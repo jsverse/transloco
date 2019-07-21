@@ -115,6 +115,41 @@
           }
         }
       }
+    },
+    "transloco": {
+      "projectType": "library",
+      "root": "projects/transloco",
+      "sourceRoot": "projects/transloco/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/transloco/tsconfig.lib.json",
+            "project": "projects/transloco/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/transloco/src/test.ts",
+            "tsConfig": "projects/transloco/tsconfig.spec.json",
+            "karmaConfig": "projects/transloco/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/transloco/tsconfig.lib.json",
+              "projects/transloco/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }},
   "defaultProject": "ngx-translate"
 }

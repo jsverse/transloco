@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { TranslateService } from './translate.service';
+import { TranslocoService } from '@ngneat/transloco';
 
 @Component({
   selector: 'app-root',
@@ -7,9 +7,7 @@ import { TranslateService } from './translate.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'ngx-translate';
-
-  constructor(private s: TranslateService) {}
+  constructor(private s: TranslocoService) {}
 
   change(l) {
     this.s.setLang(l);
