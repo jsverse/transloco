@@ -9,6 +9,11 @@ import { TranslocoService } from '@ngneat/transloco';
 export class AppComponent {
   constructor(private s: TranslocoService) {}
 
+  ngOnInit() {
+    const v = this.s.translate('a.b.c', { value: 'dynamic' });
+    console.log(v);
+  }
+
   change(l) {
     this.s.setLang(l);
   }

@@ -3,3 +3,7 @@ export * from './lib/transloco.directive';
 export * from './lib/transloco.module';
 export * from './lib/transloco.loader';
 export * from './lib/transloco.config';
+export * from './lib/transloco.parser';
+export * from './lib/types';
+export * from './lib/helpers';
+export * from './lib/translocoParams.pipe';
