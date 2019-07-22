@@ -30,7 +30,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
   }
 
   transform(key: string, params: HashMap = {}): any {
-    if (!key || key.length === 0) {
+    if (!key) {
       return key;
     }
 
