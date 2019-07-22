@@ -11,7 +11,7 @@ import { getKey } from './helpers';
 })
 export class TranslocoService {
   private lang = new BehaviorSubject<string>('en');
-  private currentlang = {};
+  private langs = new Map();
 
   lang$ = this.lang.asObservable().pipe(distinctUntilChanged());
   cache = new Map<string, Observable<HashMap<any>>>();
@@ -24,7 +24,7 @@ export class TranslocoService {
   load(lang: string): Observable<Lang> {
     if (this.cache.has(lang) === false) {
       const load$ = from(this.loader(lang)).pipe(
-        tap(value => (this.currentlang = value)),
+        tap(value => this.langs.set(lang, value)),
         shareReplay({ refCount: true, bufferSize: 1 })
       );
       this.cache.set(lang, load$);
@@ -34,7 +34,7 @@ export class TranslocoService {
   }
 
   translate(key: string, params: HashMap = {}) {
-    const value = getKey(this.currentlang, key);
+    const value = getKey(this.langs.get(this.activeLang), key);
     return this.parser.parse(value, params);
   }
 
@@ -49,5 +49,9 @@ export class TranslocoService {
   setLangAndLoad(lang: string) {
     this.setLang(lang);
     return this.load(lang);
+  }
+
+  private get activeLang() {
+    return this.lang.getValue();
   }
 }

@@ -10,7 +10,7 @@ export abstract class TranslocoParser {
 export class DefaultParser extends TranslocoParser {
   parse(value: string, params: HashMap) {
     return value.replace(/{{(.+)}}/g, function(_, match) {
-      return params[match];
+      return params[match] || '';
     });
   }
 }

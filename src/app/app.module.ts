@@ -43,8 +43,8 @@ export function getUser(userService: UserService, transloco: TranslocoService) {
       useFactory: getUser,
       deps: [UserService, TranslocoService]
     },
-    // { provide: TRANSLOCO_LOADER, useFactory: HttpLoader, deps: [HttpClient] },
-    { provide: TRANSLOCO_LOADER, useFactory: WebpackLoader },
+    { provide: TRANSLOCO_LOADER, useFactory: HttpLoader, deps: [HttpClient] },
+    // { provide: TRANSLOCO_LOADER, useFactory: WebpackLoader },
     {
       provide: TRANSLOCO_CONFIG,
       useValue: {

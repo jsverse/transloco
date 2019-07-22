@@ -1,3 +1,5 @@
 <ng-container *transloco="let t">
   <h1>{{ t.alert | translocoParams: { value: dynamic } }}</h1>
 </ng-container>
+
+<div [transloco]="'alert'" [translocoParams]="{ value: 'some value' }"></div>
