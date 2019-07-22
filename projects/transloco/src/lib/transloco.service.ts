@@ -1,10 +1,12 @@
-import { Injectable, Inject } from '@angular/core';
+import {Injectable, Inject, Optional} from '@angular/core';
 import { BehaviorSubject, from, Observable, of } from 'rxjs';
 import { distinctUntilChanged, shareReplay, tap, map, catchError } from 'rxjs/operators';
 import { TRANSLOCO_LOADER, Lang, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_PARSER, TranslocoParser } from './transloco.parser';
 import { HashMap } from './types';
 import { getKey } from './helpers';
+import { TRANSLOCO_CONFIG, TranslocoConfig, defaults } from './transloco.config';
+
 
 @Injectable({
   providedIn: 'root'
@@ -19,8 +21,11 @@ export class TranslocoService {
 
   constructor(
     @Inject(TRANSLOCO_LOADER) private loader: TranslocoLoader,
-    @Inject(TRANSLOCO_PARSER) private parser: TranslocoParser
-  ) {}
+    @Inject(TRANSLOCO_PARSER) private parser: TranslocoParser,
+    @Optional() @Inject(TRANSLOCO_CONFIG) config: TranslocoConfig
+  ) {
+    this.lang = new BehaviorSubject<string>(config.defaultLang || defaults.defaultLang);
+  }
 
   /**
    * Get the active language
