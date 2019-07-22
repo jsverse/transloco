@@ -3,3 +3,6 @@
 </ng-container>
 
 <div [transloco]="'alert'" [translocoParams]="{ value: 'some value' }"></div>
+
+<div>{{'alert' | transloco }}</div>
+<div>{{'alert' | transloco:"asd" }}</div>
