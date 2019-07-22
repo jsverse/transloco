@@ -11,9 +11,11 @@ import { getKey } from './helpers';
 })
 export class TranslocoService {
   private lang = new BehaviorSubject<string>('en');
-  lang$ = this.lang.asObservable().pipe(distinctUntilChanged());
-  cache = new Map<string, Observable<{ [key: string]: any }>>();
   private currentlang = {};
+
+  lang$ = this.lang.asObservable().pipe(distinctUntilChanged());
+  cache = new Map<string, Observable<HashMap<any>>>();
+
   constructor(
     @Inject(TRANSLOCO_LOADER) private loader: TranslocoLoader,
     @Inject(TRANSLOCO_PARSER) private parser: TranslocoParser
