@@ -2,6 +2,7 @@ import { InjectionToken } from '@angular/core';
 
 export type TranslocoConfig = {
   runtime: boolean;
+  defaultLang: string;
 };
 
 export const TRANSLOCO_CONFIG = new InjectionToken('TRANSLOCO_CONFIG', {
@@ -12,5 +13,6 @@ export const TRANSLOCO_CONFIG = new InjectionToken('TRANSLOCO_CONFIG', {
 });
 
 export const defaults: TranslocoConfig = {
-  runtime: true
+  runtime: true,
+  defaultLang: 'en'
 };

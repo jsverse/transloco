@@ -16,6 +16,9 @@ import { UserService } from './user.service';
 
 export function HttpLoader(http: HttpClient) {
   return function(lang: string) {
+    // if (lang === 'es') {
+    //   return http.get(`/assets/langs/assets/${lang}.json`);
+    // }
     return http.get(`/assets/langs/${lang}.json`);
   };
 }
@@ -48,7 +51,8 @@ export function getUser(userService: UserService, transloco: TranslocoService) {
     {
       provide: TRANSLOCO_CONFIG,
       useValue: {
-        runtime: true
+        runtime: true,
+        defaultLang: 'en'
       } as TranslocoConfig
     }
   ],
