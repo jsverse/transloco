@@ -11,7 +11,6 @@ export abstract class TranslocoParser {
 export class DefaultParser extends TranslocoParser {
   parse(value: string, params: HashMap, lang: HashMap) {
     return value.replace(/{{(.+)}}/g, function(_, match) {
-      debugger;
       return params[match] || getValue(lang, match) || '';
     });
   }
