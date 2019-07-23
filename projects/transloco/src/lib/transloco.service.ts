@@ -1,26 +1,33 @@
-import { Injectable, Inject } from '@angular/core';
+import {Injectable, Inject, Optional} from '@angular/core';
 import { BehaviorSubject, from, Observable, of } from 'rxjs';
 import { distinctUntilChanged, shareReplay, tap, map, catchError } from 'rxjs/operators';
 import { TRANSLOCO_LOADER, Lang, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_PARSER, TranslocoParser } from './transloco.parser';
 import { HashMap } from './types';
 import { getKey } from './helpers';
+import { TRANSLOCO_CONFIG, TranslocoConfig, defaults } from './transloco.config';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class TranslocoService {
-  private lang = new BehaviorSubject<string>('en');
   private langs = new Map();
   private cache = new Map<string, Observable<HashMap<any>>>();
   private defaultLang: string;
 
-  lang$ = this.lang.asObservable().pipe(distinctUntilChanged());
+  private lang: BehaviorSubject<string>;
+  lang$: Observable<string>;
 
   constructor(
     @Inject(TRANSLOCO_LOADER) private loader: TranslocoLoader,
-    @Inject(TRANSLOCO_PARSER) private parser: TranslocoParser
-  ) {}
+    @Inject(TRANSLOCO_PARSER) private parser: TranslocoParser,
+    @Optional() @Inject(TRANSLOCO_CONFIG) config: TranslocoConfig
+  ) {
+    this.defaultLang = config.defaultLang || defaults.defaultLang;
+    this.lang = new BehaviorSubject<string>(this.defaultLang);
+    this.lang$ = this.lang.asObservable().pipe(distinctUntilChanged());
+  }
 
   /**
    * Get the active language
