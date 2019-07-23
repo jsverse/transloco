@@ -1,9 +1,9 @@
-import {ChangeDetectorRef, Inject, OnDestroy, Pipe, PipeTransform} from "@angular/core";
-import {TranslocoService} from './transloco.service';
-import {HashMap} from './types';
-import {defaults, TRANSLOCO_CONFIG, TranslocoConfig} from "./transloco.config";
-import {switchMap} from "rxjs/operators";
-import {Subscription} from "rxjs";
+import { ChangeDetectorRef, Inject, OnDestroy, Pipe, PipeTransform } from '@angular/core';
+import { TranslocoService } from './transloco.service';
+import { HashMap } from './types';
+import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
+import { switchMap } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 @Pipe({
   name: 'transloco',
@@ -19,11 +19,11 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
   constructor(
     private translocoService: TranslocoService,
     @Inject(TRANSLOCO_CONFIG) private config: TranslocoConfig,
-    private cdr: ChangeDetectorRef){
-    const { runtime } = { ...defaults, ...this.config };
+    private cdr: ChangeDetectorRef
+  ) {
+    const { runtime } = { ...defaultConfig, ...this.config };
     this.runtime = runtime;
   }
-
 
   updateValue(key: string, params?: HashMap): void {
     const translation = this.translocoService.translate(key, params);
@@ -44,7 +44,6 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
     /* Cache this key and params */
     this.lastKey = key;
     this.lastParams = params;
-
 
     /* Clean previous subscription if exists */
     this.subscription && this.subscription.unsubscribe();

@@ -5,7 +5,8 @@ import { TRANSLOCO_LOADER, Lang, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_PARSER, TranslocoParser } from './transloco.parser';
 import { HashMap } from './types';
 import { getValue } from './helpers';
-import { TRANSLOCO_CONFIG, TranslocoConfig, defaults } from './transloco.config';
+import { TRANSLOCO_CONFIG, TranslocoConfig, defaultConfig } from './transloco.config';
+import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './transloco-missing-handler';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,7 @@ export class TranslocoService {
   private langs = new Map();
   private cache = new Map<string, Observable<HashMap<any>>>();
   private defaultLang: string;
+  private mergedConfig: TranslocoConfig;
 
   private lang: BehaviorSubject<string>;
   lang$: Observable<string>;
@@ -21,11 +23,17 @@ export class TranslocoService {
   constructor(
     @Inject(TRANSLOCO_LOADER) private loader: TranslocoLoader,
     @Inject(TRANSLOCO_PARSER) private parser: TranslocoParser,
-    @Optional() @Inject(TRANSLOCO_CONFIG) config: TranslocoConfig
+    @Inject(TRANSLOCO_MISSING_HANDLER) private missingHandler: TranslocoMissingHandler,
+    @Inject(TRANSLOCO_CONFIG) private userConfig: TranslocoConfig
   ) {
-    this.defaultLang = config.defaultLang || defaults.defaultLang;
+    this.mergedConfig = { ...defaultConfig, ...this.userConfig };
+    this.defaultLang = userConfig.defaultLang || defaultConfig.defaultLang;
     this.lang = new BehaviorSubject<string>(this.defaultLang);
     this.lang$ = this.lang.asObservable().pipe(distinctUntilChanged());
+  }
+
+  get config(): TranslocoConfig {
+    return this.mergedConfig;
   }
 
   /**
@@ -70,6 +78,9 @@ export class TranslocoService {
   translate(key: string, params: HashMap = {}) {
     const lang = this.langs.get(this.getActiveLang());
     const value = getValue(lang, key);
+    if (!value) {
+      return this.missingHandler.handle(key, params, this.config);
+    }
     return this.parser.parse(value, params, lang);
   }
 

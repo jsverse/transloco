@@ -1,13 +1,13 @@
 <h3>Structural Directive</h3>
 <ng-container *transloco="let t">
-  <div><b>Regular: </b>{{ t.alert }}</div>
+  <div><b>Regular: </b>{{ t.home }}</div>
   <div><b>With params: </b>{{ t.alert | translocoParams: { value: dynamic } }}</div>
   <div><b>With translation reuse: </b> {{ t.a.b.c | translocoParams }}</div>
 </ng-container>
 <h3>Directive</h3>
 <div>
   <b>Regular: </b>
-<span transloco="alert"></span>
+  <span transloco="alert"></span>
 </div>
 <div>
   <b>With params: </b>
@@ -18,6 +18,8 @@
   <span transloco="a.b.c"></span>
 </div>
 <h3>Pipe</h3>
-<div><b>Regular:</b> {{'alert' | transloco }}</div>
-<div><b>With params:</b> {{'alert' | transloco:{value: 'some value'} }}</div>
-<div><b>With translation reuse:</b> {{'a.b.c' | transloco }}</div>
+<div><b>Regular:</b> {{ 'alert' | transloco }}</div>
+<div><b>With params:</b> {{ 'alert' | transloco: { value: 'some value' } }}</div>
+<div><b>With translation reuse:</b> {{ 'a.b.c' | transloco }}</div>
+<h3>Missing key</h3>
+<div>{{ 'alertty' | transloco }}</div>

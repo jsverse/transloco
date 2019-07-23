@@ -3,22 +3,22 @@ import {
   TemplateRef,
   ViewContainerRef,
   EmbeddedViewRef,
-  Inject,
   Input,
   Optional,
   ElementRef,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  OnInit,
+  OnDestroy
 } from '@angular/core';
 import { switchMap } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { TranslocoService } from './transloco.service';
-import { TRANSLOCO_CONFIG, TranslocoConfig, defaults } from './transloco.config';
 import { HashMap } from './types';
 
 @Directive({
   selector: '[transloco]'
 })
-export class TranslocoDirective {
+export class TranslocoDirective implements OnInit, OnDestroy {
   subscription: Subscription;
   view: EmbeddedViewRef<any>;
 
@@ -27,7 +27,6 @@ export class TranslocoDirective {
 
   constructor(
     private translocoService: TranslocoService,
-    @Inject(TRANSLOCO_CONFIG) private config: TranslocoConfig,
     @Optional() private tpl: TemplateRef<any>,
     private vcr: ViewContainerRef,
     private cdr: ChangeDetectorRef,
@@ -35,7 +34,7 @@ export class TranslocoDirective {
   ) {}
 
   ngOnInit() {
-    const { runtime } = { ...defaults, ...this.config };
+    const { runtime } = this.translocoService.config;
 
     this.subscription = this.translocoService.lang$
       .pipe(switchMap(lang => this.translocoService.load(lang)))

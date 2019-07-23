@@ -2,7 +2,8 @@ import { NgModule } from '@angular/core';
 import { TranslocoDirective } from './transloco.directive';
 import { TRANSLOCO_PARSER, DefaultParser } from './transloco.parser';
 import { TranslocoParamsPipe } from './translocoParams.pipe';
-import {TranslocoPipe} from "./transloco.pipe";
+import { TranslocoPipe } from './transloco.pipe';
+import { DefaultHandler, TRANSLOCO_MISSING_HANDLER } from './transloco-missing-handler';
 
 @NgModule({
   declarations: [TranslocoDirective, TranslocoParamsPipe, TranslocoPipe],
@@ -10,6 +11,10 @@ import {TranslocoPipe} from "./transloco.pipe";
     {
       provide: TRANSLOCO_PARSER,
       useClass: DefaultParser
+    },
+    {
+      provide: TRANSLOCO_MISSING_HANDLER,
+      useClass: DefaultHandler
     }
   ],
   exports: [TranslocoDirective, TranslocoParamsPipe, TranslocoPipe]

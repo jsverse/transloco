@@ -1,6 +1,6 @@
 import { InjectionToken } from '@angular/core';
 import { HashMap } from './types';
-import {getValue} from './helpers';
+import { getValue } from './helpers';
 
 export const TRANSLOCO_PARSER = new InjectionToken('TRANSLOCO_PARSER');
 
@@ -10,8 +10,10 @@ export abstract class TranslocoParser {
 
 export class DefaultParser extends TranslocoParser {
   parse(value: string, params: HashMap, lang: HashMap) {
-    return value.replace(/{{(.+)}}/g, function(_, match) {
-      return params[match] || getValue(lang, match) || '';
-    });
+    return value
+      ? value.replace(/{{(.+)}}/g, function(_, match) {
+          return params[match] || getValue(lang, match) || '';
+        })
+      : value;
   }
 }

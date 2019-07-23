@@ -3,6 +3,7 @@ import { InjectionToken } from '@angular/core';
 export type TranslocoConfig = {
   runtime: boolean;
   defaultLang: string;
+  prodMode: boolean;
 };
 
 export const TRANSLOCO_CONFIG = new InjectionToken('TRANSLOCO_CONFIG', {
@@ -12,7 +13,8 @@ export const TRANSLOCO_CONFIG = new InjectionToken('TRANSLOCO_CONFIG', {
   }
 });
 
-export const defaults: TranslocoConfig = {
+export const defaultConfig: TranslocoConfig = {
   runtime: true,
-  defaultLang: 'en'
+  defaultLang: 'en',
+  prodMode: false
 };
