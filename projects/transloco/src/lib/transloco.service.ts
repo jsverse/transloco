@@ -1,4 +1,4 @@
-import {Injectable, Inject, Optional} from '@angular/core';
+import { Injectable, Inject, Optional } from '@angular/core';
 import { BehaviorSubject, from, Observable } from 'rxjs';
 import { distinctUntilChanged, shareReplay, tap, map } from 'rxjs/operators';
 import { TRANSLOCO_LOADER, Lang, TranslocoLoader } from './transloco.loader';
