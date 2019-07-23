@@ -3,7 +3,7 @@
   "home": "Home",
   "a": {
     "b": {
-      "c": "eng"
+      "c": "eng {{home}}"
     }
   }
 }

@@ -1,12 +1,11 @@
 import {Injectable, Inject, Optional} from '@angular/core';
-import { BehaviorSubject, from, Observable, of } from 'rxjs';
-import { distinctUntilChanged, shareReplay, tap, map, catchError } from 'rxjs/operators';
+import { BehaviorSubject, from, Observable } from 'rxjs';
+import { distinctUntilChanged, shareReplay, tap, map } from 'rxjs/operators';
 import { TRANSLOCO_LOADER, Lang, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_PARSER, TranslocoParser } from './transloco.parser';
 import { HashMap } from './types';
-import { getKey } from './helpers';
+import { getValue } from './helpers';
 import { TRANSLOCO_CONFIG, TranslocoConfig, defaults } from './transloco.config';
-
 
 @Injectable({
   providedIn: 'root'
@@ -69,8 +68,9 @@ export class TranslocoService {
    * translate('hello')
    */
   translate(key: string, params: HashMap = {}) {
-    const value = getKey(this.langs.get(this.getActiveLang()), key);
-    return this.parser.parse(value, params);
+    const lang = this.langs.get(this.getActiveLang());
+    const value = getValue(lang, key);
+    return this.parser.parse(value, params, lang);
   }
 
   /**
@@ -94,7 +94,8 @@ export class TranslocoService {
    *  translateValue('Hello {{ value }}', { value: 'World' })
    */
   translateValue(value: string, params: HashMap = {}) {
-    return this.parser.parse(value, params);
+    const lang = this.langs.get(this.getActiveLang());
+    return this.parser.parse(value, params, lang);
   }
 
   /**

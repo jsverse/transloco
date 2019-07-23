@@ -8,7 +8,7 @@ import { HashMap } from './types';
 export class TranslocoParamsPipe implements PipeTransform {
   constructor(private service: TranslocoService) {}
 
-  transform(value: string, params: HashMap) {
+  transform(value: string, params?: HashMap) {
     return this.service.translateValue(value, params);
   }
 }
