@@ -12,27 +12,21 @@ import { TRANSLOCO_CONFIG, TranslocoConfig, defaults } from './transloco.config'
   providedIn: 'root'
 })
 export class TranslocoService {
-<<<<<<< HEAD
-  private lang = new BehaviorSubject<string>('en');
   private langs = new Map();
   private cache = new Map<string, Observable<HashMap<any>>>();
   private defaultLang: string;
 
-  lang$ = this.lang.asObservable().pipe(distinctUntilChanged());
-=======
   private lang: BehaviorSubject<string>;
-  private currentlang = {};
   lang$: Observable<string>;
-  cache = new Map<string, Observable<HashMap<any>>>();
->>>>>>> remove lang$ getter
 
   constructor(
     @Inject(TRANSLOCO_LOADER) private loader: TranslocoLoader,
     @Inject(TRANSLOCO_PARSER) private parser: TranslocoParser,
     @Optional() @Inject(TRANSLOCO_CONFIG) config: TranslocoConfig
   ) {
-    this.lang = new BehaviorSubject<string>(config.defaultLang || defaults.defaultLang);
-    this.lang$ = this.lang.asObservable().pipe(distinctUntilChanged())
+    this.defaultLang = config.defaultLang || defaults.defaultLang;
+    this.lang = new BehaviorSubject<string>(this.defaultLang);
+    this.lang$ = this.lang.asObservable().pipe(distinctUntilChanged());
   }
 
   /**

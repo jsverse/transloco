@@ -52,7 +52,7 @@ export function getUser(userService: UserService, transloco: TranslocoService) {
       provide: TRANSLOCO_CONFIG,
       useValue: {
         runtime: true,
-        defaultLang: 'es'
+        defaultLang: 'en'
       } as TranslocoConfig
     }
   ],
