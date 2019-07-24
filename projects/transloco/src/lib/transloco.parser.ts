@@ -9,9 +9,10 @@ export abstract class TranslocoParser {
 }
 
 export class DefaultParser extends TranslocoParser {
-  parse(value: string, params: HashMap, lang: HashMap) {
+  parse(value: string, params: HashMap, lang?: HashMap) {
     return value
-      ? value.replace(/{{(.+)}}/g, function(_, match) {
+      ? value.replace(/{{(.*?)}}/g, function(_, match) {
+          match = match.trim();
           return params[match] || getValue(lang, match) || '';
         })
       : value;
