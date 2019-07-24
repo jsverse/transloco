@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "hooks:pre-commit": "node hooks/pre-commit.js",
     "prettier": "prettier --write \"**/*.{js,json,css,scss,less,md,ts,html,component.html}\"",
     "start": "ng serve",
     "build": "ng build",
@@ -27,24 +28,25 @@
     "zone.js": "~0.9.1"
   },
   "devDependencies": {
-    "@netbasal/spectator": "^3.9.4",
     "@angular-devkit/build-angular": "~0.801.1",
     "@angular-devkit/build-ng-packagr": "~0.801.1",
     "@angular/cli": "~8.1.1",
     "@angular/compiler-cli": "~8.1.1",
     "@angular/language-service": "~8.1.1",
-    "@types/node": "~8.9.4",
+    "@netbasal/spectator": "^3.9.4",
     "@types/jasmine": "~3.3.8",
     "@types/jasminewd2": "~2.0.3",
+    "@types/node": "~8.9.4",
+    "chalk": "^2.4.2",
     "codelyzer": "^5.0.0",
     "jasmine-core": "~3.4.0",
     "jasmine-spec-reporter": "~4.2.1",
+    "jest-preset-angular": "7.1.1",
     "karma": "~4.1.0",
     "karma-chrome-launcher": "~2.2.0",
     "karma-coverage-istanbul-reporter": "~2.0.1",
     "karma-jasmine": "~2.0.1",
     "karma-jasmine-html-reporter": "^1.4.0",
-    "jest-preset-angular": "7.1.1",
     "lint-staged": "9.2.0",
     "ng-packagr": "^5.1.0",
     "prettier": "1.18.2",
@@ -57,7 +59,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "npm run hooks:pre-commit && lint-staged"
     }
   },
   "lint-staged": {
