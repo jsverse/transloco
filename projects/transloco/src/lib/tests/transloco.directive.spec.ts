@@ -1,33 +1,13 @@
-import { timer } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { fakeAsync, tick } from '@angular/core/testing';
-import {
-  DefaultParser,
-  TRANSLOCO_CONFIG,
-  TRANSLOCO_LOADER,
-  TRANSLOCO_PARSER,
-  TranslocoDirective
-} from '../../public-api';
+import {TranslocoDirective} from '../../public-api';
 import { createHostComponentFactory, SpectatorWithHost } from '@netbasal/spectator';
+import {providersMock} from "./transloco.mocks";
 
 describe('TranslocoDirective', () => {
   let host: SpectatorWithHost<TranslocoDirective>;
   const createHost = createHostComponentFactory({
     component: TranslocoDirective,
-    providers: [
-      {
-        provide: TRANSLOCO_CONFIG,
-        useValue: {}
-      },
-      {
-        provide: TRANSLOCO_LOADER,
-        useValue: () => timer(1000).pipe(map(() => ({ alert: 'Alert' })))
-      },
-      {
-        provide: TRANSLOCO_PARSER,
-        useClass: DefaultParser
-      }
-    ]
+    providers: providersMock
   });
 
   it('should set the translation value inside the element', fakeAsync(() => {
