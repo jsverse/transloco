@@ -1,7 +1,7 @@
-import { fakeAsync, tick } from '@angular/core/testing';
-import {TranslocoDirective} from '../../public-api';
+import { fakeAsync } from '@angular/core/testing';
+import { TranslocoDirective } from '../../public-api';
 import { createHostComponentFactory, SpectatorWithHost } from '@netbasal/spectator';
-import {providersMock} from "./transloco.mocks";
+import { providersMock, runLoader } from "./transloco.mocks";
 
 describe('TranslocoDirective', () => {
   let host: SpectatorWithHost<TranslocoDirective>;
@@ -10,9 +10,22 @@ describe('TranslocoDirective', () => {
     providers: providersMock
   });
 
-  it('should set the translation value inside the element', fakeAsync(() => {
-    host = createHost(`<div transloco="alert"></div>`);
-    tick(1002);
-    expect(host.queryHost('[transloco]')['innerText']).toEqual('Alert');
-  }));
+  describe('Basic directive', () => {
+    it('should set the translation value inside the element', fakeAsync(() => {
+      host = createHost(`<div transloco="home"></div>`);
+      runLoader();
+      expect(host.queryHost('[transloco]')).toHaveText('home english');
+    }));
+
+    it('should support params', fakeAsync(() => {
+      host = createHost(`<div transloco="alert" [translocoParams]="{ value: 'netanel' }"></div>`);
+      runLoader();
+      expect(host.queryHost('[transloco]')).toHaveText('alert netanel english');
+    }));
+  });
+
+  describe('Structural directive', () => {
+
+  });
+
 });

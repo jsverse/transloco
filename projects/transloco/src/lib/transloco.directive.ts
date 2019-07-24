@@ -8,7 +8,7 @@ import {
   ElementRef,
   ChangeDetectorRef,
   OnInit,
-  OnDestroy
+  OnDestroy, SimpleChange, OnChanges
 } from '@angular/core';
 import { switchMap } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
@@ -18,7 +18,7 @@ import { HashMap } from './types';
 @Directive({
   selector: '[transloco]'
 })
-export class TranslocoDirective implements OnInit, OnDestroy {
+export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   subscription: Subscription;
   view: EmbeddedViewRef<any>;
 
@@ -31,7 +31,8 @@ export class TranslocoDirective implements OnInit, OnDestroy {
     private vcr: ViewContainerRef,
     private cdr: ChangeDetectorRef,
     private host: ElementRef
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     const { runtime } = this.translocoService.config;
@@ -42,11 +43,18 @@ export class TranslocoDirective implements OnInit, OnDestroy {
         this.tpl === null ? this.simpleStrategy() : this.structuralStrategy(data);
         this.cdr.markForCheck();
 
-        if (!runtime) {
+        if( !runtime ) {
           this.subscription.unsubscribe();
           this.subscription = null;
         }
       });
+  }
+
+  ngOnChanges(changes) {
+    // We need to support dynamic keys/params, so if this is not the first change CD cycle
+    // we need to run the function again in order to update the value
+    const notInit = Object.keys(changes).some((v) => changes[v].firstChange === false);
+    notInit && this.simpleStrategy();
   }
 
   private simpleStrategy() {
@@ -54,7 +62,7 @@ export class TranslocoDirective implements OnInit, OnDestroy {
   }
 
   private structuralStrategy(data) {
-    if (this.view) {
+    if( this.view ) {
       this.view.context['$implicit'] = data;
     } else {
       this.view = this.vcr.createEmbeddedView(this.tpl, {

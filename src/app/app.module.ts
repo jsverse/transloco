@@ -13,6 +13,7 @@ import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { UserService } from './user.service';
 import { HomeComponent } from './home/home.component';
 import { PageComponent } from './page/page.component';
+import { OnPushComponent } from './on-push/on-push.component';
 
 export function HttpLoader(http: HttpClient) {
   return function(lang: string) {
@@ -37,7 +38,7 @@ export function getUser(userService: UserService, transloco: TranslocoService) {
 }
 
 @NgModule({
-  declarations: [AppComponent, HomeComponent, PageComponent],
+  declarations: [AppComponent, HomeComponent, PageComponent, OnPushComponent],
   imports: [BrowserModule, AppRoutingModule, TranslocoModule, HttpClientModule],
   providers: [
     // {

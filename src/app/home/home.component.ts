@@ -7,8 +7,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
   dynamic = '🦄';
+  key = 'home';
 
-  constructor() {}
+  constructor() {
+  }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
+
+  changeKey() {
+    this.key = this.key === 'home' ? 'fromList' : 'home';
+  }
+
+  changeParam() {
+    this.dynamic = this.dynamic === '🦄' ? '🦄🦄🦄' :'🦄';
+  }
 }

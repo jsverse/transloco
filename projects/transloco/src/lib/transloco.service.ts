@@ -142,16 +142,6 @@ export class TranslocoService {
   }
 
   /**
-   * Returns an array of currently available langs
-   */
-  getLangs() {}
-
-  /**
-   * Add new langs to the list
-   */
-  addLangs(langs: string[]) {}
-
-  /**
    * Gets an object of translations for a given language
    */
   getTranslation(lang: string) {
