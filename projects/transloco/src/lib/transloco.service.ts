@@ -1,11 +1,11 @@
-import { Injectable, Inject, Optional } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, from, Observable } from 'rxjs';
-import { distinctUntilChanged, shareReplay, tap, map } from 'rxjs/operators';
-import { TRANSLOCO_LOADER, Lang, TranslocoLoader } from './transloco.loader';
+import { distinctUntilChanged, map, shareReplay, tap } from 'rxjs/operators';
+import { Lang, TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_PARSER, TranslocoParser } from './transloco.parser';
 import { HashMap } from './types';
 import { getValue } from './helpers';
-import { TRANSLOCO_CONFIG, TranslocoConfig, defaultConfig } from './transloco.config';
+import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './transloco-missing-handler';
 
 @Injectable({
@@ -27,8 +27,8 @@ export class TranslocoService {
     @Inject(TRANSLOCO_CONFIG) private userConfig: TranslocoConfig
   ) {
     this.mergedConfig = { ...defaultConfig, ...this.userConfig };
-    this.defaultLang = userConfig.defaultLang || defaultConfig.defaultLang;
-    this.lang = new BehaviorSubject<string>(this.defaultLang);
+    this.setDefaultLang(this.mergedConfig.defaultLang);
+    this.lang = new BehaviorSubject<string>(this.getDefaultLang());
     this.lang$ = this.lang.asObservable().pipe(distinctUntilChanged());
   }
 
@@ -50,7 +50,9 @@ export class TranslocoService {
   /**
    * This language will be used as a fallback when a translation isn't found in the current language
    */
-  setDefaultLang(lang: string) {}
+  setDefaultLang(lang: string) {
+    this.defaultLang = lang;
+  }
 
   /**
    *
@@ -77,6 +79,10 @@ export class TranslocoService {
    */
   translate(key: string, params: HashMap = {}) {
     const lang = this.langs.get(this.getActiveLang());
+    if (!lang) {
+      return;
+    }
+
     const value = getValue(lang, key);
     if (!value) {
       return this.missingHandler.handle(key, params, this.config);

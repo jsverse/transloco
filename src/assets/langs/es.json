@@ -1,9 +1,10 @@
 {
-  "alert": "Alerto {{value}}",
-  "home": "HOLLA",
+  "alert": "alert {{value}} spanish",
+  "home": "home spanish",
+  "fromList": "from list",
   "a": {
     "b": {
-      "c": "es"
+      "c": "a.b.c {{fromList}} spanish"
     }
   }
 }

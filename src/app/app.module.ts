@@ -2,8 +2,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { NavComponent } from './nav/nav.component';
-import { AlertComponent } from './alert/alert.component';
 import {
   TranslocoModule,
   TRANSLOCO_LOADER,
@@ -13,6 +11,8 @@ import {
 } from '@ngneat/transloco';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { UserService } from './user.service';
+import { HomeComponent } from './home/home.component';
+import { PageComponent } from './page/page.component';
 
 export function HttpLoader(http: HttpClient) {
   return function(lang: string) {
@@ -37,15 +37,15 @@ export function getUser(userService: UserService, transloco: TranslocoService) {
 }
 
 @NgModule({
-  declarations: [AppComponent, NavComponent, AlertComponent],
+  declarations: [AppComponent, HomeComponent, PageComponent],
   imports: [BrowserModule, AppRoutingModule, TranslocoModule, HttpClientModule],
   providers: [
-    {
-      provide: APP_INITIALIZER,
-      multi: true,
-      useFactory: getUser,
-      deps: [UserService, TranslocoService]
-    },
+    // {
+    //   provide: APP_INITIALIZER,
+    //   multi: true,
+    //   useFactory: getUser,
+    //   deps: [UserService, TranslocoService]
+    // },
     { provide: TRANSLOCO_LOADER, useFactory: HttpLoader, deps: [HttpClient] },
     // { provide: TRANSLOCO_LOADER, useFactory: WebpackLoader },
     {

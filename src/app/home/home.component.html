@@ -1,0 +1,29 @@
+<h4>Structural Directive</h4>
+<ng-container *transloco="let t">
+  <ul class="list-group">
+    <li class="list-group-item"><b>Regular: </b>{{ t.home }}</li>
+    <li class="list-group-item"><b>With params: </b>{{ t.alert | translocoParams: { value: dynamic } }}</li>
+    <li class="list-group-item"><b>With translation reuse: </b> {{ t.a.b.c | translocoParams }}</li>
+  </ul>
+</ng-container>
+
+<h3 class="mtb">Directive</h3>
+<ul class="list-group">
+  <li class="list-group-item"><b>Regular: </b><span transloco="alert"></span></li>
+  <li class="list-group-item">
+    <b>With params: </b><span transloco="alert" [translocoParams]="{ value: dynamic }"></span>
+  </li>
+  <li class="list-group-item"><b>With translation reuse: </b> <span transloco="a.b.c"></span></li>
+</ul>
+
+<h3 class="mtb">Pipe</h3>
+<ul class="list-group">
+  <li class="list-group-item"><b>Regular: </b>{{ 'alert' | transloco }}</li>
+  <li class="list-group-item"><b>With params: </b>{{ 'alert' | transloco: { value: dynamic } }}</li>
+  <li class="list-group-item"><b>With translation reuse: </b> {{ 'a.b.c' | transloco }}</li>
+</ul>
+
+<h3 class="mtb">Missing key</h3>
+<ul class="list-group">
+  <li class="list-group-item"><b>Open the console </b>{{ 'alertty' | transloco }}</li>
+</ul>

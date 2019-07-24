@@ -7,14 +7,15 @@ import { TranslocoService } from '@ngneat/transloco';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  constructor(private s: TranslocoService) {}
+  constructor(private service: TranslocoService) {}
 
-  ngOnInit() {
-    const v = this.s.translate('a.b.c', { value: 'dynamic' });
-    console.log(v);
+  ngOnInit() {}
+
+  get activeLang() {
+    return this.service.getActiveLang();
   }
 
-  change(l) {
-    this.s.setLang(l);
+  change(lang: string) {
+    this.service.setLang(lang);
   }
 }

@@ -1,5 +1,32 @@
-<app-nav></app-nav>
-<app-alert></app-alert>
-<button (click)="change('es')">change es</button>
-<button (click)="change('en')">change en</button>
-<router-outlet></router-outlet>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand">🦄 Transloco</a>
+  <button class="navbar-toggler" type="button">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item" routerLinkActive="active">
+        <a class="nav-link" routerLink="">Home</a>
+      </li>
+      <li class="nav-item" routerLinkActive="active">
+        <a class="nav-link" routerLink="page">Page</a>
+      </li>
+    </ul>
+
+    <div>
+      <button class="btn btn-outline-primary my-2 my-sm-0" style="margin-right: 10px;" (click)="change('en')">
+        English
+      </button>
+      <button class="btn btn-outline-secondary my-2 my-sm-0" (click)="change('es')">Spanish</button>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <p class="mtb">
+    Active language: <b style="color: hotpink">{{ activeLang }}</b>
+  </p>
+
+  <router-outlet></router-outlet>
+</div>
