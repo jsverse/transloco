@@ -36,7 +36,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
 
   ngOnInit() {
     const { runtime } = this.translocoService.config;
-
+debugger
     this.subscription = this.translocoService.lang$
       .pipe(switchMap(lang => this.translocoService.load(lang)))
       .subscribe(data => {

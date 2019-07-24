@@ -59,7 +59,7 @@ export class TranslocoService {
    * @internal
    */
   load(lang: string): Observable<Lang> {
-    if (this.cache.has(lang) === false) {
+    if( this.cache.has(lang) === false ) {
       const load$ = from(this.loader(lang)).pipe(
         // catchError(() => this.load(this.defaultLang)),
         tap(value => this.langs.set(lang, value)),
@@ -78,13 +78,18 @@ export class TranslocoService {
    * translate('hello')
    */
   translate(key: string, params: HashMap = {}) {
+    if( !key ) {
+      return '';
+    }
+
     const lang = this.langs.get(this.getActiveLang());
-    if (!lang) {
-      return;
+    if( !lang ) {
+      return '';
     }
 
     const value = getValue(lang, key);
-    if (!value) {
+
+    if( !value ) {
       return this.missingHandler.handle(key, params, this.config);
     }
     return this.parser.parse(value, params, lang);
