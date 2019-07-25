@@ -4,6 +4,8 @@
   "scripts": {
     "ng": "ng",
     "hooks:pre-commit": "node hooks/pre-commit.js",
+    "release": "npx standard-version",
+    "commit": "npx git-cz",
     "prettier": "prettier --write \"**/*.{js,json,css,scss,less,md,ts,html,component.html}\"",
     "start": "ng serve",
     "build": "ng build",
@@ -64,6 +66,11 @@
     "hooks": {
       "pre-commit": "npm run hooks:pre-commit && lint-staged",
       "pre-push": "npm run test:headless"
+    }
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
     }
   },
   "lint-staged": {
