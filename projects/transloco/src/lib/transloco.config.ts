@@ -1,9 +1,9 @@
 import { InjectionToken } from '@angular/core';
 
 export type TranslocoConfig = {
-  runtime: boolean;
-  defaultLang: string;
-  prodMode: boolean;
+  runtime?: boolean;
+  defaultLang?: string;
+  prodMode?: boolean;
 };
 
 export const TRANSLOCO_CONFIG = new InjectionToken('TRANSLOCO_CONFIG', {

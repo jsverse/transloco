@@ -27,8 +27,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
 
   updateValue(key: string, params?: HashMap): void {
     const translation = this.translocoService.translate(key, params);
-    this.value = translation !== undefined ? translation : key;
-    this.lastKey = key;
+    this.value = translation || key;
     this.cdr.markForCheck();
   }
 
