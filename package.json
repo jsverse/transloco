@@ -9,7 +9,7 @@
     "build": "ng build",
     "test": "ng test",
     "test:lib": "ng test transloco",
-    "test:headless": "cross-env CI=true ng test && ng test transloco",
+    "test:headless": "cross-env CI=true ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
@@ -50,6 +50,7 @@
     "karma-jasmine": "~2.0.1",
     "karma-jasmine-html-reporter": "^1.4.0",
     "lint-staged": "9.2.0",
+    "ng-mocks": "^8.1.0",
     "ng-packagr": "^5.1.0",
     "prettier": "1.18.2",
     "protractor": "~5.4.0",
