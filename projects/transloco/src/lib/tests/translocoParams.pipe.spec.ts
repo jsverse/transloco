@@ -14,10 +14,11 @@ describe('TranslocoParamsPipe', () => {
   });
 
   it('should call missing when value is falsy', () => {
+    pipe.transform('');
     pipe.transform(null);
     pipe.transform(undefined);
 
-    expect(missingHandlerMock.handle).toHaveBeenCalledTimes(2);
+    expect(missingHandlerMock.handle).toHaveBeenCalledTimes(3);
   });
 
   it('should call translate service when value is truthy', () => {
