@@ -3,6 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "contributors:add": "all-contributors add",
+    "contributors:generate": "all-contributors init",
     "hooks:pre-commit": "node hooks/pre-commit.js",
     "release": "npx standard-version",
     "commit": "npx git-cz",
@@ -40,6 +42,7 @@
     "@types/jasmine": "~3.3.8",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "~8.9.4",
+    "all-contributors-cli": "^6.8.1",
     "chalk": "^2.4.2",
     "codelyzer": "^5.0.0",
     "cross-env": "^5.2.0",
