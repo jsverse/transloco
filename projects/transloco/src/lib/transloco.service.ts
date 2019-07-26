@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
-import { BehaviorSubject, from, Observable } from 'rxjs';
-import { distinctUntilChanged, map, shareReplay, tap } from 'rxjs/operators';
+import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
+import { catchError, distinctUntilChanged, map, shareReplay, tap } from 'rxjs/operators';
 import { Lang, TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_PARSER, TranslocoParser } from './transloco.parser';
 import { HashMap } from './types';
@@ -19,6 +19,9 @@ export class TranslocoService {
 
   private lang: BehaviorSubject<string>;
   lang$: Observable<string>;
+
+  private translationLoaded = new Subject<{ lang: string }>();
+  translationLoaded$ = this.translationLoaded.asObservable();
 
   constructor(
     @Inject(TRANSLOCO_LOADER) private loader: TranslocoLoader,
@@ -61,8 +64,11 @@ export class TranslocoService {
   load(lang: string): Observable<Lang> {
     if( this.cache.has(lang) === false ) {
       const load$ = from(this.loader(lang)).pipe(
-        // catchError(() => this.load(this.defaultLang)),
-        tap(value => this.langs.set(lang, value)),
+        catchError(() => this.load(this.defaultLang)),
+        tap(value => {
+          this.langs.set(lang, value);
+          this.translationLoaded.next({ lang });
+        }),
         shareReplay({ refCount: true, bufferSize: 1 })
       );
       this.cache.set(lang, load$);
