@@ -3,11 +3,17 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "contributors:add": "all-contributors add",
+    "contributors:generate": "all-contributors init",
+    "hooks:pre-commit": "node hooks/pre-commit.js",
+    "release": "npx standard-version",
+    "commit": "npx git-cz",
     "prettier": "prettier --write \"**/*.{js,json,css,scss,less,md,ts,html,component.html}\"",
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
     "test:lib": "ng test transloco",
+    "test:headless": "cross-env CI=true ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
@@ -27,16 +33,20 @@
     "zone.js": "~0.9.1"
   },
   "devDependencies": {
-    "@netbasal/spectator": "^3.9.4",
     "@angular-devkit/build-angular": "~0.801.1",
     "@angular-devkit/build-ng-packagr": "~0.801.1",
     "@angular/cli": "~8.1.1",
     "@angular/compiler-cli": "~8.1.1",
     "@angular/language-service": "~8.1.1",
-    "@types/node": "~8.9.4",
+    "@netbasal/spectator": "^3.9.4",
     "@types/jasmine": "~3.3.8",
     "@types/jasminewd2": "~2.0.3",
+    "@types/node": "~8.9.4",
+    "all-contributors-cli": "^6.8.1",
+    "chalk": "^2.4.2",
     "codelyzer": "^5.0.0",
+    "cross-env": "^5.2.0",
+    "husky": "^3.0.1",
     "jasmine-core": "~3.4.0",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~4.1.0",
@@ -44,11 +54,12 @@
     "karma-coverage-istanbul-reporter": "~2.0.1",
     "karma-jasmine": "~2.0.1",
     "karma-jasmine-html-reporter": "^1.4.0",
-    "jest-preset-angular": "7.1.1",
     "lint-staged": "9.2.0",
+    "ng-mocks": "^8.1.0",
     "ng-packagr": "^5.1.0",
     "prettier": "1.18.2",
     "protractor": "~5.4.0",
+    "ts-mocks": "^2.3.4",
     "ts-node": "~7.0.0",
     "tsickle": "^0.35.0",
     "tslint": "~5.15.0",
@@ -57,7 +68,13 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "npm run hooks:pre-commit && lint-staged",
+      "pre-push": "npm run test:headless"
+    }
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
     }
   },
   "lint-staged": {
