@@ -1,12 +1,13 @@
 export default {
-  alert: 'Alerto',
-  home: 'HOLLA',
+  alert: 'alert {{value}} spanish',
+  home: 'home spanish',
+  fromList: 'from list',
   a: {
     b: {
-      c: 'span'
+      c: 'a.b.c {{fromList}} spanish'
     }
   },
-  dynmaic(v) {
-    return `Hello ${v} span...`;
+  dynamic(v) {
+    return `Hello ${v} spanish...`;
   }
 };

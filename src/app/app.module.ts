@@ -10,14 +10,15 @@ import { OnPushComponent } from './on-push/on-push.component';
 import { httpLoader } from './loaders/http.loader';
 import { preLoad } from './preload';
 import { environment } from '../environments/environment';
+import { webpackLoader } from './loaders/webpack.loader';
 
 @NgModule({
   declarations: [AppComponent, HomeComponent, PageComponent, OnPushComponent],
   imports: [BrowserModule, AppRoutingModule, TranslocoModule, HttpClientModule],
   providers: [
     preLoad,
-    httpLoader,
-    // webpackLoader,
+    // httpLoader,
+    webpackLoader,
     {
       provide: TRANSLOCO_CONFIG,
       useValue: {
