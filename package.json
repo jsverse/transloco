@@ -2,12 +2,14 @@
   "name": "transloco-playground",
   "version": "0.0.0",
   "scripts": {
+    "cypress-open": "cypress open",
+    "cypress-run": "cypress run",
     "ng": "ng",
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors init",
     "hooks:pre-commit": "node hooks/pre-commit.js",
-    "release": "npx standard-version",
-    "commit": "npx git-cz",
+    "release": "standard-version",
+    "commit": "git-cz",
     "prettier": "prettier --write \"**/*.{js,json,css,scss,less,md,ts,html,component.html}\"",
     "start": "ng serve",
     "build": "ng build",
@@ -15,9 +17,9 @@
     "test:lib": "ng test transloco",
     "test:headless": "cross-env CI=true ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "cypress open",
+    "e2e:ci": "cypress run"
   },
-  "private": true,
   "dependencies": {
     "@angular/animations": "~8.1.1",
     "@angular/common": "~8.1.1",
@@ -27,17 +29,24 @@
     "@angular/platform-browser": "~8.1.1",
     "@angular/platform-browser-dynamic": "~8.1.1",
     "@angular/router": "~8.1.1",
+    "@briebug/cypress-schematic": "^2.0.0",
     "@schuchard/prettier": "^3.1.0",
+    "commitizen": "^4.0.3",
     "rxjs": "~6.4.0",
+    "standard-version": "^6.0.1",
     "tslib": "^1.9.0",
     "zone.js": "~0.9.1"
   },
   "devDependencies": {
+    "@commitlint/cli": "8.1.0",
+    "@commitlint/config-angular": "8.1.0",
+    "@commitlint/config-conventional": "8.1.0",
     "@angular-devkit/build-angular": "~0.801.1",
     "@angular-devkit/build-ng-packagr": "~0.801.1",
     "@angular/cli": "~8.1.1",
     "@angular/compiler-cli": "~8.1.1",
     "@angular/language-service": "~8.1.1",
+    "@cypress/webpack-preprocessor": "4.1.0",
     "@netbasal/spectator": "^3.9.4",
     "@types/jasmine": "~3.3.8",
     "@types/jasminewd2": "~2.0.3",
@@ -45,7 +54,9 @@
     "all-contributors-cli": "^6.8.1",
     "chalk": "^2.4.2",
     "codelyzer": "^5.0.0",
+    "copy": "^0.3.2",
     "cross-env": "^5.2.0",
+    "cypress": "3.4.0",
     "husky": "^3.0.1",
     "jasmine-core": "~3.4.0",
     "jasmine-spec-reporter": "~4.2.1",
@@ -59,6 +70,7 @@
     "ng-packagr": "^5.1.0",
     "prettier": "1.18.2",
     "protractor": "~5.4.0",
+    "ts-loader": "6.0.4",
     "ts-mocks": "^2.3.4",
     "ts-node": "~7.0.0",
     "tsickle": "^0.35.0",
@@ -68,6 +80,7 @@
   },
   "husky": {
     "hooks": {
+      "commit-msg": "commitlint -e $GIT_PARAMS",
       "pre-commit": "npm run hooks:pre-commit && lint-staged",
       "pre-push": "npm run test:headless"
     }

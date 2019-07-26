@@ -15,10 +15,15 @@
     </ul>
 
     <div>
-      <button class="btn btn-outline-primary my-2 my-sm-0" style="margin-right: 10px;" (click)="change('en')">
+      <button
+        data-cy="en"
+        class="btn btn-outline-primary my-2 my-sm-0"
+        style="margin-right: 10px;"
+        (click)="change('en')"
+      >
         English
       </button>
-      <button class="btn btn-outline-secondary my-2 my-sm-0" (click)="change('es')">Spanish</button>
+      <button data-cy="es" class="btn btn-outline-secondary my-2 my-sm-0" (click)="change('es')">Spanish</button>
     </div>
   </div>
 </nav>
