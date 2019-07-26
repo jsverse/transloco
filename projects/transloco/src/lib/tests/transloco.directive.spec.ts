@@ -1,7 +1,7 @@
 import { fakeAsync } from '@angular/core/testing';
 import { TranslocoDirective, TranslocoParamsPipe } from '../../public-api';
 import { createHostComponentFactory, SpectatorWithHost } from '@netbasal/spectator';
-import { providersMock, runLoader } from "./transloco.mocks";
+import { providersMock, runLoader } from './transloco.mocks';
 
 describe('TranslocoDirective', () => {
   let host: SpectatorWithHost<TranslocoDirective>;
@@ -45,7 +45,6 @@ describe('TranslocoDirective', () => {
       host.detectChanges();
       expect(host.queryHost('[transloco]')).toHaveText('alert kazaz english');
     }));
-
   });
 
   describe('Structural directive', () => {
@@ -55,6 +54,7 @@ describe('TranslocoDirective', () => {
            <div>{{t.home}}</div>
            <span>{{t.fromList}}</span>
            <p>{{t.a.b.c | translocoParams}}</p>
+           <p>{{t.a.b.c | translocoParams:{fromList: "value"} }}</p>
         </section>
 
      `);
@@ -64,7 +64,7 @@ describe('TranslocoDirective', () => {
       expect(host.queryHost('div')).toHaveText('home english');
       expect(host.queryHost('span')).toHaveText('from list');
       expect(host.queryHost('p')).toHaveText('a.b.c from list english');
+      expect(host.queryHostAll('p')[1]).toHaveText('a.b.c value english');
     }));
   });
-
 });
