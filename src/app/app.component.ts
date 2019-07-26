@@ -16,6 +16,6 @@ export class AppComponent {
   }
 
   change(lang: string) {
-    this.service.setLang(lang);
+    this.service.setActiveLang(lang);
   }
 }

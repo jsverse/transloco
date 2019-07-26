@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
-import { BehaviorSubject, from, Observable, Subject, throwError } from 'rxjs';
+import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
 import { catchError, distinctUntilChanged, map, retry, shareReplay, tap } from 'rxjs/operators';
 import { Lang, TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_PARSER, TranslocoParser } from './transloco.parser';
@@ -18,9 +18,11 @@ export class TranslocoService {
   private mergedConfig: TranslocoConfig;
 
   private lang: BehaviorSubject<string>;
+  /** Notifies when the lang changes */
   lang$: Observable<string>;
 
   private translationLoaded = new Subject<{ lang: string }>();
+  /** Notifies when the lang loaded */
   translationLoaded$ = this.translationLoaded.asObservable();
 
   constructor(
@@ -39,13 +41,6 @@ export class TranslocoService {
     return this.mergedConfig;
   }
 
-  /**
-   * Get the active language
-   */
-  getActiveLang() {
-    return this.lang.getValue();
-  }
-
   getDefaultLang() {
     return this.defaultLang;
   }
@@ -57,6 +52,25 @@ export class TranslocoService {
     this.defaultLang = lang;
   }
 
+  getActiveLang() {
+    return this.lang.getValue();
+  }
+
+  /**
+   * Changes the lang currently used
+   */
+  setActiveLang(lang: string) {
+    this.lang.next(lang);
+  }
+
+  /**
+   * Load and change the lang currently used
+   */
+  setLangAndLoad(lang: string) {
+    this.setActiveLang(lang);
+    return this.load(lang);
+  }
+
   /**
    *
    * @internal
@@ -66,10 +80,6 @@ export class TranslocoService {
       const load$ = from(this.loader(lang)).pipe(
         retry(3),
         catchError(() => {
-          if (lang === this.defaultLang) {
-            const errMsg = `Unable to load the default translation file (${lang}), reached maximum retries`;
-            throw new Error(errMsg);
-          }
           return this.load(this.defaultLang);
         }),
         tap(value => {
@@ -131,21 +141,6 @@ export class TranslocoService {
   translateValue(value: string, params: HashMap = {}): string {
     const lang = this.langs.get(this.getActiveLang());
     return this.parser.parse(value, params, lang);
-  }
-
-  /**
-   * Changes the lang currently used
-   */
-  setLang(lang: string) {
-    this.lang.next(lang);
-  }
-
-  /**
-   * Load and changes the lang currently used
-   */
-  setLangAndLoad(lang: string) {
-    this.setLang(lang);
-    return this.load(lang);
   }
 
   /**
