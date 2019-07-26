@@ -39,6 +39,6 @@ export function load(lang: string): any {
   return timer(1000).pipe(map(() => langs[lang])) as any;
 }
 
-export function runLoader() {
-  tick(1001);
+export function runLoader(times = 1) {
+  tick(times * 1001);
 }

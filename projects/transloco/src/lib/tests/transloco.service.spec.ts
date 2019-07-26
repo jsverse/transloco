@@ -5,7 +5,7 @@ import createSpy = jasmine.createSpy;
 import { fakeAsync } from '@angular/core/testing';
 import en from '../../../../../src/assets/langs/en.json';
 import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from '../transloco-missing-handler';
-import { of, timer } from 'rxjs';
+import { of, throwError, timer } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 describe('TranslocoService', () => {
@@ -33,16 +33,17 @@ describe('TranslocoService', () => {
           })
         );
     };
-    it('should retry loading if initial loading failed', fakeAsync(() => {
+
+    it('should return the default lang if the load fails', fakeAsync(() => {
+      loadLang();
       (spectator.service as any).loader = createSpy().and.callFake(failLoad(1));
-      spectator.service.load('en').subscribe();
-      runLoader();
-      expect((spectator.service as any).loader).toHaveBeenCalledTimes(2);
-      /* We need to run the loader again since it's retrying */
-      runLoader();
+      spectator.service.load('es').subscribe();
+      runLoader(2);
+      /* Once since en is in cache */
+      expect((spectator.service as any).loader).toHaveBeenCalledTimes(1);
     }));
 
-    it('should stop retrying to load when reaching 3 tries', fakeAsync(() => {
+    it('should stop retrying to load the default lang when reaching 3 tries', fakeAsync(() => {
       const spy = createSpy().and.returnValue(of());
       (spectator.service as any).loader = createSpy().and.callFake(failLoad(5));
       const loader = (spectator.service as any).loader;
@@ -50,14 +51,9 @@ describe('TranslocoService', () => {
         .load('en')
         .pipe(catchError(spy))
         .subscribe();
-      runLoader();
-      expect(loader).toHaveBeenCalledTimes(2);
-      runLoader();
-      expect(loader).toHaveBeenCalledTimes(3);
-      runLoader();
-      expect(loader).toHaveBeenCalledTimes(3);
-      runLoader();
-      expect(loader).toHaveBeenCalledTimes(3);
+      /* 4 times - first try + 3 retries */
+      runLoader(4);
+      expect(loader).toHaveBeenCalledTimes(1);
       const expectedMsg = 'Unable to load the default translation file (en), reached maximum retries';
       const givenMsg = (spy.calls.argsFor(0)[0] as any).message;
       expect(givenMsg).toEqual(expectedMsg);
