@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
-import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
-import { catchError, distinctUntilChanged, map, shareReplay, tap } from 'rxjs/operators';
+import { BehaviorSubject, from, Observable, Subject, throwError } from 'rxjs';
+import { catchError, distinctUntilChanged, map, retry, shareReplay, tap } from 'rxjs/operators';
 import { Lang, TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_PARSER, TranslocoParser } from './transloco.parser';
 import { HashMap } from './types';
@@ -64,7 +64,14 @@ export class TranslocoService {
   load(lang: string): Observable<Lang> {
     if (this.cache.has(lang) === false) {
       const load$ = from(this.loader(lang)).pipe(
-        catchError(() => this.load(this.defaultLang)),
+        retry(3),
+        catchError(() => {
+          if (lang === this.defaultLang) {
+            const errMsg = `Unable to load the default translation file (${lang}), reached maximum retries`;
+            throw new Error(errMsg);
+          }
+          return this.load(this.defaultLang);
+        }),
         tap(value => {
           this.langs.set(lang, value);
           this.translationLoaded.next({ lang });
