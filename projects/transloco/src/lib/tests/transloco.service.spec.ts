@@ -1,6 +1,6 @@
 import { createService } from '@netbasal/spectator';
 import { TRANSLOCO_LOADER, TranslocoLoader, TranslocoService } from '@ngneat/transloco';
-import { providersMock, runLoader } from './transloco.mocks';
+import { load, providersMock, runLoader } from './transloco.mocks';
 import createSpy = jasmine.createSpy;
 import { fakeAsync } from '@angular/core/testing';
 import en from '../../../../../src/assets/langs/en.json';
@@ -22,14 +22,14 @@ describe('TranslocoService', () => {
   describe('load', () => {
     const failLoad = times => {
       let counter = 0;
-      return lang =>
-        timer(1000).pipe(
-          map(() => {
+      return () =>
+        load('en').pipe(
+          map(val => {
             if (counter < times) {
               counter++;
               throw new Error(`can't load`);
             }
-            return en;
+            return val;
           })
         );
     };
