@@ -1,7 +1,6 @@
-import {DefaultParser} from '../../public-api';
+import { DefaultParser } from '../../public-api';
 
 describe('TranslocoParser', () => {
-
   const parser = new DefaultParser();
 
   it('should translate simple string from params', () => {
@@ -26,9 +25,13 @@ describe('TranslocoParser', () => {
   });
 
   it('should translate simple string with params and from lang', () => {
-    const parsed = parser.parse('Hello {{ from }} {{ name }}', {name: 'Transloco'}, { from: 'from' });
+    const parsed = parser.parse('Hello {{ from }} {{ name }}', { name: 'Transloco' }, { from: 'from' });
     expect(parsed).toEqual('Hello from Transloco');
   });
 
-
+  it('should return the given value when the value is falsy', () => {
+    expect(parser.parse('')).toEqual('');
+    expect(parser.parse(null)).toEqual(null);
+    expect(parser.parse(undefined)).toEqual(undefined);
+  });
 });
