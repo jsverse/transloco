@@ -7,4 +7,4 @@ export * from './lib/transloco.config';
 export * from './lib/transloco.parser';
 export * from './lib/types';
 export * from './lib/helpers';
-export * from './lib/translocoParams.pipe';
+export * from './lib/transloco-params.pipe';

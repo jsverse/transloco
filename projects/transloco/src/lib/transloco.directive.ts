@@ -1,14 +1,15 @@
 import {
+  ChangeDetectorRef,
   Directive,
-  TemplateRef,
-  ViewContainerRef,
+  ElementRef,
   EmbeddedViewRef,
   Input,
-  Optional,
-  ElementRef,
-  ChangeDetectorRef,
+  OnChanges,
+  OnDestroy,
   OnInit,
-  OnDestroy, SimpleChange, OnChanges
+  Optional,
+  TemplateRef,
+  ViewContainerRef
 } from '@angular/core';
 import { switchMap } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
@@ -24,6 +25,8 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
 
   @Input('transloco') key: string;
   @Input('translocoParams') params: HashMap = {};
+  @Input('translocoScope') scope: string | undefined;
+  @Input('translocoLoadingTpl') loadingTpl: TemplateRef<any> | undefined;
 
   constructor(
     private translocoService: TranslocoService,
@@ -31,18 +34,19 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     private vcr: ViewContainerRef,
     private cdr: ChangeDetectorRef,
     private host: ElementRef
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
+    this.hasLoadingTpl() && this.vcr.createEmbeddedView(this.loadingTpl);
+
     const { runtime } = this.translocoService.config;
     this.subscription = this.translocoService.lang$
-      .pipe(switchMap(lang => this.translocoService.load(lang)))
+      .pipe(switchMap(lang => this.translocoService.load(this.scope ? `${lang}-${this.scope}` : lang)))
       .subscribe(data => {
         this.tpl === null ? this.simpleStrategy() : this.structuralStrategy(data);
         this.cdr.markForCheck();
 
-        if( !runtime ) {
+        if (!runtime) {
           this.subscription.unsubscribe();
           this.subscription = null;
         }
@@ -52,7 +56,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   ngOnChanges(changes) {
     // We need to support dynamic keys/params, so if this is not the first change CD cycle
     // we need to run the function again in order to update the value
-    const notInit = Object.keys(changes).some((v) => changes[v].firstChange === false);
+    const notInit = Object.keys(changes).some(v => changes[v].firstChange === false);
     notInit && this.simpleStrategy();
   }
 
@@ -61,13 +65,18 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   }
 
   private structuralStrategy(data) {
-    if( this.view ) {
+    if (this.view) {
       this.view.context['$implicit'] = data;
     } else {
+      this.hasLoadingTpl() && this.vcr.clear();
       this.view = this.vcr.createEmbeddedView(this.tpl, {
         $implicit: data
       });
     }
+  }
+
+  private hasLoadingTpl() {
+    return this.loadingTpl instanceof TemplateRef;
   }
 
   ngOnDestroy() {
