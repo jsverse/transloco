@@ -11,9 +11,10 @@ import { httpLoader } from './loaders/http.loader';
 import { preLoad } from './preload';
 import { environment } from '../environments/environment';
 import { webpackLoader } from './loaders/webpack.loader';
+import { LazyComponent } from './lazy/lazy.component';
 
 @NgModule({
-  declarations: [AppComponent, HomeComponent, PageComponent, OnPushComponent],
+  declarations: [AppComponent, HomeComponent, PageComponent, OnPushComponent, LazyComponent],
   imports: [BrowserModule, AppRoutingModule, TranslocoModule, HttpClientModule],
   providers: [
     preLoad,
