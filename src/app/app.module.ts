@@ -17,8 +17,8 @@ import { webpackLoader } from './loaders/webpack.loader';
   imports: [BrowserModule, AppRoutingModule, TranslocoModule, HttpClientModule],
   providers: [
     preLoad,
-    // httpLoader,
-    webpackLoader,
+    httpLoader,
+    // webpackLoader,
     {
       provide: TRANSLOCO_CONFIG,
       useValue: {
