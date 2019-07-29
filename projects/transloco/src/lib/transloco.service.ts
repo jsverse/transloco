@@ -98,7 +98,7 @@ export class TranslocoService {
           this.langs.set(lang, value);
           this.translationLoaded.next({ lang });
         }),
-        shareReplay({ refCount: true, bufferSize: 1 })
+        shareReplay({ refCount: false, bufferSize: 1 })
       );
       this.cache.set(lang, load$);
     }

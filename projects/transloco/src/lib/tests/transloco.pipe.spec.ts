@@ -1,12 +1,10 @@
-import { TranslocoService, TranslocoPipe, DefaultParser } from '../../public-api';
+import { DefaultParser, TranslocoPipe, TranslocoService } from '../../public-api';
 import { Mock } from 'ts-mocks';
 import { ChangeDetectorRef } from '@angular/core';
 import { load, runLoader } from './transloco.mocks';
-import {fakeAsync, tick} from '@angular/core/testing';
+import { fakeAsync } from '@angular/core/testing';
 import { DefaultHandler } from '../transloco-missing-handler';
-import Spy = jasmine.Spy;
-import {of} from "rxjs";
-import createSpy = jasmine.createSpy;
+import { of } from "rxjs";
 
 describe('TranslocoPipe', () => {
   let translateServiceMock;
@@ -17,7 +15,10 @@ describe('TranslocoPipe', () => {
     translateServiceMock = new Mock<TranslocoService>(
       new TranslocoService(load, new DefaultParser(), new DefaultHandler(), {})
     ).Object;
-    cdrMock = new Mock<ChangeDetectorRef>({ markForCheck: () => {} }).Object;
+    cdrMock = new Mock<ChangeDetectorRef>({
+      markForCheck: () => {
+      }
+    }).Object;
     pipe = new TranslocoPipe(translateServiceMock, {}, cdrMock);
     spyOn(pipe, 'updateValue').and.callThrough();
   });
@@ -45,13 +46,11 @@ describe('TranslocoPipe', () => {
 
   describe('transform', () => {
     it('should unsubscribe after one emit when not in runtime mode', fakeAsync(() => {
-      pipe = new TranslocoPipe(translateServiceMock, {runtime: false}, cdrMock);
+      pipe = new TranslocoPipe(translateServiceMock, { runtime: false }, cdrMock);
+      const spy = spyOn(pipe as any, 'takeOne').and.callThrough();
       pipe.transform('home');
-      const spy = createSpy().and.callThrough();
-      pipe.subscription.unsubscribe = spy;
       runLoader();
-      expect(spy).toHaveBeenCalled();
-      expect(pipe.subscription).toBe(null);
+      expect(spy).toHaveBeenCalledTimes(1);
     }));
 
     it('should return the key when the key is falsy', () => {
@@ -75,23 +74,21 @@ describe('TranslocoPipe', () => {
     it('should return the value from the cache', fakeAsync(() => {
       pipe.transform('home');
       runLoader();
-      expect(pipe.updateValue).toHaveBeenCalled();
-      (pipe.updateValue as Spy).calls.reset();
+      expect(pipe.updateValue).toHaveBeenCalledTimes(1);
       pipe.transform('home');
-      expect(pipe.updateValue).not.toHaveBeenCalled();
+      expect(pipe.updateValue).toHaveBeenCalledTimes(1);
       pipe.transform('a.b.c');
-      expect(pipe.updateValue).toHaveBeenCalled();
+      expect(pipe.updateValue).toHaveBeenCalledTimes(2);
     }));
 
-    fit('should return the value from the cache with params', fakeAsync(() => {
+    it('should return the value from the cache with params', fakeAsync(() => {
       pipe.transform('alert', { value: 'value' });
       runLoader();
-      expect(pipe.updateValue).toHaveBeenCalled();
-      (pipe.updateValue as Spy).calls.reset();
+      expect(pipe.updateValue).toHaveBeenCalledTimes(1);
       pipe.transform('alert', { value: 'value' });
-      expect(pipe.updateValue).not.toHaveBeenCalled();
+      expect(pipe.updateValue).toHaveBeenCalledTimes(1);
       pipe.transform('alert', { value: 'bla' });
-      expect(pipe.updateValue).toHaveBeenCalled();
+      expect(pipe.updateValue).toHaveBeenCalledTimes(2);
     }));
   });
 

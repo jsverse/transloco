@@ -1,6 +1,6 @@
-import { TRANSLOCO_PARSER, DefaultParser } from '../transloco.parser';
+import { DefaultParser, TRANSLOCO_PARSER } from '../transloco.parser';
 import { TRANSLOCO_LOADER } from '../transloco.loader';
-import { TRANSLOCO_CONFIG, defaultConfig } from '../transloco.config';
+import { defaultConfig, TRANSLOCO_CONFIG } from '../transloco.config';
 import { timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DefaultHandler, TRANSLOCO_MISSING_HANDLER } from '../transloco-missing-handler';

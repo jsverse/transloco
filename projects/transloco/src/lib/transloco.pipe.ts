@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Inject, OnDestroy, Pipe, PipeTransform } from '@angu
 import { TranslocoService } from './transloco.service';
 import { HashMap } from './types';
 import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
-import { switchMap } from 'rxjs/operators';
+import { finalize, switchMap, take, tap } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 
 @Pipe({
@@ -32,11 +32,11 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
   }
 
   transform(key: string, params: HashMap = {}): string {
-    if (!key) {
+    if( !key ) {
       return key;
     }
 
-    if (key === this.lastKey && JSON.stringify(params) === JSON.stringify(this.lastParams)) {
+    if( key === this.lastKey && JSON.stringify(params) === JSON.stringify(this.lastParams) ) {
       return this.value;
     }
 
@@ -48,14 +48,12 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
     this.subscription && this.subscription.unsubscribe();
 
     this.subscription = this.translocoService.lang$
-      .pipe(switchMap(lang => this.translocoService._load(lang)))
-      .subscribe(data => {
+      .pipe(
+        switchMap(lang => this.translocoService._load(lang)),
+        this.runtime ? source => source : this.takeOne()
+      )
+      .subscribe(() => {
         this.updateValue(key, params);
-
-        if (!this.runtime) {
-          this.subscription.unsubscribe();
-          this.subscription = null;
-        }
       });
 
     return this.value;
@@ -63,5 +61,9 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
 
   ngOnDestroy() {
     this.subscription && this.subscription.unsubscribe();
+  }
+
+  private takeOne() {
+    return take(1);
   }
 }

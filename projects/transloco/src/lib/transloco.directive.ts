@@ -12,7 +12,7 @@ import {
   TemplateRef,
   ViewContainerRef
 } from '@angular/core';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, take } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { TranslocoService } from './transloco.service';
 import { HashMap } from './types';
@@ -37,22 +37,21 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     private vcr: ViewContainerRef,
     private cdr: ChangeDetectorRef,
     private host: ElementRef
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     this.hasLoadingTpl() && this.vcr.createEmbeddedView(this.loadingTpl);
 
     const { runtime } = this.translocoService.config;
     this.subscription = this.translocoService.lang$
-      .pipe(switchMap(lang => this.translocoService._load(this.getScope() ? `${lang}-${this.getScope()}` : lang)))
+      .pipe(
+        switchMap(lang => this.translocoService._load(this.getScope() ? `${lang}-${this.getScope()}` : lang)),
+        runtime ? source => source : take(1)
+      )
       .subscribe(data => {
         this.tpl === null ? this.simpleStrategy() : this.structuralStrategy(data);
         this.cdr.markForCheck();
-
-        if (!runtime) {
-          this.subscription.unsubscribe();
-          this.subscription = null;
-        }
       });
   }
 
@@ -68,7 +67,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   }
 
   private structuralStrategy(data) {
-    if (this.view) {
+    if( this.view ) {
       this.view.context['$implicit'] = data;
     } else {
       this.hasLoadingTpl() && this.vcr.clear();
