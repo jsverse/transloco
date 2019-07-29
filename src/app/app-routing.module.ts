@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { PageComponent } from './page/page.component';
 
@@ -12,6 +12,10 @@ const routes: Routes = [
   {
     path: 'page',
     component: PageComponent
+  },
+  {
+    path: 'lazy',
+    loadChildren: () => import('./lazy/lazy.module').then(m => m.LazyModule)
   }
 ];
 

@@ -8,17 +8,22 @@ import { HomeComponent } from './home/home.component';
 import { PageComponent } from './page/page.component';
 import { OnPushComponent } from './on-push/on-push.component';
 import { httpLoader } from './loaders/http.loader';
+import { preLoad } from './preload';
+import { environment } from '../environments/environment';
+import { webpackLoader } from './loaders/webpack.loader';
+import { LazyComponent } from './lazy/lazy.component';
 
 @NgModule({
-  declarations: [AppComponent, HomeComponent, PageComponent, OnPushComponent],
+  declarations: [AppComponent, HomeComponent, PageComponent, OnPushComponent, LazyComponent],
   imports: [BrowserModule, AppRoutingModule, TranslocoModule, HttpClientModule],
   providers: [
-    // preLoad,
+    preLoad,
     httpLoader,
     // webpackLoader,
     {
       provide: TRANSLOCO_CONFIG,
       useValue: {
+        prodMode: environment.production,
         runtime: true,
         defaultLang: 'en'
       } as TranslocoConfig

@@ -1,12 +1,12 @@
 import { createService } from '@netbasal/spectator';
 import { TRANSLOCO_LOADER, TranslocoLoader, TranslocoService } from '@ngneat/transloco';
 import { load, providersMock, runLoader } from './transloco.mocks';
-import createSpy = jasmine.createSpy;
 import { fakeAsync } from '@angular/core/testing';
 import en from '../../../../../src/assets/langs/en.json';
 import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from '../transloco-missing-handler';
-import { of, throwError, timer } from 'rxjs';
+import { of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import createSpy = jasmine.createSpy;
 
 describe('TranslocoService', () => {
   const spectator = createService({
@@ -54,16 +54,15 @@ describe('TranslocoService', () => {
       /* 4 times - first try + 3 retries */
       runLoader(4);
       expect(loader).toHaveBeenCalledTimes(1);
-      const expectedMsg = 'Unable to load the default translation file (en), reached maximum retries';
-      const givenMsg = (spy.calls.argsFor(0)[0] as any).message;
-      expect(givenMsg).toEqual(expectedMsg);
     }));
+
     it('should trigger translationLoaded once loaded', fakeAsync(() => {
       const spy = createSpy();
       spectator.service.translationLoaded$.subscribe(spy);
       loadLang();
       expect(spy).toHaveBeenCalledWith({ lang: 'en' });
     }));
+
     it('should load the translation using the loader', fakeAsync(() => {
       (spectator.service as any).loader = createSpy(
         'loader',
@@ -73,6 +72,7 @@ describe('TranslocoService', () => {
       runLoader();
       expect((spectator.service as any).loader).toHaveBeenCalledWith('en');
     }));
+
     it('should load the translation from cache', fakeAsync(() => {
       loadLang();
       (spectator.service as any).loader = createSpy(
@@ -95,7 +95,7 @@ describe('TranslocoService', () => {
       expect(spectator.service.translate('home')).toEqual('');
       loadLang();
       expect(spectator.service.translate('home')).not.toEqual('');
-      spectator.service.setLang('es');
+      spectator.service.setActiveLang('es');
       expect(spectator.service.translate('home')).toEqual('');
     }));
 
@@ -163,7 +163,7 @@ describe('TranslocoService', () => {
     const langSpy = createSpy();
     const newLang = 'es';
     spectator.service.lang$.subscribe(langSpy);
-    spectator.service.setLang(newLang);
+    spectator.service.setActiveLang(newLang);
     expect(langSpy).toHaveBeenCalledWith(newLang);
   });
 
