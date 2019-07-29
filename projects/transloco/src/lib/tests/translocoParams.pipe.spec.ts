@@ -1,4 +1,4 @@
-import { TranslocoService, TranslocoParamsPipe } from '@ngneat/transloco';
+import { TranslocoService, TranslocoParamsPipe } from '../../public-api';
 import { Mock } from 'ts-mocks';
 import { TranslocoMissingHandler } from '../transloco-missing-handler';
 

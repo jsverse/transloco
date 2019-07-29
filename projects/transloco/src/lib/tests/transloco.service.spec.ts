@@ -1,5 +1,5 @@
 import { createService } from '@netbasal/spectator';
-import { TRANSLOCO_LOADER, TranslocoLoader, TranslocoService } from '@ngneat/transloco';
+import { TRANSLOCO_LOADER, TranslocoLoader, TranslocoService } from '../../public-api';
 import { load, providersMock, runLoader } from './transloco.mocks';
 import { fakeAsync } from '@angular/core/testing';
 import en from '../../../../../src/assets/langs/en.json';

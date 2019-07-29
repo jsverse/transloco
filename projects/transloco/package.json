@@ -1,8 +1,8 @@
 {
-  "name": "transloco",
-  "version": "0.0.1",
-  "peerDependencies": {
-    "@angular/common": "^8.1.1",
-    "@angular/core": "^8.1.1"
+  "name": "@ngneat/transloco",
+  "version": "1.0.0-rc.2",
+  "schematics": "./schematics/collection.json",
+  "publishConfig": {
+    "access": "public"
   }
 }

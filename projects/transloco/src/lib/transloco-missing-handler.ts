@@ -1,6 +1,6 @@
 import { InjectionToken } from '@angular/core';
 import { HashMap } from './types';
-import { TranslocoConfig } from '@ngneat/transloco';
+import { TranslocoConfig } from './transloco.config';
 
 export const TRANSLOCO_MISSING_HANDLER = new InjectionToken('TRANSLOCO_MISSING_HANDLER');
 

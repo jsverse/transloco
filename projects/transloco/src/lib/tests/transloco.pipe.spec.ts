@@ -1,4 +1,4 @@
-import { TranslocoService, TranslocoPipe, DefaultParser } from '@ngneat/transloco';
+import { TranslocoService, TranslocoPipe, DefaultParser } from '../../public-api';
 import { Mock } from 'ts-mocks';
 import { ChangeDetectorRef } from '@angular/core';
 import { load, runLoader } from './transloco.mocks';
