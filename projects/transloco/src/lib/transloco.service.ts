@@ -25,6 +25,10 @@ export class TranslocoService {
   /** Notifies when the lang loaded */
   translationLoaded$ = this.translationLoaded.asObservable();
 
+  private translationLoadFailed = new Subject<{ lang: string }>();
+  /** Notifies when the lang loading failed */
+  translationLoadFailed$ = this.translationLoadFailed.asObservable();
+
   constructor(
     @Inject(TRANSLOCO_LOADER) private loader: TranslocoLoader,
     @Inject(TRANSLOCO_PARSER) private parser: TranslocoParser,
@@ -68,19 +72,27 @@ export class TranslocoService {
    */
   setLangAndLoad(lang: string) {
     this.setActiveLang(lang);
-    return this.load(lang);
+    return this._load(lang);
   }
 
   /**
    *
    * @internal
    */
-  load(lang: string): Observable<Lang> {
+  _load(lang: string): Observable<Lang> {
     if (this.cache.has(lang) === false) {
       const load$ = from(this.loader(lang)).pipe(
         retry(3),
         catchError(() => {
-          return this.load(this.defaultLang);
+          if (lang === this.defaultLang) {
+            const errMsg = `Unable to load the default translation file (${lang}), reached maximum retries`;
+            throw new Error(errMsg);
+          } else {
+            /* Clear the failed language from the cache so we will retry to load once asked again */
+            this.cache.delete(lang);
+            this.translationLoadFailed.next({lang});
+          }
+          return this.setLangAndLoad(this.defaultLang);
         }),
         tap(value => {
           this.langs.set(lang, value);
@@ -125,7 +137,7 @@ export class TranslocoService {
    * selectTranslate('hello').subscribe(value => {})
    */
   selectTranslate(key: string, params: HashMap = {}) {
-    return this.load(this.getActiveLang()).pipe(
+    return this._load(this.getActiveLang()).pipe(
       map(() => {
         return this.translate(key, params);
       })

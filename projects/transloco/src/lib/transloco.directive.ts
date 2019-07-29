@@ -44,7 +44,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
 
     const { runtime } = this.translocoService.config;
     this.subscription = this.translocoService.lang$
-      .pipe(switchMap(lang => this.translocoService.load(this.getScope() ? `${lang}-${this.getScope()}` : lang)))
+      .pipe(switchMap(lang => this.translocoService._load(this.getScope() ? `${lang}-${this.getScope()}` : lang)))
       .subscribe(data => {
         this.tpl === null ? this.simpleStrategy() : this.structuralStrategy(data);
         this.cdr.markForCheck();

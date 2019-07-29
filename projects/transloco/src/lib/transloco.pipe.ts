@@ -48,7 +48,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
     this.subscription && this.subscription.unsubscribe();
 
     this.subscription = this.translocoService.lang$
-      .pipe(switchMap(lang => this.translocoService.load(lang)))
+      .pipe(switchMap(lang => this.translocoService._load(lang)))
       .subscribe(data => {
         this.updateValue(key, params);
 

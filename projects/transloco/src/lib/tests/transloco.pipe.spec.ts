@@ -2,11 +2,13 @@ import { TranslocoService, TranslocoPipe, DefaultParser } from '../../public-api
 import { Mock } from 'ts-mocks';
 import { ChangeDetectorRef } from '@angular/core';
 import { load, runLoader } from './transloco.mocks';
-import { fakeAsync } from '@angular/core/testing';
+import {fakeAsync, tick} from '@angular/core/testing';
 import { DefaultHandler } from '../transloco-missing-handler';
 import Spy = jasmine.Spy;
+import {of} from "rxjs";
+import createSpy = jasmine.createSpy;
 
-describe('TranslocoParamsPipe', () => {
+describe('TranslocoPipe', () => {
   let translateServiceMock;
   let cdrMock;
   let pipe: TranslocoPipe;
@@ -42,6 +44,16 @@ describe('TranslocoParamsPipe', () => {
   });
 
   describe('transform', () => {
+    it('should unsubscribe after one emit when not in runtime mode', fakeAsync(() => {
+      pipe = new TranslocoPipe(translateServiceMock, {runtime: false}, cdrMock);
+      pipe.transform('home');
+      const spy = createSpy().and.callThrough();
+      pipe.subscription.unsubscribe = spy;
+      runLoader();
+      expect(spy).toHaveBeenCalled();
+      expect(pipe.subscription).toBe(null);
+    }));
+
     it('should return the key when the key is falsy', () => {
       expect(pipe.transform('')).toBe('');
       expect(pipe.transform(null)).toBe(null);
@@ -71,7 +83,7 @@ describe('TranslocoParamsPipe', () => {
       expect(pipe.updateValue).toHaveBeenCalled();
     }));
 
-    it('should return the value from the cache with params', fakeAsync(() => {
+    fit('should return the value from the cache with params', fakeAsync(() => {
       pipe.transform('alert', { value: 'value' });
       runLoader();
       expect(pipe.updateValue).toHaveBeenCalled();
@@ -82,4 +94,12 @@ describe('TranslocoParamsPipe', () => {
       expect(pipe.updateValue).toHaveBeenCalled();
     }));
   });
+
+  it('should unsubscribe on destroy', () => {
+    pipe.subscription = of().subscribe();
+    spyOn(pipe.subscription, 'unsubscribe');
+    pipe.ngOnDestroy();
+    expect(pipe.subscription.unsubscribe).toHaveBeenCalled();
+  });
+
 });

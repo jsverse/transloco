@@ -1,6 +1,6 @@
 import { fakeAsync } from '@angular/core/testing';
-import { TranslocoDirective, TranslocoParamsPipe } from '../../public-api';
-import { createHostComponentFactory, SpectatorWithHost } from '@netbasal/spectator';
+import {TranslocoDirective, TranslocoParamsPipe,} from '../../public-api';
+import {createHostComponentFactory, SpectatorWithHost} from '@netbasal/spectator';
 import { providersMock, runLoader } from './transloco.mocks';
 
 describe('TranslocoDirective', () => {
@@ -8,7 +8,7 @@ describe('TranslocoDirective', () => {
   const createHost = createHostComponentFactory({
     component: TranslocoDirective,
     declarations: [TranslocoParamsPipe],
-    providers: providersMock
+    providers: providersMock,
   });
 
   describe('Basic directive', () => {
