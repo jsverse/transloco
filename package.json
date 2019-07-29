@@ -2,8 +2,6 @@
   "name": "transloco-playground",
   "version": "0.0.0",
   "scripts": {
-    "cypress-open": "cypress open",
-    "cypress-run": "cypress run",
     "ng": "ng",
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors init",
@@ -19,7 +17,7 @@
     "test:covergae": "npm run test:headless -- --code-coverage",
     "lint": "ng lint",
     "e2e": "cypress open",
-    "e2e:ci": "cypress run"
+    "e2e:ci": "cross-env CYPRESS_BASE_URL=https://5d3ee060aeda390008a07357--mystifying-sinoussi-d7cdb2.netlify.com cypress run"
   },
   "dependencies": {
     "@angular/animations": "~8.1.1",
