@@ -1,0 +1,11 @@
+{
+  "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
+  "schematics": {
+    "ng-add": {
+      "aliases": ["init"],
+      "factory": "./ng-add/",
+      "schema": "./ng-add/schema.json",
+      "description": "Add transloco configuration for root module."
+    }
+  }
+}
