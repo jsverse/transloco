@@ -12,7 +12,7 @@
     "commit": "git-cz",
     "prettier": "prettier --write \"**/*.{js,json,css,scss,less,md,ts,html,component.html}\"",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build -- --prod",
     "test": "ng test",
     "test:lib": "ng test transloco",
     "test:headless": "cross-env CI=true ng test",
