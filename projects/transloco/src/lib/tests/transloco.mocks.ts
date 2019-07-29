@@ -4,8 +4,8 @@ import { TRANSLOCO_CONFIG, defaultConfig } from '../transloco.config';
 import { timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DefaultHandler, TRANSLOCO_MISSING_HANDLER } from '../transloco-missing-handler';
-import en from '../../../../../src/assets/langs/en.json';
-import es from '../../../../../src/assets/langs/en.json';
+import en from '../../../../../src/assets/i18n/en.json';
+import es from '../../../../../src/assets/i18n/en.json';
 import { tick } from '@angular/core/testing';
 
 const langs = {

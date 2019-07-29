@@ -2,7 +2,7 @@ import { createService } from '@netbasal/spectator';
 import { TRANSLOCO_LOADER, TranslocoLoader, TranslocoService } from '../../public-api';
 import { load, providersMock, runLoader } from './transloco.mocks';
 import { fakeAsync } from '@angular/core/testing';
-import en from '../../../../../src/assets/langs/en.json';
+import en from '../../../../../src/assets/i18n/en.json';
 import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from '../transloco-missing-handler';
 import { of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
