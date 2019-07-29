@@ -13,8 +13,10 @@
     "build": "ng build --prod",
     "test": "ng test",
     "test:lib": "ng test transloco",
+    "test:schematics": "npm test --prefix ./schematics",
     "test:headless": "cross-env CI=true ng test",
     "test:covergae": "npm run test:headless -- --code-coverage",
+    "schematics:watch": "cd ./schematics/ && npm link && cd .. && npm link schematics && npm run build --prefix ./schematics -- --watch",
     "lint": "ng lint",
     "e2e": "cypress open",
     "e2e:ci": "cross-env CYPRESS_BASE_URL=https://5d3ee060aeda390008a07357--mystifying-sinoussi-d7cdb2.netlify.com cypress run"

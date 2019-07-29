@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "baseUrl": "tsconfig",
+    "lib": ["es2018", "dom"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noEmitOnError": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": false,
+    "noImplicitThis": false,
+    "rootDir": "./",
+    "sourceMap": true,
+    "strictNullChecks": false,
+    "target": "es6",
+    "types": ["node", "jasmine"]
+  },
+  "include": ["./**/*"],
+  "exclude": ["src/*/files/**/*", "srx/**/*.spec.ts"]
+}

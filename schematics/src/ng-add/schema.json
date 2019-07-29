@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "id": "SchematicsTranslocoAdd",
+  "title": "Add Transloco to Your Project",
+  "type": "object",
+  "properties": {
+    "langs": {
+      "description": "The languages of the project.",
+      "x-prompt": "\uD83C\uDF0D Which languages do you need?",
+      "type": "string",
+      "default": "en, es",
+      "alias": "la"
+    },
+    "loader": {
+      "description": "The loader strategy for the translate files.",
+      "x-prompt": "\uD83D\uDCE1 Which loader do you want to use? Webpack or HTTP ",
+      "type": "string",
+      "default": "Http",
+      "enum": ["Http", "Webpack"],
+      "alias": "lo"
+    },
+    "module": {
+      "description": "The root module name.",
+      "type": "string",
+      "default": "app"
+    }
+  },
+  "required": []
+}
