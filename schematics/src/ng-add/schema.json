@@ -13,7 +13,7 @@
     },
     "loader": {
       "description": "The loader strategy for the translate files.",
-      "x-prompt": "\uD83D\uDCE1 Which loader do you want to use? Webpack or HTTP ",
+      "x-prompt": "\uD83D\uDD25 Which loader do you want to use? Webpack or HTTP ",
       "type": "string",
       "default": "Http",
       "enum": ["Http", "Webpack"],

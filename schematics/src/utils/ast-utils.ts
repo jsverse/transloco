@@ -33,14 +33,21 @@ export function insertImport(
       if (child.kind === ts.SyntaxKind.ImportClause) {
         child.getChildren().forEach((c: any) =>
           c.elements.forEach(elem => {
-            if (elem.name.text === symbolName) {
-              return new NoopChange();
-            }
+            symbolName = symbolName
+              .split(', ')
+              .filter(symbol => {
+                return elem.name.text !== symbol;
+              })
+              .join(', ');
           })
         );
       }
     });
   });
+
+  if (!symbolName) {
+    return new NoopChange();
+  }
 
   // get nodes that map to import statements from the file fileName
   const relevantImports = allImports.filter(node => {
@@ -356,7 +363,8 @@ export function addSymbolToNgModuleMetadata(
   ngModulePath: string,
   metadataField: string,
   symbolName: string,
-  importPath: string | null = null
+  importPath: string | null = null,
+  skipImport = true
 ): Change[] {
   const nodes = getDecoratorMetadata(source, 'NgModule', '@angular/core');
   let node: any = nodes[0]; // tslint:disable-line:no-any
@@ -481,7 +489,7 @@ export function addSymbolToNgModuleMetadata(
   if (importPath !== null) {
     return [
       new InsertChange(ngModulePath, position, toInsert),
-      insertImport(source, ngModulePath, symbolName.replace(/\..*$/, ''), importPath)
+      skipImport ? new NoopChange() : insertImport(source, ngModulePath, symbolName.replace(/\..*$/, ''), importPath)
     ];
   }
 
