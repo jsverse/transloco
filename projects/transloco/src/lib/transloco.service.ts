@@ -112,7 +112,9 @@ export class TranslocoService {
    * @example
    * translate('hello')
    */
-  translate(key: string | string[], params: HashMap = {}, langName?: string) {
+  translate(key: string, params?: HashMap, langName?: string): string;
+  translate(key: string[], params?: HashMap, langName?: string): string[];
+  translate(key: string | string[], params: HashMap = {}, langName?: string): string | string[] {
     if (Array.isArray(key)) {
       return key.map(k => this.translate(k, params));
     }
@@ -161,7 +163,7 @@ export class TranslocoService {
   /**
    * Gets an object of translations for a given language
    */
-  getTranslation(lang: string) {
+  getTranslation(lang: string): HashMap<any> {
     return this.langs.get(lang);
   }
 }
