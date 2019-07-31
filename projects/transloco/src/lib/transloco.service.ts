@@ -100,7 +100,11 @@ export class TranslocoService {
    * @example
    * translate('hello')
    */
-  translate(key: string, params: HashMap = {}) {
+  translate(key: string | string[], params: HashMap = {}) {
+    if (Array.isArray(key)) {
+      return key.map(k => this.translate(k, params));
+    }
+
     if (!key) {
       return '';
     }
