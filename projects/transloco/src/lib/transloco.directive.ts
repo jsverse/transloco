@@ -30,6 +30,8 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   @Input('translocoScope') scope: string | undefined;
   @Input('translocoLoadingTpl') loadingTpl: TemplateRef<any> | undefined;
 
+  private langName: string;
+
   constructor(
     private translocoService: TranslocoService,
     @Optional() private tpl: TemplateRef<any>,
@@ -37,8 +39,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     private vcr: ViewContainerRef,
     private cdr: ChangeDetectorRef,
     private host: ElementRef
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
     this.hasLoadingTpl() && this.vcr.createEmbeddedView(this.loadingTpl);
@@ -46,7 +47,10 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     const { runtime } = this.translocoService.config;
     this.subscription = this.translocoService.lang$
       .pipe(
-        switchMap(lang => this.translocoService._load(this.getScope() ? `${lang}-${this.getScope()}` : lang)),
+        switchMap(lang => {
+          this.langName = this.getScope() ? `${lang}-${this.getScope()}` : lang;
+          return this.translocoService._load(this.langName);
+        }),
         runtime ? source => source : take(1)
       )
       .subscribe(data => {
@@ -63,11 +67,11 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   }
 
   private simpleStrategy() {
-    this.host.nativeElement.innerText = this.translocoService.translate(this.key, this.params);
+    this.host.nativeElement.innerText = this.translocoService.translate(this.key, this.params, this.langName);
   }
 
   private structuralStrategy(data) {
-    if( this.view ) {
+    if (this.view) {
       this.view.context['$implicit'] = data;
     } else {
       this.hasLoadingTpl() && this.vcr.clear();

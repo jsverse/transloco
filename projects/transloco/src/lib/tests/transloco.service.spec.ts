@@ -195,8 +195,4 @@ describe('TranslocoService', () => {
     expect(langSpy).toHaveBeenCalledWith(newLang);
     expect(spectator.service._load).toHaveBeenCalledWith(newLang);
   });
-
-  it(`should return the browser's lang`, () => {
-    expect(spectator.service.getBrowserLang()).toBe('en-US');
-  });
 });

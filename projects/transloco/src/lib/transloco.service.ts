@@ -98,7 +98,7 @@ export class TranslocoService {
           this.langs.set(lang, value);
           this.translationLoaded.next({ lang });
         }),
-        shareReplay({ refCount: false, bufferSize: 1 })
+        shareReplay(1)
       );
       this.cache.set(lang, load$);
     }
@@ -112,16 +112,15 @@ export class TranslocoService {
    * @example
    * translate('hello')
    */
-  translate(key: string | string[], params: HashMap = {}) {
+  translate(key: string | string[], params: HashMap = {}, langName?: string) {
     if (Array.isArray(key)) {
       return key.map(k => this.translate(k, params));
     }
-
     if (!key) {
       return '';
     }
 
-    const lang = this.langs.get(this.getActiveLang());
+    const lang = this.langs.get(langName || this.getActiveLang());
     if (!lang) {
       return '';
     }
@@ -157,17 +156,6 @@ export class TranslocoService {
   translateValue(value: string, params: HashMap = {}): string {
     const lang = this.langs.get(this.getActiveLang());
     return this.parser.parse(value, params, lang);
-  }
-
-  /**
-   *  Returns the current browser lang if available
-   */
-  getBrowserLang() {
-    return (
-      (navigator.languages && navigator.languages[0]) || // Chrome / Firefox
-      navigator.language || // All browsers
-      (navigator as any).userLanguage
-    );
   }
 
   /**

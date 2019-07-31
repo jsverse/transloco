@@ -4,7 +4,7 @@ import { ChangeDetectorRef } from '@angular/core';
 import { load, runLoader } from './transloco.mocks';
 import { fakeAsync } from '@angular/core/testing';
 import { DefaultHandler } from '../transloco-missing-handler';
-import { of } from "rxjs";
+import { of } from 'rxjs';
 
 describe('TranslocoPipe', () => {
   let translateServiceMock;
@@ -16,12 +16,22 @@ describe('TranslocoPipe', () => {
       new TranslocoService(load, new DefaultParser(), new DefaultHandler(), {})
     ).Object;
     cdrMock = new Mock<ChangeDetectorRef>({
-      markForCheck: () => {
-      }
+      markForCheck: () => {}
     }).Object;
-    pipe = new TranslocoPipe(translateServiceMock, {}, cdrMock);
+    pipe = new TranslocoPipe(translateServiceMock, {}, null, cdrMock);
     spyOn(pipe, 'updateValue').and.callThrough();
   });
+
+  it('should load scoped translation', fakeAsync(() => {
+    spyOn(translateServiceMock, 'translate').and.callThrough();
+    pipe = new TranslocoPipe(translateServiceMock, { runtime: true }, 'lazy-page', cdrMock);
+    pipe.transform('title', {});
+    runLoader();
+    expect(translateServiceMock.translate).toHaveBeenCalledWith('title', {}, 'en-lazy-page');
+    translateServiceMock.setActiveLang('es');
+    runLoader();
+    expect(translateServiceMock.translate).toHaveBeenCalledWith('title', {}, 'es-lazy-page');
+  }));
 
   describe('updateValue', () => {
     it('should update the value, set the cache and mark for check', fakeAsync(() => {
@@ -46,11 +56,9 @@ describe('TranslocoPipe', () => {
 
   describe('transform', () => {
     it('should unsubscribe after one emit when not in runtime mode', fakeAsync(() => {
-      pipe = new TranslocoPipe(translateServiceMock, { runtime: false }, cdrMock);
-      const spy = spyOn(pipe as any, 'takeOne').and.callThrough();
       pipe.transform('home');
       runLoader();
-      expect(spy).toHaveBeenCalledTimes(1);
+      expect(pipe.subscription.closed).toBe(true);
     }));
 
     it('should return the key when the key is falsy', () => {
@@ -98,5 +106,4 @@ describe('TranslocoPipe', () => {
     pipe.ngOnDestroy();
     expect(pipe.subscription.unsubscribe).toHaveBeenCalled();
   });
-
 });
