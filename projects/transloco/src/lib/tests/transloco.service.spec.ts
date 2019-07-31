@@ -122,6 +122,18 @@ describe('TranslocoService', () => {
       expect(spectator.service.translate('alert', { value: 'val' })).toEqual('alert val english');
       expect(spectator.service.translate('a.b.c')).toEqual('a.b.c from list english');
     }));
+
+    it('should support multi key translation', fakeAsync(() => {
+      loadLang();
+      const expected = ['home english', 'a.b.c from list english'];
+      expect(spectator.service.translate(['home', 'a.b.c'])).toEqual(expected);
+    }));
+
+    it('should support multi key translation', fakeAsync(() => {
+      loadLang();
+      const expected = ['home english', 'alert val english', 'a.b.c from list english'];
+      expect(spectator.service.translate(['home', 'alert', 'a.b.c'], { value: 'val' })).toEqual(expected);
+    }));
   });
 
   describe('translateValue', () => {

@@ -10,7 +10,10 @@ import {
   chain,
   mergeWith,
   SchematicsException,
-  noop
+  noop,
+  template,
+  url,
+  Source
 } from '@angular-devkit/schematics';
 import { createSourceFile, SourceFile, ScriptTarget } from 'typescript';
 import { LIB_NAME } from '../schematics.consts';
@@ -88,45 +91,20 @@ export function addProvidersToModuleDeclaration(options: SchemaOptions, provider
   return host => {
     const module = getModuleFile(host, options);
 
-    const providerChanges = addProviderToModule(module, options.module, providers.join(',\n    '), LIB_NAME);
+    const providerChanges = addProviderToModule(module, options.module, providers.join(',\n    ') + '\n  ', LIB_NAME);
 
     return applyChanges(host, options.module, providerChanges as InsertChange[]);
   };
 }
 
-function addCodeToModuleFile(options: SchemaOptions, template: string): Rule {
-  return host => {
-    const tsFile = getModuleFile(host, options);
-    const end = tsFile.getEnd();
-    const change = new InsertChange(options.module, end, template);
-
-    return applyChanges(host, options.module, [change]);
-  };
-}
-
-function getLoaderTemplates(loader: Loaders): { loaderTemplate: string; loaderProvider: string } {
-  const httpTemplate = `
-export function HttpLoader(http: HttpClient) {
-  return function(lang: string) {
-    return http.get(\`../assets/i18n/\${lang}.json\`);
-  };
-}`;
-
-  const webpackTemplate = `
-export function WebpackLoader() {
-  return function(lang: string) {
-    return import(\`../assets/i18n/\${lang}.json\`).then(module => module.default);
-  };
-}`;
-
-  const provider = (factory: string) => `{ provide: TRANSLOCO_LOADER, useFactory: ${factory} }`;
-
-  switch (loader) {
-    case Loaders.Http:
-      return { loaderTemplate: httpTemplate, loaderProvider: provider('HttpLoader') };
-    case Loaders.Webpack:
-      return { loaderTemplate: webpackTemplate, loaderProvider: provider('WebpackLoader') };
-  }
+function getLoaderTemplates(loader, path): Source {
+  const loaderFolder = loader === Loaders.Webpack ? 'webpack-loader' : 'http-loader';
+  return apply(url(`./files/${loaderFolder}`), [
+    template({
+      ts: 'ts'
+    }),
+    move('/', path)
+  ]);
 }
 
 export default function(options: SchemaOptions): Rule {
@@ -134,11 +112,16 @@ export default function(options: SchemaOptions): Rule {
     const langs = options.langs.split(',').map(l => l.trim());
     const project = getProject(host);
 
+    const root = (project && project.root) || '';
+    const sourceRoot = (project && project.sourceRoot) || 'src';
+
+    const rootModule = options.module;
+
     // TODO: try not to taking it as HC.
-    const assetsPath = project.root + `src/assets/i18n/`;
+    const assetsPath = root + `src/assets/i18n/`;
     const translateFiles = apply(source(createTranslateFiles(langs)), [move('/', assetsPath)]);
 
-    options.module = findRootModule(host, options.module, project.sourceRoot) as string;
+    options.module = findRootModule(host, options.module, sourceRoot) as string;
     const configProviderTemplate = `{
       provide: TRANSLOCO_CONFIG,
       useValue: {
@@ -147,18 +130,15 @@ export default function(options: SchemaOptions): Rule {
         prodMode: environment.production
       } as TranslocoConfig
     }`;
-    let { loaderTemplate, loaderProvider } = getLoaderTemplates(options.loader);
 
     return chain([
       mergeWith(translateFiles),
-      options.loader === Loaders.Http
-        ? addImportsToModuleFile(options, ['HttpClient'], '@angular/common/http')
-        : noop(),
+      mergeWith(getLoaderTemplates(options.loader, sourceRoot + '/' + rootModule)),
       addImportsToModuleFile(options, ['environment'], '../environments/environment'),
-      addImportsToModuleFile(options, ['TranslocoModule', 'TRANSLOCO_CONFIG', 'TRANSLOCO_LOADER', 'TranslocoConfig']),
+      addImportsToModuleFile(options, ['translocoLoader'], './transloco.loader'),
+      addImportsToModuleFile(options, ['TranslocoModule', 'TRANSLOCO_CONFIG', 'TranslocoConfig']),
       addImportsToModuleDeclaration(options, ['TranslocoModule']),
-      addProvidersToModuleDeclaration(options, [configProviderTemplate, loaderProvider]),
-      addCodeToModuleFile(options, loaderTemplate)
+      addProvidersToModuleDeclaration(options, [configProviderTemplate, 'translocoLoader'])
     ])(host, context);
   };
 }
