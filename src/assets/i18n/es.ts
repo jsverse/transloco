@@ -9,5 +9,7 @@ export default {
   },
   dynamic(v) {
     return `Hello ${v} spanish...`;
-  }
+  },
+  b: 'b spanish',
+  c: 'c spanish'
 };
