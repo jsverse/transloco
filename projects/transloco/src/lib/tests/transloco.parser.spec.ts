@@ -1,4 +1,5 @@
 import { DefaultParser } from '../../public-api';
+import createSpy = jasmine.createSpy;
 
 describe('TranslocoParser', () => {
   const parser = new DefaultParser();
@@ -33,5 +34,16 @@ describe('TranslocoParser', () => {
     expect(parser.parse('')).toEqual('');
     expect(parser.parse(null)).toEqual(null);
     expect(parser.parse(undefined)).toEqual(undefined);
+  });
+
+  it('shoudl call error handler when value can not be parsed', () => {
+    const errorCB = createSpy();
+    parser.parse(null, {}, {}, errorCB);
+    parser.parse(undefined, {}, {}, errorCB);
+    parser.parse(<any>false, {}, {}, errorCB);
+    parser.parse(<any>{}, {}, {}, errorCB);
+    parser.parse(<any>[], {}, {}, errorCB);
+
+    expect(errorCB).toHaveBeenCalledTimes(5);
   });
 });

@@ -6,5 +6,7 @@
     "b": {
       "c": "a.b.c {{fromList}} english"
     }
-  }
+  },
+  "b": "b english",
+  "c": "c english"
 }

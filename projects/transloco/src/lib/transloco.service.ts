@@ -115,7 +115,8 @@ export class TranslocoService {
     if (!value) {
       return this.missingHandler.handle(key, params, this.config);
     }
-    return this.parser.parse(value, params, lang);
+
+    return this.parser.parse(value, params, lang, this.parseErrorHandler.bind(this, key));
   }
 
   /**
@@ -159,5 +160,9 @@ export class TranslocoService {
    */
   getTranslation(lang: string) {
     return this.langs.get(lang);
+  }
+
+  private parseErrorHandler(key) {
+    console.warn(`could not parse key: ${key}`);
   }
 }
