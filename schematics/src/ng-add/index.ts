@@ -26,10 +26,10 @@ function createTranslateFiles(langs: string[]): HostTree {
     treeSource.create(
       lang + '.json',
       `
-      {
-        "hello": "transloco currentLanguage",
-        "dynamic": "transloco {{dynamic}}"
-      }
+{
+  "hello": "transloco ${lang}",
+  "dynamic": "transloco {{value}}"
+}
     `
     );
   });
@@ -69,9 +69,9 @@ export function applyChanges(host: Tree, path: string, changes: InsertChange[]):
 export function addImportsToModuleFile(options: SchemaOptions, imports: string[], file = LIB_NAME): Rule {
   return host => {
     const module = getModuleFile(host, options);
-    const importChanges = imports.map(imp => insertImport(module, options.module, imp, file));
+    const importChanges = insertImport(module, options.module, imports.join(', '), file);
 
-    return applyChanges(host, options.module, importChanges as InsertChange[]);
+    return applyChanges(host, options.module, [importChanges] as InsertChange[]);
   };
 }
 
@@ -88,7 +88,7 @@ export function addProvidersToModuleDeclaration(options: SchemaOptions, provider
   return host => {
     const module = getModuleFile(host, options);
 
-    const providerChanges = providers.map(prov => addProviderToModule(module, options.module, prov, LIB_NAME)[0]);
+    const providerChanges = addProviderToModule(module, options.module, providers.join(',\n    '), LIB_NAME);
 
     return applyChanges(host, options.module, providerChanges as InsertChange[]);
   };
@@ -108,14 +108,14 @@ function getLoaderTemplates(loader: Loaders): { loaderTemplate: string; loaderPr
   const httpTemplate = `
 export function HttpLoader(http: HttpClient) {
   return function(lang: string) {
-    return http.get('/assets/i18n/' + lang + '.json');
+    return http.get(\`../assets/i18n/\${lang}.json\`);
   };
 }`;
 
   const webpackTemplate = `
 export function WebpackLoader() {
   return function(lang: string) {
-    return import('../assets/i18n/' + lang + '.json').then(module => module.default);
+    return import(\`../assets/i18n/\${lang}.json\`).then(module => module.default);
   };
 }`;
 
@@ -155,7 +155,7 @@ export default function(options: SchemaOptions): Rule {
         ? addImportsToModuleFile(options, ['HttpClient'], '@angular/common/http')
         : noop(),
       addImportsToModuleFile(options, ['environment'], '../environments/environment'),
-      addImportsToModuleFile(options, ['TranslocoModule', 'TRANSLOCO_CONFIG', 'TRANSLOCO_LOADER']),
+      addImportsToModuleFile(options, ['TranslocoModule', 'TRANSLOCO_CONFIG', 'TRANSLOCO_LOADER', 'TranslocoConfig']),
       addImportsToModuleDeclaration(options, ['TranslocoModule']),
       addProvidersToModuleDeclaration(options, [configProviderTemplate, loaderProvider]),
       addCodeToModuleFile(options, loaderTemplate)

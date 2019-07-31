@@ -1,11 +1,11 @@
 <ng-container *transloco="let t; loadingTpl: loading">
-  <h1>{{ t.title }}</h1>
+  <h1 data-cy="regular">{{ t.title }}</h1>
 </ng-container>
 
 <ng-container *transloco="let t; scope: 'lazy-page'; loadingTpl: loading">
-  <h1>{{ t.title }}</h1>
+  <h1 data-cy="lazy-page">{{ t.title }}</h1>
 </ng-container>
 
 <ng-template #loading>
-  <h1>Loading...</h1>
+  <h1 data-cy="lazy-page-loading">Loading...</h1>
 </ng-template>
