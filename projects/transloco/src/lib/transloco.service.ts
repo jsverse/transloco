@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
 import { catchError, distinctUntilChanged, map, retry, shareReplay, tap } from 'rxjs/operators';
-import { Lang, TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
+import { Translation, TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_PARSER, TranslocoParser } from './transloco.parser';
 import { HashMap } from './types';
 import { getValue } from './helpers';
@@ -79,7 +79,7 @@ export class TranslocoService {
    *
    * @internal
    */
-  _load(lang: string): Observable<Lang> {
+  _load(lang: string): Observable<Translation> {
     if (this.cache.has(lang) === false) {
       const load$ = from(this.loader(lang)).pipe(
         retry(3),

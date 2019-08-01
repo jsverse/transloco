@@ -1,7 +1,7 @@
 import { InjectionToken } from '@angular/core';
 import { Observable } from 'rxjs';
 
-export type Lang = { [key: string]: any };
+export type Translation = { [key: string]: any };
 
-export type TranslocoLoader = (lang: string) => () => Observable<Lang> | Promise<Lang> | Lang;
+export type TranslocoLoader = (lang: string) => () => Observable<Translation> | Promise<Translation> | Translation;
 export const TRANSLOCO_LOADER = new InjectionToken<TranslocoLoader>('TRANSLOCO_LOADER');
