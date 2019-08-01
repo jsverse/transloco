@@ -18,6 +18,12 @@ const langs = {
   'es-lazy-page': esLazy
 };
 
+export const load = {
+  getTranslation(lang: string) {
+    return timer(1000).pipe(map(() => langs[lang])) as any;
+  }
+};
+
 export const configProviderMock = (config = {}) => ({
   provide: TRANSLOCO_CONFIG,
   useValue: { ...defaultConfig, ...config }
@@ -39,10 +45,6 @@ export const missingHandlerProviderMock = {
 };
 
 export const providersMock = [configProviderMock(), loaderProviderMock, parserProviderMock, missingHandlerProviderMock];
-
-export function load(lang: string): any {
-  return timer(1000).pipe(map(() => langs[lang])) as any;
-}
 
 export function runLoader(times = 1) {
   tick(times * 1001);

@@ -1,10 +1,9 @@
-import { TRANSLOCO_LOADER } from '@ngneat/transloco';
+import { Translation, TRANSLOCO_LOADER, TranslocoLoader } from '@ngneat/transloco';
 
-export function WebpackLoader() {
-  return function(lang: string) {
-    // Yeap it can work with typescript files
+export class WebpackLoader implements TranslocoLoader {
+  getTranslation(lang: string): Promise<Translation> {
     return import(`../../assets/i18n/${lang}`).then(module => module.default);
-  };
+  }
 }
 
-export const webpackLoader = { provide: TRANSLOCO_LOADER, useFactory: WebpackLoader };
+export const webpackLoader = { provide: TRANSLOCO_LOADER, useClass: WebpackLoader };

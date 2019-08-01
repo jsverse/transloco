@@ -1,20 +1,20 @@
 import { InjectionToken } from '@angular/core';
 import { HashMap } from './types';
-import {getValue, isString} from './helpers';
+import { getValue, isString } from './helpers';
+import { Translation } from '@ngneat/transloco';
 
 export const TRANSLOCO_PARSER = new InjectionToken('TRANSLOCO_PARSER');
 
-export abstract class TranslocoParser {
-  abstract parse(value: string, params: HashMap, lang: HashMap): string;
+export interface TranslocoParser {
+  parse(value: string, params: HashMap, lang: HashMap): string;
 }
 
-export class DefaultParser extends TranslocoParser {
-  parse(value: string, params: HashMap = {}, lang?: HashMap): string {
-
+export class DefaultParser implements TranslocoParser {
+  parse(value: string, params: HashMap = {}, translation: Translation): string {
     return isString(value)
       ? value.replace(/{{(.*?)}}/g, function(_, match) {
           match = match.trim();
-          return params[match] || getValue(lang, match) || '';
+          return params[match] || getValue(translation, match) || '';
         })
       : value;
   }

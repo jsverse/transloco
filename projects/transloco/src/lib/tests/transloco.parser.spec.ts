@@ -30,8 +30,8 @@ describe('TranslocoParser', () => {
   });
 
   it('should return the given value when the value is falsy', () => {
-    expect(parser.parse('')).toEqual('');
-    expect(parser.parse(null)).toEqual(null);
-    expect(parser.parse(undefined)).toEqual(undefined);
+    expect(parser.parse('', {}, {})).toEqual('');
+    expect(parser.parse(null, {}, {})).toEqual(null);
+    expect(parser.parse(undefined, {}, {})).toEqual(undefined);
   });
 });

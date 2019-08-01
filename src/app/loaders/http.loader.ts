@@ -1,13 +1,14 @@
 import { HttpClient } from '@angular/common/http';
-import { TRANSLOCO_LOADER } from '@ngneat/transloco';
+import { Translation, TRANSLOCO_LOADER, TranslocoLoader } from '@ngneat/transloco';
+import { Injectable } from '@angular/core';
 
-export function HttpLoader(http: HttpClient) {
-  return function(lang: string) {
-    // if (lang === 'es') {
-    //   return http.get(`/assets/i18n/assets/${lang}.json`);
-    // }
-    return http.get(`/assets/i18n/${lang}.json`);
-  };
+@Injectable({ providedIn: 'root' })
+export class HttpLoader implements TranslocoLoader {
+  constructor(private http: HttpClient) {}
+
+  getTranslation(lang: string) {
+    return this.http.get<Translation>(`/assets/i18n/${lang}.json`);
+  }
 }
 
-export const httpLoader = { provide: TRANSLOCO_LOADER, useFactory: HttpLoader, deps: [HttpClient] };
+export const httpLoader = { provide: TRANSLOCO_LOADER, useClass: HttpLoader };

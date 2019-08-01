@@ -81,7 +81,7 @@ export class TranslocoService {
    */
   _load(lang: string): Observable<Translation> {
     if (this.cache.has(lang) === false) {
-      const load$ = from(this.loader(lang)).pipe(
+      const load$ = from(this.loader.getTranslation(lang)).pipe(
         retry(3),
         catchError(() => {
           if (lang === this.defaultLang) {

@@ -12,7 +12,7 @@
     "start": "ng serve --port 8889",
     "build": "ng build --prod",
     "build:lib": "ng build transloco && npm run schematics:copy",
-    "test:lib": "ng test transloco",
+    "test": "ng test transloco",
     "test:all": "npm run test:headless & npm run e2e",
     "test:headless": "cross-env CI=true npm run test:lib",
     "test:coverage": "npm run test:headless -- --code-coverage",

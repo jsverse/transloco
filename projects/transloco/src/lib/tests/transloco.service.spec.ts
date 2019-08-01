@@ -6,7 +6,10 @@ import en from '../../../../../src/assets/i18n/en.json';
 import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from '../transloco-missing-handler';
 import { of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import createSpy = jasmine.createSpy;
+
+function createSpy() {
+  return jasmine.createSpy();
+}
 
 describe('TranslocoService', () => {
   const spectator = createService({
@@ -22,8 +25,8 @@ describe('TranslocoService', () => {
   describe('load', () => {
     const failLoad = times => {
       let counter = 0;
-      return () =>
-        load('en').pipe(
+      return () => {
+        return load.getTranslation('en').pipe(
           map(val => {
             if (counter < times) {
               counter++;
@@ -32,32 +35,34 @@ describe('TranslocoService', () => {
             return val;
           })
         );
+      };
     };
 
     it('should return the default lang if the load fails 3 times', fakeAsync(() => {
       loadLang();
-      (spectator.service as any).loader = createSpy().and.callFake(failLoad(4));
+      spyOn((spectator as any).service.loader, 'getTranslation').and.callFake(failLoad(4));
       const spy = createSpy();
       spectator.service._load('es').subscribe(spy);
       spyOn(spectator.service, '_load').and.callThrough();
       runLoader(5);
       /* Once since en is in cache */
-      expect((spectator.service as any).loader).toHaveBeenCalledTimes(1);
+      expect((spectator.service as any).loader.getTranslation).toHaveBeenCalledTimes(1);
       expect(spectator.service._load).toHaveBeenCalledWith(spectator.service.config.defaultLang);
       expect(spy.calls.argsFor(0)[0]).toEqual(en);
     }));
 
     it('should stop retrying to load the default lang when reaching 3 tries', fakeAsync(() => {
       const spy = createSpy().and.returnValue(of());
-      (spectator.service as any).loader = createSpy().and.callFake(failLoad(5));
-      const loader = (spectator.service as any).loader;
+      spyOn((spectator as any).service.loader, 'getTranslation').and.callFake(failLoad(5));
+
       spectator.service
         ._load('en')
         .pipe(catchError(spy))
         .subscribe();
+
       /* 4 times - first try + 3 retries */
       runLoader(4);
-      expect(loader).toHaveBeenCalledTimes(1);
+      expect((spectator.service as any).loader.getTranslation).toHaveBeenCalledTimes(1);
       const expectedMsg = 'Unable to load the default translation file (en), reached maximum retries';
       const givenMsg = (spy.calls.argsFor(0)[0] as any).message;
       expect(givenMsg).toEqual(expectedMsg);
@@ -71,23 +76,17 @@ describe('TranslocoService', () => {
     }));
 
     it('should load the translation using the loader', fakeAsync(() => {
-      (spectator.service as any).loader = createSpy(
-        'loader',
-        spectator.get<TranslocoLoader>(TRANSLOCO_LOADER)
-      ).and.callThrough();
+      spyOn(spectator.get<TranslocoLoader>(TRANSLOCO_LOADER), 'getTranslation').and.callThrough();
       spectator.service._load('en').subscribe();
       runLoader();
-      expect((spectator.service as any).loader).toHaveBeenCalledWith('en');
+      expect((spectator.service as any).loader.getTranslation).toHaveBeenCalledWith('en');
     }));
 
     it('should load the translation from cache', fakeAsync(() => {
       loadLang();
-      (spectator.service as any).loader = createSpy(
-        'loader',
-        spectator.get<TranslocoLoader>(TRANSLOCO_LOADER)
-      ).and.callThrough();
+      spyOn(spectator.get<TranslocoLoader>(TRANSLOCO_LOADER), 'getTranslation').and.callThrough();
       spectator.service._load('en');
-      expect((spectator.service as any).loader).not.toHaveBeenCalled();
+      expect((spectator.service as any).loader.getTranslation).not.toHaveBeenCalled();
     }));
   });
 
