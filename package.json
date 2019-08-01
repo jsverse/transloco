@@ -14,7 +14,7 @@
     "build:lib": "ng build transloco && npm run schematics:copy",
     "test": "ng test transloco",
     "test:all": "npm run test:headless & npm run e2e",
-    "test:headless": "cross-env CI=true npm run test:lib",
+    "test:headless": "cross-env CI=true npm run test",
     "test:coverage": "npm run test:headless -- --code-coverage",
     "schematics:watch": "cd ./schematics/ && npm link && cd .. && npm link schematics && npm run build --prefix ./schematics -- --watch",
     "schematics:copy": "cp -r schematics/src/ dist/transloco/schematics",
