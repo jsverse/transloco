@@ -110,16 +110,21 @@ export class TranslocoService {
    * Gets the instant translated value of a key
    *
    * @example
+   *
    * translate('hello')
+   * translate('hello', { value: 'value' })
+   * translate(['hello', 'key'])
+   * translate('hello', { }, 'en')
    */
   translate(key: string, params?: HashMap, langName?: string): string;
   translate(key: string[], params?: HashMap, langName?: string): string[];
   translate(key: string | string[], params: HashMap = {}, langName?: string): string | string[] {
     if (Array.isArray(key)) {
-      return key.map(k => this.translate(k, params));
+      return key.map(k => this.translate(k, params, langName));
     }
+
     if (!key) {
-      return '';
+      return this.missingHandler.handle(key, params, this.config);
     }
 
     const lang = this.langs.get(langName || this.getActiveLang());
@@ -167,5 +172,4 @@ export class TranslocoService {
   getTranslation(lang: string): HashMap<any> {
     return this.langs.get(lang);
   }
-
 }

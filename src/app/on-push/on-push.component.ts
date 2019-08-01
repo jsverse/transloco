@@ -9,18 +9,17 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 export class OnPushComponent implements OnInit {
   dynamic = '🦄';
   key = 'home';
+  translateList = ['b', 'c'];
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   changeKey() {
     this.key = this.key === 'home' ? 'fromList' : 'home';
   }
 
   changeParam() {
-    this.dynamic = this.dynamic === '🦄' ? '🦄🦄🦄' :'🦄';
+    this.dynamic = this.dynamic === '🦄' ? '🦄🦄🦄' : '🦄';
   }
-
 }

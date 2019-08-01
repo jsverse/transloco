@@ -4,7 +4,7 @@ import { HashMap } from './types';
 import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 import { switchMap, take } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
-import { TRANSLOCO_SCOPE } from '@ngneat/transloco';
+import { TRANSLOCO_SCOPE } from './transloco-scope';
 
 @Pipe({
   name: 'transloco',
