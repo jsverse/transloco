@@ -1,4 +1,5 @@
 import { DefaultParser } from '../../public-api';
+import createSpy = jasmine.createSpy;
 
 describe('TranslocoParser', () => {
   const parser = new DefaultParser();
@@ -34,4 +35,5 @@ describe('TranslocoParser', () => {
     expect(parser.parse(null)).toEqual(null);
     expect(parser.parse(undefined)).toEqual(undefined);
   });
+
 });

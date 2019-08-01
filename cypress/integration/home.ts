@@ -29,6 +29,10 @@ export function generateContent(lang = 'english') {
 
   // Missing key
   cy.get(`[data-cy=missing-key]`).should('contain', 'alertty');
+
+  // Loop
+  cy.get(`[data-cy=translation-loop]`).should('contain', `b ${lang}`);
+  cy.get(`[data-cy=translation-loop]`).should('contain', `c ${lang}`);
 }
 
 describe('Transloco', () => {

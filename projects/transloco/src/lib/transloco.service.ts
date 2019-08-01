@@ -132,6 +132,7 @@ export class TranslocoService {
     if (!value) {
       return this.missingHandler.handle(key, params, this.config);
     }
+
     return this.parser.parse(value, params, lang);
   }
 
@@ -166,4 +167,5 @@ export class TranslocoService {
   getTranslation(lang: string): HashMap<any> {
     return this.langs.get(lang);
   }
+
 }

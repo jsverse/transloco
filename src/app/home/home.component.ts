@@ -9,17 +9,17 @@ export class HomeComponent implements OnInit {
   dynamic = '🦄';
   key = 'home';
 
-  constructor() {
-  }
+  translateList = ['b', 'c'];
 
-  ngOnInit() {
-  }
+  constructor() {}
+
+  ngOnInit() {}
 
   changeKey() {
     this.key = this.key === 'home' ? 'fromList' : 'home';
   }
 
   changeParam() {
-    this.dynamic = this.dynamic === '🦄' ? '🦄🦄🦄' :'🦄';
+    this.dynamic = this.dynamic === '🦄' ? '🦄🦄🦄' : '🦄';
   }
 }
