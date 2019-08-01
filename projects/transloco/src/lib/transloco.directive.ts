@@ -12,7 +12,7 @@ import {
   TemplateRef,
   ViewContainerRef
 } from '@angular/core';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, take } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { TranslocoService } from './transloco.service';
 import { HashMap } from './types';
@@ -30,6 +30,8 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   @Input('translocoScope') scope: string | undefined;
   @Input('translocoLoadingTpl') loadingTpl: TemplateRef<any> | undefined;
 
+  private langName: string;
+
   constructor(
     private translocoService: TranslocoService,
     @Optional() private tpl: TemplateRef<any>,
@@ -44,15 +46,16 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
 
     const { runtime } = this.translocoService.config;
     this.subscription = this.translocoService.lang$
-      .pipe(switchMap(lang => this.translocoService.load(this.getScope() ? `${lang}-${this.getScope()}` : lang)))
+      .pipe(
+        switchMap(lang => {
+          this.langName = this.getScope() ? `${lang}-${this.getScope()}` : lang;
+          return this.translocoService._load(this.langName);
+        }),
+        runtime ? source => source : take(1)
+      )
       .subscribe(data => {
         this.tpl === null ? this.simpleStrategy() : this.structuralStrategy(data);
         this.cdr.markForCheck();
-
-        if (!runtime) {
-          this.subscription.unsubscribe();
-          this.subscription = null;
-        }
       });
   }
 
@@ -64,7 +67,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   }
 
   private simpleStrategy() {
-    this.host.nativeElement.innerText = this.translocoService.translate(this.key, this.params);
+    this.host.nativeElement.innerText = this.translocoService.translate(this.key, this.params, this.langName);
   }
 
   private structuralStrategy(data) {

@@ -14,7 +14,7 @@ export const TRANSLOCO_CONFIG = new InjectionToken('TRANSLOCO_CONFIG', {
 });
 
 export const defaultConfig: TranslocoConfig = {
-  runtime: true,
+  runtime: false,
   defaultLang: 'en',
   prodMode: false
 };

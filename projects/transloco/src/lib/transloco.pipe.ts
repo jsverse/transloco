@@ -1,9 +1,10 @@
-import { ChangeDetectorRef, Inject, OnDestroy, Pipe, PipeTransform } from '@angular/core';
+import { ChangeDetectorRef, Inject, OnDestroy, Optional, Pipe, PipeTransform } from '@angular/core';
 import { TranslocoService } from './transloco.service';
 import { HashMap } from './types';
 import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, take } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
+import { TRANSLOCO_SCOPE } from '@ngneat/transloco';
 
 @Pipe({
   name: 'transloco',
@@ -15,10 +16,12 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
   lastKey: string;
   lastParams: HashMap;
   private readonly runtime: boolean;
+  private langName: string;
 
   constructor(
     private translocoService: TranslocoService,
     @Inject(TRANSLOCO_CONFIG) private config: TranslocoConfig,
+    @Optional() @Inject(TRANSLOCO_SCOPE) private provideScope: string | null,
     private cdr: ChangeDetectorRef
   ) {
     const { runtime } = { ...defaultConfig, ...this.config };
@@ -26,7 +29,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
   }
 
   updateValue(key: string, params?: HashMap): void {
-    const translation = this.translocoService.translate(key, params);
+    const translation = this.translocoService.translate(key, params, this.langName);
     this.value = translation || key;
     this.cdr.markForCheck();
   }
@@ -48,14 +51,15 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
     this.subscription && this.subscription.unsubscribe();
 
     this.subscription = this.translocoService.lang$
-      .pipe(switchMap(lang => this.translocoService.load(lang)))
-      .subscribe(data => {
+      .pipe(
+        switchMap(lang => {
+          this.langName = this.provideScope ? `${lang}-${this.provideScope}` : lang;
+          return this.translocoService._load(this.langName);
+        }),
+        this.runtime ? source => source : take(1)
+      )
+      .subscribe(() => {
         this.updateValue(key, params);
-
-        if (!this.runtime) {
-          this.subscription.unsubscribe();
-          this.subscription = null;
-        }
       });
 
     return this.value;
