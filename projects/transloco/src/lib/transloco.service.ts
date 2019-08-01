@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@angular/core';
-import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, from, Observable, Subject, of } from 'rxjs';
 import { catchError, distinctUntilChanged, map, retry, shareReplay, tap } from 'rxjs/operators';
 import { Translation, TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_PARSER, TranslocoParser } from './transloco.parser';
 import { HashMap } from './types';
-import { getValue } from './helpers';
+import { getValue, mergeDeep } from './helpers';
 import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './transloco-missing-handler';
 
@@ -38,7 +38,7 @@ export class TranslocoService {
     this.mergedConfig = { ...defaultConfig, ...this.userConfig };
     this.setDefaultLang(this.mergedConfig.defaultLang);
     this.lang = new BehaviorSubject<string>(this.getDefaultLang());
-    this.lang$ = this.lang.asObservable().pipe(distinctUntilChanged());
+    this.lang$ = this.lang.asObservable();
   }
 
   get config(): TranslocoConfig {
@@ -171,5 +171,39 @@ export class TranslocoService {
    */
   getTranslation(lang: string): HashMap<any> {
     return this.langs.get(lang);
+  }
+
+  /**
+   * Sets or merge a given translation Object to current lang.
+   */
+  setTranslation(lang: string, translation: Translation, options: { merge: boolean }, scope?: string) {
+    const translationKey = this.getTranslationKey(lang, scope);
+    const translate = this.langs.get(translationKey);
+
+    this._setTranslate(translationKey, options.merge ? mergeDeep(translate, translation) : translation, scope);
+  }
+
+  /**
+   * Sets translation key with given value.
+   */
+  setTranslationKey(lang: string, key: string, value: any, scope?: string) {
+    const translationKey = this.getTranslationKey(lang, scope);
+    const translate = this.langs.get(translationKey);
+    this._setTranslate(translationKey, { ...translate, [key]: value }, scope);
+  }
+
+  private _setTranslate(key: string, translate: Translation, scope) {
+    if (!translate) {
+      return;
+    }
+
+    this.langs.set(key, translate);
+    // this.cache.set(key, of(translate));
+    const activeLang = this.getActiveLang();
+    this.getTranslationKey(activeLang, scope) === key && this.setActiveLang(key);
+  }
+
+  private getTranslationKey(lang: string, scope?: string) {
+    return scope ? `${lang}-${scope}` : lang;
   }
 }

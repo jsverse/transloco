@@ -48,6 +48,8 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     this.subscription = this.translocoService.lang$
       .pipe(
         switchMap(lang => {
+          // TODO: we need to move this logic to some common place,
+          //  since we also need that in the service.
           this.langName = this.getScope() ? `${lang}-${this.getScope()}` : lang;
           return this.translocoService._load(this.langName);
         }),

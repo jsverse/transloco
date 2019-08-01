@@ -1,8 +1,8 @@
 import { createService } from '@netbasal/spectator';
-import { TRANSLOCO_LOADER, TranslocoLoader, TranslocoService } from '../../public-api';
+import en from '../../../../../src/assets/i18n/en';
+import { TRANSLOCO_LOADER, TranslocoLoader, TranslocoService, mergeDeep } from '../../public-api';
 import { load, providersMock, runLoader } from './transloco.mocks';
 import { fakeAsync } from '@angular/core/testing';
-import en from '../../../../../src/assets/i18n/en.json';
 import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from '../transloco-missing-handler';
 import { of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -193,5 +193,33 @@ describe('TranslocoService', () => {
     spectator.service.setLangAndLoad(newLang);
     expect(langSpy).toHaveBeenCalledWith(newLang);
     expect(spectator.service._load).toHaveBeenCalledWith(newLang);
+  });
+
+  xdescribe('setTranslation', () => {
+    it('should add another key', () => {
+      const translation = { bar: 'bar' };
+      spectator.service.setTranslation('en', translation, { merge: true });
+      const newTranslation = spectator.service.getTranslation('en');
+
+      expect(newTranslation.bar).toEqual('bar');
+      expect(newTranslation.home).toEqual('home english');
+    });
+
+    it('should deep add another key', fakeAsync(() => {
+      const translation = { a: { bar: 'bar' } };
+      spectator.service.setTranslation('en', translation, { merge: true });
+      const newTranslation = spectator.service.getTranslation('en');
+
+      expect(newTranslation.a.bar).toEqual('bar');
+      expect(newTranslation.a.b.c).toEqual('a.b.c {{fromList}} english');
+    }));
+
+    it('should deep override key', fakeAsync(() => {
+      const translation = { a: { b: { c: 'c' } } };
+      spectator.service.setTranslation('en', translation, { merge: true });
+      const newTranslation = spectator.service.getTranslation('en');
+      console.log(newTranslation);
+      expect(newTranslation.a.b.c).toEqual('c');
+    }));
   });
 });

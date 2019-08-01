@@ -1,0 +1,7 @@
+<ng-container *transloco="let t; scope: scope">
+  <h1 data-cy="lazy-page">{{ t.title }}</h1>
+</ng-container>
+
+<button data-cy="en" class="btn btn-outline-primary my-2 my-sm-0" style="margin-right: 10px;" (click)="updateTitle()">
+  Update Title
+</button>
