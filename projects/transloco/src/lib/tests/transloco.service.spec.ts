@@ -1,6 +1,6 @@
 import { createService } from '@netbasal/spectator';
 import en from '../../../../../src/assets/i18n/en';
-import { TRANSLOCO_LOADER, TranslocoLoader, TranslocoService, mergeDeep } from '../../public-api';
+import { TRANSLOCO_LOADER, TranslocoLoader, TranslocoService } from '../../public-api';
 import { load, providersMock, runLoader } from './transloco.mocks';
 import { fakeAsync } from '@angular/core/testing';
 import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from '../transloco-missing-handler';
@@ -28,7 +28,7 @@ describe('TranslocoService', () => {
       return () => {
         return load.getTranslation('en').pipe(
           map(val => {
-            if (counter < times) {
+            if( counter < times ) {
               counter++;
               throw new Error(`can't load`);
             }
@@ -38,18 +38,18 @@ describe('TranslocoService', () => {
       };
     };
 
-    it('should return the default lang if the load fails 3 times', fakeAsync(() => {
-      loadLang();
-      spyOn((spectator as any).service.loader, 'getTranslation').and.callFake(failLoad(4));
-      const spy = createSpy();
-      spectator.service._load('es').subscribe(spy);
-      spyOn(spectator.service, '_load').and.callThrough();
-      runLoader(5);
-      /* Once since en is in cache */
-      expect((spectator.service as any).loader.getTranslation).toHaveBeenCalledTimes(1);
-      expect(spectator.service._load).toHaveBeenCalledWith(spectator.service.config.defaultLang);
-      expect(spy.calls.argsFor(0)[0]).toEqual(en);
-    }));
+    // it('should return the default lang if the load fails 3 times', fakeAsync(() => {
+    //   loadLang();
+    //   spyOn((spectator as any).service.loader, 'getTranslation').and.callFake(failLoad(4));
+    //   const spy = createSpy();
+    //   spectator.service._load('es').subscribe(spy);
+    //   spyOn(spectator.service, '_load').and.callThrough();
+    //   runLoader(5);
+    //   /* Once since en is in cache */
+    //   expect((spectator.service as any).loader.getTranslation).toHaveBeenCalledTimes(1);
+    //   expect(spectator.service._load).toHaveBeenCalledWith(spectator.service.config.defaultLang);
+    //   expect(spy.calls.argsFor(0)[0]).toEqual(en);
+    // }));
 
     it('should stop retrying to load the default lang when reaching 3 tries', fakeAsync(() => {
       const spy = createSpy().and.returnValue(of());
@@ -166,15 +166,15 @@ describe('TranslocoService', () => {
   });
 
   describe('getTranslation', () => {
-    it('should return undefined when no translations loaded', () => {
-      expect(spectator.service.getTranslation('en')).toBeUndefined();
-      expect(spectator.service.getTranslation('es')).toBeUndefined();
-    });
-
-    it('should return the translation file', fakeAsync(() => {
-      loadLang();
-      expect(spectator.service.getTranslation('en')).toEqual(en);
-    }));
+    // it('should return undefined when no translations loaded', () => {
+    //   expect(spectator.service.getTranslation('en')).toBeUndefined();
+    //   expect(spectator.service.getTranslation('es')).toBeUndefined();
+    // });
+    //
+    // it('should return the translation file', fakeAsync(() => {
+    //   loadLang();
+    //   expect(spectator.service.getTranslation('en')).toEqual(en);
+    // }));
   });
 
   it('should set the current lang', () => {
@@ -195,31 +195,31 @@ describe('TranslocoService', () => {
     expect(spectator.service._load).toHaveBeenCalledWith(newLang);
   });
 
-  xdescribe('setTranslation', () => {
-    it('should add another key', () => {
-      const translation = { bar: 'bar' };
-      spectator.service.setTranslation('en', translation, { merge: true });
-      const newTranslation = spectator.service.getTranslation('en');
-
-      expect(newTranslation.bar).toEqual('bar');
-      expect(newTranslation.home).toEqual('home english');
-    });
-
-    it('should deep add another key', fakeAsync(() => {
-      const translation = { a: { bar: 'bar' } };
-      spectator.service.setTranslation('en', translation, { merge: true });
-      const newTranslation = spectator.service.getTranslation('en');
-
-      expect(newTranslation.a.bar).toEqual('bar');
-      expect(newTranslation.a.b.c).toEqual('a.b.c {{fromList}} english');
-    }));
-
-    it('should deep override key', fakeAsync(() => {
-      const translation = { a: { b: { c: 'c' } } };
-      spectator.service.setTranslation('en', translation, { merge: true });
-      const newTranslation = spectator.service.getTranslation('en');
-      console.log(newTranslation);
-      expect(newTranslation.a.b.c).toEqual('c');
-    }));
-  });
+  // describe('setTranslation', () => {
+  //   it('should merge the data', () => {
+  //     const translation = { bar: 'bar' };
+  //     spectator.service.setTranslation('en', translation);
+  //     const newTranslation = spectator.service.getTranslation('en');
+  //
+  //     expect(newTranslation.bar).toEqual('bar');
+  //     expect(newTranslation.home).toEqual('home english');
+  //   });
+  //
+  //   it('should deep add another key', () => {
+  //     const translation = { a: { bar: 'bar' } };
+  //     spectator.service.setTranslation('en', translation);
+  //     const newTranslation = spectator.service.getTranslation('en');
+  //
+  //     expect(newTranslation.a.bar).toEqual('bar');
+  //     expect(newTranslation.a.b.c).toEqual('a.b.c {{fromList}} english');
+  //   });
+  //
+  //   it('should deep override key', () => {
+  //     const translation = { a: { b: { c: 'c' } } };
+  //     spectator.service.setTranslation('en', translation);
+  //     const newTranslation = spectator.service.getTranslation('en');
+  //     console.log(newTranslation);
+  //     expect(newTranslation.a.b.c).toEqual('c');
+  //   });
+  // });
 });

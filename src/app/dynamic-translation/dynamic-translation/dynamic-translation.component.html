@@ -1,7 +1,16 @@
-<ng-container *transloco="let t; scope: scope">
-  <h1 data-cy="lazy-page">{{ t.title }}</h1>
+<h2>Change Translation</h2>
+
+<ng-container *transloco="let t;">
+  <p>{{ t.home }}</p>
+  <p>Press Add new key to see me: {{ t.newKey }}</p>
 </ng-container>
 
-<button data-cy="en" class="btn btn-outline-primary my-2 my-sm-0" style="margin-right: 10px;" (click)="updateTitle()">
-  Update Title
+<button class="btn btn-outline-primary my-2 my-sm-0" (click)="updateTitle()">
+  Update the home key
 </button>
+
+<button class="btn btn-outline-primary my-2 my-sm-0" (click)="addNewKey()">
+  Add new key
+</button>
+
+

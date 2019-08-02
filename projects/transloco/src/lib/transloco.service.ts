@@ -4,7 +4,7 @@ import { catchError, distinctUntilChanged, map, retry, shareReplay, tap } from '
 import { Translation, TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_PARSER, TranslocoParser } from './transloco.parser';
 import { HashMap } from './types';
-import { getValue, mergeDeep } from './helpers';
+import { getValue, mergeDeep, setValue } from './helpers';
 import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './transloco-missing-handler';
 
@@ -12,8 +12,8 @@ import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './transloco-
   providedIn: 'root'
 })
 export class TranslocoService {
-  private langs = new Map();
-  private cache = new Map<string, Observable<HashMap<any>>>();
+  private translations = new Map();
+  private cache = new Map<string, Observable<Translation>>();
   private defaultLang: string;
   private mergedConfig: TranslocoConfig;
 
@@ -80,11 +80,11 @@ export class TranslocoService {
    * @internal
    */
   _load(lang: string): Observable<Translation> {
-    if (this.cache.has(lang) === false) {
+    if( this.cache.has(lang) === false ) {
       const load$ = from(this.loader.getTranslation(lang)).pipe(
         retry(3),
         catchError(() => {
-          if (lang === this.defaultLang) {
+          if( lang === this.defaultLang ) {
             const errMsg = `Unable to load the default translation file (${lang}), reached maximum retries`;
             throw new Error(errMsg);
           } else {
@@ -95,7 +95,7 @@ export class TranslocoService {
           return this.setLangAndLoad(this.defaultLang);
         }),
         tap(value => {
-          this.langs.set(lang, value);
+          this.translations.set(lang, value);
           this.translationLoaded.next({ lang });
         }),
         shareReplay(1)
@@ -119,22 +119,22 @@ export class TranslocoService {
   translate(key: string, params?: HashMap, langName?: string): string;
   translate(key: string[], params?: HashMap, langName?: string): string[];
   translate(key: string | string[], params: HashMap = {}, langName?: string): string | string[] {
-    if (Array.isArray(key)) {
+    if( Array.isArray(key) ) {
       return key.map(k => this.translate(k, params, langName));
     }
 
-    if (!key) {
+    if( !key ) {
       return this.missingHandler.handle(key, params, this.config);
     }
 
-    const lang = this.langs.get(langName || this.getActiveLang());
-    if (!lang) {
+    const lang = this.translations.get(langName || this.getActiveLang());
+    if( !lang ) {
       return '';
     }
 
     const value = getValue(lang, key);
 
-    if (!value) {
+    if( !value ) {
       return this.missingHandler.handle(key, params, this.config);
     }
 
@@ -162,48 +162,49 @@ export class TranslocoService {
    *  translateValue('Hello {{ value }}', { value: 'World' })
    */
   translateValue(value: string, params: HashMap = {}): string {
-    const lang = this.langs.get(this.getActiveLang());
+    const lang = this.translations.get(this.getActiveLang());
     return this.parser.parse(value, params, lang);
   }
 
   /**
    * Gets an object of translations for a given language
    */
-  getTranslation(lang: string): HashMap<any> {
-    return this.langs.get(lang);
+  getTranslation(lang: string): Translation {
+    return this.translations.get(lang);
   }
 
   /**
-   * Sets or merge a given translation Object to current lang.
+   * Sets or merge a given translation object to current lang
+   *
+   * @example
+   *
+   * setTranslation(lang, { ... })
+   * setTranslation(lang, { ... }, { merge: false } )
    */
-  setTranslation(lang: string, translation: Translation, options: { merge: boolean }, scope?: string) {
-    const translationKey = this.getTranslationKey(lang, scope);
-    const translate = this.langs.get(translationKey);
-
-    this._setTranslate(translationKey, options.merge ? mergeDeep(translate, translation) : translation, scope);
+  setTranslation(lang: string, data: Translation, options: { merge?: boolean } = {}) {
+    const defaults = { merge: true };
+    const mergedOptions = { ...defaults, ...options };
+    const translation = this.getTranslation(lang);
+    if( translation ) {
+      const merged = mergedOptions.merge ? mergeDeep(translation, data) : data;
+      this.translations.set(lang, merged);
+      this.setActiveLang(this.getActiveLang());
+    }
   }
 
   /**
    * Sets translation key with given value.
+   * @example
+   *
+   * setTranslationKey('key', 'value')
+   * setTranslationKey('key.nested', 'value')
    */
-  setTranslationKey(lang: string, key: string, value: any, scope?: string) {
-    const translationKey = this.getTranslationKey(lang, scope);
-    const translate = this.langs.get(translationKey);
-    this._setTranslate(translationKey, { ...translate, [key]: value }, scope);
-  }
-
-  private _setTranslate(key: string, translate: Translation, scope) {
-    if (!translate) {
-      return;
+  setTranslationKey(key: string, value: string, lang = this.getDefaultLang()) {
+    const translation = this.getTranslation(lang);
+    if( translation ) {
+      const newValue = setValue(translation, key, value);
+      this.translations.set(lang, newValue);
+      this.setActiveLang(this.getActiveLang());
     }
-
-    this.langs.set(key, translate);
-    // this.cache.set(key, of(translate));
-    const activeLang = this.getActiveLang();
-    this.getTranslationKey(activeLang, scope) === key && this.setActiveLang(key);
-  }
-
-  private getTranslationKey(lang: string, scope?: string) {
-    return scope ? `${lang}-${scope}` : lang;
   }
 }

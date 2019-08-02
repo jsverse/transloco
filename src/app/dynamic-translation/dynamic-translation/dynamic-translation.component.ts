@@ -1,5 +1,5 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { TranslocoService, TRANSLOCO_SCOPE } from '@ngneat/transloco';
+import { Component, OnInit } from '@angular/core';
+import { TranslocoService } from '@ngneat/transloco';
 
 @Component({
   selector: 'app-dynamic-translation',
@@ -7,27 +7,18 @@ import { TranslocoService, TRANSLOCO_SCOPE } from '@ngneat/transloco';
   styleUrls: ['./dynamic-translation.component.css']
 })
 export class DynamicTranslationComponent implements OnInit {
-  constructor(private translate: TranslocoService, @Inject(TRANSLOCO_SCOPE) public scope: string) {}
-
-  ngOnInit() {}
-
-  public updateTitle() {
-    const lang = this.translate.getActiveLang();
-    this.translate.setTranslationKey(lang, 'title', 'new title', this.scope);
+  constructor(private translate: TranslocoService) {
   }
 
-  public addScopeTranslation() {
-    const lang = this.translate.getActiveLang();
-    this.translate.setTranslationKey(lang, 'title', 'new title');
+  ngOnInit() {
   }
 
-  public setScopeTranslation() {
-    const lang = this.translate.getActiveLang();
-    this.translate.setTranslationKey(lang, 'title', 'new title');
+  updateTitle() {
+    this.translate.setTranslationKey('home', 'New title');
   }
 
-  public overrideScopeTranslation() {
-    const lang = this.translate.getActiveLang();
-    this.translate.setTranslationKey(lang, 'title', 'new title');
+  addNewKey() {
+    this.translate.setTranslationKey('newKey', 'New key');
   }
+
 }

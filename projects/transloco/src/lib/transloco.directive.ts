@@ -39,7 +39,8 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     private vcr: ViewContainerRef,
     private cdr: ChangeDetectorRef,
     private host: ElementRef
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     this.hasLoadingTpl() && this.vcr.createEmbeddedView(this.loadingTpl);
@@ -48,15 +49,14 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     this.subscription = this.translocoService.lang$
       .pipe(
         switchMap(lang => {
-          // TODO: we need to move this logic to some common place,
-          //  since we also need that in the service.
           this.langName = this.getScope() ? `${lang}-${this.getScope()}` : lang;
           return this.translocoService._load(this.langName);
         }),
         runtime ? source => source : take(1)
       )
-      .subscribe(data => {
-        this.tpl === null ? this.simpleStrategy() : this.structuralStrategy(data);
+      .subscribe(() => {
+        const translation = this.translocoService.getTranslation(this.langName);
+        this.tpl === null ? this.simpleStrategy() : this.structuralStrategy(translation);
         this.cdr.markForCheck();
       });
   }
@@ -73,7 +73,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   }
 
   private structuralStrategy(data) {
-    if (this.view) {
+    if( this.view ) {
       this.view.context['$implicit'] = data;
     } else {
       this.hasLoadingTpl() && this.vcr.clear();
