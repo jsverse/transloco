@@ -9,3 +9,4 @@ export * from './lib/types';
 export * from './lib/helpers';
 export * from './lib/transloco-params.pipe';
 export * from './lib/transloco-scope';
+export * from './lib/transloco-lang';

@@ -1,0 +1,13 @@
+<h2>English:</h2>
+<ng-container *transloco="let t;">
+  <p>{{ t.home }}</p>
+</ng-container>
+
+<h2>Spanish:</h2>
+<ng-container *transloco="let t; lang: 'es'; loadingTpl: loading; scope: 'lazy-page'">
+  <p>{{ t.title }}</p>
+</ng-container>
+
+<provider-lang></provider-lang>
+
+<ng-template #loading>Loading..</ng-template>

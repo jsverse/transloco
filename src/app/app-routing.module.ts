@@ -16,6 +16,10 @@ const routes: Routes = [
   {
     path: 'lazy',
     loadChildren: () => import('./lazy/lazy.module').then(m => m.LazyModule)
+  },
+  {
+    path: 'multilangs',
+    loadChildren: () => import('./multilangs/multilangs.module').then(m => m.MultilangsModule)
   }
 ];
 
@@ -23,4 +27,5 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule {
+}

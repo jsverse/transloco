@@ -1,0 +1,9 @@
+<h3>Provider Scope</h3>
+<ng-container *transloco="let t;">
+  <p>{{ t.home }}</p>
+</ng-container>
+
+<ng-container *transloco="let t; lang: 'en'">
+  <p>Inline wins: {{ t.home }}</p>
+</ng-container>
+
