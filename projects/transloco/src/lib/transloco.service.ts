@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
-import { BehaviorSubject, from, Observable, Subject, of } from 'rxjs';
-import { catchError, distinctUntilChanged, map, retry, shareReplay, tap } from 'rxjs/operators';
+import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
+import { catchError, map, retry, shareReplay, tap } from 'rxjs/operators';
 import { Translation, TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_PARSER, TranslocoParser } from './transloco.parser';
 import { HashMap } from './types';
@@ -147,11 +147,9 @@ export class TranslocoService {
    * @example
    * selectTranslate('hello').subscribe(value => {})
    */
-  selectTranslate(key: string, params: HashMap = {}) {
+  selectTranslate(key: string, params?: HashMap, langName?: string) {
     return this._load(this.getActiveLang()).pipe(
-      map(() => {
-        return this.translate(key, params);
-      })
+      map(() => this.translate(key, params, langName))
     );
   }
 
@@ -184,12 +182,10 @@ export class TranslocoService {
   setTranslation(lang: string, data: Translation, options: { merge?: boolean } = {}) {
     const defaults = { merge: true };
     const mergedOptions = { ...defaults, ...options };
-    const translation = this.getTranslation(lang);
-    if( translation ) {
-      const merged = mergedOptions.merge ? mergeDeep(translation, data) : data;
-      this.translations.set(lang, merged);
-      this.setActiveLang(this.getActiveLang());
-    }
+    const translation = this.getTranslation(lang) || {};
+    const merged = mergedOptions.merge ? mergeDeep(translation, data) : data;
+    this.translations.set(lang, merged);
+    this.setActiveLang(this.getActiveLang());
   }
 
   /**

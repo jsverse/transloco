@@ -46,11 +46,12 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     this.hasLoadingTpl() && this.vcr.createEmbeddedView(this.loadingTpl);
 
     const { runtime } = this.translocoService.config;
+
     this.subscription = this.translocoService.lang$
       .pipe(
         switchMap(lang => {
           this.langName = this.getScope() ? `${lang}-${this.getScope()}` : lang;
-          return this.translocoService._load(this.langName);
+          return this.translocoService._load(this.langName)
         }),
         runtime ? source => source : take(1)
       )
