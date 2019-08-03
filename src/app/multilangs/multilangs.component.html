@@ -1,11 +1,11 @@
 <h2>English:</h2>
 <ng-container *transloco="let t;">
-  <p>{{ t.home }}</p>
+  <p data-cy="global">{{ t.home }}</p>
 </ng-container>
 
 <h2>Spanish: (scope: lazy-page)</h2>
 <ng-container *transloco="let t; lang: 'es'; loadingTpl: loading; scope: 'lazy-page'">
-  <p>{{ t.title }}</p>
+  <p data-cy="with-scope">{{ t.title }}</p>
 </ng-container>
 
 <provider-lang></provider-lang>

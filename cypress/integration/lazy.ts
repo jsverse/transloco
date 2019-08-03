@@ -13,7 +13,7 @@ export function generateContentWithoutLoader() {
   cy.get(`[data-cy=lazy-page-loading]`).should('not.exist');
 }
 
-describe('Transloco', () => {
+describe('Lazy Load', () => {
   beforeEach(() => {
     cy.visit('/lazy');
   });

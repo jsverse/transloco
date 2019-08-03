@@ -1,9 +1,9 @@
 <h3>Provider Scope (lang is set es in providers)</h3>
 <ng-container *transloco="let t;">
-  <p>{{ t.home }}</p>
+  <p data-cy="in-provider">{{ t.home }}</p>
 </ng-container>
 
 <ng-container *transloco="let t; lang: 'en'">
-  <p>Inline (en) wins: {{ t.home }}</p>
+  <p data-cy="inline">Inline (en) wins: {{ t.home }}</p>
 </ng-container>
 
