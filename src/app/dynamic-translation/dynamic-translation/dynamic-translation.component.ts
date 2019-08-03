@@ -1,17 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoService } from '@ngneat/transloco';
 
 @Component({
   selector: 'app-dynamic-translation',
   templateUrl: './dynamic-translation.component.html',
-  styleUrls: ['./dynamic-translation.component.css']
+  styleUrls: ['./dynamic-translation.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DynamicTranslationComponent implements OnInit {
-  constructor(private translate: TranslocoService) {
-  }
+  constructor(private translate: TranslocoService) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   updateTitle() {
     this.translate.setTranslationKey('home', 'New title');
@@ -21,4 +20,12 @@ export class DynamicTranslationComponent implements OnInit {
     this.translate.setTranslationKey('newKey', 'New key');
   }
 
+  addTranslationObj() {
+    const newTranslation = {
+      newTranslation: {
+        title: 'New translation title'
+      }
+    };
+    this.translate.setTranslation('en', newTranslation, { merge: true });
+  }
 }
