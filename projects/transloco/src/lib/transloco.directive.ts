@@ -28,11 +28,13 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
 
   @Input('transloco') key: string;
   @Input('translocoParams') params: HashMap = {};
-  @Input('translocoScope') scope: string | undefined;
-  @Input('translocoLang') lang: string | undefined;
+  @Input('translocoScope') inlineScope: string | undefined;
+  @Input('translocoLang') inlineLang: string | undefined;
   @Input('translocoLoadingTpl') loadingTpl: TemplateRef<any> | undefined;
 
   private langName: string;
+  // Whether we already rendered the view once
+  private initialzed = false;
 
   constructor(
     private translocoService: TranslocoService,
@@ -49,19 +51,22 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     this.hasLoadingTpl() && this.vcr.createEmbeddedView(this.loadingTpl);
 
     const { runtime } = this.translocoService.config;
+
     this.subscription = this.translocoService.lang$
       .pipe(
-        switchMap(lang => {
-          // inline => providers => global
-          const resolveLang = this.lang ? this.lang : this.providerLang ? this.providerLang : lang;
-          this.langName = this.getScope() ? `${resolveLang}-${this.getScope()}` : resolveLang;
-          return this.translocoService._load(this.langName);
+        switchMap(globalLang => {
+          const lang = this.getLang(globalLang);
+          const scope = this.getScope();
+          this.langName = scope ? `${lang}-${scope}` : lang;
+          return this.translocoService._load(this.langName)
         }),
         runtime ? source => source : take(1)
       )
-      .subscribe(data => {
-        this.tpl === null ? this.simpleStrategy() : this.structuralStrategy(data);
+      .subscribe(() => {
+        const translation = this.translocoService.getTranslation(this.langName);
+        this.tpl === null ? this.simpleStrategy() : this.structuralStrategy(translation);
         this.cdr.markForCheck();
+        this.initialzed = true;
       });
   }
 
@@ -91,8 +96,30 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     return this.loadingTpl instanceof TemplateRef;
   }
 
+  // inline => providers
   private getScope() {
-    return this.scope || this.providerScope;
+    return this.inlineScope || this.providerScope;
+  }
+
+  // inline => providers => global
+  private getLang(globalLang: string) {
+    /**
+     * When the user changes the lang we need to update
+     * the view. Otherwise, the lang will remain the inline/provided lang
+     */
+    if( this.initialzed ) {
+      return globalLang;
+    }
+
+    if( this.inlineLang ) {
+      return this.inlineLang
+    }
+
+    if( this.providerLang ) {
+      return this.providerLang
+    }
+
+    return globalLang;
   }
 
   ngOnDestroy() {

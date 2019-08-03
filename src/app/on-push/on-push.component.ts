@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'app-on-push',
@@ -6,14 +6,10 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
   styleUrls: ['./on-push.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class OnPushComponent implements OnInit {
+export class OnPushComponent  {
   dynamic = '🦄';
   key = 'home';
   translateList = ['b', 'c'];
-
-  constructor() {}
-
-  ngOnInit() {}
 
   changeKey() {
     this.key = this.key === 'home' ? 'fromList' : 'home';

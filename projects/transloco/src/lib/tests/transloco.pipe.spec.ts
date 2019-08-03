@@ -1,7 +1,7 @@
 import { DefaultParser, TranslocoPipe, TranslocoService } from '../../public-api';
 import { Mock } from 'ts-mocks';
 import { ChangeDetectorRef } from '@angular/core';
-import { load, runLoader } from './transloco.mocks';
+import { loader, runLoader } from './transloco.mocks';
 import { fakeAsync } from '@angular/core/testing';
 import { DefaultHandler } from '../transloco-missing-handler';
 import { of } from 'rxjs';
@@ -13,7 +13,7 @@ describe('TranslocoPipe', () => {
 
   beforeEach(() => {
     translateServiceMock = new Mock<TranslocoService>(
-      new TranslocoService(load, new DefaultParser(), new DefaultHandler(), {})
+      new TranslocoService(loader, new DefaultParser(), new DefaultHandler(), {})
     ).Object;
     cdrMock = new Mock<ChangeDetectorRef>({
       markForCheck: () => {}

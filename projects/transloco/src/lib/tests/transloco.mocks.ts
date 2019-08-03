@@ -11,16 +11,16 @@ import esLazy from '../../../../../src/assets/i18n/es-lazy-page.json';
 import { tick } from '@angular/core/testing';
 import { TranslocoService } from '@ngneat/transloco';
 
-const langs = {
+export const mockLangs = {
   en,
   es,
   'en-lazy-page': enLazy,
   'es-lazy-page': esLazy
 };
 
-export const load = {
+export const loader = {
   getTranslation(lang: string) {
-    return timer(1000).pipe(map(() => langs[lang])) as any;
+    return timer(1000).pipe(map(() => mockLangs[lang])) as any;
   }
 };
 
@@ -31,7 +31,7 @@ export const configProviderMock = (config = {}) => ({
 
 export const loaderProviderMock = {
   provide: TRANSLOCO_LOADER,
-  useValue: load
+  useValue: loader
 };
 
 export const parserProviderMock = {

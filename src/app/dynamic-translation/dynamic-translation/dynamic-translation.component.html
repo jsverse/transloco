@@ -1,0 +1,16 @@
+<h2>Change Translation</h2>
+
+<ng-container *transloco="let t;">
+  <p>{{ t.home }}</p>
+  <p>Press Add new key to see me: {{ t.newKey }}</p>
+</ng-container>
+
+<button class="btn btn-outline-primary my-2 my-sm-0" (click)="updateTitle()">
+  Update the home key
+</button>
+
+<button class="btn btn-outline-primary my-2 my-sm-0" (click)="addNewKey()">
+  Add new key
+</button>
+
+

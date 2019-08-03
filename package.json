@@ -14,11 +14,12 @@
     "build:lib": "ng build transloco && npm run schematics:copy",
     "test": "ng test transloco",
     "test:all": "npm run test:headless & npm run e2e",
-    "test:headless": "cross-env CI=true npm run test:lib",
+    "test:headless": "cross-env CI=true npm run test",
     "test:coverage": "npm run test:headless -- --code-coverage",
     "schematics:watch": "cd ./schematics/ && npm link && cd .. && npm link schematics && npm run build --prefix ./schematics -- --watch",
     "schematics:copy": "cp -r schematics/src/ dist/transloco/schematics",
-    "e2e": "cypress run",
+    "e2e": "cypress open",
+    "e2e:headless": "cypress run",
     "e2e:ci": "cross-env CYPRESS_BASE_URL=https://5d3ee060aeda390008a07357--mystifying-sinoussi-d7cdb2.netlify.com cypress run"
   },
   "dependencies": {
