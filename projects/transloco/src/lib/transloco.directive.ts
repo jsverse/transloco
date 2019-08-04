@@ -1,30 +1,12 @@
-import {
-  ChangeDetectorRef,
-  Directive,
-  ElementRef,
-  EmbeddedViewRef,
-  Inject,
-  Input,
-  OnChanges,
-  OnDestroy,
-  OnInit,
-  Optional,
-  TemplateRef,
-  ViewContainerRef,
-  ComponentRef,
-  ComponentFactoryResolver,
-  Component,
-  Injector,
-  Type
-} from '@angular/core';
-import { TemplateHandler, View } from './template-handler';
-import { TRANSLOCO_LOADING_TEMPLATE } from './transloco-loading-template';
-import { switchMap, take } from 'rxjs/operators';
-import { Subscription } from 'rxjs';
-import { TranslocoService } from './transloco.service';
-import { HashMap } from './types';
-import { TRANSLOCO_SCOPE } from './transloco-scope';
-import { TRANSLOCO_LANG } from './transloco-lang';
+import {ChangeDetectorRef, Directive, ElementRef, EmbeddedViewRef, Inject, Input, OnChanges, OnDestroy, OnInit, Optional, TemplateRef, ViewContainerRef, Type} from '@angular/core';
+import {Subscription} from 'rxjs';
+import {switchMap, take} from 'rxjs/operators';
+import {TemplateHandler, View} from './template-handler';
+import {TRANSLOCO_LANG} from './transloco-lang';
+import {TRANSLOCO_LOADING_TEMPLATE} from './transloco-loading-template';
+import {TRANSLOCO_SCOPE} from './transloco-scope';
+import {TranslocoService} from './transloco.service';
+import {HashMap} from './types';
 
 @Directive({
   selector: '[transloco]'
@@ -76,7 +58,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
       )
       .subscribe(() => {
         const translation = this.translocoService.getTranslation(this.langName);
-        this.inlineTpl === null ? this.simpleStrategy() : this.structuralStrategy(translation);
+        this.tpl === null ? this.simpleStrategy() : this.structuralStrategy(translation);
         this.cdr.markForCheck();
         this.initialzed = true;
       });
@@ -97,7 +79,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     if (this.view) {
       this.view.context['$implicit'] = data;
     } else {
-      this.loaderTplHandler.detachView();
+      this.loaderTplHandler && this.loaderTplHandler.detachView();
       this.view = this.vcr.createEmbeddedView(this.tpl, {
         $implicit: data
       });

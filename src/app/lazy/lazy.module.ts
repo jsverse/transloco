@@ -15,7 +15,10 @@ const routes: Routes = [
   declarations: [LazyComponent],
   providers: [
     { provide: TRANSLOCO_SCOPE, useValue: 'admin-page' },
-    { provide: TRANSLOCO_LOADING_TEMPLATE, useValue: 'loading template...' }
+    {
+      provide: TRANSLOCO_LOADING_TEMPLATE,
+      useValue: `<span id="default-loading-template">Loading template...</span>`
+    }
   ],
   imports: [CommonModule, RouterModule.forChild(routes), TranslocoModule]
 })

@@ -1,14 +1,17 @@
+import {ViewContainerRef} from '@angular/core';
 import { fakeAsync } from '@angular/core/testing';
-import { TranslocoDirective, TranslocoParamsPipe, TranslocoService } from '../../public-api';
+import {TranslocoDirective, TranslocoParamsPipe, TranslocoService, TRANSLOCO_LOADING_TEMPLATE} from '../../public-api';
 import { createHostComponentFactory, HostComponent, SpectatorWithHost } from '@netbasal/spectator';
-import { providersMock, runLoader, setRuntime } from './transloco.mocks';
+import {TranslocoLoaderComponent} from '../loader-component.component';
+import {TemplateHandler} from '../template-handler';
+import {providersMock, runLoader, setRuntime, loadingTemplateMock} from './transloco.mocks';
 
 describe('TranslocoDirective', () => {
   let host: SpectatorWithHost<TranslocoDirective>;
   const createHost = createHostComponentFactory({
     component: TranslocoDirective,
     declarations: [TranslocoParamsPipe],
-    providers: providersMock
+    providers: providersMock,
   });
 
   function testScopedTranslation(host: SpectatorWithHost<TranslocoDirective, HostComponent>) {
@@ -83,15 +86,16 @@ describe('TranslocoDirective', () => {
     }));
 
     it('should create embedded view once', fakeAsync(() => {
-      spyOn(TranslocoDirective.prototype as any, 'hasLoadingTpl').and.callThrough();
+      spyOn(TranslocoDirective.prototype as any, 'getLoadingTpl').and.callThrough();
       host = createHost(`<section *transloco="let t"></section>`, false);
       const service = host.get<TranslocoService>(TranslocoService);
+
       setRuntime(service);
       host.detectChanges();
       runLoader();
       service.setActiveLang('es');
       runLoader();
-      expect((TranslocoDirective.prototype as any).hasLoadingTpl).toHaveBeenCalledTimes(2);
+      expect((TranslocoDirective.prototype as any).getLoadingTpl).toHaveBeenCalledTimes(1);
     }));
 
     it('should set the translation value', fakeAsync(() => {
@@ -112,4 +116,65 @@ describe('TranslocoDirective', () => {
       expect(host.queryHostAll('p')[1]).toHaveText('a.b.c value english');
     }));
   });
+
+  describe('Loading Template', () => {
+
+    it('should attach and detach view with inline loader template', fakeAsync(() => {
+      spyOn<TemplateHandler>(TemplateHandler.prototype, 'attachView').and.callThrough();
+      spyOn<TemplateHandler>(TemplateHandler.prototype, 'detachView').and.callThrough();
+      host = createHost(`
+        <section *transloco="let t; scope: 'lazy-page'; loadingTpl: loading">
+          <h1 data-cy="lazy-page">{{ t.title }}</h1>
+        </section>
+        
+        <ng-template #loading>
+          <h1 data-cy="lazy-page-loading">Loading...</h1>
+        </ng-template>
+      `);
+
+      expect((TemplateHandler.prototype as any).attachView).toHaveBeenCalledTimes(1);
+      host.detectChanges();
+      runLoader();
+      expect((TemplateHandler.prototype as any).detachView).toHaveBeenCalledTimes(1);
+    }));
+
+    it('should not attachView if no inline loader template has provided', () => {
+      spyOn<TemplateHandler>(TemplateHandler.prototype, 'attachView').and.callThrough();
+      host = createHost(`
+        <section *transloco="let t; scope: 'lazy-page';">
+          <h1 data-cy="lazy-page">{{ t.title }}</h1>
+        </section>
+      `);
+
+      expect((TemplateHandler.prototype as any).attachView).not.toHaveBeenCalled();
+    });
+
+  });
+
+  describe('default loader template', () => {
+    const createHost = createHostComponentFactory({
+      component: TranslocoDirective,
+      declarations: [TranslocoParamsPipe, TranslocoLoaderComponent],
+      entryComponents: [TranslocoLoaderComponent],
+      providers: [...providersMock, loadingTemplateMock],
+    });
+
+    it('should call attach view with default template', fakeAsync(() => {
+      spyOn<TemplateHandler>(TemplateHandler.prototype, 'attachView').and.callThrough();
+      spyOn<TemplateHandler>(TemplateHandler.prototype, 'detachView').and.callThrough();
+
+      host = createHost(`
+        <section *transloco="let t; scope: 'lazy-page';">
+          <h1 data-cy="lazy-page">{{ t.title }}</h1>
+        </section>
+      `);
+
+      expect((TemplateHandler.prototype as any).attachView).toHaveBeenCalled();
+      host.detectChanges();
+      runLoader();
+      expect((TemplateHandler.prototype as any).detachView).toHaveBeenCalled();
+    }));
+
+  })
+
 });

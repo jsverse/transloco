@@ -1,5 +1,6 @@
 export function generateContentLoader() {
   cy.get(`[data-cy=lazy-page-loading]`).should('contain', `Loading...`);
+  cy.get(`.transloco-loader-template`).should('contain', `Loading template...`);
 }
 
 export function generateContent(lang = 'english') {
