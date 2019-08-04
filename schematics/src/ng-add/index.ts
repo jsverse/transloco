@@ -10,10 +10,10 @@ import {
   chain,
   mergeWith,
   SchematicsException,
-  noop,
   template,
   url,
-  Source
+  Source,
+  noop
 } from '@angular-devkit/schematics';
 import { createSourceFile, SourceFile, ScriptTarget } from 'typescript';
 import { LIB_NAME } from '../schematics.consts';
@@ -133,6 +133,12 @@ export default function(options: SchemaOptions): Rule {
 
     return chain([
       mergeWith(translateFiles),
+      options.loader === Loaders.Http
+        ? chain([
+            addImportsToModuleFile(options, ['HttpClientModule'], '@angular/common/http'),
+            addImportsToModuleDeclaration(options, ['HttpClientModule'])
+          ])
+        : noop(),
       mergeWith(getLoaderTemplates(options.loader, sourceRoot + '/' + rootModule)),
       addImportsToModuleFile(options, ['environment'], '../environments/environment'),
       addImportsToModuleFile(options, ['translocoLoader'], './transloco.loader'),
