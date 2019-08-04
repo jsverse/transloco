@@ -1,23 +1,12 @@
-import {
-  ChangeDetectorRef,
-  Directive,
-  ElementRef,
-  EmbeddedViewRef,
-  Inject,
-  Input,
-  OnChanges,
-  OnDestroy,
-  OnInit,
-  Optional,
-  TemplateRef,
-  ViewContainerRef
-} from '@angular/core';
-import { switchMap, take } from 'rxjs/operators';
-import { Subscription } from 'rxjs';
-import { TranslocoService } from './transloco.service';
-import { HashMap } from './types';
-import { TRANSLOCO_SCOPE } from './transloco-scope';
-import { TRANSLOCO_LANG } from './transloco-lang';
+import {ChangeDetectorRef, Directive, ElementRef, EmbeddedViewRef, Inject, Input, OnChanges, OnDestroy, OnInit, Optional, TemplateRef, ViewContainerRef, Type} from '@angular/core';
+import {Subscription} from 'rxjs';
+import {switchMap, take} from 'rxjs/operators';
+import {TemplateHandler, View} from './template-handler';
+import {TRANSLOCO_LANG} from './transloco-lang';
+import {TRANSLOCO_LOADING_TEMPLATE} from './transloco-loading-template';
+import {TRANSLOCO_SCOPE} from './transloco-scope';
+import {TranslocoService} from './transloco.service';
+import {HashMap} from './types';
 
 @Directive({
   selector: '[transloco]'
@@ -30,9 +19,10 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   @Input('translocoParams') params: HashMap = {};
   @Input('translocoScope') inlineScope: string | undefined;
   @Input('translocoLang') inlineLang: string | undefined;
-  @Input('translocoLoadingTpl') loadingTpl: TemplateRef<any> | undefined;
+  @Input('translocoLoadingTpl') inlineTpl: TemplateRef<any> | undefined;
 
   private langName: string;
+  private loaderTplHandler: TemplateHandler = null;
   // Whether we already rendered the view once
   private initialzed = false;
 
@@ -41,14 +31,18 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     @Optional() private tpl: TemplateRef<any>,
     @Optional() @Inject(TRANSLOCO_SCOPE) private providerScope: string | null,
     @Optional() @Inject(TRANSLOCO_LANG) private providerLang: string | null,
+    @Optional() @Inject(TRANSLOCO_LOADING_TEMPLATE) private providedLoadingTpl: Type<any> | string,
     private vcr: ViewContainerRef,
     private cdr: ChangeDetectorRef,
     private host: ElementRef
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
-    this.hasLoadingTpl() && this.vcr.createEmbeddedView(this.loadingTpl);
+    const loadingTpl = this.getLoadingTpl();
+    if (loadingTpl) {
+      this.loaderTplHandler = new TemplateHandler(loadingTpl, this.vcr);
+      this.loaderTplHandler.attachView();
+    }
 
     const { runtime } = this.translocoService.config;
 
@@ -58,7 +52,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
           const lang = this.getLang(globalLang);
           const scope = this.getScope();
           this.langName = scope ? `${lang}-${scope}` : lang;
-          return this.translocoService._load(this.langName)
+          return this.translocoService._load(this.langName);
         }),
         runtime ? source => source : take(1)
       )
@@ -82,18 +76,18 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   }
 
   private structuralStrategy(data) {
-    if( this.view ) {
+    if (this.view) {
       this.view.context['$implicit'] = data;
     } else {
-      this.hasLoadingTpl() && this.vcr.clear();
+      this.loaderTplHandler && this.loaderTplHandler.detachView();
       this.view = this.vcr.createEmbeddedView(this.tpl, {
         $implicit: data
       });
     }
   }
 
-  private hasLoadingTpl() {
-    return this.loadingTpl instanceof TemplateRef;
+  private getLoadingTpl(): View {
+    return this.inlineTpl || this.providedLoadingTpl;
   }
 
   // inline => providers
@@ -107,16 +101,16 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
      * When the user changes the lang we need to update
      * the view. Otherwise, the lang will remain the inline/provided lang
      */
-    if( this.initialzed ) {
+    if (this.initialzed) {
       return globalLang;
     }
 
-    if( this.inlineLang ) {
-      return this.inlineLang
+    if (this.inlineLang) {
+      return this.inlineLang;
     }
 
-    if( this.providerLang ) {
-      return this.providerLang
+    if (this.providerLang) {
+      return this.providerLang;
     }
 
     return globalLang;
