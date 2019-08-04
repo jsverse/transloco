@@ -14,9 +14,10 @@ import {
   ComponentRef,
   ComponentFactoryResolver,
   Component,
-  Injector
+  Injector,
+  Type
 } from '@angular/core';
-import { TemplateHandler } from './templateHandler';
+import { TemplateHandler, Template } from './template-handler';
 import { TRANSLOCO_LOADING_TEMPLATE } from './transloco-loading-template';
 import { switchMap, take } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
@@ -36,7 +37,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   @Input('translocoParams') params: HashMap = {};
   @Input('translocoScope') inlineScope: string | undefined;
   @Input('translocoLang') inlineLang: string | undefined;
-  @Input('translocoLoadingTpl') loadingTpl: TemplateRef<any> | undefined;
+  @Input('translocoLoadingTpl') inlineTpl: TemplateRef<any> | undefined;
 
   private langName: string;
   private loaderTplHandler: TemplateHandler = null;
@@ -45,11 +46,10 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
 
   constructor(
     private translocoService: TranslocoService,
-    private injector: Injector,
     @Optional() private tpl: TemplateRef<any>,
     @Optional() @Inject(TRANSLOCO_SCOPE) private providerScope: string | null,
     @Optional() @Inject(TRANSLOCO_LANG) private providerLang: string | null,
-    @Optional() @Inject(TRANSLOCO_LOADING_TEMPLATE) private defaultLoading: Component | string,
+    @Optional() @Inject(TRANSLOCO_LOADING_TEMPLATE) private providedLoadingTpl: Type<any> | string,
     private vcr: ViewContainerRef,
     private cdr: ChangeDetectorRef,
     private host: ElementRef
@@ -58,7 +58,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   ngOnInit() {
     const tpl = this.getLoadingTpl();
     if (tpl) {
-      this.loaderTplHandler = new TemplateHandler(tpl, this.vcr, this.injector);
+      this.loaderTplHandler = new TemplateHandler(tpl, this.vcr);
       this.loaderTplHandler.attachView();
     }
 
@@ -76,7 +76,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
       )
       .subscribe(() => {
         const translation = this.translocoService.getTranslation(this.langName);
-        this.loadingTpl === null ? this.simpleStrategy() : this.structuralStrategy(translation);
+        this.inlineTpl === null ? this.simpleStrategy() : this.structuralStrategy(translation);
         this.cdr.markForCheck();
         this.initialzed = true;
       });
@@ -104,12 +104,12 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  private getLoadingTpl(): string | TemplateRef<any> | Component {
-    return this.loadingTpl || this.defaultLoading;
+  private getLoadingTpl(): Template {
+    return this.inlineTpl || this.providedLoadingTpl;
   }
 
   private hasLoadingTpl() {
-    return this.loadingTpl instanceof TemplateRef;
+    return this.inlineTpl instanceof TemplateRef;
   }
 
   // inline => providers
