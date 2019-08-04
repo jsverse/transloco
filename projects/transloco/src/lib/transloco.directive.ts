@@ -17,7 +17,7 @@ import {
   Injector,
   Type
 } from '@angular/core';
-import { TemplateHandler, Template } from './template-handler';
+import { TemplateHandler, View } from './template-handler';
 import { TRANSLOCO_LOADING_TEMPLATE } from './transloco-loading-template';
 import { switchMap, take } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
@@ -56,9 +56,9 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   ) {}
 
   ngOnInit() {
-    const tpl = this.getLoadingTpl();
-    if (tpl) {
-      this.loaderTplHandler = new TemplateHandler(tpl, this.vcr);
+    const loadingTpl = this.getLoadingTpl();
+    if (loadingTpl) {
+      this.loaderTplHandler = new TemplateHandler(loadingTpl, this.vcr);
       this.loaderTplHandler.attachView();
     }
 
@@ -104,12 +104,8 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  private getLoadingTpl(): Template {
+  private getLoadingTpl(): View {
     return this.inlineTpl || this.providedLoadingTpl;
-  }
-
-  private hasLoadingTpl() {
-    return this.inlineTpl instanceof TemplateRef;
   }
 
   // inline => providers

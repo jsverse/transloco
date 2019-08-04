@@ -1,35 +1,25 @@
-import {
-  ComponentRef,
-  TemplateRef,
-  ViewContainerRef,
-  ComponentFactoryResolver,
-  Component,
-  Injector,
-  Type,
-  ChangeDetectorRef
-} from '@angular/core';
-import { isString } from './helpers';
-import { TranslocoLoaderComponent } from './loader-component.component';
+import {ComponentRef, TemplateRef, ViewContainerRef, ComponentFactoryResolver, Injector, Type} from '@angular/core';
+import {isString} from './helpers';
+import {TranslocoLoaderComponent} from './loader-component.component';
 
-export type Template = string | TemplateRef<any> | Type<any>;
+export type View = string | TemplateRef<any> | Type<any>;
 
 export class TemplateHandler {
   private injector: Injector;
 
-  constructor(private template: Template, private vcr: ViewContainerRef) {
+  constructor(private template: View, private vcr: ViewContainerRef) {
     this.injector = this.vcr.injector;
   }
 
   public attachView() {
     if (this.isTemplateRef(this.template)) {
       this.vcr.createEmbeddedView(this.template as TemplateRef<any>);
-    } else if (this.isComponent(this.template)) {
+    } else if (isString(this.template)) {
+      const componentRef = this.createComponent<TranslocoLoaderComponent>(TranslocoLoaderComponent);
+      componentRef.instance.html = this.template as string;
+      componentRef.hostView.detectChanges();
+    } else {
       this.createComponent(this.template as Type<any>);
-    } else if (this.isHTML(this.template)) {
-      const loaderCmp = this.createComponent<TranslocoLoaderComponent>(TranslocoLoaderComponent);
-      loaderCmp.instance.html = this.template as string;
-      const cdr = this.injector.get(ChangeDetectorRef);
-      cdr && cdr.detectChanges();
     }
   }
 
@@ -44,15 +34,12 @@ export class TemplateHandler {
     return this.vcr.createComponent(factory);
   }
 
-  private isTemplateRef(template: Template) {
+  private isTemplateRef(template: View) {
     return template instanceof TemplateRef;
   }
 
-  private isHTML(template: Template) {
+  private isHTML(template: View) {
     return isString(template);
   }
 
-  private isComponent(template: Template) {
-    return typeof template === 'function';
-  }
 }
