@@ -128,13 +128,15 @@ describe('TranslocoDirective', () => {
         </section>
         
         <ng-template #loading>
-          <h1 data-cy="lazy-page-loading">Loading...</h1>
+          <h1 id="lazy-page-loading">Loading...</h1>
         </ng-template>
       `);
 
       expect((TemplateHandler.prototype as any).attachView).toHaveBeenCalledTimes(1);
+      expect(host.queryHost('#lazy-page-loading')).toHaveText('Loading...');
       host.detectChanges();
       runLoader();
+      expect(host.queryHost('#lazy-page-loading')).toBeNull();
       expect((TemplateHandler.prototype as any).detachView).toHaveBeenCalledTimes(1);
     }));
 
@@ -170,9 +172,28 @@ describe('TranslocoDirective', () => {
       `);
 
       expect((TemplateHandler.prototype as any).attachView).toHaveBeenCalled();
+      expect(host.queryHost('.transloco-loader-template')).toHaveText('loading template...');
       host.detectChanges();
       runLoader();
+      expect(host.queryHost('.transloco-loader-template')).toBeNull();
       expect((TemplateHandler.prototype as any).detachView).toHaveBeenCalled();
+    }));
+
+    it('should use the inline loader template instead of default', fakeAsync(() => {
+      host = createHost(`
+        <section *transloco="let t; scope: 'lazy-page'; loadingTpl: loading">
+          <h1 data-cy="lazy-page">{{ t.title }}</h1>
+        </section>
+        
+        <ng-template #loading>
+          <h1 id="lazy-page-loading">Loading...</h1>
+        </ng-template>
+      `);
+
+      expect(host.queryHost('#lazy-page-loading')).toHaveText('Loading...');
+      host.detectChanges();
+      runLoader();
+      expect(host.queryHost('#lazy-page-loading')).toBeNull();
     }));
 
   })
