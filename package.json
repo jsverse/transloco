@@ -10,7 +10,7 @@
     "commit": "git-cz",
     "prettier": "prettier --write \"**/*.{js,json,css,scss,less,md,ts,html,component.html}\"",
     "start": "ng serve --port 8889",
-    "build": "ng build --prod",
+    "build": "ng build --prod && cp _redirects dist/transloco-playground/",
     "build:lib": "ng build transloco && npm run schematics:copy",
     "test": "ng test transloco",
     "test:all": "npm run test:headless & npm run e2e",
