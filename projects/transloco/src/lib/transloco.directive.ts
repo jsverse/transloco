@@ -10,8 +10,14 @@ import {
   OnInit,
   Optional,
   TemplateRef,
-  ViewContainerRef
+  ViewContainerRef,
+  ComponentRef,
+  ComponentFactoryResolver,
+  Component,
+  Injector
 } from '@angular/core';
+import { TemplateHandler } from './templateHandler';
+import { TRANSLOCO_LOADING_TEMPLATE } from './transloco-loading-template';
 import { switchMap, take } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { TranslocoService } from './transloco.service';
@@ -33,22 +39,28 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   @Input('translocoLoadingTpl') loadingTpl: TemplateRef<any> | undefined;
 
   private langName: string;
+  private loaderTplHandler: TemplateHandler = null;
   // Whether we already rendered the view once
   private initialzed = false;
 
   constructor(
     private translocoService: TranslocoService,
+    private injector: Injector,
     @Optional() private tpl: TemplateRef<any>,
     @Optional() @Inject(TRANSLOCO_SCOPE) private providerScope: string | null,
     @Optional() @Inject(TRANSLOCO_LANG) private providerLang: string | null,
+    @Optional() @Inject(TRANSLOCO_LOADING_TEMPLATE) private defaultLoading: Component | string,
     private vcr: ViewContainerRef,
     private cdr: ChangeDetectorRef,
     private host: ElementRef
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
-    this.hasLoadingTpl() && this.vcr.createEmbeddedView(this.loadingTpl);
+    const tpl = this.getLoadingTpl();
+    if (tpl) {
+      this.loaderTplHandler = new TemplateHandler(tpl, this.vcr, this.injector);
+      this.loaderTplHandler.attachView();
+    }
 
     const { runtime } = this.translocoService.config;
 
@@ -58,13 +70,13 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
           const lang = this.getLang(globalLang);
           const scope = this.getScope();
           this.langName = scope ? `${lang}-${scope}` : lang;
-          return this.translocoService._load(this.langName)
+          return this.translocoService._load(this.langName);
         }),
         runtime ? source => source : take(1)
       )
       .subscribe(() => {
         const translation = this.translocoService.getTranslation(this.langName);
-        this.tpl === null ? this.simpleStrategy() : this.structuralStrategy(translation);
+        this.loadingTpl === null ? this.simpleStrategy() : this.structuralStrategy(translation);
         this.cdr.markForCheck();
         this.initialzed = true;
       });
@@ -82,14 +94,18 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   }
 
   private structuralStrategy(data) {
-    if( this.view ) {
+    if (this.view) {
       this.view.context['$implicit'] = data;
     } else {
-      this.hasLoadingTpl() && this.vcr.clear();
+      this.loaderTplHandler.detachView();
       this.view = this.vcr.createEmbeddedView(this.tpl, {
         $implicit: data
       });
     }
+  }
+
+  private getLoadingTpl(): string | TemplateRef<any> | Component {
+    return this.loadingTpl || this.defaultLoading;
   }
 
   private hasLoadingTpl() {
@@ -107,16 +123,16 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
      * When the user changes the lang we need to update
      * the view. Otherwise, the lang will remain the inline/provided lang
      */
-    if( this.initialzed ) {
+    if (this.initialzed) {
       return globalLang;
     }
 
-    if( this.inlineLang ) {
-      return this.inlineLang
+    if (this.inlineLang) {
+      return this.inlineLang;
     }
 
-    if( this.providerLang ) {
-      return this.providerLang
+    if (this.providerLang) {
+      return this.providerLang;
     }
 
     return globalLang;

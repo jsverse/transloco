@@ -1,8 +1,8 @@
-import { NgModule } from '@angular/core';
+import { NgModule, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LazyComponent } from './lazy.component';
 import { RouterModule, Routes } from '@angular/router';
-import { TRANSLOCO_SCOPE, TranslocoModule } from '@ngneat/transloco';
+import { TRANSLOCO_SCOPE, TranslocoModule, TRANSLOCO_LOADING_TEMPLATE } from '@ngneat/transloco';
 
 const routes: Routes = [
   {
@@ -13,7 +13,10 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [LazyComponent],
-  providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'admin-page' }],
+  providers: [
+    { provide: TRANSLOCO_SCOPE, useValue: 'admin-page' },
+    { provide: TRANSLOCO_LOADING_TEMPLATE, useValue: 'loading template...' }
+  ],
   imports: [CommonModule, RouterModule.forChild(routes), TranslocoModule]
 })
 export class LazyModule {}
