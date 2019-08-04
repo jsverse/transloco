@@ -40,3 +40,8 @@
 <ul class="list-group">
   <li class="list-group-item" data-cy="missing-key"><b>Open the console </b>{{ 'alertty' | transloco }}</li>
 </ul>
+
+<h3 class="mtb">Translation in ngFor</h3>
+<ul class="list-group">
+  <li *ngFor="let key of translateList" class="list-group-item" data-cy="translation-loop">{{ key | transloco }}</li>
+</ul>
