@@ -52,7 +52,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
           const lang = this.getLang(globalLang);
           const scope = this.getScope();
           this.langName = scope ? `${lang}-${scope}` : lang;
-          return this.translocoService._load(this.langName);
+          return this.translocoService.load(this.langName);
         }),
         runtime ? source => source : take(1)
       )

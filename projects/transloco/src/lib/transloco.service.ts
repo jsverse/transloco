@@ -3,14 +3,12 @@ import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
 import { catchError, map, retry, shareReplay, tap } from 'rxjs/operators';
 import { Translation, TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_PARSER, TranslocoParser } from './transloco.parser';
-import { HashMap } from './types';
+import { HashMap, TranslocoEvents } from './types';
 import { getValue, mergeDeep, setValue } from './helpers';
 import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './transloco-missing-handler';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class TranslocoService {
   private translations = new Map();
   private cache = new Map<string, Observable<Translation>>();
@@ -21,13 +19,8 @@ export class TranslocoService {
   /** Notifies when the lang changes */
   lang$: Observable<string>;
 
-  private translationLoaded = new Subject<{ lang: string }>();
-  /** Notifies when the lang loaded */
-  translationLoaded$ = this.translationLoaded.asObservable();
-
-  private translationLoadFailed = new Subject<{ lang: string }>();
-  /** Notifies when the lang loading failed */
-  translationLoadFailed$ = this.translationLoadFailed.asObservable();
+  private events = new Subject<TranslocoEvents>();
+  events$ = this.events.asObservable();
 
   constructor(
     @Inject(TRANSLOCO_LOADER) private loader: TranslocoLoader,
@@ -45,58 +38,58 @@ export class TranslocoService {
     return this.mergedConfig;
   }
 
-  getDefaultLang() {
-    return this.defaultLang;
-  }
-
   /**
    * This language will be used as a fallback when a translation isn't found in the current language
    */
+  getDefaultLang() {
+    return this.defaultLang;
+  }
   setDefaultLang(lang: string) {
     this.defaultLang = lang;
-  }
-
-  getActiveLang() {
-    return this.lang.getValue();
   }
 
   /**
    * Changes the lang currently used
    */
-  setActiveLang(lang: string) {
+  getActiveLang() {
+    return this.lang.getValue();
+  }
+  setActiveLang(lang: string, options: { load: boolean } = { load: false }) {
     this.lang.next(lang);
+    if (options.load) {
+      return this.load(lang);
+    }
   }
 
-  /**
-   * Load and change the lang currently used
-   */
-  setLangAndLoad(lang: string) {
-    this.setActiveLang(lang);
-    return this._load(lang);
-  }
-
-  /**
-   *
-   * @internal
-   */
-  _load(lang: string): Observable<Translation> {
-    if( this.cache.has(lang) === false ) {
+  load(lang: string): Observable<Translation> {
+    if (this.cache.has(lang) === false) {
       const load$ = from(this.loader.getTranslation(lang)).pipe(
         retry(3),
         catchError(() => {
-          if( lang === this.defaultLang ) {
+          if (lang === this.defaultLang) {
             const errMsg = `Unable to load the default translation file (${lang}), reached maximum retries`;
             throw new Error(errMsg);
           } else {
             /* Clear the failed language from the cache so we will retry to load once asked again */
             this.cache.delete(lang);
-            this.translationLoadFailed.next({ lang });
+            this.events.next({
+              type: 'translationLoadFailure',
+              payload: {
+                lang
+              }
+            });
           }
-          return this.setLangAndLoad(this.defaultLang);
+
+          return this.setActiveLang(this.defaultLang, { load: true });
         }),
         tap(value => {
           this.translations.set(lang, value);
-          this.translationLoaded.next({ lang });
+          this.events.next({
+            type: 'translationLoadSuccess',
+            payload: {
+              lang
+            }
+          });
         }),
         shareReplay(1)
       );
@@ -119,22 +112,22 @@ export class TranslocoService {
   translate(key: string, params?: HashMap, langName?: string): string;
   translate(key: string[], params?: HashMap, langName?: string): string[];
   translate(key: string | string[], params: HashMap = {}, langName?: string): string | string[] {
-    if( Array.isArray(key) ) {
+    if (Array.isArray(key)) {
       return key.map(k => this.translate(k, params, langName));
     }
 
-    if( !key ) {
+    if (!key) {
       return this.missingHandler.handle(key, params, this.config);
     }
 
     const lang = this.translations.get(langName || this.getActiveLang());
-    if( !lang ) {
+    if (!lang) {
       return '';
     }
 
     const value = getValue(lang, key);
 
-    if( !value ) {
+    if (!value) {
       return this.missingHandler.handle(key, params, this.config);
     }
 
@@ -148,9 +141,7 @@ export class TranslocoService {
    * selectTranslate('hello').subscribe(value => {})
    */
   selectTranslate(key: string, params?: HashMap, langName?: string) {
-    return this._load(this.getActiveLang()).pipe(
-      map(() => this.translate(key, params, langName))
-    );
+    return this.load(this.getActiveLang()).pipe(map(() => this.translate(key, params, langName)));
   }
 
   /**
@@ -197,7 +188,7 @@ export class TranslocoService {
    */
   setTranslationKey(key: string, value: string, lang = this.getDefaultLang()) {
     const translation = this.getTranslation(lang);
-    if( translation ) {
+    if (translation) {
       const newValue = setValue(translation, key, value);
       this.translations.set(lang, newValue);
       this.setActiveLang(this.getActiveLang());

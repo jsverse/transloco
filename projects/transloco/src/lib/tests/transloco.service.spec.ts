@@ -2,7 +2,7 @@ import en from '../../../../../src/assets/i18n/en';
 import { DefaultParser, TranslocoService } from '../../public-api';
 import { loader, mockLangs, runLoader } from './transloco.mocks';
 import { fakeAsync } from '@angular/core/testing';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, filter, map, pluck } from 'rxjs/operators';
 import { DefaultHandler } from '../transloco-missing-handler';
 import { of, timer } from 'rxjs';
 
@@ -14,12 +14,11 @@ describe('TranslocoService', () => {
   let service: TranslocoService;
 
   function loadLang(lang = 'en') {
-    service._load(lang).subscribe();
+    service.load(lang).subscribe();
     runLoader();
   }
 
   describe('translate', () => {
-
     beforeEach(() => {
       service = new TranslocoService(loader, new DefaultParser(), new DefaultHandler(), {});
     });
@@ -120,15 +119,14 @@ describe('TranslocoService', () => {
     it('should set the current lang and load the new lang file', () => {
       const langSpy = createSpy();
       const newLang = 'es';
-      spyOn(service, '_load');
+      spyOn(service, 'load');
       service.lang$.subscribe(langSpy);
-      service.setLangAndLoad(newLang);
+      service.setActiveLang(newLang, { load: true });
       expect(langSpy).toHaveBeenCalledWith(newLang);
-      expect(service._load).toHaveBeenCalledWith(newLang);
+      expect(service.load).toHaveBeenCalledWith(newLang);
     });
 
     describe('setTranslation', () => {
-
       it('should merge the data', fakeAsync(() => {
         loadLang();
         const translation = { bar: 'bar' };
@@ -186,16 +184,21 @@ describe('TranslocoService', () => {
     });
 
     describe('load', () => {
-      it('should trigger translationLoaded once loaded', fakeAsync(() => {
+      it('should trigger loaded event once loaded', fakeAsync(() => {
         const spy = createSpy();
-        service.translationLoaded$.subscribe(spy);
+        service.events$
+          .pipe(
+            filter(e => e.type === 'translationLoadSuccess'),
+            pluck('payload')
+          )
+          .subscribe(spy);
         loadLang();
         expect(spy).toHaveBeenCalledWith({ lang: 'en' });
       }));
 
       it('should load the translation using the loader', fakeAsync(() => {
         spyOn((service as any).loader, 'getTranslation').and.callThrough();
-        service._load('en').subscribe();
+        service.load('en').subscribe();
         runLoader();
         expect((service as any).loader.getTranslation).toHaveBeenCalledWith('en');
         expect((service as any).translations.size).toEqual(1);
@@ -204,38 +207,51 @@ describe('TranslocoService', () => {
       it('should load the translation from cache', fakeAsync(() => {
         loadLang();
         spyOn((service as any).loader, 'getTranslation').and.callThrough();
-        service._load('en');
+        service.load('en');
         expect((service as any).loader.getTranslation).not.toHaveBeenCalled();
       }));
 
       const failLoad = times => {
         let counter = 0;
-        return (lang) => {
-          return timer(1000).pipe(map(() => mockLangs[lang])).pipe(
-            map(val => {
-              if( counter < times ) {
-                counter++;
-                throw new Error(`can't load`);
-              }
-              return val;
-            })
-          );
+        return lang => {
+          return timer(1000)
+            .pipe(map(() => mockLangs[lang]))
+            .pipe(
+              map(val => {
+                if (counter < times) {
+                  counter++;
+                  throw new Error(`can't load`);
+                }
+                return val;
+              })
+            );
         };
       };
 
       it('should return the default lang if the load fails 3 times', fakeAsync(() => {
+        const eventSpy = createSpy();
+        service.events$
+          .pipe(
+            filter(e => e.type === 'translationLoadFailure'),
+            pluck('payload')
+          )
+          .subscribe(eventSpy);
         spyOn((service as any).loader, 'getTranslation').and.callFake(failLoad(4));
         const spy = createSpy();
 
-        spyOn(service, '_load').and.callThrough();
-        service._load('es').subscribe(spy);
+        spyOn(service, 'load').and.callThrough();
+        service.load('es').subscribe(spy);
         runLoader(5);
 
         /* One for es and one for fallback */
         expect((service as any).loader.getTranslation).toHaveBeenCalledTimes(2);
-        expect(service._load).toHaveBeenCalledTimes(2);
-        expect(service._load).toHaveBeenCalledWith(service.config.defaultLang);
+        expect(service.load).toHaveBeenCalledTimes(2);
+        expect(service.load).toHaveBeenCalledWith(service.config.defaultLang);
         expect(spy.calls.argsFor(0)[0]).toEqual(mockLangs['en']);
+        expect(eventSpy).toHaveBeenCalledTimes(1);
+        expect(eventSpy).toHaveBeenCalledWith({
+          lang: 'es'
+        });
       }));
 
       it('should stop retrying to load the default lang when reaching 3 tries', fakeAsync(() => {
@@ -243,7 +259,7 @@ describe('TranslocoService', () => {
         spyOn((service as any).loader, 'getTranslation').and.callFake(failLoad(5));
 
         service
-          ._load('en')
+          .load('en')
           .pipe(catchError(spy))
           .subscribe();
 
@@ -254,9 +270,6 @@ describe('TranslocoService', () => {
         const givenMsg = (spy.calls.argsFor(0)[0] as any).message;
         expect(givenMsg).toEqual(expectedMsg);
       }));
-
     });
   });
-
 });
-
