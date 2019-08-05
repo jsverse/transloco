@@ -24,7 +24,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   private langName: string;
   private loaderTplHandler: TemplateHandler = null;
   // Whether we already rendered the view once
-  private initialzed = false;
+  private initialized = false;
 
   constructor(
     private translocoService: TranslocoService,
@@ -60,7 +60,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
         const translation = this.translocoService.getTranslation(this.langName);
         this.tpl === null ? this.simpleStrategy() : this.structuralStrategy(translation);
         this.cdr.markForCheck();
-        this.initialzed = true;
+        this.initialized = true;
       });
   }
 
@@ -101,7 +101,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
      * When the user changes the lang we need to update
      * the view. Otherwise, the lang will remain the inline/provided lang
      */
-    if (this.initialzed) {
+    if (this.initialized) {
       return globalLang;
     }
 
