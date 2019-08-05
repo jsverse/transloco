@@ -6,16 +6,16 @@ import { map } from 'rxjs/operators';
 import { DefaultHandler, TRANSLOCO_MISSING_HANDLER } from '../transloco-missing-handler';
 import en from '../../../../../src/assets/i18n/en.json';
 import es from '../../../../../src/assets/i18n/es.json';
-import enLazy from '../../../../../src/assets/i18n/en-lazy-page.json';
-import esLazy from '../../../../../src/assets/i18n/es-lazy-page.json';
+import enLazy from '../../../../../src/assets/i18n/lazy-page/en.json';
+import esLazy from '../../../../../src/assets/i18n/lazy-page/es.json';
 import { tick } from '@angular/core/testing';
 import {TranslocoService, TRANSLOCO_LOADING_TEMPLATE} from '@ngneat/transloco';
 
 export const mockLangs = {
   en,
   es,
-  'en-lazy-page': enLazy,
-  'es-lazy-page': esLazy
+  'lazy-page/en': enLazy,
+  'lazy-page/es': esLazy
 };
 
 export const loader = {

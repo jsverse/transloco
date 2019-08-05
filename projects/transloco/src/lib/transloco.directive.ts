@@ -1,12 +1,26 @@
-import {ChangeDetectorRef, Directive, ElementRef, EmbeddedViewRef, Inject, Input, OnChanges, OnDestroy, OnInit, Optional, TemplateRef, ViewContainerRef, Type} from '@angular/core';
-import {Subscription} from 'rxjs';
-import {switchMap, take} from 'rxjs/operators';
-import {TemplateHandler, View} from './template-handler';
-import {TRANSLOCO_LANG} from './transloco-lang';
-import {TRANSLOCO_LOADING_TEMPLATE} from './transloco-loading-template';
-import {TRANSLOCO_SCOPE} from './transloco-scope';
-import {TranslocoService} from './transloco.service';
-import {HashMap} from './types';
+import {
+  ChangeDetectorRef,
+  Directive,
+  ElementRef,
+  EmbeddedViewRef,
+  Inject,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Optional,
+  TemplateRef,
+  ViewContainerRef,
+  Type
+} from '@angular/core';
+import { Subscription } from 'rxjs';
+import { switchMap, take } from 'rxjs/operators';
+import { TemplateHandler, View } from './template-handler';
+import { TRANSLOCO_LANG } from './transloco-lang';
+import { TRANSLOCO_LOADING_TEMPLATE } from './transloco-loading-template';
+import { TRANSLOCO_SCOPE } from './transloco-scope';
+import { TranslocoService } from './transloco.service';
+import { HashMap } from './types';
 
 @Directive({
   selector: '[transloco]'
@@ -51,7 +65,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
         switchMap(globalLang => {
           const lang = this.getLang(globalLang);
           const scope = this.getScope();
-          this.langName = scope ? `${lang}-${scope}` : lang;
+          this.langName = scope ? `${scope}/${lang}` : lang;
           return this.translocoService.load(this.langName);
         }),
         runtime ? source => source : take(1)

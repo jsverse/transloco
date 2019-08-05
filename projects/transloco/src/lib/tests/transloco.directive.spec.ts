@@ -1,17 +1,16 @@
-import {ViewContainerRef} from '@angular/core';
 import { fakeAsync } from '@angular/core/testing';
-import {TranslocoDirective, TranslocoParamsPipe, TranslocoService, TRANSLOCO_LOADING_TEMPLATE} from '../../public-api';
+import { TranslocoDirective, TranslocoParamsPipe, TranslocoService } from '../../public-api';
 import { createHostComponentFactory, HostComponent, SpectatorWithHost } from '@netbasal/spectator';
-import {TranslocoLoaderComponent} from '../loader-component.component';
-import {TemplateHandler} from '../template-handler';
-import {providersMock, runLoader, setRuntime, loadingTemplateMock} from './transloco.mocks';
+import { TranslocoLoaderComponent } from '../loader-component.component';
+import { TemplateHandler } from '../template-handler';
+import { loadingTemplateMock, providersMock, runLoader, setRuntime } from './transloco.mocks';
 
 describe('TranslocoDirective', () => {
   let host: SpectatorWithHost<TranslocoDirective>;
   const createHost = createHostComponentFactory({
     component: TranslocoDirective,
     declarations: [TranslocoParamsPipe],
-    providers: providersMock,
+    providers: providersMock
   });
 
   function testScopedTranslation(host: SpectatorWithHost<TranslocoDirective, HostComponent>) {
@@ -118,7 +117,6 @@ describe('TranslocoDirective', () => {
   });
 
   describe('Loading Template', () => {
-
     it('should attach and detach view with inline loader template', fakeAsync(() => {
       spyOn<TemplateHandler>(TemplateHandler.prototype, 'attachView').and.callThrough();
       spyOn<TemplateHandler>(TemplateHandler.prototype, 'detachView').and.callThrough();
@@ -150,7 +148,6 @@ describe('TranslocoDirective', () => {
 
       expect((TemplateHandler.prototype as any).attachView).not.toHaveBeenCalled();
     });
-
   });
 
   describe('default loader template', () => {
@@ -158,7 +155,7 @@ describe('TranslocoDirective', () => {
       component: TranslocoDirective,
       declarations: [TranslocoParamsPipe, TranslocoLoaderComponent],
       entryComponents: [TranslocoLoaderComponent],
-      providers: [...providersMock, loadingTemplateMock],
+      providers: [...providersMock, loadingTemplateMock]
     });
 
     it('should call attach view with default template', fakeAsync(() => {
@@ -195,7 +192,5 @@ describe('TranslocoDirective', () => {
       runLoader();
       expect(host.queryHost('#lazy-page-loading')).toBeNull();
     }));
-
-  })
-
+  });
 });

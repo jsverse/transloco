@@ -83,6 +83,9 @@ export class TranslocoService {
           return this.setActiveLang(this.defaultLang, { load: true });
         }),
         tap(value => {
+          if (!this.config.prodMode) {
+            console.log(`%c 🍻 Translation Load Success: ${lang}`, 'background: #fff; color: hotpink;');
+          }
           this.translations.set(lang, value);
           this.events.next({
             type: 'translationLoadSuccess',
@@ -109,29 +112,29 @@ export class TranslocoService {
    * translate(['hello', 'key'])
    * translate('hello', { }, 'en')
    */
-  translate(key: string, params?: HashMap, langName?: string): string;
-  translate(key: string[], params?: HashMap, langName?: string): string[];
-  translate(key: string | string[], params: HashMap = {}, langName?: string): string | string[] {
+  translate(key: string, params?: HashMap, lang?: string): string;
+  translate(key: string[], params?: HashMap, lang?: string): string[];
+  translate(key: string | string[], params: HashMap = {}, lang?: string): string | string[] {
     if (Array.isArray(key)) {
-      return key.map(k => this.translate(k, params, langName));
+      return key.map(k => this.translate(k, params, lang));
     }
 
     if (!key) {
       return this.missingHandler.handle(key, params, this.config);
     }
 
-    const lang = this.translations.get(langName || this.getActiveLang());
-    if (!lang) {
+    const translation = this.translations.get(lang || this.getActiveLang());
+    if (!translation) {
       return '';
     }
 
-    const value = getValue(lang, key);
+    const value = getValue(translation, key);
 
     if (!value) {
       return this.missingHandler.handle(key, params, this.config);
     }
 
-    return this.parser.parse(value, params, lang);
+    return this.parser.parse(value, params, translation);
   }
 
   /**
@@ -139,9 +142,10 @@ export class TranslocoService {
    *
    * @example
    * selectTranslate('hello').subscribe(value => {})
+   * selectTranslate('hello').subscribe(value => {}, 'es')
    */
-  selectTranslate(key: string, params?: HashMap, langName?: string) {
-    return this.load(langName || this.getActiveLang()).pipe(map(() => this.translate(key, params, langName)));
+  selectTranslate(key: string, params?: HashMap, lang?: string) {
+    return this.load(lang || this.getActiveLang()).pipe(map(() => this.translate(key, params, lang)));
   }
 
   /**
@@ -149,14 +153,19 @@ export class TranslocoService {
    *
    *  @example
    *  translateValue('Hello {{ value }}', { value: 'World' })
+   *  translateValue('Hello {{ value }}', { value: 'World' }, 'es')
    */
-  translateValue(value: string, params: HashMap = {}): string {
-    const lang = this.translations.get(this.getActiveLang());
-    return this.parser.parse(value, params, lang);
+  translateValue(value: string, params: HashMap = {}, lang = this.getActiveLang()): string {
+    const translation = this.translations.get(lang);
+    return this.parser.parse(value, params, translation);
   }
 
   /**
    * Gets an object of translations for a given language
+   *
+   * @example
+   * getTranslation('en')
+   * getTranslation('admin-page/en')
    */
   getTranslation(lang: string): Translation | undefined {
     return this.translations.get(lang);
@@ -167,7 +176,8 @@ export class TranslocoService {
    *
    * @example
    *
-   * setTranslation(lang, { ... })
+   * setTranslation('en', { ... })
+   * setTranslation('admin-page/en', { ... })
    * setTranslation(lang, { ... }, { merge: false } )
    */
   setTranslation(lang: string, data: Translation, options: { merge?: boolean } = {}) {
@@ -181,10 +191,12 @@ export class TranslocoService {
 
   /**
    * Sets translation key with given value.
+   *
    * @example
    *
    * setTranslationKey('key', 'value')
    * setTranslationKey('key.nested', 'value')
+   * setTranslationKey('key.nested', 'value', 'en')
    */
   setTranslationKey(key: string, value: string, lang = this.getDefaultLang()) {
     const translation = this.getTranslation(lang);
