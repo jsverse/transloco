@@ -141,7 +141,7 @@ export class TranslocoService {
    * selectTranslate('hello').subscribe(value => {})
    */
   selectTranslate(key: string, params?: HashMap, langName?: string) {
-    return this.load(this.getActiveLang()).pipe(map(() => this.translate(key, params, langName)));
+    return this.load(langName || this.getActiveLang()).pipe(map(() => this.translate(key, params, langName)));
   }
 
   /**
@@ -158,7 +158,7 @@ export class TranslocoService {
   /**
    * Gets an object of translations for a given language
    */
-  getTranslation(lang: string): Translation {
+  getTranslation(lang: string): Translation | undefined {
     return this.translations.get(lang);
   }
 
