@@ -1,9 +1,8 @@
 import en from '../../../../../src/assets/i18n/en';
-import { DefaultParser, TranslocoService } from '../../public-api';
-import { loader, mockLangs, runLoader } from './transloco.mocks';
+import { TranslocoService } from '../../public-api';
+import { createService, mockLangs, runLoader } from './transloco.mocks';
 import { fakeAsync } from '@angular/core/testing';
 import { catchError, filter, map, pluck } from 'rxjs/operators';
-import { DefaultHandler } from '../transloco-missing-handler';
 import { of, timer } from 'rxjs';
 
 function createSpy() {
@@ -20,7 +19,7 @@ describe('TranslocoService', () => {
 
   describe('translate', () => {
     beforeEach(() => {
-      service = new TranslocoService(loader, new DefaultParser(), new DefaultHandler(), {});
+      service = createService();
     });
 
     it('should return empty string when the key is falsy', () => {
@@ -69,13 +68,13 @@ describe('TranslocoService', () => {
     describe('translateValue', () => {
       it('should translate a given value', fakeAsync(() => {
         loadLang();
-        const translation = service.translateValue(en.home, { value: 'val' });
+        const translation = service.transpile(en.home, { value: 'val' });
         expect(translation).toBe('home english');
       }));
 
       it('should translate a given value with params', fakeAsync(() => {
         loadLang();
-        const translation = service.translateValue(en.alert, { value: 'val' });
+        const translation = service.transpile(en.alert, { value: 'val' });
         expect(translation).toBe('alert val english');
       }));
     });
@@ -218,7 +217,7 @@ describe('TranslocoService', () => {
             .pipe(map(() => mockLangs[lang]))
             .pipe(
               map(val => {
-                if (counter < times) {
+                if( counter < times ) {
                   counter++;
                   throw new Error(`can't load`);
                 }
@@ -271,5 +270,30 @@ describe('TranslocoService', () => {
         expect(givenMsg).toEqual(expectedMsg);
       }));
     });
+
+    describe('Custom Interceptor', () => {
+      it('should support', fakeAsync(() => {
+        (service as any).interceptor = {
+          preSaveTranslation(translation, lang) {
+            return Object.keys(translation).reduce((acc: any, key) => {
+              acc[key] = `Intercepted ${key}`;
+              return acc;
+            }, {});
+          },
+          preSaveTranslationKey(key, value) {
+            return `preSaveTranslationKey ${key}`;
+          }
+        };
+        loadLang();
+        runLoader();
+        const translation = service.getTranslation('en');
+        Object.keys(translation).forEach((key) => {
+          expect(translation[key]).toEqual(`Intercepted ${key}`);
+        });
+        service.setTranslationKey('home', 'test');
+        expect(service.translate('home')).toEqual('preSaveTranslationKey home');
+      }));
+    });
   });
+
 });

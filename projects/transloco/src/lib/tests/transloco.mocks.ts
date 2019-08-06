@@ -1,4 +1,4 @@
-import { DefaultParser, TRANSLOCO_PARSER } from '../transloco.parser';
+import { DefaultParser, TRANSLOCO_TRANSPILER } from '../transloco.transpiler';
 import { TRANSLOCO_LOADER } from '../transloco.loader';
 import { defaultConfig, TRANSLOCO_CONFIG } from '../transloco.config';
 import { timer } from 'rxjs';
@@ -11,6 +11,7 @@ import esLazy from '../../../../../src/assets/i18n/lazy-page/es.json';
 import { tick } from '@angular/core/testing';
 import { TranslocoService } from '../transloco.service';
 import { TRANSLOCO_LOADING_TEMPLATE } from '../transloco-loading-template';
+import { DefaultInterceptor, TRANSLOCO_INTERCEPTOR } from '../transloco.interceptor';
 
 export const mockLangs = {
   en,
@@ -35,9 +36,14 @@ export const loaderProviderMock = {
   useValue: loader
 };
 
-export const parserProviderMock = {
-  provide: TRANSLOCO_PARSER,
+export const transpilerProviderMock = {
+  provide: TRANSLOCO_TRANSPILER,
   useClass: DefaultParser
+};
+
+export const interceptorProviderMock = {
+  provide: TRANSLOCO_INTERCEPTOR,
+  useClass: DefaultInterceptor
 };
 
 export const missingHandlerProviderMock = {
@@ -45,7 +51,7 @@ export const missingHandlerProviderMock = {
   useClass: DefaultHandler
 };
 
-export const providersMock = [configProviderMock(), loaderProviderMock, parserProviderMock, missingHandlerProviderMock];
+export const providersMock = [configProviderMock(), interceptorProviderMock, loaderProviderMock, transpilerProviderMock, missingHandlerProviderMock];
 
 export function runLoader(times = 1) {
   tick(times * 1001);
@@ -56,3 +62,13 @@ export function setRuntime(service: TranslocoService, runtime = true) {
 }
 
 export const loadingTemplateMock = { provide: TRANSLOCO_LOADING_TEMPLATE, useValue: 'loading template...' };
+
+export function createService() {
+  return new TranslocoService(
+    loader,
+    new DefaultParser(),
+    new DefaultHandler(),
+    new DefaultInterceptor(),
+    {}
+  );
+}

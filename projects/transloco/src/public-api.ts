@@ -4,7 +4,7 @@ export * from './lib/transloco.pipe';
 export * from './lib/transloco.module';
 export * from './lib/transloco.loader';
 export * from './lib/transloco.config';
-export * from './lib/transloco.parser';
+export * from './lib/transloco.transpiler';
 export * from './lib/types';
 export * from './lib/helpers';
 export * from './lib/transloco-params.pipe';

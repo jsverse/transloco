@@ -1,9 +1,8 @@
-import { DefaultParser, TranslocoPipe, TranslocoService } from '../../public-api';
+import { TranslocoPipe, TranslocoService } from '../../public-api';
 import { Mock } from 'ts-mocks';
 import { ChangeDetectorRef } from '@angular/core';
-import { loader, runLoader } from './transloco.mocks';
+import { createService, runLoader } from './transloco.mocks';
 import { fakeAsync } from '@angular/core/testing';
-import { DefaultHandler } from '../transloco-missing-handler';
 import { of } from 'rxjs';
 
 describe('TranslocoPipe', () => {
@@ -13,11 +12,14 @@ describe('TranslocoPipe', () => {
 
   beforeEach(() => {
     translateServiceMock = new Mock<TranslocoService>(
-      new TranslocoService(loader, new DefaultParser(), new DefaultHandler(), {})
+      createService()
     ).Object;
+
     cdrMock = new Mock<ChangeDetectorRef>({
-      markForCheck: () => {}
+      markForCheck: () => {
+      }
     }).Object;
+
     pipe = new TranslocoPipe(translateServiceMock, {}, null, cdrMock);
     spyOn(pipe, 'updateValue').and.callThrough();
   });
@@ -27,10 +29,10 @@ describe('TranslocoPipe', () => {
     pipe = new TranslocoPipe(translateServiceMock, { runtime: true }, 'lazy-page', cdrMock);
     pipe.transform('title', {});
     runLoader();
-    expect(translateServiceMock.translate).toHaveBeenCalledWith('title', {}, 'en-lazy-page');
+    expect(translateServiceMock.translate).toHaveBeenCalledWith('title', {}, 'lazy-page/en');
     translateServiceMock.setActiveLang('es');
     runLoader();
-    expect(translateServiceMock.translate).toHaveBeenCalledWith('title', {}, 'es-lazy-page');
+    expect(translateServiceMock.translate).toHaveBeenCalledWith('title', {}, 'lazy-page/es');
   }));
 
   describe('updateValue', () => {

@@ -9,7 +9,7 @@ describe('TranslocoParamsPipe', () => {
 
   beforeEach(() => {
     missingHandlerMock = new Mock<TranslocoMissingHandler>({ handle: () => {} }).Object;
-    translateServiceMock = new Mock<TranslocoService>({ translateValue: (v, p) => '' }).Object;
+    translateServiceMock = new Mock<TranslocoService>({ transpile: (v, p) => '' }).Object;
     pipe = new TranslocoParamsPipe(translateServiceMock, missingHandlerMock);
   });
 
@@ -25,6 +25,6 @@ describe('TranslocoParamsPipe', () => {
     pipe.transform('some value');
     pipe.transform('some other value', { param: 'param' });
 
-    expect(translateServiceMock.translateValue).toHaveBeenCalledTimes(2);
+    expect(translateServiceMock.transpile).toHaveBeenCalledTimes(2);
   });
 });
