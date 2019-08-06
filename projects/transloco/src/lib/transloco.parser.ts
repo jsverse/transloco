@@ -1,7 +1,6 @@
 import { InjectionToken } from '@angular/core';
-import { HashMap } from './types';
+import { HashMap, Translation } from './types';
 import { getValue, isString } from './helpers';
-import { Translation } from '@ngneat/transloco';
 
 export const TRANSLOCO_PARSER = new InjectionToken('TRANSLOCO_PARSER');
 
