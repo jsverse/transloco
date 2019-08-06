@@ -3,10 +3,10 @@
   "projectOwner": "NetanelBasal",
   "repoType": "github",
   "repoHost": "https://github.com",
+  imageSize: "50",
   "files": [
     "README.md"
   ],
-  "imageSize": 100,
   "commit": true,
   "commitConvention": "angular",
   "contributors": [

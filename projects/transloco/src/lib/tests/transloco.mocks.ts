@@ -9,7 +9,8 @@ import es from '../../../../../src/assets/i18n/es.json';
 import enLazy from '../../../../../src/assets/i18n/lazy-page/en.json';
 import esLazy from '../../../../../src/assets/i18n/lazy-page/es.json';
 import { tick } from '@angular/core/testing';
-import {TranslocoService, TRANSLOCO_LOADING_TEMPLATE} from '@ngneat/transloco';
+import { TranslocoService } from '../transloco.service';
+import { TRANSLOCO_LOADING_TEMPLATE } from '../transloco-loading-template';
 
 export const mockLangs = {
   en,
@@ -54,4 +55,4 @@ export function setRuntime(service: TranslocoService, runtime = true) {
   (service as any).mergedConfig.runtime = runtime;
 }
 
-export const loadingTemplateMock = { provide: TRANSLOCO_LOADING_TEMPLATE, useValue: 'loading template...' }
+export const loadingTemplateMock = { provide: TRANSLOCO_LOADING_TEMPLATE, useValue: 'loading template...' };

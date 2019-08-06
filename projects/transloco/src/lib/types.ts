@@ -15,3 +15,4 @@ export type FailedEvent = {
 };
 
 export type TranslocoEvents = LoadedEvent | FailedEvent;
+export type Translation = HashMap<any>;

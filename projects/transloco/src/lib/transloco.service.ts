@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
 import { catchError, map, retry, shareReplay, tap } from 'rxjs/operators';
-import { Translation, TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
+import { TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_PARSER, TranslocoParser } from './transloco.parser';
-import { HashMap, TranslocoEvents } from './types';
+import { HashMap, Translation, TranslocoEvents } from './types';
 import { getValue, mergeDeep, setValue } from './helpers';
 import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './transloco-missing-handler';
