@@ -53,7 +53,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
     this.subscription = this.translocoService.lang$
       .pipe(
         switchMap(lang => {
-          this.langName = this.provideScope ? `${this.provideScope}/${lang}` : lang;
+          this.langName = this.provideScope ? `${lang}-${this.provideScope}` : lang;
           return this.translocoService.load(this.langName);
         }),
         this.runtime ? source => source : take(1)
