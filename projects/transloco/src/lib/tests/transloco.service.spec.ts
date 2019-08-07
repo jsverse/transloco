@@ -110,7 +110,7 @@ describe('TranslocoService', () => {
     it('should set the current lang', () => {
       const langSpy = createSpy();
       const newLang = 'es';
-      service.lang$.subscribe(langSpy);
+      service.langChanges$.subscribe(langSpy);
       service.setActiveLang(newLang);
       expect(langSpy).toHaveBeenCalledWith(newLang);
     });
@@ -119,7 +119,7 @@ describe('TranslocoService', () => {
       const langSpy = createSpy();
       const newLang = 'es';
       spyOn(service, 'load');
-      service.lang$.subscribe(langSpy);
+      service.langChanges$.subscribe(langSpy);
       service.setActiveLang(newLang, { load: true });
       expect(langSpy).toHaveBeenCalledWith(newLang);
       expect(service.load).toHaveBeenCalledWith(newLang);

@@ -60,7 +60,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
 
     const { runtime } = this.translocoService.config;
 
-    this.subscription = this.translocoService.lang$
+    this.subscription = this.translocoService.langChanges$
       .pipe(
         switchMap(globalLang => {
           const lang = this.getLang(globalLang);

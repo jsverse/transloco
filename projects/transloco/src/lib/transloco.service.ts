@@ -17,11 +17,10 @@ export class TranslocoService {
   private mergedConfig: TranslocoConfig;
 
   private lang: BehaviorSubject<string>;
-  /** Notifies when the lang changes */
-  lang$: Observable<string>;
+  langChanges$: Observable<string>;
 
   private events = new Subject<TranslocoEvents>();
-  events$ = this.events.asObservable();
+  events$ = this.events.asObservable()
 
   constructor(
     @Inject(TRANSLOCO_LOADER) private loader: TranslocoLoader,
@@ -33,7 +32,7 @@ export class TranslocoService {
     this.mergedConfig = { ...defaultConfig, ...this.userConfig };
     this.setDefaultLang(this.mergedConfig.defaultLang);
     this.lang = new BehaviorSubject<string>(this.getDefaultLang());
-    this.lang$ = this.lang.asObservable();
+    this.langChanges$ = this.lang.asObservable();
   }
 
   get config(): TranslocoConfig {

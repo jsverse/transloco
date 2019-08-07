@@ -50,7 +50,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
     /* Clean previous subscription if exists */
     this.subscription && this.subscription.unsubscribe();
 
-    this.subscription = this.translocoService.lang$
+    this.subscription = this.translocoService.langChanges$
       .pipe(
         switchMap(lang => {
           this.langName = this.provideScope ? `${this.provideScope}/${lang}` : lang;
