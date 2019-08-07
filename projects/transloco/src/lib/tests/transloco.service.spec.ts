@@ -53,6 +53,18 @@ describe('TranslocoService', () => {
       expect(service.translate('a.b.c')).toEqual('a.b.c from list english');
     }));
 
+    it('should translate using a cb', fakeAsync(() => {
+      loadLang();
+      const eng = mockLangs['en'];
+      expect(service.translate(en => en.home)).toEqual(eng.home);
+      expect(service.translate(en => en.a.b.c)).toEqual('a.b.c from list english');
+    }));
+
+    it('should translate using a cb with params', fakeAsync(() => {
+      loadLang();
+      expect(service.translate(en => en.alert, { value: 'val' })).toEqual('alert val english');
+    }));
+
     it('should support multi key translation', fakeAsync(() => {
       loadLang();
       const expected = ['home english', 'a.b.c from list english', ''];
@@ -217,7 +229,7 @@ describe('TranslocoService', () => {
             .pipe(map(() => mockLangs[lang]))
             .pipe(
               map(val => {
-                if( counter < times ) {
+                if (counter < times) {
                   counter++;
                   throw new Error(`can't load`);
                 }
@@ -287,7 +299,7 @@ describe('TranslocoService', () => {
         loadLang();
         runLoader();
         const translation = service.getTranslation('en');
-        Object.keys(translation).forEach((key) => {
+        Object.keys(translation).forEach(key => {
           expect(translation[key]).toEqual(`Intercepted ${key}`);
         });
         service.setTranslationKey('home', 'test');
@@ -295,5 +307,4 @@ describe('TranslocoService', () => {
       }));
     });
   });
-
 });

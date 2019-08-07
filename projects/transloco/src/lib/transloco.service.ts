@@ -3,7 +3,7 @@ import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
 import { catchError, map, retry, shareReplay, tap } from 'rxjs/operators';
 import { TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_TRANSPILER, TranslocoTranspiler } from './transloco.transpiler';
-import { HashMap, Translation, TranslocoEvents } from './types';
+import { HashMap, Translation, TranslationCb, TranslocoEvents } from './types';
 import { getValue, mergeDeep, setValue } from './helpers';
 import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './transloco-missing-handler';
@@ -115,15 +115,20 @@ export class TranslocoService {
    * translate(['hello', 'key'])
    * translate('hello', { }, 'en')
    */
+  translate<T = Translation>(key: TranslationCb<T>, params?: HashMap, lang?: string): string;
   translate(key: string, params?: HashMap, lang?: string): string;
   translate(key: string[], params?: HashMap, lang?: string): string[];
-  translate(key: string | string[], params: HashMap = {}, lang?: string): string | string[] {
+  translate<T = Translation>(
+    key: string | string[] | TranslationCb<T>,
+    params: HashMap = {},
+    lang?: string
+  ): string | string[] {
     if (Array.isArray(key)) {
       return key.map(k => this.translate(k, params, lang));
     }
 
     if (!key) {
-      return this.missingHandler.handle(key, params, this.config);
+      return this.missingHandler.handle(key as string, params, this.config);
     }
 
     const translation = this.translations.get(lang || this.getActiveLang());
@@ -131,7 +136,7 @@ export class TranslocoService {
       return '';
     }
 
-    const value = getValue(translation, key);
+    const value = typeof key === 'function' ? key(translation as T, params) : getValue(translation, key);
 
     if (!value) {
       return this.missingHandler.handle(key, params, this.config);
