@@ -131,8 +131,7 @@ export default function(options: SchemaOptions): Rule {
 
     const rootModule = options.module;
 
-    // TODO: try not to taking it as HC.
-    const assetsPath = root + `src/assets/i18n/`;
+    const assetsPath = root + options.path;
 
     const translationCreator =
       options.translateType === TranslationFileTypes.Typescript

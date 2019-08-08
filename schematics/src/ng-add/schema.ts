@@ -22,7 +22,11 @@ export interface SchemaOptions {
    */
   translateType: TranslationFileTypes;
   /**
-   * The root module name .
+   * The translation files folder.
+   */
+  path: string;
+  /**
+   * The root module name.
    */
   module: string;
 }
