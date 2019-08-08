@@ -12,6 +12,7 @@ import { tick } from '@angular/core/testing';
 import { TranslocoService } from '../transloco.service';
 import { TRANSLOCO_LOADING_TEMPLATE } from '../transloco-loading-template';
 import { DefaultInterceptor, TRANSLOCO_INTERCEPTOR } from '../transloco.interceptor';
+import { DefaultFallbackStrategy, TRANSLOCO_FALLBACK_STRATEGY } from '../transloco-fallback-strategy';
 
 export const mockLangs = {
   en,
@@ -51,7 +52,20 @@ export const missingHandlerProviderMock = {
   useClass: DefaultHandler
 };
 
-export const providersMock = [configProviderMock(), interceptorProviderMock, loaderProviderMock, transpilerProviderMock, missingHandlerProviderMock];
+export const fallbackStrategyProviderMock = {
+  provide: TRANSLOCO_FALLBACK_STRATEGY,
+  useClass: DefaultFallbackStrategy,
+  deps: [TRANSLOCO_CONFIG]
+};
+
+export const providersMock = [
+  configProviderMock(),
+  interceptorProviderMock,
+  loaderProviderMock,
+  transpilerProviderMock,
+  missingHandlerProviderMock,
+  fallbackStrategyProviderMock
+];
 
 export function runLoader(times = 1) {
   tick(times * 1001);
@@ -69,6 +83,7 @@ export function createService() {
     new DefaultTranspiler(),
     new DefaultHandler(),
     new DefaultInterceptor(),
-    {}
+    { defaultLang: 'en' },
+    new DefaultFallbackStrategy({ defaultLang: 'en', fallbackLang: 'en' })
   );
 }

@@ -5,6 +5,7 @@ import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.co
 import { switchMap, take } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { TRANSLOCO_SCOPE } from './transloco-scope';
+import { TRANSLOCO_LANG } from './transloco-lang';
 
 @Pipe({
   name: 'transloco',
@@ -21,7 +22,8 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
   constructor(
     private translocoService: TranslocoService,
     @Inject(TRANSLOCO_CONFIG) private config: TranslocoConfig,
-    @Optional() @Inject(TRANSLOCO_SCOPE) private provideScope: string | null,
+    @Optional() @Inject(TRANSLOCO_SCOPE) private providerScope: string | null,
+    @Optional() @Inject(TRANSLOCO_LANG) private providerLang: string | null,
     private cdr: ChangeDetectorRef
   ) {
     const { runtime } = { ...defaultConfig, ...this.config };
@@ -52,8 +54,9 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
 
     this.subscription = this.translocoService.langChanges$
       .pipe(
-        switchMap(lang => {
-          this.langName = this.provideScope ? `${this.provideScope}/${lang}` : lang;
+        switchMap(activeLang => {
+          const lang = this.providerLang || activeLang;
+          this.langName = this.providerScope ? `${this.providerScope}/${lang}` : lang;
           return this.translocoService.load(this.langName);
         }),
         this.runtime ? source => source : take(1)

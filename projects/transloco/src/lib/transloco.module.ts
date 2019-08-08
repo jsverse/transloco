@@ -6,6 +6,8 @@ import { TranslocoParamsPipe } from './transloco-params.pipe';
 import { TranslocoPipe } from './transloco.pipe';
 import { DefaultHandler, TRANSLOCO_MISSING_HANDLER } from './transloco-missing-handler';
 import { DefaultInterceptor, TRANSLOCO_INTERCEPTOR } from './transloco.interceptor';
+import { DefaultFallbackStrategy, TRANSLOCO_FALLBACK_STRATEGY } from './transloco-fallback-strategy';
+import { TRANSLOCO_CONFIG } from './transloco.config';
 
 @NgModule({
   declarations: [TranslocoDirective, TranslocoParamsPipe, TranslocoPipe, TranslocoLoaderComponent],
@@ -21,10 +23,14 @@ import { DefaultInterceptor, TRANSLOCO_INTERCEPTOR } from './transloco.intercept
     {
       provide: TRANSLOCO_INTERCEPTOR,
       useClass: DefaultInterceptor
+    },
+    {
+      provide: TRANSLOCO_FALLBACK_STRATEGY,
+      useClass: DefaultFallbackStrategy,
+      deps: [TRANSLOCO_CONFIG]
     }
   ],
   exports: [TranslocoDirective, TranslocoParamsPipe, TranslocoPipe],
   entryComponents: [TranslocoLoaderComponent]
 })
-export class TranslocoModule {
-}
+export class TranslocoModule {}
