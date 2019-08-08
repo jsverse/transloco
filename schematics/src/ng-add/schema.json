@@ -21,10 +21,10 @@
     },
     "translateType": {
       "description": "The translation files type.",
-      "x-prompt": "\uD83D\uDE80 Which type of translation files you use? Typescript or Json",
+      "x-prompt": "\uD83D\uDE80 Which type of translation files you use? Typescript or JSON",
       "type": "string",
-      "default": "Json",
-      "enum": ["Json", "Typescript"],
+      "default": "JSON",
+      "enum": ["JSON", "Typescript"],
       "alias": "t"
     },
     "module": {

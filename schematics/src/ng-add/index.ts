@@ -25,7 +25,7 @@ import { SchemaOptions, Loaders, TranslationFileTypes } from './schema';
 
 function jsonTranslationFileCreator(source, lang) {
   return source.create(
-    lang + '.json',
+    `${lang}.json`,
     `{
   "title": "transloco ${lang}",
   "dynamic": "transloco {{value}}"
@@ -36,7 +36,7 @@ function jsonTranslationFileCreator(source, lang) {
 
 function typescriptTranslationFileCreator(source, lang) {
   return source.create(
-    lang + '.ts',
+    `${lang}.ts`,
     `export default {
   title: "transloco ${lang}",
   dynamic: "transloco {{value}}"
@@ -133,7 +133,7 @@ export default function(options: SchemaOptions): Rule {
 
     // TODO: try not to taking it as HC.
     const assetsPath = root + `src/assets/i18n/`;
-    console.log(options.translateType);
+
     const translationCreator =
       options.translateType === TranslationFileTypes.Typescript
         ? typescriptTranslationFileCreator

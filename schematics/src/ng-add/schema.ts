@@ -5,7 +5,7 @@ export enum Loaders {
 
 export enum TranslationFileTypes {
   Typescript = 'Typescript',
-  Json = 'Json'
+  Json = 'JSON'
 }
 
 export interface SchemaOptions {
