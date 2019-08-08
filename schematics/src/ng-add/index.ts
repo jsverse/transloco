@@ -30,7 +30,7 @@ function createTranslateFiles(langs: string[]): HostTree {
       lang + '.json',
       `
 {
-  "hello": "transloco ${lang}",
+  "title": "transloco ${lang}",
   "dynamic": "transloco {{value}}"
 }
     `
