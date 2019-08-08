@@ -17,13 +17,13 @@ describe('TranslocoPipe', () => {
       markForCheck: () => {}
     }).Object;
 
-    pipe = new TranslocoPipe(translateServiceMock, {}, null, null, cdrMock);
+    pipe = new TranslocoPipe(translateServiceMock, { defaultLang: 'en' }, null, null, cdrMock);
     spyOn(pipe, 'updateValue').and.callThrough();
   });
 
   it('should load scoped translation', fakeAsync(() => {
     spyOn(translateServiceMock, 'translate').and.callThrough();
-    pipe = new TranslocoPipe(translateServiceMock, { runtime: true }, 'lazy-page', null, cdrMock);
+    pipe = new TranslocoPipe(translateServiceMock, { runtime: true, defaultLang: 'en' }, 'lazy-page', null, cdrMock);
     pipe.transform('title', {});
     runLoader();
     expect(translateServiceMock.translate).toHaveBeenCalledWith('title', {}, 'lazy-page/en');

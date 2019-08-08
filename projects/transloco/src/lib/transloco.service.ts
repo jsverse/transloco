@@ -8,10 +8,13 @@ import { getValue, mergeDeep, setValue } from './helpers';
 import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './transloco-missing-handler';
 import { TRANSLOCO_INTERCEPTOR, TranslocoInterceptor } from './transloco.interceptor';
+import { TRANSLOCO_FALLBACK_STRATEGY, TranslocoFallbackStrategy } from './transloco-fallback-strategy';
+
+type setActiveOptions = { load: boolean; fallbackLang?: string[] };
 
 @Injectable({ providedIn: 'root' })
 export class TranslocoService {
-  private translations = new Map();
+  private translations = new Map<string, Translation>();
   private cache = new Map<string, Observable<Translation>>();
   private defaultLang: string;
   private mergedConfig: TranslocoConfig;
@@ -27,7 +30,8 @@ export class TranslocoService {
     @Inject(TRANSLOCO_TRANSPILER) private parser: TranslocoTranspiler,
     @Inject(TRANSLOCO_MISSING_HANDLER) private missingHandler: TranslocoMissingHandler,
     @Inject(TRANSLOCO_INTERCEPTOR) private interceptor: TranslocoInterceptor,
-    @Inject(TRANSLOCO_CONFIG) private userConfig: TranslocoConfig
+    @Inject(TRANSLOCO_CONFIG) private userConfig: TranslocoConfig,
+    @Inject(TRANSLOCO_FALLBACK_STRATEGY) private fallbackStrategy: TranslocoFallbackStrategy
   ) {
     this.mergedConfig = { ...defaultConfig, ...this.userConfig };
     this.setDefaultLang(this.mergedConfig.defaultLang);
@@ -57,20 +61,30 @@ export class TranslocoService {
     return this.lang.getValue();
   }
 
-  setActiveLang(lang: string, options: { load: boolean } = { load: false }) {
+  setActiveLang(lang: string, options?: setActiveOptions) {
+    const defaultOptions = { load: false };
+    const { load, fallbackLang } = { ...defaultOptions, ...options };
     this.lang.next(lang);
-    if (options.load) {
-      return this.load(lang);
+    if (load) {
+      return this.load(lang, { fallbackLang });
     }
   }
 
-  load(lang: string): Observable<Translation> {
+  load(lang: string, options?: { fallbackLang: string[] }): Observable<Translation> {
     if (this.cache.has(lang) === false) {
       const load$ = from(this.loader.getTranslation(lang)).pipe(
-        retry(3),
+        retry(this.mergedConfig.failedRetries),
         catchError(() => {
-          if (lang === this.defaultLang) {
-            const errMsg = `Unable to load the default translation file (${lang}), reached maximum retries`;
+          let fallbackLang = options && options.fallbackLang;
+          if (!fallbackLang) {
+            fallbackLang = this.fallbackStrategy.handle(lang).filter(fbLang => fbLang !== lang);
+          } else {
+            fallbackLang.shift();
+          }
+          if (fallbackLang.length === 0) {
+            const errMsg = `Unable to load translation and all the fallback languages (${this.fallbackStrategy
+              .handle(lang)
+              .join(', ')})`;
             throw new Error(errMsg);
           } else {
             /* Clear the failed language from the cache so we will retry to load once asked again */
@@ -82,8 +96,7 @@ export class TranslocoService {
               }
             });
           }
-
-          return this.setActiveLang(this.defaultLang, { load: true });
+          return this.setActiveLang(fallbackLang[0], { load: true, fallbackLang });
         }),
         tap(translation => {
           if (!this.config.prodMode) {
