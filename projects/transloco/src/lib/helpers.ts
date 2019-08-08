@@ -21,6 +21,10 @@ export function setValue(obj: any, prop: string, val: any) {
   return obj;
 }
 
+export function isFunction(val: any): val is Function {
+  return typeof val === 'function';
+}
+
 export function isString(val: any): boolean {
   return typeof val === 'string';
 }

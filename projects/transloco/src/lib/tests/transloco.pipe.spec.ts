@@ -11,22 +11,27 @@ describe('TranslocoPipe', () => {
   let pipe: TranslocoPipe;
 
   beforeEach(() => {
-    translateServiceMock = new Mock<TranslocoService>(
-      createService()
-    ).Object;
+    translateServiceMock = new Mock<TranslocoService>(createService()).Object;
 
     cdrMock = new Mock<ChangeDetectorRef>({
-      markForCheck: () => {
-      }
+      markForCheck: () => {}
     }).Object;
 
-    pipe = new TranslocoPipe(translateServiceMock, {}, null, cdrMock);
+    pipe = new TranslocoPipe(translateServiceMock, { defaultLang: 'en' }, null, null, cdrMock);
     spyOn(pipe, 'updateValue').and.callThrough();
   });
 
+  it('should use provided language', fakeAsync(() => {
+    spyOn(translateServiceMock, 'translate').and.callThrough();
+    pipe = new TranslocoPipe(translateServiceMock, { defaultLang: 'en' }, null, 'es', cdrMock);
+    pipe.transform('title', {});
+    runLoader();
+    expect(translateServiceMock.translate).toHaveBeenCalledWith('title', {}, 'es');
+  }));
+
   it('should load scoped translation', fakeAsync(() => {
     spyOn(translateServiceMock, 'translate').and.callThrough();
-    pipe = new TranslocoPipe(translateServiceMock, { runtime: true }, 'lazy-page', cdrMock);
+    pipe = new TranslocoPipe(translateServiceMock, { runtime: true, defaultLang: 'en' }, 'lazy-page', null, cdrMock);
     pipe.transform('title', {});
     runLoader();
     expect(translateServiceMock.translate).toHaveBeenCalledWith('title', {}, 'lazy-page/en');
