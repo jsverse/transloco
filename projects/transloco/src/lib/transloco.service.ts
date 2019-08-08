@@ -10,6 +10,19 @@ import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './transloco-
 import { TRANSLOCO_INTERCEPTOR, TranslocoInterceptor } from './transloco.interceptor';
 import { TRANSLOCO_FALLBACK_STRATEGY, TranslocoFallbackStrategy } from './transloco-fallback-strategy';
 
+let service: TranslocoService;
+
+export function translate<T = Translation>(key: TranslationCb<T>, params?: HashMap, lang?: string): string;
+export function translate(key: string, params?: HashMap, lang?: string): string;
+export function translate(key: string[], params?: HashMap, lang?: string): string[];
+export function translate<T = Translation>(
+  key: string | string[] | TranslationCb<T>,
+  params: HashMap = {},
+  lang?: string
+): string | string[] {
+  return service.translate(key, params, lang);
+}
+
 type setActiveOptions = { load: boolean; fallbackLang?: string[] };
 
 @Injectable({ providedIn: 'root' })
@@ -33,6 +46,7 @@ export class TranslocoService {
     @Inject(TRANSLOCO_CONFIG) private userConfig: TranslocoConfig,
     @Inject(TRANSLOCO_FALLBACK_STRATEGY) private fallbackStrategy: TranslocoFallbackStrategy
   ) {
+    service = this;
     this.mergedConfig = { ...defaultConfig, ...this.userConfig };
     this.setDefaultLang(this.mergedConfig.defaultLang);
     this.lang = new BehaviorSubject<string>(this.getDefaultLang());
@@ -131,6 +145,11 @@ export class TranslocoService {
   translate<T = Translation>(key: TranslationCb<T>, params?: HashMap, lang?: string): string;
   translate(key: string, params?: HashMap, lang?: string): string;
   translate(key: string[], params?: HashMap, lang?: string): string[];
+  translate<T = Translation>(
+    key: string | string[] | TranslationCb<T>,
+    params?: HashMap,
+    lang?: string
+  ): string | string[];
   translate<T = Translation>(
     key: string | string[] | TranslationCb<T>,
     params: HashMap = {},
