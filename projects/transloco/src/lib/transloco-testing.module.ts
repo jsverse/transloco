@@ -1,12 +1,8 @@
 import { Inject, ModuleWithProviders, NgModule } from '@angular/core';
-import { TranslocoLoaderComponent } from './loader-component.component';
-import { TranslocoDirective } from './transloco.directive';
-import { TranslocoParamsPipe } from './transloco-params.pipe';
-import { TranslocoPipe } from './transloco.pipe';
 import { TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { HashMap, Translation } from './types';
 import { Observable, of } from 'rxjs';
-import { defaultProviders } from './transloco.module';
+import { defaultProviders, TranslocoModule } from './transloco.module';
 
 export class TestingLoader implements TranslocoLoader {
   constructor(@Inject('translocoLangs') private langs: HashMap<Translation>) {
@@ -18,9 +14,8 @@ export class TestingLoader implements TranslocoLoader {
 }
 
 @NgModule({
-  declarations: [TranslocoDirective, TranslocoParamsPipe, TranslocoPipe, TranslocoLoaderComponent],
-  exports: [TranslocoDirective, TranslocoParamsPipe, TranslocoPipe],
-  entryComponents: [TranslocoLoaderComponent]
+  imports: [TranslocoModule],
+  exports: [TranslocoModule]
 })
 export class TranslocoTestingModule {
   static withLangs(langs: HashMap<Translation>): ModuleWithProviders {
