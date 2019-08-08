@@ -1,0 +1,13 @@
+{
+  "StructuralDirective": {
+    "body": ["<ng-template transloco let-t>", "  {{ t.title }}", "</ng-template>"],
+    "prefix": "trd",
+    "description": "Create a transloco structural directive"
+  },
+  "Directive": {
+    "body": ["<span transloco=\"title\" [translocoParams]=\"{ value: 'value' }\"></span>"],
+    "prefix": "trdd",
+    "description": "Transloco directive"
+  },
+  "Pipe": { "body": ["{{ 'title' | transloco }}"], "prefix": "trp", "description": "Transloco Pipe" }
+}

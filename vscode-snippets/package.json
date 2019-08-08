@@ -1,0 +1,20 @@
+{
+  "name": "transloco-snippets",
+  "displayName": "transloco",
+  "description": "Code snippets for Angular Transloco",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.37.0"
+  },
+  "categories": [
+    "Snippets"
+  ],
+  "contributes": {
+    "snippets": [
+      {
+        "language": "html",
+        "path": "./snippets/snippets.json"
+      }
+    ]
+  }
+}
