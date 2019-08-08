@@ -11,3 +11,4 @@ export * from './lib/transloco-params.pipe';
 export * from './lib/transloco-scope';
 export * from './lib/transloco-loading-template';
 export * from './lib/transloco-lang';
+export * from './lib/transloco-testing.module';

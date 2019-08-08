@@ -13,6 +13,7 @@
     "build": "ng build --prod && cp _redirects dist/transloco-playground/",
     "build:lib": "ng build transloco && npm run schematics:copy",
     "test": "ng test transloco",
+    "test:playground": "ng test transloco-playground",
     "test:all": "npm run test:headless & npm run e2e",
     "test:headless": "cross-env CI=true npm run test",
     "test:coverage": "npm run test:headless -- --code-coverage",

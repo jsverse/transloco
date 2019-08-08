@@ -9,28 +9,29 @@ import { DefaultInterceptor, TRANSLOCO_INTERCEPTOR } from './transloco.intercept
 import { DefaultFallbackStrategy, TRANSLOCO_FALLBACK_STRATEGY } from './transloco-fallback-strategy';
 import { TRANSLOCO_CONFIG } from './transloco.config';
 
+export const defaultProviders = [{
+  provide: TRANSLOCO_TRANSPILER,
+  useClass: DefaultTranspiler
+},
+  {
+    provide: TRANSLOCO_MISSING_HANDLER,
+    useClass: DefaultHandler
+  },
+  {
+    provide: TRANSLOCO_INTERCEPTOR,
+    useClass: DefaultInterceptor
+  },
+  {
+    provide: TRANSLOCO_FALLBACK_STRATEGY,
+    useClass: DefaultFallbackStrategy,
+    deps: [TRANSLOCO_CONFIG]
+  }]
+
 @NgModule({
   declarations: [TranslocoDirective, TranslocoParamsPipe, TranslocoPipe, TranslocoLoaderComponent],
-  providers: [
-    {
-      provide: TRANSLOCO_TRANSPILER,
-      useClass: DefaultTranspiler
-    },
-    {
-      provide: TRANSLOCO_MISSING_HANDLER,
-      useClass: DefaultHandler
-    },
-    {
-      provide: TRANSLOCO_INTERCEPTOR,
-      useClass: DefaultInterceptor
-    },
-    {
-      provide: TRANSLOCO_FALLBACK_STRATEGY,
-      useClass: DefaultFallbackStrategy,
-      deps: [TRANSLOCO_CONFIG]
-    }
-  ],
+  providers: [defaultProviders],
   exports: [TranslocoDirective, TranslocoParamsPipe, TranslocoPipe],
   entryComponents: [TranslocoLoaderComponent]
 })
-export class TranslocoModule {}
+export class TranslocoModule {
+}
