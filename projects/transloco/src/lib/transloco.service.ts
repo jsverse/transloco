@@ -4,7 +4,7 @@ import { catchError, map, retry, shareReplay, tap } from 'rxjs/operators';
 import { TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_TRANSPILER, TranslocoTranspiler } from './transloco.transpiler';
 import { HashMap, Translation, TranslationCb, TranslocoEvents } from './types';
-import { getValue, mergeDeep, setValue } from './helpers';
+import { getValue, isFunction, mergeDeep, setValue } from './helpers';
 import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './transloco-missing-handler';
 import { TRANSLOCO_INTERCEPTOR, TranslocoInterceptor } from './transloco.interceptor';
@@ -88,30 +88,7 @@ export class TranslocoService {
     if (this.cache.has(lang) === false) {
       const load$ = from(this.loader.getTranslation(lang)).pipe(
         retry(this.mergedConfig.failedRetries),
-        catchError(() => {
-          let fallbackLang = options && options.fallbackLang;
-          if (!fallbackLang) {
-            fallbackLang = this.fallbackStrategy.handle(lang).filter(fbLang => fbLang !== lang);
-          } else {
-            fallbackLang.shift();
-          }
-          if (fallbackLang.length === 0) {
-            const errMsg = `Unable to load translation and all the fallback languages (${this.fallbackStrategy
-              .handle(lang)
-              .join(', ')})`;
-            throw new Error(errMsg);
-          } else {
-            /* Clear the failed language from the cache so we will retry to load once asked again */
-            this.cache.delete(lang);
-            this.events.next({
-              type: 'translationLoadFailure',
-              payload: {
-                lang
-              }
-            });
-          }
-          return this.setActiveLang(fallbackLang[0], { load: true, fallbackLang });
-        }),
+        catchError(() => this.handleLoadFail(lang, options)),
         tap(translation => {
           if (!this.config.prodMode) {
             console.log(`%c 🍻 Translation Load Success: ${lang}`, 'background: #fff; color: hotpink;');
@@ -168,7 +145,7 @@ export class TranslocoService {
       return '';
     }
 
-    const value = typeof key === 'function' ? key(translation as T, params) : getValue(translation, key);
+    const value = isFunction(key) ? key(translation as T, params) : getValue(translation, key);
 
     if (!value) {
       return this.missingHandler.handle(key, params, this.config);
@@ -253,5 +230,29 @@ export class TranslocoService {
   private _setTranslation(lang: string, translation: Translation) {
     const withHook = this.interceptor.preSaveTranslation(translation, lang);
     this.translations.set(lang, withHook);
+  }
+
+  private handleLoadFail(lang: string, options?: { fallbackLang: string[] }) {
+    let fallbackLang = options && options.fallbackLang;
+    if (!fallbackLang) {
+      fallbackLang = this.fallbackStrategy.handle(lang).filter(fbLang => fbLang !== lang);
+    } else {
+      fallbackLang.shift();
+    }
+    if (fallbackLang.length === 0) {
+      const attemptedLangs = this.fallbackStrategy.handle(lang).join(', ');
+      const errMsg = `Unable to load translation and all the fallback languages (${attemptedLangs})`;
+      throw new Error(errMsg);
+    } else {
+      /* Clear the failed language from the cache so we will retry to load once asked again */
+      this.cache.delete(lang);
+      this.events.next({
+        type: 'translationLoadFailure',
+        payload: {
+          lang
+        }
+      });
+    }
+    return this.setActiveLang(fallbackLang[0], { load: true, fallbackLang });
   }
 }

@@ -69,18 +69,6 @@ describe('TranslocoService', () => {
       expect(service.translate(en => en.alert, { value: 'val' })).toEqual('alert val english');
     }));
 
-    it('should translate using a cb', fakeAsync(() => {
-      loadLang();
-      const eng = mockLangs['en'];
-      expect(service.translate(en => en.home)).toEqual(eng.home);
-      expect(service.translate(en => en.a.b.c)).toEqual('a.b.c from list english');
-    }));
-
-    it('should translate using a cb with params', fakeAsync(() => {
-      loadLang();
-      expect(service.translate(en => en.alert, { value: 'val' })).toEqual('alert val english');
-    }));
-
     it('should support multi key translation', fakeAsync(() => {
       loadLang();
       const expected = ['home english', 'a.b.c from list english', ''];
@@ -132,6 +120,15 @@ describe('TranslocoService', () => {
       it('should return the translation file', fakeAsync(() => {
         loadLang();
         expect(service.getTranslation('en')).toEqual(mockLangs['en']);
+      }));
+
+      it('should return the translations map', fakeAsync(() => {
+        loadLang();
+        loadLang('es');
+        const map = service.getTranslation();
+        expect(map instanceof Map).toEqual(true);
+        expect(map.get('en')).toEqual(mockLangs['en']);
+        expect(map.get('es')).toEqual(mockLangs['es']);
       }));
     });
 

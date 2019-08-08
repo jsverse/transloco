@@ -22,7 +22,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
   constructor(
     private translocoService: TranslocoService,
     @Inject(TRANSLOCO_CONFIG) private config: TranslocoConfig,
-    @Optional() @Inject(TRANSLOCO_SCOPE) private provideScope: string | null,
+    @Optional() @Inject(TRANSLOCO_SCOPE) private providerScope: string | null,
     @Optional() @Inject(TRANSLOCO_LANG) private providerLang: string | null,
     private cdr: ChangeDetectorRef
   ) {
@@ -56,7 +56,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
       .pipe(
         switchMap(activeLang => {
           const lang = this.providerLang || activeLang;
-          this.langName = this.provideScope ? `${this.provideScope}/${lang}` : lang;
+          this.langName = this.providerScope ? `${this.providerScope}/${lang}` : lang;
           return this.translocoService.load(this.langName);
         }),
         this.runtime ? source => source : take(1)
