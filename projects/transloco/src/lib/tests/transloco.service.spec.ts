@@ -1,13 +1,13 @@
 import en from '../../../../../src/assets/i18n/en';
-import { DefaultParser, TranslocoService } from '../../public-api';
+import { DefaultTranspiler, TranslocoService } from '../../public-api';
 import { createService, loader, mockLangs, runLoader } from './transloco.mocks';
 import { fakeAsync } from '@angular/core/testing';
 import { catchError, filter, map, pluck } from 'rxjs/operators';
 import { of, timer } from 'rxjs';
-import Spy = jasmine.Spy;
 import { DefaultHandler } from '../transloco-missing-handler';
 import { DefaultInterceptor } from '../transloco.interceptor';
-import { DefaultFallbackStrategy, TranslocoFallbackStrategy } from '../transloco-fallback-strategy';
+import { TranslocoFallbackStrategy } from '../transloco-fallback-strategy';
+import Spy = jasmine.Spy;
 
 function createSpy() {
   return jasmine.createSpy();
@@ -306,7 +306,7 @@ describe('TranslocoService', () => {
           }
           service = new TranslocoService(
             loader,
-            new DefaultParser(),
+            new DefaultTranspiler(),
             new DefaultHandler(),
             new DefaultInterceptor(),
             { defaultLang: 'en' },
