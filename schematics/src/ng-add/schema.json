@@ -19,6 +19,14 @@
       "enum": ["Http", "Webpack"],
       "alias": "lo"
     },
+    "translateType": {
+      "description": "The translation files type.",
+      "x-prompt": "\uD83D\uDE80 Which type of translation files you use? Typescript or Json",
+      "type": "string",
+      "default": "Json",
+      "enum": ["Json", "Typescript"],
+      "alias": "t"
+    },
     "module": {
       "description": "The root module name.",
       "type": "string",
