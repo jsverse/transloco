@@ -8,7 +8,7 @@ export interface TranslocoTranspiler {
   transpile(value: string, params: HashMap, translation: HashMap): string;
 }
 
-export class DefaultParser implements TranslocoTranspiler {
+export class DefaultTranspiler implements TranslocoTranspiler {
   transpile(value: string, params: HashMap = {}, translation: Translation): string {
     return isString(value)
       ? value.replace(/{{(.*?)}}/g, function(_, match) {

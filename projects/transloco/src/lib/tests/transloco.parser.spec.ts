@@ -1,7 +1,7 @@
-import { DefaultParser } from '../../public-api';
+import { DefaultTranspiler } from '../../public-api';
 
 describe('TranslocoParser', () => {
-  const parser = new DefaultParser();
+  const parser = new DefaultTranspiler();
 
   it('should translate simple string from params', () => {
     const parsed = parser.transpile('Hello {{ value }}', { value: 'World' }, {});

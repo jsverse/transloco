@@ -1,4 +1,4 @@
-import { DefaultParser, TRANSLOCO_TRANSPILER } from '../transloco.transpiler';
+import { DefaultTranspiler, TRANSLOCO_TRANSPILER } from '../transloco.transpiler';
 import { TRANSLOCO_LOADER } from '../transloco.loader';
 import { defaultConfig, TRANSLOCO_CONFIG } from '../transloco.config';
 import { timer } from 'rxjs';
@@ -38,7 +38,7 @@ export const loaderProviderMock = {
 
 export const transpilerProviderMock = {
   provide: TRANSLOCO_TRANSPILER,
-  useClass: DefaultParser
+  useClass: DefaultTranspiler
 };
 
 export const interceptorProviderMock = {
@@ -66,7 +66,7 @@ export const loadingTemplateMock = { provide: TRANSLOCO_LOADING_TEMPLATE, useVal
 export function createService() {
   return new TranslocoService(
     loader,
-    new DefaultParser(),
+    new DefaultTranspiler(),
     new DefaultHandler(),
     new DefaultInterceptor(),
     {}

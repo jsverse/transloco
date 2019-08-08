@@ -20,7 +20,7 @@ export class TranslocoService {
   langChanges$: Observable<string>;
 
   private events = new Subject<TranslocoEvents>();
-  events$ = this.events.asObservable()
+  events$ = this.events.asObservable();
 
   constructor(
     @Inject(TRANSLOCO_LOADER) private loader: TranslocoLoader,
@@ -39,9 +39,6 @@ export class TranslocoService {
     return this.mergedConfig;
   }
 
-  /**
-   * This language will be used as a fallback when a translation isn't found in the current language
-   */
   getDefaultLang() {
     return this.defaultLang;
   }
@@ -50,9 +47,6 @@ export class TranslocoService {
     this.defaultLang = lang;
   }
 
-  /**
-   * Changes the lang currently used
-   */
   getActiveLang() {
     return this.lang.getValue();
   }

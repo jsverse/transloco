@@ -6,7 +6,7 @@ export const TRANSLOCO_INTERCEPTOR = new InjectionToken('TRANSLOCO_INTERCEPTOR')
 export interface TranslocoInterceptor {
   preSaveTranslation(translation: Translation, lang: string): Translation;
 
-  preSaveTranslationKey(key: string, value: string, lang: string): any;
+  preSaveTranslationKey(key: string, value: string, lang: string): string;
 }
 
 export class DefaultInterceptor implements TranslocoInterceptor {
@@ -14,7 +14,7 @@ export class DefaultInterceptor implements TranslocoInterceptor {
     return translation;
   }
 
-  preSaveTranslationKey(key: string, value: string, lang: string): any {
+  preSaveTranslationKey(key: string, value: string, lang: string): string {
     return value;
   }
 
