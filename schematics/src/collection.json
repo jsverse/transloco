@@ -1,4 +1,5 @@
 {
+  "extends": ["@schematics/angular"],
   "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
   "schematics": {
     "ng-add": {
@@ -6,6 +7,12 @@
       "factory": "./ng-add/",
       "schema": "./ng-add/schema.json",
       "description": "Add transloco configuration for root module."
+    },
+    "component": {
+      "aliases": ["c"],
+      "factory": "./component/",
+      "schema": "../../@schematics/angular/component/schema.json",
+      "description": "Add component with translation."
     }
   }
 }
