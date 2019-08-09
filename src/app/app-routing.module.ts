@@ -8,18 +8,18 @@ const routes: Routes = [
     component: HomeComponent,
     pathMatch: 'full'
   },
-  {
-    path: 'lazy',
-    loadChildren: () => import('./lazy/lazy.module').then(m => m.LazyModule)
-  },
+  // {
+  //   path: 'lazy',
+  //   loadChildren: './lazy/lazy.module#LazyModule'
+  // },
   {
     path: 'dynamic-translation',
-    loadChildren: () => import('./dynamic-translation/dynamic-translation.module').then(m => m.DynamicTranslationModule)
+    loadChildren: './dynamic-translation/dynamic-translation.module#DynamicTranslationModule'
   },
-  {
-    path: 'multilangs',
-    loadChildren: () => import('./multilangs/multilangs.module').then(m => m.MultilangsModule)
-  }
+  // {
+  //   path: 'multilangs',
+  //   loadChildren: `./multilangs/multilangs.module#MultilangsModule`
+  // }
 ];
 
 @NgModule({

@@ -39,12 +39,11 @@
     "zone.js": "~0.8.26"
   },
   "devDependencies": {
-    "standard-version": "^6.0.1",
     "@angular-devkit/build-angular": "~0.13.0",
+    "@angular-devkit/build-ng-packagr": "~0.13.0",
     "@angular/cli": "~7.3.1",
     "@angular/compiler-cli": "~7.2.0",
     "@angular/language-service": "~7.2.0",
-    "@angular-devkit/build-ng-packagr": "~0.13.0",
     "@commitlint/cli": "8.1.0",
     "@commitlint/config-angular": "8.1.0",
     "@commitlint/config-conventional": "8.1.0",
@@ -71,6 +70,7 @@
     "ng-mocks": "^8.1.0",
     "ng-packagr": "4.7.1",
     "prettier": "1.18.2",
+    "standard-version": "^6.0.1",
     "ts-loader": "6.0.4",
     "ts-mocks": "^2.3.4",
     "ts-node": "~7.0.0",
