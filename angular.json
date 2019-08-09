@@ -4,11 +4,11 @@
   "newProjectRoot": "projects",
   "projects": {
     "transloco-playground": {
-      "projectType": "application",
-      "schematics": {},
       "root": "",
       "sourceRoot": "src",
+      "projectType": "application",
       "prefix": "app",
+      "schematics": {},
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
@@ -17,11 +17,11 @@
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
-            "tsConfig": "tsconfig.app.json",
-            "aot": false,
+            "tsConfig": "src/tsconfig.app.json",
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": ["src/styles.css"],
-            "scripts": []
+            "scripts": [],
+            "es5BrowserSupport": true
           },
           "configurations": {
             "production": {
@@ -72,20 +72,27 @@
           "options": {
             "main": "src/test.ts",
             "polyfills": "src/polyfills.ts",
-            "tsConfig": "tsconfig.spec.json",
-            "karmaConfig": "karma.conf.js",
-            "assets": ["src/favicon.ico", "src/assets"],
+            "tsConfig": "src/tsconfig.spec.json",
+            "karmaConfig": "src/karma.conf.js",
             "styles": ["src/styles.css"],
-            "scripts": []
+            "scripts": [],
+            "assets": ["src/favicon.ico", "src/assets"]
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": ["tsconfig.app.json", "tsconfig.spec.json", "e2e/tsconfig.json"],
+            "tsConfig": ["src/tsconfig.app.json", "src/tsconfig.spec.json"],
             "exclude": ["**/node_modules/**"]
           }
-        },
+        }
+      }
+    },
+    "transloco-playground-e2e": {
+      "root": "e2e/",
+      "projectType": "application",
+      "prefix": "",
+      "architect": {
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
@@ -97,34 +104,41 @@
               "devServerTarget": "transloco-playground:serve:production"
             }
           }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": "e2e/tsconfig.e2e.json",
+            "exclude": ["**/node_modules/**"]
+          }
         }
       }
     },
-    "transloco": {
+    "@ngneat/transloco": {
+      "root": "projects/ngneat/transloco",
+      "sourceRoot": "projects/ngneat/transloco/src",
       "projectType": "library",
-      "root": "projects/transloco",
-      "sourceRoot": "projects/transloco/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
-            "tsConfig": "projects/transloco/tsconfig.lib.json",
-            "project": "projects/transloco/ng-package.json"
+            "tsConfig": "projects/ngneat/transloco/tsconfig.lib.json",
+            "project": "projects/ngneat/transloco/ng-package.json"
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/transloco/src/test.ts",
-            "tsConfig": "projects/transloco/tsconfig.spec.json",
-            "karmaConfig": "projects/transloco/karma.conf.js"
+            "main": "projects/ngneat/transloco/src/test.ts",
+            "tsConfig": "projects/ngneat/transloco/tsconfig.spec.json",
+            "karmaConfig": "projects/ngneat/transloco/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": ["projects/transloco/tsconfig.lib.json", "projects/transloco/tsconfig.spec.json"],
+            "tsConfig": ["projects/ngneat/transloco/tsconfig.lib.json", "projects/ngneat/transloco/tsconfig.spec.json"],
             "exclude": ["**/node_modules/**"]
           }
         }

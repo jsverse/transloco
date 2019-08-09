@@ -1,8 +1,0 @@
-{
-  "name": "@ngneat/transloco",
-  "version": "1.0.0-rc.3",
-  "schematics": "./schematics/collection.json",
-  "publishConfig": {
-    "access": "public"
-  }
-}
