@@ -47,7 +47,7 @@ describe('TranslocoPipe', () => {
       expect(pipe.lastKey).toBe(key);
       expect(pipe.lastParams).toEqual({});
       runLoader();
-      expect(pipe.updateValue).toHaveBeenCalledWith(key, {});
+      expect((pipe as any).updateValue).toHaveBeenCalledWith(key, {});
       expect(pipe.value).toBe('home english');
       expect(cdrMock.markForCheck).toHaveBeenCalled();
     }));
@@ -89,21 +89,21 @@ describe('TranslocoPipe', () => {
     it('should return the value from the cache', fakeAsync(() => {
       pipe.transform('home');
       runLoader();
-      expect(pipe.updateValue).toHaveBeenCalledTimes(1);
+      expect((pipe as any).updateValue).toHaveBeenCalledTimes(1);
       pipe.transform('home');
-      expect(pipe.updateValue).toHaveBeenCalledTimes(1);
+      expect((pipe as any).updateValue).toHaveBeenCalledTimes(1);
       pipe.transform('a.b.c');
-      expect(pipe.updateValue).toHaveBeenCalledTimes(2);
+      expect((pipe as any).updateValue).toHaveBeenCalledTimes(2);
     }));
 
     it('should return the value from the cache with params', fakeAsync(() => {
       pipe.transform('alert', { value: 'value' });
       runLoader();
-      expect(pipe.updateValue).toHaveBeenCalledTimes(1);
+      expect((pipe as any).updateValue).toHaveBeenCalledTimes(1);
       pipe.transform('alert', { value: 'value' });
-      expect(pipe.updateValue).toHaveBeenCalledTimes(1);
+      expect((pipe as any).updateValue).toHaveBeenCalledTimes(1);
       pipe.transform('alert', { value: 'bla' });
-      expect(pipe.updateValue).toHaveBeenCalledTimes(2);
+      expect((pipe as any).updateValue).toHaveBeenCalledTimes(2);
     }));
   });
 
