@@ -1,11 +1,13 @@
+<h4>Scope is set to `admin-page` in module's providers</h4>
 <ng-container *transloco="let t">
-  <h1 data-cy="regular">{{ t.title }}</h1>
+  <p data-cy="regular">{{ t.title }}</p>
 </ng-container>
 
+<h4>Scope is set to `lazy-page` inline in the directive</h4>
 <ng-container *transloco="let t; scope: 'lazy-page'; loadingTpl: loading">
-  <h1 data-cy="lazy-page">{{ t.title }}</h1>
+  <p data-cy="lazy-page">{{ t.title }}</p>
 </ng-container>
 
 <ng-template #loading>
-  <h1 data-cy="lazy-page-loading">Loading...</h1>
+  <p data-cy="lazy-page-loading">Loading...</p>
 </ng-template>

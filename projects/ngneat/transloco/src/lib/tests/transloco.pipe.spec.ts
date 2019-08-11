@@ -18,7 +18,7 @@ describe('TranslocoPipe', () => {
     }).Object;
 
     pipe = new TranslocoPipe(translateServiceMock, { defaultLang: 'en' }, null, null, cdrMock);
-    spyOn(pipe, 'updateValue').and.callThrough();
+    spyOn(pipe as any, 'updateValue').and.callThrough();
   });
 
   it('should use provided language', fakeAsync(() => {

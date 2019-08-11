@@ -1,9 +1,9 @@
-<h2>English:</h2>
-<ng-container *transloco="let t;">
+<h4>English: (global)</h4>
+<ng-container *transloco="let t">
   <p data-cy="global">{{ t.home }}</p>
 </ng-container>
 
-<h2>Spanish: (scope: lazy-page)</h2>
+<h4>Spanish: (inline lang, scope: lazy-page)</h4>
 <ng-container *transloco="let t; lang: 'es'; loadingTpl: loading; scope: 'lazy-page'">
   <p data-cy="with-scope">{{ t.title }}</p>
 </ng-container>
