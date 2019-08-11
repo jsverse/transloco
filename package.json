@@ -2,7 +2,6 @@
   "name": "transloco-playground",
   "version": "0.0.0",
   "scripts": {
-    "ng": "ng",
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors init",
     "hooks:pre-commit": "node hooks/pre-commit.js",

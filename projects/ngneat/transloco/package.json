@@ -1,6 +1,41 @@
 {
   "name": "@ngneat/transloco",
   "version": "0.0.1",
+  "description": "The internationalization (i18n) library for Angular",
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/ngneat/transloco/issues"
+  },
+  "homepage": "https://github.com/ngneat/transloco#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ngneat/transloco"
+  },
+  "keywords": [
+    "angular",
+    "angular 2",
+    "i18n",
+    "translate",
+    "angular translate",
+    "angular i18n",
+    "transloco"
+  ],
+  "author": {
+    "name": "Netanel Basal",
+    "email": "netanel7799@gmail.com",
+    "url": "https://netbasal.com"
+  },
+  "contributors": [{
+    "name": "Shahar Kazaz",
+    "url": "https://github.com/shaharkazaz"
+  },
+  {
+    "name": "Itay Oded",
+    "url": "https://github.com/itayod"
+  }],
+  "license": "MIT",
   "peerDependencies": {
     "@angular/common": "^7.2.0",
     "@angular/core": "^7.2.0"
