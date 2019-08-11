@@ -21,20 +21,34 @@ import { addImportToModule, insertImport, addProviderToModule } from '../utils/a
 import { InsertChange } from '../utils/change';
 import { findRootModule } from '../utils/find-module';
 import { getProject } from '../utils/projects';
-import { SchemaOptions, Loaders } from './schema';
+import { SchemaOptions, Loaders, TranslationFileTypes } from './schema';
 
-function createTranslateFiles(langs: string[]): HostTree {
-  const treeSource = new EmptyTree();
-  langs.forEach(lang => {
-    treeSource.create(
-      lang + '.json',
-      `
-{
+function jsonTranslationFileCreator(source, lang) {
+  return source.create(
+    `${lang}.json`,
+    `{
   "title": "transloco ${lang}",
   "dynamic": "transloco {{value}}"
 }
-    `
-    );
+`
+  );
+}
+
+function typescriptTranslationFileCreator(source, lang) {
+  return source.create(
+    `${lang}.ts`,
+    `export default {
+  title: "transloco ${lang}",
+  dynamic: "transloco {{value}}"
+};
+`
+  );
+}
+
+function createTranslateFiles(langs: string[], creator): HostTree {
+  const treeSource = new EmptyTree();
+  langs.forEach(lang => {
+    creator(treeSource, lang);
   });
 
   return treeSource;
@@ -117,9 +131,14 @@ export default function(options: SchemaOptions): Rule {
 
     const rootModule = options.module;
 
-    // TODO: try not to taking it as HC.
-    const assetsPath = root + `src/assets/i18n/`;
-    const translateFiles = apply(source(createTranslateFiles(langs)), [move('/', assetsPath)]);
+    const assetsPath = root + options.path;
+
+    const translationCreator =
+      options.translateType === TranslationFileTypes.Typescript
+        ? typescriptTranslationFileCreator
+        : jsonTranslationFileCreator;
+
+    const translateFiles = apply(source(createTranslateFiles(langs, translationCreator)), [move('/', assetsPath)]);
 
     options.module = findRootModule(host, options.module, sourceRoot) as string;
     const configProviderTemplate = `{
