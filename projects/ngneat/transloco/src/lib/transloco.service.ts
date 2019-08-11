@@ -203,7 +203,7 @@ export class TranslocoService {
   }
 
   /**
-   * Sets translation key with given value.
+   * Sets translation key with given value
    *
    * @example
    *
@@ -247,6 +247,7 @@ export class TranslocoService {
         }
       });
     }
+
     return this.setActiveLang(fallbackLang[0], { load: true, fallbackLang });
   }
 }

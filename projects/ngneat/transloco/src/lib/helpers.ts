@@ -25,7 +25,7 @@ export function isFunction(val: any): val is Function {
   return typeof val === 'function';
 }
 
-export function isString(val: any): boolean {
+export function isString(val: any): val is string {
   return typeof val === 'string';
 }
 

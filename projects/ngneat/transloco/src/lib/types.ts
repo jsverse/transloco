@@ -16,4 +16,4 @@ export type FailedEvent = {
 
 export type TranslocoEvents = LoadedEvent | FailedEvent;
 export type Translation = HashMap<any>;
-export type TranslationCb<T> = (translation: T, params?) => string;
+export type TranslationCb<T> = (translation: T, params?: HashMap) => string;

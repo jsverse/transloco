@@ -20,7 +20,7 @@ import { TRANSLOCO_LANG } from './transloco-lang';
 import { TRANSLOCO_LOADING_TEMPLATE } from './transloco-loading-template';
 import { TRANSLOCO_SCOPE } from './transloco-scope';
 import { TranslocoService } from './transloco.service';
-import { HashMap } from './types';
+import { HashMap, Translation } from './types';
 
 @Directive({
   selector: '[transloco]'
@@ -89,7 +89,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     this.host.nativeElement.innerText = this.translocoService.translate(this.key, this.params, this.langName);
   }
 
-  private structuralStrategy(data) {
+  private structuralStrategy(data: Translation) {
     if (this.view) {
       this.view.context['$implicit'] = data;
     } else {

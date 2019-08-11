@@ -1,29 +1,29 @@
-import {ComponentRef, TemplateRef, ViewContainerRef, ComponentFactoryResolver, Injector, Type} from '@angular/core';
-import {isString} from './helpers';
-import {TranslocoLoaderComponent} from './loader-component.component';
+import { ComponentRef, TemplateRef, ViewContainerRef, ComponentFactoryResolver, Injector, Type } from '@angular/core';
+import { isString } from './helpers';
+import { TranslocoLoaderComponent } from './loader-component.component';
 
 export type View = string | TemplateRef<any> | Type<any>;
 
 export class TemplateHandler {
   private injector: Injector;
 
-  constructor(private template: View, private vcr: ViewContainerRef) {
+  constructor(private view: View, private vcr: ViewContainerRef) {
     this.injector = this.vcr.injector;
   }
 
-  public attachView() {
-    if (this.isTemplateRef(this.template)) {
-      this.vcr.createEmbeddedView(this.template as TemplateRef<any>);
-    } else if (isString(this.template)) {
+  attachView() {
+    if (this.view instanceof TemplateRef) {
+      this.vcr.createEmbeddedView(this.view);
+    } else if (isString(this.view)) {
       const componentRef = this.createComponent<TranslocoLoaderComponent>(TranslocoLoaderComponent);
-      componentRef.instance.html = this.template as string;
+      componentRef.instance.html = this.view;
       componentRef.hostView.detectChanges();
     } else {
-      this.createComponent(this.template as Type<any>);
+      this.createComponent(this.view);
     }
   }
 
-  public detachView() {
+  detachView() {
     this.vcr.clear();
   }
 
@@ -33,13 +33,4 @@ export class TemplateHandler {
 
     return this.vcr.createComponent(factory);
   }
-
-  private isTemplateRef(template: View) {
-    return template instanceof TemplateRef;
-  }
-
-  private isHTML(template: View) {
-    return isString(template);
-  }
-
 }

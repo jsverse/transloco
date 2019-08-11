@@ -17,5 +17,4 @@ export class DefaultInterceptor implements TranslocoInterceptor {
   preSaveTranslationKey(key: string, value: string, lang: string): string {
     return value;
   }
-
 }

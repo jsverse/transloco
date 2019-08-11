@@ -5,8 +5,7 @@ import { Observable, of } from 'rxjs';
 import { defaultProviders, TranslocoModule } from './transloco.module';
 
 export class TestingLoader implements TranslocoLoader {
-  constructor(@Inject('translocoLangs') private langs: HashMap<Translation>) {
-  }
+  constructor(@Inject('translocoLangs') private langs: HashMap<Translation>) {}
 
   getTranslation(lang: string): Observable<Translation> | Promise<Translation> {
     return of(this.langs[lang]);
@@ -14,7 +13,6 @@ export class TestingLoader implements TranslocoLoader {
 }
 
 @NgModule({
-  imports: [TranslocoModule],
   exports: [TranslocoModule]
 })
 export class TranslocoTestingModule {
@@ -24,14 +22,14 @@ export class TranslocoTestingModule {
       providers: [
         {
           provide: 'translocoLangs',
-          useValue: langs,
+          useValue: langs
         },
         {
           provide: TRANSLOCO_LOADER,
           useClass: TestingLoader
         },
         defaultProviders
-      ],
+      ]
     };
   }
 }

@@ -16,7 +16,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
   value: string = '';
   lastKey: string;
   lastParams: HashMap;
-  private readonly runtime: boolean;
+  private runtime: boolean;
   private langName: string;
 
   constructor(
@@ -28,12 +28,6 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
   ) {
     const { runtime } = { ...defaultConfig, ...this.config };
     this.runtime = runtime;
-  }
-
-  updateValue(key: string, params?: HashMap): void {
-    const translation = this.translocoService.translate(key, params, this.langName);
-    this.value = translation || key;
-    this.cdr.markForCheck();
   }
 
   transform(key: string, params: HashMap = {}): string {
@@ -61,14 +55,18 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
         }),
         this.runtime ? source => source : take(1)
       )
-      .subscribe(() => {
-        this.updateValue(key, params);
-      });
+      .subscribe(() => this.updateValue(key, params));
 
     return this.value;
   }
 
   ngOnDestroy() {
     this.subscription && this.subscription.unsubscribe();
+  }
+
+  private updateValue(key: string, params?: HashMap): void {
+    const translation = this.translocoService.translate(key, params, this.langName);
+    this.value = translation || key;
+    this.cdr.markForCheck();
   }
 }
