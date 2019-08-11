@@ -3,6 +3,11 @@ export enum Loaders {
   Webpack = 'Webpack'
 }
 
+export enum TranslationFileTypes {
+  Typescript = 'Typescript',
+  JSON = 'JSON'
+}
+
 export interface SchemaOptions {
   /**
    * The languages of the project.
@@ -13,7 +18,15 @@ export interface SchemaOptions {
    */
   loader: Loaders;
   /**
-   * The root module name .
+   * The translation files type.
+   */
+  translateType: TranslationFileTypes;
+  /**
+   * The translation files folder.
+   */
+  path: string;
+  /**
+   * The root module name.
    */
   module: string;
 }
