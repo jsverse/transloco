@@ -33,6 +33,7 @@
     "@angular/platform-browser-dynamic": "~7.2.0",
     "@angular/router": "~7.2.0",
     "core-js": "^2.5.4",
+    "git-cz": "^3.2.1",
     "rxjs": "~6.3.3",
     "tslib": "^1.9.0",
     "zone.js": "~0.8.26"
@@ -67,6 +68,7 @@
     "lint-staged": "9.2.0",
     "ng-mocks": "^8.1.0",
     "ng-packagr": "^4.2.0",
+    "ora": "^3.4.0",
     "prettier": "1.18.2",
     "protractor": "~5.4.0",
     "replace-in-file": "^4.1.2",
