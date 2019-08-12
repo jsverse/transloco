@@ -1,11 +1,11 @@
 {
   "name": "@ngneat/transloco",
-  "version": "0.0.1",
+  "version": "1.0.0-rc.5",
   "description": "The internationalization (i18n) library for Angular",
+  "schematics": "./schematics/collection.json",
   "publishConfig": {
     "access": "public"
   },
-  "sideEffects": false,
   "bugs": {
     "url": "https://github.com/ngneat/transloco/issues"
   },
@@ -36,9 +36,5 @@
     "name": "Itay Oded",
     "url": "https://github.com/itayod"
   }],
-  "license": "MIT",
-  "peerDependencies": {
-    "@angular/common": "^7.2.0",
-    "@angular/core": "^7.2.0"
-  }
+  "license": "MIT"
 }
