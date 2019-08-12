@@ -55,6 +55,7 @@ describe('TranslocoService', () => {
       expect(service.translate('home')).toEqual(eng.home);
       expect(service.translate('alert', { value: 'val' })).toEqual('alert val english');
       expect(service.translate('a.b.c')).toEqual('a.b.c from list english');
+      expect(service.translate('key.is.like.path')).toEqual('key is like path');
     }));
 
     it('should translate using a cb', fakeAsync(() => {
