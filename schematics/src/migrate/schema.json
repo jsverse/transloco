@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "id": "SchematicsTranslocoMigrate",
+  "title": "Run a migration script from @ngx-translate.",
+  "type": "object",
+  "properties": {
+    "path": {
+      "description": "The path to the source root directory.",
+      "type": "string"
+    }
+  },
+  "required": []
+}
