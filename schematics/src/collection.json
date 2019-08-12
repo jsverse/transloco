@@ -13,6 +13,12 @@
       "factory": "./component/",
       "schema": "../../@schematics/angular/component/schema.json",
       "description": "Add component with translation."
+    },
+    "migrate": {
+      "aliases": ["m"],
+      "factory": "./migrate/",
+      "schema": "./migrate/schema.json",
+      "description": "Run a migration script from @ngx-translate."
     }
   }
 }
