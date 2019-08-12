@@ -16,7 +16,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
   value: string = '';
   lastKey: string;
   lastParams: HashMap;
-  private runtime: boolean;
+  private listenToLangChange: boolean;
   private langName: string;
 
   constructor(
@@ -26,8 +26,8 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
     @Optional() @Inject(TRANSLOCO_LANG) private providerLang: string | null,
     private cdr: ChangeDetectorRef
   ) {
-    const { runtime } = { ...defaultConfig, ...this.config };
-    this.runtime = runtime;
+    const { listenToLangChange } = { ...defaultConfig, ...this.config };
+    this.listenToLangChange = listenToLangChange;
   }
 
   transform(key: string, params: HashMap = {}): string {
@@ -53,7 +53,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
           this.langName = this.providerScope ? `${this.providerScope}/${lang}` : lang;
           return this.translocoService.load(this.langName);
         }),
-        this.runtime ? source => source : take(1)
+        this.listenToLangChange ? source => source : take(1)
       )
       .subscribe(() => this.updateValue(key, params));
 

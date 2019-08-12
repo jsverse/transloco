@@ -31,7 +31,7 @@ describe('TranslocoPipe', () => {
 
   it('should load scoped translation', fakeAsync(() => {
     spyOn(translateServiceMock, 'translate').and.callThrough();
-    pipe = new TranslocoPipe(translateServiceMock, { runtime: true, defaultLang: 'en' }, 'lazy-page', null, cdrMock);
+    pipe = new TranslocoPipe(translateServiceMock, { listenToLangChange: true, defaultLang: 'en' }, 'lazy-page', null, cdrMock);
     pipe.transform('title', {});
     runLoader();
     expect(translateServiceMock.translate).toHaveBeenCalledWith('title', {}, 'lazy-page/en');
@@ -62,7 +62,7 @@ describe('TranslocoPipe', () => {
   });
 
   describe('transform', () => {
-    it('should unsubscribe after one emit when not in runtime mode', fakeAsync(() => {
+    it('should unsubscribe after one emit when not in listenToLangChange mode', fakeAsync(() => {
       pipe.transform('home');
       runLoader();
       expect(pipe.subscription.closed).toBe(true);

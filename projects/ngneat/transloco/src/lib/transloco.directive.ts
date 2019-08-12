@@ -58,7 +58,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
       this.loaderTplHandler.attachView();
     }
 
-    const { runtime } = this.translocoService.config;
+    const { listenToLangChange } = this.translocoService.config;
 
     this.subscription = this.translocoService.langChanges$
       .pipe(
@@ -68,7 +68,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
           this.langName = scope ? `${scope}/${lang}` : lang;
           return this.translocoService.load(this.langName);
         }),
-        runtime ? source => source : take(1)
+        listenToLangChange ? source => source : take(1)
       )
       .subscribe(() => {
         const translation = this.translocoService.getTranslation(this.langName);

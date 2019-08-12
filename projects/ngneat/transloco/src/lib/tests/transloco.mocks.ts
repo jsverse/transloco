@@ -71,8 +71,8 @@ export function runLoader(times = 1) {
   tick(times * 1001);
 }
 
-export function setRuntime(service: TranslocoService, runtime = true) {
-  (service as any).mergedConfig.runtime = runtime;
+export function setlistenToLangChange(service: TranslocoService, listenToLangChange = true) {
+  (service as any).mergedConfig.listenToLangChange = listenToLangChange;
 }
 
 export const loadingTemplateMock = { provide: TRANSLOCO_LOADING_TEMPLATE, useValue: 'loading template...' };

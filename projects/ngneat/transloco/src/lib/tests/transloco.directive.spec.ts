@@ -3,7 +3,7 @@ import { TranslocoDirective, TranslocoParamsPipe, TranslocoService } from '../..
 import { createHostComponentFactory, HostComponent, SpectatorWithHost } from '@netbasal/spectator';
 import { TranslocoLoaderComponent } from '../loader-component.component';
 import { TemplateHandler } from '../template-handler';
-import { loadingTemplateMock, providersMock, runLoader, setRuntime } from './transloco.mocks';
+import { loadingTemplateMock, providersMock, runLoader, setlistenToLangChange } from './transloco.mocks';
 
 describe('TranslocoDirective', () => {
   let host: SpectatorWithHost<TranslocoDirective>;
@@ -15,7 +15,7 @@ describe('TranslocoDirective', () => {
 
   function testScopedTranslation(host: SpectatorWithHost<TranslocoDirective, HostComponent>) {
     const service = host.get<TranslocoService>(TranslocoService);
-    setRuntime(service);
+    setlistenToLangChange(service);
     host.detectChanges();
     runLoader();
     // fakeAsync doesn't trigger CD
@@ -27,7 +27,7 @@ describe('TranslocoDirective', () => {
     expect(host.queryHost('div')).toHaveText('Admin Lazy spanish');
   }
 
-  it('should unsubscribe after one emit when not in runtime mode', fakeAsync(() => {
+  it('should unsubscribe after one emit when not in listenToLangChange mode', fakeAsync(() => {
     host = createHost(`<div transloco="home"></div>`);
     runLoader();
     expect(host.queryHost('[transloco]')).toHaveText('home english');
@@ -89,7 +89,7 @@ describe('TranslocoDirective', () => {
       host = createHost(`<section *transloco="let t"></section>`, false);
       const service = host.get<TranslocoService>(TranslocoService);
 
-      setRuntime(service);
+      setlistenToLangChange(service);
       host.detectChanges();
       runLoader();
       service.setActiveLang('es');

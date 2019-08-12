@@ -7,7 +7,7 @@ describe('TranslocoParser', () => {
 
   beforeEach(() => {
     defaultConfig = {
-      runtime: true,
+      listenToLangChange: true,
       defaultLang: 'en',
       prodMode: false
     };

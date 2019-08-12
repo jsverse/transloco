@@ -121,7 +121,7 @@ function getLoaderTemplates(loader, path): Source {
   ]);
 }
 
-export default function(options: SchemaOptions): Rule {
+export default function (options: SchemaOptions): Rule {
   return (host: Tree, context: SchematicContext) => {
     const langs = options.langs.split(',').map(l => l.trim());
     const project = getProject(host);
@@ -144,7 +144,7 @@ export default function(options: SchemaOptions): Rule {
     const configProviderTemplate = `{
       provide: TRANSLOCO_CONFIG,
       useValue: {
-        runtime: false,
+        listenToLangChange: true,
         defaultLang: 'en',
         prodMode: environment.production
       } as TranslocoConfig
@@ -154,9 +154,9 @@ export default function(options: SchemaOptions): Rule {
       mergeWith(translateFiles),
       options.loader === Loaders.Http
         ? chain([
-            addImportsToModuleFile(options, ['HttpClientModule'], '@angular/common/http'),
-            addImportsToModuleDeclaration(options, ['HttpClientModule'])
-          ])
+          addImportsToModuleFile(options, ['HttpClientModule'], '@angular/common/http'),
+          addImportsToModuleDeclaration(options, ['HttpClientModule'])
+        ])
         : noop(),
       mergeWith(getLoaderTemplates(options.loader, sourceRoot + '/' + rootModule)),
       addImportsToModuleFile(options, ['environment'], '../environments/environment'),

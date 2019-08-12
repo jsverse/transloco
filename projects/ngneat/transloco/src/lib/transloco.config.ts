@@ -2,7 +2,7 @@ import { InjectionToken } from '@angular/core';
 
 export type TranslocoConfig = {
   defaultLang: string;
-  runtime?: boolean;
+  listenToLangChange?: boolean;
   prodMode?: boolean;
   fallbackLang?: string;
   failedRetries?: number;
@@ -17,7 +17,7 @@ export const TRANSLOCO_CONFIG = new InjectionToken('TRANSLOCO_CONFIG', {
 
 export const defaultConfig: TranslocoConfig = {
   defaultLang: 'en',
-  runtime: false,
+  listenToLangChange: false,
   prodMode: false,
   failedRetries: 2
 };
