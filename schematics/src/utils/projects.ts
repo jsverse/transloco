@@ -20,15 +20,11 @@ export function getWorkspace(host: Tree): WorkspaceSchema {
   return JSON.parse(config);
 }
 
-export function getProject(host: Tree) {
-  let project = null;
+export function getProject(host: Tree, project?: string) {
   const workspace = getWorkspace(host);
   if (workspace) {
-    return workspace.projects[workspace.defaultProject];
-  }
-  if (!project) {
-    new SchematicsException('could not find a workspace project');
+    return workspace.projects[project || workspace.defaultProject];
   }
 
-  return project as WorkspaceProject;
+  throw new SchematicsException('could not find a workspace project');
 }
