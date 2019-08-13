@@ -7,12 +7,10 @@ export default function(options: SchemaOptions): Rule {
     if (!options.path) {
       throw new SchematicsException(`
         Please specify the root source of your project.
-        (e.g. --path ./src)
+        (e.g. --path ./src/app)
       `);
     }
 
-    run(options.path);
-
-    return noop();
+    return run(options.path);
   };
 }

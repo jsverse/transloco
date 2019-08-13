@@ -121,17 +121,16 @@ function getLoaderTemplates(loader, path): Source {
   ]);
 }
 
-export default function (options: SchemaOptions): Rule {
+export default function(options: SchemaOptions): Rule {
   return (host: Tree, context: SchematicContext) => {
     const langs = options.langs.split(',').map(l => l.trim());
-    const project = getProject(host);
+    const project = getProject(host, options.project);
 
-    const root = (project && project.root) || '';
     const sourceRoot = (project && project.sourceRoot) || 'src';
 
     const rootModule = options.module;
 
-    const assetsPath = root + options.path;
+    const assetsPath = options.path;
 
     const translationCreator =
       options.translateType === TranslationFileTypes.Typescript
@@ -154,9 +153,9 @@ export default function (options: SchemaOptions): Rule {
       mergeWith(translateFiles),
       options.loader === Loaders.Http
         ? chain([
-          addImportsToModuleFile(options, ['HttpClientModule'], '@angular/common/http'),
-          addImportsToModuleDeclaration(options, ['HttpClientModule'])
-        ])
+            addImportsToModuleFile(options, ['HttpClientModule'], '@angular/common/http'),
+            addImportsToModuleDeclaration(options, ['HttpClientModule'])
+          ])
         : noop(),
       mergeWith(getLoaderTemplates(options.loader, sourceRoot + '/' + rootModule)),
       addImportsToModuleFile(options, ['environment'], '../environments/environment'),

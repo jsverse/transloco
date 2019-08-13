@@ -6,7 +6,10 @@
   "properties": {
     "path": {
       "description": "The path to the source root directory.",
-      "type": "string"
+      "x-prompt": "✍ Which folder will contain the translation files?",
+      "type": "string",
+      "default": "./src/app",
+      "alias": "p"
     }
   },
   "required": []
