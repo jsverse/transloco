@@ -2,9 +2,14 @@
   "name": "transloco-snippets",
   "displayName": "transloco",
   "description": "Code snippets for Angular Transloco",
-  "version": "0.0.1",
+  "version": "0.0.2",
+  "publisher": "shaharkazaz",
   "engines": {
-    "vscode": "^1.37.0"
+    "vscode": "^1.30.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ngneat/transloco"
   },
   "categories": [
     "Snippets"
