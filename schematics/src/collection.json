@@ -11,7 +11,7 @@
     "component": {
       "aliases": ["c"],
       "factory": "./component/",
-      "schema": "../../../@angular-devkit/schematics/collection-schema.json",
+      "schema": "../../../@schematics/angular/component/schema.json",
       "description": "Add component with translation."
     },
     "migrate": {
