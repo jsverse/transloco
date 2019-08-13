@@ -11,8 +11,6 @@ export default function(options: SchemaOptions): Rule {
       `);
     }
 
-    run(options.path);
-
-    return noop();
+    return run(options.path);
   };
 }
