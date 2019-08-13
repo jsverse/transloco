@@ -74,7 +74,7 @@ const instantTranslation = {
     )[1];
     const sanitizedName = serviceName
       .split('')
-      .map(char => (['$', '^'].includes(char) ? `\\\\${char}` : char))
+      .map(char => (['$', '^'].includes(char) ? `\\${char}` : char))
       .join('');
     return match.replace(new RegExp(`(?:(?:=\\s*|this\\.)${sanitizedName})\\.(instant|transform)`, 'g'), str =>
       str.replace(/instant|transform/, 'translate')
