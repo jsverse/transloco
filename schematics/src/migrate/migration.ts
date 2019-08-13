@@ -9,7 +9,6 @@ export function run(path) {
 
   path = p.join(dir, path, '/**/*');
 
-  console.log(path);
   const tsFiles = { ignore: `${path}spec.ts`, files: `${path}.ts` };
   const [directive, pipe, pipeInBinding] = [
     /(translate|\[translate(Params)?\])="[^"]*"/gm,
@@ -132,7 +131,7 @@ export function run(path) {
     }
   }
 
-  migrate(htmlReplacements, 'HTML')
+  return migrate(htmlReplacements, 'HTML')
     .then(() => migrate(tsReplacements, 'TS'))
     .then(() => {
       console.log('\n              🌵 Done! 🌵');
@@ -140,6 +139,5 @@ export function run(path) {
       console.log(
         '\nFor more information about this script please visit 👉 https://github.com/ngneat/transloco/tree/v1/migration/migration.md'
       );
-    })
-    .catch(console.log);
+    });
 }
