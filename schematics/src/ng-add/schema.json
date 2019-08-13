@@ -34,6 +34,10 @@
       "default": "src/assets/i18n/",
       "alias": "p"
     },
+    "project": {
+      "description": "The project name.",
+      "type": "string"
+    },
     "module": {
       "description": "The root module name.",
       "type": "string",

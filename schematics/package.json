@@ -18,6 +18,7 @@
     "@types/jasmine": "^3.3.9",
     "@types/node": "^8.0.31",
     "jasmine": "^3.3.1",
-    "typescript": "~3.4.3"
+    "typescript": "~3.4.3",
+    "replace-in-file": "^4.1.2"
   }
 }
