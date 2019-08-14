@@ -197,11 +197,11 @@ export class TranslocoService {
    *
    * @example
    *
-   * setTranslation('en', { ... })
-   * setTranslation('admin-page/en', { ... })
-   * setTranslation(lang, { ... }, { merge: false } )
+   * setTranslation({ ... })
+   * setTranslation({ ... }, 'en')
+   * setTranslation({ ... }, 'admin-page/en', { merge: false } )
    */
-  setTranslation(lang: string, data: Translation, options: { merge?: boolean } = {}) {
+  setTranslation(data: Translation, lang = this.getActiveLang(), options: { merge?: boolean } = {}) {
     const defaults = { merge: true };
     const mergedOptions = { ...defaults, ...options };
     const translation = this.getTranslation(lang) || {};

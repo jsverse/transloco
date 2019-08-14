@@ -155,7 +155,7 @@ describe('TranslocoService', () => {
       it('should merge the data', fakeAsync(() => {
         loadLang();
         const translation = { bar: 'bar' };
-        service.setTranslation('en', translation);
+        service.setTranslation(translation);
         const newTranslation = service.getTranslation('en');
 
         expect(newTranslation.bar).toEqual('bar');
@@ -165,7 +165,7 @@ describe('TranslocoService', () => {
       it('should deep merge', fakeAsync(() => {
         loadLang();
         const translation = { a: { bar: 'bar' } };
-        service.setTranslation('en', translation);
+        service.setTranslation(translation);
         const newTranslation = service.getTranslation('en');
         expect(newTranslation.a.bar).toEqual('bar');
       }));
@@ -173,14 +173,14 @@ describe('TranslocoService', () => {
       it('should replace it', fakeAsync(() => {
         loadLang();
         const translation = { newKey: 'a', newKeyTwo: 'b' };
-        service.setTranslation('en', translation, { merge: false });
+        service.setTranslation(translation, 'en', { merge: false });
         const newTranslation = service.getTranslation('en');
         expect(newTranslation).toEqual({ newKey: 'a', newKeyTwo: 'b' });
       }));
 
       it('should add the lang if it not exists', fakeAsync(() => {
         loadLang();
-        service.setTranslation('es', { home: 'home es' });
+        service.setTranslation({ home: 'home es' }, 'es');
         expect(service.getTranslation('es').home).toEqual('home es');
       }));
     });
