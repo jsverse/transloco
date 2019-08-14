@@ -1,10 +1,12 @@
-# Ngx-Translate Migration script
+# ngx-translate Migration script
 
 **Note:** some manual changes might still be needed after the script ran.
 
+`ng @ngneat/transloco:migrate`
+
 ## What will be done?
 
-The script will iterate recursively over all your `HTML` and `TS` files (spec files excluded) and will execute the replacements described below.  
+The script will iterate recursively over all your `HTML` and `TS` files (spec files excluded) and will execute the replacements described below:
 
 ### Pipe  
 The `translate` pipe will be replaced with the `transloco` pipe.
