@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
-import { BehaviorSubject, from, Observable, Subject, throwError } from 'rxjs';
-import { catchError, map, retry, shareReplay, tap, finalize } from 'rxjs/operators';
+import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
+import { catchError, map, retry, shareReplay, tap } from 'rxjs/operators';
 import { TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_TRANSPILER, TranslocoTranspiler } from './transloco.transpiler';
 import { HashMap, Translation, TranslationCb, TranslocoEvents } from './types';

@@ -12,7 +12,7 @@ export class UserService {
     return timer(500)
       .pipe(
         mapTo({
-          lang: 'es'
+          lang: 'en'
         })
       )
       .toPromise();
