@@ -2,6 +2,7 @@ export type HashMap<T = string> = { [key: string]: T };
 
 export type LoadedEvent = {
   type: 'translationLoadSuccess';
+  wasFailure: boolean;
   payload: {
     lang: string;
   };

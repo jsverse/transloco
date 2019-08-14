@@ -3,10 +3,10 @@ import { DefaultTranspiler, TranslocoService } from '../../public-api';
 import { createService, loader, mockLangs, runLoader } from './transloco.mocks';
 import { fakeAsync } from '@angular/core/testing';
 import { catchError, filter, map, pluck } from 'rxjs/operators';
-import { of, timer } from 'rxjs';
+import { of, timer, throwError } from 'rxjs';
 import { DefaultHandler } from '../transloco-missing-handler';
 import { DefaultInterceptor } from '../transloco.interceptor';
-import { TranslocoFallbackStrategy } from '../transloco-fallback-strategy';
+import { DefaultFallbackStrategy, TranslocoFallbackStrategy } from '../transloco-fallback-strategy';
 import Spy = jasmine.Spy;
 
 function createSpy() {
@@ -141,16 +141,6 @@ describe('TranslocoService', () => {
       expect(langSpy).toHaveBeenCalledWith(newLang);
     });
 
-    it('should set the current lang and load the new lang file', () => {
-      const langSpy = createSpy();
-      const newLang = 'es';
-      spyOn(service, 'load');
-      service.langChanges$.subscribe(langSpy);
-      service.setActiveLang(newLang, { load: true });
-      expect(langSpy).toHaveBeenCalledWith(newLang);
-      expect(service.load).toHaveBeenCalledWith(newLang, { fallbackLang: undefined });
-    });
-
     describe('setTranslation', () => {
       it('should merge the data', fakeAsync(() => {
         loadLang();
@@ -253,93 +243,129 @@ describe('TranslocoService', () => {
         };
       };
 
-      it('should return the fallback lang if the load fails 3 times', fakeAsync(() => {
-        const eventSpy = createSpy();
-        service.events$
-          .pipe(
-            filter(e => e.type === 'translationLoadFailure'),
-            pluck('payload')
-          )
-          .subscribe(eventSpy);
-        spyOn((service as any).loader, 'getTranslation').and.callFake(failLoad(4));
-        const spy = createSpy();
-
-        spyOn(service, 'load').and.callThrough();
-        service.load('es').subscribe(spy);
-        runLoader(5);
-
-        /* One for es and one for fallback */
-        expect((service as any).loader.getTranslation).toHaveBeenCalledTimes(2);
-        expect(service.load).toHaveBeenCalledTimes(2);
-        const fallback = (service as any).fallbackStrategy.handle();
-        expect((service.load as Spy).calls.allArgs()).toEqual([['es'], [fallback[0], { fallbackLang: fallback }]]);
-        expect(spy.calls.argsFor(0)[0]).toEqual(mockLangs['en']);
-        expect(eventSpy).toHaveBeenCalledTimes(1);
-        expect(eventSpy).toHaveBeenCalledWith({
-          lang: 'es'
-        });
-      }));
-
-      it('should stop retrying to load the fallback lang after 3 tries', fakeAsync(() => {
-        const spy = createSpy().and.returnValue(of());
-        spyOn((service as any).loader, 'getTranslation').and.callFake(failLoad(3));
-
-        service
-          .load('en')
-          .pipe(catchError(spy))
-          .subscribe();
-
-        /* 3 times - first try + 2 retries */
-        runLoader(3);
-        expect((service as any).loader.getTranslation).toHaveBeenCalledTimes(1);
-        const expectedMsg = 'Unable to load translation and all the fallback languages (en)';
-        const givenMsg = (spy.calls.argsFor(0)[0] as any).message;
-        expect(givenMsg).toEqual(expectedMsg);
-      }));
-
       describe('Multiple fallbacks', () => {
-        let spy;
-        beforeEach(() => {
+        describe('DefaultFallbackStrategy', () => {
+          let loader;
+
+          beforeEach(() => {
+            loader = {
+              getTranslation(lang: string) {
+                return timer(1000).pipe(
+                  map(() => mockLangs[lang]),
+                  map(translation => {
+                    if (lang === 'notExists' || lang === 'fallbackNotExists') {
+                      throw new Error('error');
+                    }
+                    return translation;
+                  })
+                );
+              }
+            };
+          });
+
+          it('should try load the fallbackLang when current lang failed', fakeAsync(() => {
+            const service = new TranslocoService(
+              loader,
+              new DefaultTranspiler(),
+              new DefaultHandler(),
+              new DefaultInterceptor(),
+              { defaultLang: 'en' },
+              new DefaultFallbackStrategy({ fallbackLang: 'es', defaultLang: 'en', failedRetries: 2 })
+            );
+
+            spyOn(service, 'load').and.callThrough();
+            service.load('notExists').subscribe();
+            // notExists will try 3 times then the fallback
+            runLoader(4);
+            expect(service.load).toHaveBeenCalledTimes(2);
+            expect((service.load as jasmine.Spy).calls.argsFor(0)).toEqual(['notExists']);
+            expect((service.load as jasmine.Spy).calls.argsFor(1)).toEqual(['es']);
+
+            // it should set the fallback lang as active
+            expect(service.getActiveLang()).toEqual('es');
+
+            // clear the cache
+            expect((service as any).cache.size).toEqual(1);
+          }));
+
+          it('should should throw if the fallback lang is failed to load', fakeAsync(() => {
+            const service = new TranslocoService(
+              loader,
+              new DefaultTranspiler(),
+              new DefaultHandler(),
+              new DefaultInterceptor(),
+              { defaultLang: 'en' },
+              new DefaultFallbackStrategy({ fallbackLang: 'fallbackNotExists', defaultLang: 'en', failedRetries: 2 })
+            );
+            spyOn(service, 'load').and.callThrough();
+            service
+              .load('notExists')
+              .pipe(
+                catchError(e => {
+                  expect(e.message).toEqual('Unable to load translation and all the fallback languages');
+                  return of('');
+                })
+              )
+              .subscribe();
+
+            // notExists will try 3 times then the fallback 3 times
+            runLoader(6);
+            expect(service.load).toHaveBeenCalledTimes(2);
+          }));
+        });
+
+        describe('CustomFallbackStrategy', () => {
           class StrategyTest implements TranslocoFallbackStrategy {
-            handle(failedLang: string): string[] {
+            getNextLangs(failedLang: string): string[] {
               return ['it', 'gp', 'en'];
             }
           }
-          service = new TranslocoService(
-            loader,
-            new DefaultTranspiler(),
-            new DefaultHandler(),
-            new DefaultInterceptor(),
-            { defaultLang: 'en' },
-            new StrategyTest()
-          );
-          spy = createSpy().and.returnValue(of());
+
+          let loader;
+
+          beforeEach(() => {
+            loader = {
+              getTranslation(lang: string) {
+                return timer(1000).pipe(
+                  map(() => mockLangs[lang]),
+                  map(translation => {
+                    if (lang === 'it' || lang === 'gp' || lang === 'notExists') {
+                      throw new Error('error');
+                    }
+                    return translation;
+                  })
+                );
+              }
+            };
+          });
+
+          it('should try load the it and gp then set en as the active', fakeAsync(() => {
+            const service = new TranslocoService(
+              loader,
+              new DefaultTranspiler(),
+              new DefaultHandler(),
+              new DefaultInterceptor(),
+              { defaultLang: 'es' },
+              new StrategyTest()
+            );
+
+            spyOn(service, 'load').and.callThrough();
+            service.load('notExists').subscribe();
+            // 3 notExists/ 3 it / 3 gp / 1 en = 10
+            runLoader(10);
+            expect((service.load as jasmine.Spy).calls.argsFor(0)).toEqual(['notExists']);
+            expect((service.load as jasmine.Spy).calls.argsFor(1)).toEqual(['it']);
+            expect((service.load as jasmine.Spy).calls.argsFor(2)).toEqual(['gp']);
+            expect((service.load as jasmine.Spy).calls.argsFor(3)).toEqual(['en']);
+            expect(service.load).toHaveBeenCalledTimes(4);
+
+            // it should set the fallback lang as active
+            expect(service.getActiveLang()).toEqual('en');
+
+            // clear the cache
+            expect((service as any).cache.size).toEqual(1);
+          }));
         });
-        it('should return the last fallback lang', fakeAsync(() => {
-          spyOn((service as any).loader, 'getTranslation').and.callFake(failLoad(9));
-          service.load('es').subscribe(spy);
-
-          /* 9 times - first try + 2 retries for each lang including the fallback */
-          runLoader(10);
-          /* 4 times - es, it, gp, en */
-          expect((service as any).loader.getTranslation).toHaveBeenCalledTimes(4);
-          expect(spy.calls.argsFor(0)[0]).toEqual(mockLangs['en']);
-        }));
-        it('should fail all loading attempts and throw an error', fakeAsync(() => {
-          spyOn((service as any).loader, 'getTranslation').and.callFake(failLoad(12));
-          service
-            .load('es')
-            .pipe(catchError(spy))
-            .subscribe();
-
-          /* 12 times - first try + 2 retries for each lang including the fallback */
-          runLoader(12);
-          /* 4 times - es, it, gp, en */
-          expect((service as any).loader.getTranslation).toHaveBeenCalledTimes(4);
-          const expectedMsg = 'Unable to load translation and all the fallback languages (it, gp, en)';
-          const givenMsg = (spy.calls.argsFor(0)[0] as any).message;
-          expect(givenMsg).toEqual(expectedMsg);
-        }));
       });
     });
 

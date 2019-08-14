@@ -23,6 +23,7 @@ import { webpackLoader } from './loaders/webpack.loader';
       useValue: {
         prodMode: environment.production,
         listenToLangChange: true,
+        fallbackLang: 'es',
         defaultLang: 'en'
       } as TranslocoConfig
     }

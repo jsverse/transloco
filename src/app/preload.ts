@@ -4,7 +4,11 @@ import { TranslocoService } from '@ngneat/transloco';
 
 export function preloadUser(userService: UserService, transloco: TranslocoService) {
   return function() {
-    return userService.getUser().then(({ lang }) => transloco.setActiveLang(lang, { load: true }));
+    return userService.getUser().then(({ lang }) => {
+      const l = lang;
+      transloco.setActiveLang(l);
+      return transloco.load(l).toPromise();
+    });
   };
 }
 
