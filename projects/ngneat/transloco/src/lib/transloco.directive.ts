@@ -70,8 +70,8 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
         }),
         listenToLangChange ? source => source : take(1)
       )
-      .subscribe(v => {
-        const translation = this.translocoService.getTranslation(this.langName) || v;
+      .subscribe(() => {
+        const translation = this.translocoService.getTranslation(this.langName);
         this.tpl === null ? this.simpleStrategy() : this.structuralStrategy(translation);
         this.cdr.markForCheck();
         this.initialized = true;

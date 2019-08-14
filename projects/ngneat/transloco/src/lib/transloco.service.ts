@@ -176,6 +176,7 @@ export class TranslocoService {
    * Gets an object of translations for a given language
    *
    * @example
+   *
    * getTranslation('en')
    * getTranslation('admin-page/en')
    */
@@ -228,8 +229,8 @@ export class TranslocoService {
   }
 
   private handleSuccess(lang: string, translation: Translation) {
+    this._setTranslation(lang, translation);
     if (this.failedLangs.has(lang) === false) {
-      this._setTranslation(lang, translation);
       if (!this.config.prodMode) {
         console.log(`%c 🍻 Translation Load Success: ${lang}`, 'background: #fff; color: hotpink;');
       }
@@ -242,9 +243,9 @@ export class TranslocoService {
         }
       });
 
-      this.failedLangs.forEach(l => this.cache.delete(l));
       this.failedCounter = 0;
     } else {
+      this.cache.delete(lang);
       this.failedLangs.delete(lang);
     }
   }
@@ -256,8 +257,15 @@ export class TranslocoService {
     const fallbacks = mergedOptions.fallbackLangs || this.fallbackStrategy.getNextLangs(lang);
     const nextLang = fallbacks[this.failedCounter];
 
-    if (!nextLang) {
-      throw new Error(`Unable to load translation and all the fallback languages`);
+    const isFallbackLang = nextLang === splitted[splitted.length - 1];
+
+    if (!nextLang || isFallbackLang) {
+      let msg = `Unable to load translation and all the fallback languages`;
+      if (splitted.length > 1) {
+        msg += `, did you misspelled the scope name?`;
+      }
+
+      throw new Error(msg);
     }
 
     let resolveLang = nextLang;
@@ -276,9 +284,6 @@ export class TranslocoService {
         lang
       }
     });
-
-    // If the lang already exists we want to clear and refetch it
-    this.cache.delete(resolveLang);
 
     return this.load(resolveLang);
   }

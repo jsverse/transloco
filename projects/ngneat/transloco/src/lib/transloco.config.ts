@@ -4,7 +4,7 @@ export type TranslocoConfig = {
   defaultLang: string;
   listenToLangChange?: boolean;
   prodMode?: boolean;
-  fallbackLang?: string;
+  fallbackLang?: string | string[];
   failedRetries?: number;
 };
 
