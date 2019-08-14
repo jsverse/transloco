@@ -58,7 +58,10 @@ export class TranslocoService {
      */
     this.events$.subscribe(e => {
       if (e.type === 'translationLoadSuccess' && e.wasFailure) {
-        this.setActiveLang(e.payload.lang);
+        // Handle scoped lang
+        const split = e.payload.lang.split('/');
+        const lang = split[split.length - 1];
+        this.setActiveLang(lang);
       }
     });
   }
@@ -90,7 +93,7 @@ export class TranslocoService {
 
       const load$ = from(this.loader.getTranslation(lang)).pipe(
         retry(this.mergedConfig.failedRetries),
-        catchError(() => this.handleFailedLang(lang, mergedOptions)),
+        catchError(() => this.handleFailure(lang, mergedOptions)),
         tap(translation => this.handleSuccess(lang, translation)),
         shareReplay(1)
       );
@@ -246,13 +249,26 @@ export class TranslocoService {
     }
   }
 
-  private handleFailedLang(lang: string, mergedOptions) {
+  private handleFailure(lang: string, mergedOptions) {
+    const splitted = lang.split('/');
+
     this.failedLangs.add(lang);
     const fallbacks = mergedOptions.fallbackLangs || this.fallbackStrategy.getNextLangs(lang);
     const nextLang = fallbacks[this.failedCounter];
+
     if (!nextLang) {
       throw new Error(`Unable to load translation and all the fallback languages`);
     }
+
+    let resolveLang = nextLang;
+    // if it's scoped lang
+    if (splitted.length > 1) {
+      // We need to resolve it to:
+      // todos/langNotExists => todos/nextLang
+      splitted[splitted.length - 1] = nextLang;
+      resolveLang = splitted.join('/');
+    }
+
     this.failedCounter++;
     this.events.next({
       type: 'translationLoadFailure',
@@ -261,6 +277,9 @@ export class TranslocoService {
       }
     });
 
-    return this.load(nextLang);
+    // If the lang already exists we want to clear and refetch it
+    this.cache.delete(resolveLang);
+
+    return this.load(resolveLang);
   }
 }

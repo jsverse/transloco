@@ -1,8 +1,8 @@
 <h4>English: (global)</h4>
-<ng-container *transloco="let t">
+<ng-container *transloco="let t; lang: 'escc'">
   <p data-cy="global">{{ t.home }}</p>
 </ng-container>
-
+<!-- 
 <h4>Spanish: (inline lang, scope: lazy-page)</h4>
 <ng-container *transloco="let t; lang: 'es'; loadingTpl: loading; scope: 'lazy-page'">
   <p data-cy="with-scope">{{ t.title }}</p>
@@ -10,4 +10,4 @@
 
 <provider-lang></provider-lang>
 
-<ng-template #loading>Loading..</ng-template>
+<ng-template #loading>Loading..</ng-template> -->
