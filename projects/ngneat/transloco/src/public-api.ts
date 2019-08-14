@@ -11,3 +11,11 @@ export { TRANSLOCO_SCOPE } from './lib/transloco-scope';
 export { TRANSLOCO_LOADING_TEMPLATE } from './lib/transloco-loading-template';
 export { TRANSLOCO_LANG } from './lib/transloco-lang';
 export { TestingLoader, TranslocoTestingModule } from './lib/transloco-testing.module';
+export { TemplateHandler, View } from './lib/template-handler';
+export { TRANSLOCO_INTERCEPTOR, TranslocoInterceptor } from './lib/transloco.interceptor';
+export {
+  TRANSLOCO_FALLBACK_STRATEGY,
+  TranslocoFallbackStrategy,
+  DefaultFallbackStrategy
+} from './lib/transloco-fallback-strategy';
+export { TRANSLOCO_MISSING_HANDLER, DefaultHandler, TranslocoMissingHandler } from './lib/transloco-missing-handler';

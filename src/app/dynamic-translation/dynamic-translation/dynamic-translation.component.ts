@@ -26,6 +26,6 @@ export class DynamicTranslationComponent implements OnInit {
         title: 'New translation title'
       }
     };
-    this.translate.setTranslation(newTranslation, 'en', { merge: true });
+    this.translate.setTranslation(newTranslation, undefined, { merge: true });
   }
 }
