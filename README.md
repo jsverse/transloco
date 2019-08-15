@@ -1,6 +1,6 @@
 <br />
 <p align="center">
- <img width="50%" height="50%" src="https://raw.githubusercontent.com/ngneat/transloco/master/logo.svg?sanitize=true">
+ <img width="50%" height="50%" src="https://raw.githubusercontent.com/ngneat/transloco/master/logo.png?sanitize=true">
 </p>
 
 > Translation can drive you crazy, here's the cure!
