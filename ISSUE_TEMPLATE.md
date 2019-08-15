@@ -27,8 +27,7 @@ ISSUES MISSING IMPORTANT INFORMATION MAY BE CLOSED WITHOUT INVESTIGATION.
 
 ## Minimal reproduction of the problem with instructions
 
-For bug reports please provide the _STEPS TO REPRODUCE_ and if possible a _MINIMAL DEMO_ of the problem via
-https://stackblitz.com or similar
+For bug reports please provide the _STEPS TO REPRODUCE_ and if possible a _MINIMAL DEMO_ of the problem, for that you could use our [stackblitz example](https://stackblitz.com/edit/transloco-example)
 
 ## What is the motivation / use case for changing the behavior?
 
