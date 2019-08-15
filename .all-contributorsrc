@@ -39,6 +39,19 @@
         "ideas",
         "test"
       ]
+    },
+    {
+      "login": "itayod",
+      "name": "Itay Oded",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/6719615?v=4",
+      "profile": "https://github.com/itayod",
+      "contributions": [
+        "code",
+        "example",
+        "ideas",
+        "infra",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7
