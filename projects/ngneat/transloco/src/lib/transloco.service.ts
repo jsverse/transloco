@@ -213,7 +213,7 @@ export class TranslocoService {
    * setTranslationKey('key.nested', 'value')
    * setTranslationKey('key.nested', 'value', 'en')
    */
-  setTranslationKey(key: string, value: string, lang = this.getDefaultLang()) {
+  setTranslationKey(key: string, value: string, lang = this.getActiveLang()) {
     const translation = this.getTranslation(lang);
     if (translation) {
       const withHook = this.interceptor.preSaveTranslationKey(key, value, lang);
