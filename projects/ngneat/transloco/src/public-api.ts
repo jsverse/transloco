@@ -18,4 +18,4 @@ export {
   TranslocoFallbackStrategy,
   DefaultFallbackStrategy
 } from './lib/transloco-fallback-strategy';
-export { TRANSLOCO_MISSING_HANDLER, DefaultHandler, TranslocoMissingHandler } from './lib/transloco-missing-handler';
+
