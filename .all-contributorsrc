@@ -4,12 +4,30 @@
   "repoType": "github",
   "repoHost": "https://github.com",
   "commitConvention": "angular",
-  imageSize: "50",
+  "imageSize": "50",
   "files": [
     "README.md"
   ],
   "commit": true,
-  "commitConvention": "angular",
-  "contributors": [],
+  "contributors": [
+    {
+      "login": "NetanelBasal",
+      "name": "Netanel Basal",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/6745730?v=4",
+      "profile": "https://www.netbasal.com",
+      "contributions": [
+        "blog",
+        "business",
+        "code",
+        "content",
+        "design",
+        "doc",
+        "example",
+        "ideas",
+        "infra",
+        "projectManagement"
+      ]
+    }
+  ],
   "contributorsPerLine": 7
 }
