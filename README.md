@@ -1,6 +1,6 @@
 <br />
 <p align="center">
- <img width="50%" height="50%" src="./logo.png">
+ <img width="50%" height="50%" src="https://raw.githubusercontent.com/ngneat/transloco/master/logo.svg?sanitize=true">
 </p>
 
 > Translation can drive you crazy, here's the cure!
@@ -20,7 +20,7 @@ The internationalization (i18n) library for Angular
 
 🛀 Clean and DRY templates <br>
 😴 Support for Lazy Load<br>
-😍 Support for Multiple Languages<br>
+😍 Support for Multiple Languagues<br>
 🧙‍♂️ Support for Multiple Fallbacks<br>
 🤓 Support for Testing<br>
 🦊 Hackable<br>
@@ -45,6 +45,7 @@ The internationalization (i18n) library for Angular
 - [Prefetch the User Language](#prefetch-the-user-language)
 - [Unit Testing](#unit-testing)
 - [Additional Functionality](#additional-functionality)
+- [Comparison to other libraries](#comparison-to-other-libraries)
 
 ## Installation
 
@@ -105,7 +106,7 @@ export class AppModule {}
 
 Let's explain each one of the `config` options:
 
-- `listenToLangChange`: Subscribes to the language change event, and allows you to change the active language. This is not needed in applications that don't allow the user to change the language in runtime (i.e., from a dropdown), so by setting it to false in these cases, you can save on memory by rendering the view once, and unsubscribing from the language changes event (defaults to `false`).
+- `listenToLangChange`: Subrscribes to the language change event, and allows you to change the active language. This is not needed in applications that don't allow the user to change the language in runtime (i.e., from a dropdown), so by setting it to false in these cases, you can save on memory by rendering the view once, and unsubscribing from the language changes event (defaults to `false`).
 - `defaultLang`: Sets the default language
 - `fallbackLang`: Sets the default language/s to use as a fallback. See the [`TranslocoFallbackStrategy`](#transloco-fallback-strategy) section if you need to customize it.
   `failedRetries`: How many time should Transloco retry to load translation files, in case of a load failure (defaults to 2)
@@ -550,9 +551,29 @@ import { translate } from '@ngneat/transloco';
 translate('someKey');
 ```
 
-### Migration from ngx-translate
+## Migration from ngx-translate
 
 Transloco provides a schematics [command](https://github.com/ngneat/transloco/blob/master/schematics/migration.md) that will help you with the migration process.
+
+## Comparison to other libraries
+
+ Feature                  | @ngneat/transloco                                 | @ngx-translate/core
+ -------------------      | -------------------                               | --------------------------
+ Multiple Languages       | ✅                                                | ❌
+ Lazy Loading             | ✅                                                | ❌
+ Multiple Fallbacks       | ✅                                                | ❌
+ Hackable                 | ✅                                                | ✅
+ Testing                  | ✅                                                | ✅ External library
+ Structural Directive     | ✅                                                | ❌
+ Attribute Directive      | ✅                                                | ✅
+ Pipe                     | ✅                                                | ✅
+ Ivy support              | ✅                                                | ❌
+ Additional Functionality | ✅ [See here](#additional-functionality)          | ❌
+ Plugins                  | WIP                                               | ✅ [See here](https://github.com/ngx-translate/core#plugins)
+
+## Support
+
+For any questions or deliberations join our [Gitter channel](https://gitter.im/ngneat-transloco/lobby#);
 
 ## Contributors ✨
 
