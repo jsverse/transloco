@@ -4,7 +4,7 @@
   "repoType": "github",
   "repoHost": "https://github.com",
   "commitConvention": "angular",
-  "imageSize": "50",
+  "imageSize": "100",
   "files": [
     "README.md"
   ],
@@ -25,31 +25,8 @@
         "example",
         "ideas",
         "infra",
-        "projectManagement"
-      ]
-    },
-    {
-      "login": "shaharkazaz",
-      "name": "Shahar Kazaz",
-      "avatar_url": "https://avatars2.githubusercontent.com/u/17194830?v=4",
-      "profile": "https://github.com/shaharkazaz",
-      "contributions": [
-        "code",
-        "content",
-        "ideas",
-        "test"
-      ]
-    },
-    {
-      "login": "itayod",
-      "name": "Itay Oded",
-      "avatar_url": "https://avatars2.githubusercontent.com/u/6719615?v=4",
-      "profile": "https://github.com/itayod",
-      "contributions": [
-        "code",
-        "example",
-        "ideas",
-        "infra",
+        "maintenance",
+        "projectManagement",
         "test"
       ]
     }
