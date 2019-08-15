@@ -1,6 +1,8 @@
+<br />
 <p align="center">
  <img width="50%" height="50%" src="https://raw.githubusercontent.com/ngneat/transloco/v1/logo.svg?sanitize=true">
 </p>
+
 
 > Translation can drive you crazy, here's the cure!
 
@@ -22,7 +24,6 @@ The internationalization (i18n) library for Angular
 😍 Support for Multiple Languagues<br>
 🧙‍♂️ Support for Multiple Fallbacks<br>
 🤓 Support for Testing<br>
-🤩 Support of translation files in either JSON or Typescript formats<br>
 🦊 Hackable<br>
 
 ## Table of Contents

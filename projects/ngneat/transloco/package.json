@@ -1,6 +1,6 @@
 {
   "name": "@ngneat/transloco",
-  "version": "1.0.0-rc.8",
+  "version": "1.0.0-rc.9",
   "description": "The internationalization (i18n) library for Angular",
   "schematics": "./schematics/collection.json",
   "publishConfig": {
@@ -28,14 +28,16 @@
     "email": "netanel7799@gmail.com",
     "url": "https://netbasal.com"
   },
-  "contributors": [{
-    "name": "Shahar Kazaz",
-    "url": "https://github.com/shaharkazaz"
-  },
-  {
-    "name": "Itay Oded",
-    "url": "https://github.com/itayod"
-  }],
+  "contributors": [
+    {
+      "name": "Shahar Kazaz",
+      "url": "https://github.com/shaharkazaz"
+    },
+    {
+      "name": "Itay Oded",
+      "url": "https://github.com/itayod"
+    }
+  ],
   "dependencies": {
     "replace-in-file": "^4.1.2",
     "ora": "^3.4.0"
