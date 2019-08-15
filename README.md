@@ -560,7 +560,7 @@ Transloco provides a schematics [command](https://github.com/ngneat/transloco/bl
  Feature                  | @ngneat/transloco                                 | @ngx-translate/core
  -------------------      | -------------------                               | --------------------------
  Multiple Languages       | ✅                                                | ❌
- Lazy Loading             | ✅                                                | ❌
+ Lazy load translation scopes             | ✅                                                | ❌
  Multiple Fallbacks       | ✅                                                | ❌
  Hackable                 | ✅                                                | ✅
  Testing                  | ✅                                                | ✅ External library
