@@ -3,7 +3,6 @@
  <img width="50%" height="50%" src="https://raw.githubusercontent.com/ngneat/transloco/v1/logo.svg?sanitize=true">
 </p>
 
-
 > Translation can drive you crazy, here's the cure!
 
 The internationalization (i18n) library for Angular
@@ -43,7 +42,6 @@ The internationalization (i18n) library for Angular
   - [Transloco Loader](#transloco-loader)
   - [Transloco Interceptor](#transloco-interceptor)
   - [Transloco Transpiler](#transloco-transpiler)
-  - [Transloco Missing Handler](#transloco-missing-handler)
 - [Prefetch the User Language](#prefetch-the-user-language)
 - [Unit Testing](#unit-testing)
 - [Additional Functionality](#additional-functionality)
