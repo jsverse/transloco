@@ -7,7 +7,7 @@
 The internationalization (i18n) library for Angular
 
 [![Build Status](https://img.shields.io/travis/datorama/akita.svg?style=flat-square)](https://travis-ci.org/ngneat/transloco)
-[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
 [![commitizen](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)]()
 [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)]()
 [![coc-badge](https://img.shields.io/badge/codeof-conduct-ff69b4.svg?style=flat-square)]()
@@ -566,6 +566,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="https://www.netbasal.com"><img src="https://avatars1.githubusercontent.com/u/6745730?v=4" width="100px;" alt="Netanel Basal"/><br /><sub><b>Netanel Basal</b></sub></a><br /><a href="#blog-NetanelBasal" title="Blogposts">📝</a> <a href="#business-NetanelBasal" title="Business development">💼</a> <a href="https://github.com/NetanelBasal/transloco/commits?author=NetanelBasal" title="Code">💻</a> <a href="#content-NetanelBasal" title="Content">🖋</a> <a href="#design-NetanelBasal" title="Design">🎨</a> <a href="https://github.com/NetanelBasal/transloco/commits?author=NetanelBasal" title="Documentation">📖</a> <a href="#example-NetanelBasal" title="Examples">💡</a> <a href="#ideas-NetanelBasal" title="Ideas, Planning, & Feedback">🤔</a> <a href="#infra-NetanelBasal" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-NetanelBasal" title="Maintenance">🚧</a> <a href="#projectManagement-NetanelBasal" title="Project Management">📆</a> <a href="https://github.com/NetanelBasal/transloco/commits?author=NetanelBasal" title="Tests">⚠️</a></td>
     <td align="center"><a href="https://github.com/shaharkazaz"><img src="https://avatars2.githubusercontent.com/u/17194830?v=4" width="100px;" alt="Shahar Kazaz"/><br /><sub><b>Shahar Kazaz</b></sub></a><br /><a href="https://github.com/NetanelBasal/transloco/commits?author=shaharkazaz" title="Code">💻</a> <a href="#content-shaharkazaz" title="Content">🖋</a> <a href="https://github.com/NetanelBasal/transloco/commits?author=shaharkazaz" title="Documentation">📖</a> <a href="#ideas-shaharkazaz" title="Ideas, Planning, & Feedback">🤔</a> <a href="#infra-shaharkazaz" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-shaharkazaz" title="Maintenance">🚧</a> <a href="https://github.com/NetanelBasal/transloco/commits?author=shaharkazaz" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/itayod"><img src="https://avatars2.githubusercontent.com/u/6719615?v=4" width="100px;" alt="Itay Oded"/><br /><sub><b>Itay Oded</b></sub></a><br /><a href="https://github.com/NetanelBasal/transloco/commits?author=itayod" title="Code">💻</a> <a href="#ideas-itayod" title="Ideas, Planning, & Feedback">🤔</a> <a href="#infra-itayod" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-itayod" title="Maintenance">🚧</a> <a href="https://github.com/NetanelBasal/transloco/commits?author=itayod" title="Tests">⚠️</a></td>
   </tr>
 </table>
 

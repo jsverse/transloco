@@ -44,6 +44,19 @@
         "maintenance",
         "test"
       ]
+    },
+    {
+      "login": "itayod",
+      "name": "Itay Oded",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/6719615?v=4",
+      "profile": "https://github.com/itayod",
+      "contributions": [
+        "code",
+        "ideas",
+        "infra",
+        "maintenance",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7
