@@ -573,7 +573,7 @@ Transloco provides a schematics [command](https://github.com/ngneat/transloco/bl
 
 ## Support
 
-For any questions or deliberations join our [Gitter channel](https://gitter.im/ngneat-transloco/lobby#);
+For any questions or deliberations join our [Gitter channel](https://gitter.im/ngneat-transloco/lobby#)
 
 ## Contributors ✨
 
