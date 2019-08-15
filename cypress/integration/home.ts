@@ -27,9 +27,6 @@ export function generateContent(lang = 'english') {
   cy.get(`[data-cy=p-with-params]`).should('contain', `alert 🦄 ${lang}`);
   cy.get(`[data-cy=p-with-translation-reuse]`).should('contain', `a.b.c from list ${lang}`);
 
-  // Missing key
-  cy.get(`[data-cy=missing-key]`).should('contain', 'alertty');
-
   // Loop
   cy.get(`[data-cy=translation-loop]`).should('contain', `b ${lang}`);
   cy.get(`[data-cy=translation-loop]`).should('contain', `c ${lang}`);
