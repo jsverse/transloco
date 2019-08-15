@@ -552,7 +552,7 @@ translate('someKey');
 
 ### Migration from ngx-translate
 
-Transloco provides a schematics [command](https://github.com/ngneat/transloco/blob/v1/schematics/migration.md) that will help you with the migration process.
+Transloco provides a schematics [command](https://github.com/ngneat/transloco/blob/master/schematics/migration.md) that will help you with the migration process.
 
 ## Contributors ✨
 
