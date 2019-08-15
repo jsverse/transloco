@@ -15,13 +15,15 @@ describe('TranslocoParser', () => {
 
   it('should notify a warning message', () => {
     spyOn(console, 'warn');
-    parser.handle('myKey', {}, defaultConfig);
+    const result = parser.handle('myKey', {}, defaultConfig);
     expect(console.warn).toHaveBeenCalled();
+    expect(result).toEqual('myKey');
   });
 
   it('should not notify a warning message for production mode', () => {
     spyOn(console, 'warn');
-    parser.handle('myKey', {}, { ...defaultConfig, prodMode: true });
+    const result = parser.handle('myKey', {}, { ...defaultConfig, prodMode: true });
     expect(console.warn).not.toHaveBeenCalled();
+    expect(result).toEqual('myKey');
   });
 });

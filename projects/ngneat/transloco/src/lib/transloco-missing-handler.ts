@@ -15,6 +15,6 @@ export class DefaultHandler implements TranslocoMissingHandler {
       const msg = isFunction(key) ? `Missing value from translation callback` : `Missing translation for '${key}'`;
       console.warn(`%c ${msg} 🤔🕵🏻‍♀`, 'font-size: 12px; color: red');
     }
-    return '';
+    return key;
   }
 }

@@ -28,8 +28,8 @@ describe('TranslocoService', () => {
 
     it('should return empty string when the key is falsy', () => {
       expect(service.translate('')).toEqual('');
-      expect(service.translate(null)).toEqual('');
-      expect(service.translate(undefined)).toEqual('');
+      expect(service.translate(null)).toEqual(null);
+      expect(service.translate(undefined)).toEqual(undefined);
     });
 
     it('should return empty string when there is no translation file for the active lang', fakeAsync(() => {
@@ -72,7 +72,7 @@ describe('TranslocoService', () => {
 
     it('should support multi key translation', fakeAsync(() => {
       loadLang();
-      const expected = ['home english', 'a.b.c from list english', ''];
+      const expected = ['home english', 'a.b.c from list english', 'notexists'];
       expect(service.translate(['home', 'a.b.c', 'notexists'])).toEqual(expected);
     }));
 
