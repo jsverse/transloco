@@ -43,6 +43,7 @@ The internationalization (i18n) library for Angular
   - [Transloco Interceptor](#transloco-interceptor)
   - [Transloco Transpiler](#transloco-transpiler)
 - [Prefetch the User Language](#prefetch-the-user-language)
+- [MessageFormat Support](#messageformat-support)
 - [Unit Testing](#unit-testing)
 - [Additional Functionality](#additional-functionality)
 - [Comparison to other libraries](#comparison-to-other-libraries)
@@ -500,6 +501,40 @@ This will make sure the application doesn't bootstrap before Transloco loads the
 
 You can read more about it in [this article](https://netbasal.com/optimize-user-experience-while-your-angular-app-loads-7e982a67ff1a).
 
+## MessageFormat Support
+
+The library comes with support for [messageformat](https://messageformat.github.io/messageformat/).  
+Messageformat is a mechanism for handling both pluralization and gender in your app.
+
+You can see its format guide [here](https://messageformat.github.io/messageformat/page-guide).
+
+To enable support within Transloco app the following to the providers array in your `app.module.ts`:
+
+```ts
+import { MessageFormatTranspiler } from '@ngneat/transloco';
+
+...
+
+@NgModule({
+  providers: [
+    ...,
+    { provide: TRANSLOCO_TRANSPILER, useClass: MessageFormatTranspiler }
+  ]
+})
+
+```
+
+The `MessageFormatTranspiler` is compatible with the `DefaultTranspiler` and therefore you can switch without worry that it will break your current translations.
+
+It then enables support for the following within your i18n translation files:
+
+```js
+{
+  "mySelectRule": "{myVar, select, val1 {Value 1} val2 {Value 2} other {Other Value}}",
+  "myPluralRule": "{myCount, plural, =0 {no results} one {1 result} other {# results}}"
+}
+```
+
 ## Unit Testing
 
 When running specs, we want the have the languages available immediately, in a synchronous fashion. Transloco provides you with a `TranslocoTestingModule`, where you can pass the languages you need in your specs. For example:
@@ -557,19 +592,19 @@ Transloco provides a schematics [command](https://github.com/ngneat/transloco/bl
 
 ## Comparison to other libraries
 
- Feature                  | @ngneat/transloco                                 | @ngx-translate/core
- -------------------      | -------------------                               | --------------------------
- Multiple Languages       | ✅                                                | ❌
- Lazy Loading             | ✅                                                | ❌
- Multiple Fallbacks       | ✅                                                | ❌
- Hackable                 | ✅                                                | ✅
- Testing                  | ✅                                                | ✅ External library
- Structural Directive     | ✅                                                | ❌
- Attribute Directive      | ✅                                                | ✅
- Pipe                     | ✅                                                | ✅
- Ivy support              | ✅                                                | ❌
- Additional Functionality | ✅ [See here](#additional-functionality)          | ❌
- Plugins                  | WIP                                               | ✅ [See here](https://github.com/ngx-translate/core#plugins)
+| Feature                  | @ngneat/transloco                        | @ngx-translate/core                                          |
+| ------------------------ | ---------------------------------------- | ------------------------------------------------------------ |
+| Multiple Languages       | ✅                                       | ❌                                                           |
+| Lazy Loading             | ✅                                       | ❌                                                           |
+| Multiple Fallbacks       | ✅                                       | ❌                                                           |
+| Hackable                 | ✅                                       | ✅                                                           |
+| Testing                  | ✅                                       | ✅ External library                                          |
+| Structural Directive     | ✅                                       | ❌                                                           |
+| Attribute Directive      | ✅                                       | ✅                                                           |
+| Pipe                     | ✅                                       | ✅                                                           |
+| Ivy support              | ✅                                       | ❌                                                           |
+| Additional Functionality | ✅ [See here](#additional-functionality) | ❌                                                           |
+| Plugins                  | WIP                                      | ✅ [See here](https://github.com/ngx-translate/core#plugins) |
 
 ## Support
 

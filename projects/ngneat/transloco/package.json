@@ -42,5 +42,8 @@
     "replace-in-file": "^4.1.2",
     "ora": "^3.4.0"
   },
+  "peerDependencies": {
+    "messageformat": "^2.3.0"
+  },
   "license": "MIT"
 }

@@ -2,7 +2,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { TRANSLOCO_CONFIG, TranslocoConfig, TranslocoModule } from '@ngneat/transloco';
+import {
+  TRANSLOCO_CONFIG,
+  TranslocoConfig,
+  TranslocoModule,
+  TRANSLOCO_TRANSPILER,
+  MessageFormatTranspiler
+} from '@ngneat/transloco';
 import { HttpClientModule } from '@angular/common/http';
 import { HomeComponent } from './home/home.component';
 import { OnPushComponent } from './on-push/on-push.component';
@@ -23,10 +29,12 @@ import { webpackLoader } from './loaders/webpack.loader';
       useValue: {
         prodMode: environment.production,
         listenToLangChange: true,
-        fallbackLang: 'es',
+        fallbackLang: 'en',
         defaultLang: 'en'
       } as TranslocoConfig
     }
+    // Uncomment to use MessageFormatTranspiler
+    // { provide: TRANSLOCO_TRANSPILER, useClass: MessageFormatTranspiler }
   ],
   bootstrap: [AppComponent]
 })

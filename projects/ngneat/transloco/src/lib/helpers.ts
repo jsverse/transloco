@@ -1,6 +1,6 @@
 export function getValue(obj: object, path: string) {
   /* For cases where the key is like: 'general.something.thing' */
-  if (obj.hasOwnProperty(path)) {
+  if (obj && obj.hasOwnProperty(path)) {
     return obj[path];
   }
   return path.split('.').reduce((p, c) => (p && p[c]) || null, obj);

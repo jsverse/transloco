@@ -19,6 +19,10 @@ const routes: Routes = [
   {
     path: 'multilangs',
     loadChildren: './multilangs/multilangs.module#MultilangsModule'
+  },
+  {
+    path: 'transpilers',
+    loadChildren: './transpilers/transpilers.module#TranspilersModule'
   }
 ];
 

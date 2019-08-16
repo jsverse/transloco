@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { TranslocoService } from '@ngneat/transloco';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -14,6 +15,12 @@ export class AppComponent {
   }
 
   change(lang: string) {
-    this.service.setActiveLang(lang);
+    // Ensure new active lang is loaded
+    this.service
+      .load(lang)
+      .pipe(take(1))
+      .subscribe(() => {
+        this.service.setActiveLang(lang);
+      });
   }
 }
