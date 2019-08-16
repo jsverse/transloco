@@ -15,6 +15,7 @@ The internationalization (i18n) library for Angular
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e5079.svg?style=flat-square)](https://github.com/semantic-release/semantic-release)
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 [![spectator](https://img.shields.io/badge/tested%20with-spectator-2196F3.svg?style=flat-square)]()
+[![Join the chat at https://gitter.im/ngneat-transloco](https://badges.gitter.im/gitterHQ/gitter.svg)](https://gitter.im/ngneat-transloco/lobby?source=orgpage)
 
 ## Features
 
@@ -557,24 +558,24 @@ Transloco provides a schematics [command](https://github.com/ngneat/transloco/bl
 
 ## Comparison to other libraries
 
- Feature                  | @ngneat/transloco                                 | @ngx-translate/core
- -------------------      | -------------------                               | --------------------------
- Actively Maintained       | ✅                                                | ❌ [See here](https://github.com/ngx-translate/core/issues/783)
- listenToLangChange       | ✅                                                | ❌
- Custom Loading Template  | ✅                                                | ❌
- Multiple Languages       | ✅                                                | ✅*
- Lazy Load Translations   | ✅                                                | ✅*
- Multiple Fallbacks       | ✅                                                | ❌
- Hackable                 | ✅                                                | ✅
- Testing                  | ✅                                                | ✅ External library
- Structural Directive     | ✅                                                | ❌
- Attribute Directive      | ✅                                                | ✅
- Pipe                     | ✅                                                | ✅
- Ivy support              | ✅                                                | ❌ [See here](https://github.com/ngx-translate/core/issues/958)
- Additional Functionality | ✅ [See here](#additional-functionality)          | ❌
- Plugins                  | WIP                                               | ✅ [See here](https://github.com/ngx-translate/core#plugins)
+| Feature                  | @ngneat/transloco                        | @ngx-translate/core                                             |
+| ------------------------ | ---------------------------------------- | --------------------------------------------------------------- |
+| Actively Maintained      | ✅                                       | ❌ [See here](https://github.com/ngx-translate/core/issues/783) |
+| listenToLangChange       | ✅                                       | ❌                                                              |
+| Custom Loading Template  | ✅                                       | ❌                                                              |
+| Multiple Languages       | ✅                                       | ✅\*                                                            |
+| Lazy Load Translations   | ✅                                       | ✅\*                                                            |
+| Multiple Fallbacks       | ✅                                       | ❌                                                              |
+| Hackable                 | ✅                                       | ✅                                                              |
+| Testing                  | ✅                                       | ✅ External library                                             |
+| Structural Directive     | ✅                                       | ❌                                                              |
+| Attribute Directive      | ✅                                       | ✅                                                              |
+| Pipe                     | ✅                                       | ✅                                                              |
+| Ivy support              | ✅                                       | ❌ [See here](https://github.com/ngx-translate/core/issues/958) |
+| Additional Functionality | ✅ [See here](#additional-functionality) | ❌                                                              |
+| Plugins                  | WIP                                      | ✅ [See here](https://github.com/ngx-translate/core#plugins)    |
 
-(*) Works **only** by creating a new service instance and mark it as isolated, and it's not supported at the directive level.
+(\*) Works **only** by creating a new service instance and mark it as isolated, and it's not supported at the directive level.
 
 ## Support
 
