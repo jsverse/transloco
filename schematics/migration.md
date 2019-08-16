@@ -14,7 +14,7 @@ The `translate` pipe will be replaced with the `transloco` pipe.
 
 ##### Examples:
 
-1. `{{ "hello.world | translate }}"` will be replaced with`{{ "hello.world" | transloco }}"`
+1. `{{ "hello.world" | translate }}` will be replaced with`{{ "hello.world" | transloco }}`
 2. `<component [header]="'hello.world' | translate"...` will be replaced with `<component [header]="'hello.world' | transloco"...`
 
 ### Directives
