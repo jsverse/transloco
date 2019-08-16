@@ -606,6 +606,7 @@ Transloco provides a schematics [command](https://github.com/ngneat/transloco/bl
 | Additional Functionality | ✅ [See here](#additional-functionality) | ❌                                                           |
 | Plugins                  | WIP                                      | ✅ [See here](https://github.com/ngx-translate/core#plugins) |
 
+
 ## Support
 
 For any questions or deliberations join our [Gitter channel](https://gitter.im/ngneat-transloco/lobby#)
