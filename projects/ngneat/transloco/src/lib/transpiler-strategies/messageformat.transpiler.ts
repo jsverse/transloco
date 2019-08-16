@@ -5,13 +5,14 @@ import { HashMap, Translation } from '../types';
 import MessageFormat from 'messageformat';
 
 export class MessageFormatTranspiler implements TranslocoTranspiler {
+  defaultTranspiler: DefaultTranspiler = new DefaultTranspiler();
+  messageFormat: MessageFormat = new MessageFormat();
+
   transpile(value: string, params: HashMap = {}, translation: Translation): string {
-    const defaultTranspiler = new DefaultTranspiler();
-    value = defaultTranspiler.transpile(value, params, translation);
+    value = this.defaultTranspiler.transpile(value, params, translation);
 
     if (isString(value)) {
-      const messageFormat = new MessageFormat();
-      const message = messageFormat.compile(value);
+      const message = this.messageFormat.compile(value);
       const transpiled = message(params);
 
       return transpiled;
