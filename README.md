@@ -559,17 +559,22 @@ Transloco provides a schematics [command](https://github.com/ngneat/transloco/bl
 
  Feature                  | @ngneat/transloco                                 | @ngx-translate/core
  -------------------      | -------------------                               | --------------------------
- Multiple Languages       | ✅                                                | ❌
- Lazy load translation scopes             | ✅                                                | ❌
+ Actively Maintained       | ✅                                                | ❌ [See here](https://github.com/ngx-translate/core/issues/783)
+ listenToLangChange       | ✅                                                | ❌
+ Custom Loading Template  | ✅                                                | ❌
+ Multiple Languages       | ✅                                                | ✅*
+ Lazy Load Translations   | ✅                                                | ✅*
  Multiple Fallbacks       | ✅                                                | ❌
  Hackable                 | ✅                                                | ✅
  Testing                  | ✅                                                | ✅ External library
  Structural Directive     | ✅                                                | ❌
  Attribute Directive      | ✅                                                | ✅
  Pipe                     | ✅                                                | ✅
- Ivy support              | ✅                                                | ❌
+ Ivy support              | ✅                                                | ❌ [See here](https://github.com/ngx-translate/core/issues/958)
  Additional Functionality | ✅ [See here](#additional-functionality)          | ❌
  Plugins                  | WIP                                               | ✅ [See here](https://github.com/ngx-translate/core#plugins)
+
+(*) Works **only** by creating a new service instance and mark it as isolated, and it's not supported at the directive level.
 
 ## Support
 
