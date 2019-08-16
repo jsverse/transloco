@@ -18,4 +18,4 @@ export {
   TranslocoFallbackStrategy,
   DefaultFallbackStrategy
 } from './lib/transloco-fallback-strategy';
-
+export { MessageFormatTranspiler } from './lib/transpiler-strategies/messageformat.transpiler';

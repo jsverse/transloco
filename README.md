@@ -44,6 +44,7 @@ The internationalization (i18n) library for Angular
   - [Transloco Interceptor](#transloco-interceptor)
   - [Transloco Transpiler](#transloco-transpiler)
 - [Prefetch the User Language](#prefetch-the-user-language)
+- [MessageFormat Support](#messageformat-support)
 - [Unit Testing](#unit-testing)
 - [Additional Functionality](#additional-functionality)
 - [Comparison to other libraries](#comparison-to-other-libraries)
@@ -500,6 +501,46 @@ export const preLoad = {
 This will make sure the application doesn't bootstrap before Transloco loads the translation file based on the current user's language.
 
 You can read more about it in [this article](https://netbasal.com/optimize-user-experience-while-your-angular-app-loads-7e982a67ff1a).
+
+## MessageFormat Support
+
+The library comes with support for [messageformat](https://messageformat.github.io/messageformat/).  
+Messageformat is a mechanism for handling both pluralization and gender in your app.
+
+You can see its format guide [here](https://messageformat.github.io/messageformat/page-guide).
+
+MessageFormat Support is tree-shakebale. If you don't need it, it wont be included in your bundle!
+
+To enable support within Transloco, do the following:
+
+`npm install messageformat`
+
+Then add the following to the providers array in your `app.module.ts`:
+
+```ts
+import { MessageFormatTranspiler } from '@ngneat/transloco';
+
+...
+
+@NgModule({
+  providers: [
+    ...,
+    { provide: TRANSLOCO_TRANSPILER, useClass: MessageFormatTranspiler }
+  ]
+})
+
+```
+
+The `MessageFormatTranspiler` is compatible with the `DefaultTranspiler` and therefore you can switch without worry that it will break your current translations.
+
+It then enables support for the following within your i18n translation files:
+
+```js
+{
+  "mySelectRule": "{myVar, select, val1 {Value 1} val2 {Value 2} other {Other Value}}",
+  "myPluralRule": "{myCount, plural, =0 {no results} one {1 result} other {# results}}"
+}
+```
 
 ## Unit Testing
 
