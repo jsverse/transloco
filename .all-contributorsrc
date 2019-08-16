@@ -66,6 +66,18 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "Coly010",
+      "name": "Colum Ferry",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/12140467?v=4",
+      "profile": "https://github.com/Coly010",
+      "contributions": [
+        "code",
+        "doc",
+        "ideas",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7
