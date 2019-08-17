@@ -2,10 +2,11 @@ import { TranslocoTranspiler, DefaultTranspiler } from '../transloco.transpiler'
 import { isString } from '../helpers';
 import { HashMap, Translation } from '../types';
 
-import MessageFormat from 'messageformat';
+import * as MessageFormat from 'messageformat';
 
 export class MessageFormatTranspiler implements TranslocoTranspiler {
   defaultTranspiler: DefaultTranspiler = new DefaultTranspiler();
+  //@ts-ignore
   messageFormat: MessageFormat = new MessageFormat();
 
   transpile(value: string, params: HashMap = {}, translation: Translation): string {
