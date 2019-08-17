@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.1](https://github.com/ngneat/transloco/compare/v1.0.1...v1.1.1) (2019-08-17)
+
+### Bug Fixes
+
+- 🐛 fix format message import ([f3aa862](https://github.com/ngneat/transloco/commit/f3aa862))
+- 🐛 fix ng-add webpack loader template ([5aaee28](https://github.com/ngneat/transloco/commit/5aaee28))
+
+### Features
+
+- **lib:** 🎸 add messageformat support through custom transpiler ([#11](https://github.com/ngneat/transloco/issues/11)) ([1feb309](https://github.com/ngneat/transloco/commit/1feb309))
+
 ## [1.1.0](https://github.com/ngneat/transloco/compare/v1.0.1...v1.1.0) (2019-08-16)
 
 ### Features
