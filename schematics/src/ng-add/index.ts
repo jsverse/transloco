@@ -111,11 +111,12 @@ export function addProvidersToModuleDeclaration(options: SchemaOptions, provider
   };
 }
 
-function getLoaderTemplates(loader, path): Source {
+function getLoaderTemplates(loader, path, format: TranslationFileTypes): Source {
   const loaderFolder = loader === Loaders.Webpack ? 'webpack-loader' : 'http-loader';
   return apply(url(`./files/${loaderFolder}`), [
     template({
-      ts: 'ts'
+      ts: 'ts',
+      suffix: format === TranslationFileTypes.JSON ? '.json' : ''
     }),
     move('/', path)
   ]);
@@ -157,7 +158,7 @@ export default function(options: SchemaOptions): Rule {
             addImportsToModuleDeclaration(options, ['HttpClientModule'])
           ])
         : noop(),
-      mergeWith(getLoaderTemplates(options.loader, sourceRoot + '/' + rootModule)),
+      mergeWith(getLoaderTemplates(options.loader, sourceRoot + '/' + rootModule, options.translateType)),
       addImportsToModuleFile(options, ['environment'], '../environments/environment'),
       addImportsToModuleFile(options, ['translocoLoader'], './transloco.loader'),
       addImportsToModuleFile(options, ['TranslocoModule', 'TRANSLOCO_CONFIG', 'TranslocoConfig']),
