@@ -509,12 +509,6 @@ Messageformat is a mechanism for handling both pluralization and gender in your 
 
 You can see its format guide [here](https://messageformat.github.io/messageformat/page-guide).
 
-MessageFormat Support is tree-shakebale. If you don't need it, it wont be included in your bundle!
-
-To enable support within Transloco, do the following:
-
-`npm install messageformat`
-
 Then add the following to the providers array in your `app.module.ts`:
 
 ```ts
