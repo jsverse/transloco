@@ -40,7 +40,8 @@
   ],
   "dependencies": {
     "replace-in-file": "^4.1.2",
-    "ora": "^3.4.0"
+    "ora": "^3.4.0",
+    "messageformat": "^2.3.0"
   },
   "peerDependencies": {
     "@angular/core": ">=4.3.0 <9.0.0",
