@@ -19,4 +19,4 @@ export {
   DefaultFallbackStrategy
 } from './lib/transloco-fallback-strategy';
 export { MessageFormatTranspiler } from './lib/transpiler-strategies/messageformat.transpiler';
-export { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './lib/transloco-missing-handler.ts';
+export { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './lib/transloco-missing-handler';
