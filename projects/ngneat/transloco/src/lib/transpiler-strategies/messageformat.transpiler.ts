@@ -8,6 +8,10 @@ export class MessageFormatTranspiler implements TranslocoTranspiler {
   messageFormat: MessageFormat = new MessageFormat();
 
   transpile(value: string, params: HashMap = {}, translation: Translation): string {
+    if (!value) {
+      return value;
+    }
+
     const transpiled = this.defaultTranspiler.transpile(value, params, translation);
     const message = this.messageFormat.compile(transpiled);
 
