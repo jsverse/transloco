@@ -78,6 +78,15 @@
         "ideas",
         "test"
       ]
+    },
+    {
+      "login": "armanozak",
+      "name": "Levent Arman Özak",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/15855540?v=4",
+      "profile": "https://www.armanozak.com/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
