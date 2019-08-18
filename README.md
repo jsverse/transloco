@@ -22,7 +22,7 @@ The internationalization (i18n) library for Angular
 🛀 Clean and DRY templates <br>
 😴 Support for Lazy Load<br>
 😍 Support for Multiple Languagues<br>
-🧙‍♂️ Support for Multiple Fallbacks<br>
+🔥 Support for Multiple Fallbacks<br>
 🤓 Support for Testing<br>
 🦊 Hackable<br>
 
