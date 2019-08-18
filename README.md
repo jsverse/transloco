@@ -8,7 +8,7 @@
 The internationalization (i18n) library for Angular
 
 [![Build Status](https://img.shields.io/travis/datorama/akita.svg?style=flat-square)](https://travis-ci.org/ngneat/transloco)
-[![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-7-orange.svg?style=flat-square)](#contributors-)
 [![commitizen](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)]()
 [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)]()
 [![coc-badge](https://img.shields.io/badge/codeof-conduct-ff69b4.svg?style=flat-square)]()
@@ -631,6 +631,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://twitter.com/irustm"><img src="https://avatars1.githubusercontent.com/u/16316579?v=4" width="100px;" alt="Rustam"/><br /><sub><b>Rustam</b></sub></a><br /><a href="https://github.com/NetanelBasal/transloco/commits?author=irustm" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/Coly010"><img src="https://avatars2.githubusercontent.com/u/12140467?v=4" width="100px;" alt="Colum Ferry"/><br /><sub><b>Colum Ferry</b></sub></a><br /><a href="https://github.com/NetanelBasal/transloco/commits?author=Coly010" title="Code">💻</a> <a href="https://github.com/NetanelBasal/transloco/commits?author=Coly010" title="Documentation">📖</a> <a href="#ideas-Coly010" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/NetanelBasal/transloco/commits?author=Coly010" title="Tests">⚠️</a></td>
     <td align="center"><a href="https://www.armanozak.com/"><img src="https://avatars3.githubusercontent.com/u/15855540?v=4" width="100px;" alt="Levent Arman Özak"/><br /><sub><b>Levent Arman Özak</b></sub></a><br /><a href="https://github.com/NetanelBasal/transloco/commits?author=armanozak" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/theblushingcrow"><img src="https://avatars3.githubusercontent.com/u/638818?v=4" width="100px;" alt="Inbal Sinai"/><br /><sub><b>Inbal Sinai</b></sub></a><br /><a href="https://github.com/NetanelBasal/transloco/commits?author=theblushingcrow" title="Documentation">📖</a></td>
   </tr>
 </table>
 
