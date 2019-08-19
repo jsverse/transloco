@@ -26,8 +26,9 @@
 <h3 class="mtb">Directive</h3>
 <ul class="list-group">
   <li class="list-group-item" data-cy="d-regular"><b>Regular: </b><span transloco="home"></span></li>
-  <li class="list-group-item" (click)="changeParam()" data-cy="d-with-params">
-    <b>(click) With params: </b> <span transloco="params" [translocoParams]="{ value: dynamic }"></span>
+  <li class="list-group-item" data-cy="d-with-params">
+    <b class="pointer" (click)="changeParam()">(click) </b> <b>With params: </b>
+    <span transloco="params" [translocoParams]="{ value: dynamic }"></span>
   </li>
   <li class="list-group-item" data-cy="d-with-translation-reuse">
     <b>With translation reuse: </b> <span transloco="a.b.c"></span>

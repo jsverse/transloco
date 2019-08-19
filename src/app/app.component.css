@@ -1,3 +1,16 @@
 #logo {
   height: 50px;
 }
+
+.navbar {
+  box-shadow: 0 0 2px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+}
+
+.container {
+  margin-top: 130px;
+  z-index: 0;
+}

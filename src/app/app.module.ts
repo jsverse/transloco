@@ -32,9 +32,8 @@ import { webpackLoader } from './loaders/webpack.loader';
         fallbackLang: 'es',
         defaultLang: 'en'
       } as TranslocoConfig
-    }
-    // Uncomment to use MessageFormatTranspiler
-    // { provide: TRANSLOCO_TRANSPILER, useClass: MessageFormatTranspiler }
+    },
+    { provide: TRANSLOCO_TRANSPILER, useClass: MessageFormatTranspiler }
   ],
   bootstrap: [AppComponent]
 })

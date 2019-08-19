@@ -17,7 +17,7 @@
   <div id="navbarSupportedContent" class="collapse navbar-collapse">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" routerLink="">Home</a>
+        <a class="nav-link" routerLink="home">Home</a>
       </li>
       <li class="nav-item" routerLinkActive="active">
         <a class="nav-link" routerLink="lazy">Lazy</a>
@@ -33,11 +33,9 @@
       </li>
     </ul>
   </div>
-</nav>
 
-<div class="container">
-  <div class="d-flex justify-content-between">
-    <p class="mtb">
+  <div class="d-flex justify-content-between align-items-center">
+    <p class="mtb" style="margin-right: 10px">
       Active language: <b style="color: hotpink">{{ activeLang }}</b>
     </p>
     <div class="lang-btns">
@@ -62,7 +60,9 @@
   </div>
 
   <!-- Uncomment to test the TranslocoTestingModule
-  <h1 [transloco]="'home'"></h1> -->
+    <h1 [transloco]="'home'"></h1> -->
+</nav>
 
+<div class="container">
   <router-outlet></router-outlet>
 </div>
