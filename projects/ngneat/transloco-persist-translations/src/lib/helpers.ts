@@ -1,5 +1,6 @@
 import { isObservable, from, of, Observable } from 'rxjs';
 
+// TODO: Be DRY - take what we have from the ngneat/transloco
 export function isFunction(val: any): val is Function {
   return typeof val === 'function';
 }

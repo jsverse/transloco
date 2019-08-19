@@ -8,6 +8,8 @@ import { TranslocoPersistTranslationsTypes } from './transloco-persist-translati
 const getTimestampKey = key => `${key}/timestamp`;
 
 export function translocoPersistTranslationsFactory(
+  // TODO: change handler to storage
+  // TODO: change the order - loader, storage
   handler: TranslocoPersistTranslationsTypes,
   loader: TranslocoLoader,
   config: TranslocoPersistTranslationsConfig = {}
@@ -25,6 +27,7 @@ export class TranslocoPersistTranslations implements TranslocoLoader {
     this.clearOldStorage();
   }
 
+  // TODO: remove public, remove Promise type
   public getTranslation(lang: string): Observable<Translation> | Promise<Translation> {
     const storageKey = this.config.storageKey;
     return this.getCache(storageKey).pipe(
@@ -38,6 +41,10 @@ export class TranslocoPersistTranslations implements TranslocoLoader {
     );
   }
 
+  // TODO: Add clearCache method
+
+  // TODO: redundant | null
+  // TODO: change to getCached
   private getCache(key: string): Observable<Translation | null> | null {
     return observify(this.handler.getItem(key)).pipe(
       map(item => (item ? this.decode<Translation>(key, item) : null)),
@@ -47,7 +54,9 @@ export class TranslocoPersistTranslations implements TranslocoLoader {
 
   private setCache(key: string, lang: string, translation: Translation) {
     this.setTimestamp(key);
+    // TODO: change toSave to cachedTranslations
     this.getCache(key).subscribe(translations => {
+      // TODO: change toSave to translations
       const toSave = translations || {};
       toSave[lang] = translation;
       this.handler.setItem(key, this.encode(toSave));
@@ -80,11 +89,13 @@ export class TranslocoPersistTranslations implements TranslocoLoader {
     return observify(this.handler.getItem(getTimestampKey(key))).pipe(map((time: string) => parseInt(time)));
   }
 
+  // TODO: Change to clearCurrentStorage
   private clearOldStorage() {
     const storageKey = this.config.storageKey;
     this.getTimestamp(storageKey)
       .pipe(
         tap(time => {
+          // TODO: extract to a const isExpired = ...
           if (time && now() - time > this.config.lifeTime) {
             this.handler.removeItem(storageKey);
           }
