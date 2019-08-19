@@ -16,7 +16,8 @@
     "typeRoots": ["node_modules/@types"],
     "lib": ["es2018", "dom"],
     "paths": {
-      "@ngneat/transloco": ["./projects/ngneat/transloco/src/public-api.ts"]
+      "@ngneat/transloco": ["./projects/ngneat/transloco/src/public-api.ts"],
+      "@ngneat/transloco-persist-translations": ["dist/transloco-persist-translations/src/public-api.ts"]
     }
   }
 }
