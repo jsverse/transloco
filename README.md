@@ -595,6 +595,7 @@ Transloco provides a schematics [command](https://github.com/ngneat/transloco/bl
 
 | Feature                  | @ngneat/transloco                        | @ngx-translate/core                                             |
 | ------------------------ | ---------------------------------------- | --------------------------------------------------------------- |
+| Pluralization            | ✅                                       | ✅ External library
 | Actively Maintained      | ✅                                       | ❌ [See here](https://github.com/ngx-translate/core/issues/783) |
 | listenToLangChange       | ✅                                       | ❌                                                              |
 | Custom Loading Template  | ✅                                       | ❌                                                              |
