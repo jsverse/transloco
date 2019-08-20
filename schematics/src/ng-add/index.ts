@@ -21,7 +21,7 @@ import { addImportToModule, insertImport, addProviderToModule } from '../utils/a
 import { InsertChange } from '../utils/change';
 import { findRootModule } from '../utils/find-module';
 import { getProject } from '../utils/projects';
-import { SchemaOptions, Loaders, TranslationFileTypes } from './schema';
+import { SchemaOptions, Loaders, TranslationFileTypes, translationFileExtensions } from './schema';
 
 function jsonTranslationFileCreator(source, lang) {
   return source.create(
@@ -111,11 +111,12 @@ export function addProvidersToModuleDeclaration(options: SchemaOptions, provider
   };
 }
 
-function getLoaderTemplates(loader, path): Source {
+function getLoaderTemplates(loader, fileType, path): Source {
   const loaderFolder = loader === Loaders.Webpack ? 'webpack-loader' : 'http-loader';
   return apply(url(`./files/${loaderFolder}`), [
     template({
-      ts: 'ts'
+      ts: 'ts',
+      fileType
     }),
     move('/', path)
   ]);
@@ -131,6 +132,8 @@ export default function(options: SchemaOptions): Rule {
     const rootModule = options.module;
 
     const assetsPath = options.path;
+
+    const fileType = translationFileExtensions[options.translateType];
 
     const translationCreator =
       options.translateType === TranslationFileTypes.Typescript
@@ -157,7 +160,7 @@ export default function(options: SchemaOptions): Rule {
             addImportsToModuleDeclaration(options, ['HttpClientModule'])
           ])
         : noop(),
-      mergeWith(getLoaderTemplates(options.loader, sourceRoot + '/' + rootModule)),
+      mergeWith(getLoaderTemplates(options.loader, fileType, sourceRoot + '/' + rootModule)),
       addImportsToModuleFile(options, ['environment'], '../environments/environment'),
       addImportsToModuleFile(options, ['translocoLoader'], './transloco.loader'),
       addImportsToModuleFile(options, ['TranslocoModule', 'TRANSLOCO_CONFIG', 'TranslocoConfig']),

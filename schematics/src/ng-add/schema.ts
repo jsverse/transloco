@@ -8,6 +8,11 @@ export enum TranslationFileTypes {
   JSON = 'JSON'
 }
 
+export const translationFileExtensions: { [key in keyof typeof TranslationFileTypes]: string } = {
+  JSON: 'json',
+  Typescript: 'ts'
+};
+
 export interface SchemaOptions {
   /**
    * The languages of the project.
