@@ -27,6 +27,12 @@
       "enum": ["JSON", "Typescript"],
       "alias": "t"
     },
+    "ssr": {
+      "description": "If the user is working with server side rendering.",
+      "x-prompt": "\uD83D\uDE80 Are you working with server side rendering?",
+      "type": "boolean",
+      "default": false
+    },
     "path": {
       "description": "The translation files folder.",
       "x-prompt": "✍ Which folder will contain the translation files?",
