@@ -6,6 +6,7 @@ import { switchMap, take } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { TRANSLOCO_SCOPE } from './transloco-scope';
 import { TRANSLOCO_LANG } from './transloco-lang';
+import { getLangFromScope, getScopeFromLang } from './helpers';
 
 @Pipe({
   name: 'transloco',
@@ -65,7 +66,16 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
   }
 
   private updateValue(key: string, params?: HashMap): void {
-    const translation = this.translocoService.translate(key, params, this.langName);
+    let targetLang = this.langName;
+    /*
+      Scope docs
+    */
+    const scope = getScopeFromLang(this.langName);
+    if (scope) {
+      const { scopeStrategy } = this.translocoService.config;
+      targetLang = scopeStrategy === 'shared' ? getLangFromScope(this.langName) : this.langName;
+    }
+    const translation = this.translocoService.translate(key, params, targetLang);
     this.value = translation || key;
     this.cdr.markForCheck();
   }

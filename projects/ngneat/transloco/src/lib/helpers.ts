@@ -37,6 +37,10 @@ export function isObject(item): boolean {
   return item && typeof item === 'object' && !Array.isArray(item);
 }
 
+export function coerceArray(val) {
+  return Array.isArray(val) ? val : [val];
+}
+
 export function mergeDeep(target: Object, ...sources: Object[]) {
   if (!sources.length) return target;
   const source = sources.shift();
@@ -53,4 +57,41 @@ export function mergeDeep(target: Object, ...sources: Object[]) {
   }
 
   return mergeDeep(target, ...sources);
+}
+
+/*
+ * @example
+ *
+ * given: lazy-page/en => lazy-page
+ *
+ */
+export function getScopeFromLang(lang: string): string {
+  const split = lang.split('/');
+  split.pop();
+  return split.join('/');
+}
+
+/*
+ * @example
+ *
+ * given: lazy-page/en => en
+ *
+ */
+export function getLangFromScope(lang: string): string {
+  const split = lang.split('/');
+  return split.pop();
+}
+
+/*
+ * @example
+ *
+ * given: path-to-happiness => pathToHappiness
+ * given: path_to_happiness => pathToHappiness
+ * given: path-to_happiness => pathToHappiness
+ *
+ */
+export function camelizeScope(str) {
+  return str
+    .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => (index == 0 ? word.toLowerCase() : word.toUpperCase()))
+    .replace(/\s+|_|-/g, '');
 }

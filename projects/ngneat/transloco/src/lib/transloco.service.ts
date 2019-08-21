@@ -4,7 +4,15 @@ import { catchError, map, retry, shareReplay, tap } from 'rxjs/operators';
 import { TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_TRANSPILER, TranslocoTranspiler } from './transloco.transpiler';
 import { HashMap, Translation, TranslationCb, TranslocoEvents } from './types';
-import { getValue, isFunction, mergeDeep, setValue } from './helpers';
+import {
+  camelizeScope,
+  getLangFromScope,
+  getScopeFromLang,
+  getValue,
+  isFunction,
+  mergeDeep,
+  setValue
+} from './helpers';
 import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './transloco-missing-handler';
 import { TRANSLOCO_INTERCEPTOR, TranslocoInterceptor } from './transloco.interceptor';
@@ -59,8 +67,7 @@ export class TranslocoService {
     this.events$.subscribe(e => {
       if (e.type === 'translationLoadSuccess' && e.wasFailure) {
         // Handle scoped lang
-        const split = e.payload.lang.split('/');
-        const lang = split[split.length - 1];
+        const lang = getLangFromScope(e.payload.lang);
         this.setActiveLang(lang);
       }
     });
@@ -183,7 +190,7 @@ export class TranslocoService {
   getTranslation(): Map<string, Translation>;
   getTranslation(lang: string): Translation;
   getTranslation(lang?: string): Map<string, Translation> | Translation | undefined {
-    return lang ? this.translations.get(lang) : this.translations;
+    return lang ? this.translations.get(lang) || {} : this.translations;
   }
 
   /**
@@ -215,7 +222,7 @@ export class TranslocoService {
    */
   setTranslationKey(key: string, value: string, lang = this.getActiveLang()) {
     const translation = this.getTranslation(lang);
-    if (translation) {
+    if (Object.keys(translation).length > 0) {
       const withHook = this.interceptor.preSaveTranslationKey(key, value, lang);
       const newValue = setValue(translation, key, withHook);
       this.translations.set(lang, newValue);
@@ -226,10 +233,19 @@ export class TranslocoService {
   private _setTranslation(lang: string, translation: Translation) {
     const withHook = this.interceptor.preSaveTranslation(translation, lang);
     this.translations.set(lang, withHook);
+    const { scopeStrategy, scopeMapping } = this.config;
+    const currLang = getLangFromScope(lang);
+    const scope = getScopeFromLang(lang);
+    if (scope && scopeStrategy) {
+      const activeLang = this.getTranslation(currLang);
+      const key = camelizeScope(scopeMapping[scope] || scope);
+      const merged = setValue(activeLang, key, withHook);
+      this.translations.set(currLang, merged);
+    }
   }
 
   private handleSuccess(lang: string, translation: Translation) {
-    this._setTranslation(lang, translation);
+    this.setTranslation(translation, lang);
     if (this.failedLangs.has(lang) === false) {
       if (!this.config.prodMode) {
         console.log(`%c 🍻 Translation Load Success: ${lang}`, 'background: #fff; color: hotpink;');
