@@ -1,4 +1,4 @@
-import { MessageFormatTranspiler } from '../../../public-api';
+import { MessageFormatTranspiler } from '@ngneat/transloco';
 
 describe('MessageFormatTranslocoParser', () => {
   const parser = new MessageFormatTranspiler();

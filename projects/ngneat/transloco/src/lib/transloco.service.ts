@@ -233,10 +233,10 @@ export class TranslocoService {
   private _setTranslation(lang: string, translation: Translation) {
     const withHook = this.interceptor.preSaveTranslation(translation, lang);
     this.translations.set(lang, withHook);
-    const { scopeStrategy, scopeMapping } = this.config;
+    const { scopeStrategy, scopeMapping = {} } = this.config;
     const currLang = getLangFromScope(lang);
     const scope = getScopeFromLang(lang);
-    if (scope && scopeStrategy) {
+    if (scope && scopeStrategy === 'shared') {
       const activeLang = this.getTranslation(currLang);
       const key = camelizeScope(scopeMapping[scope] || scope);
       const merged = setValue(activeLang, key, withHook);

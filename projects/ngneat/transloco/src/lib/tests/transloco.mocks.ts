@@ -83,7 +83,7 @@ export function createService() {
     new DefaultTranspiler(),
     new DefaultHandler(),
     new DefaultInterceptor(),
-    { defaultLang: 'en' },
+    { defaultLang: 'en', scopeStrategy: 'shared' },
     new DefaultFallbackStrategy({ defaultLang: 'en', fallbackLang: 'en' })
   );
 }

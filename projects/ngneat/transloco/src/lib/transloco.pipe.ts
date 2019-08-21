@@ -1,7 +1,6 @@
 import { ChangeDetectorRef, Inject, OnDestroy, Optional, Pipe, PipeTransform } from '@angular/core';
 import { TranslocoService } from './transloco.service';
 import { HashMap } from './types';
-import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 import { switchMap, take } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { TRANSLOCO_SCOPE } from './transloco-scope';
@@ -22,12 +21,11 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
 
   constructor(
     private translocoService: TranslocoService,
-    @Inject(TRANSLOCO_CONFIG) private config: TranslocoConfig,
     @Optional() @Inject(TRANSLOCO_SCOPE) private providerScope: string | null,
     @Optional() @Inject(TRANSLOCO_LANG) private providerLang: string | null,
     private cdr: ChangeDetectorRef
   ) {
-    const { listenToLangChange } = { ...defaultConfig, ...this.config };
+    const { listenToLangChange } = this.translocoService.config;
     this.listenToLangChange = listenToLangChange;
   }
 
