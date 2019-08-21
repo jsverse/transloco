@@ -23,6 +23,9 @@
         <a class="nav-link" routerLink="lazy">Lazy</a>
       </li>
       <li class="nav-item" routerLinkActive="active">
+        <a class="nav-link" routerLink="merged-scope">Merged Scope</a>
+      </li>
+      <li class="nav-item" routerLinkActive="active">
         <a class="nav-link" routerLink="dynamic-translation">Dynamic Translation</a>
       </li>
       <li class="nav-item" routerLinkActive="active">
@@ -35,16 +38,13 @@
   </div>
 
   <div class="d-flex justify-content-between align-items-center">
-    <p class="mtb" style="margin-right: 10px">
-      Active language: <b style="color: hotpink">{{ activeLang }}</b>
-    </p>
     <div class="lang-btns">
       <button
         data-cy="en"
         class="btn my-2 my-sm-0"
         style="margin-right: 10px;"
         (click)="change('en')"
-        [ngClass]="{ 'btn-outline-primary': activeLang === 'en', 'btn-outline-secondary': activeLang !== 'en' }"
+        [ngClass]="{ 'btn-primary': activeLang === 'en', 'btn-secondary': activeLang !== 'en' }"
       >
         English
       </button>
@@ -52,7 +52,7 @@
         data-cy="es"
         class="btn my-2 my-sm-0"
         (click)="change('es')"
-        [ngClass]="{ 'btn-outline-primary': activeLang === 'es', 'btn-outline-secondary': activeLang !== 'es' }"
+        [ngClass]="{ 'btn-primary': activeLang === 'es', 'btn-secondary': activeLang !== 'es' }"
       >
         Spanish
       </button>

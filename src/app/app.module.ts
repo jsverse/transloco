@@ -30,7 +30,12 @@ import { webpackLoader } from './loaders/webpack.loader';
         prodMode: environment.production,
         listenToLangChange: true,
         fallbackLang: 'es',
-        defaultLang: 'en'
+        defaultLang: 'en',
+        scopeStrategy: 'shared',
+        scopeMapping: {
+          'todos-page': 'todos',
+          'transpilers/messageformat': 'mf'
+        }
       } as TranslocoConfig
     },
     { provide: TRANSLOCO_TRANSPILER, useClass: MessageFormatTranspiler }
