@@ -202,13 +202,17 @@ export class TranslocoService {
    * setTranslation({ ... }, 'en')
    * setTranslation({ ... }, 'admin-page/en', { merge: false } )
    */
-  setTranslation(data: Translation, lang = this.getActiveLang(), options: { merge?: boolean } = {}) {
-    const defaults = { merge: true };
+  setTranslation(
+    data: Translation,
+    lang = this.getActiveLang(),
+    options: { merge?: boolean; emitChange?: boolean } = {}
+  ) {
+    const defaults = { merge: true, emitChange: true };
     const mergedOptions = { ...defaults, ...options };
     const translation = this.getTranslation(lang) || {};
     const merged = mergedOptions.merge ? mergeDeep(translation, data) : data;
     this._setTranslation(lang, merged);
-    this.setActiveLang(this.getActiveLang());
+    mergedOptions.emitChange && this.setActiveLang(this.getActiveLang());
   }
 
   /**
@@ -225,8 +229,7 @@ export class TranslocoService {
     if (Object.keys(translation).length > 0) {
       const withHook = this.interceptor.preSaveTranslationKey(key, value, lang);
       const newValue = setValue(translation, key, withHook);
-      this.translations.set(lang, newValue);
-      this.setActiveLang(this.getActiveLang());
+      this.setTranslation(newValue, lang);
     }
   }
 
@@ -245,7 +248,7 @@ export class TranslocoService {
   }
 
   private handleSuccess(lang: string, translation: Translation) {
-    this.setTranslation(translation, lang);
+    this.setTranslation(translation, lang, { emitChange: false });
     if (this.failedLangs.has(lang) === false) {
       if (!this.config.prodMode) {
         console.log(`%c 🍻 Translation Load Success: ${lang}`, 'background: #fff; color: hotpink;');

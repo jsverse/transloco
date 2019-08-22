@@ -15,14 +15,14 @@
 >
 <h6><u>And here is the result:</u></h6>
 <ng-container *transloco="let t">
-  <p data-cy="scoped">{{ t.todos.title }}</p>
+  <p data-cy="todos-page-scope">{{ t.todos.title }}</p>
   <p data-cy="global">{{ t.home }}</p>
 </ng-container>
 <h4><u>More Examples:</u></h4>
 <h5><u>Directive</u></h5>
 <h6><u>Scope is set to `lazy-page` inline</u></h6>
-<p data-cy="lazy-page-scoped" transloco="lazyPage.title" translocoScope="lazy-page"></p>
-<p data-cy="lazy-page-scoped" transloco="b"></p>
+<p data-cy="d-lazy-page-scope" transloco="lazyPage.title" translocoScope="lazy-page"></p>
+<p data-cy="d-global" transloco="b"></p>
 <h5><u>Pipe</u></h5>
-<p>{{ 'todos.title' | transloco }}</p>
-<p>{{ 'c' | transloco }}</p>
+<p data-cy="p-todos-page-scope">{{ 'todos.title' | transloco }}</p>
+<p data-cy="p-global">{{ 'c' | transloco }}</p>

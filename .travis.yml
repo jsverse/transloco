@@ -2,6 +2,19 @@ language: node_js
 cache:
   directories:
     - ~/.npm
+    - ~/.cache
+  override:
+    - npm ci
+    - npm run cy:verify
+defaults: &defaults
+        script:
+          #   ## print all Travis environment variables for debugging
+          - $(npm bin)/print-env TRAVIS
+          - npm run start &
+          - npm run e2e:headless
+          # after all tests finish running we need
+          # to kill all background jobs (like "npm start &")
+          - kill $(jobs -p) || true
 notifications:
   email: true
 node_js:

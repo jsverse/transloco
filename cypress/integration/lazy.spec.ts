@@ -3,7 +3,7 @@ export function generateContentLoader() {
   cy.get(`.transloco-loader-template`).should('contain', `Loading template...`);
 }
 
-export function generateContent(lang = 'english') {
+export function generateLazyContent(lang = 'english') {
   // Structural Directive
   cy.get(`[data-cy=regular]`).should('contain', `Admin ${lang}`);
   cy.get(`[data-cy=lazy-page]`).should('contain', `Admin Lazy ${lang}`);
@@ -26,10 +26,10 @@ describe('Lazy Load', () => {
   it('should display lazy translation', () => {
     cy.get(`[data-cy=es]`).click();
 
-    generateContent('spanish');
+    generateLazyContent('spanish');
 
     cy.get(`[data-cy=en]`).click();
-    generateContent();
+    generateLazyContent();
   });
 
   it('should not display loader template after loaded once', () => {

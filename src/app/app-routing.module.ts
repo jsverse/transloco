@@ -17,8 +17,8 @@ const routes: Routes = [
     loadChildren: './lazy/lazy.module#LazyModule'
   },
   {
-    path: 'merged-scope',
-    loadChildren: './merged-scope/merged-scope.module#MergedScopeModule'
+    path: 'scope-sharing',
+    loadChildren: './scope-sharing/scope-sharing.module#ScopeSharingModule'
   },
   {
     path: 'dynamic-translation',

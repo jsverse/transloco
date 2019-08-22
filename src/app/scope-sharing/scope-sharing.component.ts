@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'merged-scope',
-  templateUrl: './merged-scope.component.html',
+  selector: 'scope-sharing',
+  templateUrl: './scope-sharing.component.html',
   styleUrls: []
 })
-export class MergedScopeComponent implements OnInit {
+export class ScopeSharingComponent implements OnInit {
   ex = {
     one: `  <ng-container *transloco="let t">
     <p>{{ t.todosPage.title }}</p>

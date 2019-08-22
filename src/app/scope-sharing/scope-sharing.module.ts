@@ -1,18 +1,18 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MergedScopeComponent } from './merged-scope.component';
+import { ScopeSharingComponent } from './scope-sharing.component';
 import { RouterModule, Routes } from '@angular/router';
 import { TRANSLOCO_LOADING_TEMPLATE, TRANSLOCO_SCOPE, TranslocoModule } from '@ngneat/transloco';
 
 const routes: Routes = [
   {
     path: '',
-    component: MergedScopeComponent
+    component: ScopeSharingComponent
   }
 ];
 
 @NgModule({
-  declarations: [MergedScopeComponent],
+  declarations: [ScopeSharingComponent],
   providers: [
     { provide: TRANSLOCO_SCOPE, useValue: 'todos-page' },
     {
@@ -22,4 +22,4 @@ const routes: Routes = [
   ],
   imports: [CommonModule, RouterModule.forChild(routes), TranslocoModule]
 })
-export class MergedScopeModule {}
+export class ScopeSharingModule {}
