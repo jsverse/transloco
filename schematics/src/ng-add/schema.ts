@@ -33,4 +33,8 @@ export interface SchemaOptions {
    * The root project name.
    */
   project: string;
+  /**
+   * If the user is working with server side rendering.
+   */
+  ssr: boolean;
 }
