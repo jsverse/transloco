@@ -1,6 +1,5 @@
 import { WorkspaceSchema } from '@angular-devkit/core/src/experimental/workspace';
 import { SchematicsException, Tree } from '@angular-devkit/schematics';
-import { WorkspaceProject } from '@schematics/angular/utility/workspace-models';
 
 export function getWorkspacePath(host: Tree): string {
   const possibleFiles = ['/angular.json', '/.angular.json'];
@@ -27,4 +26,15 @@ export function getProject(host: Tree, project?: string) {
   }
 
   throw new SchematicsException('could not find a workspace project');
+}
+
+export function setEnvironments(host: Tree, sourceRoot: string, transformer: (env: string) => string) {
+  const path = sourceRoot + '/environments';
+  const environments = host.getDir(path);
+  return environments.subfiles.forEach(file => {
+    const filePath = `${path}/${file}`;
+    const configBuffer = host.read(filePath);
+    const source = configBuffer.toString('utf-8');
+    host.overwrite(filePath, transformer(source));
+  });
 }

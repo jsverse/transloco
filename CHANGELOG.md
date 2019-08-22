@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.3](https://github.com/ngneat/transloco/compare/v1.0.1...v1.1.3) (2019-08-22)
+
+### Bug Fixes
+
+- 🐛 fix format message import ([f8815dc](https://github.com/ngneat/transloco/commit/f8815dc))
+- 🐛 schematics ng-add import-default bug ([#29](https://github.com/ngneat/transloco/issues/29)) ([35229e0](https://github.com/ngneat/transloco/commit/35229e0))
+
+### Build System
+
+- add peerDependencies to package.json ([22b0af5](https://github.com/ngneat/transloco/commit/22b0af5))
+
+### Features
+
+- 🎸 added ssr question to ng-add ([#30](https://github.com/ngneat/transloco/issues/30)) ([7bcd15d](https://github.com/ngneat/transloco/commit/7bcd15d))
+- **lib:** 🎸 add messageformat support through custom transpiler ([#11](https://github.com/ngneat/transloco/issues/11)) ([1feb309](https://github.com/ngneat/transloco/commit/1feb309))
+
+### [1.1.2](https://github.com/ngneat/transloco/compare/v1.0.1...v1.1.2) (2019-08-22)
+
+### Bug Fixes
+
+- 🐛 fix format message import ([f8815dc](https://github.com/ngneat/transloco/commit/f8815dc))
+- 🐛 schematics ng-add import-default bug ([#29](https://github.com/ngneat/transloco/issues/29)) ([35229e0](https://github.com/ngneat/transloco/commit/35229e0))
+
+### Build System
+
+- add peerDependencies to package.json ([22b0af5](https://github.com/ngneat/transloco/commit/22b0af5))
+
+### Features
+
+- 🎸 added ssr question to ng-add ([#30](https://github.com/ngneat/transloco/issues/30)) ([7bcd15d](https://github.com/ngneat/transloco/commit/7bcd15d))
+- **lib:** 🎸 add messageformat support through custom transpiler ([#11](https://github.com/ngneat/transloco/issues/11)) ([1feb309](https://github.com/ngneat/transloco/commit/1feb309))
+
 ## [1.1.0](https://github.com/ngneat/transloco/compare/v1.0.1...v1.1.0) (2019-08-16)
 
 ### Features
@@ -49,19 +81,3 @@ All notable changes to this project will be documented in this file. See [standa
 - added setTranslation && setTranslationKey methods ([fdf2ade](https://github.com/ngneat/transloco/commit/fdf2ade))
 - added support for multi key translation ([#46](https://github.com/ngneat/transloco/issues/46)) ([15378c5](https://github.com/ngneat/transloco/commit/15378c5))
 - lazy load ([6dc1f72](https://github.com/ngneat/transloco/commit/6dc1f72))
-- lazy load ([ee68219](https://github.com/ngneat/transloco/commit/ee68219))
-
-### Tests
-
-- 💍 add key is path test ([2406bd8](https://github.com/ngneat/transloco/commit/2406bd8))
-- 💍 cypress ([fd3622b](https://github.com/ngneat/transloco/commit/fd3622b))
-- 💍 update specs ([5f0629c](https://github.com/ngneat/transloco/commit/5f0629c))
-- **transloco-transpiler:** add spec for nested lang keys ([9dc7875](https://github.com/ngneat/transloco/commit/9dc7875))
-- add missing coverage specs ([101f1f1](https://github.com/ngneat/transloco/commit/101f1f1))
-- added e2e test to lazy page ([f06c922](https://github.com/ngneat/transloco/commit/f06c922)), closes [#33](https://github.com/ngneat/transloco/issues/33)
-- created change-translation e2e tests ([e693c12](https://github.com/ngneat/transloco/commit/e693c12))
-- cypress prod url ([4c464a6](https://github.com/ngneat/transloco/commit/4c464a6))
-- **transloco-service:** add specs ([3af51c6](https://github.com/ngneat/transloco/commit/3af51c6))
-- **transloco-service:** fix pr ([58b6624](https://github.com/ngneat/transloco/commit/58b6624))
-- test params pipe ([331b7e0](https://github.com/ngneat/transloco/commit/331b7e0))
-- test params pipe ([#27](https://github.com/ngneat/transloco/issues/27)) ([1ffa3a2](https://github.com/ngneat/transloco/commit/1ffa3a2))
