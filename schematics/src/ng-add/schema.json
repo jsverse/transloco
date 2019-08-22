@@ -13,7 +13,6 @@
     },
     "loader": {
       "description": "The loader strategy for the translate files.",
-      "x-prompt": "\uD83D\uDD25 Which loader do you want to use? Webpack or HTTP ",
       "type": "string",
       "default": "Http",
       "enum": ["Http", "Webpack"],
@@ -21,7 +20,6 @@
     },
     "translateType": {
       "description": "The translation files type.",
-      "x-prompt": "\uD83D\uDE80 Which type of translation files you use? Typescript or JSON",
       "type": "string",
       "default": "JSON",
       "enum": ["JSON", "Typescript"],
