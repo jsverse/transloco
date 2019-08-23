@@ -5,7 +5,7 @@
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors init",
     "hooks:pre-commit": "node hooks/pre-commit.js",
-    "release": "standard-version",
+    "release": "cd projects/ngneat/transloco/ && standard-version --infile ../../../CHANGELOG.md",
     "commit": "git-cz",
     "prettier": "prettier --write \"**/*.{js,json,css,scss,less,md,ts,html,component.html}\"",
     "start": "ng serve --port 8889 --open",
