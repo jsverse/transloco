@@ -15,15 +15,22 @@ import { OnPushComponent } from './on-push/on-push.component';
 import { httpLoader } from './loaders/http.loader';
 import { preLoad } from './preload';
 import { environment } from '../environments/environment';
-import { webpackLoader } from './loaders/webpack.loader';
+import { TranslocoPersistLangModule } from '@ngneat/transloco-persist-lang';
 
 @NgModule({
   declarations: [AppComponent, HomeComponent, OnPushComponent],
-  imports: [BrowserModule, AppRoutingModule, TranslocoModule, HttpClientModule],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    TranslocoModule,
+    HttpClientModule,
+    TranslocoPersistLangModule.init({
+      storage: 'session'
+    })
+  ],
   providers: [
     preLoad,
     httpLoader,
-    // webpackLoader,
     {
       provide: TRANSLOCO_CONFIG,
       useValue: {

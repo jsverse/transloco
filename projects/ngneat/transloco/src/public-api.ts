@@ -19,3 +19,5 @@ export {
   DefaultFallbackStrategy
 } from './lib/transloco-fallback-strategy';
 export { MessageFormatTranspiler } from './lib/transpiler-strategies/messageformat.transpiler';
+export * from './lib/types';
+export { isNotBrowser } from './lib/helpers';

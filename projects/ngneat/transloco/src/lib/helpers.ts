@@ -54,3 +54,7 @@ export function mergeDeep(target: Object, ...sources: Object[]) {
 
   return mergeDeep(target, ...sources);
 }
+
+export function isNotBrowser() {
+  return typeof window === 'undefined';
+}

@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
-import { catchError, map, retry, shareReplay, tap } from 'rxjs/operators';
+import { catchError, distinctUntilChanged, map, retry, shareReplay, tap } from 'rxjs/operators';
 import { TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_TRANSPILER, TranslocoTranspiler } from './transloco.transpiler';
 import { HashMap, Translation, TranslationCb, TranslocoEvents } from './types';
-import { getValue, isFunction, mergeDeep, setValue } from './helpers';
+import { getValue, isFunction, isNotBrowser, mergeDeep, setValue } from './helpers';
 import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './transloco-missing-handler';
 import { TRANSLOCO_INTERCEPTOR, TranslocoInterceptor } from './transloco.interceptor';
@@ -51,7 +51,7 @@ export class TranslocoService {
     this.mergedConfig = { ...defaultConfig, ...this.userConfig };
     this.setDefaultLang(this.mergedConfig.defaultLang);
     this.lang = new BehaviorSubject<string>(this.getDefaultLang());
-    this.langChanges$ = this.lang.asObservable();
+    this.langChanges$ = this.lang.asObservable().pipe(distinctUntilChanged());
 
     /**
      * When we have a failure, we want to define the next language that succeeded as the active
@@ -221,6 +221,36 @@ export class TranslocoService {
       this.translations.set(lang, newValue);
       this.setActiveLang(this.getActiveLang());
     }
+  }
+
+  /**
+   * Returns the language code name from the browser, e.g. "de"
+   *
+   * @example
+   *
+   * service.getBrowserLang()
+   */
+  getBrowserLang() {
+    if (isNotBrowser()) {
+      return undefined;
+    }
+
+    let browserLang: any = window.navigator.languages ? window.navigator.languages[0] : null;
+    browserLang =
+      browserLang ||
+      window.navigator.language ||
+      (window.navigator as any).browserLanguage ||
+      (window.navigator as any).userLanguage;
+
+    if (browserLang.indexOf('-') !== -1) {
+      browserLang = browserLang.split('-')[0];
+    }
+
+    if (browserLang.indexOf('_') !== -1) {
+      browserLang = browserLang.split('_')[0];
+    }
+
+    return browserLang;
   }
 
   private _setTranslation(lang: string, translation: Translation) {
