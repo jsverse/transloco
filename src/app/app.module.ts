@@ -11,6 +11,7 @@ import {
 } from '@ngneat/transloco';
 import { HttpClientModule } from '@angular/common/http';
 import { HomeComponent } from './home/home.component';
+import { cacheLoaderProviders } from './loaders/cache.loader';
 import { OnPushComponent } from './on-push/on-push.component';
 import { httpLoader } from './loaders/http.loader';
 import { preLoad } from './preload';
@@ -22,6 +23,7 @@ import { webpackLoader } from './loaders/webpack.loader';
   imports: [BrowserModule, AppRoutingModule, TranslocoModule, HttpClientModule],
   providers: [
     preLoad,
+    // ...cacheLoaderProviders,
     httpLoader,
     // webpackLoader,
     {

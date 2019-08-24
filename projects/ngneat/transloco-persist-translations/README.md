@@ -1,25 +1,66 @@
 # TranslocoPersistTranslations
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.2.0.
+A persisting translations cache plugin for Transloco.
 
-## Code scaffolding
+## Installation
 
-Run `ng generate component component-name --project transloco-persist-translations` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project transloco-persist-translations`.
+```
+npm install @ngneat/transloco-persist-translations
+```
 
-> Note: Don't forget to add `--project transloco-persist-translations` or else it will be added to the default project in your `angular.json` file.
+##Usage
+To use the cache, simply provide it as your transloco loader, while passing `translocoPersistTranslationsFactory` you'r original loader and a storage class.
 
-## Build
+```typescript
+// app.module
+import {TranslocoModule, TRANSLOCO_LOADER, TranslocoLoader} from '@ngneat/transloco';
+import {translocoPersistTranslationsFactory} from '@ngneat/transloco-persist-translations';
 
-Run `ng build transloco-persist-translations` to build the project. The build artifacts will be stored in the `dist/` directory.
 
-## Publishing
+export function translocoLoaderFactory(loader: TranslocoLoader) {
+  return translocoPersistTranslationsFactory(loader, localStorage);
+}
 
-After building your library with `ng build transloco-persist-translations`, go to the dist folder `cd dist/transloco-persist-translations` and run `npm publish`.
+@NgModule({
+  imports: [TranslocoModule],
+  providers: [
+    HttpLoader,
+    {
+      provide: TRANSLOCO_LOADER,
+      deps: [HttpLoader],
+      useFactory: translocoLoaderFactory
+    }
+  ],
+  ...
+})
+export class AppModule {}
 
-## Running unit tests
+```
 
-Run `ng test transloco-persist-translations` to execute the unit tests via [Karma](https://karma-runner.github.io).
+### Configuration
 
-## Further help
+`translocoPersistTranslationsFactory` can also receive a configuration object with a default values as it's 3rd parameter:
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+```typescript
+config: TranslocoPersistTranslationsConfig = {
+  ttl: 86400, // One day
+  storageKey: '@transloco/translations'
+};
+```
+
+- `ttl`: How long the cache should live in seconds.
+- `storageKey`: The key to be used to save the translations data.
+
+### Clear Storage
+
+The storage cleanup is done automatically once the `ttl` is passed, but it could also can be done manually by calling `clearCache` method from the cache service:
+
+```typescript
+export class AppComponent {
+  constructor(@Inject(TRANSLOCO_LOADER) private loader: TranslocoPersistTranslations) {}
+
+  clearTranslationsCache() {
+    this.loader.clearCache();
+  }
+}
+```
