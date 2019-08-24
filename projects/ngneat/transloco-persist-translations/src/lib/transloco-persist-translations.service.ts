@@ -1,36 +1,34 @@
 import { Translation, TranslocoLoader } from '@ngneat/transloco';
 import { Observable, from, of } from 'rxjs';
-import { map, take, tap, switchMap } from 'rxjs/operators';
-import { isObject, isString, now, observify } from './helpers';
+import { map, take, tap, switchMap, filter } from 'rxjs/operators';
+import { isObject, isString } from '../../../transloco/src/lib/helpers';
+import { now, observify } from './helpers';
 import { defaultConfig, TranslocoPersistTranslationsConfig } from './transloco-persist-translations.config';
-import { TranslocoPersistTranslationsTypes } from './transloco-persist-translations.types';
+import { TranslocoStorage } from './transloco.storage';
 
 const getTimestampKey = key => `${key}/timestamp`;
 
 export function translocoPersistTranslationsFactory(
-  // TODO: change handler to storage
-  // TODO: change the order - loader, storage
-  handler: TranslocoPersistTranslationsTypes,
   loader: TranslocoLoader,
+  storage: TranslocoStorage,
   config: TranslocoPersistTranslationsConfig = {}
 ): TranslocoLoader {
   const mergedConfig = { ...defaultConfig, ...config };
-  return new TranslocoPersistTranslations(mergedConfig, handler, loader);
+  return new TranslocoPersistTranslations(loader, storage, mergedConfig);
 }
 
 export class TranslocoPersistTranslations implements TranslocoLoader {
   constructor(
-    private config: TranslocoPersistTranslationsConfig,
-    private handler: TranslocoPersistTranslationsTypes,
-    private loader: TranslocoLoader
+    private loader: TranslocoLoader,
+    private storage: TranslocoStorage,
+    private config: TranslocoPersistTranslationsConfig
   ) {
-    this.clearOldStorage();
+    this.clearCurrentStorage();
   }
 
-  // TODO: remove public, remove Promise type
-  public getTranslation(lang: string): Observable<Translation> | Promise<Translation> {
+  getTranslation(lang: string): Observable<Translation> {
     const storageKey = this.config.storageKey;
-    return this.getCache(storageKey).pipe(
+    return this.getCached(storageKey).pipe(
       switchMap(translations =>
         translations && translations[lang]
           ? of(translations[lang])
@@ -41,25 +39,24 @@ export class TranslocoPersistTranslations implements TranslocoLoader {
     );
   }
 
-  // TODO: Add clearCache method
+  clearCache() {
+    this.clearTimestamp(this.config.storageKey);
+    this.clearTranslations();
+  }
 
-  // TODO: redundant | null
-  // TODO: change to getCached
-  private getCache(key: string): Observable<Translation | null> | null {
-    return observify(this.handler.getItem(key)).pipe(
+  private getCached(key: string): Observable<Translation | null> {
+    return observify(this.storage.getItem(key)).pipe(
       map(item => (item ? this.decode<Translation>(key, item) : null)),
       take(1)
     );
   }
 
   private setCache(key: string, lang: string, translation: Translation) {
-    this.setTimestamp(key);
-    // TODO: change toSave to cachedTranslations
-    this.getCache(key).subscribe(translations => {
-      // TODO: change toSave to translations
-      const toSave = translations || {};
-      toSave[lang] = translation;
-      this.handler.setItem(key, this.encode(toSave));
+    this.getCached(key).subscribe(cachedTranslations => {
+      const translations = cachedTranslations || {};
+      translations[lang] = translation;
+      this.setTimestamp(key);
+      this.storage.setItem(key, this.encode(translations));
     });
   }
 
@@ -82,22 +79,30 @@ export class TranslocoPersistTranslations implements TranslocoLoader {
   }
 
   private setTimestamp(key: string): void {
-    this.handler.setItem(getTimestampKey(key), now());
+    this.storage.setItem(getTimestampKey(key), now());
   }
 
   private getTimestamp(key: string): Observable<number> {
-    return observify(this.handler.getItem(getTimestampKey(key))).pipe(map((time: string) => parseInt(time)));
+    return observify(this.storage.getItem(getTimestampKey(key))).pipe(map((time: string) => parseInt(time)));
   }
 
-  // TODO: Change to clearCurrentStorage
-  private clearOldStorage() {
+  private clearTimestamp(key: string): void {
+    this.storage.removeItem(getTimestampKey(key));
+  }
+
+  private clearTranslations(): void {
+    this.storage.removeItem(this.config.storageKey);
+  }
+
+  private clearCurrentStorage() {
     const storageKey = this.config.storageKey;
     this.getTimestamp(storageKey)
       .pipe(
+        filter(time => !!time),
         tap(time => {
-          // TODO: extract to a const isExpired = ...
-          if (time && now() - time > this.config.lifeTime) {
-            this.handler.removeItem(storageKey);
+          const isExpired = now() - time >= this.config.ttl;
+          if (isExpired) {
+            this.storage.removeItem(storageKey);
           }
         })
       )

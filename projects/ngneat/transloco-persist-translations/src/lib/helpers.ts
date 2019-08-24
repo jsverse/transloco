@@ -1,17 +1,5 @@
 import { isObservable, from, of, Observable } from 'rxjs';
-
-// TODO: Be DRY - take what we have from the ngneat/transloco
-export function isFunction(val: any): val is Function {
-  return typeof val === 'function';
-}
-
-export function isString(val: any): val is string {
-  return typeof val === 'string';
-}
-
-export function isObject(item): boolean {
-  return item && typeof item === 'object' && !Array.isArray(item);
-}
+import { isFunction } from '../../../transloco/src/lib/helpers';
 
 export function isPromise(v: any) {
   return v && isFunction(v.then);
