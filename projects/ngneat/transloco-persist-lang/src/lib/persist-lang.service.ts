@@ -1,39 +1,42 @@
-import { Inject, Injectable } from '@angular/core';
-import { isNotBrowser, TranslocoService } from '@ngneat/transloco';
+import {
+  getBrowserCultureLang,
+  getBrowserLang,
+  isBrowser,
+  isFunction,
+  PersistStorage,
+  TranslocoService
+} from '@ngneat/transloco';
 import { skip } from 'rxjs/operators';
-import { defaults, PersistLangConfig, TRANSLOCO_PERSIST_LANG_CONFIG } from './persist-lang.config';
-import { cookiesStorage } from './cookie-storage';
-import { noopStorage } from './noop-storage';
+import {
+  PersistLangConfig,
+  TRANSLOCO_PERSIST_LANG_CONFIG,
+  TRANSLOCO_PERSIST_LANG_STROAGE
+} from './persist-lang.config';
+import { Inject, Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class TranslocoPersistLangService {
-  private mergedConfig: PersistLangConfig;
+  private storageKey: string;
 
   constructor(
     private service: TranslocoService,
+    @Inject(TRANSLOCO_PERSIST_LANG_STROAGE) private storage: PersistStorage,
     @Inject(TRANSLOCO_PERSIST_LANG_CONFIG) private config: PersistLangConfig
   ) {
-    this.mergedConfig = { ...defaults, ...(this.config || {}) };
-    if (isNotBrowser() === false) {
+    this.storageKey = config.storageKey || 'translocoLang';
+
+    if (isBrowser()) {
       this.updateStorageOnLangChange();
-      this.mergedConfig.strategy === 'auto' && this.setActiveLang();
+      this.setActiveLang();
     }
   }
 
   getCachedLang(): string | null {
-    if (isNotBrowser() === false) {
-      return this.getStorage().getItem(this.storageKey);
-    }
-
-    return null;
+    return isBrowser() ? this.storage.getItem(this.storageKey) : null;
   }
 
   clear() {
-    this.getStorage().removeItem(this.storageKey);
-  }
-
-  private get storageKey() {
-    return this.mergedConfig.storageKey;
+    isBrowser() && this.storage.removeItem(this.storageKey);
   }
 
   private updateStorageOnLangChange() {
@@ -43,27 +46,23 @@ export class TranslocoPersistLangService {
   }
 
   private setActiveLang() {
-    const cached = this.getStorage().getItem(this.storageKey);
-    const browserLang = this.service.getBrowserLang();
+    const cachedLang = this.storage.getItem(this.storageKey);
+    const browserLang = getBrowserLang();
+    const cultureLang = getBrowserCultureLang();
     const defaultLang = this.service.config.defaultLang;
-    const currentLang = cached || browserLang || defaultLang;
-    currentLang && this.service.setActiveLang(currentLang);
+    const activeLang = isFunction(this.config.getLangFn)
+      ? this.config.getLangFn({
+          browserLang,
+          defaultLang,
+          cultureLang,
+          cachedLang
+        })
+      : cachedLang || defaultLang;
+
+    activeLang && this.service.setActiveLang(activeLang);
   }
 
   private save(lang: string) {
-    this.getStorage().setItem(this.storageKey, lang);
-  }
-
-  private getStorage() {
-    switch (this.mergedConfig.storage) {
-      case 'local':
-        return localStorage;
-      case 'session':
-        return sessionStorage;
-      case 'cookie':
-        return cookiesStorage(this.mergedConfig);
-      default:
-        return noopStorage;
-    }
+    this.storage.setItem(this.storageKey, lang);
   }
 }

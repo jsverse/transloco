@@ -587,6 +587,13 @@ import { translate } from '@ngneat/transloco';
 translate('someKey');
 ```
 
+- `getBrowserLang()` - Returns the language code name from the browser, e.g. "en"
+- `getBrowserCultureLang()` - Returns the culture language code name from the browser, e.g. "en-US"
+
+```ts
+import { getBrowserLang, getBrowserCultureLang } from 'ngneat/transloco';
+```
+
 ## Migration from ngx-translate
 
 Transloco provides a schematics [command](https://github.com/ngneat/transloco/blob/master/schematics/migration.md) that will help you with the migration process.

@@ -18,4 +18,4 @@ export type FailedEvent = {
 export type TranslocoEvents = LoadedEvent | FailedEvent;
 export type Translation = HashMap<any>;
 export type TranslationCb<T> = (translation: T, params?: HashMap) => string;
-export type PersisStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>;
+export type PersistStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>;

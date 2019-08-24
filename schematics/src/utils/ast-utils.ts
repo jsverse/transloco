@@ -31,7 +31,8 @@ export function insertImport(
   allImports.forEach(node => {
     node.getChildren().forEach(child => {
       if (child.kind === ts.SyntaxKind.ImportClause) {
-        child.getChildren().forEach((c: any) =>
+        child.getChildren().forEach((c: any) => {
+          if (!c.elements) return;
           c.elements.forEach(elem => {
             symbolName = symbolName
               .split(', ')
@@ -39,8 +40,8 @@ export function insertImport(
                 return elem.name.text !== symbol;
               })
               .join(', ');
-          })
-        );
+          });
+        });
       }
     });
   });

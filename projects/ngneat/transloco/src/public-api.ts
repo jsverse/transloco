@@ -19,5 +19,7 @@ export {
   DefaultFallbackStrategy
 } from './lib/transloco-fallback-strategy';
 export { MessageFormatTranspiler } from './lib/transpiler-strategies/messageformat.transpiler';
+export { getBrowserCultureLang, getBrowserLang } from './lib/browser-lang';
+export { isBrowser } from './lib/helpers';
 export * from './lib/types';
-export { isNotBrowser } from './lib/helpers';
+export * from './lib/helpers';

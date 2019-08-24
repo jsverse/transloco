@@ -3,11 +3,11 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {
+  MessageFormatTranspiler,
   TRANSLOCO_CONFIG,
-  TranslocoConfig,
-  TranslocoModule,
   TRANSLOCO_TRANSPILER,
-  MessageFormatTranspiler
+  TranslocoConfig,
+  TranslocoModule
 } from '@ngneat/transloco';
 import { HttpClientModule } from '@angular/common/http';
 import { HomeComponent } from './home/home.component';
@@ -15,7 +15,11 @@ import { OnPushComponent } from './on-push/on-push.component';
 import { httpLoader } from './loaders/http.loader';
 import { preLoad } from './preload';
 import { environment } from '../environments/environment';
-import { TranslocoPersistLangModule } from '@ngneat/transloco-persist-lang';
+import { TRANSLOCO_PERSIST_LANG_STROAGE, TranslocoPersistLangModule } from '@ngneat/transloco-persist-lang';
+
+export function getLangFn({ cachedLang, browserLang, cultureLang, defaultLang }) {
+  return cachedLang || defaultLang;
+}
 
 @NgModule({
   declarations: [AppComponent, HomeComponent, OnPushComponent],
@@ -25,7 +29,11 @@ import { TranslocoPersistLangModule } from '@ngneat/transloco-persist-lang';
     TranslocoModule,
     HttpClientModule,
     TranslocoPersistLangModule.init({
-      storage: 'session'
+      getLangFn,
+      storage: {
+        provide: TRANSLOCO_PERSIST_LANG_STROAGE,
+        useValue: localStorage
+      }
     })
   ],
   providers: [

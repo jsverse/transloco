@@ -4,7 +4,7 @@ import { catchError, distinctUntilChanged, map, retry, shareReplay, tap } from '
 import { TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_TRANSPILER, TranslocoTranspiler } from './transloco.transpiler';
 import { HashMap, Translation, TranslationCb, TranslocoEvents } from './types';
-import { getValue, isFunction, isNotBrowser, mergeDeep, setValue } from './helpers';
+import { getValue, isFunction, mergeDeep, setValue } from './helpers';
 import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './transloco-missing-handler';
 import { TRANSLOCO_INTERCEPTOR, TranslocoInterceptor } from './transloco.interceptor';
@@ -221,36 +221,6 @@ export class TranslocoService {
       this.translations.set(lang, newValue);
       this.setActiveLang(this.getActiveLang());
     }
-  }
-
-  /**
-   * Returns the language code name from the browser, e.g. "de"
-   *
-   * @example
-   *
-   * service.getBrowserLang()
-   */
-  getBrowserLang() {
-    if (isNotBrowser()) {
-      return undefined;
-    }
-
-    let browserLang: any = window.navigator.languages ? window.navigator.languages[0] : null;
-    browserLang =
-      browserLang ||
-      window.navigator.language ||
-      (window.navigator as any).browserLanguage ||
-      (window.navigator as any).userLanguage;
-
-    if (browserLang.indexOf('-') !== -1) {
-      browserLang = browserLang.split('-')[0];
-    }
-
-    if (browserLang.indexOf('_') !== -1) {
-      browserLang = browserLang.split('_')[0];
-    }
-
-    return browserLang;
   }
 
   private _setTranslation(lang: string, translation: Translation) {

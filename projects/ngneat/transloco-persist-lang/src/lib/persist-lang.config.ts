@@ -1,17 +1,10 @@
-import { InjectionToken } from '@angular/core';
+import { InjectionToken, Provider } from '@angular/core';
 
 export type PersistLangConfig = {
-  storage?: 'local' | 'session' | 'cookie';
+  storage: Provider;
   storageKey?: string;
-  cookieExpiry?: number;
-  strategy?: 'auto' | 'manual';
+  getLangFn?: (langs: { cachedLang: string; browserLang: string; cultureLang: string; defaultLang: string }) => string;
 };
 
-export const TRANSLOCO_PERSIST_LANG_CONFIG = new InjectionToken<PersistLangConfig>('TRANSLOCO_PERSIST_LANG_CONFIG');
-
-export const defaults: Partial<PersistLangConfig> = {
-  storageKey: 'translocoLang',
-  storage: 'local',
-  strategy: 'auto',
-  cookieExpiry: 720 // a month
-};
+export const TRANSLOCO_PERSIST_LANG_STROAGE = new InjectionToken('TRANSLOCO_PERSIST_LANG_STROAGE');
+export const TRANSLOCO_PERSIST_LANG_CONFIG = new InjectionToken('TRANSLOCO_PERSIST_LANG_CONFIG');

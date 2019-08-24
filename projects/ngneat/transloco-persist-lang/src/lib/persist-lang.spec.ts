@@ -1,42 +1,48 @@
 import { TranslocoPersistLangService } from './persist-lang.service';
 import { BehaviorSubject } from 'rxjs';
 
-let storage = {};
+let fakeStorage = {
+  storage: {},
+  getItem: jasmine.createSpy().and.callFake(function(key) {
+    return this.storage[key];
+  }),
+  setItem: jasmine.createSpy().and.callFake(function(key, value) {
+    this.storage[key] = value;
+  }),
+  removeItem: jasmine.createSpy().and.callFake(function(key) {
+    delete this.storage[key];
+  })
+};
 
 describe('PersistLang - auto', () => {
   const translocoService = createService();
   let service;
 
   beforeAll(() => {
-    setupSpies();
+    // @ts-ignore
+    spyOn(TranslocoPersistLangService.prototype, 'setActiveLang').and.callThrough();
 
-    service = new TranslocoPersistLangService(translocoService as any, {
-      strategy: 'auto'
-    });
+    service = new TranslocoPersistLangService(translocoService as any, fakeStorage, {} as any);
   });
 
   describe('Save lang to storage', () => {
     it('should skip the initial lang', () => {
-      // @ts-ignore
       spyOn(service, 'save').and.callThrough();
-      // @ts-ignore
       expect(service.save).not.toHaveBeenCalled();
     });
 
     it('should save the lang in storage upon change', () => {
-      // @ts-ignore
       spyOn(service, 'save').and.callThrough();
       translocoService.setActiveLang('es');
-      // @ts-ignore
       expect(service.save).toHaveBeenCalledWith('es');
-      expect(localStorage.setItem).toHaveBeenCalledWith('translocoLang', 'es');
+      expect(fakeStorage.setItem).toHaveBeenCalledWith('translocoLang', 'es');
     });
   });
 
   describe('Get lang from storage', () => {
     it('should get the lang from storage', () => {
       expect(service.setActiveLang).toHaveBeenCalled();
-      expect(localStorage.getItem).toHaveBeenCalledWith('translocoLang');
+      expect(fakeStorage.getItem).toHaveBeenCalledWith('translocoLang');
       expect(translocoService.langChanges$.getValue()).toEqual('es');
     });
 
@@ -51,29 +57,9 @@ describe('PersistLang - auto', () => {
   });
 });
 
-describe('PersistLang - manual', () => {
-  const translocoService = createService();
-  let service;
-
-  beforeAll(() => {
-    setupSpies();
-
-    service = new TranslocoPersistLangService(translocoService as any, {
-      strategy: 'manual'
-    });
-  });
-
-  it('should not auto set the lang from the storage', () => {
-    expect(service.setActiveLang).not.toHaveBeenCalled();
-  });
-});
-
 function createService() {
   return {
     langChanges$: new BehaviorSubject('en'),
-    getBrowserLang() {
-      return 'es';
-    },
     setActiveLang(lang) {
       this.langChanges$.next(lang);
     },
@@ -81,21 +67,4 @@ function createService() {
       defaultLang: 'en'
     }
   };
-}
-
-function setupSpies() {
-  // @ts-ignore
-  spyOn(TranslocoPersistLangService.prototype, 'setActiveLang').and.callThrough();
-
-  spyOn(localStorage, 'getItem').and.callFake(key => {
-    return storage[key];
-  });
-
-  spyOn(localStorage, 'setItem').and.callFake((key, value) => {
-    storage[key] = value;
-  });
-
-  spyOn(localStorage, 'removeItem').and.callFake(key => {
-    delete storage[key];
-  });
 }
