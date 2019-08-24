@@ -605,6 +605,7 @@ Transloco provides a schematics [command](https://github.com/ngneat/transloco/bl
 | Actively Maintained      | ✅                                       | ❌ [See here](https://github.com/ngx-translate/core/issues/783) | ✅           |
 | Runtime Lang Change      | ✅                                       | ✅                                                              | ❌           |
 | listenToLangChange       | ✅                                       | ❌                                                              | ❌           |
+| Schematics               | ✅                                       | ❌                                                              | ❌           |
 | Custom Loading Template  | ✅                                       | ❌                                                              | ❌           |
 | Multiple Languages       | ✅                                       | ✅\*                                                            | ❌           |
 | Lazy Load Translations   | ✅                                       | ✅\*                                                            | ✅           |
