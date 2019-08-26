@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/ngneat/transloco/compare/v1.2.0...v1.3.0) (2019-08-26)
+
+### Bug Fixes
+
+- 🐛 global scoep translations in pipe and directive ([c4d0993](https://github.com/ngneat/transloco/commit/c4d0993))
+- 🐛 global scope might not be loaded when sharing scope ([d094764](https://github.com/ngneat/transloco/commit/d094764))
+
+### Features
+
+- 🎸 scope strategy - shared ([84eb7ec](https://github.com/ngneat/transloco/commit/84eb7ec))
+
+### Tests
+
+- 💍 finish testing ([104ecd3](https://github.com/ngneat/transloco/commit/104ecd3))
+- 💍 fix cypress specs ([7fdfe11](https://github.com/ngneat/transloco/commit/7fdfe11))
+- 💍 shared scope - update specs ([50f3362](https://github.com/ngneat/transloco/commit/50f3362))
+
 ## [1.2.0](https://github.com/ngneat/transloco/compare/v1.0.1...v1.2.0) (2019-08-23)
 
 ### Bug Fixes
