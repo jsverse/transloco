@@ -113,6 +113,7 @@ export function addProvidersToModuleDeclaration(options: SchemaOptions, provider
 
 function getLoaderTemplates(options, path): Source {
   const loaderFolder = options.loader === Loaders.Webpack ? 'webpack-loader' : 'http-loader';
+
   return apply(url(`./files/${loaderFolder}`), [
     template({
       ts: 'ts',
@@ -137,11 +138,8 @@ export default function(options: SchemaOptions): Rule {
   return (host: Tree, context: SchematicContext) => {
     const langs = options.langs.split(',').map(l => l.trim());
     const project = getProject(host, options.project);
-
     const sourceRoot = (project && project.sourceRoot) || 'src';
-
-    const rootModule = options.module;
-
+    const isLib = project.projectType === 'library';
     const assetsPath = options.path;
 
     const translationCreator =
@@ -152,13 +150,15 @@ export default function(options: SchemaOptions): Rule {
     const translateFiles = apply(source(createTranslateFiles(langs, translationCreator)), [move('/', assetsPath)]);
 
     options.module = findRootModule(host, options.module, sourceRoot) as string;
+    const modulePath = options.module.substring(0, options.module.lastIndexOf('/') + 1);
+    const prodMode = isLib ? 'false' : 'environment.production';
     const configProviderTemplate = `{
       provide: TRANSLOCO_CONFIG,
       useValue: {
         listenToLangChange: false,
         defaultLang: 'en',
         fallbackLang: 'es',
-        prodMode: environment.production,
+        prodMode: ${prodMode},
         scopeStrategy: 'shared'
       } as TranslocoConfig
     }`;
@@ -175,8 +175,8 @@ export default function(options: SchemaOptions): Rule {
             addImportsToModuleDeclaration(options, ['HttpClientModule'])
           ])
         : noop(),
-      mergeWith(getLoaderTemplates(options, sourceRoot + '/' + rootModule)),
-      addImportsToModuleFile(options, ['environment'], '../environments/environment'),
+      mergeWith(getLoaderTemplates(options, modulePath)),
+      isLib ? noop() : addImportsToModuleFile(options, ['environment'], '../environments/environment'),
       addImportsToModuleFile(options, ['translocoLoader'], './transloco.loader'),
       addImportsToModuleFile(options, ['TranslocoModule', 'TRANSLOCO_CONFIG', 'TranslocoConfig']),
       addImportsToModuleDeclaration(options, ['TranslocoModule']),

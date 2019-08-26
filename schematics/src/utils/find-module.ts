@@ -16,13 +16,17 @@ export function findRootModule(host: Tree, module: string, rootPath = '', skipIm
     return undefined;
   }
 
-  const modulePath = normalize(`${rootPath}/${module}/${module}`);
+  const modulePath = normalize(`${rootPath}/${module}`);
   if (host.exists(modulePath)) {
     return modulePath;
   } else if (host.exists(modulePath + '.ts')) {
     return normalize(modulePath + '.ts');
   } else if (host.exists(modulePath + '.module.ts')) {
     return normalize(modulePath + '.module.ts');
+  } else if (host.exists(`${modulePath}/${module}.module.ts`)) {
+    return normalize(`${modulePath}/${module}.module.ts`);
+  } else if (host.exists(`${modulePath}/${module}.ts`)) {
+    return normalize(`${modulePath}/${module}.ts`);
   } else {
     throw new Error(`Specified module path ${modulePath} does not exist`);
   }
