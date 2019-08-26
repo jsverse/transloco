@@ -64,8 +64,15 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
       .pipe(
         switchMap(globalLang => {
           const lang = this.getLang(globalLang);
-          const scope = this.getScope();
-          this.langName = scope ? `${scope}/${lang}` : lang;
+          let langName = lang;
+          if (this.inlineScope) {
+            langName = `${this.inlineScope}/${lang}`;
+          } else if (this.providerScope) {
+            const globalKey =
+              this.translocoService.isSharedScope && this.tpl === null && this.key.split('.')[0] !== this.providerScope;
+            langName = !globalKey && this.providerScope ? `${this.providerScope}/${lang}` : lang;
+          }
+          this.langName = langName;
           return this.translocoService.load(this.langName);
         }),
         listenToLangChange ? source => source : take(1)

@@ -49,7 +49,8 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
       .pipe(
         switchMap(activeLang => {
           const lang = this.providerLang || activeLang;
-          this.langName = this.providerScope ? `${this.providerScope}/${lang}` : lang;
+          const globalKey = this.translocoService.isSharedScope && key.split('.')[0] !== this.providerScope;
+          this.langName = !globalKey && this.providerScope ? `${this.providerScope}/${lang}` : lang;
           return this.translocoService.load(this.langName);
         }),
         this.listenToLangChange ? source => source : take(1)
@@ -70,8 +71,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
     */
     const scope = getScopeFromLang(this.langName);
     if (scope) {
-      const { scopeStrategy } = this.translocoService.config;
-      targetLang = scopeStrategy === 'shared' ? getLangFromScope(this.langName) : this.langName;
+      targetLang = this.translocoService.isSharedScope ? getLangFromScope(this.langName) : this.langName;
     }
     const translation = this.translocoService.translate(key, params, targetLang);
     this.value = translation || key;

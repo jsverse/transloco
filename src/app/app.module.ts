@@ -13,14 +13,14 @@ import { HttpClientModule } from '@angular/common/http';
 import { HomeComponent } from './home/home.component';
 import { OnPushComponent } from './on-push/on-push.component';
 import { httpLoader } from './loaders/http.loader';
-import { preLoad } from './preload';
+// import { preLoad } from './preload';
 import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [AppComponent, HomeComponent, OnPushComponent],
   imports: [BrowserModule, AppRoutingModule, TranslocoModule, HttpClientModule],
   providers: [
-    preLoad,
+    // preLoad,
     httpLoader,
     {
       provide: TRANSLOCO_CONFIG,

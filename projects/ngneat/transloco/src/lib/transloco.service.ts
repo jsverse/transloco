@@ -73,6 +73,10 @@ export class TranslocoService {
     });
   }
 
+  get isSharedScope(): boolean {
+    return this.config.scopeStrategy === 'shared';
+  }
+
   get config(): TranslocoConfig {
     return this.mergedConfig;
   }
