@@ -5,14 +5,15 @@ import { TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_TRANSPILER, TranslocoTranspiler } from './transloco.transpiler';
 import { HashMap, Translation, TranslationCb, TranslocoEvents } from './types';
 import {
-  camelizeScope,
+  dashCaseToCamelCase,
   getLangFromScope,
   getScopeFromLang,
   getValue,
   isFunction,
   mergeDeep,
   setValue,
-  size
+  size,
+  isEmpty
 } from './helpers';
 import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './transloco-missing-handler';
@@ -231,7 +232,7 @@ export class TranslocoService {
    */
   setTranslationKey(key: string, value: string, lang = this.getActiveLang()) {
     const translation = this.getTranslation(lang);
-    if (Object.keys(translation).length > 0) {
+    if (!isEmpty(translation)) {
       const withHook = this.interceptor.preSaveTranslationKey(key, value, lang);
       const newValue = setValue(translation, key, withHook);
       this.setTranslation(newValue, lang);
@@ -260,7 +261,7 @@ export class TranslocoService {
     const scope = getScopeFromLang(lang);
     if (scope && scopeStrategy === 'shared') {
       const activeLang = this.getTranslation(currLang);
-      const key = camelizeScope(scopeMapping[scope] || scope);
+      const key = dashCaseToCamelCase(scopeMapping[scope] || scope);
       const merged = setValue(activeLang, key, withHook);
       this.translations.set(currLang, merged);
     }

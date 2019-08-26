@@ -266,9 +266,9 @@ Let's say we have a todos page and we want to create separate translation files 
       ├─ es.json
 ```
 
-We have several ways of telling Transloco to use them, via setting the `TRANSLOCO_SCOPE` provider based on Angular's DI rules.
+There are 3 levels of setting the translation scope:
 
-We can set it the providers list of a _lazy module_:
+1. We can set it inside the _lazy module_ module providers :
 
 ```ts
 const routes: Routes = [
@@ -286,7 +286,7 @@ const routes: Routes = [
 export class TodosModule {}
 ```
 
-We can set it in a component's providers:
+2. We can set it in a component's providers:
 
 ```ts
 @Component({
@@ -302,7 +302,7 @@ We can set it in a component's providers:
 export class MyComponent {}
 ```
 
-Or we can set the `scope` input in the `transloco` structural directive:
+3. We can set the `scope` input in the `transloco` structural directive:
 
 ```html
 <ng-container *transloco="let t; scope: 'todos';">
@@ -312,7 +312,7 @@ Or we can set the `scope` input in the `transloco` structural directive:
 
 Each one of these options tells Transloco to load the corresponding `scope` based on the current language and merge it under the `scope` namespace into the active language translation object.
 
-For example, if the current language is `en`, it will load the file `todos/en.json` and set the response to be the following:
+For example, if the current language is `en`, it will load the `todos/en.json` file, and will set the response to be the following:
 
 ```ts
 {
@@ -325,7 +325,7 @@ For example, if the current language is `en`, it will load the file `todos/en.js
 }
 ```
 
-So now we can access each one of the `todos` keys by using the `todos` namespace:
+Now we can access each one of the `todos` keys by using the `todos` namespace:
 
 ```html
 {{ 'todos.title' | transloco }}
@@ -347,7 +347,7 @@ By default, the namespace will be the scope name (capitalized), but we can overr
 }
 ```
 
-And now we can access it through `customName` instead of the original scope name (`todos` in our case):
+Now we can access it through `customName` instead of the original scope name (`todos` in our case):
 
 ```html
 {{ 'customName.title' | transloco }}

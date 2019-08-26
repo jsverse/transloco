@@ -41,6 +41,10 @@ export function size(collection) {
   return !!collection ? collection.length : 0;
 }
 
+export function isEmpty(collection) {
+  return size(collection) === 0;
+}
+
 export function isFunction(val: any): val is Function {
   return typeof val === 'function';
 }
@@ -106,7 +110,7 @@ export function getLangFromScope(lang: string): string {
  * given: path-to_happiness => pathToHappiness
  *
  */
-export function camelizeScope(str) {
+export function dashCaseToCamelCase(str: string): string {
   return str
     .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => (index == 0 ? word.toLowerCase() : word.toUpperCase()))
     .replace(/\s+|_|-|\//g, '');
