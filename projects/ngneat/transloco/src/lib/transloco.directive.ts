@@ -71,9 +71,9 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
         listenToLangChange ? source => source : take(1)
       )
       .subscribe(() => {
-        /*
-          Scope docs
-         */
+        /* In case the scope strategy is set to 'shared' we want to load the scope's language instead of the scope
+        itself in order to expose the global translations as well.
+        the scopes translations are merged to the global when using this strategy */
         let targetLang = this.langName;
         const scope = this.getScope();
         if (scope) {
