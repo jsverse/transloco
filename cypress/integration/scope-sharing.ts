@@ -9,5 +9,5 @@ export function testScopeSharingContent(lang = 'english') {
 
   // Pipe
   cy.get(`[data-cy=p-todos-page-scope]`).should('contain', `My scope name was mapped! ${lang}`);
-  cy.get(`[data-cy=p-global]`).should('contain', `c`);
+  cy.get(`[data-cy=p-global]`).should('contain', `home ${lang}`);
 }

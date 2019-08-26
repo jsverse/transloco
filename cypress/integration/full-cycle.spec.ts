@@ -1,9 +1,10 @@
 import { testHomeContent } from './home';
-import { generateLazyContent, generateContentWithoutLoader } from './lazy.spec';
+import { generateLazyContent, generateContentWithoutLoader } from './lazy';
 import { testScopeSharingContent } from './scope-sharing';
 import { testDynamicContent } from './dynamic-translation';
 import { testMultiLangContent } from './multi-lang';
 import { testTranspilersContent } from './transpilers';
+import { generateContentLoader } from './lazy';
 
 function changeLang(lang) {
   cy.get(`[data-cy=${lang}]`).click();
@@ -63,5 +64,31 @@ describe('Transloco Full Cycle', () => {
     testTranspilersContent('spanish');
     changeLang('en');
     testTranspilersContent();
+  });
+});
+
+describe('Lazy Load', () => {
+  beforeEach(() => {
+    cy.visit('/lazy');
+  });
+
+  it('should display loading template', () => {
+    generateContentLoader();
+  });
+
+  it('should display lazy translation', () => {
+    cy.get(`[data-cy=es]`).click();
+
+    generateLazyContent('spanish');
+
+    cy.get(`[data-cy=en]`).click();
+    generateLazyContent();
+  });
+
+  it('should not display loader template after loaded once', () => {
+    cy.get(`[data-cy=es]`).click();
+    cy.get(`[data-cy=en]`).click();
+
+    generateContentWithoutLoader();
   });
 });
