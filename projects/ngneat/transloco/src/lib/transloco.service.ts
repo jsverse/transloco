@@ -1,10 +1,20 @@
 import { Inject, Injectable } from '@angular/core';
-import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, from, Observable, Subject } from 'rxjs';
 import { catchError, map, retry, shareReplay, tap } from 'rxjs/operators';
 import { TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_TRANSPILER, TranslocoTranspiler } from './transloco.transpiler';
 import { HashMap, Translation, TranslationCb, TranslocoEvents } from './types';
-import { getValue, isFunction, mergeDeep, setValue } from './helpers';
+import {
+  dashCaseToCamelCase,
+  getLangFromScope,
+  getScopeFromLang,
+  getValue,
+  isFunction,
+  mergeDeep,
+  setValue,
+  size,
+  isEmpty
+} from './helpers';
 import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './transloco-missing-handler';
 import { TRANSLOCO_INTERCEPTOR, TranslocoInterceptor } from './transloco.interceptor';
@@ -59,11 +69,14 @@ export class TranslocoService {
     this.events$.subscribe(e => {
       if (e.type === 'translationLoadSuccess' && e.wasFailure) {
         // Handle scoped lang
-        const split = e.payload.lang.split('/');
-        const lang = split[split.length - 1];
+        const lang = getLangFromScope(e.payload.lang);
         this.setActiveLang(lang);
       }
     });
+  }
+
+  get isSharedScope(): boolean {
+    return this.config.scopeStrategy === 'shared';
   }
 
   get config(): TranslocoConfig {
@@ -183,7 +196,7 @@ export class TranslocoService {
   getTranslation(): Map<string, Translation>;
   getTranslation(lang: string): Translation;
   getTranslation(lang?: string): Map<string, Translation> | Translation | undefined {
-    return lang ? this.translations.get(lang) : this.translations;
+    return lang ? this.translations.get(lang) || {} : this.translations;
   }
 
   /**
@@ -195,13 +208,17 @@ export class TranslocoService {
    * setTranslation({ ... }, 'en')
    * setTranslation({ ... }, 'admin-page/en', { merge: false } )
    */
-  setTranslation(data: Translation, lang = this.getActiveLang(), options: { merge?: boolean } = {}) {
-    const defaults = { merge: true };
+  setTranslation(
+    data: Translation,
+    lang = this.getActiveLang(),
+    options: { merge?: boolean; emitChange?: boolean } = {}
+  ) {
+    const defaults = { merge: true, emitChange: true };
     const mergedOptions = { ...defaults, ...options };
     const translation = this.getTranslation(lang) || {};
     const merged = mergedOptions.merge ? mergeDeep(translation, data) : data;
     this._setTranslation(lang, merged);
-    this.setActiveLang(this.getActiveLang());
+    mergedOptions.emitChange && this.setActiveLang(this.getActiveLang());
   }
 
   /**
@@ -215,21 +232,43 @@ export class TranslocoService {
    */
   setTranslationKey(key: string, value: string, lang = this.getActiveLang()) {
     const translation = this.getTranslation(lang);
-    if (translation) {
+    if (!isEmpty(translation)) {
       const withHook = this.interceptor.preSaveTranslationKey(key, value, lang);
       const newValue = setValue(translation, key, withHook);
-      this.translations.set(lang, newValue);
-      this.setActiveLang(this.getActiveLang());
+      this.setTranslation(newValue, lang);
     }
+  }
+
+  /**
+   * @internal
+   * When using the shared scope strategy you always want to make sure the global lang  is loaded
+   * before loading the scope since you can access both via the pipe/directive.
+   */
+  _loadDependencies(langName: string): Observable<Translation | Translation[]> {
+    const split = langName.split('/');
+    const [lang] = split.slice(-1);
+    if (split.length > 1 && this.isSharedScope && !size(this.getTranslation(lang))) {
+      return combineLatest(this.load(lang), this.load(langName));
+    }
+    return this.load(langName);
   }
 
   private _setTranslation(lang: string, translation: Translation) {
     const withHook = this.interceptor.preSaveTranslation(translation, lang);
     this.translations.set(lang, withHook);
+    const { scopeStrategy, scopeMapping = {} } = this.config;
+    const currLang = getLangFromScope(lang);
+    const scope = getScopeFromLang(lang);
+    if (scope && scopeStrategy === 'shared') {
+      const activeLang = this.getTranslation(currLang);
+      const key = dashCaseToCamelCase(scopeMapping[scope] || scope);
+      const merged = setValue(activeLang, key, withHook);
+      this.translations.set(currLang, merged);
+    }
   }
 
   private handleSuccess(lang: string, translation: Translation) {
-    this._setTranslation(lang, translation);
+    this.setTranslation(translation, lang, { emitChange: false });
     if (this.failedLangs.has(lang) === false) {
       if (!this.config.prodMode) {
         console.log(`%c 🍻 Translation Load Success: ${lang}`, 'background: #fff; color: hotpink;');

@@ -255,7 +255,7 @@ service.load('en').subscribe();
 
 ## Lazy Load Translation Files
 
-Let's say you have a todos page and you want to create separate translation files for this page, and load them only when the user navigates there. First, you need to create a `todos` folder (or whatever name you choose); In it, create a translation file for each language you want to support:
+Let's say we have a todos page and we want to create separate translation files for this page, and load them only when the user navigates there. First, we need to create a `todos` folder (or whatever name you choose); In it, we create a translation file for each language we want to support:
 
 ```
 ├─ i18n/
@@ -266,9 +266,9 @@ Let's say you have a todos page and you want to create separate translation file
       ├─ es.json
 ```
 
-You have several ways of telling Transloco to use them, via setting the `TRANSLOCO_SCOPE` provider based on Angular's DI rules.
+There are 3 levels of setting the translation scope:
 
-You can set it the providers list of a **lazy module**:
+1. We can set it inside the _lazy module_ module providers :
 
 ```ts
 const routes: Routes = [
@@ -286,7 +286,7 @@ const routes: Routes = [
 export class TodosModule {}
 ```
 
-You can set it in a component's providers:
+2. We can set it in a component's providers:
 
 ```ts
 @Component({
@@ -302,21 +302,60 @@ You can set it in a component's providers:
 export class MyComponent {}
 ```
 
-Or you can set the `scope` input in the `transloco` structural directive:
+3. We can set the `scope` input in the `transloco` structural directive:
 
 ```html
 <ng-container *transloco="let t; scope: 'todos';">
-  <h1>{{ t.keyFromTodos }}</h1>
+  <h1>{{ t.todos.keyFromTodo }}</h1>
 </ng-container>
 ```
 
-Each one of these options tells Transloco to load the corresponding `scope` based on the current language. For example, if the current language is `en`, it will load the file `todos/en.json` and set the response to be the context in this module, component, or template, respectively.
+Each one of these options tells Transloco to load the corresponding `scope` based on the current language and merge it under the `scope` namespace into the active language translation object.
 
-You can think of it as a virtual directory, `todos/{langName}`, so when you need to use the API, you can refer to it as such, for example:
+For example, if the current language is `en`, it will load the `todos/en.json` file, and will set the response to be the following:
 
 ```ts
-service.getTranslation(`todos/en`);
+{
+  header: '',
+  login: '',
+  todos: {
+    submit: '',
+    title: ''
+  }
+}
 ```
+
+Now we can access each one of the `todos` keys by using the `todos` namespace:
+
+```html
+{{ 'todos.title' | transloco }}
+
+<span transloco="toods.submit"></span>
+```
+
+By default, the namespace will be the scope name (capitalized), but we can override it by using the `config.scopeMapping` config:
+
+```ts
+{
+  provide: TRANSLOCO_CONFIG,
+   useValue: {
+    defaultLang: 'en',
+    scopeMapping: {
+      todos: 'customName'
+    }
+  }
+}
+```
+
+Now we can access it through `customName` instead of the original scope name (`todos` in our case):
+
+```html
+{{ 'customName.title' | transloco }}
+
+<span transloco="customName.submit"></span>
+```
+
+Note that to use it in the current version (1.x.x), we need to set `config.scopeStrategy` to `shared`. In the next major release, it will be the default.
 
 ## Using Multiple Languages Simultaneously
 
@@ -626,6 +665,16 @@ Transloco provides a schematics [command](https://github.com/ngneat/transloco/bl
 
 For any questions or deliberations join our [Gitter channel](https://gitter.im/ngneat-transloco/lobby#)
 
+## Core Team
+
+<table>
+  <tr>
+    <td align="center"><a href="https://www.netbasal.com"><img src="https://avatars1.githubusercontent.com/u/6745730?v=4" width="100px;" alt="Netanel Basal"/><br /><sub><b>Netanel Basal</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/shaharkazaz"><img src="https://avatars2.githubusercontent.com/u/17194830?v=4" width="100px;" alt="Shahar Kazaz"/><br /><sub><b>Shahar Kazaz</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/itayod"><img src="https://avatars2.githubusercontent.com/u/6719615?v=4" width="100px;" alt="Itay Oded"/><br /><sub><b>Itay Oded</b></sub></a><br /></td>
+    </tr>
+</table>
+
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -635,15 +684,10 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="https://www.netbasal.com"><img src="https://avatars1.githubusercontent.com/u/6745730?v=4" width="100px;" alt="Netanel Basal"/><br /><sub><b>Netanel Basal</b></sub></a><br /><a href="#blog-NetanelBasal" title="Blogposts">📝</a> <a href="#business-NetanelBasal" title="Business development">💼</a> <a href="https://github.com/ngneat/transloco/commits?author=NetanelBasal" title="Code">💻</a> <a href="#content-NetanelBasal" title="Content">🖋</a> <a href="#design-NetanelBasal" title="Design">🎨</a> <a href="https://github.com/ngneat/transloco/commits?author=NetanelBasal" title="Documentation">📖</a> <a href="#example-NetanelBasal" title="Examples">💡</a> <a href="#ideas-NetanelBasal" title="Ideas, Planning, & Feedback">🤔</a> <a href="#infra-NetanelBasal" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-NetanelBasal" title="Maintenance">🚧</a> <a href="#projectManagement-NetanelBasal" title="Project Management">📆</a> <a href="https://github.com/ngneat/transloco/commits?author=NetanelBasal" title="Tests">⚠️</a></td>
-    <td align="center"><a href="https://github.com/shaharkazaz"><img src="https://avatars2.githubusercontent.com/u/17194830?v=4" width="100px;" alt="Shahar Kazaz"/><br /><sub><b>Shahar Kazaz</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=shaharkazaz" title="Code">💻</a> <a href="#content-shaharkazaz" title="Content">🖋</a> <a href="https://github.com/ngneat/transloco/commits?author=shaharkazaz" title="Documentation">📖</a> <a href="#ideas-shaharkazaz" title="Ideas, Planning, & Feedback">🤔</a> <a href="#infra-shaharkazaz" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-shaharkazaz" title="Maintenance">🚧</a> <a href="https://github.com/ngneat/transloco/commits?author=shaharkazaz" title="Tests">⚠️</a></td>
-    <td align="center"><a href="https://github.com/itayod"><img src="https://avatars2.githubusercontent.com/u/6719615?v=4" width="100px;" alt="Itay Oded"/><br /><sub><b>Itay Oded</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=itayod" title="Code">💻</a> <a href="#ideas-itayod" title="Ideas, Planning, & Feedback">🤔</a> <a href="#infra-itayod" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-itayod" title="Maintenance">🚧</a> <a href="https://github.com/ngneat/transloco/commits?author=itayod" title="Tests">⚠️</a></td>
-    <td align="center"><a href="https://twitter.com/irustm"><img src="https://avatars1.githubusercontent.com/u/16316579?v=4" width="100px;" alt="Rustam"/><br /><sub><b>Rustam</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=irustm" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://github.com/Coly010"><img src="https://avatars2.githubusercontent.com/u/12140467?v=4" width="100px;" alt="Colum Ferry"/><br /><sub><b>Colum Ferry</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=Coly010" title="Code">💻</a> <a href="https://github.com/ngneat/transloco/commits?author=Coly010" title="Documentation">📖</a> <a href="#ideas-Coly010" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/ngneat/transloco/commits?author=Coly010" title="Tests">⚠️</a> <a href="#blog-Coly010" title="Blogposts">📝</a></td>
-    <td align="center"><a href="https://www.armanozak.com/"><img src="https://avatars3.githubusercontent.com/u/15855540?v=4" width="100px;" alt="Levent Arman Özak"/><br /><sub><b>Levent Arman Özak</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=armanozak" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/theblushingcrow"><img src="https://avatars3.githubusercontent.com/u/638818?v=4" width="100px;" alt="Inbal Sinai"/><br /><sub><b>Inbal Sinai</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=theblushingcrow" title="Documentation">📖</a></td>
-  </tr>
-  <tr>
+    <td align="center"><a href="https://twitter.com/irustm"><img src="https://avatars1.githubusercontent.com/u/16316579?v=4" width="100px;" alt="Rustam"/><br /><sub><b>Rustam</b></sub></a><br /><a href="https://github.com/NetanelBasal/transloco/commits?author=irustm" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/Coly010"><img src="https://avatars2.githubusercontent.com/u/12140467?v=4" width="100px;" alt="Colum Ferry"/><br /><sub><b>Colum Ferry</b></sub></a><br /><a href="https://github.com/NetanelBasal/transloco/commits?author=Coly010" title="Code">💻</a> <a href="https://github.com/NetanelBasal/transloco/commits?author=Coly010" title="Documentation">📖</a> <a href="#ideas-Coly010" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/NetanelBasal/transloco/commits?author=Coly010" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://www.armanozak.com/"><img src="https://avatars3.githubusercontent.com/u/15855540?v=4" width="100px;" alt="Levent Arman Özak"/><br /><sub><b>Levent Arman Özak</b></sub></a><br /><a href="https://github.com/NetanelBasal/transloco/commits?author=armanozak" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/theblushingcrow"><img src="https://avatars3.githubusercontent.com/u/638818?v=4" width="100px;" alt="Inbal Sinai"/><br /><sub><b>Inbal Sinai</b></sub></a><br /><a href="https://github.com/NetanelBasal/transloco/commits?author=theblushingcrow" title="Documentation">📖</a></td>
     <td align="center"><a href="http://www.larskniep.nl"><img src="https://avatars1.githubusercontent.com/u/1215195?v=4" width="100px;" alt="Lars Kniep"/><br /><sub><b>Lars Kniep</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=larscom" title="Code">💻</a> <a href="#ideas-larscom" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>

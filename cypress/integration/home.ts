@@ -1,4 +1,4 @@
-export function generateContent(lang = 'english') {
+export function testHomeContent(lang = 'english') {
   // Structural Directive
   cy.get(`[data-cy=regular]`).should('contain', `home ${lang}`);
   cy.get(`[data-cy=with-params]`).should('contain', `alert 🦄 ${lang}`);
@@ -31,21 +31,3 @@ export function generateContent(lang = 'english') {
   cy.get(`[data-cy=translation-loop]`).should('contain', `b ${lang}`);
   cy.get(`[data-cy=translation-loop]`).should('contain', `c ${lang}`);
 }
-
-describe('Transloco', () => {
-  beforeEach(() => {
-    cy.visit('');
-  });
-
-  it('should translate to english', () => {
-    generateContent();
-
-    cy.get(`[data-cy=es]`).click();
-
-    generateContent('spanish');
-
-    cy.get(`[data-cy=en]`).click();
-
-    generateContent();
-  });
-});

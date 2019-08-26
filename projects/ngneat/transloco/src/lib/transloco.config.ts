@@ -1,4 +1,5 @@
 import { InjectionToken } from '@angular/core';
+import { HashMap } from './types';
 
 export type TranslocoConfig = {
   defaultLang: string;
@@ -6,6 +7,8 @@ export type TranslocoConfig = {
   prodMode?: boolean;
   fallbackLang?: string | string[];
   failedRetries?: number;
+  scopeStrategy?: 'shared';
+  scopeMapping?: HashMap<string>;
 };
 
 export const TRANSLOCO_CONFIG = new InjectionToken('TRANSLOCO_CONFIG', {

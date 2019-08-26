@@ -13,24 +13,27 @@ import { HttpClientModule } from '@angular/common/http';
 import { HomeComponent } from './home/home.component';
 import { OnPushComponent } from './on-push/on-push.component';
 import { httpLoader } from './loaders/http.loader';
-import { preLoad } from './preload';
+// import { preLoad } from './preload';
 import { environment } from '../environments/environment';
-import { webpackLoader } from './loaders/webpack.loader';
 
 @NgModule({
   declarations: [AppComponent, HomeComponent, OnPushComponent],
   imports: [BrowserModule, AppRoutingModule, TranslocoModule, HttpClientModule],
   providers: [
-    preLoad,
+    // preLoad,
     httpLoader,
-    // webpackLoader,
     {
       provide: TRANSLOCO_CONFIG,
       useValue: {
         prodMode: environment.production,
         listenToLangChange: true,
         fallbackLang: 'es',
-        defaultLang: 'en'
+        defaultLang: 'en',
+        scopeStrategy: 'shared',
+        scopeMapping: {
+          'todos-page': 'todos',
+          'transpilers/messageformat': 'mf'
+        }
       } as TranslocoConfig
     },
     { provide: TRANSLOCO_TRANSPILER, useClass: MessageFormatTranspiler }

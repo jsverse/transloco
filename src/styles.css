@@ -11,3 +11,19 @@
   margin-top: 25px;
   margin-bottom: 25px;
 }
+
+.mb {
+  margin-bottom: 25px;
+}
+
+pre {
+  color: #e83e8c;
+}
+
+.quoteblock {
+  padding: 20px;
+  background-color: rgba(231, 231, 231, 0.5);
+}
+.quoteblock::before {
+  content: '- ';
+}
