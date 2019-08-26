@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
-import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, from, Observable, Subject } from 'rxjs';
 import { catchError, map, retry, shareReplay, tap } from 'rxjs/operators';
 import { TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_TRANSPILER, TranslocoTranspiler } from './transloco.transpiler';
@@ -11,7 +11,8 @@ import {
   getValue,
   isFunction,
   mergeDeep,
-  setValue
+  setValue,
+  size
 } from './helpers';
 import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './transloco-missing-handler';
@@ -235,6 +236,20 @@ export class TranslocoService {
       const newValue = setValue(translation, key, withHook);
       this.setTranslation(newValue, lang);
     }
+  }
+
+  /**
+   * @internal
+   * When using the shared scope strategy you always want to make sure the global lang  is loaded
+   * before loading the scope since you can access both via the pipe/directive.
+   */
+  _loadDependencies(langName: string): Observable<Translation | Translation[]> {
+    const split = langName.split('/');
+    const [lang] = split.slice(-1);
+    if (split.length > 1 && this.isSharedScope && !size(this.getTranslation(lang))) {
+      return combineLatest(this.load(lang), this.load(langName));
+    }
+    return this.load(langName);
   }
 
   private _setTranslation(lang: string, translation: Translation) {

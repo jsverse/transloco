@@ -25,6 +25,22 @@ export function setValue(obj: any, prop: string, val: any) {
   return obj;
 }
 
+export function size(collection) {
+  if (!collection) {
+    return 0;
+  }
+
+  if (Array.isArray(collection)) {
+    return collection.length;
+  }
+
+  if (isObject(collection)) {
+    return Object.keys(collection).length;
+  }
+
+  return !!collection ? collection.length : 0;
+}
+
 export function isFunction(val: any): val is Function {
   return typeof val === 'function';
 }
