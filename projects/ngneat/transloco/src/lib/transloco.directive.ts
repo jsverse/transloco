@@ -84,8 +84,9 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
         let targetLang = this.langName;
         const scope = this.getScope();
         if (scope) {
-          const { scopeStrategy } = this.translocoService.config;
-          targetLang = scopeStrategy === 'shared' ? this.getLang(this.translocoService.getActiveLang()) : this.langName;
+          targetLang = this.translocoService.isSharedScope
+            ? this.getLang(this.translocoService.getActiveLang())
+            : this.langName;
         }
         const translation = this.translocoService.getTranslation(targetLang);
         this.langName = targetLang;
