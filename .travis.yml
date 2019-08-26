@@ -1,22 +1,11 @@
 language: node_js
-node_js:
-  - '10'
-addons:
-  apt:
-    packages:
-      - libgconf-2-4
 cache:
-  npm: true
   directories:
-    - ~/.cache
-install:
-  - npm ci
-script:
-  - npm test
-  - ng serve --port 8889 &
-  - $(npm bin)/cypress run
+    - ~/.npm
 notifications:
   email: true
+node_js:
+  - '10'
 branches:
   except:
     - /^v\d+\.\d+\.\d+$/
