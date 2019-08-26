@@ -97,6 +97,16 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "larscom",
+      "name": "Lars Kniep",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/1215195?v=4",
+      "profile": "http://www.larskniep.nl",
+      "contributions": [
+        "code",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7
