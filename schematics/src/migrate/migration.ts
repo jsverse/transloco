@@ -71,7 +71,7 @@ export function run(path) {
     to: match => match.replace(/TranslateService|TranslatePipe/g, 'TranslocoService')
   };
 
-  const instantTranslation = {
+  const serviceTranslation = {
     ...tsFiles,
     from: /[^]*(?=(?:private|protected|public)\s+([^,:()]+)\s*:\s*(?:TranslocoService\s*(?:,|\))))[^]*/gm,
     to: match => {
@@ -82,9 +82,12 @@ export function run(path) {
         .split('')
         .map(char => (['$', '^'].includes(char) ? `\\${char}` : char))
         .join('');
-      return match.replace(new RegExp(`(?:(?:=\\s*|this\\.)${sanitizedName})\\.(instant|transform)`, 'g'), str =>
-        str.replace(/instant|transform/, 'translate')
+      const functionsMap = { instant: 'translate', transform: 'translate', get: 'selectTranslate' };
+      const translationCalls = new RegExp(
+        `(?:(?:\\s*|this\\.)${sanitizedName})(?:\\s*\\t*\\r*\\n*)*\\.(?:\\s*\\t*\\r*\\n*)*(instant|transform|get)`,
+        'g'
       );
+      return match.replace(translationCalls, str => str.replace(/instant|transform|get/, func => functionsMap[func]));
     }
   };
 
@@ -112,8 +115,8 @@ export function run(path) {
       step: 'constructor injections'
     },
     {
-      matchers: [instantTranslation],
-      step: 'instant translations'
+      matchers: [serviceTranslation],
+      step: 'service translations'
     }
   ];
 
