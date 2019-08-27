@@ -51,6 +51,16 @@ describe('TranslocoDirective', () => {
     expect(host.queryHost('div')).toHaveText('Admin Lazy spanish');
   }
 
+  function testLimitedTranslation(host: SpectatorWithHost<TranslocoDirective, HostComponent>) {
+    const service = host.get<TranslocoService>(TranslocoService);
+    initScopeTest(host, service);
+    expect(host.queryHost('div')).toHaveText('Title english');
+    service.setActiveLang('es');
+    runLoader();
+    host.detectChanges();
+    expect(host.queryHost('div')).toHaveText('Title spanish');
+  }
+
   it('should unsubscribe after one emit when not in listenToLangChange mode', fakeAsync(() => {
     host = createHost(`<div transloco="home"></div>`);
     runLoader();
@@ -185,6 +195,11 @@ describe('TranslocoDirective', () => {
       expect(host.queryHost('p')).toHaveText('a.b.c from list english');
       expect(host.queryHostAll('p')[1]).toHaveText('a.b.c value english');
     }));
+
+    it('should limit translation to a nested property', fakeAsync(() => {
+      host = createHost(`<section *transloco="let t; limit: 'nested'"><div>{{t.title}}</div></section>`, false);
+      testLimitedTranslation(host);
+    }));
   });
 
   describe('Loading Template', () => {
@@ -195,7 +210,7 @@ describe('TranslocoDirective', () => {
         <section *transloco="let t; scope: 'lazy-page'; loadingTpl: loading">
           <h1 data-cy="lazy-page">{{ t.title }}</h1>
         </section>
-        
+
         <ng-template #loading>
           <h1 id="lazy-page-loading">Loading...</h1>
         </ng-template>
@@ -252,7 +267,7 @@ describe('TranslocoDirective', () => {
         <section *transloco="let t; scope: 'lazy-page'; loadingTpl: loading">
           <h1 data-cy="lazy-page">{{ t.title }}</h1>
         </section>
-        
+
         <ng-template #loading>
           <h1 id="lazy-page-loading">Loading...</h1>
         </ng-template>
