@@ -157,6 +157,34 @@ This is the recommended approach. It's DRY and efficient, as it creates one subs
 </ng-template>
 ```
 
+If you are using `shared` strategy (default in the next major release), you can use `limit` to limit your translations to a particular nested property.
+
+Given this translation object:
+
+```typescript
+{
+  common: {
+    foo: 'Foo',
+    bar: 'Bar'
+  },
+  dashboard: {
+    title: 'Title',
+    desc: 'Desc'
+  }
+}
+```
+
+you can do
+
+```html
+<ng-container *transloco="let t; limit: 'dashboard'">
+  <h1>{{ t.title }}</h1>
+  <p>{{ t.desc }}</p>
+</ng-container>
+```
+
+without having to repeat the `dashboard` key.
+
 ### Using the Attribute Directive
 
 ```html
@@ -544,7 +572,7 @@ You can read more about it in [this article](https://netbasal.com/optimize-user-
 
 ## MessageFormat Support
 
-The library comes with support for [messageformat](https://messageformat.github.io/messageformat/).  
+The library comes with support for [messageformat](https://messageformat.github.io/messageformat/).
 Messageformat is a mechanism for handling both pluralization and gender in your app.
 
 You can see its format guide [here](https://messageformat.github.io/messageformat/page-guide).
