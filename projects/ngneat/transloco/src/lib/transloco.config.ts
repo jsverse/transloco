@@ -9,6 +9,9 @@ export type TranslocoConfig = {
   failedRetries?: number;
   scopeStrategy?: 'shared';
   scopeMapping?: HashMap<string>;
+  missingHandler?: {
+    allowEmpty: boolean;
+  };
 };
 
 export const TRANSLOCO_CONFIG = new InjectionToken('TRANSLOCO_CONFIG', {
@@ -22,5 +25,8 @@ export const defaultConfig: TranslocoConfig = {
   defaultLang: 'en',
   listenToLangChange: false,
   prodMode: false,
-  failedRetries: 2
+  failedRetries: 2,
+  missingHandler: {
+    allowEmpty: false
+  }
 };
