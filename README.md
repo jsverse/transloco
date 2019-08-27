@@ -47,6 +47,7 @@ The internationalization (i18n) library for Angular
 - [MessageFormat Support](#messageformat-support)
 - [Unit Testing](#unit-testing)
 - [Additional Functionality](#additional-functionality)
+- [Plugins](#plugins)
 - [Comparison to other libraries](#comparison-to-other-libraries)
 
 ## Installation
