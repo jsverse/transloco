@@ -663,8 +663,7 @@ Transloco provides a schematics [command](https://github.com/ngneat/transloco/bl
 
 ## Plugins
 
-- Persist Language (offical)
-
+- [Persist Language](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-persist-lang) (offical)
 ## Support
 
 For any questions or deliberations join our [Gitter channel](https://gitter.im/ngneat-transloco/lobby#)
