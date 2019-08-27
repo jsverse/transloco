@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.2](https://github.com/ngneat/transloco/compare/v1.4.0...v1.4.2) (2019-08-27)
+
+### Bug Fixes
+
+- 🐛 message-format ([ff835c3](https://github.com/ngneat/transloco/commit/ff835c3)), closes [#40](https://github.com/ngneat/transloco/issues/40)
+- 🐛 migration script support for get function ([67e112d](https://github.com/ngneat/transloco/commit/67e112d))
+- 🐛 translate ([620b151](https://github.com/ngneat/transloco/commit/620b151)), closes [#40](https://github.com/ngneat/transloco/issues/40)
+
 ### [1.4.1](https://github.com/ngneat/transloco/compare/v1.4.0...v1.4.1) (2019-08-27)
 
 ### Bug Fixes
