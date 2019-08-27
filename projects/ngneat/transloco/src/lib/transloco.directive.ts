@@ -32,6 +32,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   @Input('transloco') key: string;
   @Input('translocoParams') params: HashMap = {};
   @Input('translocoScope') inlineScope: string | undefined;
+  @Input('translocoLimit') inlineLimit: string | undefined;
   @Input('translocoLang') inlineLang: string | undefined;
   @Input('translocoLoadingTpl') inlineTpl: TemplateRef<any> | undefined;
 
@@ -83,7 +84,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
         }
         const translation = this.translocoService.getTranslation(targetLang);
         this.langName = targetLang;
-        this.tpl === null ? this.simpleStrategy() : this.structuralStrategy(translation);
+        this.tpl === null ? this.simpleStrategy() : this.structuralStrategy(translation, this.inlineLimit);
         this.cdr.markForCheck();
         this.initialized = true;
       });
@@ -101,13 +102,13 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     this.host.nativeElement.innerText = this.translocoService.translate(this.key, this.params, this.langName);
   }
 
-  private structuralStrategy(data: Translation) {
+  private structuralStrategy(data: Translation, limit?: string) {
     if (this.view) {
-      this.view.context['$implicit'] = data;
+      this.view.context['$implicit'] = limit ? data[limit] : data;
     } else {
       this.detachLoader();
       this.view = this.vcr.createEmbeddedView(this.tpl, {
-        $implicit: data
+        $implicit: limit ? data[limit] : data
       });
     }
   }

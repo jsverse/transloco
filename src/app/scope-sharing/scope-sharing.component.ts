@@ -15,6 +15,10 @@ export class ScopeSharingComponent implements OnInit {
     two: `  <ng-container *transloco="let t">
     <p>{{ t.todos.title }}</p>
     <p>{{ t.home }}</p>
+  </ng-container>`,
+    nested: `  <ng-container *transloco="let t; limit: 'nested'">
+    <h5>{{ t.title }}</h5>
+    <p>{{ t.desc }}</p>
   </ng-container>`
   };
 

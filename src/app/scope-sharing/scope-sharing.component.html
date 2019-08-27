@@ -26,3 +26,12 @@
 <h5><u>Pipe</u></h5>
 <p data-cy="p-todos-page-scope">{{ 'todos.title' | transloco }}</p>
 <p data-cy="p-global">{{ 'home' | transloco }}</p>
+
+<h5><u>Limiting the results to a nested property</u></h5>
+<code
+  ><pre>{{ ex.nested }}</pre></code
+>
+<ng-container *transloco="let t; limit: 'nested'">
+  <h5>{{ t.title }}</h5>
+  <p>{{ t.desc }}</p>
+</ng-container>
