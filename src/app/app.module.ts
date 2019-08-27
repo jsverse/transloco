@@ -12,10 +12,14 @@ import {
 import { HttpClientModule } from '@angular/common/http';
 import { HomeComponent } from './home/home.component';
 import { OnPushComponent } from './on-push/on-push.component';
-import { httpLoader } from './loaders/http.loader';
+import { HttpLoader, httpLoader } from './loaders/http.loader';
 import { environment } from '../environments/environment';
 import { TRANSLOCO_PERSIST_LANG_STORAGE, TranslocoPersistLangModule } from '@ngneat/transloco-persist-lang';
 import { getLangFn } from './getLang';
+import {
+  PERSIST_TRANSLATIONS_STORAGE,
+  TranslocoPersistTranslationsModule
+} from '@ngneat/transloco-persist-translation';
 
 @NgModule({
   declarations: [AppComponent, HomeComponent, OnPushComponent],
@@ -31,6 +35,13 @@ import { getLangFn } from './getLang';
         useValue: localStorage
       }
     })
+    // TranslocoPersistTranslationsModule.init({
+    //   loader: HttpLoader,
+    //   storage: {
+    //     provide: PERSIST_TRANSLATIONS_STORAGE,
+    //     useValue: localStorage
+    //   }
+    // })
   ],
   providers: [
     httpLoader,
