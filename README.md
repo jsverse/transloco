@@ -661,6 +661,10 @@ Transloco provides a schematics [command](https://github.com/ngneat/transloco/bl
 
 (\*) Works **only** by creating a new service instance and mark it as isolated, and it's not supported at the directive level.
 
+## Plugins
+
+- Persist Language (offical)
+
 ## Support
 
 For any questions or deliberations join our [Gitter channel](https://gitter.im/ngneat-transloco/lobby#)
