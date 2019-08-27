@@ -8,11 +8,12 @@ import {
   toCamelCase,
   getLangFromScope,
   getScopeFromLang,
-  getValue, isEmpty,
+  getValue,
+  isEmpty,
   isFunction,
   mergeDeep,
   setValue,
-  size,
+  size
 } from './helpers';
 import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './transloco-missing-handler';
@@ -21,14 +22,23 @@ import { TRANSLOCO_FALLBACK_STRATEGY, TranslocoFallbackStrategy } from './transl
 
 let service: TranslocoService;
 
-export function translate<T = Translation>(key: TranslationCb<T>, params?: HashMap, lang?: string): string;
-export function translate(key: string, params?: HashMap, lang?: string): string;
+export function translate<T = Translation>(
+  key: TranslationCb<T>,
+  params?: HashMap,
+  lang?: string
+): string | Translation;
+export function translate<T = string | Translation>(key: string, params?: HashMap, lang?: string): T;
 export function translate(key: string[], params?: HashMap, lang?: string): string[];
+export function translate<T = Translation | string>(
+  key: string | string[] | TranslationCb<T>,
+  params?: HashMap,
+  lang?: string
+): string | string[] | Translation;
 export function translate<T = Translation>(
   key: string | string[] | TranslationCb<T>,
   params: HashMap = {},
   lang?: string
-): string | string[] {
+): string | string[] | Translation {
   return service.translate(key, params, lang);
 }
 
@@ -66,7 +76,7 @@ export class TranslocoService {
      * When we have a failure, we want to define the next language that succeeded as the active
      */
     this.events$.subscribe(e => {
-      if( e.type === 'translationLoadSuccess' && e.wasFailure ) {
+      if (e.type === 'translationLoadSuccess' && e.wasFailure) {
         // Handle scoped lang
         const lang = getLangFromScope(e.payload.lang);
         this.setActiveLang(lang);
@@ -100,7 +110,7 @@ export class TranslocoService {
   }
 
   load(lang: string, options?: { fallbackLangs: string[] | null }): Observable<Translation> {
-    if( this.cache.has(lang) === false ) {
+    if (this.cache.has(lang) === false) {
       const mergedOptions = { ...{ fallbackLangs: null }, ...(options || {}) };
 
       const load$ = from(this.loader.getTranslation(lang)).pipe(
@@ -126,35 +136,35 @@ export class TranslocoService {
    * translate(['hello', 'key'])
    * translate('hello', { }, 'en')
    */
-  translate<T = Translation>(key: TranslationCb<T>, params?: HashMap, lang?: string): string;
-  translate(key: string, params?: HashMap, lang?: string): string;
+  translate<T = Translation>(key: TranslationCb<T>, params?: HashMap, lang?: string): string | Translation;
+  translate<T = string | Translation>(key: string, params?: HashMap, lang?: string): T;
   translate(key: string[], params?: HashMap, lang?: string): string[];
-  translate<T = Translation>(
+  translate<T = Translation | string>(
     key: string | string[] | TranslationCb<T>,
     params?: HashMap,
     lang?: string
-  ): string | string[];
+  ): string | string[] | Translation;
   translate<T = Translation>(
     key: string | string[] | TranslationCb<T>,
     params: HashMap = {},
     lang?: string
-  ): string | string[] {
-    if( Array.isArray(key) ) {
+  ): string | string[] | Translation {
+    if (Array.isArray(key)) {
       return key.map(k => this.translate(k, params, lang));
     }
 
-    if( !key ) {
+    if (!key) {
       return this.missingHandler.handle(key as string, params, this.config);
     }
 
     const translation = this.translations.get(lang || this.getActiveLang());
-    if( !translation ) {
+    if (!translation) {
       return '';
     }
 
     const value = isFunction(key) ? key(translation as T, params) : getValue(translation, key);
 
-    if( !value ) {
+    if (!value) {
       return this.missingHandler.handle(key, params, this.config);
     }
 
@@ -168,7 +178,7 @@ export class TranslocoService {
    * selectTranslate('hello').subscribe(value => {})
    * selectTranslate('hello').subscribe(value => {}, 'es')
    */
-  selectTranslate(key: string, params?: HashMap, lang?: string) {
+  selectTranslate<T = string | Translation | string[]>(key: string, params?: HashMap, lang?: string): Observable<T> {
     return this.load(lang || this.getActiveLang()).pipe(map(() => this.translate(key, params, lang)));
   }
 
@@ -231,7 +241,7 @@ export class TranslocoService {
    */
   setTranslationKey(key: string, value: string, lang = this.getActiveLang()) {
     const translation = this.getTranslation(lang);
-    if( !isEmpty(translation) ) {
+    if (!isEmpty(translation)) {
       const withHook = this.interceptor.preSaveTranslationKey(key, value, lang);
       const newValue = setValue(translation, key, withHook);
       this.setTranslation(newValue, lang);
@@ -246,7 +256,7 @@ export class TranslocoService {
   _loadDependencies(langName: string): Observable<Translation | Translation[]> {
     const split = langName.split('/');
     const [lang] = split.slice(-1);
-    if( split.length > 1 && this.isSharedScope && !size(this.getTranslation(lang)) ) {
+    if (split.length > 1 && this.isSharedScope && !size(this.getTranslation(lang))) {
       return combineLatest(this.load(lang), this.load(langName));
     }
 
@@ -259,7 +269,7 @@ export class TranslocoService {
     const { scopeStrategy, scopeMapping = {} } = this.config;
     const currLang = getLangFromScope(lang);
     const scope = getScopeFromLang(lang);
-    if( scope && scopeStrategy === 'shared' ) {
+    if (scope && scopeStrategy === 'shared') {
       const activeLang = this.getTranslation(currLang);
       const key = toCamelCase(scopeMapping[scope] || scope);
       const merged = setValue(activeLang, key, withHook);
@@ -269,8 +279,8 @@ export class TranslocoService {
 
   private handleSuccess(lang: string, translation: Translation) {
     this.setTranslation(translation, lang, { emitChange: false });
-    if( this.failedLangs.has(lang) === false ) {
-      if( !this.config.prodMode ) {
+    if (this.failedLangs.has(lang) === false) {
+      if (!this.config.prodMode) {
         console.log(`%c 🍻 Translation Load Success: ${lang}`, 'background: #fff; color: hotpink;');
       }
 
@@ -298,9 +308,9 @@ export class TranslocoService {
 
     const isFallbackLang = nextLang === splitted[splitted.length - 1];
 
-    if( !nextLang || isFallbackLang ) {
+    if (!nextLang || isFallbackLang) {
       let msg = `Unable to load translation and all the fallback languages`;
-      if( splitted.length > 1 ) {
+      if (splitted.length > 1) {
         msg += `, did you misspelled the scope name?`;
       }
 
@@ -309,7 +319,7 @@ export class TranslocoService {
 
     let resolveLang = nextLang;
     // if it's scoped lang
-    if( splitted.length > 1 ) {
+    if (splitted.length > 1) {
       // We need to resolve it to:
       // todos/langNotExists => todos/nextLang
       splitted[splitted.length - 1] = nextLang;
