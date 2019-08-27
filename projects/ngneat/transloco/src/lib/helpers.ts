@@ -1,6 +1,6 @@
 export function getValue(obj: object, path: string) {
   /* For cases where the key is like: 'general.something.thing' */
-  if (obj && obj.hasOwnProperty(path)) {
+  if( obj && obj.hasOwnProperty(path) ) {
     return obj[path];
   }
   return path.split('.').reduce((p, c) => (p && p[c]) || null, obj);
@@ -13,7 +13,7 @@ export function setValue(obj: any, prop: string, val: any) {
   const lastIndex = split.length - 1;
 
   split.reduce((acc, part, index) => {
-    if (index === lastIndex) {
+    if( index === lastIndex ) {
       acc[part] = val;
     } else {
       acc[part] = Array.isArray(acc[part]) ? acc[part].slice() : { ...acc[part] };
@@ -26,15 +26,15 @@ export function setValue(obj: any, prop: string, val: any) {
 }
 
 export function size(collection) {
-  if (!collection) {
+  if( !collection ) {
     return 0;
   }
 
-  if (Array.isArray(collection)) {
+  if( Array.isArray(collection) ) {
     return collection.length;
   }
 
-  if (isObject(collection)) {
+  if( isObject(collection) ) {
     return Object.keys(collection).length;
   }
 
@@ -62,13 +62,13 @@ export function coerceArray(val) {
 }
 
 export function mergeDeep(target: Object, ...sources: Object[]) {
-  if (!sources.length) return target;
+  if( !sources.length ) return target;
   const source = sources.shift();
 
-  if (isObject(target) && isObject(source)) {
-    for (const key in source) {
-      if (isObject(source[key])) {
-        if (!target[key]) Object.assign(target, { [key]: {} });
+  if( isObject(target) && isObject(source) ) {
+    for( const key in source ) {
+      if( isObject(source[key]) ) {
+        if( !target[key] ) Object.assign(target, { [key]: {} });
         mergeDeep(target[key], source[key]);
       } else {
         Object.assign(target, { [key]: source[key] });
@@ -110,7 +110,7 @@ export function getLangFromScope(lang: string): string {
  * given: path-to_happiness => pathToHappiness
  *
  */
-export function dashCaseToCamelCase(str: string): string {
+export function toCamelCase(str: string): string {
   return str
     .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => (index == 0 ? word.toLowerCase() : word.toUpperCase()))
     .replace(/\s+|_|-|\//g, '');
