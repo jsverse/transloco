@@ -2,6 +2,7 @@ import { TranslocoTranspiler, DefaultTranspiler } from '../transloco.transpiler'
 import { HashMap, Translation } from '../types';
 
 import * as MessageFormat from 'messageformat';
+import { isString } from '../helpers';
 
 export class MessageFormatTranspiler implements TranslocoTranspiler {
   defaultTranspiler: DefaultTranspiler = new DefaultTranspiler();
@@ -9,7 +10,7 @@ export class MessageFormatTranspiler implements TranslocoTranspiler {
   messageFormat: MessageFormat = new MessageFormat();
 
   transpile(value: string, params: HashMap = {}, translation: Translation): string {
-    if (!value) {
+    if (!value || isString(value) === false) {
       return value;
     }
 
