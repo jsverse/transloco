@@ -18,7 +18,8 @@
     "paths": {
       "@ngneat/transloco": ["./projects/ngneat/transloco/src/public-api.ts"],
       "@ngneat/transloco-persist-lang": ["./projects/ngneat/transloco-persist-lang/src/public-api.ts"],
-      "@ngneat/transloco-persist-translation": ["./projects/ngneat/transloco-persist-translations/src/public-api.ts"]
+      "@ngneat/transloco-persist-translation": ["./projects/ngneat/transloco-persist-translations/src/public-api.ts"],
+      "@ngneat/transloco-messageformat": ["./projects/ngneat/transloco-messageformat/src/public-api.ts"]
     }
   }
 }

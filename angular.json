@@ -209,6 +209,39 @@
           }
         }
       }
+    },
+    "@ngneat/transloco-messageformat": {
+      "root": "projects/ngneat/transloco-messageformat",
+      "sourceRoot": "projects/ngneat/transloco-messageformat/src",
+      "projectType": "library",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/ngneat/transloco-messageformat/tsconfig.lib.json",
+            "project": "projects/ngneat/transloco-messageformat/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ngneat/transloco-messageformat/src/test.ts",
+            "tsConfig": "projects/ngneat/transloco-messageformat/tsconfig.spec.json",
+            "karmaConfig": "projects/ngneat/transloco-messageformat/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/ngneat/transloco-messageformat/tsconfig.lib.json",
+              "projects/ngneat/transloco-messageformat/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
     }
   },
   "defaultProject": "transloco-playground"
