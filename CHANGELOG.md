@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.5.0](https://github.com/ngneat/transloco/compare/v1.4.2...v1.5.0) (2019-08-28)
+
+### Bug Fixes
+
+- 🐛 translate types ([fe51317](https://github.com/ngneat/transloco/commit/fe51317))
+
+### Features
+
+- 🎸 missing-handler ([23da8c5](https://github.com/ngneat/transloco/commit/23da8c5)), closes [#42](https://github.com/ngneat/transloco/issues/42)
+- 🎸 missing-handler ([#43](https://github.com/ngneat/transloco/issues/43)) ([5f082fc](https://github.com/ngneat/transloco/commit/5f082fc))
+- **loader:** allow it to be optional ([2a7fd83](https://github.com/ngneat/transloco/commit/2a7fd83))
+- 🎸 service ([317bfc8](https://github.com/ngneat/transloco/commit/317bfc8)), closes [#46](https://github.com/ngneat/transloco/issues/46)
+
+### Tests
+
+- 💍 allow-empty ([ba33ea1](https://github.com/ngneat/transloco/commit/ba33ea1))
+
 ### [1.4.2](https://github.com/ngneat/transloco/compare/v1.4.0...v1.4.2) (2019-08-27)
 
 ### Bug Fixes
