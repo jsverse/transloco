@@ -22,23 +22,7 @@ import { TRANSLOCO_FALLBACK_STRATEGY, TranslocoFallbackStrategy } from './transl
 
 let service: TranslocoService;
 
-export function translate<T = Translation>(
-  key: TranslationCb<T>,
-  params?: HashMap,
-  lang?: string
-): string | Translation;
-export function translate<T = string | Translation>(key: string, params?: HashMap, lang?: string): T;
-export function translate(key: string[], params?: HashMap, lang?: string): string[];
-export function translate<T = Translation | string>(
-  key: string | string[] | TranslationCb<T>,
-  params?: HashMap,
-  lang?: string
-): string | string[] | Translation;
-export function translate<T = Translation>(
-  key: string | string[] | TranslationCb<T>,
-  params: HashMap = {},
-  lang?: string
-): string | string[] | Translation {
+export function translate<T = any>(key: string | string[] | TranslationCb<T>, params: HashMap = {}, lang?: string): T {
   return service.translate(key, params, lang);
 }
 
@@ -135,26 +119,15 @@ export class TranslocoService {
    *
    * @example
    *
-   * translate('hello')
+   * translate<string>('hello')
    * translate('hello', { value: 'value' })
-   * translate(['hello', 'key'])
+   * translate<string[]>(['hello', 'key'])
+   * translate(t => t.a.b.c);
    * translate('hello', { }, 'en')
    */
-  translate<T = Translation>(key: TranslationCb<T>, params?: HashMap, lang?: string): string | Translation;
-  translate<T = string | Translation>(key: string, params?: HashMap, lang?: string): T;
-  translate(key: string[], params?: HashMap, lang?: string): string[];
-  translate<T = Translation | string>(
-    key: string | string[] | TranslationCb<T>,
-    params?: HashMap,
-    lang?: string
-  ): string | string[] | Translation;
-  translate<T = Translation>(
-    key: string | string[] | TranslationCb<T>,
-    params: HashMap = {},
-    lang?: string
-  ): string | string[] | Translation {
+  translate<T = any>(key: string | string[] | TranslationCb<T>, params: HashMap = {}, lang?: string): T {
     if (Array.isArray(key)) {
-      return key.map(k => this.translate(k, params, lang));
+      return key.map(k => this.translate(k, params, lang)) as any;
     }
 
     if (!key) {
@@ -163,26 +136,27 @@ export class TranslocoService {
 
     const translation = this.translations.get(lang || this.getActiveLang());
     if (!translation) {
-      return '';
+      return '' as any;
     }
 
-    const value = isFunction(key) ? key(translation as T, params) : getValue(translation, key);
+    const value = isFunction(key) ? key(translation as any, params) : getValue(translation, key);
 
     if (!value) {
       if (this.mergedConfig.missingHandler.allowEmpty && value === '') {
-        return '';
+        return '' as any;
       }
 
       return this.missingHandler.handle(key, params, this.config);
     }
 
-    return this.parser.transpile(value, params, translation);
+    return this.parser.transpile(value, params, translation) as any;
   }
 
   /**
    * Gets the translated value of a key as observable
    *
    * @example
+   *
    * selectTranslate('hello').subscribe(value => {})
    * selectTranslate('hello').subscribe(value => {}, 'es')
    */
