@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.6.0](https://github.com/ngneat/transloco/compare/v1.5.0...v1.6.0) (2019-08-28)
+
+### Features
+
+- limit nested translations ([71e5488](https://github.com/ngneat/transloco/commit/71e5488))
+- **directive:** add limit property ([7715deb](https://github.com/ngneat/transloco/commit/7715deb))
+- **directive:** add limit property ([f17f417](https://github.com/ngneat/transloco/commit/f17f417))
+- **directive:** read nested property ([b51359e](https://github.com/ngneat/transloco/commit/b51359e))
+- **directive:** set context to a nested property ([561cba4](https://github.com/ngneat/transloco/commit/561cba4))
+
 ## [1.5.0](https://github.com/ngneat/transloco/compare/v1.4.2...v1.5.0) (2019-08-28)
 
 ### Bug Fixes
