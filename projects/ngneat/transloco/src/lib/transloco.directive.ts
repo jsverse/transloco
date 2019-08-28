@@ -21,6 +21,7 @@ import { TRANSLOCO_LOADING_TEMPLATE } from './transloco-loading-template';
 import { TRANSLOCO_SCOPE } from './transloco-scope';
 import { TranslocoService } from './transloco.service';
 import { HashMap, Translation } from './types';
+import { getValue } from './helpers';
 
 @Directive({
   selector: '[transloco]'
@@ -32,6 +33,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   @Input('transloco') key: string;
   @Input('translocoParams') params: HashMap = {};
   @Input('translocoScope') inlineScope: string | undefined;
+  @Input('translocoRead') inlineRead: string | undefined;
   @Input('translocoLang') inlineLang: string | undefined;
   @Input('translocoLoadingTpl') inlineTpl: TemplateRef<any> | undefined;
 
@@ -102,12 +104,13 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   }
 
   private structuralStrategy(data: Translation) {
+    const translations = this.inlineRead ? getValue(data, this.inlineRead) : data;
     if (this.view) {
-      this.view.context['$implicit'] = data;
+      this.view.context['$implicit'] = translations;
     } else {
       this.detachLoader();
       this.view = this.vcr.createEmbeddedView(this.tpl, {
-        $implicit: data
+        $implicit: translations
       });
     }
   }
