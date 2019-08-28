@@ -27,14 +27,14 @@ import {
     BrowserModule,
     AppRoutingModule,
     TranslocoModule,
-    HttpClientModule,
-    TranslocoPersistLangModule.init({
-      getLangFn,
-      storage: {
-        provide: TRANSLOCO_PERSIST_LANG_STORAGE,
-        useValue: localStorage
-      }
-    })
+    HttpClientModule
+    // TranslocoPersistLangModule.init({
+    //   getLangFn,
+    //   storage: {
+    //     provide: TRANSLOCO_PERSIST_LANG_STORAGE,
+    //     useValue: localStorage
+    //   }
+    // })
     // TranslocoPersistTranslationsModule.init({
     //   loader: HttpLoader,
     //   storage: {

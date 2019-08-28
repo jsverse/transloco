@@ -1,6 +1,6 @@
 import en from '../../../../../../src/assets/i18n/en.json';
 import { DefaultTranspiler, TranslocoService } from '../../public-api';
-import { createService, mockLangs, runLoader } from './transloco.mocks';
+import { createService, loader, mockLangs, runLoader } from './transloco.mocks';
 import { fakeAsync } from '@angular/core/testing';
 import { catchError, filter, map, pluck } from 'rxjs/operators';
 import { of, timer } from 'rxjs';
@@ -9,6 +9,7 @@ import { DefaultInterceptor } from '../transloco.interceptor';
 import { DefaultFallbackStrategy, TranslocoFallbackStrategy } from '../transloco-fallback-strategy';
 import * as helper from '../helpers';
 import { isString } from '../helpers';
+import { DefaultLoader } from '../transloco.loader';
 
 function createSpy() {
   return jasmine.createSpy();
@@ -471,5 +472,30 @@ describe('TranslocoService', () => {
         expect(service.translate('home')).toEqual('preSaveTranslationKey home');
       }));
     });
+  });
+});
+
+describe('Optional Loader', () => {
+  it('should no throw and use the default loader', () => {
+    let service;
+
+    expect(function() {
+      service = new TranslocoService(
+        null,
+        new DefaultTranspiler(),
+        new DefaultHandler(),
+        new DefaultInterceptor(),
+        { defaultLang: 'en', scopeStrategy: 'shared' },
+        new DefaultFallbackStrategy({ defaultLang: 'en', fallbackLang: 'en' })
+      );
+    }).not.toThrow();
+    expect(service.loader instanceof DefaultLoader).toBe(true);
+    service.setTranslation(
+      {
+        key: 'Netanel'
+      },
+      'en'
+    );
+    expect(service.translate('key')).toEqual('Netanel');
   });
 });
