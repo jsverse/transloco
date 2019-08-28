@@ -77,13 +77,13 @@ export function setlistenToLangChange(service: TranslocoService, listenToLangCha
 
 export const loadingTemplateMock = { provide: TRANSLOCO_LOADING_TEMPLATE, useValue: 'loading template...' };
 
-export function createService() {
+export function createService(config: Partial<TranslocoConfig> = {}) {
   return new TranslocoService(
     loader,
     new DefaultTranspiler(),
     new DefaultHandler(),
     new DefaultInterceptor(),
-    { defaultLang: 'en', scopeStrategy: 'shared' },
+    { defaultLang: 'en', scopeStrategy: 'shared', ...config },
     new DefaultFallbackStrategy({ defaultLang: 'en', fallbackLang: 'en' })
   );
 }

@@ -173,6 +173,9 @@ This is the recommended approach. It's DRY and efficient, as it creates one subs
 
 ```html
 <span>{{ 'home' | transloco }}</span> <span>{{ 'alert' | transloco: { value: dynamic } }}</span>
+
+<span [attr.alt]="'hello' | transloco">Attribute</span>
+<span [title]="'hello' | transloco">Property</span>
 ```
 
 ## Programmatical Translation

@@ -68,6 +68,7 @@ export class TranslocoService {
   ) {
     service = this;
     this.mergedConfig = { ...defaultConfig, ...this.userConfig };
+
     this.setDefaultLang(this.mergedConfig.defaultLang);
     this.lang = new BehaviorSubject<string>(this.getDefaultLang());
     this.langChanges$ = this.lang.asObservable().pipe(distinctUntilChanged());
@@ -165,6 +166,10 @@ export class TranslocoService {
     const value = isFunction(key) ? key(translation as T, params) : getValue(translation, key);
 
     if (!value) {
+      if (this.mergedConfig.missingHandler.allowEmpty && value === '') {
+        return '';
+      }
+
       return this.missingHandler.handle(key, params, this.config);
     }
 
