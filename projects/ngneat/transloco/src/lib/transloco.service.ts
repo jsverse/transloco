@@ -1,7 +1,7 @@
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, Optional } from '@angular/core';
 import { BehaviorSubject, combineLatest, from, Observable, Subject } from 'rxjs';
 import { catchError, map, retry, shareReplay, tap, distinctUntilChanged } from 'rxjs/operators';
-import { TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
+import { DefaultLoader, TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_TRANSPILER, TranslocoTranspiler } from './transloco.transpiler';
 import { HashMap, Translation, TranslationCb, TranslocoEvents } from './types';
 import {
@@ -59,13 +59,16 @@ export class TranslocoService {
   private failedLangs = new Set<string>();
 
   constructor(
-    @Inject(TRANSLOCO_LOADER) private loader: TranslocoLoader,
+    @Optional() @Inject(TRANSLOCO_LOADER) private loader: TranslocoLoader,
     @Inject(TRANSLOCO_TRANSPILER) private parser: TranslocoTranspiler,
     @Inject(TRANSLOCO_MISSING_HANDLER) private missingHandler: TranslocoMissingHandler,
     @Inject(TRANSLOCO_INTERCEPTOR) private interceptor: TranslocoInterceptor,
     @Inject(TRANSLOCO_CONFIG) private userConfig: TranslocoConfig,
     @Inject(TRANSLOCO_FALLBACK_STRATEGY) private fallbackStrategy: TranslocoFallbackStrategy
   ) {
+    if (!this.loader) {
+      this.loader = new DefaultLoader(this.translations);
+    }
     service = this;
     this.mergedConfig = { ...defaultConfig, ...this.userConfig };
 
