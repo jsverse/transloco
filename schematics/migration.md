@@ -44,9 +44,10 @@ The `TranslateService` injection will be replaced with `TranslocoService`.
 
 1. `constructor(private translate: TranslateService) {` will be replaced with `constructor(private translate: TranslocoService) {`
 
-### Instant Translations
+### Service Translations
 
-The `translateService.instant(...)` calls will be replaced with `translateService.translate(...)`.
+1. `translateService.instant(...)` calls will be replaced with `translateService.translate(...)`.
+2. `translateService.get(...)` calls will be replaced with `translateService.selectTranslate(...)`.
 
 ##### Examples:
 
