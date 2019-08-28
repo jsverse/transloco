@@ -199,8 +199,14 @@ export class AppComponent {
 Note that in order to safely use this method, you are responsible for ensuring that the translation files have been successfully loaded by the time it's called. If you aren't sure, you can use the `selectTranslate()` method instead:
 
 ```ts
-this.service.selectTranslate('hello').subscribe(value => {});
-this.service.selectTranslate('hello').subscribe(value => {}, 'es');
+this.service.selectTranslate('hello').subscribe(value => ...);
+this.service.selectTranslate('hello', params, lang).subscribe(value => ...);
+
+// Returns the active language translation
+this.service.selectTranslation().subscribe(translation => ...);
+
+// Load and returns the provided language
+this.service.selectTranslation('es').subscribe(translation => ...);
 ```
 
 ## Service API

@@ -133,6 +133,20 @@ describe('TranslocoService', () => {
         expect(map.get('en')).toEqual(mockLangs['en']);
         expect(map.get('es')).toEqual(mockLangs['es']);
       }));
+
+      it('should select the active translations lang', fakeAsync(() => {
+        const spy = jasmine.createSpy();
+        service.selectTranslation().subscribe(spy);
+        runLoader();
+        expect(spy).toHaveBeenCalledWith(mockLangs['en']);
+      }));
+
+      it('should select the translations lang when passing one', fakeAsync(() => {
+        const spy = jasmine.createSpy();
+        service.selectTranslation('es').subscribe(spy);
+        runLoader();
+        expect(spy).toHaveBeenCalledWith(mockLangs['es']);
+      }));
     });
 
     it('should set the current lang', () => {

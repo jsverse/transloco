@@ -1,11 +1,10 @@
 import { Inject, Injectable, Optional } from '@angular/core';
 import { BehaviorSubject, combineLatest, from, Observable, Subject } from 'rxjs';
-import { catchError, map, retry, shareReplay, tap, distinctUntilChanged } from 'rxjs/operators';
+import { catchError, distinctUntilChanged, map, retry, shareReplay, tap } from 'rxjs/operators';
 import { DefaultLoader, TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_TRANSPILER, TranslocoTranspiler } from './transloco.transpiler';
-import { HashMap, Translation, TranslationCb, TranslocoEvents } from './types';
+import { HashMap, TranslateParams, Translation, TranslocoEvents } from './types';
 import {
-  toCamelCase,
   getLangFromScope,
   getScopeFromLang,
   getValue,
@@ -13,7 +12,8 @@ import {
   isFunction,
   mergeDeep,
   setValue,
-  size
+  size,
+  toCamelCase
 } from './helpers';
 import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './transloco-missing-handler';
@@ -22,7 +22,7 @@ import { TRANSLOCO_FALLBACK_STRATEGY, TranslocoFallbackStrategy } from './transl
 
 let service: TranslocoService;
 
-export function translate<T = any>(key: string | string[] | TranslationCb<T>, params: HashMap = {}, lang?: string): T {
+export function translate<T = any>(key: TranslateParams, params: HashMap = {}, lang?: string): T {
   return service.translate(key, params, lang);
 }
 
@@ -125,7 +125,7 @@ export class TranslocoService {
    * translate(t => t.a.b.c);
    * translate('hello', { }, 'en')
    */
-  translate<T = any>(key: string | string[] | TranslationCb<T>, params: HashMap = {}, lang?: string): T {
+  translate<T = any>(key: TranslateParams, params: HashMap = {}, lang?: string): T {
     if (Array.isArray(key)) {
       return key.map(k => this.translate(k, params, lang)) as any;
     }
@@ -157,10 +157,10 @@ export class TranslocoService {
    *
    * @example
    *
-   * selectTranslate('hello').subscribe(value => {})
-   * selectTranslate('hello').subscribe(value => {}, 'es')
+   * selectTranslate<string>('hello').subscribe(value => ...)
+   * selectTranslate<string>('hello', {}, 'es').subscribe(value => ...)
    */
-  selectTranslate<T = string | Translation | string[]>(key: string, params?: HashMap, lang?: string): Observable<T> {
+  selectTranslate<T = any>(key: TranslateParams, params?: HashMap, lang?: string): Observable<T> {
     return this.load(lang || this.getActiveLang()).pipe(map(() => this.translate(key, params, lang)));
   }
 
@@ -181,13 +181,27 @@ export class TranslocoService {
    *
    * @example
    *
+   * getTranslation()
    * getTranslation('en')
    * getTranslation('admin-page/en')
    */
   getTranslation(): Map<string, Translation>;
   getTranslation(lang: string): Translation;
-  getTranslation(lang?: string): Map<string, Translation> | Translation | undefined {
+  getTranslation(lang?: string): Map<string, Translation> | Translation {
     return lang ? this.translations.get(lang) || {} : this.translations;
+  }
+
+  /**
+   * Gets an object of translations for a given language
+   *
+   * @example
+   *
+   * selectTranslation().subscribe()
+   * selectTranslation('es').subscribe()
+   */
+  selectTranslation(lang?: string): Observable<Translation> {
+    const language = lang || this.getActiveLang();
+    return this.load(language).pipe(map(() => this.getTranslation(language)));
   }
 
   /**
