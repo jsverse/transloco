@@ -157,7 +157,7 @@ This is the recommended approach. It's DRY and efficient, as it creates one subs
 </ng-template>
 ```
 
-If you are using `shared` strategy (default in the next major release), you can use `limit` to limit your translations to a particular nested property.
+If you are using `shared` strategy (default in the next major release), you can set `context` in your structural directive to get translations from a particular nested (including deeply nested) property.
 
 Given this translation object:
 
@@ -177,7 +177,7 @@ Given this translation object:
 you can do
 
 ```html
-<ng-container *transloco="let t; limit: 'dashboard'">
+<ng-container *transloco="let t; context: 'dashboard'">
   <h1>{{ t.title }}</h1>
   <p>{{ t.desc }}</p>
 </ng-container>

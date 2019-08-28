@@ -21,6 +21,7 @@ import { TRANSLOCO_LOADING_TEMPLATE } from './transloco-loading-template';
 import { TRANSLOCO_SCOPE } from './transloco-scope';
 import { TranslocoService } from './transloco.service';
 import { HashMap, Translation } from './types';
+import { getValue } from './helpers';
 
 @Directive({
   selector: '[transloco]'
@@ -32,7 +33,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   @Input('transloco') key: string;
   @Input('translocoParams') params: HashMap = {};
   @Input('translocoScope') inlineScope: string | undefined;
-  @Input('translocoLimit') inlineLimit: string | undefined;
+  @Input('translocoContext') inlineContext: string | undefined;
   @Input('translocoLang') inlineLang: string | undefined;
   @Input('translocoLoadingTpl') inlineTpl: TemplateRef<any> | undefined;
 
@@ -84,7 +85,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
         }
         const translation = this.translocoService.getTranslation(targetLang);
         this.langName = targetLang;
-        this.tpl === null ? this.simpleStrategy() : this.structuralStrategy(translation, this.inlineLimit);
+        this.tpl === null ? this.simpleStrategy() : this.structuralStrategy(translation);
         this.cdr.markForCheck();
         this.initialized = true;
       });
@@ -102,13 +103,14 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     this.host.nativeElement.innerText = this.translocoService.translate(this.key, this.params, this.langName);
   }
 
-  private structuralStrategy(data: Translation, limit?: string) {
+  private structuralStrategy(data: Translation) {
+    const dataWithContext = this.inlineContext ? getValue(data, this.inlineContext) : data;
     if (this.view) {
-      this.view.context['$implicit'] = limit ? data[limit] : data;
+      this.view.context['$implicit'] = dataWithContext;
     } else {
       this.detachLoader();
       this.view = this.vcr.createEmbeddedView(this.tpl, {
-        $implicit: limit ? data[limit] : data
+        $implicit: dataWithContext
       });
     }
   }
