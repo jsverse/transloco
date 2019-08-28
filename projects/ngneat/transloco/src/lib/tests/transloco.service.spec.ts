@@ -473,3 +473,22 @@ describe('TranslocoService', () => {
     });
   });
 });
+
+describe('missingHandler.allowEmpty', () => {
+  const service: any = createService({ missingHandler: { allowEmpty: true } });
+
+  it('should not call handle', () => {
+    service.setTranslation(
+      {
+        empty: ''
+      },
+      'en'
+    );
+
+    spyOn(service.missingHandler, 'handle').and.callThrough();
+    const value = service.translate('empty');
+
+    expect(value).toEqual('');
+    expect(service.missingHandler.handle).not.toHaveBeenCalled();
+  });
+});
