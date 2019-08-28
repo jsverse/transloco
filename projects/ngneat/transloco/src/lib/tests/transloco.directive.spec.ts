@@ -51,7 +51,7 @@ describe('TranslocoDirective', () => {
     expect(host.queryHost('div')).toHaveText('Admin Lazy spanish');
   }
 
-  function testTranslationWithContext(host: SpectatorWithHost<TranslocoDirective, HostComponent>) {
+  function testTranslationWithRead(host: SpectatorWithHost<TranslocoDirective, HostComponent>) {
     const service = host.get<TranslocoService>(TranslocoService);
     initScopeTest(host, service);
     expect(host.queryHost('div')).toHaveText('Title english');
@@ -196,9 +196,9 @@ describe('TranslocoDirective', () => {
       expect(host.queryHostAll('p')[1]).toHaveText('a.b.c value english');
     }));
 
-    it('should get translation of a nested property using context', fakeAsync(() => {
-      host = createHost(`<section *transloco="let t; context: 'nested'"><div>{{t.title}}</div></section>`, false);
-      testTranslationWithContext(host);
+    it('should get translation of a nested property using read', fakeAsync(() => {
+      host = createHost(`<section *transloco="let t; read: 'nested'"><div>{{t.title}}</div></section>`, false);
+      testTranslationWithRead(host);
     }));
   });
 

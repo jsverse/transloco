@@ -157,7 +157,7 @@ This is the recommended approach. It's DRY and efficient, as it creates one subs
 </ng-template>
 ```
 
-If you are using `shared` strategy (default in the next major release), you can set `context` in your structural directive to get translations from a particular nested (including deeply nested) property.
+If you are using `shared` strategy (default in the next major release), you can use `read` property in your structural directive to get translations of a particular nested (including deeply nested) property.
 
 Given this translation object:
 
@@ -177,13 +177,13 @@ Given this translation object:
 you can do
 
 ```html
-<ng-container *transloco="let t; context: 'dashboard'">
+<ng-container *transloco="let t; read: 'dashboard'">
   <h1>{{ t.title }}</h1>
   <p>{{ t.desc }}</p>
 </ng-container>
 ```
 
-without having to repeat the `dashboard` key.
+without having to repeat the `dashboard` key in each translation.
 
 ### Using the Attribute Directive
 

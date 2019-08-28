@@ -27,11 +27,11 @@
 <p data-cy="p-todos-page-scope">{{ 'todos.title' | transloco }}</p>
 <p data-cy="p-global">{{ 'home' | transloco }}</p>
 
-<h5><u>Settings a context to a nested property</u></h5>
+<h5><u>Use read to get translations of a nested property</u></h5>
 <code
   ><pre>{{ ex.nested }}</pre></code
 >
-<ng-container *transloco="let t; context: 'nested'">
+<ng-container *transloco="let t; read: 'nested'">
   <h5>{{ t.title }}</h5>
   <p>{{ t.desc }}</p>
 </ng-container>

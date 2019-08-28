@@ -33,7 +33,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   @Input('transloco') key: string;
   @Input('translocoParams') params: HashMap = {};
   @Input('translocoScope') inlineScope: string | undefined;
-  @Input('translocoContext') inlineContext: string | undefined;
+  @Input('translocoRead') inlineRead: string | undefined;
   @Input('translocoLang') inlineLang: string | undefined;
   @Input('translocoLoadingTpl') inlineTpl: TemplateRef<any> | undefined;
 
@@ -104,13 +104,13 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   }
 
   private structuralStrategy(data: Translation) {
-    const dataWithContext = this.inlineContext ? getValue(data, this.inlineContext) : data;
+    const translations = this.inlineRead ? getValue(data, this.inlineRead) : data;
     if (this.view) {
-      this.view.context['$implicit'] = dataWithContext;
+      this.view.context['$implicit'] = translations;
     } else {
       this.detachLoader();
       this.view = this.vcr.createEmbeddedView(this.tpl, {
-        $implicit: dataWithContext
+        $implicit: translations
       });
     }
   }
