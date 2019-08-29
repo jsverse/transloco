@@ -8,7 +8,7 @@
 The internationalization (i18n) library for Angular
 
 [![Build Status](https://img.shields.io/travis/datorama/akita.svg?style=flat-square)](https://travis-ci.org/ngneat/transloco)
-[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-9-orange.svg?style=flat-square)](#contributors-)
 [![commitizen](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)]()
 [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)]()
 [![coc-badge](https://img.shields.io/badge/codeof-conduct-ff69b4.svg?style=flat-square)]()
@@ -22,7 +22,7 @@ The internationalization (i18n) library for Angular
 🛀 Clean and DRY templates <br>
 😴 Support for Lazy Load<br>
 😍 Support for Multiple Languagues<br>
-🧙‍♂️ Support for Multiple Fallbacks<br>
+🔥 Support for Multiple Fallbacks<br>
 🤓 Support for Testing<br>
 🦊 Hackable<br>
 
@@ -47,6 +47,7 @@ The internationalization (i18n) library for Angular
 - [MessageFormat Support](#messageformat-support)
 - [Unit Testing](#unit-testing)
 - [Additional Functionality](#additional-functionality)
+- [Plugins](#plugins)
 - [Comparison to other libraries](#comparison-to-other-libraries)
 
 ## Installation
@@ -156,6 +157,34 @@ This is the recommended approach. It's DRY and efficient, as it creates one subs
 </ng-template>
 ```
 
+If you are using `shared` strategy (default in the next major release), you can use `read` property in your structural directive to get translations of a particular nested (including deeply nested) property.
+
+Given this translation object:
+
+```typescript
+{
+  common: {
+    foo: 'Foo',
+    bar: 'Bar'
+  },
+  dashboard: {
+    title: 'Title',
+    desc: 'Desc'
+  }
+}
+```
+
+you can do
+
+```html
+<ng-container *transloco="let t; read: 'dashboard'">
+  <h1>{{ t.title }}</h1>
+  <p>{{ t.desc }}</p>
+</ng-container>
+```
+
+without having to repeat the `dashboard` key in each translation.
+
 ### Using the Attribute Directive
 
 ```html
@@ -172,6 +201,9 @@ This is the recommended approach. It's DRY and efficient, as it creates one subs
 
 ```html
 <span>{{ 'home' | transloco }}</span> <span>{{ 'alert' | transloco: { value: dynamic } }}</span>
+
+<span [attr.alt]="'hello' | transloco">Attribute</span>
+<span [title]="'hello' | transloco">Property</span>
 ```
 
 ## Programmatical Translation
@@ -195,8 +227,14 @@ export class AppComponent {
 Note that in order to safely use this method, you are responsible for ensuring that the translation files have been successfully loaded by the time it's called. If you aren't sure, you can use the `selectTranslate()` method instead:
 
 ```ts
-this.service.selectTranslate('hello').subscribe(value => {});
-this.service.selectTranslate('hello').subscribe(value => {}, 'es');
+this.service.selectTranslate('hello').subscribe(value => ...);
+this.service.selectTranslate('hello', params, lang).subscribe(value => ...);
+
+// Returns the active language translation
+this.service.selectTranslation().subscribe(translation => ...);
+
+// Load and returns the provided language
+this.service.selectTranslation('es').subscribe(translation => ...);
 ```
 
 ## Service API
@@ -255,7 +293,7 @@ service.load('en').subscribe();
 
 ## Lazy Load Translation Files
 
-Let's say you have a todos page and you want to create separate translation files for this page, and load them only when the user navigates there. First, you need to create a `todos` folder (or whatever name you choose); In it, create a translation file for each language you want to support:
+Let's say we have a todos page and we want to create separate translation files for this page, and load them only when the user navigates there. First, we need to create a `todos` folder (or whatever name you choose); In it, we create a translation file for each language we want to support:
 
 ```
 ├─ i18n/
@@ -266,9 +304,9 @@ Let's say you have a todos page and you want to create separate translation file
       ├─ es.json
 ```
 
-You have several ways of telling Transloco to use them, via setting the `TRANSLOCO_SCOPE` provider based on Angular's DI rules.
+There are 3 levels of setting the translation scope:
 
-You can set it the providers list of a **lazy module**:
+1. We can set it inside the _lazy module_ module providers :
 
 ```ts
 const routes: Routes = [
@@ -286,7 +324,7 @@ const routes: Routes = [
 export class TodosModule {}
 ```
 
-You can set it in a component's providers:
+2. We can set it in a component's providers:
 
 ```ts
 @Component({
@@ -302,21 +340,60 @@ You can set it in a component's providers:
 export class MyComponent {}
 ```
 
-Or you can set the `scope` input in the `transloco` structural directive:
+3. We can set the `scope` input in the `transloco` structural directive:
 
 ```html
 <ng-container *transloco="let t; scope: 'todos';">
-  <h1>{{ t.keyFromTodos }}</h1>
+  <h1>{{ t.todos.keyFromTodo }}</h1>
 </ng-container>
 ```
 
-Each one of these options tells Transloco to load the corresponding `scope` based on the current language. For example, if the current language is `en`, it will load the file `todos/en.json` and set the response to be the context in this module, component, or template, respectively.
+Each one of these options tells Transloco to load the corresponding `scope` based on the current language and merge it under the `scope` namespace into the active language translation object.
 
-You can think of it as a virtual directory, `todos/{langName}`, so when you need to use the API, you can refer to it as such, for example:
+For example, if the current language is `en`, it will load the `todos/en.json` file, and will set the response to be the following:
 
 ```ts
-service.getTranslation(`todos/en`);
+{
+  header: '',
+  login: '',
+  todos: {
+    submit: '',
+    title: ''
+  }
+}
 ```
+
+Now we can access each one of the `todos` keys by using the `todos` namespace:
+
+```html
+{{ 'todos.title' | transloco }}
+
+<span transloco="toods.submit"></span>
+```
+
+By default, the namespace will be the scope name (capitalized), but we can override it by using the `config.scopeMapping` config:
+
+```ts
+{
+  provide: TRANSLOCO_CONFIG,
+   useValue: {
+    defaultLang: 'en',
+    scopeMapping: {
+      todos: 'customName'
+    }
+  }
+}
+```
+
+Now we can access it through `customName` instead of the original scope name (`todos` in our case):
+
+```html
+{{ 'customName.title' | transloco }}
+
+<span transloco="customName.submit"></span>
+```
+
+Note that to use it in the current version (1.x.x), we need to set `config.scopeStrategy` to `shared`. In the next major release, it will be the default.
 
 ## Using Multiple Languages Simultaneously
 
@@ -504,16 +581,10 @@ You can read more about it in [this article](https://netbasal.com/optimize-user-
 
 ## MessageFormat Support
 
-The library comes with support for [messageformat](https://messageformat.github.io/messageformat/).  
+The library comes with support for [messageformat](https://messageformat.github.io/messageformat/).
 Messageformat is a mechanism for handling both pluralization and gender in your app.
 
 You can see its format guide [here](https://messageformat.github.io/messageformat/page-guide).
-
-MessageFormat Support is tree-shakebale. If you don't need it, it wont be included in your bundle!
-
-To enable support within Transloco, do the following:
-
-`npm install messageformat`
 
 Then add the following to the providers array in your `app.module.ts`:
 
@@ -593,34 +664,59 @@ import { translate } from '@ngneat/transloco';
 translate('someKey');
 ```
 
+- `getBrowserLang()` - Returns the language code name from the browser, e.g. "en"
+- `getBrowserCultureLang()` - Returns the culture language code name from the browser, e.g. "en-US"
+
+```ts
+import { getBrowserLang, getBrowserCultureLang } from 'ngneat/transloco';
+```
+
 ## Migration from ngx-translate
 
 Transloco provides a schematics [command](https://github.com/ngneat/transloco/blob/master/schematics/migration.md) that will help you with the migration process.
 
 ## Comparison to other libraries
 
-| Feature                  | @ngneat/transloco                        | @ngx-translate/core                                             |
-| ------------------------ | ---------------------------------------- | --------------------------------------------------------------- |
-| Actively Maintained      | ✅                                       | ❌ [See here](https://github.com/ngx-translate/core/issues/783) |
-| listenToLangChange       | ✅                                       | ❌                                                              |
-| Custom Loading Template  | ✅                                       | ❌                                                              |
-| Multiple Languages       | ✅                                       | ✅\*                                                            |
-| Lazy Load Translations   | ✅                                       | ✅\*                                                            |
-| Multiple Fallbacks       | ✅                                       | ❌                                                              |
-| Hackable                 | ✅                                       | ✅                                                              |
-| Testing                  | ✅                                       | ✅ External library                                             |
-| Structural Directive     | ✅                                       | ❌                                                              |
-| Attribute Directive      | ✅                                       | ✅                                                              |
-| Pipe                     | ✅                                       | ✅                                                              |
-| Ivy support              | ✅                                       | ❌ [See here](https://github.com/ngx-translate/core/issues/958) |
-| Additional Functionality | ✅ [See here](#additional-functionality) | ❌                                                              |
-| Plugins                  | WIP                                      | ✅ [See here](https://github.com/ngx-translate/core#plugins)    |
+| Feature                  | @ngneat/transloco                        | @ngx-translate/core                                             | Angular i18n |
+| ------------------------ | ---------------------------------------- | --------------------------------------------------------------- | ------------ |
+| Actively Maintained      | ✅                                       | ❌ [See here](https://github.com/ngx-translate/core/issues/783) | ✅           |
+| Runtime Lang Change      | ✅                                       | ✅                                                              | ❌           |
+| listenToLangChange       | ✅                                       | ❌                                                              | ❌           |
+| Schematics               | ✅                                       | ❌                                                              | ❌           |
+| Custom Loading Template  | ✅                                       | ❌                                                              | ❌           |
+| Multiple Languages       | ✅                                       | ✅\*                                                            | ❌           |
+| Lazy Load Translations   | ✅                                       | ✅\*                                                            | ✅           |
+| Multiple Fallbacks       | ✅                                       | ❌                                                              | ❌           |
+| Hackable                 | ✅                                       | ✅                                                              | ❌           |
+| Testing                  | ✅                                       | ✅ External library                                             | ❌           |
+| Structural Directive     | ✅                                       | ❌                                                              | ❌           |
+| Attribute Directive      | ✅                                       | ✅                                                              | ✅           |
+| Pipe                     | ✅                                       | ✅                                                              | ❌           |
+| Ivy support              | ✅                                       | ❌ [See here](https://github.com/ngx-translate/core/issues/958) | ✅           |
+| Additional Functionality | ✅ [See here](#additional-functionality) | ❌                                                              | ❌           |
+| Pluralization            | ✅                                       | ✅ External library                                             | ✅           |
+| Plugins                  | WIP                                      | ✅ [See here](https://github.com/ngx-translate/core#plugins)    | ❌           |
 
 (\*) Works **only** by creating a new service instance and mark it as isolated, and it's not supported at the directive level.
+
+## Plugins
+
+- [Persist Language](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-persist-lang) (offical)
+- [Persist Translations](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-persist-translations) (offical)
 
 ## Support
 
 For any questions or deliberations join our [Gitter channel](https://gitter.im/ngneat-transloco/lobby#)
+
+## Core Team
+
+<table>
+  <tr>
+    <td align="center"><a href="https://www.netbasal.com"><img src="https://avatars1.githubusercontent.com/u/6745730?v=4" width="100px;" alt="Netanel Basal"/><br /><sub><b>Netanel Basal</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/shaharkazaz"><img src="https://avatars2.githubusercontent.com/u/17194830?v=4" width="100px;" alt="Shahar Kazaz"/><br /><sub><b>Shahar Kazaz</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/itayod"><img src="https://avatars2.githubusercontent.com/u/6719615?v=4" width="100px;" alt="Itay Oded"/><br /><sub><b>Itay Oded</b></sub></a><br /></td>
+    </tr>
+</table>
 
 ## Contributors ✨
 
@@ -631,11 +727,17 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="https://www.netbasal.com"><img src="https://avatars1.githubusercontent.com/u/6745730?v=4" width="100px;" alt="Netanel Basal"/><br /><sub><b>Netanel Basal</b></sub></a><br /><a href="#blog-NetanelBasal" title="Blogposts">📝</a> <a href="#business-NetanelBasal" title="Business development">💼</a> <a href="https://github.com/NetanelBasal/transloco/commits?author=NetanelBasal" title="Code">💻</a> <a href="#content-NetanelBasal" title="Content">🖋</a> <a href="#design-NetanelBasal" title="Design">🎨</a> <a href="https://github.com/NetanelBasal/transloco/commits?author=NetanelBasal" title="Documentation">📖</a> <a href="#example-NetanelBasal" title="Examples">💡</a> <a href="#ideas-NetanelBasal" title="Ideas, Planning, & Feedback">🤔</a> <a href="#infra-NetanelBasal" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-NetanelBasal" title="Maintenance">🚧</a> <a href="#projectManagement-NetanelBasal" title="Project Management">📆</a> <a href="https://github.com/NetanelBasal/transloco/commits?author=NetanelBasal" title="Tests">⚠️</a></td>
-    <td align="center"><a href="https://github.com/shaharkazaz"><img src="https://avatars2.githubusercontent.com/u/17194830?v=4" width="100px;" alt="Shahar Kazaz"/><br /><sub><b>Shahar Kazaz</b></sub></a><br /><a href="https://github.com/NetanelBasal/transloco/commits?author=shaharkazaz" title="Code">💻</a> <a href="#content-shaharkazaz" title="Content">🖋</a> <a href="https://github.com/NetanelBasal/transloco/commits?author=shaharkazaz" title="Documentation">📖</a> <a href="#ideas-shaharkazaz" title="Ideas, Planning, & Feedback">🤔</a> <a href="#infra-shaharkazaz" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-shaharkazaz" title="Maintenance">🚧</a> <a href="https://github.com/NetanelBasal/transloco/commits?author=shaharkazaz" title="Tests">⚠️</a></td>
-    <td align="center"><a href="https://github.com/itayod"><img src="https://avatars2.githubusercontent.com/u/6719615?v=4" width="100px;" alt="Itay Oded"/><br /><sub><b>Itay Oded</b></sub></a><br /><a href="https://github.com/NetanelBasal/transloco/commits?author=itayod" title="Code">💻</a> <a href="#ideas-itayod" title="Ideas, Planning, & Feedback">🤔</a> <a href="#infra-itayod" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-itayod" title="Maintenance">🚧</a> <a href="https://github.com/NetanelBasal/transloco/commits?author=itayod" title="Tests">⚠️</a></td>
-    <td align="center"><a href="https://twitter.com/irustm"><img src="https://avatars1.githubusercontent.com/u/16316579?v=4" width="100px;" alt="Rustam"/><br /><sub><b>Rustam</b></sub></a><br /><a href="https://github.com/NetanelBasal/transloco/commits?author=irustm" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://github.com/Coly010"><img src="https://avatars2.githubusercontent.com/u/12140467?v=4" width="100px;" alt="Colum Ferry"/><br /><sub><b>Colum Ferry</b></sub></a><br /><a href="https://github.com/NetanelBasal/transloco/commits?author=Coly010" title="Code">💻</a> <a href="https://github.com/NetanelBasal/transloco/commits?author=Coly010" title="Documentation">📖</a> <a href="#ideas-Coly010" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/NetanelBasal/transloco/commits?author=Coly010" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://www.netbasal.com"><img src="https://avatars1.githubusercontent.com/u/6745730?v=4" width="100px;" alt="Netanel Basal"/><br /><sub><b>Netanel Basal</b></sub></a><br /><a href="#blog-NetanelBasal" title="Blogposts">📝</a> <a href="#business-NetanelBasal" title="Business development">💼</a> <a href="https://github.com/ngneat/transloco/commits?author=NetanelBasal" title="Code">💻</a> <a href="#content-NetanelBasal" title="Content">🖋</a> <a href="#design-NetanelBasal" title="Design">🎨</a> <a href="https://github.com/ngneat/transloco/commits?author=NetanelBasal" title="Documentation">📖</a> <a href="#example-NetanelBasal" title="Examples">💡</a> <a href="#ideas-NetanelBasal" title="Ideas, Planning, & Feedback">🤔</a> <a href="#infra-NetanelBasal" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-NetanelBasal" title="Maintenance">🚧</a> <a href="#projectManagement-NetanelBasal" title="Project Management">📆</a> <a href="https://github.com/ngneat/transloco/commits?author=NetanelBasal" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/shaharkazaz"><img src="https://avatars2.githubusercontent.com/u/17194830?v=4" width="100px;" alt="Shahar Kazaz"/><br /><sub><b>Shahar Kazaz</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=shaharkazaz" title="Code">💻</a> <a href="#content-shaharkazaz" title="Content">🖋</a> <a href="https://github.com/ngneat/transloco/commits?author=shaharkazaz" title="Documentation">📖</a> <a href="#ideas-shaharkazaz" title="Ideas, Planning, & Feedback">🤔</a> <a href="#infra-shaharkazaz" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-shaharkazaz" title="Maintenance">🚧</a> <a href="https://github.com/ngneat/transloco/commits?author=shaharkazaz" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/itayod"><img src="https://avatars2.githubusercontent.com/u/6719615?v=4" width="100px;" alt="Itay Oded"/><br /><sub><b>Itay Oded</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=itayod" title="Code">💻</a> <a href="#ideas-itayod" title="Ideas, Planning, & Feedback">🤔</a> <a href="#infra-itayod" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-itayod" title="Maintenance">🚧</a> <a href="https://github.com/ngneat/transloco/commits?author=itayod" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://twitter.com/irustm"><img src="https://avatars1.githubusercontent.com/u/16316579?v=4" width="100px;" alt="Rustam"/><br /><sub><b>Rustam</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=irustm" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/Coly010"><img src="https://avatars2.githubusercontent.com/u/12140467?v=4" width="100px;" alt="Colum Ferry"/><br /><sub><b>Colum Ferry</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=Coly010" title="Code">💻</a> <a href="https://github.com/ngneat/transloco/commits?author=Coly010" title="Documentation">📖</a> <a href="#ideas-Coly010" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/ngneat/transloco/commits?author=Coly010" title="Tests">⚠️</a> <a href="#blog-Coly010" title="Blogposts">📝</a></td>
+    <td align="center"><a href="https://www.armanozak.com/"><img src="https://avatars3.githubusercontent.com/u/15855540?v=4" width="100px;" alt="Levent Arman Özak"/><br /><sub><b>Levent Arman Özak</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=armanozak" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/theblushingcrow"><img src="https://avatars3.githubusercontent.com/u/638818?v=4" width="100px;" alt="Inbal Sinai"/><br /><sub><b>Inbal Sinai</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=theblushingcrow" title="Documentation">📖</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="http://www.larskniep.nl"><img src="https://avatars1.githubusercontent.com/u/1215195?v=4" width="100px;" alt="Lars Kniep"/><br /><sub><b>Lars Kniep</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=larscom" title="Code">💻</a> <a href="#ideas-larscom" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/fxck"><img src="https://avatars1.githubusercontent.com/u/1303561?v=4" width="100px;" alt="Aleš"/><br /><sub><b>Aleš</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=fxck" title="Code">💻</a> <a href="#ideas-fxck" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>
 

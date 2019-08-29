@@ -1,23 +1,22 @@
 import { TranslocoTranspiler, DefaultTranspiler } from '../transloco.transpiler';
-import { isString } from '../helpers';
 import { HashMap, Translation } from '../types';
 
-import MessageFormat from 'messageformat';
+import * as MessageFormat from 'messageformat';
+import { isString } from '../helpers';
 
 export class MessageFormatTranspiler implements TranslocoTranspiler {
   defaultTranspiler: DefaultTranspiler = new DefaultTranspiler();
+  //@ts-ignore
   messageFormat: MessageFormat = new MessageFormat();
 
   transpile(value: string, params: HashMap = {}, translation: Translation): string {
-    value = this.defaultTranspiler.transpile(value, params, translation);
-
-    if (isString(value)) {
-      const message = this.messageFormat.compile(value);
-      const transpiled = message(params);
-
-      return transpiled;
+    if (!value || isString(value) === false) {
+      return value;
     }
 
-    return value;
+    const transpiled = this.defaultTranspiler.transpile(value, params, translation);
+    const message = this.messageFormat.compile(transpiled);
+
+    return message(params);
   }
 }

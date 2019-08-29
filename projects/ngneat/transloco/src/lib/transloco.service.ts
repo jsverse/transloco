@@ -1,10 +1,20 @@
-import { Inject, Injectable } from '@angular/core';
-import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
-import { catchError, map, retry, shareReplay, tap } from 'rxjs/operators';
-import { TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
+import { Inject, Injectable, Optional } from '@angular/core';
+import { BehaviorSubject, combineLatest, from, Observable, Subject } from 'rxjs';
+import { catchError, distinctUntilChanged, map, retry, shareReplay, tap } from 'rxjs/operators';
+import { DefaultLoader, TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_TRANSPILER, TranslocoTranspiler } from './transloco.transpiler';
-import { HashMap, Translation, TranslationCb, TranslocoEvents } from './types';
-import { getValue, isFunction, mergeDeep, setValue } from './helpers';
+import { HashMap, TranslateParams, Translation, TranslocoEvents } from './types';
+import {
+  getLangFromScope,
+  getScopeFromLang,
+  getValue,
+  isEmpty,
+  isFunction,
+  mergeDeep,
+  setValue,
+  size,
+  toCamelCase
+} from './helpers';
 import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './transloco-missing-handler';
 import { TRANSLOCO_INTERCEPTOR, TranslocoInterceptor } from './transloco.interceptor';
@@ -12,14 +22,7 @@ import { TRANSLOCO_FALLBACK_STRATEGY, TranslocoFallbackStrategy } from './transl
 
 let service: TranslocoService;
 
-export function translate<T = Translation>(key: TranslationCb<T>, params?: HashMap, lang?: string): string;
-export function translate(key: string, params?: HashMap, lang?: string): string;
-export function translate(key: string[], params?: HashMap, lang?: string): string[];
-export function translate<T = Translation>(
-  key: string | string[] | TranslationCb<T>,
-  params: HashMap = {},
-  lang?: string
-): string | string[] {
+export function translate<T = any>(key: TranslateParams, params: HashMap = {}, lang?: string): T {
   return service.translate(key, params, lang);
 }
 
@@ -40,18 +43,22 @@ export class TranslocoService {
   private failedLangs = new Set<string>();
 
   constructor(
-    @Inject(TRANSLOCO_LOADER) private loader: TranslocoLoader,
+    @Optional() @Inject(TRANSLOCO_LOADER) private loader: TranslocoLoader,
     @Inject(TRANSLOCO_TRANSPILER) private parser: TranslocoTranspiler,
     @Inject(TRANSLOCO_MISSING_HANDLER) private missingHandler: TranslocoMissingHandler,
     @Inject(TRANSLOCO_INTERCEPTOR) private interceptor: TranslocoInterceptor,
     @Inject(TRANSLOCO_CONFIG) private userConfig: TranslocoConfig,
     @Inject(TRANSLOCO_FALLBACK_STRATEGY) private fallbackStrategy: TranslocoFallbackStrategy
   ) {
+    if (!this.loader) {
+      this.loader = new DefaultLoader(this.translations);
+    }
     service = this;
     this.mergedConfig = { ...defaultConfig, ...this.userConfig };
+
     this.setDefaultLang(this.mergedConfig.defaultLang);
     this.lang = new BehaviorSubject<string>(this.getDefaultLang());
-    this.langChanges$ = this.lang.asObservable();
+    this.langChanges$ = this.lang.asObservable().pipe(distinctUntilChanged());
 
     /**
      * When we have a failure, we want to define the next language that succeeded as the active
@@ -59,11 +66,14 @@ export class TranslocoService {
     this.events$.subscribe(e => {
       if (e.type === 'translationLoadSuccess' && e.wasFailure) {
         // Handle scoped lang
-        const split = e.payload.lang.split('/');
-        const lang = split[split.length - 1];
+        const lang = getLangFromScope(e.payload.lang);
         this.setActiveLang(lang);
       }
     });
+  }
+
+  get isSharedScope(): boolean {
+    return this.config.scopeStrategy === 'shared';
   }
 
   get config(): TranslocoConfig {
@@ -109,26 +119,15 @@ export class TranslocoService {
    *
    * @example
    *
-   * translate('hello')
+   * translate<string>('hello')
    * translate('hello', { value: 'value' })
-   * translate(['hello', 'key'])
+   * translate<string[]>(['hello', 'key'])
+   * translate(t => t.a.b.c);
    * translate('hello', { }, 'en')
    */
-  translate<T = Translation>(key: TranslationCb<T>, params?: HashMap, lang?: string): string;
-  translate(key: string, params?: HashMap, lang?: string): string;
-  translate(key: string[], params?: HashMap, lang?: string): string[];
-  translate<T = Translation>(
-    key: string | string[] | TranslationCb<T>,
-    params?: HashMap,
-    lang?: string
-  ): string | string[];
-  translate<T = Translation>(
-    key: string | string[] | TranslationCb<T>,
-    params: HashMap = {},
-    lang?: string
-  ): string | string[] {
+  translate<T = any>(key: TranslateParams, params: HashMap = {}, lang?: string): T {
     if (Array.isArray(key)) {
-      return key.map(k => this.translate(k, params, lang));
+      return key.map(k => this.translate(k, params, lang)) as any;
     }
 
     if (!key) {
@@ -137,26 +136,31 @@ export class TranslocoService {
 
     const translation = this.translations.get(lang || this.getActiveLang());
     if (!translation) {
-      return '';
+      return '' as any;
     }
 
-    const value = isFunction(key) ? key(translation as T, params) : getValue(translation, key);
+    const value = isFunction(key) ? key(translation as any, params) : getValue(translation, key);
 
     if (!value) {
+      if (this.mergedConfig.missingHandler.allowEmpty && value === '') {
+        return '' as any;
+      }
+
       return this.missingHandler.handle(key, params, this.config);
     }
 
-    return this.parser.transpile(value, params, translation);
+    return this.parser.transpile(value, params, translation) as any;
   }
 
   /**
    * Gets the translated value of a key as observable
    *
    * @example
-   * selectTranslate('hello').subscribe(value => {})
-   * selectTranslate('hello').subscribe(value => {}, 'es')
+   *
+   * selectTranslate<string>('hello').subscribe(value => ...)
+   * selectTranslate<string>('hello', {}, 'es').subscribe(value => ...)
    */
-  selectTranslate(key: string, params?: HashMap, lang?: string) {
+  selectTranslate<T = any>(key: TranslateParams, params?: HashMap, lang?: string): Observable<T> {
     return this.load(lang || this.getActiveLang()).pipe(map(() => this.translate(key, params, lang)));
   }
 
@@ -177,13 +181,27 @@ export class TranslocoService {
    *
    * @example
    *
+   * getTranslation()
    * getTranslation('en')
    * getTranslation('admin-page/en')
    */
   getTranslation(): Map<string, Translation>;
   getTranslation(lang: string): Translation;
-  getTranslation(lang?: string): Map<string, Translation> | Translation | undefined {
-    return lang ? this.translations.get(lang) : this.translations;
+  getTranslation(lang?: string): Map<string, Translation> | Translation {
+    return lang ? this.translations.get(lang) || {} : this.translations;
+  }
+
+  /**
+   * Gets an object of translations for a given language
+   *
+   * @example
+   *
+   * selectTranslation().subscribe()
+   * selectTranslation('es').subscribe()
+   */
+  selectTranslation(lang?: string): Observable<Translation> {
+    const language = lang || this.getActiveLang();
+    return this.load(language).pipe(map(() => this.getTranslation(language)));
   }
 
   /**
@@ -195,13 +213,17 @@ export class TranslocoService {
    * setTranslation({ ... }, 'en')
    * setTranslation({ ... }, 'admin-page/en', { merge: false } )
    */
-  setTranslation(data: Translation, lang = this.getActiveLang(), options: { merge?: boolean } = {}) {
-    const defaults = { merge: true };
+  setTranslation(
+    data: Translation,
+    lang = this.getActiveLang(),
+    options: { merge?: boolean; emitChange?: boolean } = {}
+  ) {
+    const defaults = { merge: true, emitChange: true };
     const mergedOptions = { ...defaults, ...options };
     const translation = this.getTranslation(lang) || {};
     const merged = mergedOptions.merge ? mergeDeep(translation, data) : data;
     this._setTranslation(lang, merged);
-    this.setActiveLang(this.getActiveLang());
+    mergedOptions.emitChange && this.setActiveLang(this.getActiveLang());
   }
 
   /**
@@ -215,21 +237,44 @@ export class TranslocoService {
    */
   setTranslationKey(key: string, value: string, lang = this.getActiveLang()) {
     const translation = this.getTranslation(lang);
-    if (translation) {
+    if (!isEmpty(translation)) {
       const withHook = this.interceptor.preSaveTranslationKey(key, value, lang);
       const newValue = setValue(translation, key, withHook);
-      this.translations.set(lang, newValue);
-      this.setActiveLang(this.getActiveLang());
+      this.setTranslation(newValue, lang);
     }
+  }
+
+  /**
+   * @internal
+   * When using the shared scope strategy you always want to make sure the global lang  is loaded
+   * before loading the scope since you can access both via the pipe/directive.
+   */
+  _loadDependencies(langName: string): Observable<Translation | Translation[]> {
+    const split = langName.split('/');
+    const [lang] = split.slice(-1);
+    if (split.length > 1 && this.isSharedScope && !size(this.getTranslation(lang))) {
+      return combineLatest(this.load(lang), this.load(langName));
+    }
+
+    return this.load(langName);
   }
 
   private _setTranslation(lang: string, translation: Translation) {
     const withHook = this.interceptor.preSaveTranslation(translation, lang);
     this.translations.set(lang, withHook);
+    const { scopeStrategy, scopeMapping = {} } = this.config;
+    const currLang = getLangFromScope(lang);
+    const scope = getScopeFromLang(lang);
+    if (scope && scopeStrategy === 'shared') {
+      const activeLang = this.getTranslation(currLang);
+      const key = toCamelCase(scopeMapping[scope] || scope);
+      const merged = setValue(activeLang, key, withHook);
+      this.translations.set(currLang, merged);
+    }
   }
 
   private handleSuccess(lang: string, translation: Translation) {
-    this._setTranslation(lang, translation);
+    this.setTranslation(translation, lang, { emitChange: false });
     if (this.failedLangs.has(lang) === false) {
       if (!this.config.prodMode) {
         console.log(`%c 🍻 Translation Load Success: ${lang}`, 'background: #fff; color: hotpink;');

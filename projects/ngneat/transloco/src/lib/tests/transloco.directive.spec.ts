@@ -13,18 +13,52 @@ describe('TranslocoDirective', () => {
     providers: providersMock
   });
 
-  function testScopedTranslation(host: SpectatorWithHost<TranslocoDirective, HostComponent>) {
-    const service = host.get<TranslocoService>(TranslocoService);
+  function initScopeTest(host: SpectatorWithHost<TranslocoDirective, HostComponent>, service) {
     setlistenToLangChange(service);
     host.detectChanges();
     runLoader();
     // fakeAsync doesn't trigger CD
     host.detectChanges();
+  }
+
+  function testMergedScopedTranslation(host: SpectatorWithHost<TranslocoDirective, HostComponent>, preload?) {
+    const service = host.get<TranslocoService>(TranslocoService);
+    if (preload) {
+      service.load('en').subscribe();
+      runLoader();
+    }
+    initScopeTest(host, service);
+    expect(host.queryHost('.global')).toHaveText(preload ? 'home english' : '');
+    expect(host.queryHost('.scoped')).toHaveText('Admin Lazy english');
+    if (preload) {
+      service.load('es').subscribe();
+      runLoader();
+    }
+    service.setActiveLang('es');
+    runLoader();
+    host.detectChanges();
+    expect(host.queryHost('.global')).toHaveText(preload ? 'home spanish' : '');
+    expect(host.queryHost('.scoped')).toHaveText('Admin Lazy spanish');
+  }
+
+  function testScopedTranslation(host: SpectatorWithHost<TranslocoDirective, HostComponent>) {
+    const service = host.get<TranslocoService>(TranslocoService);
+    initScopeTest(host, service);
     expect(host.queryHost('div')).toHaveText('Admin Lazy english');
     service.setActiveLang('es');
     runLoader();
     host.detectChanges();
     expect(host.queryHost('div')).toHaveText('Admin Lazy spanish');
+  }
+
+  function testTranslationWithRead(host: SpectatorWithHost<TranslocoDirective, HostComponent>) {
+    const service = host.get<TranslocoService>(TranslocoService);
+    initScopeTest(host, service);
+    expect(host.queryHost('div')).toHaveText('Title english');
+    service.setActiveLang('es');
+    runLoader();
+    host.detectChanges();
+    expect(host.queryHost('div')).toHaveText('Title spanish');
   }
 
   it('should unsubscribe after one emit when not in listenToLangChange mode', fakeAsync(() => {
@@ -73,15 +107,62 @@ describe('TranslocoDirective', () => {
     }));
 
     it('should load scoped translation', fakeAsync(() => {
-      host = createHost(`<div transloco="title" translocoScope="lazy-page"></div>`, false);
+      host = createHost(`<div transloco="lazyPage.title" translocoScope="lazy-page"></div>`, false);
       testScopedTranslation(host);
+    }));
+
+    it("should load scoped translation even if global didn't load", fakeAsync(() => {
+      host = createHost(
+        `
+        <div class="global" transloco="home" translocoScope="lazy-page"></div>
+        <div class="scoped" transloco="lazyPage.title" translocoScope="lazy-page"></div>`,
+        false
+      );
+      testMergedScopedTranslation(host);
+    }));
+
+    it('should expose both scoped and global translation', fakeAsync(() => {
+      host = createHost(
+        `
+        <div class="global" transloco="home" translocoScope="lazy-page"></div>
+        <div class="scoped" transloco="lazyPage.title" translocoScope="lazy-page"></div>`,
+        false
+      );
+      testMergedScopedTranslation(host, true);
     }));
   });
 
   describe('Structural directive', () => {
     it('should load scoped translation', fakeAsync(() => {
-      host = createHost(`<section *transloco="let t; scope: 'lazy-page'"><div>{{t.title}}</div></section>`, false);
+      host = createHost(
+        `<section *transloco="let t; scope: 'lazy-page'"><div>{{t.lazyPage.title}}</div></section>`,
+        false
+      );
       testScopedTranslation(host);
+    }));
+
+    it("should load scoped translation even if global didn't load", fakeAsync(() => {
+      host = createHost(
+        `
+        <section *transloco="let t; scope: 'lazy-page'">
+        <div class="scoped">{{t.lazyPage.title}}</div>
+        <div class="global">{{t.home}}</div>
+        </section>`,
+        false
+      );
+      testMergedScopedTranslation(host);
+    }));
+
+    it('should expose both scoped and global translation', fakeAsync(() => {
+      host = createHost(
+        `
+        <section *transloco="let t; scope: 'lazy-page'">
+        <div class="scoped">{{t.lazyPage.title}}</div>
+        <div class="global">{{t.home}}</div>
+        </section>`,
+        false
+      );
+      testMergedScopedTranslation(host, true);
     }));
 
     it('should create embedded view once', fakeAsync(() => {
@@ -114,6 +195,11 @@ describe('TranslocoDirective', () => {
       expect(host.queryHost('p')).toHaveText('a.b.c from list english');
       expect(host.queryHostAll('p')[1]).toHaveText('a.b.c value english');
     }));
+
+    it('should get translation of a nested property using read', fakeAsync(() => {
+      host = createHost(`<section *transloco="let t; read: 'nested'"><div>{{t.title}}</div></section>`, false);
+      testTranslationWithRead(host);
+    }));
   });
 
   describe('Loading Template', () => {
@@ -124,7 +210,7 @@ describe('TranslocoDirective', () => {
         <section *transloco="let t; scope: 'lazy-page'; loadingTpl: loading">
           <h1 data-cy="lazy-page">{{ t.title }}</h1>
         </section>
-        
+
         <ng-template #loading>
           <h1 id="lazy-page-loading">Loading...</h1>
         </ng-template>
@@ -181,7 +267,7 @@ describe('TranslocoDirective', () => {
         <section *transloco="let t; scope: 'lazy-page'; loadingTpl: loading">
           <h1 data-cy="lazy-page">{{ t.title }}</h1>
         </section>
-        
+
         <ng-template #loading>
           <h1 id="lazy-page-loading">Loading...</h1>
         </ng-template>

@@ -3,65 +3,66 @@
 <h4>Structural Directive</h4>
 <ng-container *transloco="let t">
   <ul class="list-group">
-    <li class="list-group-item" data-cy="regular"><b>Regular: </b>{{ t.home }}</li>
+    <li class="list-group-item" data-cy="regular"><b>Regular: </b>{{ t.mf.home }}</li>
     <li class="list-group-item" data-cy="with-params">
-      <b>With params: </b>{{ t['params'] | translocoParams: { value: dynamic } }}
+      <b>With params: </b>{{ t.mf.params | translocoParams: { value: dynamic } }}
     </li>
     <li class="list-group-item" data-cy="with-translation-reuse">
-      <b>With translation reuse: </b> {{ t.a.b.c | translocoParams: {} }}
+      <b>With translation reuse: </b> {{ t.mf.a.b.c | translocoParams: {} }}
     </li>
     <li class="list-group-item" data-cy="with-message-format">
-      <b>Using messageformat: </b>{{ t['messageFormat'] | translocoParams: { gender: 'male' } }}
+      <b>Using messageformat: </b>{{ t.mf.messageFormat | translocoParams: { gender: 'male' } }}
     </li>
     <li class="list-group-item" data-cy="with-message-format-dynamic">
-      <b>Using messageformat with dynamic value: </b>{{ t['messageFormat'] | translocoParams: { gender: userGender } }}
+      <b>Using messageformat with dynamic value: </b>{{ t.mf.messageFormat | translocoParams: { gender: userGender } }}
     </li>
     <li class="list-group-item" data-cy="with-message-format-params">
       <b>Using messageformat with transloco standard params: </b
-      >{{ t['messageFormatWithParams'] | translocoParams: { value: 'transloco params', gender: '' } }}
+      >{{ t.mf.messageFormatWithParams | translocoParams: { value: 'transloco params', gender: '' } }}
     </li>
   </ul>
 </ng-container>
 
 <h3 class="mtb">Directive</h3>
 <ul class="list-group">
-  <li class="list-group-item" data-cy="d-regular"><b>Regular: </b><span transloco="home"></span></li>
-  <li class="list-group-item" (click)="changeParam()" data-cy="d-with-params">
-    <b>(click) With params: </b> <span transloco="params" [translocoParams]="{ value: dynamic }"></span>
+  <li class="list-group-item" data-cy="d-regular"><b>Regular: </b><span transloco="mf.home"></span></li>
+  <li class="list-group-item" data-cy="d-with-params">
+    <b class="pointer" (click)="changeParam()">(click) </b> <b>With params: </b>
+    <span transloco="mf.params" [translocoParams]="{ value: dynamic }"></span>
   </li>
   <li class="list-group-item" data-cy="d-with-translation-reuse">
-    <b>With translation reuse: </b> <span transloco="a.b.c"></span>
+    <b>With translation reuse: </b> <span transloco="mf.a.b.c"></span>
   </li>
   <li class="list-group-item" data-cy="d-with-message-format">
-    <b>Using messageformat: </b> <span transloco="messageFormat" [translocoParams]="{ gender: 'male' }"></span>
+    <b>Using messageformat: </b> <span transloco="mf.messageFormat" [translocoParams]="{ gender: 'male' }"></span>
   </li>
   <li class="list-group-item" data-cy="d-with-message-format-dynamic">
     <b>Using messageformat with dynamic value: </b>
-    <span transloco="messageFormat" [translocoParams]="{ gender: userGender }"></span>
+    <span transloco="mf.messageFormat" [translocoParams]="{ gender: userGender }"></span>
   </li>
   <li class="list-group-item" data-cy="d-with-message-format-params">
     <b>Using messageformat with transloco standard params: </b>
-    <span transloco="messageFormatWithParams" [translocoParams]="{ value: 'transloco params', gender: '' }"></span>
+    <span transloco="mf.messageFormatWithParams" [translocoParams]="{ value: 'transloco params', gender: '' }"></span>
   </li>
 </ul>
 
 <h3 class="mtb">Pipe</h3>
 <ul class="list-group">
-  <li class="list-group-item" data-cy="p-regular"><b>Regular: </b>{{ 'home' | transloco }}</li>
+  <li class="list-group-item" data-cy="p-regular"><b>Regular: </b>{{ 'mf.home' | transloco }}</li>
   <li class="list-group-item" data-cy="p-with-params">
-    <b>With params: </b>{{ 'params' | transloco: { value: dynamic } }}
+    <b>With params: </b>{{ 'mf.params' | transloco: { value: dynamic } }}
   </li>
   <li class="list-group-item" data-cy="p-with-translation-reuse">
-    <b>With translation reuse: </b> {{ 'a.b.c' | transloco }}
+    <b>With translation reuse: </b> {{ 'mf.a.b.c' | transloco }}
   </li>
   <li class="list-group-item" data-cy="p-with-message-format">
-    <b>Using messageformat: </b>{{ 'messageFormat' | transloco: { gender: 'male' } }}
+    <b>Using messageformat: </b>{{ 'mf.messageFormat' | transloco: { gender: 'male' } }}
   </li>
   <li class="list-group-item" data-cy="p-with-message-format-dynamic">
-    <b>Using messageformat with dynamic value: </b>{{ 'messageFormat' | transloco: { gender: userGender } }}
+    <b>Using messageformat with dynamic value: </b>{{ 'mf.messageFormat' | transloco: { gender: userGender } }}
   </li>
   <li class="list-group-item" data-cy="p-with-message-format-params">
     <b>Using messageformat with transloco standard params: </b
-    >{{ 'messageFormatWithParams' | transloco: { value: 'transloco params', gender: '' } }}
+    >{{ 'mf.messageFormatWithParams' | transloco: { value: 'transloco params', gender: '' } }}
   </li>
 </ul>

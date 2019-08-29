@@ -1,0 +1,37 @@
+<h4>Scope is set to <code>todos-page</code> in module's providers.</h4>
+<h6>This app is configured with <code>scopeStrategy</code> set to <code>'shared'</code>.</h6>
+<h6>Which means each scope is merged into the global lang and accessed by the scope name:</h6>
+<h6 class="quoteblock">The scope's name will be camel cased e.g: <code>todos-page</code> 👉🏼 <code>todosPage</code></h6>
+<code
+  ><pre>{{ ex.one }}</pre></code
+>
+<h6>
+  You can also configure the name for accessing the scope by passing the <code>scopeMapping</code> property in the
+  config
+</h6>
+<h6>In our case we mapped <code>todos-page</code> to <code>todos</code>, so our code will actually be:</h6>
+<code
+  ><pre>{{ ex.two }}</pre></code
+>
+<h6><u>And here is the result:</u></h6>
+<ng-container *transloco="let t">
+  <p data-cy="todos-page-scope">{{ t.todos.title }}</p>
+  <p data-cy="global">{{ t.home }}</p>
+</ng-container>
+<h4><u>More Examples:</u></h4>
+<h5><u>Directive</u></h5>
+<h6><u>Scope is set to `lazy-page` inline</u></h6>
+<p data-cy="d-lazy-page-scope" transloco="lazyPage.title" translocoScope="lazy-page"></p>
+<p data-cy="d-global" transloco="b"></p>
+<h5><u>Pipe</u></h5>
+<p data-cy="p-todos-page-scope">{{ 'todos.title' | transloco }}</p>
+<p data-cy="p-global">{{ 'home' | transloco }}</p>
+
+<h5><u>Use read to get translations of a nested property</u></h5>
+<code
+  ><pre>{{ ex.nested }}</pre></code
+>
+<ng-container *transloco="let t; read: 'nested'">
+  <h5>{{ t.title }}</h5>
+  <p>{{ t.desc }}</p>
+</ng-container>

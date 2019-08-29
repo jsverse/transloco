@@ -8,5 +8,9 @@
     }
   },
   "b": "b spanish",
-  "c": "c spanish"
+  "c": "c spanish",
+  "nested": {
+    "title": "Title spanish",
+    "desc": "Desc spanish"
+  }
 }

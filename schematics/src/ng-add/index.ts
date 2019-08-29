@@ -8,11 +8,11 @@ import {
   source,
   move,
   chain,
-  mergeWith,
   SchematicsException,
   template,
   url,
   Source,
+  mergeWith,
   noop
 } from '@angular-devkit/schematics';
 import { createSourceFile, SourceFile, ScriptTarget } from 'typescript';
@@ -20,7 +20,7 @@ import { LIB_NAME } from '../schematics.consts';
 import { addImportToModule, insertImport, addProviderToModule } from '../utils/ast-utils';
 import { InsertChange } from '../utils/change';
 import { findRootModule } from '../utils/find-module';
-import { getProject } from '../utils/projects';
+import { getProject, setEnvironments } from '../utils/projects';
 import { SchemaOptions, Loaders, TranslationFileTypes } from './schema';
 
 function jsonTranslationFileCreator(source, lang) {
@@ -111,25 +111,35 @@ export function addProvidersToModuleDeclaration(options: SchemaOptions, provider
   };
 }
 
-function getLoaderTemplates(loader, path): Source {
-  const loaderFolder = loader === Loaders.Webpack ? 'webpack-loader' : 'http-loader';
+function getLoaderTemplates(options, path): Source {
+  const loaderFolder = options.loader === Loaders.Webpack ? 'webpack-loader' : 'http-loader';
+
   return apply(url(`./files/${loaderFolder}`), [
     template({
-      ts: 'ts'
+      ts: 'ts',
+      ssr: options.ssr,
+      prefix: options.ssr ? '${environment.baseUrl}' : '',
+      suffix: options.format === TranslationFileTypes.JSON ? '.json' : ''
     }),
     move('/', path)
   ]);
+}
+
+function updateEnvironmentBaseUrl(host: Tree, sourceRoot: string, defaultValue: any) {
+  const template = `\$1{
+  baseUrl: '${defaultValue}',`;
+
+  setEnvironments(host, sourceRoot, (env: string) =>
+    env.indexOf('baseUrl') === -1 ? env.replace(/(environment.*=*)\{/, template) : env
+  );
 }
 
 export default function(options: SchemaOptions): Rule {
   return (host: Tree, context: SchematicContext) => {
     const langs = options.langs.split(',').map(l => l.trim());
     const project = getProject(host, options.project);
-
     const sourceRoot = (project && project.sourceRoot) || 'src';
-
-    const rootModule = options.module;
-
+    const isLib = project.projectType === 'library';
     const assetsPath = options.path;
 
     const translationCreator =
@@ -140,14 +150,22 @@ export default function(options: SchemaOptions): Rule {
     const translateFiles = apply(source(createTranslateFiles(langs, translationCreator)), [move('/', assetsPath)]);
 
     options.module = findRootModule(host, options.module, sourceRoot) as string;
+    const modulePath = options.module.substring(0, options.module.lastIndexOf('/') + 1);
+    const prodMode = isLib ? 'false' : 'environment.production';
     const configProviderTemplate = `{
       provide: TRANSLOCO_CONFIG,
       useValue: {
-        listenToLangChange: true,
+        listenToLangChange: false,
         defaultLang: 'en',
-        prodMode: environment.production
+        fallbackLang: 'es',
+        prodMode: ${prodMode},
+        scopeStrategy: 'shared'
       } as TranslocoConfig
     }`;
+
+    if (options.ssr) {
+      updateEnvironmentBaseUrl(host, sourceRoot, 'http://{your_url}');
+    }
 
     return chain([
       mergeWith(translateFiles),
@@ -157,8 +175,8 @@ export default function(options: SchemaOptions): Rule {
             addImportsToModuleDeclaration(options, ['HttpClientModule'])
           ])
         : noop(),
-      mergeWith(getLoaderTemplates(options.loader, sourceRoot + '/' + rootModule)),
-      addImportsToModuleFile(options, ['environment'], '../environments/environment'),
+      mergeWith(getLoaderTemplates(options, modulePath)),
+      isLib ? noop() : addImportsToModuleFile(options, ['environment'], '../environments/environment'),
       addImportsToModuleFile(options, ['translocoLoader'], './transloco.loader'),
       addImportsToModuleFile(options, ['TranslocoModule', 'TRANSLOCO_CONFIG', 'TranslocoConfig']),
       addImportsToModuleDeclaration(options, ['TranslocoModule']),

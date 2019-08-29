@@ -1,3 +1,36 @@
 #logo {
   height: 50px;
 }
+
+.navbar {
+  box-shadow: 0 0 2px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+}
+
+.container {
+  margin-top: 130px;
+  z-index: 0;
+}
+
+.btn:focus {
+  box-shadow: none !important;
+}
+
+.nav-item.active .nav-link {
+  color: #e83e8c;
+}
+.nav-item:hover:not(.active) .nav-link {
+  color: #cd298d;
+}
+
+.btn-primary {
+  background-color: #e83e8c;
+  border-color: #e83e8c;
+}
+.btn-primary:not(:disabled):not(.disabled):active {
+  background-color: #cd298d;
+  border-color: #cd298d;
+}

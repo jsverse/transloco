@@ -10,8 +10,8 @@ import {
   OnInit,
   Optional,
   TemplateRef,
-  ViewContainerRef,
-  Type
+  Type,
+  ViewContainerRef
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
@@ -21,6 +21,7 @@ import { TRANSLOCO_LOADING_TEMPLATE } from './transloco-loading-template';
 import { TRANSLOCO_SCOPE } from './transloco-scope';
 import { TranslocoService } from './transloco.service';
 import { HashMap, Translation } from './types';
+import { getValue } from './helpers';
 
 @Directive({
   selector: '[transloco]'
@@ -32,6 +33,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   @Input('transloco') key: string;
   @Input('translocoParams') params: HashMap = {};
   @Input('translocoScope') inlineScope: string | undefined;
+  @Input('translocoRead') inlineRead: string | undefined;
   @Input('translocoLang') inlineLang: string | undefined;
   @Input('translocoLoadingTpl') inlineTpl: TemplateRef<any> | undefined;
 
@@ -66,12 +68,23 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
           const lang = this.getLang(globalLang);
           const scope = this.getScope();
           this.langName = scope ? `${scope}/${lang}` : lang;
-          return this.translocoService.load(this.langName);
+          return this.translocoService._loadDependencies(this.langName);
         }),
         listenToLangChange ? source => source : take(1)
       )
       .subscribe(() => {
-        const translation = this.translocoService.getTranslation(this.langName);
+        /* In case the scope strategy is set to 'shared' we want to load the scope's language instead of the scope
+        itself in order to expose the global translations as well.
+        the scopes translations are merged to the global when using this strategy */
+        let targetLang = this.langName;
+        const scope = this.getScope();
+        if (scope) {
+          targetLang = this.translocoService.isSharedScope
+            ? this.getLang(this.translocoService.getActiveLang())
+            : this.langName;
+        }
+        const translation = this.translocoService.getTranslation(targetLang);
+        this.langName = targetLang;
         this.tpl === null ? this.simpleStrategy() : this.structuralStrategy(translation);
         this.cdr.markForCheck();
         this.initialized = true;
@@ -86,16 +99,18 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   }
 
   private simpleStrategy() {
+    this.detachLoader();
     this.host.nativeElement.innerText = this.translocoService.translate(this.key, this.params, this.langName);
   }
 
   private structuralStrategy(data: Translation) {
+    const translations = this.inlineRead ? getValue(data, this.inlineRead) : data;
     if (this.view) {
-      this.view.context['$implicit'] = data;
+      this.view.context['$implicit'] = translations;
     } else {
-      this.loaderTplHandler && this.loaderTplHandler.detachView();
+      this.detachLoader();
       this.view = this.vcr.createEmbeddedView(this.tpl, {
-        $implicit: data
+        $implicit: translations
       });
     }
   }
@@ -132,5 +147,9 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
 
   ngOnDestroy() {
     this.subscription && this.subscription.unsubscribe();
+  }
+
+  private detachLoader() {
+    this.loaderTplHandler && this.loaderTplHandler.detachView();
   }
 }

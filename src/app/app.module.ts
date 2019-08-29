@@ -3,38 +3,65 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {
+  MessageFormatTranspiler,
   TRANSLOCO_CONFIG,
-  TranslocoConfig,
-  TranslocoModule,
   TRANSLOCO_TRANSPILER,
-  MessageFormatTranspiler
+  TranslocoConfig,
+  TranslocoModule
 } from '@ngneat/transloco';
 import { HttpClientModule } from '@angular/common/http';
 import { HomeComponent } from './home/home.component';
 import { OnPushComponent } from './on-push/on-push.component';
-import { httpLoader } from './loaders/http.loader';
-import { preLoad } from './preload';
+import { HttpLoader, httpLoader } from './loaders/http.loader';
 import { environment } from '../environments/environment';
-import { webpackLoader } from './loaders/webpack.loader';
+import { TRANSLOCO_PERSIST_LANG_STORAGE, TranslocoPersistLangModule } from '@ngneat/transloco-persist-lang';
+import { getLangFn } from './getLang';
+import {
+  PERSIST_TRANSLATIONS_STORAGE,
+  TranslocoPersistTranslationsModule
+} from '@ngneat/transloco-persist-translation';
+import { TranslocoPreloadLangsModule } from '@ngneat/transloco-preload-langs';
 
 @NgModule({
   declarations: [AppComponent, HomeComponent, OnPushComponent],
-  imports: [BrowserModule, AppRoutingModule, TranslocoModule, HttpClientModule],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    TranslocoModule,
+    HttpClientModule,
+    TranslocoPreloadLangsModule.preload(['es', 'todos-page|scoped'])
+    // TranslocoPersistLangModule.init({
+    //   getLangFn,
+    //   storage: {
+    //     provide: TRANSLOCO_PERSIST_LANG_STORAGE,
+    //     useValue: localStorage
+    //   }
+    // })
+    // TranslocoPersistTranslationsModule.init({
+    //   loader: HttpLoader,
+    //   storage: {
+    //     provide: PERSIST_TRANSLATIONS_STORAGE,
+    //     useValue: localStorage
+    //   }
+    // })
+  ],
   providers: [
-    preLoad,
     httpLoader,
-    // webpackLoader,
     {
       provide: TRANSLOCO_CONFIG,
       useValue: {
         prodMode: environment.production,
         listenToLangChange: true,
         fallbackLang: 'es',
-        defaultLang: 'en'
+        defaultLang: 'en',
+        scopeStrategy: 'shared',
+        scopeMapping: {
+          'todos-page': 'todos',
+          'transpilers/messageformat': 'mf'
+        }
       } as TranslocoConfig
-    }
-    // Uncomment to use MessageFormatTranspiler
-    // { provide: TRANSLOCO_TRANSPILER, useClass: MessageFormatTranspiler }
+    },
+    { provide: TRANSLOCO_TRANSPILER, useClass: MessageFormatTranspiler }
   ],
   bootstrap: [AppComponent]
 })

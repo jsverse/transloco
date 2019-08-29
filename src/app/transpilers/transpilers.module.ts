@@ -1,14 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranspilersComponent } from './transpilers.component';
-import { Routes, RouterModule } from '@angular/router';
-import {
-  TranslocoModule,
-  TRANSLOCO_TRANSPILER,
-  MessageFormatTranspiler,
-  TRANSLOCO_SCOPE,
-  TRANSLOCO_LANG
-} from '@ngneat/transloco';
+import { RouterModule, Routes } from '@angular/router';
+import { TRANSLOCO_SCOPE, TranslocoModule } from '@ngneat/transloco';
 
 const routes: Routes = [
   {

@@ -2,14 +2,14 @@
   "name": "transloco-snippets",
   "displayName": "transloco",
   "description": "Code snippets for Angular Transloco",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "publisher": "shaharkazaz",
   "icon": "logo.png",
   "engines": {
     "vscode": "^1.30.0"
   },
   "galleryBanner": {
-    "color": "#BDE4A7"
+    "color": "#fcb6c1"
   },
   "repository": {
     "type": "git",

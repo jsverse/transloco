@@ -16,7 +16,11 @@
     "typeRoots": ["node_modules/@types"],
     "lib": ["es2018", "dom"],
     "paths": {
-      "@ngneat/transloco": ["./projects/ngneat/transloco/src/public-api.ts"]
+      "@ngneat/transloco": ["./projects/ngneat/transloco/src/public-api.ts"],
+      "@ngneat/transloco-persist-lang": ["./projects/ngneat/transloco-persist-lang/src/public-api.ts"],
+      "@ngneat/transloco-persist-translation": ["./projects/ngneat/transloco-persist-translations/src/public-api.ts"],
+      "@ngneat/transloco-messageformat": ["./projects/ngneat/transloco-messageformat/src/public-api.ts"],
+      "@ngneat/transloco-preload-langs": ["./projects/ngneat/transloco-preload-langs/src/public-api.ts"]
     }
   }
 }

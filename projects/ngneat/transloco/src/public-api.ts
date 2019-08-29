@@ -20,3 +20,6 @@ export {
 } from './lib/transloco-fallback-strategy';
 export { MessageFormatTranspiler } from './lib/transpiler-strategies/messageformat.transpiler';
 export { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './lib/transloco-missing-handler';
+export { getBrowserCultureLang, getBrowserLang } from './lib/browser-lang';
+export * from './lib/types';
+export * from './lib/helpers';

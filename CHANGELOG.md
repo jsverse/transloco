@@ -2,6 +2,134 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.6.0](https://github.com/ngneat/transloco/compare/v1.5.0...v1.6.0) (2019-08-28)
+
+### Features
+
+- limit nested translations ([71e5488](https://github.com/ngneat/transloco/commit/71e5488))
+- **directive:** add limit property ([7715deb](https://github.com/ngneat/transloco/commit/7715deb))
+- **directive:** add limit property ([f17f417](https://github.com/ngneat/transloco/commit/f17f417))
+- **directive:** read nested property ([b51359e](https://github.com/ngneat/transloco/commit/b51359e))
+- **directive:** set context to a nested property ([561cba4](https://github.com/ngneat/transloco/commit/561cba4))
+
+## [1.5.0](https://github.com/ngneat/transloco/compare/v1.4.2...v1.5.0) (2019-08-28)
+
+### Bug Fixes
+
+- 🐛 translate types ([fe51317](https://github.com/ngneat/transloco/commit/fe51317))
+
+### Features
+
+- 🎸 missing-handler ([23da8c5](https://github.com/ngneat/transloco/commit/23da8c5)), closes [#42](https://github.com/ngneat/transloco/issues/42)
+- 🎸 missing-handler ([#43](https://github.com/ngneat/transloco/issues/43)) ([5f082fc](https://github.com/ngneat/transloco/commit/5f082fc))
+- **loader:** allow it to be optional ([2a7fd83](https://github.com/ngneat/transloco/commit/2a7fd83))
+- 🎸 service ([317bfc8](https://github.com/ngneat/transloco/commit/317bfc8)), closes [#46](https://github.com/ngneat/transloco/issues/46)
+
+### Tests
+
+- 💍 allow-empty ([ba33ea1](https://github.com/ngneat/transloco/commit/ba33ea1))
+
+### [1.4.2](https://github.com/ngneat/transloco/compare/v1.4.0...v1.4.2) (2019-08-27)
+
+### Bug Fixes
+
+- 🐛 message-format ([ff835c3](https://github.com/ngneat/transloco/commit/ff835c3)), closes [#40](https://github.com/ngneat/transloco/issues/40)
+- 🐛 migration script support for get function ([67e112d](https://github.com/ngneat/transloco/commit/67e112d))
+- 🐛 translate ([620b151](https://github.com/ngneat/transloco/commit/620b151)), closes [#40](https://github.com/ngneat/transloco/issues/40)
+
+### [1.4.1](https://github.com/ngneat/transloco/compare/v1.4.0...v1.4.1) (2019-08-27)
+
+### Bug Fixes
+
+- 🐛 message-format ([ff835c3](https://github.com/ngneat/transloco/commit/ff835c3)), closes [#40](https://github.com/ngneat/transloco/issues/40)
+- 🐛 migration script support for get function ([67e112d](https://github.com/ngneat/transloco/commit/67e112d))
+- 🐛 translate ([620b151](https://github.com/ngneat/transloco/commit/620b151)), closes [#40](https://github.com/ngneat/transloco/issues/40)
+
+## [1.4.0](https://github.com/ngneat/transloco/compare/v1.2.0...v1.4.0) (2019-08-27)
+
+### Bug Fixes
+
+- 🎸 support using ng-add for libraries ([8ba6f25](https://github.com/ngneat/transloco/commit/8ba6f25))
+- 🐛 global scoep translations in pipe and directive ([c4d0993](https://github.com/ngneat/transloco/commit/c4d0993))
+- 🐛 global scope might not be loaded when sharing scope ([d094764](https://github.com/ngneat/transloco/commit/d094764))
+- **api:** expose helpers and types ([19e1a7f](https://github.com/ngneat/transloco/commit/19e1a7f))
+
+### Features
+
+- 🎸 scope strategy - shared ([84eb7ec](https://github.com/ngneat/transloco/commit/84eb7ec))
+
+### Tests
+
+- 💍 finish testing ([104ecd3](https://github.com/ngneat/transloco/commit/104ecd3))
+- 💍 fix cypress specs ([7fdfe11](https://github.com/ngneat/transloco/commit/7fdfe11))
+- 💍 shared scope - update specs ([50f3362](https://github.com/ngneat/transloco/commit/50f3362))
+
+## [1.3.0](https://github.com/ngneat/transloco/compare/v1.2.0...v1.3.0) (2019-08-26)
+
+### Bug Fixes
+
+- 🐛 global scoep translations in pipe and directive ([c4d0993](https://github.com/ngneat/transloco/commit/c4d0993))
+- 🐛 global scope might not be loaded when sharing scope ([d094764](https://github.com/ngneat/transloco/commit/d094764))
+
+### Features
+
+- 🎸 scope strategy - shared ([84eb7ec](https://github.com/ngneat/transloco/commit/84eb7ec))
+
+### Tests
+
+- 💍 finish testing ([104ecd3](https://github.com/ngneat/transloco/commit/104ecd3))
+- 💍 fix cypress specs ([7fdfe11](https://github.com/ngneat/transloco/commit/7fdfe11))
+- 💍 shared scope - update specs ([50f3362](https://github.com/ngneat/transloco/commit/50f3362))
+
+## [1.2.0](https://github.com/ngneat/transloco/compare/v1.0.1...v1.2.0) (2019-08-23)
+
+### Bug Fixes
+
+- 🐛 fix format message import ([f8815dc](https://github.com/ngneat/transloco/commit/f8815dc))
+- 🐛 schematics ng-add import-default bug ([#29](https://github.com/ngneat/transloco/issues/29)) ([35229e0](https://github.com/ngneat/transloco/commit/35229e0))
+
+### Build System
+
+- add peerDependencies to package.json ([22b0af5](https://github.com/ngneat/transloco/commit/22b0af5))
+
+### Features
+
+- **lib:** 🎸 add messageformat support through custom transpiler ([#11](https://github.com/ngneat/transloco/issues/11)) ([1feb309](https://github.com/ngneat/transloco/commit/1feb309))
+- 🎸 added ssr question to ng-add ([#30](https://github.com/ngneat/transloco/issues/30)) ([7bcd15d](https://github.com/ngneat/transloco/commit/7bcd15d))
+- 🎸 lib ([ab5a6fb](https://github.com/ngneat/transloco/commit/ab5a6fb))
+
+### [1.1.3](https://github.com/ngneat/transloco/compare/v1.0.1...v1.1.3) (2019-08-22)
+
+### Bug Fixes
+
+- 🐛 fix format message import ([f8815dc](https://github.com/ngneat/transloco/commit/f8815dc))
+- 🐛 schematics ng-add import-default bug ([#29](https://github.com/ngneat/transloco/issues/29)) ([35229e0](https://github.com/ngneat/transloco/commit/35229e0))
+
+### Build System
+
+- add peerDependencies to package.json ([22b0af5](https://github.com/ngneat/transloco/commit/22b0af5))
+
+### Features
+
+- 🎸 added ssr question to ng-add ([#30](https://github.com/ngneat/transloco/issues/30)) ([7bcd15d](https://github.com/ngneat/transloco/commit/7bcd15d))
+- **lib:** 🎸 add messageformat support through custom transpiler ([#11](https://github.com/ngneat/transloco/issues/11)) ([1feb309](https://github.com/ngneat/transloco/commit/1feb309))
+
+### [1.1.2](https://github.com/ngneat/transloco/compare/v1.0.1...v1.1.2) (2019-08-22)
+
+### Bug Fixes
+
+- 🐛 fix format message import ([f8815dc](https://github.com/ngneat/transloco/commit/f8815dc))
+- 🐛 schematics ng-add import-default bug ([#29](https://github.com/ngneat/transloco/issues/29)) ([35229e0](https://github.com/ngneat/transloco/commit/35229e0))
+
+### Build System
+
+- add peerDependencies to package.json ([22b0af5](https://github.com/ngneat/transloco/commit/22b0af5))
+
+### Features
+
+- 🎸 added ssr question to ng-add ([#30](https://github.com/ngneat/transloco/issues/30)) ([7bcd15d](https://github.com/ngneat/transloco/commit/7bcd15d))
+- **lib:** 🎸 add messageformat support through custom transpiler ([#11](https://github.com/ngneat/transloco/issues/11)) ([1feb309](https://github.com/ngneat/transloco/commit/1feb309))
+
 ## [1.1.0](https://github.com/ngneat/transloco/compare/v1.0.1...v1.1.0) (2019-08-16)
 
 ### Features

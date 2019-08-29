@@ -11,10 +11,6 @@ export class TranspilersComponent {
   key = 'home';
   userGender = 'female';
 
-  changeKey() {
-    this.key = this.key === 'home' ? 'fromList' : 'home';
-  }
-
   changeParam() {
     this.dynamic = this.dynamic === '🦄' ? '🦄🦄🦄' : '🦄';
   }

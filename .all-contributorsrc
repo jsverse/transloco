@@ -1,6 +1,6 @@
 {
   "projectName": "transloco",
-  "projectOwner": "NetanelBasal",
+  "projectOwner": "ngneat",
   "repoType": "github",
   "repoHost": "https://github.com",
   "commitConvention": "angular",
@@ -76,7 +76,46 @@
         "code",
         "doc",
         "ideas",
-        "test"
+        "test",
+        "blog"
+      ]
+    },
+    {
+      "login": "armanozak",
+      "name": "Levent Arman Özak",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/15855540?v=4",
+      "profile": "https://www.armanozak.com/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "theblushingcrow",
+      "name": "Inbal Sinai",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/638818?v=4",
+      "profile": "https://github.com/theblushingcrow",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "larscom",
+      "name": "Lars Kniep",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/1215195?v=4",
+      "profile": "http://www.larskniep.nl",
+      "contributions": [
+        "code",
+        "ideas"
+      ]
+    },
+    {
+      "login": "fxck",
+      "name": "Aleš",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/1303561?v=4",
+      "profile": "https://github.com/fxck",
+      "contributions": [
+        "code",
+        "ideas"
       ]
     }
   ],

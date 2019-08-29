@@ -1,4 +1,4 @@
-export function generateContent(lang = 'english') {
+export function testTranspilersContent(lang = 'english') {
   // Structural Directive
   cy.get(`[data-cy=regular]`).should('contain', `Home - ${lang}`);
   cy.get(`[data-cy=with-params]`).should('contain', `Replaces standard 🦄 - ${lang}`);
@@ -22,9 +22,9 @@ export function generateContent(lang = 'english') {
   );
 
   // Dynamic params
-  cy.get(`[data-cy=d-with-params]`).click();
+  cy.get(`[data-cy=d-with-params] .pointer`).click();
   cy.get(`[data-cy=d-with-params]`).should('contain', `Replaces standard 🦄🦄🦄 - ${lang}`);
-  cy.get(`[data-cy=d-with-params]`).click();
+  cy.get(`[data-cy=d-with-params] .pointer`).click();
   cy.get(`[data-cy=d-with-params]`).should('contain', `Replaces standard 🦄 - ${lang}`);
 
   // Pipe
@@ -38,21 +38,3 @@ export function generateContent(lang = 'english') {
     `Can replace transloco params and also give parse messageformat: The person won their race - ${lang}`
   );
 }
-
-describe('Transloco Transpilers - MessageFormat', () => {
-  beforeEach(() => {
-    cy.visit('/transpilers');
-  });
-
-  it('should translate to english and switch to spanish', () => {
-    generateContent();
-
-    cy.get(`[data-cy=es]`).click();
-
-    generateContent('spanish');
-
-    cy.get(`[data-cy=en]`).click();
-
-    generateContent();
-  });
-});

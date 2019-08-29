@@ -5,12 +5,20 @@ import { HomeComponent } from './home/home.component';
 const routes: Routes = [
   {
     path: '',
-    component: HomeComponent,
+    redirectTo: 'home',
     pathMatch: 'full'
+  },
+  {
+    path: 'home',
+    component: HomeComponent
   },
   {
     path: 'lazy',
     loadChildren: './lazy/lazy.module#LazyModule'
+  },
+  {
+    path: 'scope-sharing',
+    loadChildren: './scope-sharing/scope-sharing.module#ScopeSharingModule'
   },
   {
     path: 'dynamic-translation',

@@ -1,6 +1,6 @@
 import { DefaultTranspiler, TRANSLOCO_TRANSPILER } from '../transloco.transpiler';
 import { TRANSLOCO_LOADER } from '../transloco.loader';
-import { defaultConfig, TRANSLOCO_CONFIG } from '../transloco.config';
+import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from '../transloco.config';
 import { timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DefaultHandler, TRANSLOCO_MISSING_HANDLER } from '../transloco-missing-handler';
@@ -29,7 +29,7 @@ export const loader = {
 
 export const configProviderMock = (config = {}) => ({
   provide: TRANSLOCO_CONFIG,
-  useValue: { ...defaultConfig, ...config }
+  useValue: { ...defaultConfig, ...config, scopeStrategy: 'shared' } as TranslocoConfig
 });
 
 export const loaderProviderMock = {
@@ -77,13 +77,13 @@ export function setlistenToLangChange(service: TranslocoService, listenToLangCha
 
 export const loadingTemplateMock = { provide: TRANSLOCO_LOADING_TEMPLATE, useValue: 'loading template...' };
 
-export function createService() {
+export function createService(config: Partial<TranslocoConfig> = {}) {
   return new TranslocoService(
     loader,
     new DefaultTranspiler(),
     new DefaultHandler(),
     new DefaultInterceptor(),
-    { defaultLang: 'en' },
+    { defaultLang: 'en', scopeStrategy: 'shared', ...config },
     new DefaultFallbackStrategy({ defaultLang: 'en', fallbackLang: 'en' })
   );
 }
