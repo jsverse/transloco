@@ -668,7 +668,7 @@ translate('someKey');
 - `getBrowserCultureLang()` - Returns the culture language code name from the browser, e.g. "en-US"
 
 ```ts
-import { getBrowserLang, getBrowserCultureLang } from 'ngneat/transloco';
+import { getBrowserLang, getBrowserCultureLang } from '@ngneat/transloco';
 ```
 
 ## Migration from ngx-translate
