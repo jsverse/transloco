@@ -723,8 +723,7 @@ For any questions or deliberations join our [Gitter channel](https://gitter.im/n
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
+<!-- prettier-ignore -->
 <table>
   <tr>
     <td align="center"><a href="https://www.netbasal.com"><img src="https://avatars1.githubusercontent.com/u/6745730?v=4" width="100px;" alt="Netanel Basal"/><br /><sub><b>Netanel Basal</b></sub></a><br /><a href="#blog-NetanelBasal" title="Blogposts">📝</a> <a href="#business-NetanelBasal" title="Business development">💼</a> <a href="https://github.com/ngneat/transloco/commits?author=NetanelBasal" title="Code">💻</a> <a href="#content-NetanelBasal" title="Content">🖋</a> <a href="#design-NetanelBasal" title="Design">🎨</a> <a href="https://github.com/ngneat/transloco/commits?author=NetanelBasal" title="Documentation">📖</a> <a href="#example-NetanelBasal" title="Examples">💡</a> <a href="#ideas-NetanelBasal" title="Ideas, Planning, & Feedback">🤔</a> <a href="#infra-NetanelBasal" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-NetanelBasal" title="Maintenance">🚧</a> <a href="#projectManagement-NetanelBasal" title="Project Management">📆</a> <a href="https://github.com/ngneat/transloco/commits?author=NetanelBasal" title="Tests">⚠️</a></td>
@@ -738,11 +737,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="http://www.larskniep.nl"><img src="https://avatars1.githubusercontent.com/u/1215195?v=4" width="100px;" alt="Lars Kniep"/><br /><sub><b>Lars Kniep</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=larscom" title="Code">💻</a> <a href="#ideas-larscom" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/fxck"><img src="https://avatars1.githubusercontent.com/u/1303561?v=4" width="100px;" alt="Aleš"/><br /><sub><b>Aleš</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=fxck" title="Code">💻</a> <a href="#ideas-fxck" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/MortenDals"><img src="https://avatars3.githubusercontent.com/u/38066241?v=4" width="100px;" alt="MortenDals"/><br /><sub><b>MortenDals</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=MortenDals" title="Documentation">📖</a></td>
   </tr>
 </table>
-
-<!-- markdownlint-enable -->
-<!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
