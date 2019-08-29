@@ -117,6 +117,15 @@
         "code",
         "ideas"
       ]
+    },
+    {
+      "login": "MortenDals",
+      "name": "MortenDals",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/38066241?v=4",
+      "profile": "https://github.com/MortenDals",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7
