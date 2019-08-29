@@ -90,7 +90,7 @@ import { environment } from '../environments/environment';
 @NgModule({
   imports: [TranslocoModule, HttpClientModule],
   providers: [
-    httpLoader
+    httpLoader,
     {
       provide: TRANSLOCO_CONFIG,
       useValue: {
