@@ -11,54 +11,6 @@
   "commit": true,
   "contributors": [
     {
-      "login": "NetanelBasal",
-      "name": "Netanel Basal",
-      "avatar_url": "https://avatars1.githubusercontent.com/u/6745730?v=4",
-      "profile": "https://www.netbasal.com",
-      "contributions": [
-        "blog",
-        "business",
-        "code",
-        "content",
-        "design",
-        "doc",
-        "example",
-        "ideas",
-        "infra",
-        "maintenance",
-        "projectManagement",
-        "test"
-      ]
-    },
-    {
-      "login": "shaharkazaz",
-      "name": "Shahar Kazaz",
-      "avatar_url": "https://avatars2.githubusercontent.com/u/17194830?v=4",
-      "profile": "https://github.com/shaharkazaz",
-      "contributions": [
-        "code",
-        "content",
-        "doc",
-        "ideas",
-        "infra",
-        "maintenance",
-        "test"
-      ]
-    },
-    {
-      "login": "itayod",
-      "name": "Itay Oded",
-      "avatar_url": "https://avatars2.githubusercontent.com/u/6719615?v=4",
-      "profile": "https://github.com/itayod",
-      "contributions": [
-        "code",
-        "ideas",
-        "infra",
-        "maintenance",
-        "test"
-      ]
-    },
-    {
       "login": "irustm",
       "name": "Rustam",
       "avatar_url": "https://avatars1.githubusercontent.com/u/16316579?v=4",
