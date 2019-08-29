@@ -70,7 +70,9 @@ export class TranslocoPersistLangService {
   }
 
   private save(lang: string) {
-    console.log(`%c 🍻 Saving ${lang} to storage`, 'background: #fff; color: #2196F3;');
+    if (this.service.config.prodMode === false) {
+      console.log(`%c 🍻 Saving ${lang} to storage`, 'background: #fff; color: #2196F3;');
+    }
     this.storage.setItem(this.storageKey, lang);
   }
 }

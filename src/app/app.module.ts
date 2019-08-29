@@ -20,6 +20,7 @@ import {
   PERSIST_TRANSLATIONS_STORAGE,
   TranslocoPersistTranslationsModule
 } from '@ngneat/transloco-persist-translation';
+import { TranslocoPreloadLangsModule } from '@ngneat/transloco-preload-langs';
 
 @NgModule({
   declarations: [AppComponent, HomeComponent, OnPushComponent],
@@ -27,7 +28,8 @@ import {
     BrowserModule,
     AppRoutingModule,
     TranslocoModule,
-    HttpClientModule
+    HttpClientModule,
+    TranslocoPreloadLangsModule.preload(['es', 'todos-page|scoped'])
     // TranslocoPersistLangModule.init({
     //   getLangFn,
     //   storage: {
