@@ -202,6 +202,95 @@ describe('TranslocoDirective', () => {
     }));
   });
 
+  describe('Multi Langs', () => {
+    it('should support multi langs', fakeAsync(() => {
+      host = createHost(
+        `
+      <section *transloco="let t;">
+        <h1>{{ t.home }}</h1>     
+      </section>
+      <section *transloco="let t; lang: 'es'">
+       <h2>{{ t.home }}</h2>     
+      </section>
+      `,
+        false
+      );
+      const service = host.get<TranslocoService>(TranslocoService);
+      setlistenToLangChange(service);
+      host.detectChanges();
+      runLoader();
+      host.detectChanges();
+      expect(host.queryHost('h1')).toHaveText('home english');
+      expect(host.queryHost('h2')).toHaveText('home spanish');
+      service.setActiveLang('es');
+      runLoader();
+      host.detectChanges();
+      // it should change both because when we don't have static it's
+      // only the initial value
+      expect(host.queryHost('h1')).toHaveText('home spanish');
+      expect(host.queryHost('h2')).toHaveText('home spanish');
+    }));
+
+    it('should respect scopes', fakeAsync(() => {
+      host = createHost(
+        `
+      <section *transloco="let t;">
+        <h1>{{ t.home }}</h1>     
+      </section>
+      <section *transloco="let t; lang: 'es'; scope: 'lazy-page'">
+       <h2>{{ t.lazyPage.title }}</h2>     
+      </section>
+      `,
+        false
+      );
+      const service = host.get<TranslocoService>(TranslocoService);
+      setlistenToLangChange(service);
+      host.detectChanges();
+      runLoader();
+      host.detectChanges();
+      expect(host.queryHost('h1')).toHaveText('home english');
+      expect(host.queryHost('h2')).toHaveText('Admin Lazy spanish');
+      service.setActiveLang('es');
+      runLoader();
+      host.detectChanges();
+      // it should change both because when we don't have static it's
+      // only the initial value
+      expect(host.queryHost('h1')).toHaveText('home spanish');
+      expect(host.queryHost('h2')).toHaveText('Admin Lazy spanish');
+      service.setActiveLang('en');
+      runLoader();
+      host.detectChanges();
+      expect(host.queryHost('h1')).toHaveText('home english');
+      expect(host.queryHost('h2')).toHaveText('Admin Lazy english');
+    }));
+
+    it('should not change the static lang', fakeAsync(() => {
+      host = createHost(
+        `
+      <section *transloco="let t;">
+        <h1>{{ t.home }}</h1>  
+        <section *transloco="let inline; lang: 'en|static'">
+          <h2>{{ inline.home }}</h2>         
+        </section>      
+      </section>
+      `,
+        false
+      );
+      const service = host.get<TranslocoService>(TranslocoService);
+      setlistenToLangChange(service);
+      host.detectChanges();
+      runLoader();
+      host.detectChanges();
+      expect(host.queryHost('h1')).toHaveText('home english');
+      expect(host.queryHost('h2')).toHaveText('home english');
+      service.setActiveLang('es');
+      runLoader();
+      host.detectChanges();
+      expect(host.queryHost('h1')).toHaveText('home spanish');
+      expect(host.queryHost('h2')).toHaveText('home english');
+    }));
+  });
+
   describe('Loading Template', () => {
     it('should attach and detach view with inline loader template', fakeAsync(() => {
       spyOn<TemplateHandler>(TemplateHandler.prototype, 'attachView').and.callThrough();

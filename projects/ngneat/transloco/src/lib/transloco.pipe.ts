@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { TRANSLOCO_SCOPE } from './transloco-scope';
 import { TRANSLOCO_LANG } from './transloco-lang';
 import { getLangFromScope, getScopeFromLang } from './helpers';
+import { shouldListenToLangChanges } from './shared';
 
 @Pipe({
   name: 'transloco',
@@ -25,8 +26,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
     @Optional() @Inject(TRANSLOCO_LANG) private providerLang: string | null,
     private cdr: ChangeDetectorRef
   ) {
-    const { listenToLangChange } = this.translocoService.config;
-    this.listenToLangChange = listenToLangChange;
+    this.listenToLangChange = shouldListenToLangChanges(this.translocoService, this.providerLang);
   }
 
   transform(key: string, params: HashMap = {}): string {

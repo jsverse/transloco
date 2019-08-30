@@ -28,8 +28,8 @@ import { TranslocoPreloadLangsModule } from '@ngneat/transloco-preload-langs';
     BrowserModule,
     AppRoutingModule,
     TranslocoModule,
-    HttpClientModule,
-    TranslocoPreloadLangsModule.preload(['es', 'todos-page|scoped'])
+    HttpClientModule
+    // TranslocoPreloadLangsModule.preload(['es', 'todos-page|scoped'])
     // TranslocoPersistLangModule.init({
     //   getLangFn,
     //   storage: {
