@@ -21,7 +21,8 @@ import { TRANSLOCO_LOADING_TEMPLATE } from './transloco-loading-template';
 import { TRANSLOCO_SCOPE } from './transloco-scope';
 import { TranslocoService } from './transloco.service';
 import { HashMap, Translation } from './types';
-import { getValue } from './helpers';
+import { getValue, getPipeValue } from './helpers';
+import { shouldListenToLangChanges } from './shared';
 
 @Directive({
   selector: '[transloco]'
@@ -60,12 +61,12 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
       this.loaderTplHandler.attachView();
     }
 
-    const { listenToLangChange } = this.translocoService.config;
+    const listenToLangChange = shouldListenToLangChanges(this.translocoService, this.providerLang || this.inlineLang);
 
     this.subscription = this.translocoService.langChanges$
       .pipe(
-        switchMap(globalLang => {
-          const lang = this.getLang(globalLang);
+        switchMap(() => {
+          const lang = this.getLang();
           const scope = this.getScope();
           this.langName = scope ? `${scope}/${lang}` : lang;
           return this.translocoService._loadDependencies(this.langName);
@@ -79,9 +80,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
         let targetLang = this.langName;
         const scope = this.getScope();
         if (scope) {
-          targetLang = this.translocoService.isSharedScope
-            ? this.getLang(this.translocoService.getActiveLang())
-            : this.langName;
+          targetLang = this.translocoService.isSharedScope ? this.getLang() : this.langName;
         }
         const translation = this.translocoService.getTranslation(targetLang);
         this.langName = targetLang;
@@ -125,24 +124,26 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   }
 
   // inline => providers => global
-  private getLang(globalLang: string) {
+  private getLang() {
     /**
      * When the user changes the lang we need to update
      * the view. Otherwise, the lang will remain the inline/provided lang
      */
     if (this.initialized) {
-      return globalLang;
+      return this.translocoService.getActiveLang();
     }
 
     if (this.inlineLang) {
-      return this.inlineLang;
+      const [_, lang] = getPipeValue(this.inlineLang, 'static');
+      return lang;
     }
 
     if (this.providerLang) {
-      return this.providerLang;
+      const [_, lang] = getPipeValue(this.providerLang, 'static');
+      return lang;
     }
 
-    return globalLang;
+    return this.translocoService.getActiveLang();
   }
 
   ngOnDestroy() {

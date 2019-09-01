@@ -23,8 +23,8 @@ import { MessageFormatTranspiler } from '@ngneat/transloco-messageformat';
     BrowserModule,
     AppRoutingModule,
     TranslocoModule,
-    HttpClientModule,
-    TranslocoPreloadLangsModule.preload(['es', 'todos-page|scoped'])
+    HttpClientModule
+    // TranslocoPreloadLangsModule.preload(['es', 'todos-page|scoped'])
     // TranslocoPersistLangModule.init({
     //   getLangFn,
     //   storage: {

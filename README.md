@@ -431,6 +431,8 @@ Alternatively, here is how to use it directly in the template:
 </ng-container>
 ```
 
+Note that it will be used as the **initial language**. If you need it to be **static**, you can use the `static` pipe: `en|static`.
+
 ## Custom Loading Template
 
 Transloco provides you with a way to define a loading template, that will be used while the translation file is loading.
@@ -672,9 +674,10 @@ Transloco provides a schematics [command](https://github.com/ngneat/transloco/bl
 
 ## Plugins
 
-- [Messageformat](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-messageformat) (offical)
-- [Persist Language](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-persist-lang) (offical)
-- [Persist Translations](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-persist-translations) (offical)
+- [Messageformat](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-messageformat) (official)
+- [Persist Language](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-persist-lang) (official)
+- [Persist Translations](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-persist-translations) (official)
+- [Preload Languages](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-preload-langs) (official)
 
 ## Support
 

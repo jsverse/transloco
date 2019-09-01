@@ -10,4 +10,14 @@
 
 <provider-lang></provider-lang>
 
+<h4>Static Lang: <code>es</code></h4>
+<ng-container *transloco="let t; lang: 'es|static'; loadingTpl: loading">
+  <p>{{ t.home }}</p>
+</ng-container>
+
+<h4>Static Lang with scope <code>lazy-page/es</code></h4>
+<ng-container *transloco="let t; lang: 'es|static'; loadingTpl: loading; scope: 'lazy-page'">
+  <p>{{ t.lazyPage.title }}</p>
+</ng-container>
+
 <ng-template #loading>Loading..</ng-template>
