@@ -2,13 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import {
-  MessageFormatTranspiler,
-  TRANSLOCO_CONFIG,
-  TRANSLOCO_TRANSPILER,
-  TranslocoConfig,
-  TranslocoModule
-} from '@ngneat/transloco';
+import { TRANSLOCO_CONFIG, TRANSLOCO_TRANSPILER, TranslocoConfig, TranslocoModule } from '@ngneat/transloco';
 import { HttpClientModule } from '@angular/common/http';
 import { HomeComponent } from './home/home.component';
 import { OnPushComponent } from './on-push/on-push.component';
@@ -21,6 +15,7 @@ import {
   TranslocoPersistTranslationsModule
 } from '@ngneat/transloco-persist-translation';
 import { TranslocoPreloadLangsModule } from '@ngneat/transloco-preload-langs';
+import { MessageFormatTranspiler } from '@ngneat/transloco-messageformat';
 
 @NgModule({
   declarations: [AppComponent, HomeComponent, OnPushComponent],
