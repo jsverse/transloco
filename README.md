@@ -44,7 +44,6 @@ The internationalization (i18n) library for Angular
   - [Transloco Interceptor](#transloco-interceptor)
   - [Transloco Transpiler](#transloco-transpiler)
 - [Prefetch the User Language](#prefetch-the-user-language)
-- [MessageFormat Support](#messageformat-support)
 - [Unit Testing](#unit-testing)
 - [Additional Functionality](#additional-functionality)
 - [Plugins](#plugins)
@@ -229,6 +228,13 @@ Note that in order to safely use this method, you are responsible for ensuring t
 ```ts
 this.service.selectTranslate('hello').subscribe(value => ...);
 this.service.selectTranslate('hello', params, lang).subscribe(value => ...);
+
+// When quering an object that should be transpiled
+// For example: { a: { b: 'Hello {{ value }}', c: 'Hey {{ dynamic }}' }}
+this.service.selectTranslate('a', {
+  'b': { value: '' },
+  'c': { dynamic: '' }
+}).subscribe(obj => ...);
 
 // Returns the active language translation
 this.service.selectTranslation().subscribe(translation => ...);
@@ -513,7 +519,7 @@ The transpiler is responsible for resolving the given value. For example, the de
 
 ```ts
 export class CustomTranspiler implements TranslocoTranspiler {
-  transpile(value: string, params, translation: Translation): string {
+  transpile(value: any, params, translation: Translation): any {
     return ...;
   }
 }
@@ -578,40 +584,6 @@ export const preLoad = {
 This will make sure the application doesn't bootstrap before Transloco loads the translation file based on the current user's language.
 
 You can read more about it in [this article](https://netbasal.com/optimize-user-experience-while-your-angular-app-loads-7e982a67ff1a).
-
-## MessageFormat Support
-
-The library comes with support for [messageformat](https://messageformat.github.io/messageformat/).
-Messageformat is a mechanism for handling both pluralization and gender in your app.
-
-You can see its format guide [here](https://messageformat.github.io/messageformat/page-guide).
-
-Then add the following to the providers array in your `app.module.ts`:
-
-```ts
-import { MessageFormatTranspiler } from '@ngneat/transloco';
-
-...
-
-@NgModule({
-  providers: [
-    ...,
-    { provide: TRANSLOCO_TRANSPILER, useClass: MessageFormatTranspiler }
-  ]
-})
-
-```
-
-The `MessageFormatTranspiler` is compatible with the `DefaultTranspiler` and therefore you can switch without worry that it will break your current translations.
-
-It then enables support for the following within your i18n translation files:
-
-```js
-{
-  "mySelectRule": "{myVar, select, val1 {Value 1} val2 {Value 2} other {Other Value}}",
-  "myPluralRule": "{myCount, plural, =0 {no results} one {1 result} other {# results}}"
-}
-```
 
 ## Unit Testing
 
@@ -694,13 +666,13 @@ Transloco provides a schematics [command](https://github.com/ngneat/transloco/bl
 | Pipe                     | ✅                                       | ✅                                                              | ❌           |
 | Ivy support              | ✅                                       | ❌ [See here](https://github.com/ngx-translate/core/issues/958) | ✅           |
 | Additional Functionality | ✅ [See here](#additional-functionality) | ❌                                                              | ❌           |
-| Pluralization            | ✅                                       | ✅ External library                                             | ✅           |
-| Plugins                  | WIP                                      | ✅ [See here](https://github.com/ngx-translate/core#plugins)    | ❌           |
+| Pluralization            | ✅ Official Plugin                       | ✅ External library                                             | ✅           |
 
 (\*) Works **only** by creating a new service instance and mark it as isolated, and it's not supported at the directive level.
 
 ## Plugins
 
+- [Messageformat](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-messageformat) (offical)
 - [Persist Language](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-persist-lang) (offical)
 - [Persist Translations](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-persist-translations) (offical)
 

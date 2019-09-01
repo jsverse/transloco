@@ -54,7 +54,7 @@ export function isString(val: any): val is string {
 }
 
 export function isObject(item): boolean {
-  return item && typeof item === 'object' && !Array.isArray(item);
+  return item && typeof item === 'object' && !Array.isArray(item) && item !== null;
 }
 
 export function coerceArray(val) {
@@ -128,7 +128,7 @@ export function isBrowser() {
  * getPipeValue('eng', 'static') [false, '']
  */
 export function getPipeValue(str: string, value: string, char = '|') {
-  if (isString(value)) {
+  if (isString(str)) {
     const splitted = str.split(char);
     const lastItem = splitted.pop();
     return lastItem === value ? [true, splitted.toString()] : [false, ''];

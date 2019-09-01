@@ -13,7 +13,8 @@ import {
   mergeDeep,
   setValue,
   size,
-  toCamelCase
+  toCamelCase,
+  getPipeValue
 } from './helpers';
 import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './transloco-missing-handler';
@@ -126,15 +127,17 @@ export class TranslocoService {
    * translate('hello', { }, 'en')
    */
   translate<T = any>(key: TranslateParams, params: HashMap = {}, lang?: string): T {
+    const withScope = this.completeScopeWithLang(lang);
+
     if (Array.isArray(key)) {
-      return key.map(k => this.translate(k, params, lang)) as any;
+      return key.map(k => this.translate(k, params, withScope)) as any;
     }
 
     if (!key) {
       return this.missingHandler.handle(key as string, params, this.config);
     }
 
-    const translation = this.translations.get(lang || this.getActiveLang());
+    const translation = this.translations.get(withScope || this.getActiveLang());
     if (!translation) {
       return '' as any;
     }
@@ -160,8 +163,9 @@ export class TranslocoService {
    * selectTranslate<string>('hello').subscribe(value => ...)
    * selectTranslate<string>('hello', {}, 'es').subscribe(value => ...)
    */
-  selectTranslate<T = any>(key: TranslateParams, params?: HashMap, lang?: string): Observable<T> {
-    return this.load(lang || this.getActiveLang()).pipe(map(() => this.translate(key, params, lang)));
+  selectTranslate<T = any>(key: TranslateParams, params?: HashMap<any>, lang?: string): Observable<T> {
+    const withScope = this.completeScopeWithLang(lang);
+    return this.load(withScope || this.getActiveLang()).pipe(map(() => this.translate(key, params, withScope)));
   }
 
   /**
@@ -257,6 +261,15 @@ export class TranslocoService {
     }
 
     return this.load(langName);
+  }
+
+  private completeScopeWithLang(lang: string) {
+    const [isScoped, value] = getPipeValue(lang, 'scoped');
+    if (isScoped) {
+      lang = `${value}/${this.getActiveLang()}`;
+    }
+
+    return lang;
   }
 
   private _setTranslation(lang: string, translation: Translation) {

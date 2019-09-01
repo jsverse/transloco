@@ -112,6 +112,27 @@ describe('TranslocoService', () => {
         runLoader();
         expect(spy).toHaveBeenCalledWith('alert val english');
       }));
+
+      it('should support different lang', fakeAsync(() => {
+        const spy = createSpy();
+        service.selectTranslate('alert', { value: 'val' }, 'es').subscribe(spy);
+        runLoader();
+        expect(spy).toHaveBeenCalledWith('alert val spanish');
+      }));
+
+      it('should support scoped lang', fakeAsync(() => {
+        const spy = createSpy();
+        service.selectTranslate('title', null, 'lazy-page|scoped').subscribe(spy);
+        runLoader();
+        expect(spy).toHaveBeenCalledWith('Admin Lazy english');
+      }));
+
+      it('should support scoped lang with param', fakeAsync(() => {
+        const spy = createSpy();
+        service.selectTranslate('withParam', { param: 'Transloco' }, 'lazy-page|scoped').subscribe(spy);
+        runLoader();
+        expect(spy).toHaveBeenCalledWith('Admin Lazy english Transloco');
+      }));
     });
 
     describe('getTranslation', () => {

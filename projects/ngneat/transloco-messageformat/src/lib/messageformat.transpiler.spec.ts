@@ -1,4 +1,4 @@
-import { MessageFormatTranspiler } from '../lib/messageformat.transpiler';
+import { MessageFormatTranspiler } from '@ngneat/transloco';
 
 describe('MessageFormatTranslocoParser', () => {
   const parser = new MessageFormatTranspiler();
@@ -69,5 +69,36 @@ describe('MessageFormatTranslocoParser', () => {
     expect(parser.transpile('', {}, {})).toEqual('');
     expect(parser.transpile(null, {}, {})).toEqual(null);
     expect(parser.transpile(undefined, {}, {})).toEqual(undefined);
+  });
+
+  it('should support params', () => {
+    const translations = {
+      nested: {
+        messageFormatWithParams:
+          'Can replace {{value}} and also give parse messageformat: The {gender, select, male {boy won his} female {girl won her} other {person won their}} race - english',
+        people: '{count, plural, =1 {person} other {people}}',
+        moreNesting: {
+          projects: '{count, plural, =1 {project} other {projects}}'
+        }
+      }
+    };
+
+    expect(
+      parser.transpile(
+        translations.nested,
+        {
+          messageFormatWithParams: { value: 'Hey', gender: 'female' },
+          people: { count: '1' },
+          'moreNesting.projects': { count: '1' }
+        },
+        {}
+      )
+    ).toEqual({
+      messageFormatWithParams: 'Can replace Hey and also give parse messageformat: The girl won her race - english',
+      people: 'person',
+      moreNesting: {
+        projects: 'project'
+      }
+    });
   });
 });

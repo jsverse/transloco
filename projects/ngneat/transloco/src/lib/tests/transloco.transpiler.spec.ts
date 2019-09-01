@@ -19,7 +19,7 @@ describe('TranslocoParser', () => {
   });
 
   it('should translate simple string multiple keys from lang', () => {
-    const lang = { withKeys: 'with keys', from: 'from', lang: 'lang', nes: {ted: 'supporting nested values!'} };
+    const lang = { withKeys: 'with keys', from: 'from', lang: 'lang', nes: { ted: 'supporting nested values!' } };
     const parsed = parser.transpile('Hello {{ withKeys }} {{ from }} {{ lang }} {{nes.ted}}', {}, lang);
     expect(parsed).toEqual('Hello with keys from lang supporting nested values!');
   });
@@ -33,5 +33,76 @@ describe('TranslocoParser', () => {
     expect(parser.transpile('', {}, {})).toEqual('');
     expect(parser.transpile(null, {}, {})).toEqual(null);
     expect(parser.transpile(undefined, {}, {})).toEqual(undefined);
+  });
+
+  describe('Objects', () => {
+    const translation = {
+      a: 'Hello',
+      j: {
+        r: 'Hey {{value}}'
+      },
+      b: {
+        flat: 'Flat {{ dynamic }}',
+        c: {
+          otherKey: 'otherKey',
+          d: 'Hello {{value}}'
+        },
+        g: {
+          h: 'Name {{ name }}'
+        }
+      }
+    };
+
+    it('should support objects', () => {
+      expect(parser.transpile(translation.b, null, {})).toEqual(translation.b);
+    });
+
+    it('should support params', () => {
+      expect(
+        parser.transpile(
+          translation.b,
+          {
+            'c.d': { value: 'World' },
+            'g.h': { name: 'Transloco' },
+            flat: { dynamic: 'HOLA' }
+          },
+          {}
+        )
+      ).toEqual({
+        flat: 'Flat HOLA',
+        c: {
+          otherKey: 'otherKey',
+          d: 'Hello World'
+        },
+        g: {
+          h: 'Name Transloco'
+        }
+      });
+
+      expect(
+        parser.transpile(
+          translation.j,
+          {
+            r: { value: 'Transloco' }
+          },
+          {}
+        )
+      ).toEqual({
+        r: 'Hey Transloco'
+      });
+
+      expect(
+        parser.transpile(
+          translation.b.c,
+          {
+            d: { value: 'Transloco' }
+          },
+          {}
+        )
+      ).toEqual({
+        otherKey: 'otherKey',
+        d: 'Hello Transloco'
+      });
+    });
   });
 });
