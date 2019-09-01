@@ -40,8 +40,6 @@ export class TranslocoPersistLangService {
 
   private updateStorageOnLangChange() {
     this.service.langChanges$.pipe(skip(1)).subscribe(lang => {
-      console.log(lang);
-
       this.save(lang);
     });
   }

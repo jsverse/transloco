@@ -136,3 +136,7 @@ export function getPipeValue(str: string, value: string, char = '|'): [boolean, 
 
   return [false, ''];
 }
+
+export function isNil(value: any) {
+  return value === null || value === undefined;
+}
