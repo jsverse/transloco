@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.7.0](https://github.com/ngneat/transloco/compare/v1.6.0...v1.7.0) (2019-09-01)
+
+### Bug Fixes
+
+- remove extension from missing handler export ([e756079](https://github.com/ngneat/transloco/commit/e756079))
+- **readme:** add missing @ ([#51](https://github.com/ngneat/transloco/issues/51)) ([2216378](https://github.com/ngneat/transloco/commit/2216378))
+
+### Features
+
+- 🎸 multi-lang ([8d91b61](https://github.com/ngneat/transloco/commit/8d91b61))
+- 🎸 mutli-langs ([0e58324](https://github.com/ngneat/transloco/commit/0e58324))
+- 🎸 transpilers ([198eb6d](https://github.com/ngneat/transloco/commit/198eb6d))
+- expose missing handler token and interface ([1a56908](https://github.com/ngneat/transloco/commit/1a56908))
+
 ## [1.6.0](https://github.com/ngneat/transloco/compare/v1.5.0...v1.6.0) (2019-08-28)
 
 ### Features
