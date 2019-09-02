@@ -653,22 +653,22 @@ Transloco provides a schematics [command](https://github.com/ngneat/transloco/bl
 
 | Feature                  | @ngneat/transloco                        | @ngx-translate/core                                             | Angular i18n |
 | ------------------------ | ---------------------------------------- | --------------------------------------------------------------- | ------------ |
-| Actively Maintained      | ✅                                       | ❌ [See here](https://github.com/ngx-translate/core/issues/783) | ✅           |
-| Runtime Lang Change      | ✅                                       | ✅                                                              | ❌           |
-| listenToLangChange       | ✅                                       | ❌                                                              | ❌           |
-| Schematics               | ✅                                       | ❌                                                              | ❌           |
-| Custom Loading Template  | ✅                                       | ❌                                                              | ❌           |
-| Multiple Languages       | ✅                                       | ✅\*                                                            | ❌           |
-| Lazy Load Translations   | ✅                                       | ✅\*                                                            | ✅           |
-| Multiple Fallbacks       | ✅                                       | ❌                                                              | ❌           |
-| Hackable                 | ✅                                       | ✅                                                              | ❌           |
-| Testing                  | ✅                                       | ✅ External library                                             | ❌           |
-| Structural Directive     | ✅                                       | ❌                                                              | ❌           |
-| Attribute Directive      | ✅                                       | ✅                                                              | ✅           |
-| Pipe                     | ✅                                       | ✅                                                              | ❌           |
-| Ivy support              | ✅                                       | ❌ [See here](https://github.com/ngx-translate/core/issues/958) | ✅           |
-| Additional Functionality | ✅ [See here](#additional-functionality) | ❌                                                              | ❌           |
-| Pluralization            | ✅ Official Plugin                       | ✅ External library                                             | ✅           |
+| Actively Maintained      | ✅                                                                                                            | ❌ [See here](https://github.com/ngx-translate/core/issues/783) | ✅           |
+| Runtime Lang Change      | ✅                                                                                                            | ✅                                                              | ❌           |
+| listenToLangChange       | ✅                                                                                                            | ❌                                                              | ❌           |
+| Schematics               | ✅                                                                                                            | ❌                                                              | ❌           |
+| Custom Loading Template  | ✅                                                                                                            | ❌                                                              | ❌           |
+| Multiple Languages       | ✅                                                                                                            | ✅\*                                                            | ❌           |
+| Lazy Load Translations   | ✅                                                                                                            | ✅\*                                                            | ✅           |
+| Multiple Fallbacks       | ✅                                                                                                            | ❌                                                              | ❌           |
+| Hackable                 | ✅                                                                                                            | ✅                                                              | ❌           |
+| Testing                  | ✅                                                                                                            | ✅ External library                                             | ❌           |
+| Structural Directive     | ✅                                                                                                            | ❌                                                              | ❌           |
+| Attribute Directive      | ✅                                                                                                            | ✅                                                              | ✅           |
+| Pipe                     | ✅                                                                                                            | ✅                                                              | ❌           |
+| Ivy support              | ✅                                                                                                            | ❌ [See here](https://github.com/ngx-translate/core/issues/958) | ✅           |
+| Additional Functionality | ✅ [See here](#additional-functionality)                                                                      | ❌                                                              | ❌           |
+| Pluralization            | ✅ [Official Plugin](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-messageformat) | ✅ External library                                             | ✅           |
 
 (\*) Works **only** by creating a new service instance and mark it as isolated, and it's not supported at the directive level.
 
