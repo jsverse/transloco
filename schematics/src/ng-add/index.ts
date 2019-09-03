@@ -164,7 +164,7 @@ export default function(options: SchemaOptions): Rule {
     }`;
 
     if (options.ssr) {
-      updateEnvironmentBaseUrl(host, sourceRoot, 'http://{your_url}');
+      updateEnvironmentBaseUrl(host, sourceRoot, 'http://localhost:4200');
     }
 
     return chain([

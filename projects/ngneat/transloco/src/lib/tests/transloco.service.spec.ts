@@ -106,6 +106,16 @@ describe('TranslocoService', () => {
         expect(spy).toHaveBeenCalledWith('home english');
       }));
 
+      it('should support lang changes', fakeAsync(() => {
+        const spy = createSpy();
+        service.selectTranslate('home').subscribe(spy);
+        runLoader();
+        expect(spy).toHaveBeenCalledWith('home english');
+        service.setActiveLang('es');
+        runLoader();
+        expect(spy).toHaveBeenCalledWith('home spanish');
+      }));
+
       it('should return an observable with the translation value with param', fakeAsync(() => {
         const spy = createSpy();
         service.selectTranslate('alert', { value: 'val' }).subscribe(spy);
@@ -118,6 +128,10 @@ describe('TranslocoService', () => {
         service.selectTranslate('alert', { value: 'val' }, 'es').subscribe(spy);
         runLoader();
         expect(spy).toHaveBeenCalledWith('alert val spanish');
+        // it should not change the lang when static
+        service.setActiveLang('en');
+        runLoader();
+        expect(spy).toHaveBeenCalledTimes(1);
       }));
 
       it('should support scoped lang', fakeAsync(() => {

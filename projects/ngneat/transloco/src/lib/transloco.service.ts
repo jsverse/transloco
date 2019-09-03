@@ -1,6 +1,6 @@
 import { Inject, Injectable, Optional } from '@angular/core';
-import { BehaviorSubject, combineLatest, from, Observable, Subject } from 'rxjs';
-import { catchError, distinctUntilChanged, map, retry, shareReplay, tap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, from, Observable, Subject, of } from 'rxjs';
+import { catchError, distinctUntilChanged, map, retry, shareReplay, tap, switchMap } from 'rxjs/operators';
 import { DefaultLoader, TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_TRANSPILER, TranslocoTranspiler } from './transloco.transpiler';
 import { HashMap, TranslateParams, Translation, TranslocoEvents } from './types';
@@ -164,8 +164,14 @@ export class TranslocoService {
    * selectTranslate<string>('hello', {}, 'es').subscribe(value => ...)
    */
   selectTranslate<T = any>(key: TranslateParams, params?: HashMap<any>, lang?: string): Observable<T> {
-    const withScope = this.completeScopeWithLang(lang);
-    return this.load(withScope || this.getActiveLang()).pipe(map(() => this.translate(key, params, withScope)));
+    const withScopeOrLang = this.completeScopeWithLang(lang);
+    const load = lang => this.load(lang).pipe(map(() => this.translate(key, params, lang)));
+    if (withScopeOrLang) {
+      return load(withScopeOrLang);
+    } else {
+      // if the user doesn't pass lang, we need to listen to lang changes and update the value accordingly
+      return this.langChanges$.pipe(switchMap(lang => load(lang)));
+    }
   }
 
   /**
