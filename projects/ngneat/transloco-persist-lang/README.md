@@ -13,14 +13,14 @@ npm i @ngneat/transloco-persist-lang
 Import the `TranslocoPersistLangModule` module into the `AppModule`, and provide the storage you would like to use:
 
 ```ts
-import { TRANSLOCO_PERSIST_LANG_STROAGE, TranslocoPersistLangModule } from '@ngneat/transloco-persist-lang';
+import { TRANSLOCO_PERSIST_LANG_STORAGE, TranslocoPersistLangModule } from '@ngneat/transloco-persist-lang';
 
 @NgModule({
   imports: [
     TranslocoModule,
     TranslocoPersistLangModule.init({
       storage: {
-        provide: TRANSLOCO_PERSIST_LANG_STROAGE,
+        provide: TRANSLOCO_PERSIST_LANG_STORAGE,
         useValue: localStorage
       }
     })
@@ -35,7 +35,7 @@ When the user changes the current language, the plugin will keep it in the provi
 By default, the plugin will use the cached language if available otherwise it will use the default language provided in the config. You can always change this behavior by providing a `getLangFn` option:
 
 ```ts
-import { TRANSLOCO_PERSIST_LANG_STROAGE, TranslocoPersistLangModule } from '@ngneat/transloco-persist-lang';
+import { TRANSLOCO_PERSIST_LANG_STORAGE, TranslocoPersistLangModule } from '@ngneat/transloco-persist-lang';
 
 export function getLangFn({ cachedLang, browserLang, cultureLang, defaultLang }) {
   return yourLogic;
@@ -47,7 +47,7 @@ export function getLangFn({ cachedLang, browserLang, cultureLang, defaultLang })
     TranslocoPersistLangModule.init({
       getLangFn,
       storage: {
-        provide: TRANSLOCO_PERSIST_LANG_STROAGE,
+        provide: TRANSLOCO_PERSIST_LANG_STORAGE,
         useValue: localStorage
       }
     })
@@ -57,13 +57,13 @@ export function getLangFn({ cachedLang, browserLang, cultureLang, defaultLang })
 export class AppModule {}
 ```
 
-The plugin also provides a `cookieStorage` function that you can use to save the language in a cookie. (SSR advantage)
+The plugin also provides a `cookiesStorage` function that you can use to save the language in a cookie. (SSR advantage)
 
 ```ts
 import {
-  TRANSLOCO_PERSIST_LANG_STROAGE,
+  TRANSLOCO_PERSIST_LANG_STORAGE
   TranslocoPersistLangModule,
-  cookieStorage
+  cookiesStorage
 } from '@ngneat/transloco-persist-lang';
 
 @NgModule({
@@ -71,8 +71,8 @@ import {
     TranslocoModule,
     TranslocoPersistLangModule.init({
       storage: {
-        provide: TRANSLOCO_PERSIST_LANG_STROAGE,
-        useValue: cookieStorage()
+        provide: TRANSLOCO_PERSIST_LANG_STORAGE,
+        useValue: cookiesStorage()
       }
     })
   ],
