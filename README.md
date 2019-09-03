@@ -44,6 +44,8 @@ The internationalization (i18n) library for Angular
   - [Transloco Loader](#transloco-loader)
   - [Transloco Interceptor](#transloco-interceptor)
   - [Transloco Transpiler](#transloco-transpiler)
+  - [Transloco Missing Handler](#transloco-missing-handler)
+  - [Transloco Fallback Strategy](#transloco-fallback-strategy)
 - [Prefetch the User Language](#prefetch-the-user-language)
 - [Unit Testing](#unit-testing)
 - [Additional Functionality](#additional-functionality)
@@ -534,6 +536,25 @@ export const custom = {
   useClass: CustomTranspiler
 }
 ```
+
+#### Transloco Missing Handler
+
+This handler is responsible for handling missing keys. The default handler calls `console.warn()` with the key when `config.isProdMode` is set to `false`, and returns an empty string to use as a replacement for the missing key's value.
+
+```ts
+export class CustomHandler implements TranslocoMissingHandler {
+  handle(key: string, params: HashMap, config: TranslocoConfig) {
+    return '...';
+  }
+}
+
+export const custom = {
+  provide: TRANSLOCO_MISSING_HANDLER,
+  useClass: CustomHandler
+};
+```
+
+**Note:** The missing handler is [**not supported when using structural directive.**](https://github.com/ngneat/transloco/issues/52#issuecomment-526313689)
 
 #### Transloco Fallback Strategy
 
