@@ -1,7 +1,8 @@
-import { MessageFormatTranspiler } from '@ngneat/transloco';
+import { MessageFormatTranspiler } from './messageformat.transpiler';
 
-describe('MessageFormatTranslocoParser', () => {
-  const parser = new MessageFormatTranspiler();
+describe('MessageFormatTranspiler', () => {
+  const config = {};
+  const parser = new MessageFormatTranspiler(config);
 
   it('should translate simple SELECT messageformat string from params when first param given', () => {
     const parsed = parser.transpile(
@@ -100,5 +101,31 @@ describe('MessageFormatTranslocoParser', () => {
         projects: 'project'
       }
     });
+  });
+
+  it('should work with locales', () => {
+    const config = { locales: 'en-GB' };
+    const parser = new MessageFormatTranspiler(config);
+    const message = '{count, plural, =0{No} one{A} other{Several}} {count, plural, one{word} other{words}}';
+
+    const result = parser.transpile(message, { count: 1 }, {});
+    expect(result).toBe('A word');
+  });
+
+  it('should use passed-in formatters', () => {
+    const formatters = {
+      prop: (v: { [key: string]: string }, lc: any, p: any) => v[p],
+      upcase: (v: string) => v.toUpperCase()
+    };
+    const messages = {
+      answer: 'Answer: {obj, prop, a}',
+      describe: 'This is {upper, upcase}.'
+    };
+
+    const parser = new MessageFormatTranspiler({ customFormatters: formatters });
+    const upper = parser.transpile(messages.describe, { upper: 'big' }, {});
+    expect(upper).toEqual('This is BIG.');
+
+    expect(parser.transpile(messages.answer, { obj: { q: 3, a: 42 } }, {})).toBe('Answer: 42');
   });
 });

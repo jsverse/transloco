@@ -15,7 +15,7 @@ import {
   TranslocoPersistTranslationsModule
 } from '@ngneat/transloco-persist-translation';
 import { TranslocoPreloadLangsModule } from '@ngneat/transloco-preload-langs';
-import { MessageFormatTranspiler } from '@ngneat/transloco-messageformat';
+import { TranslocoMessageFormatModule, MessageFormatTranspiler } from '@ngneat/transloco-messageformat';
 
 @NgModule({
   declarations: [AppComponent, HomeComponent, OnPushComponent],
@@ -23,6 +23,7 @@ import { MessageFormatTranspiler } from '@ngneat/transloco-messageformat';
     BrowserModule,
     AppRoutingModule,
     TranslocoModule,
+    TranslocoMessageFormatModule.init(),
     HttpClientModule
     // TranslocoPreloadLangsModule.preload(['es', 'todos-page|scoped'])
     // TranslocoPersistLangModule.init({
@@ -55,8 +56,8 @@ import { MessageFormatTranspiler } from '@ngneat/transloco-messageformat';
           'transpilers/messageformat': 'mf'
         }
       } as TranslocoConfig
-    },
-    { provide: TRANSLOCO_TRANSPILER, useClass: MessageFormatTranspiler }
+    }
+    // { provide: TRANSLOCO_TRANSPILER, useClass: MessageFormatTranspiler }
   ],
   bootstrap: [AppComponent]
 })
