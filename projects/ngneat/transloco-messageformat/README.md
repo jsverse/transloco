@@ -35,7 +35,7 @@ import { TranslocoMessageFormatModule } from '@ngneat/transloco-messageformat';
 @NgModule({
   imports: [
     ...,
-    TranslocoMessageFormatModule
+    TranslocoMessageFormatModule.init()
   ]
 })
 

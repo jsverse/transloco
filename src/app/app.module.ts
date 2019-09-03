@@ -23,7 +23,7 @@ import { TranslocoMessageFormatModule, MessageFormatTranspiler } from '@ngneat/t
     BrowserModule,
     AppRoutingModule,
     TranslocoModule,
-    TranslocoMessageFormatModule,
+    TranslocoMessageFormatModule.init(),
     HttpClientModule
     // TranslocoPreloadLangsModule.preload(['es', 'todos-page|scoped'])
     // TranslocoPersistLangModule.init({
