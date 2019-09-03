@@ -32,6 +32,7 @@ The internationalization (i18n) library for Angular
 - [Transloco Config](#config-options)
 - [Translation in the Template](#translation-in-the-template)
   - [Using the Structural Directive](#using-the-structural-directive)
+      - [Using the read input](#using-the-read-input)
   - [Using the Attribute Directive](#using-the-attribute-directive)
   - [Using the Pipe](#using-the-pipe)
 - [Programmatical Translation](#programmatical-translation)
@@ -156,9 +157,11 @@ This is the recommended approach. It's DRY and efficient, as it creates one subs
 </ng-template>
 ```
 
-If you are using `shared` strategy (default in the next major release), you can use `read` property in your structural directive to get translations of a particular nested (including deeply nested) property.
 
-Given this translation object:
+#### Using the read input
+You can use the `read` input in your structural directive to get translations of a particular nested (including deeply nested) property.
+
+Let's say we need to use the `dashboard` scope all over the template. Given this translation object:
 
 ```typescript
 {
@@ -173,7 +176,7 @@ Given this translation object:
 }
 ```
 
-you can do
+we can do:
 
 ```html
 <ng-container *transloco="let t; read: 'dashboard'">
@@ -182,7 +185,7 @@ you can do
 </ng-container>
 ```
 
-without having to repeat the `dashboard` key in each translation.
+without having to repeat the `dashboard` key in each translation. Note that this feature doesn't couple to scopes.
 
 ### Using the Attribute Directive
 
