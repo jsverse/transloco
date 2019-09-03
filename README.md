@@ -161,7 +161,7 @@ This is the recommended approach. It's DRY and efficient, as it creates one subs
 #### Using the read input
 You can use the `read` input in your structural directive to get translations of a particular nested (including deeply nested) property.
 
-Let's say we need to use the `dashboard` scope all over the template. Given this translation object:
+Let's say you need to use the `dashboard` scope all over the template. Given this translation object:
 
 ```typescript
 {
@@ -176,7 +176,7 @@ Let's say we need to use the `dashboard` scope all over the template. Given this
 }
 ```
 
-we can do:
+you can do:
 
 ```html
 <ng-container *transloco="let t; read: 'dashboard'">
@@ -185,7 +185,7 @@ we can do:
 </ng-container>
 ```
 
-without having to repeat the `dashboard` key in each translation. Note that this feature doesn't couple to scopes.
+without having to repeat the `dashboard` key in each translation.
 
 ### Using the Attribute Directive
 
