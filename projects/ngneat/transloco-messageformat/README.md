@@ -28,7 +28,7 @@ It then enables support for the following within your i18n translation files:
 Add the following to the imports array in your `app.module.ts`:
 
 ```ts
-import { TranslocoMessageFormatModule } from '@ngneat/transloco-';
+import { TranslocoMessageFormatModule } from '@ngneat/transloco-messageformat';
 
 ...
 
@@ -40,8 +40,6 @@ import { TranslocoMessageFormatModule } from '@ngneat/transloco-';
 })
 
 ```
-
-The `MessageFormatTranspilerModule` is compatible with the `DefaultTranspiler` and therefore you can switch without worry that it will break your current translations.
 
 It then enables support for the following within your i18n translation files:
 
