@@ -32,7 +32,7 @@ The internationalization (i18n) library for Angular
 - [Transloco Config](#config-options)
 - [Translation in the Template](#translation-in-the-template)
   - [Using the Structural Directive](#using-the-structural-directive)
-      - [Using the read input](#using-the-read-input)
+    - [Using the read input](#using-the-read-input)
   - [Using the Attribute Directive](#using-the-attribute-directive)
   - [Using the Pipe](#using-the-pipe)
 - [Programmatical Translation](#programmatical-translation)
@@ -159,8 +159,8 @@ This is the recommended approach. It's DRY and efficient, as it creates one subs
 </ng-template>
 ```
 
-
 #### Using the read input
+
 You can use the `read` input in your structural directive to get translations of a particular nested (including deeply nested) property.
 
 Let's say you need to use the `dashboard` scope all over the template. Given this translation object:
@@ -219,6 +219,7 @@ export class AppComponent {
   constructor(private service: TranslocoService) {}
 
   ngOnInit() {
+    // Please read the accompanying note before using it
     this.service.translate('hello');
     this.service.translate('hello', { value: 'world' });
     this.service.translate(['hello', 'key']);
@@ -675,8 +676,8 @@ Transloco provides a schematics [command](https://github.com/ngneat/transloco/bl
 
 ## Comparison to other libraries
 
-| Feature                  | @ngneat/transloco                        | @ngx-translate/core                                             | Angular i18n |
-| ------------------------ | ---------------------------------------- | --------------------------------------------------------------- | ------------ |
+| Feature                  | @ngneat/transloco                                                                                             | @ngx-translate/core                                             | Angular i18n |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- | ------------ |
 | Actively Maintained      | ✅                                                                                                            | ❌ [See here](https://github.com/ngx-translate/core/issues/783) | ✅           |
 | Runtime Lang Change      | ✅                                                                                                            | ✅                                                              | ❌           |
 | listenToLangChange       | ✅                                                                                                            | ❌                                                              | ❌           |
