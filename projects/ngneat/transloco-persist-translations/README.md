@@ -34,6 +34,8 @@ import { HttpLoader } from './transloco.loader';
 export class AppModule {}
 ```
 
+Note that you should **not include** the default loader to make it work.
+
 You can also use an async storage. For example, let's install [localForage](https://github.com/localForage/localForage) and use `IndexedDB`:
 
 ```ts
