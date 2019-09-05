@@ -32,10 +32,8 @@
       "default": false
     },
     "path": {
-      "description": "The translation files folder.",
-      "x-prompt": "✍ Which folder will contain the translation files?",
       "type": "string",
-      "default": "src/assets/i18n/",
+      "default": "assets/i18n/",
       "alias": "p"
     },
     "project": {
