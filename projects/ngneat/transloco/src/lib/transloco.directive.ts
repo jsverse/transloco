@@ -28,7 +28,7 @@ import { shouldListenToLangChanges } from './shared';
   selector: '[transloco]'
 })
 export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
-  subscription: Subscription;
+  subscription: Subscription = Subscription.EMPTY;
   view: EmbeddedViewRef<any>;
 
   @Input('transloco') key: string;
@@ -147,7 +147,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnDestroy() {
-    this.subscription && this.subscription.unsubscribe();
+    this.subscription.unsubscribe();
   }
 
   private detachLoader() {

@@ -13,7 +13,7 @@ import { shouldListenToLangChanges } from './shared';
   pure: false
 })
 export class TranslocoPipe implements PipeTransform, OnDestroy {
-  subscription: Subscription;
+  subscription: Subscription = Subscription.EMPTY;
   value: string = '';
   lastKey: string;
   lastParams: HashMap;
@@ -43,7 +43,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
     this.lastParams = params;
 
     /* Clean previous subscription if exists */
-    this.subscription && this.subscription.unsubscribe();
+    this.subscription.unsubscribe();
 
     this.subscription = this.translocoService.langChanges$
       .pipe(
@@ -60,7 +60,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription && this.subscription.unsubscribe();
+    this.subscription.unsubscribe();
   }
 
   private updateValue(key: string, params?: HashMap): void {

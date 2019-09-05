@@ -1,5 +1,5 @@
 import { isObject, isString, Translation, TranslocoLoader } from '@ngneat/transloco';
-import { from, Observable, of } from 'rxjs';
+import { from, Observable, of, Subscription } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { now, observify } from './helpers';
 import {
@@ -9,13 +9,14 @@ import {
   PERSIST_TRANSLATIONS_STORAGE,
   TranslocoPersistTranslationsConfig
 } from './transloco-persist-translations.config';
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, OnDestroy } from '@angular/core';
 import { MaybeAsyncStorage } from './transloco.storage';
 
 const getTimestampKey = key => `${key}/timestamp`;
 
 @Injectable()
-export class TranslocoPersistTranslations implements TranslocoLoader {
+export class TranslocoPersistTranslations implements TranslocoLoader, OnDestroy {
+  private subscription: Subscription;
   private merged: TranslocoPersistTranslationsConfig;
   private cache: Translation | null = null;
 
@@ -25,7 +26,7 @@ export class TranslocoPersistTranslations implements TranslocoLoader {
     @Inject(PERSIST_TRANSLATIONS_CONFIG) private config: TranslocoPersistTranslationsConfig
   ) {
     this.merged = { ...defaultConfig, ...(config || {}) };
-    this.clearCurrentStorage();
+    this.subscription = this.clearCurrentStorage().subscribe();
   }
 
   getTranslation(lang: string): Observable<Translation> {
@@ -101,9 +102,9 @@ export class TranslocoPersistTranslations implements TranslocoLoader {
     this.storage.removeItem(this.merged.storageKey);
   }
 
-  private clearCurrentStorage() {
+  private clearCurrentStorage(): Observable<any> {
     const storageKey = this.merged.storageKey;
-    this.getTimestamp(storageKey)
+    return this.getTimestamp(storageKey)
       .pipe(
         filter(time => !!time),
         tap(time => {
@@ -113,6 +114,10 @@ export class TranslocoPersistTranslations implements TranslocoLoader {
           }
         })
       )
-      .subscribe();
   }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
 }
