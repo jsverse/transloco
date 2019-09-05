@@ -1,19 +1,19 @@
 const ora = require('ora');
 const replace = require('replace-in-file');
 const p = require('path');
-
 // Example: `./src/ng2/**/*.html`;
 export function run(path) {
-  console.log('\x1b[4m%s\x1b[0m', 'Starting migration script');
+  console.log('\x1b[4m%s\x1b[0m', '\nStarting migration script');
   const dir = p.resolve(process.cwd());
 
   path = p.join(dir, path, '/**/*');
 
-  const tsFiles = { ignore: `${path}spec.ts`, files: `${path}.ts` };
+  const noSpecFiles = { ignore: `${path}spec.ts`, files: `${path}.ts` };
+  const pipeContent = `([^}\\r\\n]*\\|)\\s*(translate)\\s*(?::\\s*{[^}\\r\\n]+})?\\s*(\\s*\\|[\\s\\r\\t\\n]*\\w*)*\\s*`;
   const [directive, pipe, pipeInBinding] = [
-    /(translate|\[translate(Params)?\])="[^"]*"/gm,
-    /{{([^}\r\n]*|)\s*(translate)(:({[^}\r\n]+}))*\s*}}/gm,
-    /="([^}\r\n]*|)\s*(translate)(:({[^}\r\n]+}))*\s*"/gm
+    /(translate|\[translate(?:Params)?\])=("|')[^"']*\2/gm,
+    new RegExp(`{{${pipeContent}}}`, 'gm'),
+    new RegExp(`=("|')${pipeContent}\\1`, 'gm')
   ].map(regex => ({
     files: `${path}.html`,
     from: regex,
@@ -21,7 +21,7 @@ export function run(path) {
   }));
 
   const moduleMultiImport = {
-    ...tsFiles,
+    files: `${path}.ts`,
     from: /import\s*{((([^,}]*,)+\s*(TranslateModule)\s*(,[^}]*)*)|(([^,{}]*,)*\s*(TranslateModule)\s*,\s*[a-zA-Z0-9]+(,[^}]*)*))\s*}\s*from\s*('|").?ngx-translate(\/[^'"]+)?('|");?/g,
     to: match =>
       match
@@ -33,19 +33,19 @@ export function run(path) {
   };
 
   const moduleSingleImport = {
-    ...tsFiles,
+    files: `${path}.ts`,
     from: /import\s*{\s*(TranslateModule),?\s*}\s*from\s*('|").?ngx-translate(\/[^'"]+)?('|");?/g,
     to: `import { TranslocoModule } from '@ngneat/transloco';`
   };
 
   const modules = {
-    ...tsFiles,
+    files: `${path}.ts`,
     from: /TranslateModule(?![^]*from)(\.(forRoot|forChild)\(({[^}]*})*[^)]*\))?/g,
     to: 'TranslocoModule'
   };
 
   const serviceMultiImport = {
-    ...tsFiles,
+    files: `${path}.ts`,
     from: /import\s*{((([^,}]*,)+\s*(TranslateService)\s*(,[^}]*)*)|(([^,{}]*,)*\s*(TranslateService)\s*,\s*[a-zA-Z0-9]+(,[^}]*)*))\s*}\s*from\s*('|").?ngx-translate(\/[^'"]+)?('|");?/g,
     to: match =>
       match
@@ -60,35 +60,53 @@ export function run(path) {
     /import\s*{\s*(TranslateService),?\s*}\s*from\s*('|").?ngx-translate(\/[^'"]+)?('|");?/g,
     /import\s*{\s*(TranslatePipe),?\s*}\s*from\s*('|")[^'"]+('|");?/g
   ].map(regex => ({
-    ...tsFiles,
+    ...noSpecFiles,
     from: regex,
     to: `import { TranslocoService } from '@ngneat/transloco';`
   }));
 
   const constructorInjection = {
-    ...tsFiles,
+    ...noSpecFiles,
     from: /(?:private|protected|public)\s+(.*?)\s*:\s*(?:TranslateService|TranslatePipe\s*(?:,|\)))/g,
     to: match => match.replace(/TranslateService|TranslatePipe/g, 'TranslocoService')
   };
 
-  const serviceTranslation = {
-    ...tsFiles,
-    from: /[^]*(?=(?:private|protected|public)\s+([^,:()]+)\s*:\s*(?:TranslocoService\s*(?:,|\))))[^]*/gm,
-    to: match => {
-      const serviceName = /(?:private|protected|public)\s+([^,:()]+)\s*:\s*(?:TranslocoService\s*(?:,|\)))/gm.exec(
-        match
-      )[1];
+  const serviceUsage = {
+    ...noSpecFiles,
+    from: /(?=([^]+(?:private|protected|public)\s+([^,:()]+)\s*:\s*(?:TranslocoService\s*(?:,|\)))))\1[^]*/gm,
+    to: (match, _, serviceName) => {
       const sanitizedName = serviceName
         .split('')
         .map(char => (['$', '^'].includes(char) ? `\\${char}` : char))
         .join('');
-      const functionsMap = { instant: 'translate', transform: 'translate', get: 'selectTranslate' };
-      const translationCalls = new RegExp(
-        `(?:(?:\\s*|this\\.)${sanitizedName})(?:\\s*\\t*\\r*\\n*)*\\.(?:\\s*\\t*\\r*\\n*)*(instant|transform|get)`,
-        'g'
-      );
-      return match.replace(translationCalls, str => str.replace(/instant|transform|get/, func => functionsMap[func]));
+      const functionsMap = {
+        instant: 'translate',
+        transform: 'translate',
+        get: 'selectTranslate'
+      };
+      const propsMap = {
+        currentLang: 'getActiveLang()'
+      };
+      const serviceCallRgx = ({ map, func }) =>
+        new RegExp(
+          `(?:(?:\\s*|this\\.)${sanitizedName})(?:\\s*\\t*\\r*\\n*)*\\.(?:\\s*\\t*\\r*\\n*)*(${getTarget(
+            map
+          )})[\\r\\t\\n\\s]*${func ? '\\(' : '(?!\\()'}`,
+          'g'
+        );
+      const getTarget = t => Object.keys(t).join('|');
+      return [{ func: true, map: functionsMap }, { func: false, map: propsMap }].reduce((acc, curr) => {
+        return acc.replace(serviceCallRgx(curr), str =>
+          str.replace(new RegExp(getTarget(curr.map)), func => curr.map[func])
+        );
+      }, match);
     }
+  };
+
+  const specs = {
+    files: `${path}spec.ts`,
+    from: /TranslateService|TranslatePipe/g,
+    to: 'TranslocoService'
   };
 
   const htmlReplacements = [
@@ -103,25 +121,29 @@ export function run(path) {
   ];
   const tsReplacements = [
     {
-      matchers: [moduleMultiImport, moduleSingleImport, serviceMultiImport, serviceSingleImport, pipeImport],
-      step: 'imports'
+      matchers: [modules, moduleMultiImport, moduleSingleImport],
+      step: 'modules'
     },
     {
-      matchers: [modules],
-      step: 'modules'
+      matchers: [serviceMultiImport, serviceSingleImport, pipeImport],
+      step: 'service imports'
     },
     {
       matchers: [constructorInjection],
       step: 'constructor injections'
     },
     {
-      matchers: [serviceTranslation],
-      step: 'service translations'
+      matchers: [serviceUsage],
+      step: 'service usage'
+    },
+    {
+      matchers: [specs],
+      step: 'specs'
     }
   ];
 
   async function migrate(matchersArr, filesType) {
-    console.log(`\nMigrating ${filesType} files`);
+    console.log(`\nMigrating ${filesType} files 📜`);
     let spinner;
     for (let i = 0; i < matchersArr.length; i++) {
       let { step, matchers } = matchersArr[i];
@@ -140,7 +162,7 @@ export function run(path) {
       console.log('\n              🌵 Done! 🌵');
       console.log('Welcome to a better translation experience 🌐');
       console.log(
-        '\nFor more information about this script please visit 👉 https://github.com/ngneat/transloco/tree/v1/migration/migration.md'
+        '\nFor more information about this script please visit 👉 https://github.com/ngneat/transloco/tree/v1/migration/migration.md\n'
       );
     });
 }

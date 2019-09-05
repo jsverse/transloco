@@ -6,16 +6,21 @@
 
 ## What will be done?
 
-The script will iterate recursively over all your `HTML` and `TS` files (spec files excluded) and will execute the replacements described below:
+The script will iterate recursively over all your `HTML` and `TS` files and will execute the replacements described below:
 
-### Pipe
+### Pipes
 
-The `translate` pipe will be replaced with the `transloco` pipe.
+The `translate` pipes will be replaced with the `transloco` pipe.
 
 ##### Examples:
 
 1. `{{ "hello.world" | translate }}` will be replaced with`{{ "hello.world" | transloco }}`
-2. `<component [header]="'hello.world' | translate"...` will be replaced with `<component [header]="'hello.world' | transloco"...`
+2. `{{ "hello.world" | translate | anotherPipe | oneMore ... }}` will be replaced with`{{ "hello.world" | transloco | anotherPipe | oneMore ... }}`
+3. `{{ "hello" | translate:{name: 'Jhon'} }}` will be replaced with`{{ "hello" | transloco:{name: 'Jhon'} }}`
+4. `{{ "hello" | translate:{name: 'Jhon'} | anotherPipe }}` will be replaced with`{{ "hello" | transloco:{name: 'Jhon'} | anotherPipe }}`
+5. `<component [header]="'hello.world' | translate"...` will be replaced with `<component [header]="'hello.world' | transloco"...`
+6. `<component [header]="'hello.world' | translate | anotherPipe"...` will be replaced with `<component [header]="'hello.world' | transloco | anotherPipe"...`
+7. `<component [header]="'hello' | translate:params | anotherPipe"...` will be replaced with `<component [header]="'hello' | transloco:params | anotherPipe"...`
 
 ### Directives
 
@@ -25,9 +30,9 @@ The `translate` & `translateParams` directives will be replaced with the matchin
 
 1. `<div [translate]="'HELLO'" [translateParams]="{value: 'world'}"></div>` will be replaced with`<div [transloco]="'HELLO'" [translocoParams]="{value: 'world'}"></div>`
 
-### Import
+### Imports
 
-The `TranslateService` import will be replaced with `TranslocoService`.
+The `TranslateService` imports will be replaced with `TranslocoService`.
 
 ##### Examples:
 
@@ -36,27 +41,32 @@ The `TranslateService` import will be replaced with `TranslocoService`.
     `import {TranslateLoader} from '@ngx-translate/core';`
    `import { TranslocoService } from '@ngneat/transloco';`
 
-### Constructor Injection
+### Constructor Injections
 
-The `TranslateService` injection will be replaced with `TranslocoService`.
+The `TranslateService` injections will be replaced with `TranslocoService`.
 
 ##### Examples:
 
 1. `constructor(private translate: TranslateService) {` will be replaced with `constructor(private translate: TranslocoService) {`
 
-### Service Translations
+### Service Usages
 
 1. `translateService.instant(...)` calls will be replaced with `translateService.translate(...)`.
 2. `translateService.get(...)` calls will be replaced with `translateService.selectTranslate(...)`.
+3. `translateService.currentLang` will be replaced with `translateService.getActiveLang()`.
 
 ##### Examples:
 
 1. `const translation = this.translateService.instant('hello')` will be replaced with `const translation = this.translateService.translate('hello')`
 
-### Module
+### Modules
 
 `TranslateModule` & `TranslateModule.forChild(...)` & `TranslateModule.forRoot(...)` will be replaced with `TranslocoModule`
 
 ##### Examples:
 
 1. `TranslateModule.forChild({ loader: { provide: TranslateLoader, useFactory: HttpLoaderFactory, deps: [HttpClient] } })` will be replaced with `TranslocoModule`
+
+### Specs
+
+[Imports](#imports), [Modules](#modules) and `TranslateService` will be replaced with `TranslocoService`
