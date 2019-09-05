@@ -140,7 +140,7 @@ export default function(options: SchemaOptions): Rule {
     const project = getProject(host, options.project);
     const sourceRoot = (project && project.sourceRoot) || 'src';
     const isLib = project.projectType === 'library';
-    const assetsPath = options.path;
+    const assetsPath = `${sourceRoot}/${options.path}`;
 
     const translationCreator =
       options.translateType === TranslationFileTypes.Typescript
