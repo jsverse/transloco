@@ -1,6 +1,6 @@
 import { InjectionToken } from '@angular/core';
 import { HashMap, Translation } from './types';
-import { getValue, isString, isObject, setValue } from './helpers';
+import { getValue, isString, isObject, setValue, isDefined } from './helpers';
 
 export const TRANSLOCO_TRANSPILER = new InjectionToken('TRANSLOCO_TRANSPILER');
 
@@ -13,7 +13,12 @@ export class DefaultTranspiler implements TranslocoTranspiler {
     if (isString(value)) {
       return value.replace(/{{(.*?)}}/g, function(_, match) {
         match = match.trim();
-        return params[match] || getValue(translation, match) || '';
+        if (isDefined(params[match])) {
+          return params[match];
+        }
+
+        const fromTranslation = getValue(translation, match);
+        return isDefined(fromTranslation) ? fromTranslation : '';
       });
     }
 

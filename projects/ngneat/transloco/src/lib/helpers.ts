@@ -54,7 +54,7 @@ export function isString(val: any): val is string {
 }
 
 export function isObject(item): boolean {
-  return item && typeof item === 'object' && !Array.isArray(item) && item !== null;
+  return item && typeof item === 'object' && !Array.isArray(item);
 }
 
 export function coerceArray(val) {
@@ -139,4 +139,8 @@ export function getPipeValue(str: string, value: string, char = '|'): [boolean, 
 
 export function isNil(value: any) {
   return value === null || value === undefined;
+}
+
+export function isDefined(value: any) {
+  return isNil(value) === false;
 }
