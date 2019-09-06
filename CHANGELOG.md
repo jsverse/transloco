@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.7.3](https://github.com/ngneat/transloco/compare/v1.7.2...v1.7.3) (2019-09-06)
+
+### Bug Fixes
+
+- 🐛 transpiler protection ([9471f17](https://github.com/ngneat/transloco/commit/9471f17))
+
 ### [1.7.2](https://github.com/ngneat/transloco/compare/v1.7.1...v1.7.2) (2019-09-05)
 
 ### Bug Fixes
