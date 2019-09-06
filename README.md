@@ -614,7 +614,7 @@ You can read more about it in [this article](https://netbasal.com/optimize-user-
 
 ## Unit Testing
 
-When running specs, we want the have the languages available immediately, in a synchronous fashion. Transloco provides you with a `TranslocoTestingModule`, where you can pass the languages you need in your specs. For example:
+When running specs, we want to have the languages available immediately, in a synchronous fashion. Transloco provides you with a `TranslocoTestingModule`, where you can pass the languages you need in your specs. For example:
 
 ```ts
 import { TranslocoTestingModule } from '@ngneat/transloco';
@@ -639,6 +639,15 @@ describe('AppComponent', () => {
     expect(fixture.debugElement.query(By.css('h1')).nativeElement.innerText).toBe('hello');
   });
 });
+```
+
+Note that in order to import JSON files, you need to configure the TypeScript compiler by adding the following properties in `tsconfig.json`:
+
+```json
+{
+  "resolveJsonModule": true,
+  "esModuleInterop": true
+}
 ```
 
 ## Additional Functionality
