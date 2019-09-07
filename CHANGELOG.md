@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.7.4](https://github.com/ngneat/transloco/compare/v1.7.3...v1.7.4) (2019-09-07)
+
+### Bug Fixes
+
+- 🐛 scope mapping ([a3545a1](https://github.com/ngneat/transloco/commit/a3545a1)), closes [#69](https://github.com/ngneat/transloco/issues/69)
+
 ### [1.7.3](https://github.com/ngneat/transloco/compare/v1.7.2...v1.7.3) (2019-09-06)
 
 ### Bug Fixes
