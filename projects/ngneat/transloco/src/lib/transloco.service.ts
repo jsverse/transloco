@@ -1,5 +1,5 @@
-import { Inject, Injectable, Optional } from '@angular/core';
-import { BehaviorSubject, combineLatest, from, Observable, Subject, of } from 'rxjs';
+import { Inject, Injectable, OnDestroy, Optional } from '@angular/core';
+import { BehaviorSubject, combineLatest, from, Observable, Subject, of, Subscription } from 'rxjs';
 import { catchError, distinctUntilChanged, map, retry, shareReplay, tap, switchMap } from 'rxjs/operators';
 import { DefaultLoader, TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_TRANSPILER, TranslocoTranspiler } from './transloco.transpiler';
@@ -28,7 +28,8 @@ export function translate<T = any>(key: TranslateParams, params: HashMap = {}, l
 }
 
 @Injectable({ providedIn: 'root' })
-export class TranslocoService {
+export class TranslocoService implements OnDestroy {
+  private subscription: Subscription;
   private translations = new Map<string, Translation>();
   private cache = new Map<string, Observable<Translation>>();
   private defaultLang: string;
@@ -64,7 +65,7 @@ export class TranslocoService {
     /**
      * When we have a failure, we want to define the next language that succeeded as the active
      */
-    this.events$.subscribe(e => {
+    this.subscription = this.events$.subscribe(e => {
       if (e.type === 'translationLoadSuccess' && e.wasFailure) {
         // Handle scoped lang
         const lang = getLangFromScope(e.payload.lang);
@@ -351,4 +352,9 @@ export class TranslocoService {
 
     return this.load(resolveLang);
   }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
 }
