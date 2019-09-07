@@ -286,7 +286,7 @@ export class TranslocoService {
     const scope = getScopeFromLang(lang);
     if (scope && scopeStrategy === 'shared') {
       const activeLang = this.getTranslation(currLang);
-      const key = toCamelCase(scopeMapping[scope] || scope);
+      const key = scopeMapping[scope] || toCamelCase(scope);
       const merged = setValue(activeLang, key, withHook);
       this.translations.set(currLang, merged);
     }
