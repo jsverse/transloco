@@ -8,7 +8,7 @@
 The internationalization (i18n) library for Angular
 
 [![Build Status](https://img.shields.io/travis/datorama/akita.svg?style=flat-square)](https://travis-ci.org/ngneat/transloco)
-[![All Contributors](https://img.shields.io/badge/all_contributors-9-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-7-orange.svg?style=flat-square)](#contributors-)
 [![commitizen](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)]()
 [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)]()
 [![coc-badge](https://img.shields.io/badge/codeof-conduct-ff69b4.svg?style=flat-square)]()
@@ -685,24 +685,24 @@ Transloco provides a schematics [command](https://github.com/ngneat/transloco/bl
 
 ## Comparison to other libraries
 
-| Feature                  | @ngneat/transloco                                                                                             | @ngx-translate/core                                             | Angular i18n |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- | ------------ |
-| Actively Maintained      | ✅                                                                                                            | ❌ [See here](https://github.com/ngx-translate/core/issues/783) | ✅           |
-| Runtime Lang Change      | ✅                                                                                                            | ✅                                                              | ❌           |
-| listenToLangChange       | ✅                                                                                                            | ❌                                                              | ❌           |
-| Schematics               | ✅                                                                                                            | ❌                                                              | ❌           |
-| Custom Loading Template  | ✅                                                                                                            | ❌                                                              | ❌           |
-| Multiple Languages Simultaneously      | ✅                                                                                                            | ✅\*                                                            | ❌           |
-| Lazy Load Translations   | ✅                                                                                                            | ✅\*                                                            | ✅           |
-| Multiple Fallbacks       | ✅                                                                                                            | ❌                                                              | ❌           |
-| Hackable                 | ✅                                                                                                            | ✅                                                              | ❌           |
-| Testing                  | ✅                                                                                                            | ✅ External library                                             | ❌           |
-| Structural Directive     | ✅                                                                                                            | ❌                                                              | ❌           |
-| Attribute Directive      | ✅                                                                                                            | ✅                                                              | ✅           |
-| Pipe                     | ✅                                                                                                            | ✅                                                              | ❌           |
-| Ivy support              | ✅                                                                                                            | ❌ [See here](https://github.com/ngx-translate/core/issues/958) | ✅           |
-| Additional Functionality | ✅ [See here](#additional-functionality)                                                                      | ❌                                                              | ❌           |
-| Pluralization            | ✅ [Official Plugin](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-messageformat) | ✅ External library                                             | ✅           |
+| Feature                           | @ngneat/transloco                                                                                             | @ngx-translate/core                                             | Angular i18n |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- | ------------ |
+| Actively Maintained               | ✅                                                                                                            | ❌ [See here](https://github.com/ngx-translate/core/issues/783) | ✅           |
+| Runtime Lang Change               | ✅                                                                                                            | ✅                                                              | ❌           |
+| listenToLangChange                | ✅                                                                                                            | ❌                                                              | ❌           |
+| Schematics                        | ✅                                                                                                            | ❌                                                              | ❌           |
+| Custom Loading Template           | ✅                                                                                                            | ❌                                                              | ❌           |
+| Multiple Languages Simultaneously | ✅                                                                                                            | ✅\*                                                            | ❌           |
+| Lazy Load Translations            | ✅                                                                                                            | ✅\*                                                            | ✅           |
+| Multiple Fallbacks                | ✅                                                                                                            | ❌                                                              | ❌           |
+| Hackable                          | ✅                                                                                                            | ✅                                                              | ❌           |
+| Testing                           | ✅                                                                                                            | ✅ External library                                             | ❌           |
+| Structural Directive              | ✅                                                                                                            | ❌                                                              | ❌           |
+| Attribute Directive               | ✅                                                                                                            | ✅                                                              | ✅           |
+| Pipe                              | ✅                                                                                                            | ✅                                                              | ❌           |
+| Ivy support                       | ✅                                                                                                            | ❌ [See here](https://github.com/ngx-translate/core/issues/958) | ✅           |
+| Additional Functionality          | ✅ [See here](#additional-functionality)                                                                      | ❌                                                              | ❌           |
+| Pluralization                     | ✅ [Official Plugin](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-messageformat) | ✅ External library                                             | ✅           |
 
 (\*) Works **only** by creating a new service instance and mark it as isolated, and it's not supported at the directive level.
 
@@ -742,6 +742,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/theblushingcrow"><img src="https://avatars3.githubusercontent.com/u/638818?v=4" width="100px;" alt="Inbal Sinai"/><br /><sub><b>Inbal Sinai</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=theblushingcrow" title="Documentation">📖</a></td>
     <td align="center"><a href="http://www.larskniep.nl"><img src="https://avatars1.githubusercontent.com/u/1215195?v=4" width="100px;" alt="Lars Kniep"/><br /><sub><b>Lars Kniep</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=larscom" title="Code">💻</a> <a href="#ideas-larscom" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/fxck"><img src="https://avatars1.githubusercontent.com/u/1303561?v=4" width="100px;" alt="Aleš"/><br /><sub><b>Aleš</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=fxck" title="Code">💻</a> <a href="#ideas-fxck" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://www.codamit.dev"><img src="https://avatars0.githubusercontent.com/u/8522558?v=4" width="100px;" alt="Koala"/><br /><sub><b>Koala</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=Edouardbozon" title="Documentation">📖</a></td>
   </tr>
 </table>
 
