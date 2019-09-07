@@ -6,16 +6,18 @@ import {
   PersistStorage,
   TranslocoService
 } from '@ngneat/transloco';
+import { Subscription } from 'rxjs';
 import { skip } from 'rxjs/operators';
 import {
   PersistLangConfig,
   TRANSLOCO_PERSIST_LANG_CONFIG,
   TRANSLOCO_PERSIST_LANG_STORAGE
 } from './persist-lang.config';
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, OnDestroy } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
-export class TranslocoPersistLangService {
+export class TranslocoPersistLangService implements OnDestroy {
+  private subscription: Subscription = Subscription.EMPTY;
   private storageKey: string;
 
   constructor(
@@ -38,8 +40,8 @@ export class TranslocoPersistLangService {
     isBrowser() && this.storage.removeItem(this.storageKey);
   }
 
-  private updateStorageOnLangChange() {
-    this.service.langChanges$.pipe(skip(1)).subscribe(lang => {
+  private updateStorageOnLangChange(): Subscription {
+    return this.service.langChanges$.pipe(skip(1)).subscribe(lang => {
       this.save(lang);
     });
   }
@@ -47,7 +49,8 @@ export class TranslocoPersistLangService {
   private init() {
     // We need to first set the cached lang and then listen to changes
     this.setActiveLang();
-    this.updateStorageOnLangChange();
+    this.subscription.unsubscribe();
+    this.subscription = this.updateStorageOnLangChange();
   }
 
   private setActiveLang() {
@@ -73,4 +76,9 @@ export class TranslocoPersistLangService {
     }
     this.storage.setItem(this.storageKey, lang);
   }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
 }

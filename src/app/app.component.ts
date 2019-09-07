@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { TranslocoService } from '@ngneat/transloco';
+import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 @Component({
@@ -7,7 +8,9 @@ import { take } from 'rxjs/operators';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnDestroy {
+  private subscription: Subscription = Subscription.EMPTY;
+
   constructor(private service: TranslocoService) {}
 
   get activeLang() {
@@ -16,11 +19,17 @@ export class AppComponent {
 
   change(lang: string) {
     // Ensure new active lang is loaded
-    this.service
+    this.subscription.unsubscribe();
+    this.subscription = this.service
       .load(lang)
       .pipe(take(1))
       .subscribe(() => {
         this.service.setActiveLang(lang);
       });
   }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
 }

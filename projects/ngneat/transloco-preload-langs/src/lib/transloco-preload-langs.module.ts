@@ -1,6 +1,6 @@
-import { Inject, ModuleWithProviders, NgModule } from '@angular/core';
+import { Inject, ModuleWithProviders, NgModule, OnDestroy } from '@angular/core';
 import { getPipeValue, TranslocoService } from '@ngneat/transloco';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subscription } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 declare global {
@@ -31,7 +31,10 @@ window.cancelIdleCallback =
   };
 
 @NgModule()
-export class TranslocoPreloadLangsModule {
+export class TranslocoPreloadLangsModule implements OnDestroy {
+  private idleCallbackId: any;
+  private subscription: Subscription = Subscription.EMPTY;
+
   static preload(langs: string[]): ModuleWithProviders {
     return {
       ngModule: TranslocoPreloadLangsModule,
@@ -41,7 +44,7 @@ export class TranslocoPreloadLangsModule {
 
   constructor(service: TranslocoService, @Inject('PreloadLangs') langs: string[]) {
     if (!langs) return;
-    window.requestIdleCallback(() => {
+    this.idleCallbackId = window.requestIdleCallback(() => {
       const preloads = langs.map(currentLang => {
         const [isScoped, scopedPath] = getPipeValue(currentLang, 'scoped');
         const lang = isScoped ? `${scopedPath}/${service.getActiveLang()}` : currentLang;
@@ -53,7 +56,15 @@ export class TranslocoPreloadLangsModule {
           })
         );
       });
-      forkJoin(preloads).subscribe();
+      this.subscription = forkJoin(preloads).subscribe();
     });
   }
+
+  ngOnDestroy() {
+    if (this.idleCallbackId !== undefined) {
+      window.cancelIdleCallback(this.idleCallbackId);
+    }
+    this.subscription.unsubscribe();
+  }
+
 }
