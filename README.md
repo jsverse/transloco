@@ -8,7 +8,7 @@
 The internationalization (i18n) library for Angular
 
 [![Build Status](https://img.shields.io/travis/datorama/akita.svg?style=flat-square)](https://travis-ci.org/ngneat/transloco)
-[![All Contributors](https://img.shields.io/badge/all_contributors-7-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors-)
 [![commitizen](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)]()
 [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)]()
 [![coc-badge](https://img.shields.io/badge/codeof-conduct-ff69b4.svg?style=flat-square)]()
@@ -743,6 +743,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="http://www.larskniep.nl"><img src="https://avatars1.githubusercontent.com/u/1215195?v=4" width="100px;" alt="Lars Kniep"/><br /><sub><b>Lars Kniep</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=larscom" title="Code">💻</a> <a href="#ideas-larscom" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/fxck"><img src="https://avatars1.githubusercontent.com/u/1303561?v=4" width="100px;" alt="Aleš"/><br /><sub><b>Aleš</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=fxck" title="Code">💻</a> <a href="#ideas-fxck" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://www.codamit.dev"><img src="https://avatars0.githubusercontent.com/u/8522558?v=4" width="100px;" alt="Koala"/><br /><sub><b>Koala</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=Edouardbozon" title="Documentation">📖</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/DerSizeS"><img src="https://avatars3.githubusercontent.com/u/708090?v=4" width="100px;" alt="Oleg Teterin"/><br /><sub><b>Oleg Teterin</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=DerSizeS" title="Code">💻</a></td>
   </tr>
 </table>
 

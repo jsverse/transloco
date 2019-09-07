@@ -78,6 +78,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "DerSizeS",
+      "name": "Oleg Teterin",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/708090?v=4",
+      "profile": "https://github.com/DerSizeS",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
