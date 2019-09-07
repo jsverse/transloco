@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { TranslocoLocaleModule } from '../../projects/ngneat/transloco-locale/src/lib/transloco-locale.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { TRANSLOCO_CONFIG, TRANSLOCO_TRANSPILER, TranslocoConfig, TranslocoModule } from '@ngneat/transloco';
@@ -24,12 +25,13 @@ import { TranslocoMessageFormatModule, MessageFormatTranspiler } from '@ngneat/t
     AppRoutingModule,
     TranslocoModule,
     TranslocoMessageFormatModule.init(),
-    HttpClientModule
+    HttpClientModule,
+    TranslocoLocaleModule.init()
     // TranslocoPreloadLangsModule.preload(['es', 'todos-page|scoped'])
     // TranslocoPersistLangModule.init({
     //   getLangFn,
     //   storage: {
-    //     provide: TRANSLOCO_PERSIST_LANG_STORAGE,
+    //     provide: TRANSLOCO_PERSIST_LA  NG_STORAGE,
     //     useValue: localStorage
     //   }
     // })
@@ -48,8 +50,8 @@ import { TranslocoMessageFormatModule, MessageFormatTranspiler } from '@ngneat/t
       useValue: {
         prodMode: environment.production,
         listenToLangChange: true,
-        fallbackLang: 'es',
-        defaultLang: 'en',
+        fallbackLang: 'es-ES',
+        defaultLang: 'en-US',
         scopeStrategy: 'shared',
         scopeMapping: {
           'todos-page': 'todos',

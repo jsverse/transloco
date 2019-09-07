@@ -275,6 +275,39 @@
           }
         }
       }
+    },
+    "@ngneat/transloco-locale": {
+      "root": "projects/ngneat/transloco-locale",
+      "sourceRoot": "projects/ngneat/transloco-locale/src",
+      "projectType": "library",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/ngneat/transloco-locale/tsconfig.lib.json",
+            "project": "projects/ngneat/transloco-locale/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ngneat/transloco-locale/src/test.ts",
+            "tsConfig": "projects/ngneat/transloco-locale/tsconfig.spec.json",
+            "karmaConfig": "projects/ngneat/transloco-locale/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/ngneat/transloco-locale/tsconfig.lib.json",
+              "projects/ngneat/transloco-locale/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
     }
   },
   "defaultProject": "transloco-playground"

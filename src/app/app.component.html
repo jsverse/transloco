@@ -34,6 +34,9 @@
       <li class="nav-item" routerLinkActive="active">
         <a class="nav-link" routerLink="transpilers">Transpilers</a>
       </li>
+      <li class="nav-item" routerLinkActive="active">
+        <a class="nav-link" routerLink="locale">Locale</a>
+      </li>
     </ul>
   </div>
 
@@ -43,16 +46,16 @@
         data-cy="en"
         class="btn my-2 my-sm-0"
         style="margin-right: 10px;"
-        (click)="change('en')"
-        [ngClass]="{ 'btn-primary': activeLang === 'en', 'btn-secondary': activeLang !== 'en' }"
+        (click)="change('en-US')"
+        [ngClass]="{ 'btn-primary': activeLang === 'en-US', 'btn-secondary': activeLang !== 'en' }"
       >
         English
       </button>
       <button
         data-cy="es"
         class="btn my-2 my-sm-0"
-        (click)="change('es')"
-        [ngClass]="{ 'btn-primary': activeLang === 'es', 'btn-secondary': activeLang !== 'es' }"
+        (click)="change('es-ES')"
+        [ngClass]="{ 'btn-primary': activeLang === 'es-ES', 'btn-secondary': activeLang !== 'es' }"
       >
         Spanish
       </button>

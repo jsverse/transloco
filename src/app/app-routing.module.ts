@@ -31,6 +31,10 @@ const routes: Routes = [
   {
     path: 'transpilers',
     loadChildren: './transpilers/transpilers.module#TranspilersModule'
+  },
+  {
+    path: 'locale',
+    loadChildren: './locale/locale.module#LocaleModule'
   }
 ];
 
