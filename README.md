@@ -383,7 +383,7 @@ Now we can access each one of the `todos` keys by using the `todos` namespace:
 <span transloco="toods.submit"></span>
 ```
 
-By default, the namespace will be the scope name (capitalized), but we can override it by using the `config.scopeMapping` config:
+By default, the namespace will be the scope name (camel cased), but we can override it by using the `config.scopeMapping` config:
 
 ```ts
 {
