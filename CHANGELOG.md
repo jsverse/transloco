@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.7.5](https://github.com/ngneat/transloco/compare/v1.7.4...v1.7.5) (2019-09-08)
+
+### Bug Fixes
+
+- **core:** lack of unsubscriptions ([#65](https://github.com/ngneat/transloco/issues/65)) ([67f5d3f](https://github.com/ngneat/transloco/commit/67f5d3f))
+- 🐛 pipe should support any type ([bf3f11c](https://github.com/ngneat/transloco/commit/bf3f11c)), closes [#70](https://github.com/ngneat/transloco/issues/70)
+
 ### [1.7.4](https://github.com/ngneat/transloco/compare/v1.7.3...v1.7.4) (2019-09-07)
 
 ### Bug Fixes
