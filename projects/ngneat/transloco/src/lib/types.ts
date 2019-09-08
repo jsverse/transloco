@@ -1,4 +1,4 @@
-export type HashMap<T = string> = { [key: string]: T };
+export type HashMap<T = any> = { [key: string]: T };
 
 export type LoadedEvent = {
   type: 'translationLoadSuccess';
