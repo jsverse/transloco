@@ -4,15 +4,22 @@ import { AppComponent } from './app.component';
 import { TranslocoTestingModule } from '@ngneat/transloco';
 import { By } from '@angular/platform-browser';
 import en from '../assets/i18n/en.json';
+import es from '../assets/i18n/es.json';
 
 fdescribe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
-        TranslocoTestingModule.withLangs({
-          en
-        })
+        TranslocoTestingModule.withLangs(
+          {
+            en,
+            es
+          },
+          {
+            defaultLang: 'es'
+          }
+        )
       ],
       declarations: [AppComponent]
     }).compileComponents();
@@ -21,6 +28,6 @@ fdescribe('AppComponent', () => {
   it('should work', function() {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
-    expect(fixture.debugElement.query(By.css('h1')).nativeElement.innerText).toBe('home english');
+    expect(fixture.debugElement.query(By.css('h1')).nativeElement.innerText).toBe('home spanish');
   });
 });

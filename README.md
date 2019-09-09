@@ -627,7 +627,7 @@ describe('AppComponent', () => {
         RouterTestingModule,
         TranslocoTestingModule.withLangs({
           en
-        })
+        }, translocoConfig?)
       ],
       declarations: [AppComponent]
     }).compileComponents();
