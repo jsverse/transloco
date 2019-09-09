@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.7.6](https://github.com/ngneat/transloco/compare/v1.7.5...v1.7.6) (2019-09-09)
+
+### Bug Fixes
+
+- 🐛 allow pass config in testing module ([caeaa8c](https://github.com/ngneat/transloco/commit/caeaa8c))
+
 ### [1.7.5](https://github.com/ngneat/transloco/compare/v1.7.4...v1.7.5) (2019-09-08)
 
 ### Bug Fixes
