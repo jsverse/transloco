@@ -46,6 +46,7 @@ The internationalization (i18n) library for Angular
   - [Transloco Transpiler](#transloco-transpiler)
   - [Transloco Missing Handler](#transloco-missing-handler)
   - [Transloco Fallback Strategy](#transloco-fallback-strategy)
+- [SSR Support](#ssr-support)
 - [Prefetch the User Language](#prefetch-the-user-language)
 - [Unit Testing](#unit-testing)
 - [Additional Functionality](#additional-functionality)
@@ -577,6 +578,23 @@ export const custom = {
 ```
 
 The `getNextLangs` method is called with the failed language, and should return an array containing the next languages to load, in order of preference.
+
+## SSR Support
+
+Create a new CLI project and add SSR support:
+
+`ng add @nguniversal/express-engine --clientProject <PROJECT-NAME>`
+
+When employing Angular SSR, we need to change our loader base path to be absolute instead of relative, in order for it to work. Run `ng add @ngneat/transloco` and choose the SSR option. This will make sure to update the loader to use an absolute path.
+
+Moreover, Transloco will add a `baseUrl` key to the environment object. Make sure to update it based on your environments.
+
+```ts
+export const environment = {
+  production: false,
+  baseUrl: 'http://localhost:4200' <====
+};
+```
 
 ## Prefetch the User Language
 
