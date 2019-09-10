@@ -1,4 +1,5 @@
 import { Pipe, PipeTransform, ChangeDetectorRef, Inject } from '@angular/core';
+import { isNil } from '@ngneat/transloco';
 import { localizeNumber } from '../helpers';
 import { LOCALE_NUMBER_CONFIG } from '../transloco-locale.config';
 import { TranslocoLocaleService } from '../transloco-locale.service';
@@ -27,6 +28,7 @@ export class TranslocoPercentPipe extends TranslocoLocalePipe implements PipeTra
    *
    */
   transform(value: any, digits: NumberFormatOptions = {}, locale?): string {
+    if (isNil(value)) return '';
     locale = locale || this.translocoLocaleService.getLocale();
     const options = {
       style: 'percent',

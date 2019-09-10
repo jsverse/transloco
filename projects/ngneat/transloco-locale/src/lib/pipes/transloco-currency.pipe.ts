@@ -1,10 +1,11 @@
 import { Pipe, PipeTransform, ChangeDetectorRef, Inject } from '@angular/core';
-import { localizeNumber, isLocaleFormat } from '../helpers';
-import { LOCALE_DATE_CONFIG, LOCALE_NUMBER_CONFIG } from '../transloco-locale.config';
+import { isNil } from '@ngneat/transloco';
+import { localizeNumber } from '../helpers';
+import { LOCALE_NUMBER_CONFIG } from '../transloco-locale.config';
 import { TranslocoLocaleService } from '../transloco-locale.service';
-import { NumberFormatOptions, DateFormatOptions } from '../transloco-locale.types';
-import { TranslocoLocalePipe } from './transloco-locale.pipe';
+import { NumberFormatOptions } from '../transloco-locale.types';
 import LOCAL_CURRENCY from './../locale-currency.json';
+import { TranslocoLocalePipe } from './transloco-locale.pipe';
 
 @Pipe({
   name: 'translocoCurrency',
@@ -24,9 +25,9 @@ export class TranslocoCurrencyPipe extends TranslocoLocalePipe implements PipeTr
    *
    * @example
    *
-   * 1000000 | translocoCurrency
-   * 1000000 | translocoCurrency: 'name'
-   * 1000000 | translocoCurrency: 'symbol' : {minimumFractionDigits: 0}
+   * 1000000 | translocoCurrency: 'symbol' : {} : USD // $1,000,000.00
+   * 1000000 | translocoCurrency: 'name' : {} : USD // 1,000,000.00 US dollars
+   * 1000000 | translocoCurrency: 'symbol' : {minimumFractionDigits: 0 } : USD // $1,000,000
    *
    */
   transform(
@@ -35,11 +36,11 @@ export class TranslocoCurrencyPipe extends TranslocoLocalePipe implements PipeTr
     digits: NumberFormatOptions = {},
     currencyCode?: string
   ): string {
+    if (isNil(value)) return '';
     const options = {
       ...digits,
       currencyDisplay: display,
       style: 'currency',
-      // TODO: consider adding "static" parameter that will define override behaviour.
       currency: currencyCode || this.getCurrencyCode(this.translocoLocaleService.getLocale())
     };
     return localizeNumber(value, this.translocoLocaleService.getLocale(), {
@@ -49,7 +50,6 @@ export class TranslocoCurrencyPipe extends TranslocoLocalePipe implements PipeTr
   }
 
   private getCurrencyCode(locale: string) {
-    console.log(LOCAL_CURRENCY[locale]);
     return LOCAL_CURRENCY[locale] || 'USD';
   }
 }

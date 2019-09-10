@@ -21,4 +21,22 @@ describe('TranslocoDatePipe', () => {
     const pipe = new TranslocoDatePipe(service, cdr, {});
     expect(pipe.transform(date, { dateStyle: 'medium', timeStyle: 'medium' })).toEqual('Oct 7, 2019, 12:00:00 PM');
   });
+
+  it('Should consider a global date config', () => {
+    const pipe = new TranslocoDatePipe(service, cdr, { dateStyle: 'medium', timeStyle: 'medium' });
+    expect(pipe.transform(date)).toEqual('Oct 7, 2019, 12:00:00 PM');
+  });
+
+  it('Should consider a given config over the global config', () => {
+    const pipe = new TranslocoDatePipe(service, cdr, { dateStyle: 'medium', timeStyle: 'medium' });
+    expect(pipe.transform(date, {dateStyle: 'full'})).toEqual('Monday, October 7, 2019 at 12:00:00 PM');
+  });
+
+  it('Should handle none date values', () => {
+    const pipe = new TranslocoDatePipe(service, cdr, { dateStyle: 'medium', timeStyle: 'medium' });
+    expect(pipe.transform(null)).toEqual('');
+    expect(() => pipe.transform(<any>'string')).toThrow();
+    expect(() => pipe.transform(<any>0)).toThrow();
+    expect(() => pipe.transform(<any>{})).toThrow();
+  });
 });

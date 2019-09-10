@@ -13,12 +13,12 @@ export const pipes = [TranslocoCurrencyPipe, TranslocoDatePipe, TranslocoDecimal
   exports: pipes
 })
 export class TranslocoLocaleModule {
-  static init(config: TranslocoLocaleConfig = {}): ModuleWithProviders {
+  static init(config: TranslocoLocaleConfig = { number: {}, date: {} }): ModuleWithProviders {
     return {
       ngModule: TranslocoLocaleModule,
       providers: [
-        { provide: LOCALE_NUMBER_CONFIG, useValue: config.number || {} },
-        { provide: LOCALE_DATE_CONFIG, useValue: config.date || {} }
+        { provide: LOCALE_NUMBER_CONFIG, useValue: config.number },
+        { provide: LOCALE_DATE_CONFIG, useValue: config.date }
       ]
     };
   }

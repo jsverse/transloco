@@ -1,4 +1,6 @@
 import { Pipe, ChangeDetectorRef, PipeTransform, Inject } from '@angular/core';
+import { isNil } from '@ngneat/transloco';
+import { isDate, toDate } from '../helpers';
 import { LOCALE_DATE_CONFIG } from '../transloco-locale.config';
 import { TranslocoLocaleService } from '../transloco-locale.service';
 import { DateFormatOptions } from '../transloco-locale.types';
@@ -20,16 +22,23 @@ export class TranslocoDatePipe extends TranslocoLocalePipe implements PipeTransf
   /**
    * Transform a date into the locale's date format.
    *
+   * The date expression: a `Date` object,  a number
+   * (milliseconds since UTC epoch), or an ISO string (https://www.w3.org/TR/NOTE-datetime).
+   *
    * @example
    *
-   * date | translocoDate
-   * date | translocoDate: {dateStyle: 'long'}
-   * date | translocoDate: {dateStyle: 'full'}
-   *
+   * date | translocoDate: {} : en-US // 9/10/2019
+   * date | translocoDate: { dateStyle: 'medium', timeStyle: 'medium' } : en-US // Sep 10, 2019, 10:46:12 PM
+   * date | translocoDate: { timeZone: 'UTC', timeStyle: 'full' } : en-US // 7:40:32 PM Coordinated Universal Time
+   * 1 | translocoDate: { dateStyle: 'medium', timeStyle: 'medium' }
    */
-  transform(value: Date, options: DateFormatOptions = {}, locale?) {
-    // TODO: take the currency code only if it's the first time just like in the directive.
+  transform(value: Date | string | number, options: DateFormatOptions = {}, locale?) {
+    if (isNil(value)) return '';
     locale = locale || this.translocoLocaleService.getLocale();
-    return value.toLocaleDateString(locale, { ...this.dateConfig, ...options });
+    value = toDate(value);
+    if (isDate(value)) {
+      return value.toLocaleDateString(locale, { ...this.dateConfig, ...options });
+    }
+    return '';
   }
 }

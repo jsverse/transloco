@@ -1,4 +1,5 @@
 import { Pipe, PipeTransform, ChangeDetectorRef, Inject } from '@angular/core';
+import { isNil } from '@ngneat/transloco';
 import { localizeNumber } from '../helpers';
 import { LOCALE_NUMBER_CONFIG } from '../transloco-locale.config';
 import { TranslocoLocaleService } from '../transloco-locale.service';
@@ -23,10 +24,12 @@ export class TranslocoDecimalPipe extends TranslocoLocalePipe implements PipeTra
    *
    * @example
    *
-   * 1234567890 | translocoDecimal
+   * 1234567890 | translocoDecimal: {} : en-US // 1,234,567,890
+   * 1234567890 | translocoDecimal: {useGrouping: false}: en-US // 1234567890
    *
    */
   transform(value: any, digits: NumberFormatOptions = {}, locale?): string {
+    if (isNil(value)) return '';
     locale = locale || this.translocoLocaleService.getLocale();
     const options = {
       style: 'decimal',
