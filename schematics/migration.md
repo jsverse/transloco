@@ -51,13 +51,27 @@ The `TranslateService` injections will be replaced with `TranslocoService`.
 
 ### Service Usages
 
-1. `translateService.instant(...)` calls will be replaced with `translateService.translate(...)`.
-2. `translateService.get(...)` calls will be replaced with `translateService.selectTranslate(...)`.
-3. `translateService.currentLang` will be replaced with `translateService.getActiveLang()`.
+1. `translateService.currentLang` will be replaced with `translateService.getActiveLang()`.
+2. `translateService.onLangChange` will be replaced with `translateService.langChanges$`.
+3. `translateService.use(...)` calls will be replaced with `translateService.setActiveLang(...)`.
+4. `translateService.instant(...)` calls will be replaced with `translateService.translate(...)`.
+5. `translateService.get(...)` calls will be replaced with `translateService.selectTranslate(...)`.
+6. `translateService.stream(...)` calls will be replaced with `translateService.selectTranslate(...)`.
+7. `translateService.set(...)` calls will be replaced with `translateService.setTranslation(...)`.
 
 ##### Examples:
 
 1. `const translation = this.translateService.instant('hello')` will be replaced with `const translation = this.translateService.translate('hello')`
+
+##### Manual Replacements
+
+1. `getBrowserLang()` - In Transloco it's a pure function that needs to be imported.
+2. `getBrowserCultureLang()` - In Transloco it's a pure function that needs to be imported.
+3. `currentLoader` - No equivalent in Transloco.
+4. `addLangs(...)` - No equivalent in Transloco.
+5. `getLangs(...)` - No equivalent in Transloco.
+6. `reloadLang(...)` - No equivalent in Transloco.
+7. `resetLang(...)` - No equivalent in Transloco.
 
 ### Modules
 
@@ -70,3 +84,7 @@ The `TranslateService` injections will be replaced with `TranslocoService`.
 ### Specs
 
 [Imports](#imports), [Modules](#modules) and `TranslateService` will be replaced with `TranslocoService`
+
+### Issues
+
+If you encounter any issues with the migration script please open a github issue so we can resolve them and make a better experience for all.

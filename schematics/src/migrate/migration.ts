@@ -9,11 +9,11 @@ export function run(path) {
   path = p.join(dir, path, '/**/*');
 
   const noSpecFiles = { ignore: `${path}spec.ts`, files: `${path}.ts` };
-  const pipeContent = `([^}\\r\\n]*\\|)\\s*(translate)\\s*(?::\\s*{[^}\\r\\n]+})?\\s*(\\s*\\|[\\s\\r\\t\\n]*\\w*)*\\s*`;
+  const pipeContent = `([^}\\r\\n]*?\\|)\\s*(translate)\\s*(?::\\s*{[^}\\r\\n]+})?\\s*(\\s*\\|[\\s\\r\\t\\n]*\\w*)*\\s*`;
   const [directive, pipe, pipeInBinding] = [
     /(translate|\[translate(?:Params)?\])=("|')[^"']*\2/gm,
     new RegExp(`{{${pipeContent}}}`, 'gm'),
-    new RegExp(`=("|')${pipeContent}\\1`, 'gm')
+    new RegExp(`\\]=('|")${pipeContent}\\1`, 'gm')
   ].map(regex => ({
     files: `${path}.html`,
     from: regex,
@@ -82,10 +82,14 @@ export function run(path) {
       const functionsMap = {
         instant: 'translate',
         transform: 'translate',
-        get: 'selectTranslate'
+        get: 'selectTranslate',
+        stream: 'selectTranslate',
+        use: 'setActiveLang',
+        set: 'setTranslation'
       };
       const propsMap = {
-        currentLang: 'getActiveLang()'
+        currentLang: 'getActiveLang()',
+        onLangChange: 'langChanges$'
       };
       const serviceCallRgx = ({ map, func }) =>
         new RegExp(
