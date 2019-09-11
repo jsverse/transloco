@@ -14,6 +14,7 @@ const path = `${process.cwd()}/${src}`;
 
 glob(`${path}/**/*.json`, {}, function(er, files) {
   files.forEach(path => {
+    // TODO: Run in parallel
     fs.readFile(path, 'utf8', function(err, translation) {
       const toObject = JSON.parse(translation);
       let withoutComments = removeComments(toObject, keyName);
