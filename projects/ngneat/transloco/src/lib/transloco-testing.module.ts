@@ -32,7 +32,7 @@ export class TranslocoTestingModule {
         defaultProviders,
         {
           provide: TRANSLOCO_CONFIG,
-          useValue: config
+          useValue: { prodMode: true, ...config }
         }
       ]
     };
