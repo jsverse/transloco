@@ -2,7 +2,7 @@ import { Pipe, PipeTransform, ChangeDetectorRef, Inject } from '@angular/core';
 import { isNil, HashMap } from '@ngneat/transloco';
 import { localizeNumber } from '../helpers';
 import LOCALE_CURRENCY from '../locale-currency.json';
-import { LOCALE_NUMBER_CONFIG } from '../transloco-locale.config';
+import { LOCALE_NUMBER_CONFIG, LOCALE_CURRENCY_MAPPING } from '../transloco-locale.config';
 import { TranslocoLocaleService } from '../transloco-locale.service';
 import { NumberFormatOptions, Currency } from '../transloco-locale.types';
 import { TranslocoLocalePipe } from './transloco-locale.pipe';
@@ -16,7 +16,7 @@ export class TranslocoCurrencyPipe extends TranslocoLocalePipe implements PipeTr
     protected translocoLocaleService: TranslocoLocaleService,
     protected cdr: ChangeDetectorRef,
     @Inject(LOCALE_NUMBER_CONFIG) private numberConfig: NumberFormatOptions,
-    @Inject(LOCALE_CURRENCY) private localeCurrencyMapping: HashMap<Currency>
+    @Inject(LOCALE_CURRENCY_MAPPING) private localeCurrencyMapping: HashMap<Currency>
   ) {
     super(translocoLocaleService, cdr);
   }

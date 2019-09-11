@@ -1,4 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ViewChild, ElementRef } from '@angular/core';
+import { TranslocoLocaleService } from '../../../../projects/ngneat/transloco-locale/src/lib/transloco-locale.service';
 
 @Component({
   selector: 'app-locale',
@@ -9,7 +10,13 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 export class LocaleComponent implements OnInit {
   public date = new Date();
 
-  constructor() {}
+  @ViewChild('locale') localeInput: ElementRef<HTMLInputElement>;
+
+  constructor(private localeService: TranslocoLocaleService) {}
 
   ngOnInit() {}
+
+  public setLocale() {
+    this.localeService.setLocale(this.localeInput.nativeElement.value);
+  }
 }

@@ -7,7 +7,13 @@
   >.
 </p>
 
+<input #locale value="fr-FR" class="form-control" />
+<button data-cy="set-translation-key-btn" class="btn btn-outline-primary my-2 my-sm-0" (click)="setLocale()">
+  Set locale
+</button>
+
 <h3 class="mtb">Date Format</h3>
+
 <ul class="list-group">
   <li class="list-group-item" data-cy="date-regular"><b>Regular date: </b>{{ date | translocoDate }}</li>
   <li class="list-group-item" data-cy="date-long">
