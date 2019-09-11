@@ -14,4 +14,9 @@ describe('TranslocoDecimalPipe', () => {
     const pipe = new TranslocoDecimalPipe(service, cdr, {});
     expect(pipe.transform(123456)).toEqual('123,456');
   });
+  // TODO: test string.
+  it('Should transform number to locale format number', () => {
+    // const pipe = new TranslocoDecimalPipe(service, cdr, {});
+    // expect(pipe.transform(123456)).toEqual('123,456');
+  });
 });

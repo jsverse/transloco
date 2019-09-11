@@ -1,4 +1,4 @@
-import en from '../../../../../../src/assets/i18n/en-US.json';
+import en from '../../../../../../src/assets/i18n/en.json';
 import { DefaultTranspiler, TranslocoService } from '../../public-api';
 import { createService, loader, mockLangs, runLoader } from './transloco.mocks';
 import { fakeAsync } from '@angular/core/testing';

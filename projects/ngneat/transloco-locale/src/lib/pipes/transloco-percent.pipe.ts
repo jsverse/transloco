@@ -3,7 +3,7 @@ import { isNil } from '@ngneat/transloco';
 import { localizeNumber } from '../helpers';
 import { LOCALE_NUMBER_CONFIG } from '../transloco-locale.config';
 import { TranslocoLocaleService } from '../transloco-locale.service';
-import { NumberFormatOptions } from '../transloco-locale.types';
+import { NumberFormatOptions, Locale } from '../transloco-locale.types';
 import { TranslocoLocalePipe } from './transloco-locale.pipe';
 
 @Pipe({
@@ -24,10 +24,11 @@ export class TranslocoPercentPipe extends TranslocoLocalePipe implements PipeTra
    *
    * @example
    *
-   * 1 | translocoPercent
+   * 1 | translocoPercent : {} : en-US // 100%
+   * "1" | translocoPercent : {} : en-US // 100%
    *
    */
-  transform(value: any, digits: NumberFormatOptions = {}, locale?): string {
+  transform(value: number | string, digits: NumberFormatOptions = {}, locale?: Locale): string {
     if (isNil(value)) return '';
     locale = locale || this.translocoLocaleService.getLocale();
     const options = {

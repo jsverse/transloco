@@ -40,5 +40,8 @@ export interface DateFormatOptions {
   timeZone?: Intl.DateTimeFormatOptions['timeZone'];
 }
 
-// TODO:
-// support date string.
+//BCP 47 locale string (e.g. en-US, es-ES).
+export type Locale = string;
+
+//ISO 4217 currency string (e.g. USD, EUR).
+export type Currency = string;

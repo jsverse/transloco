@@ -3,7 +3,7 @@ import { isNil } from '@ngneat/transloco';
 import { localizeNumber } from '../helpers';
 import { LOCALE_NUMBER_CONFIG } from '../transloco-locale.config';
 import { TranslocoLocaleService } from '../transloco-locale.service';
-import { NumberFormatOptions } from '../transloco-locale.types';
+import { NumberFormatOptions, Currency } from '../transloco-locale.types';
 import LOCAL_CURRENCY from './../locale-currency.json';
 import { TranslocoLocalePipe } from './transloco-locale.pipe';
 
@@ -34,7 +34,7 @@ export class TranslocoCurrencyPipe extends TranslocoLocalePipe implements PipeTr
     value: number | string,
     display: 'code' | 'symbol' | 'name' = 'symbol',
     digits: NumberFormatOptions = {},
-    currencyCode?: string
+    currencyCode?: Currency
   ): string {
     if (isNil(value)) return '';
     const options = {

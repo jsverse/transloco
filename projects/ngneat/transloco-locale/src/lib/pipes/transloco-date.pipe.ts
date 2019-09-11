@@ -3,7 +3,7 @@ import { isNil } from '@ngneat/transloco';
 import { isDate, toDate } from '../helpers';
 import { LOCALE_DATE_CONFIG } from '../transloco-locale.config';
 import { TranslocoLocaleService } from '../transloco-locale.service';
-import { DateFormatOptions } from '../transloco-locale.types';
+import { DateFormatOptions, Locale } from '../transloco-locale.types';
 import { TranslocoLocalePipe } from './transloco-locale.pipe';
 
 @Pipe({
@@ -32,7 +32,7 @@ export class TranslocoDatePipe extends TranslocoLocalePipe implements PipeTransf
    * date | translocoDate: { timeZone: 'UTC', timeStyle: 'full' } : en-US // 7:40:32 PM Coordinated Universal Time
    * 1 | translocoDate: { dateStyle: 'medium', timeStyle: 'medium' }
    */
-  transform(value: Date | string | number, options: DateFormatOptions = {}, locale?) {
+  transform(value: Date | string | number, options: DateFormatOptions = {}, locale?: Locale) {
     if (isNil(value)) return '';
     locale = locale || this.translocoLocaleService.getLocale();
     value = toDate(value);

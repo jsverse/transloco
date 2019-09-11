@@ -50,8 +50,8 @@ import { TranslocoMessageFormatModule, MessageFormatTranspiler } from '@ngneat/t
       useValue: {
         prodMode: environment.production,
         listenToLangChange: true,
-        fallbackLang: 'es-ES',
-        defaultLang: 'en-US',
+        fallbackLang: 'es',
+        defaultLang: 'en',
         scopeStrategy: 'shared',
         scopeMapping: {
           'todos-page': 'todos',

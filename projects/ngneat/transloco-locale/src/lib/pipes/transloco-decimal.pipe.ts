@@ -3,7 +3,7 @@ import { isNil } from '@ngneat/transloco';
 import { localizeNumber } from '../helpers';
 import { LOCALE_NUMBER_CONFIG } from '../transloco-locale.config';
 import { TranslocoLocaleService } from '../transloco-locale.service';
-import { NumberFormatOptions } from '../transloco-locale.types';
+import { NumberFormatOptions, Locale } from '../transloco-locale.types';
 import { TranslocoLocalePipe } from './transloco-locale.pipe';
 
 @Pipe({
@@ -28,7 +28,7 @@ export class TranslocoDecimalPipe extends TranslocoLocalePipe implements PipeTra
    * 1234567890 | translocoDecimal: {useGrouping: false}: en-US // 1234567890
    *
    */
-  transform(value: any, digits: NumberFormatOptions = {}, locale?): string {
+  transform(value: string | number, digits: NumberFormatOptions = {}, locale?: Locale): string {
     if (isNil(value)) return '';
     locale = locale || this.translocoLocaleService.getLocale();
     const options = {
