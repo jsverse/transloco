@@ -1,10 +1,10 @@
-import { testHomeContent } from './home';
-import { generateLazyContent, generateContentWithoutLoader } from './lazy';
-import { testScopeSharingContent } from './scope-sharing';
 import { testDynamicContent } from './dynamic-translation';
+import { testHomeContent } from './home';
+import { generateLazyContent, generateContentWithoutLoader, generateContentLoader } from './lazy';
+import { testLocaleContentUS, testLocaleContentES } from './locale';
 import { testMultiLangContent } from './multi-lang';
+import { testScopeSharingContent } from './scope-sharing';
 import { testTranspilersContent } from './transpilers';
-import { generateContentLoader } from './lazy';
 
 function changeLang(lang) {
   cy.get(`[data-cy=${lang}]`).click();
@@ -64,6 +64,14 @@ describe('Transloco Full Cycle', () => {
     testTranspilersContent('spanish');
     changeLang('en');
     testTranspilersContent();
+
+    /* Test locale page */
+
+    cy.visit('/locale');
+    changeLang('en');
+    testLocaleContentUS();
+    changeLang('es');
+    testLocaleContentES();
   });
 });
 

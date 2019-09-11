@@ -8,7 +8,7 @@ import { TranslocoLocaleService } from '../../../../projects/ngneat/transloco-lo
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LocaleComponent implements OnInit {
-  public date = new Date();
+  public date = new Date(2019, 7, 14, 0, 0, 0, 0);
 
   @ViewChild('locale') localeInput: ElementRef<HTMLInputElement>;
 
