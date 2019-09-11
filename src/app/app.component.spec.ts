@@ -6,7 +6,7 @@ import { By } from '@angular/platform-browser';
 import en from '../assets/i18n/en.json';
 import es from '../assets/i18n/es.json';
 
-fdescribe('AppComponent', () => {
+describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
