@@ -21,8 +21,7 @@
       "@ngneat/transloco-persist-translation": ["./projects/ngneat/transloco-persist-translations/src/public-api.ts"],
       "@ngneat/transloco-messageformat": ["./projects/ngneat/transloco-messageformat/src/public-api.ts"],
       "@ngneat/transloco-preload-langs": ["./projects/ngneat/transloco-preload-langs/src/public-api.ts"],
-      "@ngneat/transloco-locale": ["dist/ngneat/transloco-locale"],
-      "@ngneat/transloco-locale/*": ["dist/ngneat/transloco-locale/*"]
+      "@ngneat/transloco-locale": ["./projects/ngneat/transloco-locale/src/public-api"]
     }
   }
 }
