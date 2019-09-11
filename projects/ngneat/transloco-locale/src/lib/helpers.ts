@@ -10,11 +10,12 @@ export const ISO8601_DATE_REGEX = /^(\d{4})-?(\d\d)-?(\d\d)(?:T(\d\d)(?::?(\d\d)
  * isLocaleFormat('en-US') // true
  */
 export function isLocaleFormat(val: string): boolean {
-  return !!val.match(/[a-z]{2}-[A-Z]{2}/);
+  return typeof val === 'string' && !!val.match(/[a-z]{2}-[A-Z]{2}/);
 }
 
 export function localizeNumber(value: number | string, locale, options: NumberFormatOptions): string {
-  return new Intl.NumberFormat(locale, options).format(toNumber(value));
+  const number = toNumber(value);
+  return number !== null ? new Intl.NumberFormat(locale, options).format(number) : '';
 }
 
 export function isDate(value): boolean {

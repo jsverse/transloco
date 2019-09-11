@@ -22,6 +22,9 @@
   <li class="list-group-item" data-cy="date-full">
     <b>Unix timestamp time date: </b>{{ 1 | translocoDate: { dateStyle: 'medium', timeStyle: 'medium' } }}
   </li>
+  <li class="list-group-item" data-cy="date-full">
+    <b>String format to date: </b>{{ '2019-02-08' | translocoDate: { dateStyle: 'medium', timeStyle: 'medium' } }}
+  </li>
 </ul>
 
 <h3 class="mtb">Number Format</h3>

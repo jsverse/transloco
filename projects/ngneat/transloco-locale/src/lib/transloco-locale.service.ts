@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { TranslocoService, HashMap } from '@ngneat/transloco';
 import { Observable, ReplaySubject } from 'rxjs';
-import { map, distinctUntilChanged } from 'rxjs/operators';
+import { map, distinctUntilChanged, filter } from 'rxjs/operators';
 import { isLocaleFormat } from './helpers';
 import { LOCALE_LANG_MAPPING } from './transloco-locale.config';
 import { Locale } from './transloco-locale.types';
@@ -18,7 +18,12 @@ export class TranslocoLocaleService {
     private translocoService: TranslocoService,
     @Inject(LOCALE_LANG_MAPPING) private langLocaleMapping: HashMap<Locale>
   ) {
-    translocoService.langChanges$.pipe(map(this.toLocale.bind(this))).subscribe(this.setLocale.bind(this));
+    translocoService.langChanges$
+      .pipe(
+        map(this.toLocale.bind(this)),
+        filter(lang => !!lang)
+      )
+      .subscribe(this.setLocale.bind(this));
     this.localeChanges$ = this.locale.asObservable().pipe(distinctUntilChanged());
   }
 
@@ -38,6 +43,12 @@ export class TranslocoLocaleService {
     if (isLocaleFormat(val)) {
       return val;
     }
-    return this.langLocaleMapping[val] || null;
+    if (this.langLocaleMapping[val]) {
+      return this.langLocaleMapping[val];
+    }
+
+    console.warn(`%c Could not find locale match to value: ${val} 🤔🕵🏻‍♀`, 'font-size: 12px; color: red');
+
+    return null;
   }
 }

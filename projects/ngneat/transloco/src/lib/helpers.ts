@@ -55,6 +55,10 @@ export function isString(val: any): val is string {
   return typeof val === 'string';
 }
 
+export function isNumber(val: any): val is number {
+  return typeof val === 'number';
+}
+
 export function isObject(item): boolean {
   return item && typeof item === 'object' && !Array.isArray(item);
 }
@@ -147,12 +151,12 @@ export function isDefined(value: any) {
   return isNil(value) === false;
 }
 
-export function toNumber(value: number | string): number {
+export function toNumber(value: number | string): number | null {
+  if (isNumber(value)) return value;
+
   if (typeof value === 'string' && !isNaN(Number(value) - parseFloat(value))) {
     return Number(value);
   }
-  if (typeof value !== 'number') {
-    throw new Error(`${value} can not be convert into number`);
-  }
-  return value;
+
+  return null;
 }

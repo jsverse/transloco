@@ -30,7 +30,8 @@ export class TranslocoDatePipe extends TranslocoLocalePipe implements PipeTransf
    * date | translocoDate: {} : en-US // 9/10/2019
    * date | translocoDate: { dateStyle: 'medium', timeStyle: 'medium' } : en-US // Sep 10, 2019, 10:46:12 PM
    * date | translocoDate: { timeZone: 'UTC', timeStyle: 'full' } : en-US // 7:40:32 PM Coordinated Universal Time
-   * 1 | translocoDate: { dateStyle: 'medium', timeStyle: 'medium' }
+   * 1 | translocoDate: { dateStyle: 'medium' } // Jan 1, 1970
+   * '2019-02-08' | translocoDate: { dateStyle: 'medium' } // Feb 8, 2019
    */
   transform(value: Date | string | number, options: DateFormatOptions = {}, locale?: Locale) {
     if (isNil(value)) return '';
