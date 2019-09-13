@@ -18,3 +18,4 @@ export function createFakeCDR(locale: string = 'en-US') {
 
 export const LOCALE_CURRENCY_MOCK = LOCALE_CURRENCY;
 export const LANG_LOCALE_MOCK = { en: 'en-US', es: 'es-ES' };
+export const DEFAULT_LOCALE_MOCK = 'en-US';
