@@ -1,9 +1,9 @@
 import { Injectable, Inject } from '@angular/core';
 import { TranslocoService, HashMap } from '@ngneat/transloco';
-import { Observable, ReplaySubject } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { map, distinctUntilChanged, filter } from 'rxjs/operators';
 import { isLocaleFormat } from './helpers';
-import { LOCALE_LANG_MAPPING } from './transloco-locale.config';
+import { LOCALE_LANG_MAPPING, LOCALE_DEFAULT_LOCALE } from './transloco-locale.config';
 import { Locale } from './transloco-locale.types';
 
 @Injectable({
@@ -11,20 +11,24 @@ import { Locale } from './transloco-locale.types';
 })
 export class TranslocoLocaleService {
   localeChanges$: Observable<Locale>;
-  private locale = new ReplaySubject<Locale>(1);
+  private locale: BehaviorSubject<Locale>;
   private _locale: any;
 
   constructor(
     private translocoService: TranslocoService,
-    @Inject(LOCALE_LANG_MAPPING) private langLocaleMapping: HashMap<Locale>
+    @Inject(LOCALE_LANG_MAPPING) private langLocaleMapping: HashMap<Locale>,
+    @Inject(LOCALE_DEFAULT_LOCALE) private defaultLocale: Locale
   ) {
+    this._locale = defaultLocale || this.toLocale(this.translocoService.getActiveLang());
+    this.locale = new BehaviorSubject(this._locale);
+    this.localeChanges$ = this.locale.asObservable().pipe(distinctUntilChanged());
+
     translocoService.langChanges$
       .pipe(
         map(this.toLocale.bind(this)),
         filter(lang => !!lang)
       )
       .subscribe(this.setLocale.bind(this));
-    this.localeChanges$ = this.locale.asObservable().pipe(distinctUntilChanged());
   }
 
   getLocale() {
@@ -46,8 +50,6 @@ export class TranslocoLocaleService {
     if (this.langLocaleMapping[val]) {
       return this.langLocaleMapping[val];
     }
-
-    console.warn(`%c Could not find locale match to value: ${val} 🤔🕵🏻‍♀`, 'font-size: 12px; color: red');
 
     return null;
   }

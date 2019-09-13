@@ -26,7 +26,12 @@ import { TranslocoMessageFormatModule, MessageFormatTranspiler } from '@ngneat/t
     TranslocoModule,
     TranslocoMessageFormatModule.init(),
     HttpClientModule,
-    TranslocoLocaleModule.init()
+    TranslocoLocaleModule.init({
+      langToLocaleMapping: {
+        en: 'en-US',
+        es: 'es-ES'
+      }
+    })
     // TranslocoPreloadLangsModule.preload(['es', 'todos-page|scoped'])
     // TranslocoPersistLangModule.init({
     //   getLangFn,

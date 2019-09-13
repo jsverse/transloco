@@ -9,7 +9,8 @@ import {
   LOCALE_DATE_CONFIG,
   LOCALE_CURRENCY_MAPPING,
   LOCALE_LANG_MAPPING,
-  defaultConfig
+  defaultConfig,
+  LOCALE_DEFAULT_LOCALE
 } from './transloco-locale.config';
 
 export const pipes = [TranslocoCurrencyPipe, TranslocoDatePipe, TranslocoDecimalPipe, TranslocoPercentPipe];
@@ -20,14 +21,18 @@ export const pipes = [TranslocoCurrencyPipe, TranslocoDatePipe, TranslocoDecimal
   exports: pipes
 })
 export class TranslocoLocaleModule {
-  static init(config: TranslocoLocaleConfig = defaultConfig): ModuleWithProviders {
+  static init(config: TranslocoLocaleConfig = {}): ModuleWithProviders {
     return {
       ngModule: TranslocoLocaleModule,
       providers: [
-        { provide: LOCALE_NUMBER_CONFIG, useValue: config.number },
-        { provide: LOCALE_DATE_CONFIG, useValue: config.date },
-        { provide: LOCALE_LANG_MAPPING, useValue: config.langToLocaleMapping },
-        { provide: LOCALE_CURRENCY_MAPPING, useValue: config.localeToCurrencyMapping }
+        { provide: LOCALE_NUMBER_CONFIG, useValue: config.number || defaultConfig.number },
+        { provide: LOCALE_DATE_CONFIG, useValue: config.date || defaultConfig.date },
+        { provide: LOCALE_LANG_MAPPING, useValue: config.langToLocaleMapping || defaultConfig.langToLocaleMapping },
+        {
+          provide: LOCALE_CURRENCY_MAPPING,
+          useValue: config.localeToCurrencyMapping || defaultConfig.localeToCurrencyMapping
+        },
+        { provide: LOCALE_DEFAULT_LOCALE, useValue: config.defaultLocale || defaultConfig.defaultLocale }
       ]
     };
   }
