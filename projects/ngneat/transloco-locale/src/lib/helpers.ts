@@ -1,5 +1,6 @@
 import NumberFormatOptions = Intl.NumberFormatOptions;
 import { toNumber } from '@ngneat/transloco';
+import { Locale, DateFormatOptions } from '@ngneat/transloco-locale';
 
 export const ISO8601_DATE_REGEX = /^(\d{4})-?(\d\d)-?(\d\d)(?:T(\d\d)(?::?(\d\d)(?::?(\d\d)(?:\.(\d+))?)?)?(Z|([+-])(\d\d):?(\d\d))?)?$/;
 /**
@@ -13,9 +14,16 @@ export function isLocaleFormat(val: string): boolean {
   return typeof val === 'string' && !!val.match(/[a-z]{2}-[A-Z]{2}/);
 }
 
-export function localizeNumber(value: number | string, locale, options: NumberFormatOptions): string {
+export function localizeNumber(value: number | string, locale: Locale, options: NumberFormatOptions): string {
   const number = toNumber(value);
   return number !== null ? new Intl.NumberFormat(locale, options).format(number) : '';
+}
+
+export function localizeDate(date: Date, locale: Locale, options: DateFormatOptions): string {
+  if (isDate(date)) {
+    return date.toLocaleDateString(locale, options);
+  }
+  return '';
 }
 
 export function isDate(value): boolean {

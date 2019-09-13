@@ -10,7 +10,8 @@ import {
   LOCALE_CURRENCY_MAPPING,
   LOCALE_LANG_MAPPING,
   defaultConfig,
-  LOCALE_DEFAULT_LOCALE
+  LOCALE_DEFAULT_LOCALE,
+  LOCALE_SETTINGS
 } from './transloco-locale.config';
 
 export const pipes = [TranslocoCurrencyPipe, TranslocoDatePipe, TranslocoDecimalPipe, TranslocoPercentPipe];
@@ -27,12 +28,22 @@ export class TranslocoLocaleModule {
       providers: [
         { provide: LOCALE_NUMBER_CONFIG, useValue: config.number || defaultConfig.number },
         { provide: LOCALE_DATE_CONFIG, useValue: config.date || defaultConfig.date },
-        { provide: LOCALE_LANG_MAPPING, useValue: config.langToLocaleMapping || defaultConfig.langToLocaleMapping },
+        {
+          provide: LOCALE_LANG_MAPPING,
+          useValue: config.langToLocaleMapping || defaultConfig.langToLocaleMapping
+        },
+        {
+          provide: LOCALE_SETTINGS,
+          useValue: config.localeSettings || defaultConfig.localeSettings
+        },
         {
           provide: LOCALE_CURRENCY_MAPPING,
           useValue: config.localeToCurrencyMapping || defaultConfig.localeToCurrencyMapping
         },
-        { provide: LOCALE_DEFAULT_LOCALE, useValue: config.defaultLocale || defaultConfig.defaultLocale }
+        {
+          provide: LOCALE_DEFAULT_LOCALE,
+          useValue: config.defaultLocale || defaultConfig.defaultLocale
+        }
       ]
     };
   }

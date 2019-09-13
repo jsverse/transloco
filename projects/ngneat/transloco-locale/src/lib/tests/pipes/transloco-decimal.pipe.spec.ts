@@ -9,7 +9,7 @@ describe('TranslocoDecimalPipe', () => {
   beforeEach(() => {
     service = createFakeService();
     cdr = createFakeCDR();
-    pipe = new TranslocoDecimalPipe(service, cdr, {});
+    pipe = new TranslocoDecimalPipe(service, cdr, {}, {});
   });
 
   it('Should transform number to locale format number', () => {
@@ -22,7 +22,7 @@ describe('TranslocoDecimalPipe', () => {
 
   it('Should take the format from the locale', () => {
     service = createFakeService('es-ES');
-    pipe = new TranslocoDecimalPipe(service, cdr, {});
+    pipe = new TranslocoDecimalPipe(service, cdr, {}, {});
     expect(pipe.transform(123456)).toEqual('123.456');
   });
 
@@ -33,7 +33,7 @@ describe('TranslocoDecimalPipe', () => {
   it('Should use default config options', () => {
     spyOn(Intl, 'NumberFormat').and.callThrough();
     const config = { useGrouping: true, maximumFractionDigits: 2 };
-    const pipe = new TranslocoDecimalPipe(service, cdr, config);
+    const pipe = new TranslocoDecimalPipe(service, cdr, config, {});
     pipe.transform('123');
     const call = (Intl.NumberFormat as any).calls.argsFor(0);
     expect(call[1].useGrouping).toBeTruthy();

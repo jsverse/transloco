@@ -8,6 +8,14 @@ describe('TranslocoLocaleService', () => {
   let service: TranslocoLocaleService;
 
   describe('getLocale', () => {
+    it('should return the default locale', () => {
+      const translocoService: any = {
+        langChanges$: of()
+      };
+      service = new TranslocoLocaleService(translocoService, LANG_LOCALE_MOCK, DEFAULT_LOCALE_MOCK);
+      expect(service.getLocale()).toEqual('en-US');
+    });
+
     it('should return the current locale', () => {
       const translocoService: any = {
         langChanges$: of('en-US')
@@ -19,6 +27,16 @@ describe('TranslocoLocaleService', () => {
     it('should return the default locale', () => {
       const translocoService: any = {
         langChanges$: of('en')
+      };
+      service = new TranslocoLocaleService(translocoService, LANG_LOCALE_MOCK, DEFAULT_LOCALE_MOCK);
+      expect(service.getLocale()).toEqual('en-US');
+    });
+
+    it('should not update a none locale format', () => {
+      spyOn(console, 'warn');
+
+      const translocoService: any = {
+        langChanges$: of('fr')
       };
       service = new TranslocoLocaleService(translocoService, LANG_LOCALE_MOCK, DEFAULT_LOCALE_MOCK);
       expect(service.getLocale()).toEqual('en-US');
