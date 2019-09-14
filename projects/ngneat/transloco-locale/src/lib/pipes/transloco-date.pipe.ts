@@ -1,6 +1,6 @@
 import { Pipe, ChangeDetectorRef, PipeTransform, Inject } from '@angular/core';
 import { isNil, HashMap } from '@ngneat/transloco';
-import { isDate, toDate, localizeDate } from '../helpers';
+import { toDate, localizeDate } from '../helpers';
 import { getDefaultOptions } from '../shared';
 import { LOCALE_DATE_CONFIG, LOCALE_SETTINGS, LocaleSettings } from '../transloco-locale.config';
 import { TranslocoLocaleService } from '../transloco-locale.service';

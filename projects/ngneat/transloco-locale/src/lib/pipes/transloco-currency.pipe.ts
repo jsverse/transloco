@@ -1,7 +1,6 @@
 import { Pipe, PipeTransform, ChangeDetectorRef, Inject } from '@angular/core';
 import { isNil, HashMap } from '@ngneat/transloco';
 import { localizeNumber } from '../helpers';
-import LOCALE_CURRENCY from '../locale-currency.json';
 import { getDefaultOptions } from '../shared';
 import {
   LOCALE_NUMBER_CONFIG,

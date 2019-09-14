@@ -7,10 +7,12 @@
   >.
 </p>
 
-<input #locale value="fr-FR" class="form-control" />
-<button class="btn btn-outline-primary my-2 my-sm-0" (click)="setLocale()">
-  Set locale
-</button>
+<h5>Select any locale from the list to see his format:</h5>
+<select value="fr-FR" class="form-control" (change)="setLocale($event.target.value)">
+  <option *ngFor="let locale of localeList" [value]="locale">
+    {{ locale }}
+  </option>
+</select>
 
 <h3 class="mtb">Date Format</h3>
 

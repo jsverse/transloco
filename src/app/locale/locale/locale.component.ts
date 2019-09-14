@@ -1,4 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ViewChild, ElementRef, Inject } from '@angular/core';
+import { LOCALE_CURRENCY_MAPPING, Locale } from '@ngneat/transloco-locale';
 import { TranslocoLocaleService } from '../../../../projects/ngneat/transloco-locale/src/lib/transloco-locale.service';
 
 @Component({
@@ -9,14 +10,16 @@ import { TranslocoLocaleService } from '../../../../projects/ngneat/transloco-lo
 })
 export class LocaleComponent implements OnInit {
   public date = new Date(2019, 7, 14, 0, 0, 0, 0);
+  public localeList: string[];
 
-  @ViewChild('locale') localeInput: ElementRef<HTMLInputElement>;
-
-  constructor(private localeService: TranslocoLocaleService) {}
+  constructor(private localeService: TranslocoLocaleService, @Inject(LOCALE_CURRENCY_MAPPING) localeMapping) {
+    this.localeList = Object.keys(localeMapping);
+  }
 
   ngOnInit() {}
 
-  public setLocale() {
-    this.localeService.setLocale(this.localeInput.nativeElement.value);
+  public setLocale(locale: Locale) {
+    console.log(locale);
+    this.localeService.setLocale(locale);
   }
 }

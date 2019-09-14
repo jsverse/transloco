@@ -1,4 +1,5 @@
-import { Locale, LocaleSettings } from '@ngneat/transloco-locale';
+import { Locale } from './transloco-locale.types';
+import { LocaleSettings } from './transloco-locale.config';
 
 export function getDefaultOptions(locale: Locale, type: keyof LocaleSettings, localeSettings, defaultConfig = {}) {
   const settings = localeSettings[locale];
