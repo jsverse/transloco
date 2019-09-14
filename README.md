@@ -38,6 +38,8 @@ The internationalization (i18n) library for Angular
 - [Programmatical Translation](#programmatical-translation)
 - [Service API](#service-api)
 - [Lazy Load Translation Files](#lazy-load-translation-files)
+  - [Scope Configuration](#scope-configuration)
+  - [Programmatically Translations for Scopes](#programmatically-translations-for-scopes)
 - [Using Multiple Languages Simultaneously](#using-multiple-languages-simultaneously)
 - [Custom Loading Template](#custom-loading-template)
 - [Hack the Library](#hack-the-library)
@@ -306,6 +308,8 @@ service.load('en').subscribe();
 
 ## Lazy Load Translation Files
 
+### Scope Configuration
+
 Let's say we have a todos page and we want to create separate translation files for this page, and load them only when the user navigates there. First, we need to create a `todos` folder (or whatever name you choose); In it, we create a translation file for each language we want to support:
 
 ```
@@ -407,6 +411,22 @@ Now we can access it through `customName` instead of the original scope name (`t
 ```
 
 Note that to use it in the current version (1.x.x), we need to set `config.scopeStrategy` to `shared`. In the next major release, it will be the default.
+
+### Programmatically Translations for Scopes
+
+Since `TranslocoService` is a singleton each time we need to programmatically translate a scope key, we have to specify it in `translate` method.
+
+Translating scope parameter of active language:
+
+```typescript
+this.service.translate('title', {}, 'my-scope|scoped');
+```
+
+You could also get translation scope from a specific language:
+
+```typescript
+this.service.translate('title', {}, 'my-scope/en');
+```
 
 ## Using Multiple Languages Simultaneously
 

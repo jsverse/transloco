@@ -126,6 +126,7 @@ export class TranslocoService implements OnDestroy {
    * translate<string[]>(['hello', 'key'])
    * translate(t => t.a.b.c);
    * translate('hello', { }, 'en')
+   * translate('hello-from-scope', { }, 'my-scope|scoped')
    */
   translate<T = any>(key: TranslateParams, params: HashMap = {}, lang?: string): T {
     const withScope = this.completeScopeWithLang(lang);
@@ -356,5 +357,4 @@ export class TranslocoService implements OnDestroy {
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
-
 }
