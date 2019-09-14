@@ -19,7 +19,6 @@ export class LocaleComponent implements OnInit {
   ngOnInit() {}
 
   public setLocale(locale: Locale) {
-    console.log(locale);
     this.localeService.setLocale(locale);
   }
 }

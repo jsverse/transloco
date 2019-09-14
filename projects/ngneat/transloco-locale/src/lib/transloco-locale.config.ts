@@ -25,8 +25,6 @@ export interface TranslocoLocaleConfig {
 }
 
 export const defaultConfig: TranslocoLocaleConfig = {
-  number: {},
-  date: {},
   localeConfig: {
     global: {},
     localeBased: {}
@@ -42,5 +40,3 @@ export const LOCALE_DATE_CONFIG = new InjectionToken<DateFormatOptions>('LOCALE_
 export const LOCALE_LANG_MAPPING = new InjectionToken<HashMap<Locale>>('LOCALE_LANG_MAPPING');
 export const LOCALE_CONFIG = new InjectionToken<HashMap<LocaleSettings>>('LOCALE_CONFIG');
 export const LOCALE_CURRENCY_MAPPING = new InjectionToken<HashMap<Currency>>('LOCALE_CURRENCY_MAPPING');
-
-// TODO: add global config.

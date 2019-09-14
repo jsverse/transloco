@@ -751,6 +751,7 @@ Transloco provides a schematics [command](https://github.com/ngneat/transloco/bl
 - [Persist Translations](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-persist-translations) (official)
 - [Preload Languages](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-preload-langs) (official)
 - [Translators Comments](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-remove-comments) (official)
+- [Locale](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-locale) (official)
 
 ## Support
 

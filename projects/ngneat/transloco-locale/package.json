@@ -5,5 +5,26 @@
     "@angular/common": "^7.2.0",
     "@angular/core": "^7.2.0",
     "@ngneat/transloco": "^1.7.2"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/ngneat/transloco/issues"
+  },
+  "homepage": "https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-locale#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ngneat/transloco"
+  },
+  "keywords": [
+    "angular",
+    "angular 2",
+    "i18n",
+    "localization",
+    "l10n",
+    "angular translate",
+    "angular i18n",
+    "transloco"
+  ]
 }
