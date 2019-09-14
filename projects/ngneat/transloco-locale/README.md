@@ -13,12 +13,15 @@ This plugin provides localization(l10n) support for Transloco.
   - [Locale Translation Files](#translation-files-name)
   - [Language Locale Mapping](#language-locale-mapping)
   - [Manually Setting Locale](#manually-setting-locale)
+- [Format Options](#locale-format-options)
+  - [Number Format Options](#number-format-options)
+  - [Date Format Options](#date-format-options)
 - [Service API](#service-api)
 - [Localization Pipes](#localization-pipes)
-  - [Date](#date-pipe)
-  - [Currency](#currency-pipe)
-  - [Decimal](#decimal-pipe)
-  - [Percent](#percent-pipe)
+  - [Date Pipe](#date-pipe)
+  - [Currency Pipe](#currency-pipe)
+  - [Decimal Pipe](#decimal-pipe)
+  - [Percent Pipe](#percent-pipe)
   - [Browser Support](#browser-support)
 
 ## Installation
@@ -35,7 +38,7 @@ Inject `TranslocoLocaleModule` along with `TranslocoModule` into `AppModule`:
 import { TranslocoLocaleModule } from '@ngneat/transloco-locale';
 
 @NgModule({
-  imports: [TranslocoModule, TranslocoPersistLangModule.init()],
+  imports: [TranslocoModule, TranslocoLocaleModule.init()],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
@@ -45,14 +48,14 @@ export class AppModule {}
 
 Let's go over each one of the `config` options:
 
-- `localeConfig?`: Declare the default configuration of the locale's formatting. A general configuration could be set using the `global` property, for a configuration by locale use `localeBased` property (default value determine by the native [javascript's api](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl)).
+- `localeConfig?`: Declare the default configuration of the locale's formatting. A general configuration could be set using the `global` property, for a configuration by locale use `localeBased` property (default value determine by the native [Javascript's API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl)).
 - `defaultLocale?`: The default locale formatted in [BCP 47](https://tools.ietf.org/html/bcp47) (default value: `en-US`),
 - `langToLocaleMapping?`: A key value `object` that maps Transloco language to it's Locale (default value: `{}`).
 - `localeToCurrencyMapping?`: A key value `object` that maps the Locale to it's currency (the library provide a default value with all of the existing mapping).
 
 ### Setting Locale
 
-The library provides 3 different ways to set the locale.
+The library provides three different ways to set the locale.
 
 ##### Translation files name:
 
@@ -67,7 +70,7 @@ Using locale format for the translation files will automatically declare the loc
 
 ##### Language Locale Mapping:
 
-Users who don't have more then 1 locale per language
+Users who don't have more then one locale per language
 could provide a language locale mapping object using the config's `langToLocaleMapping`:
 
 ```typescript
@@ -87,7 +90,7 @@ export class AppModule {}
 
 ##### Manually Setting Locale:
 
-The third option in manually setting the locale, this could be done by calling `setLocale` method from `localeSerice`:
+The third option in manually setting the locale, this could be done by calling `setLocale` method from `localeService`:
 
 ```typescript
 export class AppComponent {
@@ -99,6 +102,95 @@ export class AppComponent {
 }
 ```
 
+### Locale Format Options
+
+There are two types of formatting options, one for `date` and one for `number`.
+ 
+ 
+The formatted options could be declared in three levels 
+
+1. In the module's configuration (as mentioned above):
+
+```typescript
+import { TranslocoLocaleModule } from '@ngneat/transloco-locale';
+
+const globalFormatConfig = {
+  date: {
+    dateStyle: 'long',
+    timeStyle: 'long'
+  }
+}
+
+const esESFormatConfig = {
+  date: {
+    timeStyle: 'medium'
+  },
+  currency: {
+    minimumFractionDigits: 0
+  }
+}
+
+@NgModule({
+  imports: [TranslocoLocaleModule.init({
+    localeConfig: {
+      global: globalFormatConfig,
+      localeBased: {
+        'es-ES': esESFormatConfig
+      }
+    },
+  })],
+})
+export class AppModule {}
+```
+
+2. It could be set in the component's providers using `LOCALE_CONFIG` token:
+
+```typescript
+@Component({
+  selector: 'my-comp',
+  templateUrl: './my-comp.component.html',
+  providers: [
+    {
+      provide: LOCALE_CONFIG,
+      useValue: localeConfig
+    }
+  ]
+})
+export class MyComponent {}
+```
+
+3. We can pass it to each [pipe](#localization-pipes) in the HTML template:
+
+```html
+<span>
+  {{ date | translocoDate: { dateStyle: 'medium', timeStyle: 'medium' }}
+</span>
+
+<span>
+  {{ number | translocoDecimal: {useGrouping: false} }}
+</span>
+
+```
+
+Note the format option of the global, locale's format and the one's being passed in the template, will be merged. While the template is the stronger one and then the locale and the global.
+
+#### Number Format Options
+
+* `useGrouping `- Whether to use grouping separators, such as thousands separators or thousand/lakh/crore separators. Possible values are true and false; the (default is true).
+* `minimumIntegerDigits `- The minimum number of integer digits to use. Possible values are from 1 to 21 (default is 1).
+* `minimumFractionDigits `- The minimum number of fraction digits to use. Possible values are from 0 to 20 (default is 0).
+* `maximumFractionDigits `- The maximum number of fraction digits to use. Possible values are from 0 to 20 (default is 3).
+* `minimumSignificantDigits `- The minimum number of significant digits to use. Possible values are from 1 to 21 (default is 1).
+* `maximumSignificantDigits `- The maximum number of significant digits to use. Possible values are from 1 to 21 (default is 21).
+
+
+#### Date Format Options
+
+* `dateStyle` - The date formatting style.
+* `timeStyle` - The time formatting style.
+* `timeZone` - The time zone to use. The only value implementations must recognize is "UTC"; the default is the runtime's default time zone. Implementations may also recognize the time zone names of the [IANA](https://www.iana.org/time-zones) time zone database, such as "Asia/Shanghai", "Asia/Kolkata", "America/New_York".
+
+
 ### Service API
 
 - `localeChanges$` - Observable of the active locale.
@@ -107,7 +199,7 @@ export class AppComponent {
 
 ### Localization Pipes
 
-The library provides localization pipes base on the native [javascript's api](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl).
+The library provides localization pipes base on the native [Javascript's API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl).
 
 #### Date Pipe
 

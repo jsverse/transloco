@@ -36,7 +36,7 @@ import { TranslocoMessageFormatModule, MessageFormatTranspiler } from '@ngneat/t
     // TranslocoPersistLangModule.init({
     //   getLangFn,
     //   storage: {
-    //     provide: TRANSLOCO_PERSIST_LA  NG_STORAGE,
+    //     provide: TRANSLOCO_PERSIST_LANG_STORAGE,
     //     useValue: localStorage
     //   }
     // })

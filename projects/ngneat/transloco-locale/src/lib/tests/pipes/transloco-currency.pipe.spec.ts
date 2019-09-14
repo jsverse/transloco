@@ -13,29 +13,29 @@ describe('TranslocoCurrencyPipe', () => {
     pipe = new TranslocoCurrencyPipe(service, cdr, defaultConfig.localeConfig, LOCALE_CURRENCY_MOCK);
   });
 
-  it('Should transform number to currency', () => {
+  it('should transform number to currency', () => {
     expect(pipe.transform(123)).toEqual('$123.00');
     expect(pipe.transform('123')).toEqual('$123.00');
   });
 
-  it('Should take the currency from the locale', () => {
+  it('should take the currency from the locale', () => {
     service = createFakeService('es-ES');
     pipe = new TranslocoCurrencyPipe(service, cdr, defaultConfig.localeConfig, LOCALE_CURRENCY_MOCK);
     expect(pipe.transform('123')).toContain('€');
   });
 
-  it('Should take the currency given currency', () => {
+  it('should take the currency given currency', () => {
     expect(pipe.transform('123', undefined, undefined, 'EUR')).toContain('€');
   });
 
-  it('Should use given display', () => {
+  it('should use given display', () => {
     spyOn(Intl, 'NumberFormat').and.callThrough();
     pipe.transform('123', 'code');
     const call = (Intl.NumberFormat as any).calls.argsFor(0);
     expect(call[1].currencyDisplay).toEqual('code');
   });
 
-  it('Should handle none transformable values', () => {
+  it('should handle none transformable values', () => {
     expect(pipe.transform(null)).toEqual('');
     expect(pipe.transform(<any>{})).toEqual('');
     expect(pipe.transform('none number string')).toEqual('');
@@ -46,7 +46,7 @@ describe('TranslocoCurrencyPipe', () => {
       spyOn(Intl, 'NumberFormat').and.callThrough();
     });
 
-    it('Should use default config options', () => {
+    it('should use default config options', () => {
       const config: LocaleConfig = {
         global: { currency: { useGrouping: true, maximumFractionDigits: 2 } },
         localeBased: {}
@@ -58,7 +58,7 @@ describe('TranslocoCurrencyPipe', () => {
       expect(call[1].maximumFractionDigits).toEqual(2);
     });
 
-    it('Should use passed digit options instead of default options', () => {
+    it('should use passed digit options instead of default options', () => {
       const config = { useGrouping: true, maximumFractionDigits: 3 };
       pipe.transform('123', undefined, config);
       const call = (Intl.NumberFormat as any).calls.argsFor(0);
@@ -66,7 +66,7 @@ describe('TranslocoCurrencyPipe', () => {
       expect(call[1].maximumFractionDigits).toEqual(3);
     });
 
-    it('Should take number options from locale settings', () => {
+    it('should take number options from locale settings', () => {
       service = createFakeService('es-ES');
 
       pipe = new TranslocoCurrencyPipe(service, cdr, LOCALE_CONFIG_MOCK, LOCALE_CURRENCY_MOCK);
@@ -78,7 +78,7 @@ describe('TranslocoCurrencyPipe', () => {
       expect(call[1].maximumFractionDigits).toEqual(3);
     });
 
-    it('Should take passed transform config options', () => {
+    it('should take passed transform config options', () => {
       service = createFakeService('es-ES');
 
       pipe = new TranslocoCurrencyPipe(service, cdr, LOCALE_CONFIG_MOCK, LOCALE_CURRENCY_MOCK);
@@ -92,7 +92,7 @@ describe('TranslocoCurrencyPipe', () => {
       expect(call[1].maximumFractionDigits).toEqual(3);
     });
 
-    it('Should override default config with the locale config', () => {
+    it('should override default config with the locale config', () => {
       service = createFakeService('es-ES');
 
       pipe = new TranslocoCurrencyPipe(service, cdr, LOCALE_CONFIG_MOCK, LOCALE_CURRENCY_MOCK);
@@ -104,7 +104,7 @@ describe('TranslocoCurrencyPipe', () => {
       expect(call[1].maximumFractionDigits).toEqual(3);
     });
 
-    it('Should fallback to default config when there are no settings for the current locale', () => {
+    it('should fallback to default config when there are no settings for the current locale', () => {
       service = createFakeService('en-US');
 
       pipe = new TranslocoCurrencyPipe(service, cdr, LOCALE_CONFIG_MOCK, LOCALE_CURRENCY_MOCK);

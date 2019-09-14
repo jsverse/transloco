@@ -13,25 +13,25 @@ describe('TranslocoDecimalPipe', () => {
     pipe = new TranslocoDecimalPipe(service, cdr, defaultConfig.localeConfig);
   });
 
-  it('Should transform number to locale format number', () => {
+  it('should transform number to locale format number', () => {
     expect(pipe.transform(123456)).toEqual('123,456');
   });
 
-  it('Should transform string to locale format number', () => {
+  it('should transform string to locale format number', () => {
     expect(pipe.transform('123456')).toEqual('123,456');
   });
 
-  it('Should take the format from the locale', () => {
+  it('should take the format from the locale', () => {
     service = createFakeService('es-ES');
     pipe = new TranslocoDecimalPipe(service, cdr, defaultConfig.localeConfig);
     expect(pipe.transform(123456)).toEqual('123.456');
   });
 
-  it('Should take the number from the locale', () => {
+  it('should take the number from the locale', () => {
     expect(pipe.transform(123456, undefined, 'es-ES')).toEqual('123.456');
   });
 
-  it('Should use default config options', () => {
+  it('should use default config options', () => {
     spyOn(Intl, 'NumberFormat').and.callThrough();
     const config: LocaleConfig = {
       global: { decimal: { useGrouping: true, maximumFractionDigits: 2 } },
@@ -44,7 +44,7 @@ describe('TranslocoDecimalPipe', () => {
     expect(call[1].maximumFractionDigits).toEqual(2);
   });
 
-  it('Should use passed digit options instead of default options', () => {
+  it('should use passed digit options instead of default options', () => {
     spyOn(Intl, 'NumberFormat').and.callThrough();
     const config = { useGrouping: true, maximumFractionDigits: 3 };
     pipe.transform('123', config);
@@ -53,7 +53,7 @@ describe('TranslocoDecimalPipe', () => {
     expect(call[1].maximumFractionDigits).toEqual(3);
   });
 
-  it('Should handle none transformable values', () => {
+  it('should handle none transformable values', () => {
     expect(pipe.transform(null)).toEqual('');
     expect(pipe.transform(<any>{})).toEqual('');
     expect(pipe.transform('none number string')).toEqual('');

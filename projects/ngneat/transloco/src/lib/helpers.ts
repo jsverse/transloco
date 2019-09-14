@@ -154,7 +154,7 @@ export function isDefined(value: any) {
 export function toNumber(value: number | string): number | null {
   if (isNumber(value)) return value;
 
-  if (typeof value === 'string' && !isNaN(Number(value) - parseFloat(value))) {
+  if (isString(value) && !isNaN(Number(value) - parseFloat(value))) {
     return Number(value);
   }
 

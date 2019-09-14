@@ -3,7 +3,7 @@ import { HashMap } from '@ngneat/transloco';
 import LOCALE_CURRENCY from './locale-currency.json';
 import { DateFormatOptions, NumberFormatOptions, Locale, Currency } from './transloco-locale.types';
 
-export interface LocaleSettings {
+export interface LocaleFormatOptions {
   date?: DateFormatOptions;
   decimal?: NumberFormatOptions;
   currency?: NumberFormatOptions;
@@ -11,13 +11,11 @@ export interface LocaleSettings {
 }
 
 export interface LocaleConfig {
-  global: LocaleSettings;
-  localeBased: HashMap<LocaleSettings>;
+  global: LocaleFormatOptions;
+  localeBased: HashMap<LocaleFormatOptions>;
 }
 
 export interface TranslocoLocaleConfig {
-  number?: NumberFormatOptions;
-  date?: DateFormatOptions;
   defaultLocale?: Locale;
   localeConfig?: LocaleConfig;
   langToLocaleMapping?: HashMap<Locale>;
@@ -35,8 +33,6 @@ export const defaultConfig: TranslocoLocaleConfig = {
 };
 
 export const LOCALE_DEFAULT_LOCALE = new InjectionToken<NumberFormatOptions>('DEFAULT_LOCALE');
-export const LOCALE_NUMBER_CONFIG = new InjectionToken<NumberFormatOptions>('LOCALE_NUMBER_CONFIG');
-export const LOCALE_DATE_CONFIG = new InjectionToken<DateFormatOptions>('LOCALE_DATE_CONFIG');
 export const LOCALE_LANG_MAPPING = new InjectionToken<HashMap<Locale>>('LOCALE_LANG_MAPPING');
-export const LOCALE_CONFIG = new InjectionToken<HashMap<LocaleSettings>>('LOCALE_CONFIG');
+export const LOCALE_CONFIG = new InjectionToken<HashMap<LocaleFormatOptions>>('LOCALE_CONFIG');
 export const LOCALE_CURRENCY_MAPPING = new InjectionToken<HashMap<Currency>>('LOCALE_CURRENCY_MAPPING');

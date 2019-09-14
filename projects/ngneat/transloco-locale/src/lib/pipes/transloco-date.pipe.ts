@@ -36,7 +36,8 @@ export class TranslocoDatePipe extends TranslocoLocalePipe implements PipeTransf
    */
   transform(value: Date | string | number, options: DateFormatOptions = {}, locale?: Locale) {
     if (isNil(value)) return '';
-    locale = locale || this.translocoLocaleService.getLocale();
+    locale = this.getLocale(locale);
+
     value = toDate(value);
     return localizeDate(value, locale, {
       ...getDefaultOptions(locale, 'date', this.localeConfig),

@@ -33,8 +33,6 @@ describe('TranslocoLocaleService', () => {
     });
 
     it('should not update a none locale format', () => {
-      spyOn(console, 'warn');
-
       const translocoService: any = {
         langChanges$: of('fr')
       };
@@ -57,10 +55,12 @@ describe('TranslocoLocaleService', () => {
     });
 
     it('should throw error when receive wrong locale format', () => {
-      expect(() => service.setLocale('en')).toThrow();
-      expect(() => service.setLocale('En-us')).toThrow();
-      expect(() => service.setLocale('en-Us')).toThrow();
-      expect(() => service.setLocale('en-us')).toThrow();
+      spyOn(console, 'error');
+      service.setLocale('en');
+      service.setLocale('En-us');
+      service.setLocale('en-Us');
+      service.setLocale('en-us');
+      expect(console.error).toHaveBeenCalledTimes(4);
     });
   });
 

@@ -29,12 +29,13 @@ export class TranslocoDecimalPipe extends TranslocoLocalePipe implements PipeTra
    * 1234567890 | translocoDecimal: {useGrouping: false}: en-US // 1234567890
    *
    */
-  transform(value: string | number, digits: NumberFormatOptions = {}, locale?: Locale): string {
+  transform(value: string | number, numberFormatOptions: NumberFormatOptions = {}, locale?: Locale): string {
     if (isNil(value)) return '';
-    locale = locale || this.translocoLocaleService.getLocale();
+    locale = this.getLocale(locale);
+
     const options = {
       style: 'decimal',
-      ...digits
+      ...numberFormatOptions
     };
     return localizeNumber(value, locale, {
       ...getDefaultOptions(locale, 'decimal', this.localeConfig),

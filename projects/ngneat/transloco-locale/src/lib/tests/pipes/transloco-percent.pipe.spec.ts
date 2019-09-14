@@ -13,21 +13,21 @@ describe('TranslocoPercentPipe', () => {
     pipe = new TranslocoPercentPipe(service, cdr, defaultConfig.localeConfig);
   });
 
-  it('Should transform number to locale format number', () => {
+  it('should transform number to locale format number', () => {
     expect(pipe.transform(1)).toEqual('100%');
   });
 
-  it('Should transform string to locale format number', () => {
+  it('should transform string to locale format number', () => {
     expect(pipe.transform('1')).toEqual('100%');
   });
 
-  it('Should handle none transformable values', () => {
+  it('should handle none transformable values', () => {
     expect(pipe.transform(null)).toEqual('');
     expect(pipe.transform(<any>{})).toEqual('');
     expect(pipe.transform('none number string')).toEqual('');
   });
 
-  it('Should use default config options', () => {
+  it('should use default config options', () => {
     spyOn(Intl, 'NumberFormat').and.callThrough();
     const config: LocaleConfig = {
       global: { percent: { useGrouping: true, maximumFractionDigits: 2 } },
@@ -40,7 +40,7 @@ describe('TranslocoPercentPipe', () => {
     expect(call[1].maximumFractionDigits).toEqual(2);
   });
 
-  it('Should use passed digit options instead of default options', () => {
+  it('should use passed digit options instead of default options', () => {
     spyOn(Intl, 'NumberFormat').and.callThrough();
     const config = { useGrouping: true, maximumFractionDigits: 3 };
     pipe.transform('123', config);

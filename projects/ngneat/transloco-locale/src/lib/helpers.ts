@@ -10,7 +10,7 @@ export const ISO8601_DATE_REGEX = /^(\d{4})-?(\d\d)-?(\d\d)(?:T(\d\d)(?::?(\d\d)
  * isLocaleFormat('En-us') // false
  * isLocaleFormat('en-US') // true
  */
-export function isLocaleFormat(val: string): boolean {
+export function isLocaleFormat(val: string): val is Locale {
   return typeof val === 'string' && !!val.match(/[a-z]{2}-[A-Z]{2}/);
 }
 

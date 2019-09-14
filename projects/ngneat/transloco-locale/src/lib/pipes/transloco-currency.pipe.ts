@@ -34,16 +34,16 @@ export class TranslocoCurrencyPipe extends TranslocoLocalePipe implements PipeTr
   transform(
     value: number | string,
     display: 'code' | 'symbol' | 'name' = 'symbol',
-    digits: NumberFormatOptions = {},
+    numberFormatOptions: NumberFormatOptions = {},
     currencyCode?: Currency,
     locale?: Locale
   ): string {
     if (isNil(value)) return '';
 
-    locale = locale || this.translocoLocaleService.getLocale();
+    locale = this.getLocale(locale);
 
     const options = {
-      ...digits,
+      ...numberFormatOptions,
       currencyDisplay: display,
       style: 'currency',
       currency: currencyCode || this.getCurrencyCode(this.translocoLocaleService.getLocale())

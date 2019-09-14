@@ -1,6 +1,6 @@
-import { Injectable, Inject } from '@angular/core';
+import {Injectable, Inject, OnDestroy} from '@angular/core';
 import { TranslocoService, HashMap } from '@ngneat/transloco';
-import { Observable, BehaviorSubject } from 'rxjs';
+import {Observable, BehaviorSubject, Subscription} from 'rxjs';
 import { map, distinctUntilChanged, filter } from 'rxjs/operators';
 import { isLocaleFormat } from './helpers';
 import { LOCALE_LANG_MAPPING, LOCALE_DEFAULT_LOCALE } from './transloco-locale.config';
@@ -9,10 +9,11 @@ import { Locale } from './transloco-locale.types';
 @Injectable({
   providedIn: 'root'
 })
-export class TranslocoLocaleService {
+export class TranslocoLocaleService implements OnDestroy{
   localeChanges$: Observable<Locale>;
   private locale: BehaviorSubject<Locale>;
-  private _locale: any;
+  private _locale: Locale | null;
+  private subscription: Subscription;
 
   constructor(
     private translocoService: TranslocoService,
@@ -23,7 +24,7 @@ export class TranslocoLocaleService {
     this.locale = new BehaviorSubject(this._locale);
     this.localeChanges$ = this.locale.asObservable().pipe(distinctUntilChanged());
 
-    translocoService.langChanges$
+    this.subscription = translocoService.langChanges$
       .pipe(
         map(this.toLocale.bind(this)),
         filter(lang => !!lang)
@@ -37,7 +38,7 @@ export class TranslocoLocaleService {
 
   setLocale(locale: Locale) {
     if (!isLocaleFormat(locale)) {
-      throw new Error(`Given lang: ${locale} is not in a locale format`);
+      console.error(`${locale} isn't a valid locale format`);
     }
     this.locale.next(locale);
     this._locale = locale;
@@ -52,5 +53,9 @@ export class TranslocoLocaleService {
     }
 
     return null;
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 }

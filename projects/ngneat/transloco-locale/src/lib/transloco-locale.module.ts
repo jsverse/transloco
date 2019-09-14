@@ -4,9 +4,7 @@ import { TranslocoDatePipe } from './pipes/transloco-date.pipe';
 import { TranslocoDecimalPipe } from './pipes/transloco-decimal.pipe';
 import { TranslocoPercentPipe } from './pipes/transloco-percent.pipe';
 import {
-  LOCALE_NUMBER_CONFIG,
   TranslocoLocaleConfig,
-  LOCALE_DATE_CONFIG,
   LOCALE_CURRENCY_MAPPING,
   LOCALE_LANG_MAPPING,
   defaultConfig,
@@ -18,7 +16,6 @@ export const pipes = [TranslocoCurrencyPipe, TranslocoDatePipe, TranslocoDecimal
 
 @NgModule({
   declarations: pipes,
-  imports: [],
   exports: pipes
 })
 export class TranslocoLocaleModule {
@@ -26,8 +23,6 @@ export class TranslocoLocaleModule {
     return {
       ngModule: TranslocoLocaleModule,
       providers: [
-        { provide: LOCALE_NUMBER_CONFIG, useValue: config.number || defaultConfig.number },
-        { provide: LOCALE_DATE_CONFIG, useValue: config.date || defaultConfig.date },
         {
           provide: LOCALE_LANG_MAPPING,
           useValue: config.langToLocaleMapping || defaultConfig.langToLocaleMapping
