@@ -273,7 +273,7 @@ service.getTranslation('en');
 - `setTranslation()` : Manually sets a translations object to be used for a given language, set `merge` to true if you want to append the translations instead of replacing them.
 
 ```ts
-service.setTranslation({ ... }); // defaults to current language
+service.setTranslation({ ... }); // defaults to active language
 service.setTranslation({ ... }, 'es');
 service.setTranslation({ ... }, 'en', { merge: false } );
 ```
@@ -365,9 +365,9 @@ export class MyComponent {}
 </ng-container>
 ```
 
-Each one of these options tells Transloco to load the corresponding `scope` based on the current language and merge it under the `scope` namespace into the active language translation object.
+Each one of these options tells Transloco to load the corresponding `scope` based on the active language and merge it under the `scope` namespace into the active language translation object.
 
-For example, if the current language is `en`, it will load the `todos/en.json` file, and will set the response to be the following:
+For example, if the active language is `en`, it will load the `todos/en.json` file, and will set the response to be the following:
 
 ```ts
 {
@@ -416,13 +416,13 @@ Note that to use it in the current version (1.x.x), we need to set `config.scope
 
 Since `TranslocoService` is a singleton each time we need to programmatically translate a scope key, we have to specify it in `translate` method.
 
-Translating scope parameter of active language:
+Translating scope key of active language:
 
 ```typescript
 this.service.translate('title', {}, 'my-scope|scoped');
 ```
 
-You could also get translation scope from a specific language:
+You could also get translation scope of a specific language:
 
 ```typescript
 this.service.translate('title', {}, 'my-scope/en');
