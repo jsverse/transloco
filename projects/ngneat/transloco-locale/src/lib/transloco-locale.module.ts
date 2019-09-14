@@ -11,7 +11,7 @@ import {
   LOCALE_LANG_MAPPING,
   defaultConfig,
   LOCALE_DEFAULT_LOCALE,
-  LOCALE_SETTINGS
+  LOCALE_CONFIG
 } from './transloco-locale.config';
 
 export const pipes = [TranslocoCurrencyPipe, TranslocoDatePipe, TranslocoDecimalPipe, TranslocoPercentPipe];
@@ -33,8 +33,8 @@ export class TranslocoLocaleModule {
           useValue: config.langToLocaleMapping || defaultConfig.langToLocaleMapping
         },
         {
-          provide: LOCALE_SETTINGS,
-          useValue: config.localeSettings || defaultConfig.localeSettings
+          provide: LOCALE_CONFIG,
+          useValue: config.localeConfig || defaultConfig.localeConfig
         },
         {
           provide: LOCALE_CURRENCY_MAPPING,

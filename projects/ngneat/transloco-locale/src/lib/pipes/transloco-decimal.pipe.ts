@@ -1,8 +1,8 @@
 import { Pipe, PipeTransform, ChangeDetectorRef, Inject } from '@angular/core';
-import { isNil, HashMap } from '@ngneat/transloco';
+import { isNil } from '@ngneat/transloco';
 import { localizeNumber } from '../helpers';
 import { getDefaultOptions } from '../shared';
-import { LOCALE_NUMBER_CONFIG, LOCALE_SETTINGS, LocaleSettings } from '../transloco-locale.config';
+import { LOCALE_CONFIG, LocaleConfig } from '../transloco-locale.config';
 import { TranslocoLocaleService } from '../transloco-locale.service';
 import { NumberFormatOptions, Locale } from '../transloco-locale.types';
 import { TranslocoLocalePipe } from './transloco-locale.pipe';
@@ -15,8 +15,7 @@ export class TranslocoDecimalPipe extends TranslocoLocalePipe implements PipeTra
   constructor(
     protected translocoLocaleService: TranslocoLocaleService,
     protected cdr: ChangeDetectorRef,
-    @Inject(LOCALE_NUMBER_CONFIG) private numberConfig: NumberFormatOptions,
-    @Inject(LOCALE_SETTINGS) private localeSettings: HashMap<LocaleSettings>
+    @Inject(LOCALE_CONFIG) private localeConfig: LocaleConfig
   ) {
     super(translocoLocaleService, cdr);
   }
@@ -38,7 +37,7 @@ export class TranslocoDecimalPipe extends TranslocoLocalePipe implements PipeTra
       ...digits
     };
     return localizeNumber(value, locale, {
-      ...getDefaultOptions(locale, 'number', this.localeSettings, this.numberConfig),
+      ...getDefaultOptions(locale, 'decimal', this.localeConfig),
       ...options
     });
   }

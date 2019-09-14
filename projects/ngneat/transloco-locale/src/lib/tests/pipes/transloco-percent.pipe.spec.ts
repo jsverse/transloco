@@ -1,5 +1,6 @@
 import { TranslocoPercentPipe } from '../../pipes/transloco-percent.pipe';
 import { createFakeService, createFakeCDR } from '../mocks';
+import { defaultConfig, LocaleConfig } from './../../transloco-locale.config';
 
 describe('TranslocoPercentPipe', () => {
   let service;
@@ -9,7 +10,7 @@ describe('TranslocoPercentPipe', () => {
   beforeEach(() => {
     service = createFakeService();
     cdr = createFakeCDR();
-    pipe = new TranslocoPercentPipe(service, cdr, {}, {});
+    pipe = new TranslocoPercentPipe(service, cdr, defaultConfig.localeConfig);
   });
 
   it('Should transform number to locale format number', () => {
@@ -28,8 +29,11 @@ describe('TranslocoPercentPipe', () => {
 
   it('Should use default config options', () => {
     spyOn(Intl, 'NumberFormat').and.callThrough();
-    const config = { useGrouping: true, maximumFractionDigits: 2 };
-    const pipe = new TranslocoPercentPipe(service, cdr, config, {});
+    const config: LocaleConfig = {
+      global: { percent: { useGrouping: true, maximumFractionDigits: 2 } },
+      localeBased: {}
+    };
+    const pipe = new TranslocoPercentPipe(service, cdr, config);
     pipe.transform('123');
     const call = (Intl.NumberFormat as any).calls.argsFor(0);
     expect(call[1].useGrouping).toBeTruthy();
