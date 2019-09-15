@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy, ViewChild, ElementRef, Inject } from '@angular/core';
 import { LOCALE_CURRENCY_MAPPING, Locale } from '@ngneat/transloco-locale';
-import { TranslocoLocaleService } from '../../../../projects/ngneat/transloco-locale/src/lib/transloco-locale.service';
+import { TranslocoLocaleService } from '@ngneat/transloco-locale';
 
 @Component({
   selector: 'app-locale',

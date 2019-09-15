@@ -39,6 +39,7 @@ export class TranslocoLocaleService implements OnDestroy{
   setLocale(locale: Locale) {
     if (!isLocaleFormat(locale)) {
       console.error(`${locale} isn't a valid locale format`);
+      return false;
     }
     this.locale.next(locale);
     this._locale = locale;

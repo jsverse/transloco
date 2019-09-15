@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { TranslocoLocaleModule } from '../../projects/ngneat/transloco-locale/src/lib/transloco-locale.module';
+import { TranslocoLocaleModule } from '@ngneat/transloco-locale';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { TRANSLOCO_CONFIG, TRANSLOCO_TRANSPILER, TranslocoConfig, TranslocoModule } from '@ngneat/transloco';

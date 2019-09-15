@@ -36,18 +36,25 @@ export function toDate(value): Date {
   if (typeof value === 'string') {
     value = value.trim();
   }
+
   if (isDate(value)) {
     return value;
-  } else if (!isNaN(value - parseFloat(value))) {
+  }
+
+  if (!isNaN(value - parseFloat(value))) {
     return new Date(parseFloat(value));
-  } else if (typeof value === 'string' && /^(\d{4}-\d{1,2}-\d{1,2})$/.test(value)) {
+  }
+
+  if (typeof value === 'string' && /^(\d{4}-\d{1,2}-\d{1,2})$/.test(value)) {
     const [y, m, d] = value.split('-').map((val: string) => parseInt(val, 10));
     return new Date(y, m - 1, d);
-  } else if (typeof value === 'string' && (match = value.match(ISO8601_DATE_REGEX))) {
-    return isoStringToDate(match);
-  } else {
-    return new Date(value);
   }
+
+  if (typeof value === 'string' && (match = value.match(ISO8601_DATE_REGEX))) {
+    return isoStringToDate(match);
+  }
+
+  return new Date(value);
 }
 
 export function isoStringToDate(match: RegExpMatchArray): Date {

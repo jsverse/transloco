@@ -57,7 +57,7 @@ Let's go over each one of the `config` options:
 
 The library provides three different ways to set the locale.
 
-##### Translation files name:
+##### Translation file names:
 
 Using locale format for the translation files will automatically declare the locale on `langChanges$` event:
 
@@ -70,13 +70,13 @@ Using locale format for the translation files will automatically declare the loc
 
 ##### Language Locale Mapping:
 
-Users who don't have more then one locale per language
+Users who don't have more than one locale per language
 could provide a language locale mapping object using the config's `langToLocaleMapping`:
 
 ```typescript
 @NgModule({
   imports: [
-    TranslocoPersistLangModule.init({
+    TranslocoLocaleModule.init({
       langToLocaleMapping: {
         en: 'en-US',
         es: 'es-ES'
@@ -217,7 +217,7 @@ The date expression: a `Date` object, a number
 </span>
 <!-- 7:40:32 PM Coordinated-->
 <span>
-  {{ date | translocoDate: { timeZone: 'UTC',d timeStyle: 'full' } }}
+  {{ date | translocoDate: { timeZone: 'UTC', timeStyle: 'full' } }}
 </span>
 <!-- Jan 1, 1970-->
 <span>
