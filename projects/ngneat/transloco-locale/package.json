@@ -1,0 +1,31 @@
+{
+  "name": "@ngneat/transloco-locale",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/common": ">=4.3.0",
+    "@angular/core": ">=4.3.0",
+    "rxjs": ">=6.0.0 || ^5.6.0-forward-compat.4",
+    "@ngneat/transloco": "^1.7.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/ngneat/transloco/issues"
+  },
+  "homepage": "https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-locale#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ngneat/transloco"
+  },
+  "keywords": [
+    "angular",
+    "angular 2",
+    "i18n",
+    "localization",
+    "l10n",
+    "angular translate",
+    "angular i18n",
+    "transloco"
+  ]
+}

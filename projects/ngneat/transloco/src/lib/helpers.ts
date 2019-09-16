@@ -1,3 +1,5 @@
+import { HashMap, TranslocoTranspiler } from '@ngneat/transloco';
+
 export function getValue(obj: object, path: string) {
   /* For cases where the key is like: 'general.something.thing' */
   if (obj && obj.hasOwnProperty(path)) {
@@ -51,6 +53,10 @@ export function isFunction(val: any): val is Function {
 
 export function isString(val: any): val is string {
   return typeof val === 'string';
+}
+
+export function isNumber(val: any): val is number {
+  return typeof val === 'number';
 }
 
 export function isObject(item): boolean {
@@ -143,4 +149,14 @@ export function isNil(value: any) {
 
 export function isDefined(value: any) {
   return isNil(value) === false;
+}
+
+export function toNumber(value: number | string): number | null {
+  if (isNumber(value)) return value;
+
+  if (isString(value) && !isNaN(Number(value) - parseFloat(value))) {
+    return Number(value);
+  }
+
+  return null;
 }
