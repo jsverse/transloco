@@ -740,7 +740,7 @@ Transloco provides a schematics [command](https://github.com/ngneat/transloco/bl
 | Pipe                              | ✅                                                                                                            | ✅                                                              | ❌            | ✅
 | Ivy support                       | ✅                                                                                                            | ❌ [See here](https://github.com/ngx-translate/core/issues/958) | ✅            | ❌
 | Additional Functionality          | ✅ [See here](#additional-functionality)                                                                      | ❌                                                              | ❌            | ❌
-| Pluralization                     | ✅ [Official Plugin](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-messageformat) | ✅ External library                                             | ✅            | ❌
+| Pluralization                     | ✅ [Official Plugin](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-messageformat) | ✅ External library                                             | ✅            | ✅
 | Locale                            | ✅ [Official Plugin](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-locale)        | ❌                                                              | ✅            | ✅
 
 (\*) Works **only** by creating a new service instance and mark it as isolated, and it's not supported at the directive level.
