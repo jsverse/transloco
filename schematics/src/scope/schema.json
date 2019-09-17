@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "id": "SchematicsTranslocoScope",
+  "title": "Add new transloco scope module, along with it's translation files.",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The scope name.",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "What scope name would you like?"
+    },
+    "module": {
+      "type": "string",
+      "description": "The path at which module to add scope to, relative to the workspace root."
+    },
+    "langs": {
+      "description": "The languages of the project.",
+      "type": "string",
+      "alias": "la"
+    },
+    "skipCreateTranslations": {
+      "type": "boolean",
+      "description": "Skip creating the translation files."
+    },
+    "translateType": {
+      "description": "The translation files type.",
+      "type": "string",
+      "default": "JSON"
+    },
+    "path": {
+      "type": "string",
+      "format": "path",
+      "description": "The path at which to create the NgModule, relative to the workspace root.",
+      "visible": false
+    },
+    "project": {
+      "type": "string",
+      "description": "The name of the project.",
+      "$default": {
+        "$source": "projectName"
+      }
+    },
+    "routing": {
+      "type": "boolean",
+      "description": "When true, creates a routing module.",
+      "default": false
+    },
+    "routingScope": {
+      "enum": ["Child", "Root"],
+      "type": "string",
+      "description": "The scope for the new routing module.",
+      "default": "Child"
+    },
+    "flat": {
+      "type": "boolean",
+      "description": "When true, creates the new files at the top level of the current project root. ",
+      "default": false
+    },
+    "commonModule": {
+      "type": "boolean",
+      "description": "When true, the new NgModule imports \"CommonModule\". ",
+      "default": true,
+      "visible": false
+    },
+    "lintFix": {
+      "type": "boolean",
+      "default": false,
+      "description": "When true, applies lint fixes after generating the module."
+    }
+  },
+  "required": []
+}
