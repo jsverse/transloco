@@ -1,5 +1,3 @@
-import { HashMap, TranslocoTranspiler } from '@ngneat/transloco';
-
 export function getValue(obj: object, path: string) {
   /* For cases where the key is like: 'general.something.thing' */
   if (obj && obj.hasOwnProperty(path)) {
