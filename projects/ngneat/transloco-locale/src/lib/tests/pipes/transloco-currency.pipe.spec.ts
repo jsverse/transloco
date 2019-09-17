@@ -1,4 +1,4 @@
-import { defaultConfig, LocaleConfig } from '@ngneat/transloco-locale';
+import { defaultConfig, LocaleConfig } from '../../transloco-locale.config';
 import { TranslocoCurrencyPipe } from '../../pipes/transloco-currency.pipe';
 import { createFakeService, createFakeCDR, LOCALE_CURRENCY_MOCK, LOCALE_CONFIG_MOCK } from '../mocks';
 

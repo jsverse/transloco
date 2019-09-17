@@ -1,8 +1,8 @@
-import { LocaleConfig } from '@ngneat/transloco-locale';
 import { of } from 'rxjs';
-import LOCALE_CURRENCY from '../locale-currency.json';
+import LOCALE_CURRENCY from '../locale-currency';
 import { Locale } from '../transloco-locale.types';
 import createSpy = jasmine.createSpy;
+import { LocaleConfig } from '../../lib/transloco-locale.config';
 
 export function createFakeService(locale: Locale = 'en-US') {
   return {

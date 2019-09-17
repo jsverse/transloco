@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, OnDestroy } from '@angular/core';
-import {Locale} from '@ngneat/transloco-locale';
 import { Subscription } from 'rxjs';
 import { TranslocoLocaleService } from '../transloco-locale.service';
+import { Locale } from '../../lib/transloco-locale.types';
 
 export class TranslocoLocalePipe implements OnDestroy {
   private subscription: Subscription;

@@ -1,6 +1,6 @@
 import { InjectionToken } from '@angular/core';
 import { HashMap } from '@ngneat/transloco';
-import LOCALE_CURRENCY from './locale-currency.json';
+import LOCALE_CURRENCY from './locale-currency';
 import { DateFormatOptions, NumberFormatOptions, Locale, Currency } from './transloco-locale.types';
 
 export interface LocaleFormatOptions {

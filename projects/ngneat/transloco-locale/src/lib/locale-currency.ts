@@ -1,4 +1,4 @@
-{
+export default {
   "aa-DJ": "DJF",
   "aa-ER": "ERN",
   "aa-ET": "ETB",
