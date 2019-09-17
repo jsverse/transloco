@@ -31,6 +31,10 @@
       "type": "string",
       "default": "JSON"
     },
+    "translationFilesPath": {
+      "description": "The path of the translation files.",
+      "type": "string"
+    },
     "path": {
       "type": "string",
       "format": "path",

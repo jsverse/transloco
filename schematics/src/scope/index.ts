@@ -35,20 +35,23 @@ function addScopeToModule(tree: Tree, modulePath: string, name: string) {
   applyChanges(tree, modulePath, changes as any);
 }
 
-function getTranslationFilesFromAssets(host, sourceRoot) {
-  const langFiles = host.root.dir((sourceRoot + '/assets/i18n') as any).subfiles;
+function getTranslationFilesFromAssets(host, sourceRoot, options: SchemaOptions) {
+  const translationsPath = sourceRoot + (options.translationFilesPath || '/assets/i18n');
+
+  const langFiles = host.root.dir(translationsPath as any).subfiles;
   return langFiles.map(file => file.split('.')[0]);
 }
 
 function addTranslationFiles(options, path, host: Tree): Source {
-  const sourceRoot = path || 'src';
+  const translationsPath = options.translationFilesPath
+    ? p.join(path, options.translationFilesPath)
+    : p.join(path, 'assets', 'i18n');
 
-  const assetsPath = p.join(sourceRoot, 'assets', 'i18n');
   options.langs = options.langs
     ? options.langs.split(',').map(l => l.trim())
-    : getTranslationFilesFromAssets(host, sourceRoot);
+    : getTranslationFilesFromAssets(host, path, options);
 
-  return createTranslateFilesFromOptions(host, options, `${assetsPath}/${dasherize(options.name)}`);
+  return createTranslateFilesFromOptions(host, options, p.join(translationsPath, dasherize(options.name)));
 }
 
 export default function(options: SchemaOptions): Rule {
