@@ -736,14 +736,14 @@ Transloco provides a schematics [command](https://github.com/ngneat/transloco/bl
 | Testing  Module                   | ✅                                                                                                            | ✅ External library                                             | ❌            | ❌
 | Structural Directive              | ✅                                                                                                            | ❌                                                              | ❌            | ❌
 | Attribute Directive               | ✅                                                                                                            | ✅                                                              | ✅            | ✅
-| Pipe                              | ✅                                                                                                            | ✅                                                              | ❌            | ✅ **
-| Ivy support                       | ✅                                                                                                            | ❌ [See here](https://github.com/ngx-translate/core/issues/958) | ✅            | ❌
+| Pipe                              | ✅                                                                                                            | ✅                                                              | ❌            | ✅
+| Ivy support                       | ✅                                                                                                            | ❌ [See here](https://github.com/ngx-translate/core/issues/958) | ✅            | ✅ **
 | Pluralization                     | ✅ [Official Plugin](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-messageformat) | ✅ External library                                             | ✅            | ✅
 | Locale                            | ✅ [Official Plugin](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-locale)        | ❌                                                              | ✅            | ✅
 
 (*) Works **only** by creating a new service instance and mark it as isolated, and it's not supported at the directive level.
 
-(**) Doesn't work with @Language decorator when used in AOT.
+(**) Doesn't work with [@Language](https://github.com/robisim74/angular-l10n/issues/257) decorator when used in AOT.
 
 If you find any mistakes in the table, open an issue, and we'll fix them asap, thanks in advance.
 
