@@ -252,6 +252,8 @@ this.service.selectTranslation().subscribe(translation => ...);
 this.service.selectTranslation('es').subscribe(translation => ...);
 ```
 
+Note that `selectTranslate` will emit each time the active language is changed.
+
 ## Service API
 
 - `getDefaultLang` - Returns the default language
