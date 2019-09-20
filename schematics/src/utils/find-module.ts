@@ -123,33 +123,3 @@ export function findModule(
   return null;
   throw new Error(errorMsg);
 }
-
-//
-//
-//
-//
-// /**
-//  * Function to find the "closest" module to a generated file's path.
-//  */
-// export function findModuleDrillDown(host: Tree, generateDir: string): string {
-//   let dir: DirEntry | null = host.getDir('/' + generateDir);
-//   const moduleRe = /\.module\.ts$/;
-//   const routingModuleRe = /-routing\.module\.ts/;
-//
-//   while (dir) {
-//     const matches = dir.subfiles.filter(p => moduleRe.test(p) && !routingModuleRe.test(p));
-//
-//     if (matches.length == 1) {
-//       return join(dir.path, matches[0]);
-//     } else if (matches.length > 1) {
-//       throw new Error(
-//         'More than one module matches. Use skip-import option to skip importing ' +
-//           'the component into the closest module.'
-//       );
-//     }
-//
-//     dir = dir.parent;
-//   }
-//
-//   throw new Error('Could not find an NgModule. Use the skip-import ' + 'option to skip importing in NgModule.');
-// }

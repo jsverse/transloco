@@ -35,21 +35,19 @@ function addScopeToModule(tree: Tree, modulePath: string, name: string) {
   applyChanges(tree, modulePath, changes as any);
 }
 
-function getTranslationFilesFromAssets(host, sourceRoot, options: SchemaOptions) {
-  const translationsPath = sourceRoot + (options.translationFilesPath || '/assets/i18n');
-
+function getTranslationFilesFromAssets(host, translationsPath) {
   const langFiles = host.root.dir(translationsPath as any).subfiles;
   return langFiles.map(file => file.split('.')[0]);
 }
 
-function addTranslationFiles(options, path, host: Tree): Source {
+function addTranslationFiles(options, rootPath, host: Tree): Source {
   const translationsPath = options.translationFilesPath
-    ? p.join(path, options.translationFilesPath)
-    : p.join(path, 'assets', 'i18n');
+    ? p.join(rootPath, options.translationFilesPath)
+    : p.join(rootPath, 'assets', 'i18n');
 
   options.langs = options.langs
     ? options.langs.split(',').map(l => l.trim())
-    : getTranslationFilesFromAssets(host, path, options);
+    : getTranslationFilesFromAssets(host, translationsPath);
 
   return createTranslateFilesFromOptions(host, options, p.join(translationsPath, dasherize(options.name)));
 }
@@ -58,7 +56,7 @@ export default function(options: SchemaOptions): Rule {
   return (host: Tree, context: SchematicContext) => {
     const project = getProject(host, options.project);
     const path = (project && project.sourceRoot) || 'src';
-    const translationFiles: any = options.skipCreateTranslations
+    const translationFiles: any = options.skipCreation
       ? noop()
       : mergeWith(addTranslationFiles(options, path, host));
 

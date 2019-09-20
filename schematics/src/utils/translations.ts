@@ -39,7 +39,7 @@ export function checkIfTranslationFilesExist(path: string, langs: string[], exte
     const filePath = p.resolve(`${path}/${lang}${extension}`);
     if (fs.existsSync(filePath)) {
       throw new SchematicsException(
-        `Translation file ${filePath} is already exist, please use --skip-createTranslations`
+        `Translation file ${filePath} is already exist, please use --skip-creation`
       );
     }
   });
@@ -58,12 +58,12 @@ export function createTranslateFilesFromOptions(
 
   checkIfTranslationFilesExist(translationFilePath, options.langs, extension);
 
-  return apply(source(createTranslateFiles(options.langs, translationCreator, extension)), [
+  return apply(source(createTranslateFiles(options.langs, translationCreator)), [
     move('/', translationFilePath)
   ]);
 }
 
-export function createTranslateFiles(langs: string[], creator, extension): HostTree {
+export function createTranslateFiles(langs: string[], creator): HostTree {
   const treeSource = new EmptyTree();
   langs.forEach(lang => {
     creator(treeSource, lang);

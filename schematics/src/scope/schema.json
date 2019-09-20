@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/schema",
   "id": "SchematicsTranslocoScope",
-  "title": "Add new transloco scope module, along with it's translation files.",
+  "title": "Add new transloco scope module, along with translation files.",
   "type": "object",
   "properties": {
     "name": {
@@ -22,23 +22,23 @@
       "type": "string",
       "alias": "la"
     },
-    "skipCreateTranslations": {
+    "skipCreation": {
       "type": "boolean",
-      "description": "Skip creating the translation files."
+      "description": "Skip the translation files creation."
     },
     "translateType": {
-      "description": "The translation files type.",
+      "description": "The translation files format.",
       "type": "string",
       "default": "JSON"
     },
     "translationFilesPath": {
-      "description": "The path of the translation files.",
+      "description": "The to the translation files, relative to the project's root.",
       "type": "string"
     },
     "path": {
       "type": "string",
       "format": "path",
-      "description": "The path at which to create the NgModule, relative to the workspace root.",
+      "description": "The path at which to create the NgModule, relative to the project's root.",
       "visible": false
     },
     "project": {

@@ -14,7 +14,7 @@ export interface SchemaOptions extends Schema {
   /**
    * Skip the creation of the translation files.
    */
-  skipCreateTranslations: boolean;
+  skipCreation: boolean;
   /**
    * The path of the translation files.
    */
