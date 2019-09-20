@@ -38,3 +38,28 @@ export function setEnvironments(host: Tree, sourceRoot: string, transformer: (en
     host.overwrite(filePath, transformer(source));
   });
 }
+
+export interface WorkspaceProject {
+  root: string;
+  projectType: string;
+}
+
+export function getProjectPath(host: Tree, project, options) {
+  if (project.root.substr(-1) === '/') {
+    project.root = project.root.substr(0, project.root.length - 1);
+  }
+
+  if (options.path === undefined) {
+    const projectDirName = project.projectType === 'application' ? 'app' : 'lib';
+
+    return `${project.root ? `/${project.root}` : ''}/src/${projectDirName}`;
+  }
+
+  return options.path;
+}
+
+export function isLib(host: Tree, options: { project?: string | undefined; path?: string | undefined }) {
+  const project = getProject(host, options.project);
+
+  return project.projectType === 'library';
+}

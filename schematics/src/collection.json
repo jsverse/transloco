@@ -19,6 +19,12 @@
       "factory": "./migrate/",
       "schema": "./migrate/schema.json",
       "description": "Run a migration script from @ngx-translate."
+    },
+    "scope": {
+      "aliases": ["s"],
+      "factory": "./scope/",
+      "schema": "./scope/schema.json",
+      "description": "Add transloco scope."
     }
   }
 }
