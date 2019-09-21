@@ -156,8 +156,8 @@ export default function(options: SchemaOptions): Rule {
       provide: TRANSLOCO_CONFIG,
       useValue: {
         listenToLangChange: false,
-        defaultLang: 'en',
-        fallbackLang: 'es',
+        defaultLang: '${langs[0]}',
+        fallbackLang: '${langs[0]}',
         prodMode: ${prodMode},
         scopeStrategy: 'shared'
       } as TranslocoConfig
