@@ -14,7 +14,7 @@ import { getLangFn } from './getLang';
 import {
   PERSIST_TRANSLATIONS_STORAGE,
   TranslocoPersistTranslationsModule
-} from '@ngneat/transloco-persist-translation';
+} from '@ngneat/transloco-persist-translations';
 import { TranslocoPreloadLangsModule } from '@ngneat/transloco-preload-langs';
 import { TranslocoMessageFormatModule, MessageFormatTranspiler } from '@ngneat/transloco-messageformat';
 
