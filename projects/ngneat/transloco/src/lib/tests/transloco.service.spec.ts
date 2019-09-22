@@ -51,6 +51,12 @@ describe('TranslocoService', () => {
       expect((service as any).missingHandler.handle).toHaveBeenCalledTimes(3);
     }));
 
+    it('should return the fallback value when there is no translation for the key', fakeAsync(() => {
+      service = createService({ fallbackLang: 'es' });
+      loadLang();
+      expect(service.translate('fallback')).toEqual(mockLangs['es'].fallback);
+    }));
+
     it('should translate', fakeAsync(() => {
       loadLang();
       const eng = mockLangs['en'];
@@ -290,6 +296,15 @@ describe('TranslocoService', () => {
           .subscribe(spy);
         loadLang();
         expect(spy).toHaveBeenCalledWith({ lang: 'en' });
+      }));
+
+      it('should load the fallback translation using the loader', fakeAsync(() => {
+        service = createService({ fallbackLang: 'es' });
+        spyOn((service as any).loader, 'getTranslation').and.callThrough();
+        loadLang();
+        expect((service as any).fallbackLang).toEqual('es');
+        expect((service as any).loader.getTranslation).toHaveBeenCalledWith('es');
+        expect((service as any).translations.size).toEqual(1);
       }));
 
       it('should load the translation using the loader', fakeAsync(() => {

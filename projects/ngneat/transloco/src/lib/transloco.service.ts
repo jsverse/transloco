@@ -1,6 +1,6 @@
 import { Inject, Injectable, OnDestroy, Optional } from '@angular/core';
-import { BehaviorSubject, combineLatest, from, Observable, Subject, Subscription } from 'rxjs';
-import { catchError, map, retry, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, from, Observable, Subject, Subscription, of } from 'rxjs';
+import { catchError, map, retry, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import { DefaultLoader, TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_TRANSPILER, TranslocoTranspiler } from './transloco.transpiler';
 import { AvailableLangs, HashMap, SetTranslationOptions, TranslateParams, Translation, TranslocoEvents } from './types';
@@ -23,6 +23,7 @@ export class TranslocoService implements OnDestroy {
   private translations = new Map<string, Translation>();
   private cache = new Map<string, Observable<Translation>>();
   private defaultLang: string;
+  private fallbackLang: string | null = null;
   private mergedConfig: TranslocoConfig;
   private availableLangs: AvailableLangs = [];
 
@@ -49,6 +50,13 @@ export class TranslocoService implements OnDestroy {
     service = this;
     this.mergedConfig = { ...defaultConfig, ...this.userConfig };
     this.setAvailableLangs(this.mergedConfig.availableLangs);
+
+    if (this.mergedConfig.fallbackLang) {
+      this.fallbackLang = Array.isArray(this.mergedConfig.fallbackLang)
+        ? this.mergedConfig.fallbackLang[0]
+        : this.mergedConfig.fallbackLang;
+    }
+
     this.setDefaultLang(this.mergedConfig.defaultLang);
     this.lang = new BehaviorSubject<string>(this.getDefaultLang());
     // Don't use distinctUntilChanged as we need the ability to update
@@ -102,7 +110,11 @@ export class TranslocoService implements OnDestroy {
       const load$ = from(this.loader.getTranslation(lang)).pipe(
         retry(this.config.failedRetries),
         catchError(() => this.handleFailure(lang, mergedOptions)),
-        tap(translation => this.handleSuccess(lang, translation)),
+        withLatestFrom(this.loadFallbackLang(lang)),
+        map(([translations, fallbackTranslations]) =>
+          fallbackTranslations ? { ...translations, ...fallbackTranslations } : translations
+        ),
+        tap(translations => this.handleSuccess(lang, translations)),
         shareReplay(1)
       );
 
@@ -328,6 +340,20 @@ export class TranslocoService implements OnDestroy {
    */
   _completeScopeWithLang(langOrScope: string) {
     return this._isLangScoped(langOrScope) ? `${langOrScope}/${this.getActiveLang()}` : langOrScope;
+  }
+
+  private loadFallbackLang(lang: string): Observable<HashMap<any> | null> {
+    const fallbackLang = this.fallbackLang;
+    if (!fallbackLang || lang === fallbackLang) {
+      return of(null);
+    }
+
+    return from(this.loader.getTranslation(fallbackLang)).pipe(
+      catchError(() => {
+        this.failedLangs.add(fallbackLang);
+        return of(null);
+      })
+    );
   }
 
   private getAvailableLangsIds(): string[] {
