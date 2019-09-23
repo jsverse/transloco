@@ -61,7 +61,7 @@ describe('TranslocoDirective', () => {
     expect(host.queryHost('div')).toHaveText('Title spanish');
   }
 
-  it('should unsubscribe after one emit when not in listenToLangChange mode', fakeAsync(() => {
+  it('should unsubscribe after one emit when not in renderLangOnce mode', fakeAsync(() => {
     host = createHost(`<div transloco="home"></div>`);
     runLoader();
     expect(host.queryHost('[transloco]')).toHaveText('home english');
@@ -135,7 +135,7 @@ describe('TranslocoDirective', () => {
   describe('Structural directive', () => {
     it('should load scoped translation', fakeAsync(() => {
       host = createHost(
-        `<section *transloco="let t; scope: 'lazy-page'"><div>{{t.lazyPage.title}}</div></section>`,
+        `<section *transloco="let t; scope: 'lazy-page'"><div>{{t['lazyPage.title']}}</div></section>`,
         false
       );
       testScopedTranslation(host);
@@ -145,7 +145,7 @@ describe('TranslocoDirective', () => {
       host = createHost(
         `
         <section *transloco="let t; scope: 'lazy-page'">
-        <div class="scoped">{{t.lazyPage.title}}</div>
+        <div class="scoped">{{t['lazyPage.title']}}</div>
         <div class="global">{{t.home}}</div>
         </section>`,
         false
@@ -157,7 +157,7 @@ describe('TranslocoDirective', () => {
       host = createHost(
         `
         <section *transloco="let t; scope: 'lazy-page'">
-        <div class="scoped">{{t.lazyPage.title}}</div>
+        <div class="scoped">{{t['lazyPage.title']}}</div>
         <div class="global">{{t.home}}</div>
         </section>`,
         false
@@ -181,10 +181,10 @@ describe('TranslocoDirective', () => {
     it('should set the translation value', fakeAsync(() => {
       host = createHost(`
         <section *transloco="let t">
-           <div>{{t.home}}</div>
+           <div>{{t.home }}</div>
            <span>{{t.fromList}}</span>
-           <p>{{t.a.b.c | translocoParams}}</p>
-           <p>{{t.a.b.c | translocoParams:{fromList: "value"} }}</p>
+           <p>{{t['a.b.c'] | translocoParams}}</p>
+           <p>{{t['a.b.c']  | translocoParams:{fromList: "value"} }}</p>
         </section>
      `);
       runLoader();
@@ -238,7 +238,7 @@ describe('TranslocoDirective', () => {
         <h1>{{ t.home }}</h1>     
       </section>
       <section *transloco="let t; lang: 'es'; scope: 'lazy-page'">
-       <h2>{{ t.lazyPage.title }}</h2>     
+       <h2>{{ t['lazyPage.title'] }}</h2>     
       </section>
       `,
         false

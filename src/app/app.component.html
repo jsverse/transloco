@@ -43,21 +43,14 @@
   <div class="d-flex justify-content-between align-items-center">
     <div class="lang-btns">
       <button
+        *ngFor="let lang of availableLangs"
         data-cy="en"
         class="btn my-2 my-sm-0"
         style="margin-right: 10px;"
-        (click)="change('en')"
-        [ngClass]="{ 'btn-primary': activeLang === 'en', 'btn-secondary': activeLang !== 'en' }"
+        (click)="change(lang.id)"
+        [ngClass]="{ 'btn-primary': activeLang === lang.id, 'btn-secondary': activeLang !== lang.id }"
       >
-        English
-      </button>
-      <button
-        data-cy="es"
-        class="btn my-2 my-sm-0"
-        (click)="change('es')"
-        [ngClass]="{ 'btn-primary': activeLang === 'es', 'btn-secondary': activeLang !== 'es' }"
-      >
-        Spanish
+        {{ lang.label }}
       </button>
     </div>
   </div>

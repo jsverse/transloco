@@ -17,6 +17,7 @@ export type FailedEvent = {
 
 export type TranslocoEvents = LoadedEvent | FailedEvent;
 export type Translation = HashMap<any>;
-export type TranslationCb = (translation: any, params?: HashMap) => string;
 export type PersistStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>;
-export type TranslateParams = string | string[] | TranslationCb;
+export type TranslateParams = string | string[];
+export type AvailableLangs = string[] | { id: string; label: string }[];
+export type SetTranslationOptions = { merge?: boolean; emitChange?: boolean };

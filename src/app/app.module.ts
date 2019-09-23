@@ -3,20 +3,13 @@ import { NgModule } from '@angular/core';
 import { TranslocoLocaleModule } from '@ngneat/transloco-locale';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { TRANSLOCO_CONFIG, TRANSLOCO_TRANSPILER, TranslocoConfig, TranslocoModule } from '@ngneat/transloco';
+import { TRANSLOCO_CONFIG, TranslocoConfig, TranslocoModule } from '@ngneat/transloco';
 import { HttpClientModule } from '@angular/common/http';
 import { HomeComponent } from './home/home.component';
 import { OnPushComponent } from './on-push/on-push.component';
-import { HttpLoader, httpLoader } from './loaders/http.loader';
+import { httpLoader } from './loaders/http.loader';
 import { environment } from '../environments/environment';
-import { TRANSLOCO_PERSIST_LANG_STORAGE, TranslocoPersistLangModule } from '@ngneat/transloco-persist-lang';
-import { getLangFn } from './getLang';
-import {
-  PERSIST_TRANSLATIONS_STORAGE,
-  TranslocoPersistTranslationsModule
-} from '@ngneat/transloco-persist-translations';
-import { TranslocoPreloadLangsModule } from '@ngneat/transloco-preload-langs';
-import { TranslocoMessageFormatModule, MessageFormatTranspiler } from '@ngneat/transloco-messageformat';
+import { TranslocoMessageFormatModule } from '@ngneat/transloco-messageformat';
 
 @NgModule({
   declarations: [AppComponent, HomeComponent, OnPushComponent],
@@ -54,17 +47,15 @@ import { TranslocoMessageFormatModule, MessageFormatTranspiler } from '@ngneat/t
       provide: TRANSLOCO_CONFIG,
       useValue: {
         prodMode: environment.production,
-        listenToLangChange: true,
+        renderLangOnce: true,
         fallbackLang: 'es',
         defaultLang: 'en',
-        scopeStrategy: 'shared',
         scopeMapping: {
           'todos-page': 'todos',
           'transpilers/messageformat': 'mf'
         }
       } as TranslocoConfig
     }
-    // { provide: TRANSLOCO_TRANSPILER, useClass: MessageFormatTranspiler }
   ],
   bootstrap: [AppComponent]
 })

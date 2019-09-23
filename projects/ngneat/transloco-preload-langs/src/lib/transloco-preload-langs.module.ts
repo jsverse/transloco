@@ -45,9 +45,8 @@ export class TranslocoPreloadLangsModule implements OnDestroy {
   constructor(service: TranslocoService, @Inject('PreloadLangs') langs: string[]) {
     if (!langs) return;
     this.idleCallbackId = window.requestIdleCallback(() => {
-      const preloads = langs.map(currentLang => {
-        const [isScoped, scopedPath] = getPipeValue(currentLang, 'scoped');
-        const lang = isScoped ? `${scopedPath}/${service.getActiveLang()}` : currentLang;
+      const preloads = langs.map(currentLangOrScope => {
+        const lang = service._completeScopeWithLang(currentLangOrScope);
         return service.load(lang).pipe(
           tap(() => {
             if (service.config.prodMode === false) {
@@ -66,5 +65,4 @@ export class TranslocoPreloadLangsModule implements OnDestroy {
     }
     this.subscription.unsubscribe();
   }
-
 }

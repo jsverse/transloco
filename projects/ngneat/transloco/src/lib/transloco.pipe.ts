@@ -64,14 +64,8 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
   }
 
   private updateValue(key: string, params?: HashMap): void {
-    let targetLang = this.langName;
-    /* In case the scope strategy is set to 'shared' we want to load the scope's language instead of the scope
-    itself in order to expose the global translations as well.
-    the scopes translations are merged to the global when using this strategy */
     const scope = getScopeFromLang(this.langName);
-    if (scope) {
-      targetLang = this.translocoService.isSharedScope ? getLangFromScope(this.langName) : this.langName;
-    }
+    const targetLang = scope ? getLangFromScope(this.langName) : this.langName;
     const translation = this.translocoService.translate(key, params, targetLang) as string;
     this.value = translation || key;
     this.cdr.markForCheck();

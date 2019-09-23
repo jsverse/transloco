@@ -155,11 +155,10 @@ export default function(options: SchemaOptions): Rule {
     const configProviderTemplate = `{
       provide: TRANSLOCO_CONFIG,
       useValue: {
-        listenToLangChange: false,
+        renderLangOnce: false,
         defaultLang: '${langs[0]}',
         fallbackLang: '${langs[0]}',
         prodMode: ${prodMode},
-        scopeStrategy: 'shared'
       } as TranslocoConfig
     }`;
 

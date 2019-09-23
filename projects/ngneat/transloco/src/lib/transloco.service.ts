@@ -1,25 +1,15 @@
 import { Inject, Injectable, OnDestroy, Optional } from '@angular/core';
-import { BehaviorSubject, combineLatest, from, Observable, Subject, of, Subscription } from 'rxjs';
-import { catchError, distinctUntilChanged, map, retry, shareReplay, tap, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, from, Observable, Subject, Subscription } from 'rxjs';
+import { catchError, map, retry, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { DefaultLoader, TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_TRANSPILER, TranslocoTranspiler } from './transloco.transpiler';
-import { HashMap, TranslateParams, Translation, TranslocoEvents } from './types';
-import {
-  getLangFromScope,
-  getScopeFromLang,
-  getValue,
-  isEmpty,
-  isFunction,
-  mergeDeep,
-  setValue,
-  size,
-  toCamelCase,
-  getPipeValue
-} from './helpers';
+import { AvailableLangs, HashMap, SetTranslationOptions, TranslateParams, Translation, TranslocoEvents } from './types';
+import { getLangFromScope, getScopeFromLang, isString, size, toCamelCase } from './helpers';
 import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './transloco-missing-handler';
 import { TRANSLOCO_INTERCEPTOR, TranslocoInterceptor } from './transloco.interceptor';
 import { TRANSLOCO_FALLBACK_STRATEGY, TranslocoFallbackStrategy } from './transloco-fallback-strategy';
+import flatten from 'flat';
 
 let service: TranslocoService;
 
@@ -34,6 +24,7 @@ export class TranslocoService implements OnDestroy {
   private cache = new Map<string, Observable<Translation>>();
   private defaultLang: string;
   private mergedConfig: TranslocoConfig;
+  private availableLangs: AvailableLangs = [];
 
   private lang: BehaviorSubject<string>;
   langChanges$: Observable<string>;
@@ -57,10 +48,12 @@ export class TranslocoService implements OnDestroy {
     }
     service = this;
     this.mergedConfig = { ...defaultConfig, ...this.userConfig };
-
+    this.setAvailableLangs(this.mergedConfig.availableLangs);
     this.setDefaultLang(this.mergedConfig.defaultLang);
     this.lang = new BehaviorSubject<string>(this.getDefaultLang());
-    this.langChanges$ = this.lang.asObservable().pipe(distinctUntilChanged());
+    // Don't use distinctUntilChanged as we need the ability to update
+    // the value when using setTranslation or setTranslationKeys
+    this.langChanges$ = this.lang.asObservable();
 
     /**
      * When we have a failure, we want to define the next language that succeeded as the active
@@ -72,10 +65,6 @@ export class TranslocoService implements OnDestroy {
         this.setActiveLang(lang);
       }
     });
-  }
-
-  get isSharedScope(): boolean {
-    return this.config.scopeStrategy === 'shared';
   }
 
   get config(): TranslocoConfig {
@@ -99,10 +88,17 @@ export class TranslocoService implements OnDestroy {
     return this;
   }
 
+  setAvailableLangs(langs: AvailableLangs) {
+    this.availableLangs = langs;
+  }
+
+  getAvailableLangs() {
+    return this.availableLangs;
+  }
+
   load(lang: string, options?: { fallbackLangs: string[] | null }): Observable<Translation> {
     if (this.cache.has(lang) === false) {
       const mergedOptions = { ...{ fallbackLangs: null }, ...(options || {}) };
-
       const load$ = from(this.loader.getTranslation(lang)).pipe(
         retry(this.mergedConfig.failedRetries),
         catchError(() => this.handleFailure(lang, mergedOptions)),
@@ -124,37 +120,27 @@ export class TranslocoService implements OnDestroy {
    * translate<string>('hello')
    * translate('hello', { value: 'value' })
    * translate<string[]>(['hello', 'key'])
-   * translate(t => t.a.b.c);
    * translate('hello', { }, 'en')
-   * translate('hello-from-scope', { }, 'my-scope|scoped')
+   * translate('scope.someKey', { }, 'en')
    */
-  translate<T = any>(key: TranslateParams, params: HashMap = {}, lang?: string): T {
-    const withScope = this.completeScopeWithLang(lang);
-
+  translate<T = any>(key: TranslateParams, params: HashMap = {}, lang = this.getActiveLang()): T {
+    const resolveLang = this._isLangScoped(lang) ? this.getActiveLang() : lang;
     if (Array.isArray(key)) {
-      return key.map(k => this.translate(k, params, withScope)) as any;
+      return key.map(k => this.translate(k, params, resolveLang)) as any;
     }
 
     if (!key) {
-      return this.missingHandler.handle(key as string, params, this.config);
+      return this.missingHandler.handle(key, this.config);
     }
 
-    const translation = this.translations.get(withScope || this.getActiveLang());
-    if (!translation) {
-      return '' as any;
-    }
-
-    const value = isFunction(key) ? key(translation as any, params) : getValue(translation, key);
+    const translation = this.getTranslation(resolveLang);
+    const value = translation[key];
 
     if (!value) {
-      if (this.mergedConfig.missingHandler.allowEmpty && value === '') {
-        return '' as any;
-      }
-
-      return this.missingHandler.handle(key, params, this.config);
+      return this.handleMissingKey(key, value);
     }
 
-    return this.parser.transpile(value, params, translation) as any;
+    return this.parser.transpile(value, params, translation);
   }
 
   /**
@@ -164,16 +150,44 @@ export class TranslocoService implements OnDestroy {
    *
    * selectTranslate<string>('hello').subscribe(value => ...)
    * selectTranslate<string>('hello', {}, 'es').subscribe(value => ...)
+   * selectTranslate<string>('hello', {}, 'todos').subscribe(value => ...)
+   *
    */
-  selectTranslate<T = any>(key: TranslateParams, params?: HashMap<any>, lang?: string): Observable<T> {
-    const withScopeOrLang = this.completeScopeWithLang(lang);
-    const load = lang => this.load(lang).pipe(map(() => this.translate(key, params, lang)));
-    if (withScopeOrLang) {
-      return load(withScopeOrLang);
+  selectTranslate<T = any>(key: TranslateParams, params?: HashMap, lang?: string, _isObject = false): Observable<T> {
+    const load = lang =>
+      this.load(lang).pipe(
+        map(() => (_isObject ? this.translateObject(key, params, lang) : this.translate(key, params, lang)))
+      );
+    if (isString(lang)) {
+      const langOrScope = this._completeScopeWithLang(lang);
+      return load(langOrScope);
     } else {
       // if the user doesn't pass lang, we need to listen to lang changes and update the value accordingly
       return this.langChanges$.pipe(switchMap(lang => load(lang)));
     }
+  }
+
+  /**
+   * Translate the given path that returns an object
+   *
+   * @example
+   *
+   * service.translateObject('path.to.object', {'subpath': { value: 'someValue'}}) => returns translated object
+   *
+   */
+  translateObject<T = any>(key: TranslateParams, params?: HashMap, lang = this.getActiveLang()): T {
+    if (Array.isArray(key)) {
+      return key.map(k => this.translateObject(k, params, lang)) as any;
+    }
+
+    const translation = this.getTranslation(lang);
+    // TODO: optimize it (we can build this specific object)
+    const value = flatten.unflatten(translation)[key];
+    return this.parser.transpile(value, params, translation);
+  }
+
+  selectTranslateObject<T = any>(key: TranslateParams, params?: HashMap, lang = this.getActiveLang()): Observable<T> {
+    return this.selectTranslate(key, params, lang, true);
   }
 
   /**
@@ -223,19 +237,40 @@ export class TranslocoService implements OnDestroy {
    *
    * setTranslation({ ... })
    * setTranslation({ ... }, 'en')
-   * setTranslation({ ... }, 'admin-page/en', { merge: false } )
+   * setTranslation({ ... }, 'es', { merge: false } )
+   * setTranslation({ ... }, 'todos/en', { merge: false } )
    */
-  setTranslation(
-    data: Translation,
-    lang = this.getActiveLang(),
-    options: { merge?: boolean; emitChange?: boolean } = {}
-  ) {
+  setTranslation(translation: Translation, lang = this.getActiveLang(), options: SetTranslationOptions = {}) {
     const defaults = { merge: true, emitChange: true };
     const mergedOptions = { ...defaults, ...options };
-    const translation = this.getTranslation(lang) || {};
-    const merged = mergedOptions.merge ? mergeDeep(translation, data) : data;
-    this._setTranslation(lang, merged);
-    mergedOptions.emitChange && this.setActiveLang(this.getActiveLang());
+    const scope = getScopeFromLang(lang);
+
+    /**
+     * If this isn't a scope we use the whole translation as is
+     * otherwise we need to flat the scope and use it
+     */
+    let flattenScopeOrTranslation = translation;
+
+    // Merged the scoped language into the active language
+    if (scope) {
+      const { scopeMapping = {} } = this.config;
+      const key = scopeMapping[scope] || toCamelCase(scope);
+      flattenScopeOrTranslation = flatten({
+        [key]: translation
+      });
+    }
+
+    const currentLang = scope ? getLangFromScope(lang) : lang;
+
+    const mergedTranslation = {
+      ...(mergedOptions.merge && this.getTranslation(currentLang)),
+      ...flattenScopeOrTranslation
+    };
+
+    const withHook = this.interceptor.preSaveTranslation(mergedTranslation, currentLang);
+    const flattenTranslation = flatten(withHook);
+    this.translations.set(currentLang, flattenTranslation);
+    options.emitChange && this.setActiveLang(this.getActiveLang());
   }
 
   /**
@@ -248,59 +283,65 @@ export class TranslocoService implements OnDestroy {
    * setTranslationKey('key.nested', 'value', 'en')
    */
   setTranslationKey(key: string, value: string, lang = this.getActiveLang()) {
-    const translation = this.getTranslation(lang);
-    if (!isEmpty(translation)) {
-      const withHook = this.interceptor.preSaveTranslationKey(key, value, lang);
-      const newValue = setValue(translation, key, withHook);
-      this.setTranslation(newValue, lang);
+    const withHook = this.interceptor.preSaveTranslationKey(key, value, lang);
+    const newValue = {
+      ...this.getTranslation(lang),
+      [key]: withHook
+    };
+    this.setTranslation(newValue, lang);
+  }
+
+  handleMissingKey(key: string, value: any) {
+    if (this.mergedConfig.missingHandler.allowEmpty && value === '') {
+      return '';
     }
+
+    return this.missingHandler.handle(key, this.config);
   }
 
   /**
    * @internal
-   * When using the shared scope strategy you always want to make sure the global lang  is loaded
+   */
+  _isLangScoped(lang: string) {
+    return this.getAvailableLangsIds().every(l => l !== lang);
+  }
+
+  /**
+   * @internal
+   *
+   * We always want to make sure the global lang is loaded
    * before loading the scope since you can access both via the pipe/directive.
    */
   _loadDependencies(langName: string): Observable<Translation | Translation[]> {
     const split = langName.split('/');
     const [lang] = split.slice(-1);
-    if (split.length > 1 && this.isSharedScope && !size(this.getTranslation(lang))) {
+    if (split.length > 1 && !size(this.getTranslation(lang))) {
       return combineLatest(this.load(lang), this.load(langName));
     }
 
     return this.load(langName);
   }
 
-  private completeScopeWithLang(lang: string) {
-    const [isScoped, value] = getPipeValue(lang, 'scoped');
-    if (isScoped) {
-      lang = `${value}/${this.getActiveLang()}`;
-    }
-
-    return lang;
+  /**
+   * @internal
+   */
+  _completeScopeWithLang(langOrScope: string) {
+    return this._isLangScoped(langOrScope) ? `${langOrScope}/${this.getActiveLang()}` : langOrScope;
   }
 
-  private _setTranslation(lang: string, translation: Translation) {
-    const withHook = this.interceptor.preSaveTranslation(translation, lang);
-    this.translations.set(lang, withHook);
-    const { scopeStrategy, scopeMapping = {} } = this.config;
-    const currLang = getLangFromScope(lang);
-    const scope = getScopeFromLang(lang);
-    if (scope && scopeStrategy === 'shared') {
-      const activeLang = this.getTranslation(currLang);
-      const key = scopeMapping[scope] || toCamelCase(scope);
-      const merged = setValue(activeLang, key, withHook);
-      this.translations.set(currLang, merged);
+  private getAvailableLangsIds(): string[] {
+    const first = this.getAvailableLangs()[0];
+
+    if (isString(first)) {
+      return this.getAvailableLangs() as string[];
     }
+
+    return (this.getAvailableLangs() as { id: string }[]).map(l => l.id);
   }
 
   private handleSuccess(lang: string, translation: Translation) {
     this.setTranslation(translation, lang, { emitChange: false });
     if (this.failedLangs.has(lang) === false) {
-      if (!this.config.prodMode) {
-        console.log(`%c 🍻 Translation Load Success: ${lang}`, 'background: #fff; color: hotpink;');
-      }
-
       this.events.next({
         wasFailure: !!this.failedLangs.size,
         type: 'translationLoadSuccess',

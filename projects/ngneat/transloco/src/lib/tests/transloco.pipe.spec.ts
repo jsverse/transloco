@@ -63,7 +63,7 @@ describe('TranslocoPipe', () => {
   });
 
   describe('transform', () => {
-    it('should unsubscribe after one emit when not in listenToLangChange mode', fakeAsync(() => {
+    it('should unsubscribe after one emit when not in renderLangOnce mode', fakeAsync(() => {
       pipe.transform('home');
       runLoader();
       expect(pipe.subscription.closed).toBe(true);

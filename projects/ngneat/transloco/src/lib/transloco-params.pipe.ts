@@ -14,8 +14,9 @@ export class TranslocoParamsPipe implements PipeTransform {
 
   transform(value: string, params?: HashMap) {
     if (!value) {
-      this.missingHandler.handle(value, params, this.service.config);
+      this.missingHandler.handle(value, this.service.config);
     }
+
     return this.service.transpile(value, params);
   }
 }
