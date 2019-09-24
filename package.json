@@ -9,7 +9,7 @@
     "commit": "git-cz",
     "prettier": "prettier --write \"**/*.{js,json,css,scss,less,md,ts,html,component.html}\"",
     "start": "ng serve --port 8889 --open",
-    "build": "ng build --prod && cp _redirects dist/transloco-playground/",
+    "build": "ng build --prod && cp _redirects dist/transloco-playground/ && npm run transloco:optimize",
     "build:lib": "ng build @ngneat/transloco && npm run schematics:build && npm run copy",
     "build:persist-lang": "ng build @ngneat/transloco-persist-lang",
     "build:persist-translations": "ng build @ngneat/transloco-persist-translations",
@@ -31,7 +31,8 @@
     "copy": "npm run schematics:copy && cp -r README.md dist/ngneat/transloco",
     "e2e": "cypress open",
     "e2e:headless": "cypress run",
-    "e2e:ci": "cross-env CYPRESS_BASE_URL=https://transloco.netlify.com cypress run"
+    "e2e:ci": "cross-env CYPRESS_BASE_URL=https://transloco.netlify.com cypress run",
+    "transloco:optimize": "transloco-optimize dist/transloco-playground/assets/i18n"
   },
   "dependencies": {
     "@angular/animations": "~7.2.0",
