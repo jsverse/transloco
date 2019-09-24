@@ -54,6 +54,7 @@ The internationalization (i18n) library for Angular
 - [Additional Functionality](#additional-functionality)
 - [Plugins](#plugins)
 - [Comparison to other libraries](#comparison-to-other-libraries)
+- [Schematics Support](https://github.com/ngneat/transloco/blob/master/schematics/README.md)
 
 ## Installation
 
