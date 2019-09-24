@@ -15,6 +15,7 @@ export type TranslocoConfig = {
   missingHandler?: {
     allowEmpty: boolean;
   };
+  useFallbackForMissingKey?: boolean;
 };
 
 export const TRANSLOCO_CONFIG = new InjectionToken('TRANSLOCO_CONFIG', {
@@ -30,6 +31,7 @@ export const defaultConfig: TranslocoConfig = {
   prodMode: false,
   failedRetries: 2,
   availableLangs: [],
+  useFallbackForMissingKey: false,
   missingHandler: {
     allowEmpty: false
   },

@@ -52,7 +52,7 @@ describe('TranslocoService', () => {
     }));
 
     it('should return the fallback value when there is no translation for the key', fakeAsync(() => {
-      service = createService({ fallbackLang: 'es' });
+      service = createService({ fallbackLang: 'es', useFallbackForMissingKey: true });
       loadLang();
       expect(service.translate('fallback')).toEqual(mockLangs['es'].fallback);
     }));
@@ -299,7 +299,7 @@ describe('TranslocoService', () => {
       }));
 
       it('should load the fallback translation using the loader', fakeAsync(() => {
-        service = createService({ fallbackLang: 'es' });
+        service = createService({ fallbackLang: 'es', useFallbackForMissingKey: true });
         spyOn((service as any).loader, 'getTranslation').and.callThrough();
         loadLang();
         expect((service as any).fallbackLang).toEqual('es');
