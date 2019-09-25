@@ -8,17 +8,22 @@ import en from '../../../../../../src/assets/i18n/en.json';
 import es from '../../../../../../src/assets/i18n/es.json';
 import enLazy from '../../../../../../src/assets/i18n/lazy-page/en.json';
 import esLazy from '../../../../../../src/assets/i18n/lazy-page/es.json';
+import enLazyScopeAlias from '../../../../../../src/assets/i18n/lazy-scope-alias/en.json';
+import esLazyScopeAlias from '../../../../../../src/assets/i18n/lazy-scope-alias/es.json';
 import { tick } from '@angular/core/testing';
 import { TranslocoService } from '../transloco.service';
 import { TRANSLOCO_LOADING_TEMPLATE } from '../transloco-loading-template';
 import { DefaultInterceptor, TRANSLOCO_INTERCEPTOR } from '../transloco.interceptor';
 import { DefaultFallbackStrategy, TRANSLOCO_FALLBACK_STRATEGY } from '../transloco-fallback-strategy';
+import { TRANSLOCO_SCOPE } from '@ngneat/transloco';
 
 export const mockLangs = {
   en,
   es,
   'lazy-page/en': enLazy,
-  'lazy-page/es': esLazy
+  'lazy-page/es': esLazy,
+  'lazy-scope-alias/en': enLazyScopeAlias,
+  'lazy-scope-alias/es': esLazyScopeAlias
 };
 
 export const loader = {
@@ -87,3 +92,8 @@ export function createService(config: Partial<TranslocoConfig> = {}) {
     new DefaultFallbackStrategy({ defaultLang: 'en', fallbackLang: 'en' })
   );
 }
+
+export const scopeAliasMock = {
+  provide: TRANSLOCO_SCOPE,
+  useValue: { scope: 'lazy-scope-alias', alias: 'myScopeAlias' }
+};

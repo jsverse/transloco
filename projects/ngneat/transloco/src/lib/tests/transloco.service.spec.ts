@@ -218,6 +218,16 @@ describe('TranslocoService', () => {
           const merged = { ...flatten(mockLangs.en), ...flatten({ kazaz: { ...translation } }) };
           expect(_service.translations.set).toHaveBeenCalledWith('en', merged);
         });
+
+        it("should change the scope's name in the merged translation to alias specified in component provider", () => {
+          lang = 'lazy-scope-alias/en';
+          translation = mockLangs[lang];
+          _service._setTranslation(lang, translation, 'myScopeAlias');
+          expect(_service.translations.set).toHaveBeenCalledWith(lang, translation);
+          expect(helper.setValue).toHaveBeenCalledWith(mockLangs.en, 'myScopeAlias', translation);
+          const merged = { ...mockLangs.en, myScopeAlias: { ...translation } };
+          expect(_service.translations.set).toHaveBeenCalledWith('en', merged);
+        });
       });
     });
 

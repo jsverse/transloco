@@ -320,7 +320,7 @@ export class TranslocoService implements OnDestroy {
       return combineLatest(this.load(lang), this.load(langName));
     }
 
-    return this.load(langName);
+    return this.load(langName, null, scopeAlias);
   }
 
   /**
