@@ -18,10 +18,10 @@ import { switchMap, take } from 'rxjs/operators';
 import { TemplateHandler, View } from './template-handler';
 import { TRANSLOCO_LANG } from './transloco-lang';
 import { TRANSLOCO_LOADING_TEMPLATE } from './transloco-loading-template';
-import { TRANSLOCO_SCOPE } from './transloco-scope';
+import { TRANSLOCO_SCOPE, TranslocoScopeInterface } from './transloco-scope';
 import { TranslocoService } from './transloco.service';
 import { HashMap, Translation } from './types';
-import { getPipeValue } from './helpers';
+import { getPipeValue, isTranslocoScopeInterface } from './helpers';
 import { shouldListenToLangChanges } from './shared';
 
 @Directive({
@@ -47,7 +47,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   constructor(
     private translocoService: TranslocoService,
     @Optional() private tpl: TemplateRef<any>,
-    @Optional() @Inject(TRANSLOCO_SCOPE) private providerScope: string | null,
+    @Optional() @Inject(TRANSLOCO_SCOPE) private providerScope: string | TranslocoScopeInterface | null,
     @Optional() @Inject(TRANSLOCO_LANG) private providerLang: string | null,
     @Optional() @Inject(TRANSLOCO_LOADING_TEMPLATE) private providedLoadingTpl: Type<any> | string,
     private vcr: ViewContainerRef,
@@ -70,7 +70,9 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
           const lang = this.getLang();
           const scope = this.getScope();
           this.langName = scope ? `${scope}/${lang}` : lang;
-          return this.translocoService._loadDependencies(this.langName);
+          const scopeAlias =
+            this.providerScope && isTranslocoScopeInterface(this.providerScope) ? this.providerScope.alias : null;
+          return this.translocoService._loadDependencies(this.langName, scopeAlias);
         }),
         listenToLangChange ? source => source : take(1)
       )
@@ -143,7 +145,11 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
 
   // inline => providers
   private getScope() {
-    return this.inlineScope || this.providerScope;
+    const providerScope =
+      this.providerScope && isTranslocoScopeInterface(this.providerScope)
+        ? this.providerScope.scope
+        : this.providerScope;
+    return this.inlineScope || providerScope;
   }
 
   // inline => providers => global

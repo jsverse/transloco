@@ -17,6 +17,10 @@ const routes: Routes = [
     loadChildren: './lazy/lazy.module#LazyModule'
   },
   {
+    path: 'lazy-scope-alias',
+    loadChildren: './lazy-scope-alias/lazy-scope-alias.module#LazyScopeAliasModule'
+  },
+  {
     path: 'scope-sharing',
     loadChildren: './scope-sharing/scope-sharing.module#ScopeSharingModule'
   },

@@ -1,3 +1,8 @@
 import { InjectionToken } from '@angular/core';
 
-export const TRANSLOCO_SCOPE = new InjectionToken<string>('TRANSLOCO_SCOPE');
+export interface TranslocoScopeInterface {
+  scope: string;
+  alias?: string;
+}
+
+export const TRANSLOCO_SCOPE = new InjectionToken<TranslocoScopeInterface | string>('TRANSLOCO_SCOPE');
