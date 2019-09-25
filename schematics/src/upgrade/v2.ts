@@ -3,7 +3,7 @@ const p = require('path');
 const fs = require('fs');
 
 export function run(path) {
-  console.log('\x1b[4m%s\x1b[0m', '\n⬆️ Starting v2 upgrade script ⬆️');
+  console.log('\x1b[4m%s\x1b[0m', '⬆️ Starting v2 upgrade script ⬆️');
   const dir = p.resolve(process.cwd());
   path = p.join(dir, path, '/**/*');
   const htmlFiles = glob.sync(`${path}.html`);
@@ -31,6 +31,20 @@ export function run(path) {
           }
         });
       result = structuralRegex.exec(str);
+    }
+    fs.writeFileSync(file, str, { encoding: 'utf8' });
+  }
+  const modules = glob.sync(`${path}.module.ts`);
+  for (const file of modules) {
+    let str = fs.readFileSync(file).toString('utf8');
+    if (!str.includes('@ngneat/transloco')) continue;
+    /** change listenToLangChange to renderOnce */
+    str = str.replace('listenToLangChange', 'renderLangOnce');
+    /** Remove scopeStrategy */
+    str = str.replace(/\s*scopeStrategy:.*?,/, '');
+    /** Add availableLangs */
+    if (!str.includes('availableLangs')) {
+      str = str.replace(/((\s*)defaultLang:(.*?),)/, (str, g1, g2, g3) => `${g1}${g2}availableLangs: [${g3.trim()}],`);
     }
     fs.writeFileSync(file, str, { encoding: 'utf8' });
   }
