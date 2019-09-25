@@ -49,8 +49,8 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
       .pipe(
         switchMap(activeLang => {
           const lang = this.providerLang || activeLang;
-          let providerScope = null;
-          let scopeAlias = null;
+          let providerScope;
+          let scopeAlias;
           if (this.providerScope) {
             if (isTranslocoScopeInterface(this.providerScope)) {
               providerScope = this.providerScope.scope;
