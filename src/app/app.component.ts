@@ -13,17 +13,6 @@ export class AppComponent implements OnDestroy {
   availableLangs: AvailableLangs;
 
   constructor(private service: TranslocoService) {
-    this.service.setAvailableLangs([
-      {
-        id: 'en',
-        label: 'English'
-      },
-      {
-        id: 'es',
-        label: 'Spanish'
-      }
-    ]);
-
     this.availableLangs = this.service.getAvailableLangs();
   }
 
