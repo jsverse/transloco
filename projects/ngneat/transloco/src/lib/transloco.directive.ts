@@ -71,7 +71,9 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
           const scope = this.getScope();
           this.langName = scope ? `${scope}/${lang}` : lang;
           const scopeAlias =
-            this.providerScope && isTranslocoScopeInterface(this.providerScope) ? this.providerScope.alias : null;
+            !this.inlineScope && this.providerScope && isTranslocoScopeInterface(this.providerScope)
+              ? this.providerScope.alias
+              : null;
           return this.translocoService._loadDependencies(this.langName, scopeAlias);
         }),
         listenToLangChange ? source => source : take(1)
