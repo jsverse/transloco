@@ -180,3 +180,28 @@ Note if this flag won't be provide a new Module should be created.
 - `--translation-filesPath`
 
   `type`: `string`
+
+## Upgrade
+
+### Overview
+
+The Library's upgrade script from lower versions. For more information about the script see:
+[upgrade.md](https://github.com/ngneat/transloco/tree/master/schematics/upgrade.md)
+
+### Command
+
+```
+  ng genrate @ngneat/transloco:upgrade
+```
+
+### Options
+
+#### Define the entry path of the upgrade script.
+
+- `--path`
+
+  `type`: `string`
+
+  `default`: `./src/app`
+
+  `alias`: `p`
