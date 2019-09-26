@@ -30,8 +30,10 @@ The internationalization (i18n) library for Angular
 
 - [Installation](#installation)
 - [Transloco Config](#config-options)
+- [Set the Available Languages](#set-the-available-languages)
 - [Translation in the Template](#translation-in-the-template)
   - [Using the Structural Directive](#using-the-structural-directive)
+    - [Translation Flatting Process](#translation-flatting-process)
     - [Using the read input](#using-the-read-input)
   - [Using the Attribute Directive](#using-the-attribute-directive)
   - [Using the Pipe](#using-the-pipe)
@@ -39,7 +41,6 @@ The internationalization (i18n) library for Angular
 - [Service API](#service-api)
 - [Lazy Load Translation Files](#lazy-load-translation-files)
   - [Scope Configuration](#scope-configuration)
-  - [Programmatically Translations for Scopes](#programmatically-translations-for-scopes)
 - [Using Multiple Languages Simultaneously](#using-multiple-languages-simultaneously)
 - [Custom Loading Template](#custom-loading-template)
 - [Hack the Library](#hack-the-library)
@@ -97,8 +98,9 @@ import { environment } from '../environments/environment';
     {
       provide: TRANSLOCO_CONFIG,
       useValue: {
+        availableLangs: ['en', 'es'],
         prodMode: environment.production,
-        listenToLangChange: true,
+        renderLangOnce: true,
         defaultLang: 'en'
       }
     }
@@ -112,11 +114,12 @@ export class AppModule {}
 
 Let's explain each one of the `config` options:
 
-- `listenToLangChange`: Subrscribes to the language change event, and allows you to change the active language. This is not needed in applications that don't allow the user to change the language in runtime (i.e., from a dropdown), so by setting it to false in these cases, you can save on memory by rendering the view once, and unsubscribing from the language changes event (defaults to `false`).
+- `renderLangOnce`: Subrscribes to the language change event, and allows you to change the active language. This is not needed in applications that don't allow the user to change the language in runtime (i.e., from a dropdown), so by setting it to false in these cases, you can save on memory by rendering the view once, and unsubscribing from the language changes event (defaults to `false`).
 - `defaultLang`: Sets the default language
 - `fallbackLang`: Sets the default language/s to use as a fallback. See the [`TranslocoFallbackStrategy`](#transloco-fallback-strategy) section if you need to customize it.
   `failedRetries`: How many time should Transloco retry to load translation files, in case of a load failure (defaults to 2)
 - `prodMode`: Whether the application runs in production mode (defaults to `false`).
+- `availableLangs`: The available languages in your application.
 
 It also injects the `httpLoader` into the `AppModule` providers:
 
@@ -139,6 +142,23 @@ export const httpLoader = { provide: TRANSLOCO_LOADER, useClass: HttpLoader };
 
 The `HttpLoader` is a class that implements the `TranslocoLoader` interface. It's responsible for instructing transloco how to load the translation files. It uses Angular HTTP client to fetch the files, based on the given path (We'll see why it called path on the lazy load section).
 
+## Set the Available Languages
+
+Next, you need to set the available languages in your application. You have two ways to do it:
+
+- Add the `config.availableLangs` property
+- Call `translocoService.setAvailableLangs(langs)`
+
+Note that you can also pass an object containing a `label` and an `id` keys:
+
+```ts
+{
+  availableLangs: [{ id: 'en', label: 'English' }];
+}
+```
+
+This can become handy when you need to use it for a languages dropdown.
+
 ## Translation in the Template
 
 Transloco provides three ways to translate your templates:
@@ -150,8 +170,8 @@ This is the recommended approach. It's DRY and efficient, as it creates one subs
 ```html
 <ng-container *transloco="let t">
   <ul>
-    <li>{{ t.home }}</li>
-    <li>{{ t.alert | translocoParams: { value: dynamic } }}</li>
+    <li>{{ t['some.nested.key']}}</li>
+    <li>{{ t['alert'] | translocoParams: { value: dynamic } }}</li>
   </ul>
 </ng-container>
 
@@ -159,6 +179,11 @@ This is the recommended approach. It's DRY and efficient, as it creates one subs
   {{ t.home }}
 </ng-template>
 ```
+
+#### Translation Flatting Process
+
+To consume less memory and to get a fast value accessor, Transloco will flatten each translation file in runtime.
+As a result, when using the structural directive, you should use the bracket notation following the JS rules. Transloco has an [optimization](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-optimize) plugin that will make the flatting AOT.
 
 #### Using the read input
 
@@ -225,7 +250,6 @@ export class AppComponent {
     this.service.translate('hello', { value: 'world' });
     this.service.translate(['hello', 'key']);
     this.service.translate('hello', params, 'en');
-    this.service.translate<T>(translate => translate.someKey);
   }
 }
 ```
@@ -238,7 +262,7 @@ this.service.selectTranslate('hello', params, lang).subscribe(value => ...);
 
 // When quering an object that should be transpiled
 // For example: { a: { b: 'Hello {{ value }}', c: 'Hey {{ dynamic }}' }}
-this.service.selectTranslate('a', {
+this.service.selectTranslateObject('a', {
   'b': { value: '' },
   'c': { dynamic: '' }
 }).subscribe(obj => ...);
@@ -258,6 +282,8 @@ Note that `selectTranslate` will emit each time the active language is changed.
 - `setDefaultLang` - Sets the default language
 - `getActiveLang` - Gets the current active language
 - `setActiveLang` - Sets the current active language
+- `getAvailableLangs` - Gets the available languages
+- `setAvailableLangs` - Sets the available languages
 
 ```ts
 service.setActiveLang(lang);
@@ -361,7 +387,7 @@ export class MyComponent {}
 
 ```html
 <ng-container *transloco="let t; scope: 'todos';">
-  <h1>{{ t.todos.keyFromTodo }}</h1>
+  <h1>{{ t['todos.keyFromTodo'] }}</h1>
 </ng-container>
 ```
 
@@ -408,24 +434,6 @@ Now we can access it through `customName` instead of the original scope name (`t
 {{ 'customName.title' | transloco }}
 
 <span transloco="customName.submit"></span>
-```
-
-Note that to use it in the current version (1.x.x), we need to set `config.scopeStrategy` to `shared`. In the next major release, it will be the default.
-
-### Programmatically Translations for Scopes
-
-Since `TranslocoService` is a singleton each time we need to programmatically translate a scope key, we have to specify it in `translate` method.
-
-Translating scope key of active language:
-
-```typescript
-this.service.translate('title', {}, 'my-scope|scoped');
-```
-
-You could also get translation scope of a specific language:
-
-```typescript
-this.service.translate('title', {}, 'my-scope/en');
 ```
 
 ## Using Multiple Languages Simultaneously
@@ -565,7 +573,7 @@ This handler is responsible for handling missing keys. The default handler calls
 
 ```ts
 export class CustomHandler implements TranslocoMissingHandler {
-  handle(key: string, params: HashMap, config: TranslocoConfig) {
+  handle(key: string, config: TranslocoConfig) {
     return '...';
   }
 }
@@ -575,8 +583,6 @@ export const custom = {
   useClass: CustomHandler
 };
 ```
-
-**Note:** The missing handler is [**not supported when using structural directive.**](https://github.com/ngneat/transloco/issues/52#issuecomment-526313689)
 
 #### Transloco Fallback Strategy
 
@@ -657,6 +663,7 @@ When running specs, we want to have the languages available immediately, in a sy
 ```ts
 import { TranslocoTestingModule } from '@ngneat/transloco';
 import en from '../../assets/i18n/en.json';
+import scopeScope from '../../assets/i18n/some-scope/en.json';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -664,7 +671,8 @@ describe('AppComponent', () => {
       imports: [
         RouterTestingModule,
         TranslocoTestingModule.withLangs({
-          en
+          en,
+          'some-scope/en': scopeScope
         }, translocoConfig?)
       ],
       declarations: [AppComponent]
@@ -755,6 +763,7 @@ If you find any mistakes in the table, open an issue, and we'll fix them asap, t
 - [Preload Languages](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-preload-langs) (official)
 - [Translators Comments](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-remove-comments) (official)
 - [Locale](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-locale) (official)
+- [Transloco Optimize](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-optimize) (official)
 
 ## Support
 

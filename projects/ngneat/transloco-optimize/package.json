@@ -1,10 +1,10 @@
 {
   "name": "@ngneat/transloco-optimize",
-  "version": "1.0.0",
+  "version": "1.0.0-rc.2",
   "description": "Angular Transloco optimization process for production environments",
   "main": "index.js",
   "bin": {
-    "transloco-optimize": "index.js"
+    "transloco-optimize": "cli.js"
   },
   "publishConfig": {
     "access": "public"

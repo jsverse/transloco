@@ -22,3 +22,28 @@ Add to your `package.json` the following script:
   "build:prod": "ng build --prod && npm run transloco:optimize",
 }
 ```
+
+Then, add the following `config` option to the application Transloco config object:
+
+```ts
+import { environment } from '../environments/environment';
+
+{
+  ...
+  flatten: {
+    aot: environment.production;
+  };
+};
+```
+
+You can also use it as a function:
+
+```js
+import translocoOptimize from '@ngneat/transloco-optimize';
+import { task } from 'gulp';
+
+const locales = `${config.paths.dist}${config.paths.assets.locales}`;
+task('transloco:optimize', function(cb) {
+  translocoOptimize({ dist: locales }).then(cb);
+});
+```
