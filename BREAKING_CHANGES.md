@@ -72,6 +72,8 @@ We need this information to know whether we're dealing with a `language` or a `s
 - Remove callback param support from `translate()`.
 - Remove messageformat from the library in favor of the external library.
 
+**We created a schematics command that'll do most of the work for you**
+
 ## Features
 
 - Missing handler support for the structural directive.
