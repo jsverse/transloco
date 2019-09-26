@@ -32,11 +32,9 @@ So now when using the structural directive, you should use the bracket notation:
 
 ```html
 // before 
-
 {{ t.a.b }} {{ t.hello }} 
 
 // After 
-
 {{ t['a.b'] }} {{ t.hello }}
 ```
 
@@ -68,7 +66,7 @@ We also allow passing an `object` making it easier for you to use it in a langua
 
 `[{ id: 'en', label: 'English'}]`
 
-We use this information to know whether we deal with a `language` or a `scope`.
+We need this information to know whether we're dealing with a `language` or a `scope`.
 
 - Change `config.listenToLangChange` to `config.renderLangOnce` to make it more clear.
 - Remove callback param support from `translate()`.
