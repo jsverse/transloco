@@ -31,7 +31,13 @@ This change brings the following benefits:
 So now when using the structural directive, you should use the bracket notation:
 
 ```html
-// before {{ t.a.b }} {{ t.hello }} // After {{ t['a.b'] }} {{ t.hello }}
+// before 
+
+{{ t.a.b }} {{ t.hello }} 
+
+// After 
+
+{{ t['a.b'] }} {{ t.hello }}
 ```
 
 - Dedicated method for when you need to query an object instead of a key:
@@ -46,8 +52,8 @@ service.translateObject('a.b', params);
 service.selectTranslateObject('a.b', params);
 ```
 
-- MissingHandler interface removes the second redundant `params` param. (only relevant if you implemented a custom handler)
-- You should now set the available languages in your application:
+- `MissingHandler` interface: removes the second redundant `params` param. (only relevant if you implemented a custom handler)
+- It's now required to set the available languages in your application:
 
 ```ts
 {
