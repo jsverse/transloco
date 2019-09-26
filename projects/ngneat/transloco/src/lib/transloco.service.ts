@@ -100,7 +100,7 @@ export class TranslocoService implements OnDestroy {
     if (this.cache.has(lang) === false) {
       const mergedOptions = { ...{ fallbackLangs: null }, ...(options || {}) };
       const load$ = from(this.loader.getTranslation(lang)).pipe(
-        retry(this.mergedConfig.failedRetries),
+        retry(this.config.failedRetries),
         catchError(() => this.handleFailure(lang, mergedOptions)),
         tap(translation => this.handleSuccess(lang, translation)),
         shareReplay(1)
@@ -268,9 +268,10 @@ export class TranslocoService implements OnDestroy {
     };
 
     const withHook = this.interceptor.preSaveTranslation(mergedTranslation, currentLang);
-    const flattenTranslation = flatten(withHook);
+    const flattenTranslation = this.mergedConfig.flatten.aot ? withHook : flatten(withHook);
+
     this.translations.set(currentLang, flattenTranslation);
-    options.emitChange && this.setActiveLang(this.getActiveLang());
+    mergedOptions.emitChange && this.setActiveLang(this.getActiveLang());
   }
 
   /**
@@ -292,7 +293,7 @@ export class TranslocoService implements OnDestroy {
   }
 
   handleMissingKey(key: string, value: any) {
-    if (this.mergedConfig.missingHandler.allowEmpty && value === '') {
+    if (this.config.missingHandler.allowEmpty && value === '') {
       return '';
     }
 

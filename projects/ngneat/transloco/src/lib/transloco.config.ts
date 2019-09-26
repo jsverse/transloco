@@ -9,6 +9,9 @@ export type TranslocoConfig = {
   failedRetries?: number;
   scopeMapping?: HashMap<string>;
   availableLangs?: AvailableLangs;
+  flatten?: {
+    aot?: boolean;
+  };
   missingHandler?: {
     allowEmpty: boolean;
   };
@@ -29,5 +32,8 @@ export const defaultConfig: TranslocoConfig = {
   availableLangs: [],
   missingHandler: {
     allowEmpty: false
+  },
+  flatten: {
+    aot: false
   }
 };
