@@ -114,10 +114,10 @@ export class AppModule {}
 
 Let's explain each one of the `config` options:
 
-- `renderLangOnce`: Subscribes to the language change event, and allows you to change the active language. This is not needed in applications that don't allow the user to change the language in runtime (i.e., from a dropdown), so by setting it to false in these cases, you can save on memory by rendering the view once, and unsubscribing from the language changes event (defaults to `false`).
+- `reRenderOnLangChange`: Subscribes to the language change event, and allows you to change the active language. This is not needed in applications that don't allow the user to change the language in runtime (i.e., from a dropdown), so by setting it to false in these cases, you can save on memory by rendering the view once, and unsubscribing from the language changes event (defaults to `false`).
 - `defaultLang`: Sets the default language
 - `fallbackLang`: Sets the default language/s to use as a fallback. See the [`TranslocoFallbackStrategy`](#transloco-fallback-strategy) section if you need to customize it.
-  `failedRetries`: How many time should Transloco retry to load translation files, in case of a load failure (defaults to 2)
+- `failedRetries`: How many time should Transloco retry to load translation files, in case of a load failure (defaults to 2)
 - `prodMode`: Whether the application runs in production mode (defaults to `false`).
 - `availableLangs`: The available languages in your application.
 
