@@ -9,7 +9,11 @@
 So now when using the structural directive, you should use the bracket notation:
 
 ```html
-// before {{ t.a.b }} {{ t.hello }} // After {{ t['a.b'] }} {{ t.hello }}
+// before 
+{{ t.a.b }} {{ t.hello }} 
+
+// After 
+{{ t['a.b'] }} {{ t.hello }}
 ```
 
 - Dedicated method for when you need to query an object instead of a key:
