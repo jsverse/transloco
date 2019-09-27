@@ -1,6 +1,6 @@
 import { Inject, Injectable, OnDestroy, Optional } from '@angular/core';
-import { BehaviorSubject, combineLatest, from, Observable, Subject, Subscription, of, forkJoin } from 'rxjs';
-import { catchError, map, retry, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, from, Observable, Subject, Subscription, of, forkJoin, iif } from 'rxjs';
+import { catchError, map, retry, shareReplay, switchMap, tap, withLatestFrom, pluck } from 'rxjs/operators';
 import { DefaultLoader, TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_TRANSPILER, TranslocoTranspiler } from './transloco.transpiler';
 import { AvailableLangs, HashMap, SetTranslationOptions, TranslateParams, Translation, TranslocoEvents } from './types';
@@ -69,8 +69,16 @@ export class TranslocoService implements OnDestroy {
     });
   }
 
+  get useFallbackTranslation(): boolean {
+    return this.fallbackLang && this.config.missingHandler && this.config.missingHandler.useFallbackTranslation;
+  }
+
   get config(): TranslocoConfig {
     return this.mergedConfig;
+  }
+
+  getFallbackLang(): string | null {
+    return this.fallbackLang;
   }
 
   getDefaultLang() {
@@ -99,26 +107,23 @@ export class TranslocoService implements OnDestroy {
   }
 
   load(lang: string, options?: { fallbackLangs: string[] | null }): Observable<Translation> {
-    if (this.cache.has(lang) === false) {
-      const mergedOptions = { ...{ fallbackLangs: null }, ...(options || {}) };
-
-      let stream = from(this.loader.getTranslation(lang));
-      if (this.fallbackLang) {
-        stream = forkJoin([this.loader.getTranslation(lang), this.loadFallbackLang(lang)]).pipe(
-          map(([translations, fallbackTranslations]) =>
-            fallbackTranslations ? { ...fallbackTranslations, ...translations } : translations
-          )
-        );
-      }
-
-      const load$ = stream.pipe(
+    const mergedOptions = { ...{ fallbackLangs: null }, ...(options || {}) };
+    const load = (lang: string) =>
+      from(this.loader.getTranslation(lang)).pipe(
         retry(this.config.failedRetries),
         catchError(() => this.handleFailure(lang, mergedOptions)),
-        tap(translations => this.handleSuccess(lang, translations)),
+        tap(translation => this.handleSuccess(lang, translation)),
         shareReplay(1)
       );
 
-      this.cache.set(lang, load$);
+    if (this.useFallbackTranslation && this.cache.has(this.fallbackLang) === false) {
+      const fallbackTranslation$ = load(this.fallbackLang);
+      this.cache.set(this.fallbackLang, fallbackTranslation$);
+      fallbackTranslation$.subscribe();
+    }
+
+    if (this.cache.has(lang) === false) {
+      this.cache.set(lang, load(lang));
     }
 
     return this.cache.get(lang);
@@ -142,14 +147,14 @@ export class TranslocoService implements OnDestroy {
     }
 
     if (!key) {
-      return this.missingHandler.handle(key, this.config);
+      return this.handleMissingTranslation(key);
     }
 
     const translation = this.getTranslation(resolveLang);
     const value = translation[key];
 
     if (!value) {
-      return this.handleMissingKey(key, value);
+      return this.handleMissingTranslation(key, value);
     }
 
     return this.parser.transpile(value, params, translation);
@@ -304,12 +309,16 @@ export class TranslocoService implements OnDestroy {
     this.setTranslation(newValue, lang);
   }
 
-  handleMissingKey(key: string, value: any) {
+  handleMissingTranslation(key: string, value?: any) {
     if (this.config.missingHandler.allowEmpty && value === '') {
       return '';
     }
 
-    return this.missingHandler.handle(key, this.config);
+    return this.missingHandler.handle(key, {
+      prodMode: this.config.prodMode,
+      useFallback: this.useFallbackTranslation,
+      fallback: this.translations.get(this.fallbackLang)
+    });
   }
 
   /**
@@ -343,24 +352,10 @@ export class TranslocoService implements OnDestroy {
   }
 
   private setFallbackLang(config: TranslocoConfig): void {
-    if (config.useFallbackForMissingKey && config.fallbackLang) {
+    if (config.fallbackLang) {
       const { fallbackLang } = config;
       this.fallbackLang = Array.isArray(fallbackLang) ? fallbackLang[0] : fallbackLang;
     }
-  }
-
-  private loadFallbackLang(lang: string): Observable<HashMap<any> | null> {
-    const fallbackLang = this.fallbackLang;
-    if (!fallbackLang || lang === fallbackLang) {
-      return of(null);
-    }
-
-    return from(this.loader.getTranslation(fallbackLang)).pipe(
-      catchError(() => {
-        this.failedLangs.add(fallbackLang);
-        return of(null);
-      })
-    );
   }
 
   private getAvailableLangsIds(): string[] {

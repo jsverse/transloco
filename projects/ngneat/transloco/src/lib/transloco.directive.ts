@@ -30,7 +30,7 @@ import { shouldListenToLangChanges } from './shared';
 export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   subscription: Subscription = Subscription.EMPTY;
   view: EmbeddedViewRef<any>;
-  private missingKeysCache = {};
+  private missingTranslationCache = {};
 
   @Input('transloco') key: string;
   @Input('translocoParams') params: HashMap = {};
@@ -124,11 +124,11 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
             /**
              * Components that don't use onPush will trigger it twice, so we need to cache it
              */
-            if (!this.missingKeysCache[resolveKey]) {
-              this.missingKeysCache[resolveKey] = this.translocoService.handleMissingKey(key, value);
+            if (!this.missingTranslationCache[resolveKey]) {
+              this.missingTranslationCache[resolveKey] = this.translocoService.handleMissingTranslation(key, value);
             }
 
-            return this.missingKeysCache[resolveKey];
+            return this.missingTranslationCache[resolveKey];
           }
 
           return value;

@@ -42,7 +42,7 @@ describe('TranslocoService', () => {
       expect(service.translate('home')).toEqual('home');
     }));
 
-    it('should call missing handler when there is no translation for the key', fakeAsync(() => {
+    it('should call missing handler when translation is missing', fakeAsync(() => {
       spyOn((service as any).missingHandler, 'handle').and.callThrough();
       loadLang();
       service.translate('kazaz');
@@ -51,10 +51,16 @@ describe('TranslocoService', () => {
       expect((service as any).missingHandler.handle).toHaveBeenCalledTimes(3);
     }));
 
-    it('should return the fallback value when there is no translation for the key', fakeAsync(() => {
-      service = createService({ fallbackLang: 'es', useFallbackForMissingKey: true });
+    it('should return the fallback value when translation is missing', fakeAsync(() => {
+      service = createService({ fallbackLang: 'es', missingHandler: { useFallbackTranslation: true } });
       loadLang();
       expect(service.translate('fallback')).toEqual(mockLangs['es'].fallback);
+    }));
+
+    it('should return the fallback value when translation is empty', fakeAsync(() => {
+      service = createService({ fallbackLang: 'es', missingHandler: { useFallbackTranslation: true } });
+      loadLang();
+      expect(service.translate('empty')).toEqual(mockLangs['es'].empty);
     }));
 
     it('should translate', fakeAsync(() => {
@@ -299,12 +305,13 @@ describe('TranslocoService', () => {
       }));
 
       it('should load the fallback translation using the loader', fakeAsync(() => {
-        service = createService({ fallbackLang: 'es', useFallbackForMissingKey: true });
+        service = createService({ fallbackLang: 'es', missingHandler: { useFallbackTranslation: true } });
         spyOn((service as any).loader, 'getTranslation').and.callThrough();
         loadLang();
         expect((service as any).fallbackLang).toEqual('es');
         expect((service as any).loader.getTranslation).toHaveBeenCalledWith('es');
-        expect((service as any).translations.size).toEqual(1);
+        expect((service as any).loader.getTranslation).toHaveBeenCalledWith('en');
+        expect((service as any).translations.size).toEqual(2);
       }));
 
       it('should load the translation using the loader', fakeAsync(() => {

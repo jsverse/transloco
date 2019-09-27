@@ -9,13 +9,13 @@ export type TranslocoConfig = {
   failedRetries?: number;
   scopeMapping?: HashMap<string>;
   availableLangs?: AvailableLangs;
+  missingHandler?: {
+    allowEmpty?: boolean;
+    useFallbackTranslation?: boolean;
+  };
   flatten?: {
     aot?: boolean;
   };
-  missingHandler?: {
-    allowEmpty: boolean;
-  };
-  useFallbackForMissingKey?: boolean;
 };
 
 export const TRANSLOCO_CONFIG = new InjectionToken('TRANSLOCO_CONFIG', {
@@ -31,9 +31,9 @@ export const defaultConfig: TranslocoConfig = {
   prodMode: false,
   failedRetries: 2,
   availableLangs: [],
-  useFallbackForMissingKey: false,
   missingHandler: {
-    allowEmpty: false
+    allowEmpty: false,
+    useFallbackTranslation: true
   },
   flatten: {
     aot: false

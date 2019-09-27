@@ -117,7 +117,6 @@ Let's explain each one of the `config` options:
 - `renderLangOnce`: Subscribes to the language change event, and allows you to change the active language. This is not needed in applications that don't allow the user to change the language in runtime (i.e., from a dropdown), so by setting it to false in these cases, you can save on memory by rendering the view once, and unsubscribing from the language changes event (defaults to `false`).
 - `defaultLang`: Sets the default language
 - `fallbackLang`: Sets the default language/s to use as a fallback. See the [`TranslocoFallbackStrategy`](#transloco-fallback-strategy) section if you need to customize it.
-- `useFallbackForMissingKey`: Use fallback translation for missing keys (defaults to `false`).
   `failedRetries`: How many time should Transloco retry to load translation files, in case of a load failure (defaults to 2)
 - `prodMode`: Whether the application runs in production mode (defaults to `false`).
 - `availableLangs`: The available languages in your application.
@@ -507,7 +506,7 @@ Alternatively, here is how to use it directly in the template:
 
 Transloco provides you with an option to customize each one of its buliding blocks. Here's a list of the things you can customize:
 
-#### Transloco Loader
+### Transloco Loader
 
 The loader provides you with the ability to override the default handling of translation file loading.
 
@@ -528,7 +527,7 @@ export const custom = {
 }
 ```
 
-#### Transloco Interceptor
+### Transloco Interceptor
 
 The interceptor provides you with the ability to manipulate the translation object before it is saved by the service.
 
@@ -551,7 +550,7 @@ export const custom = {
 
 The `preSaveTranslation` method is called before the translation is saved by the service, and the `preSaveTranslationKey` is called before a new key-value pair is saved by the `service.setTranslationKey()` method.
 
-#### Transloco Transpiler
+### Transloco Transpiler
 
 The transpiler is responsible for resolving the given value. For example, the default transpiler transpiles `Hello {{ key }}` and replaces the dynamic variable `key` based on the given params, or the translation object.
 
@@ -568,9 +567,9 @@ export const custom = {
 }
 ```
 
-#### Transloco Missing Handler
+### Transloco Missing Handler
 
-This handler is responsible for handling missing keys. The default handler calls `console.warn()` with the key when `config.isProdMode` is set to `false`, and returns an empty string to use as a replacement for the missing key's value.
+This handler is responsible for handling missing translations. The default handler calls `console.warn()` with the key when `config.isProdMode` is set to `false` and returns the fallback translation.
 
 ```ts
 export class CustomHandler implements TranslocoMissingHandler {
@@ -585,7 +584,7 @@ export const custom = {
 };
 ```
 
-#### Transloco Fallback Strategy
+### Transloco Fallback Strategy
 
 The fallback strategy is responsible for loading the fallback translation file, when the selected active language has failed to load. The default behavior is to load the language set in the `config.fallbackLang`, and set it as the new active language.
 
