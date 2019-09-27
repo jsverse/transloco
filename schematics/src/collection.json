@@ -25,6 +25,12 @@
       "factory": "./scope/",
       "schema": "./scope/schema.json",
       "description": "Add transloco scope."
+    },
+    "upgrade": {
+      "aliases": ["up"],
+      "factory": "./upgrade/",
+      "schema": "./upgrade/schema.json",
+      "description": "Run an upgrade script."
     }
   }
 }

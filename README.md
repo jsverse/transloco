@@ -8,7 +8,7 @@
 The internationalization (i18n) library for Angular
 
 [![Build Status](https://img.shields.io/travis/datorama/akita.svg?style=flat-square)](https://travis-ci.org/ngneat/transloco)
-[![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-9-orange.svg?style=flat-square)](#contributors-)
 [![commitizen](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)]()
 [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)]()
 [![coc-badge](https://img.shields.io/badge/codeof-conduct-ff69b4.svg?style=flat-square)]()
@@ -55,6 +55,7 @@ The internationalization (i18n) library for Angular
 - [Additional Functionality](#additional-functionality)
 - [Plugins](#plugins)
 - [Comparison to other libraries](#comparison-to-other-libraries)
+- [Schematics Support](https://github.com/ngneat/transloco/blob/master/schematics/README.md)
 
 ## Installation
 
@@ -100,7 +101,6 @@ import { environment } from '../environments/environment';
       useValue: {
         availableLangs: ['en', 'es'],
         prodMode: environment.production,
-        reRenderOnLangChange: true,
         defaultLang: 'en'
       }
     }
@@ -798,6 +798,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/DerSizeS"><img src="https://avatars3.githubusercontent.com/u/708090?v=4" width="100px;" alt="Oleg Teterin"/><br /><sub><b>Oleg Teterin</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=DerSizeS" title="Code">💻</a></td>
+    <td align="center"><a href="https://twitter.com/maxime1992"><img src="https://avatars0.githubusercontent.com/u/4950209?v=4" width="100px;" alt="Maxime"/><br /><sub><b>Maxime</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=maxime1992" title="Documentation">📖</a></td>
   </tr>
 </table>
 
