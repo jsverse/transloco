@@ -35,6 +35,7 @@
     "transloco:optimize": "transloco-optimize dist/transloco-playground/assets/i18n"
   },
   "dependencies": {
+    "messageformat": "2.3.0",
     "@angular/animations": "~7.2.0",
     "@angular/common": "~7.2.0",
     "@angular/compiler": "~7.2.0",
