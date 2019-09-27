@@ -48,7 +48,7 @@ import { TranslocoMessageFormatModule } from '@ngneat/transloco-messageformat';
       useValue: {
         prodMode: environment.production,
         availableLangs: [{ id: 'en', label: 'English' }, { id: 'es', label: 'Spanish' }],
-        renderLangOnce: true,
+        reRenderOnLangChange: true,
         fallbackLang: 'es',
         defaultLang: 'en',
         scopeMapping: {

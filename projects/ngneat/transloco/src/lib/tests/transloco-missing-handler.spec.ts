@@ -7,7 +7,7 @@ describe('TranslocoMissingHandler', () => {
 
   beforeEach(() => {
     defaultConfig = {
-      renderLangOnce: true,
+      reRenderOnLangChange: true,
       defaultLang: 'en',
       prodMode: false
     };

@@ -3,7 +3,7 @@ import { AvailableLangs, HashMap } from './types';
 
 export type TranslocoConfig = {
   defaultLang: string;
-  renderLangOnce?: boolean;
+  reRenderOnLangChange?: boolean;
   prodMode?: boolean;
   fallbackLang?: string | string[];
   failedRetries?: number;
@@ -26,7 +26,7 @@ export const TRANSLOCO_CONFIG = new InjectionToken('TRANSLOCO_CONFIG', {
 
 export const defaultConfig: TranslocoConfig = {
   defaultLang: 'en',
-  renderLangOnce: false,
+  reRenderOnLangChange: false,
   prodMode: false,
   failedRetries: 2,
   availableLangs: [],

@@ -155,7 +155,6 @@ export default function(options: SchemaOptions): Rule {
     const configProviderTemplate = `{
       provide: TRANSLOCO_CONFIG,
       useValue: {
-        renderLangOnce: false,
         availableLangs: [${langs}],
         defaultLang: '${langs[0]}',
         prodMode: ${prodMode},

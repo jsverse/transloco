@@ -61,7 +61,7 @@ describe('TranslocoDirective', () => {
     expect(host.queryHost('div')).toHaveText('Title spanish');
   }
 
-  it('should unsubscribe after one emit when not in renderLangOnce mode', fakeAsync(() => {
+  it('should unsubscribe after one emit when not in reRenderOnLangChange mode', fakeAsync(() => {
     host = createHost(`<div transloco="home"></div>`);
     runLoader();
     expect(host.queryHost('[transloco]')).toHaveText('home english');

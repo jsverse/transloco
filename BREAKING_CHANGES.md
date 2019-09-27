@@ -1,28 +1,6 @@
 # Transloco V2
 
-- Each translation file is now flatten in runtime:
-
-From:
-
-```json
-{
-  "a": {
-    "b": {
-      "c": ""
-    }
-  }
-}
-```
-
-To:
-
-```json
-{
-  "a.b.c": ""
-}
-```
-
-This change brings the following benefits:
+- Each translation file is now flatten in runtime. This change brings the following benefits:
 
 - Lower memory consumption.
 - Faster value accessor.
@@ -31,11 +9,7 @@ This change brings the following benefits:
 So now when using the structural directive, you should use the bracket notation:
 
 ```html
-// before 
-{{ t.a.b }} {{ t.hello }} 
-
-// After 
-{{ t['a.b'] }} {{ t.hello }}
+// before {{ t.a.b }} {{ t.hello }} // After {{ t['a.b'] }} {{ t.hello }}
 ```
 
 - Dedicated method for when you need to query an object instead of a key:
@@ -68,7 +42,7 @@ We also allow passing an `object` making it easier for you to use it in a langua
 
 We need this information to know whether we're dealing with a `language` or a `scope`.
 
-- Change `config.listenToLangChange` to `config.renderLangOnce` to make it more clear.
+- Change `config.listenToLangChange` to `config.reRenderOnLangChange` to make it more clear.
 - Remove callback param support from `translate()`.
 - Remove messageformat from the library in favor of the external library.
 
