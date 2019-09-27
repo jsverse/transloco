@@ -39,7 +39,7 @@ export function run(path) {
     let str = fs.readFileSync(file).toString('utf8');
     if (!str.includes('@ngneat/transloco')) continue;
     /** change listenToLangChange to renderOnce */
-    str = str.replace('listenToLangChange', 'renderLangOnce');
+    str = str.replace('listenToLangChange', 'reRenderOnLangChange');
     /** Remove scopeStrategy */
     str = str.replace(/\s*scopeStrategy:.*?,/, '');
     /** Add availableLangs */
