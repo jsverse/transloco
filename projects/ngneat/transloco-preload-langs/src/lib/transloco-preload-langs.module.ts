@@ -1,5 +1,5 @@
 import { Inject, ModuleWithProviders, NgModule, OnDestroy } from '@angular/core';
-import { getPipeValue, TranslocoService } from '@ngneat/transloco';
+import { TranslocoService } from '@ngneat/transloco';
 import { forkJoin, Subscription } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
@@ -47,6 +47,7 @@ export class TranslocoPreloadLangsModule implements OnDestroy {
     this.idleCallbackId = window.requestIdleCallback(() => {
       const preloads = langs.map(currentLangOrScope => {
         const lang = service._completeScopeWithLang(currentLangOrScope);
+
         return service.load(lang).pipe(
           tap(() => {
             if (service.config.prodMode === false) {

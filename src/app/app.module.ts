@@ -25,14 +25,14 @@ import { TranslocoMessageFormatModule } from '@ngneat/transloco-messageformat';
         es: 'es-ES'
       }
     })
-    // TranslocoPreloadLangsModule.preload(['es', 'todos-page|scoped'])
+    // TranslocoPreloadLangsModule.preload(['es', 'todos-page'])
     // TranslocoPersistLangModule.init({
     //   getLangFn,
     //   storage: {
     //     provide: TRANSLOCO_PERSIST_LANG_STORAGE,
     //     useValue: localStorage
     //   }
-    // })
+    // }),
     // TranslocoPersistTranslationsModule.init({
     //   loader: HttpLoader,
     //   storage: {
@@ -47,6 +47,7 @@ import { TranslocoMessageFormatModule } from '@ngneat/transloco-messageformat';
       provide: TRANSLOCO_CONFIG,
       useValue: {
         prodMode: environment.production,
+        availableLangs: [{ id: 'en', label: 'English' }, { id: 'es', label: 'Spanish' }],
         renderLangOnce: true,
         fallbackLang: 'es',
         defaultLang: 'en',
