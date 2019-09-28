@@ -1,6 +1,4 @@
 <h4>Scope is set to <code>todos-page</code> in module's providers.</h4>
-<h6>This app is configured with <code>scopeStrategy</code> set to <code>'shared'</code>.</h6>
-<h6>Which means each scope is merged into the global lang and accessed by the scope name:</h6>
 <h6 class="quoteblock">The scope's name will be camel cased e.g: <code>todos-page</code> 👉🏼 <code>todosPage</code></h6>
 <code
   ><pre>{{ ex.one }}</pre></code
@@ -15,8 +13,8 @@
 >
 <h6><u>And here is the result:</u></h6>
 <ng-container *transloco="let t">
-  <p data-cy="todos-page-scope">{{ t.todos.title }}</p>
-  <p data-cy="global">{{ t.home }}</p>
+  <p data-cy="todos-page-scope">{{ t['todos.title'] }}</p>
+  <p data-cy="global">{{ t['home'] }}</p>
 </ng-container>
 <h4><u>More Examples:</u></h4>
 <h5><u>Directive</u></h5>
@@ -32,6 +30,6 @@
   ><pre>{{ ex.nested }}</pre></code
 >
 <ng-container *transloco="let t; read: 'nested'">
-  <h5>{{ t.title }}</h5>
-  <p>{{ t.desc }}</p>
+  <h5>{{ t['title'] }}</h5>
+  <p>{{ t['desc'] }}</p>
 </ng-container>

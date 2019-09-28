@@ -29,7 +29,7 @@ export const loader = {
 
 export const configProviderMock = (config = {}) => ({
   provide: TRANSLOCO_CONFIG,
-  useValue: { ...defaultConfig, ...config, scopeStrategy: 'shared' } as TranslocoConfig
+  useValue: { ...defaultConfig, ...config, availableLangs: ['en', 'es'] } as TranslocoConfig
 });
 
 export const loaderProviderMock = {
@@ -71,8 +71,8 @@ export function runLoader(times = 1) {
   tick(times * 1001);
 }
 
-export function setlistenToLangChange(service: TranslocoService, listenToLangChange = true) {
-  (service as any).mergedConfig.listenToLangChange = listenToLangChange;
+export function setlistenToLangChange(service: TranslocoService, reRenderOnLangChange = true) {
+  (service as any).mergedConfig.reRenderOnLangChange = reRenderOnLangChange;
 }
 
 export const loadingTemplateMock = { provide: TRANSLOCO_LOADING_TEMPLATE, useValue: 'loading template...' };
@@ -83,7 +83,7 @@ export function createService(config: Partial<TranslocoConfig> = {}) {
     new DefaultTranspiler(),
     new DefaultHandler(),
     new DefaultInterceptor(),
-    { defaultLang: 'en', scopeStrategy: 'shared', ...config },
+    { defaultLang: 'en', ...config, availableLangs: ['en', 'es'] },
     new DefaultFallbackStrategy({ defaultLang: 'en', fallbackLang: 'en' })
   );
 }

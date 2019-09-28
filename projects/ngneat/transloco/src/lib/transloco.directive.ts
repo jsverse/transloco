@@ -21,7 +21,7 @@ import { TRANSLOCO_LOADING_TEMPLATE } from './transloco-loading-template';
 import { TRANSLOCO_SCOPE } from './transloco-scope';
 import { TranslocoService } from './transloco.service';
 import { HashMap, Translation } from './types';
-import { getValue, getPipeValue } from './helpers';
+import { getPipeValue } from './helpers';
 import { shouldListenToLangChanges } from './shared';
 
 @Directive({
@@ -30,6 +30,7 @@ import { shouldListenToLangChanges } from './shared';
 export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   subscription: Subscription = Subscription.EMPTY;
   view: EmbeddedViewRef<any>;
+  private missingKeysCache = {};
 
   @Input('transloco') key: string;
   @Input('translocoParams') params: HashMap = {};
@@ -77,11 +78,8 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
         /* In case the scope strategy is set to 'shared' we want to load the scope's language instead of the scope
         itself in order to expose the global translations as well.
         the scopes translations are merged to the global when using this strategy */
-        let targetLang = this.langName;
         const scope = this.getScope();
-        if (scope) {
-          targetLang = this.translocoService.isSharedScope ? this.getLang() : this.langName;
-        }
+        const targetLang = scope ? this.getLang() : this.langName;
         const translation = this.translocoService.getTranslation(targetLang);
         this.langName = targetLang;
         this.tpl === null ? this.simpleStrategy() : this.structuralStrategy(translation);
@@ -102,16 +100,41 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     this.host.nativeElement.innerText = this.translocoService.translate(this.key, this.params, this.langName);
   }
 
-  private structuralStrategy(data: Translation) {
-    const translations = this.inlineRead ? getValue(data, this.inlineRead) : data;
+  private structuralStrategy(translation: Translation) {
+    const withProxy = this.proxied(translation, this.inlineRead);
     if (this.view) {
-      this.view.context['$implicit'] = translations;
+      this.view.context['$implicit'] = withProxy;
     } else {
       this.detachLoader();
       this.view = this.vcr.createEmbeddedView(this.tpl, {
-        $implicit: translations
+        $implicit: withProxy
       });
     }
+  }
+
+  private proxied(translation: Translation, read: string | undefined) {
+    return new Proxy(
+      {},
+      {
+        get: (target: Translation, key: string) => {
+          const resolveKey = read ? `${read}.${key}` : key;
+          const value = translation[resolveKey];
+
+          if (!value) {
+            /**
+             * Components that don't use onPush will trigger it twice, so we need to cache it
+             */
+            if (!this.missingKeysCache[resolveKey]) {
+              this.missingKeysCache[resolveKey] = this.translocoService.handleMissingKey(key, value);
+            }
+
+            return this.missingKeysCache[resolveKey];
+          }
+
+          return value;
+        }
+      }
+    );
   }
 
   private getLoadingTpl(): View {

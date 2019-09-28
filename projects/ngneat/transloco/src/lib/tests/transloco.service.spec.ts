@@ -1,15 +1,15 @@
 import en from '../../../../../../src/assets/i18n/en.json';
 import { DefaultTranspiler, TranslocoService } from '../../public-api';
-import { createService, loader, mockLangs, runLoader } from './transloco.mocks';
+import { createService, mockLangs, runLoader } from './transloco.mocks';
 import { fakeAsync } from '@angular/core/testing';
 import { catchError, filter, map, pluck } from 'rxjs/operators';
 import { of, timer } from 'rxjs';
 import { DefaultHandler } from '../transloco-missing-handler';
 import { DefaultInterceptor } from '../transloco.interceptor';
 import { DefaultFallbackStrategy, TranslocoFallbackStrategy } from '../transloco-fallback-strategy';
-import * as helper from '../helpers';
 import { isString } from '../helpers';
 import { DefaultLoader } from '../transloco.loader';
+import flatten from 'flat';
 
 function createSpy() {
   return jasmine.createSpy();
@@ -34,12 +34,12 @@ describe('TranslocoService', () => {
       expect(service.translate(undefined)).toEqual(undefined);
     });
 
-    it('should return empty string when there is no translation file for the active lang', fakeAsync(() => {
-      expect(service.translate('home')).toEqual('');
+    it('should return call missing handler when there is no translation file for the active lang', fakeAsync(() => {
+      expect(service.translate('home')).toEqual('home');
       loadLang();
       expect(service.translate('home')).toEqual(mockLangs['en'].home);
       service.setActiveLang('es');
-      expect(service.translate('home')).toEqual('');
+      expect(service.translate('home')).toEqual('home');
     }));
 
     it('should call missing handler when there is no translation for the key', fakeAsync(() => {
@@ -58,18 +58,6 @@ describe('TranslocoService', () => {
       expect(service.translate('alert', { value: 'val' })).toEqual('alert val english');
       expect(service.translate('a.b.c')).toEqual('a.b.c from list english');
       expect(service.translate('key.is.like.path')).toEqual('key is like path');
-    }));
-
-    it('should translate using a cb', fakeAsync(() => {
-      loadLang();
-      const eng = mockLangs['en'];
-      expect(service.translate(en => en.home)).toEqual(eng.home);
-      expect(service.translate(en => en.a.b.c)).toEqual('a.b.c from list english');
-    }));
-
-    it('should translate using a cb with params', fakeAsync(() => {
-      loadLang();
-      expect(service.translate(en => en.alert, { value: 'val' })).toEqual('alert val english');
     }));
 
     it('should support multi key translation', fakeAsync(() => {
@@ -136,14 +124,14 @@ describe('TranslocoService', () => {
 
       it('should support scoped lang', fakeAsync(() => {
         const spy = createSpy();
-        service.selectTranslate('title', null, 'lazy-page|scoped').subscribe(spy);
+        service.selectTranslate('lazyPage.title', null, 'lazy-page').subscribe(spy);
         runLoader();
         expect(spy).toHaveBeenCalledWith('Admin Lazy english');
       }));
 
       it('should support scoped lang with param', fakeAsync(() => {
         const spy = createSpy();
-        service.selectTranslate('withParam', { param: 'Transloco' }, 'lazy-page|scoped').subscribe(spy);
+        service.selectTranslate('lazyPage.withParam', { param: 'Transloco' }, 'lazy-page').subscribe(spy);
         runLoader();
         expect(spy).toHaveBeenCalledWith('Admin Lazy english Transloco');
       }));
@@ -157,7 +145,7 @@ describe('TranslocoService', () => {
 
       it('should return the translation file', fakeAsync(() => {
         loadLang();
-        expect(service.getTranslation('en')).toEqual(mockLangs['en']);
+        expect(service.getTranslation('en')).toEqual(flatten(mockLangs['en']));
       }));
 
       it('should return the translations map', fakeAsync(() => {
@@ -165,22 +153,22 @@ describe('TranslocoService', () => {
         loadLang('es');
         const map = service.getTranslation();
         expect(map instanceof Map).toEqual(true);
-        expect(map.get('en')).toEqual(mockLangs['en']);
-        expect(map.get('es')).toEqual(mockLangs['es']);
+        expect(map.get('en')).toEqual(flatten(mockLangs['en']));
+        expect(map.get('es')).toEqual(flatten(mockLangs['es']));
       }));
 
       it('should select the active translations lang', fakeAsync(() => {
         const spy = jasmine.createSpy();
         service.selectTranslation().subscribe(spy);
         runLoader();
-        expect(spy).toHaveBeenCalledWith(mockLangs['en']);
+        expect(spy).toHaveBeenCalledWith(flatten(mockLangs['en']));
       }));
 
       it('should select the translations lang when passing one', fakeAsync(() => {
         const spy = jasmine.createSpy();
         service.selectTranslation('es').subscribe(spy);
         runLoader();
-        expect(spy).toHaveBeenCalledWith(mockLangs['es']);
+        expect(spy).toHaveBeenCalledWith(flatten(mockLangs['es']));
       }));
     });
 
@@ -192,54 +180,42 @@ describe('TranslocoService', () => {
       expect(langSpy).toHaveBeenCalledWith(newLang);
     });
 
-    describe('_setTranslation', () => {
+    describe('setTranslation', () => {
       let _service;
       beforeEach(() => {
         _service = service as any;
         spyOn(_service.translations, 'set').and.callThrough();
       });
+
       it('should add translation to the map after passing through the interceptor', () => {
         spyOn(_service.interceptor, 'preSaveTranslation').and.callThrough();
         const lang = 'en';
-        const translation = mockLangs[lang];
-        _service._setTranslation(lang, translation);
+        const translation = flatten(mockLangs[lang]);
+        _service.setTranslation(translation, lang);
         expect(_service.interceptor.preSaveTranslation).toHaveBeenCalledWith(translation, lang);
-        expect(_service.translations.set).toHaveBeenCalledWith(lang, translation);
-        expect(_service.translations.set).toHaveBeenCalledTimes(1);
-      });
-
-      it('should skip merging the scope when scopeStrategy is not defined', () => {
-        _service.mergedConfig.scopeStrategy = null;
-        const lang = 'lazy-page/en';
-        const translation = mockLangs[lang];
-        _service._setTranslation(lang, translation);
         expect(_service.translations.set).toHaveBeenCalledWith(lang, translation);
         expect(_service.translations.set).toHaveBeenCalledTimes(1);
       });
 
       describe('shared scopes', () => {
         let lang, translation;
+
         beforeEach(() => {
           _service.translations.set('en', mockLangs.en);
-          const funcSpy = createSpy().and.callFake(helper.setValue);
-          spyOnProperty(helper, 'setValue', 'get').and.returnValue(funcSpy);
           lang = 'lazy-page/en';
           translation = mockLangs[lang];
         });
-        it("should share the scope with the scope's global lang", () => {
-          _service._setTranslation(lang, translation);
-          expect(_service.translations.set).toHaveBeenCalledWith(lang, translation);
-          expect(helper.setValue).toHaveBeenCalledWith(mockLangs.en, 'lazyPage', translation);
-          const merged = { ...mockLangs.en, lazyPage: { ...translation } };
+
+        it("should merge the scope with the scope's global lang", () => {
+          _service.setTranslation(translation, lang);
+          const merged = { ...flatten(mockLangs.en), ...flatten({ lazyPage: { ...translation } }) };
           expect(_service.translations.set).toHaveBeenCalledWith('en', merged);
         });
 
         it("should map the scope's name in the merged translation", () => {
           _service.mergedConfig.scopeMapping = { 'lazy-page': 'kazaz' };
-          _service._setTranslation(lang, translation);
-          expect(_service.translations.set).toHaveBeenCalledWith(lang, translation);
-          expect(helper.setValue).toHaveBeenCalledWith(mockLangs.en, 'kazaz', translation);
-          const merged = { ...mockLangs.en, kazaz: { ...translation } };
+          _service.setTranslation(translation, lang);
+          const merged = { ...flatten(mockLangs.en), ...flatten({ kazaz: { ...translation } }) };
           expect(_service.translations.set).toHaveBeenCalledWith('en', merged);
         });
       });
@@ -254,14 +230,6 @@ describe('TranslocoService', () => {
 
         expect(newTranslation.bar).toEqual('bar');
         expect(newTranslation.home).toEqual('home english');
-      }));
-
-      it('should deep merge', fakeAsync(() => {
-        loadLang();
-        const translation = { a: { bar: 'bar' } };
-        service.setTranslation(translation);
-        const newTranslation = service.getTranslation('en');
-        expect(newTranslation.a.bar).toEqual('bar');
       }));
 
       it('should replace the current translation ( merge = false )', fakeAsync(() => {
@@ -285,14 +253,6 @@ describe('TranslocoService', () => {
         service.setTranslation({ home: 'home es' }, 'es');
         expect(service.getTranslation('es').home).toEqual('home es');
       }));
-      it('should also update the global translation when setting scope', fakeAsync(() => {
-        loadLang();
-        service.setTranslation(mockLangs['lazy-page/en'], 'lazy-page/en');
-        const newTranslation = service.getTranslation('en');
-
-        expect(newTranslation.lazyPage.title).toEqual('Admin Lazy english');
-        expect(newTranslation.home).toEqual('home english');
-      }));
     });
 
     describe('setTranslationKey', () => {
@@ -307,20 +267,15 @@ describe('TranslocoService', () => {
         loadLang();
         service.setTranslationKey('a.b.c', 'new value');
         const newTranslation = service.getTranslation('en');
-        expect(newTranslation.a.b.c).toEqual('new value');
+        expect(newTranslation['a.b.c']).toEqual('new value');
       }));
 
-      it('should do nothing if lang not exists', fakeAsync(() => {
+      it('should add it even if lang not exists', fakeAsync(() => {
         loadLang();
-        spyOn((service as any).translations, 'set').and.callThrough();
         service.setTranslationKey('a', 'new value', 'es');
-        expect((service as any).translations.set).not.toHaveBeenCalled();
-      }));
-      it('should add key to both scope and global', fakeAsync(() => {
-        loadLang('lazy-page/en');
-        service.setTranslationKey('kazaz', 'new value', 'lazy-page/en');
-        const newTranslation = service.getTranslation('en');
-        expect(newTranslation.lazyPage.kazaz).toEqual('new value');
+        expect((service as any).getTranslation('es')).toEqual({
+          a: 'new value'
+        });
       }));
     });
 
@@ -534,7 +489,7 @@ describe('Optional Loader', () => {
         new DefaultTranspiler(),
         new DefaultHandler(),
         new DefaultInterceptor(),
-        { defaultLang: 'en', scopeStrategy: 'shared' },
+        { defaultLang: 'en' },
         new DefaultFallbackStrategy({ defaultLang: 'en', fallbackLang: 'en' })
       );
     }).not.toThrow();

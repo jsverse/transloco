@@ -31,9 +31,11 @@
     "copy": "npm run schematics:copy && cp -r README.md dist/ngneat/transloco",
     "e2e": "cypress open",
     "e2e:headless": "cypress run",
-    "e2e:ci": "cross-env CYPRESS_BASE_URL=https://transloco.netlify.com cypress run"
+    "e2e:ci": "cross-env CYPRESS_BASE_URL=https://transloco.netlify.com cypress run",
+    "transloco:optimize": "transloco-optimize dist/transloco-playground/assets/i18n"
   },
   "dependencies": {
+    "messageformat": "2.3.0",
     "@angular/animations": "~7.2.0",
     "@angular/common": "~7.2.0",
     "@angular/compiler": "~7.2.0",
@@ -43,12 +45,12 @@
     "@angular/platform-browser-dynamic": "~7.2.0",
     "@angular/router": "~7.2.0",
     "core-js": "^2.5.4",
+    "flat": "^4.1.0",
     "git-cz": "^3.2.1",
-    "messageformat": "^2.3.0",
+    "lodash.omitby": "^4.6.0",
     "rxjs": "~6.3.3",
     "tslib": "^1.9.0",
-    "zone.js": "~0.8.26",
-    "lodash.omitby": "^4.6.0"
+    "zone.js": "~0.8.26"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.13.0",

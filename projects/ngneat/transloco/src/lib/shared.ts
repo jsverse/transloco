@@ -5,7 +5,7 @@ export function shouldListenToLangChanges(service: TranslocoService, lang: strin
   const [hasStatic] = getPipeValue(lang, 'static');
   if (hasStatic === false) {
     // If we didn't get 'lang|static' check if it's set in the global level
-    return service.config.listenToLangChange;
+    return service.config.reRenderOnLangChange;
   }
 
   // We have 'lang|static' so don't listen to lang changes

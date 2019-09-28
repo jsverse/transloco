@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { TranslocoService } from '@ngneat/transloco';
+import { AvailableLangs, TranslocoService } from '@ngneat/transloco';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 
@@ -10,8 +10,11 @@ import { take } from 'rxjs/operators';
 })
 export class AppComponent implements OnDestroy {
   private subscription: Subscription = Subscription.EMPTY;
+  availableLangs: AvailableLangs;
 
-  constructor(private service: TranslocoService) {}
+  constructor(private service: TranslocoService) {
+    this.availableLangs = this.service.getAvailableLangs();
+  }
 
   get activeLang() {
     return this.service.getActiveLang();
@@ -31,5 +34,4 @@ export class AppComponent implements OnDestroy {
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
-
 }
