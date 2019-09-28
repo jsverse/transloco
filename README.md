@@ -168,10 +168,10 @@ Transloco provides three ways to translate your templates:
 This is the recommended approach. It's DRY and efficient, as it creates one subscription per template:
 
 ```html
-<ng-container *transloco="let t">
+<ng-container *transloco="let t; let tParams=tParams">
   <ul>
     <li>{{ t['some.nested.key']}}</li>
-    <li>{{ t['alert'] | translocoParams: { value: dynamic } }}</li>
+    <li>{{ tParams('alert', { value: dynamic }) }}</li>
   </ul>
 </ng-container>
 

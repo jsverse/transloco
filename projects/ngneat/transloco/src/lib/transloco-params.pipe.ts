@@ -2,7 +2,7 @@ import { Inject, Pipe, PipeTransform } from '@angular/core';
 import { TranslocoService } from './transloco.service';
 import { HashMap } from './types';
 import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './transloco-missing-handler';
-
+// REMOVE
 @Pipe({
   name: 'translocoParams'
 })

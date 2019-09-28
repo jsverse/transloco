@@ -180,11 +180,11 @@ describe('TranslocoDirective', () => {
 
     it('should set the translation value', fakeAsync(() => {
       host = createHost(`
-        <section *transloco="let t">
+        <section *transloco="let t; let tParams=tParams">
            <div>{{t.home }}</div>
            <span>{{t.fromList}}</span>
-           <p>{{t['a.b.c'] | translocoParams}}</p>
-           <p>{{t['a.b.c']  | translocoParams:{fromList: "value"} }}</p>
+           <p>{{tParams('a.b.c')}}</p>
+           <p>{{tParams('a.b.c', {fromList: "value"}) }}</p>
         </section>
      `);
       runLoader();

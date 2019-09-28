@@ -21,7 +21,7 @@ import { TRANSLOCO_LOADING_TEMPLATE } from './transloco-loading-template';
 import { TRANSLOCO_SCOPE } from './transloco-scope';
 import { TranslocoService } from './transloco.service';
 import { HashMap, Translation } from './types';
-import { getPipeValue } from './helpers';
+import { getPipeValue, isEqual } from './helpers';
 import { shouldListenToLangChanges } from './shared';
 
 @Directive({
@@ -31,6 +31,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   subscription: Subscription = Subscription.EMPTY;
   view: EmbeddedViewRef<any>;
   private missingKeysCache = {};
+  private translationMemo: { [key: string]: { value: any; params: HashMap } } = {};
 
   @Input('transloco') key: string;
   @Input('translocoParams') params: HashMap = {};
@@ -107,7 +108,17 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     } else {
       this.detachLoader();
       this.view = this.vcr.createEmbeddedView(this.tpl, {
-        $implicit: withProxy
+        $implicit: withProxy,
+        tParams: (key: string, params: HashMap) => {
+          if (this.translationMemo.hasOwnProperty(key) && isEqual(this.translationMemo[key].params, params)) {
+            return this.translationMemo[key].value;
+          }
+          this.translationMemo[key] = {
+            params,
+            value: this.translocoService.translate(key, params)
+          };
+          return this.translationMemo[key].value;
+        }
       });
     }
   }

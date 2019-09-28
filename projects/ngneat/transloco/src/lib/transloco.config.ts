@@ -13,7 +13,8 @@ export type TranslocoConfig = {
     aot?: boolean;
   };
   missingHandler?: {
-    allowEmpty: boolean;
+    useFallbackTranslation?: boolean;
+    allowEmpty?: boolean;
   };
 };
 
@@ -31,6 +32,7 @@ export const defaultConfig: TranslocoConfig = {
   failedRetries: 2,
   availableLangs: [],
   missingHandler: {
+    useFallbackTranslation: false,
     allowEmpty: false
   },
   flatten: {
