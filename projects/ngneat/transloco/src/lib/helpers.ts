@@ -1,4 +1,4 @@
-import { TranslocoScopeInterface } from './transloco-scope';
+import { TranslocoScope } from './transloco-scope';
 
 export function getValue(obj: object, path: string) {
   /* For cases where the key is like: 'general.something.thing' */
@@ -161,6 +161,6 @@ export function toNumber(value: number | string): number | null {
   return null;
 }
 
-export function isTranslocoScopeInterface(item: any): item is TranslocoScopeInterface {
+export function isTranslocoScope(item: any): item is TranslocoScope {
   return typeof item.scope === 'string';
 }

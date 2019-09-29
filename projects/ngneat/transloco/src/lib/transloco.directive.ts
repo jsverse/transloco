@@ -18,12 +18,11 @@ import { switchMap, take } from 'rxjs/operators';
 import { TemplateHandler, View } from './template-handler';
 import { TRANSLOCO_LANG } from './transloco-lang';
 import { TRANSLOCO_LOADING_TEMPLATE } from './transloco-loading-template';
-import { TRANSLOCO_SCOPE, TranslocoScopeInterface } from './transloco-scope';
+import { TRANSLOCO_SCOPE, TranslocoScope } from './transloco-scope';
 import { TranslocoService } from './transloco.service';
 import { HashMap, Translation } from './types';
-import { getPipeValue, isTranslocoScopeInterface } from './helpers';
+import { getPipeValue, isTranslocoScope } from './helpers';
 import { shouldListenToLangChanges } from './shared';
-import { TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 
 @Directive({
   selector: '[transloco]'
@@ -48,10 +47,9 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   constructor(
     private translocoService: TranslocoService,
     @Optional() private tpl: TemplateRef<any>,
-    @Optional() @Inject(TRANSLOCO_SCOPE) private providerScope: string | TranslocoScopeInterface | null,
+    @Optional() @Inject(TRANSLOCO_SCOPE) private providerScope: string | TranslocoScope | null,
     @Optional() @Inject(TRANSLOCO_LANG) private providerLang: string | null,
     @Optional() @Inject(TRANSLOCO_LOADING_TEMPLATE) private providedLoadingTpl: Type<any> | string,
-    @Optional() @Inject(TRANSLOCO_CONFIG) private configProvider: TranslocoConfig | null,
     private vcr: ViewContainerRef,
     private cdr: ChangeDetectorRef,
     private host: ElementRef
@@ -72,13 +70,8 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
           const lang = this.getLang();
           const scope = this.getScope();
           this.langName = scope ? `${scope}/${lang}` : lang;
-          if (
-            !this.inlineScope &&
-            this.providerScope &&
-            isTranslocoScopeInterface(this.providerScope) &&
-            this.configProvider
-          ) {
-            this.configProvider.scopeMapping[this.providerScope.scope] = this.providerScope.alias;
+          if (!this.inlineScope && this.providerScope && isTranslocoScope(this.providerScope)) {
+            this.translocoService._setScopeAlias(this.providerScope.scope, this.providerScope.alias);
           }
           return this.translocoService._loadDependencies(this.langName);
         }),
@@ -154,9 +147,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   // inline => providers
   private getScope() {
     const providerScope =
-      this.providerScope && isTranslocoScopeInterface(this.providerScope)
-        ? this.providerScope.scope
-        : this.providerScope;
+      this.providerScope && isTranslocoScope(this.providerScope) ? this.providerScope.scope : this.providerScope;
     return this.inlineScope || providerScope;
   }
 

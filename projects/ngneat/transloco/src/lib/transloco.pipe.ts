@@ -3,11 +3,10 @@ import { TranslocoService } from './transloco.service';
 import { HashMap } from './types';
 import { switchMap, take } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
-import { TRANSLOCO_SCOPE, TranslocoScopeInterface } from './transloco-scope';
+import { TRANSLOCO_SCOPE, TranslocoScope } from './transloco-scope';
 import { TRANSLOCO_LANG } from './transloco-lang';
-import { getLangFromScope, getScopeFromLang, isTranslocoScopeInterface } from './helpers';
+import { getLangFromScope, getScopeFromLang, isTranslocoScope } from './helpers';
 import { shouldListenToLangChanges } from './shared';
-import { TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 
 @Pipe({
   name: 'transloco',
@@ -23,9 +22,8 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
 
   constructor(
     private translocoService: TranslocoService,
-    @Optional() @Inject(TRANSLOCO_SCOPE) private providerScope: string | TranslocoScopeInterface | null,
+    @Optional() @Inject(TRANSLOCO_SCOPE) private providerScope: string | TranslocoScope | null,
     @Optional() @Inject(TRANSLOCO_LANG) private providerLang: string | null,
-    @Optional() @Inject(TRANSLOCO_CONFIG) private configProvider: TranslocoConfig | null,
     private cdr: ChangeDetectorRef
   ) {
     this.listenToLangChange = shouldListenToLangChanges(this.translocoService, this.providerLang);
@@ -53,9 +51,9 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
           const lang = this.providerLang || activeLang;
           let providerScope;
           if (this.providerScope) {
-            if (isTranslocoScopeInterface(this.providerScope) && this.configProvider) {
+            if (isTranslocoScope(this.providerScope)) {
               providerScope = this.providerScope.scope;
-              this.configProvider.scopeMapping[this.providerScope.scope] = this.providerScope.alias;
+              this.translocoService._setScopeAlias(providerScope, this.providerScope.alias);
             } else {
               providerScope = this.providerScope;
             }

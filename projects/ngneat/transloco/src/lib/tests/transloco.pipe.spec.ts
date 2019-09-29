@@ -1,4 +1,4 @@
-import { defaultConfig, TranslocoConfig, TranslocoPipe, TranslocoService } from '../../public-api';
+import { TranslocoPipe, TranslocoService } from '../../public-api';
 import { Mock } from 'ts-mocks';
 import { ChangeDetectorRef } from '@angular/core';
 import { createService, runLoader } from './transloco.mocks';
@@ -17,13 +17,13 @@ describe('TranslocoPipe', () => {
       markForCheck: () => {}
     }).Object;
 
-    pipe = new TranslocoPipe(translateServiceMock, null, null, null, cdrMock);
+    pipe = new TranslocoPipe(translateServiceMock, null, null, cdrMock);
     spyOn(pipe as any, 'updateValue').and.callThrough();
   });
 
   it('should use provided language', fakeAsync(() => {
     spyOn(translateServiceMock, 'translate').and.callThrough();
-    pipe = new TranslocoPipe(translateServiceMock, null, 'es', null, cdrMock);
+    pipe = new TranslocoPipe(translateServiceMock, null, 'es', cdrMock);
     pipe.transform('title', {});
     runLoader();
     expect(translateServiceMock.translate).toHaveBeenCalledWith('title', {}, 'es');
@@ -31,7 +31,7 @@ describe('TranslocoPipe', () => {
 
   it('should load scoped translation', fakeAsync(() => {
     spyOn(translateServiceMock, 'translate').and.callThrough();
-    pipe = new TranslocoPipe(translateServiceMock, 'lazy-page', null, null, cdrMock);
+    pipe = new TranslocoPipe(translateServiceMock, 'lazy-page', null, cdrMock);
     (pipe as any).listenToLangChange = true;
     pipe.transform('title', {});
     runLoader();
@@ -43,14 +43,7 @@ describe('TranslocoPipe', () => {
 
   it('should load scoped translation with scope alias', fakeAsync(() => {
     spyOn(translateServiceMock, 'translate').and.callThrough();
-    const config = { ...defaultConfig, availableLangs: ['en', 'es'], scopeMapping: {} } as TranslocoConfig;
-    pipe = new TranslocoPipe(
-      translateServiceMock,
-      { scope: 'lazy-scope-alias', alias: 'myScopeAlias' },
-      null,
-      config,
-      cdrMock
-    );
+    pipe = new TranslocoPipe(translateServiceMock, { scope: 'lazy-scope-alias', alias: 'myScopeAlias' }, null, cdrMock);
     (pipe as any).listenToLangChange = true;
     pipe.transform('title', {});
     runLoader();

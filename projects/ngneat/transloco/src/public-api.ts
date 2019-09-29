@@ -7,7 +7,7 @@ export { TranslocoConfig, TRANSLOCO_CONFIG, defaultConfig } from './lib/transloc
 export { TRANSLOCO_TRANSPILER, DefaultTranspiler, TranslocoTranspiler } from './lib/transloco.transpiler';
 export { Translation, FailedEvent, HashMap, LoadedEvent, TranslocoEvents } from './lib/types';
 export { TranslocoParamsPipe } from './lib/transloco-params.pipe';
-export { TranslocoScopeInterface, TRANSLOCO_SCOPE } from './lib/transloco-scope';
+export { TranslocoScope, TRANSLOCO_SCOPE } from './lib/transloco-scope';
 export { TRANSLOCO_LOADING_TEMPLATE } from './lib/transloco-loading-template';
 export { TRANSLOCO_LANG } from './lib/transloco-lang';
 export { TestingLoader, TranslocoTestingModule } from './lib/transloco-testing.module';
