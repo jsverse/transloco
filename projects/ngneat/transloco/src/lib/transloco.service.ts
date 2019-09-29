@@ -102,7 +102,7 @@ export class TranslocoService implements OnDestroy {
       const load$ = from(this.loader.getTranslation(lang)).pipe(
         retry(this.config.failedRetries),
         catchError(() => this.handleFailure(lang, mergedOptions)),
-        tap(translation => this.handleSuccess(lang, translation, scopeAlias)),
+        tap(translation => this.handleSuccess(lang, translation)),
         shareReplay(1)
       );
 
@@ -313,14 +313,14 @@ export class TranslocoService implements OnDestroy {
    * We always want to make sure the global lang is loaded
    * before loading the scope since you can access both via the pipe/directive.
    */
-  _loadDependencies(langName: string, scopeAlias?: string): Observable<Translation | Translation[]> {
+  _loadDependencies(langName: string): Observable<Translation | Translation[]> {
     const split = langName.split('/');
     const [lang] = split.slice(-1);
     if (split.length > 1 && !size(this.getTranslation(lang))) {
       return combineLatest(this.load(lang), this.load(langName));
     }
 
-    return this.load(langName, null, scopeAlias);
+    return this.load(langName);
   }
 
   /**
@@ -340,8 +340,8 @@ export class TranslocoService implements OnDestroy {
     return (this.getAvailableLangs() as { id: string }[]).map(l => l.id);
   }
 
-  private handleSuccess(lang: string, translation: Translation, scopeAlias?: string) {
-    this.setTranslation(translation, lang, { emitChange: false }, scopeAlias);
+  private handleSuccess(lang: string, translation: Translation) {
+    this.setTranslation(translation, lang, { emitChange: false });
     if (this.failedLangs.has(lang) === false) {
       this.events.next({
         wasFailure: !!this.failedLangs.size,
