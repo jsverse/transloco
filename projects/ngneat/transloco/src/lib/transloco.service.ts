@@ -1,5 +1,5 @@
 import { Inject, Injectable, OnDestroy, Optional } from '@angular/core';
-import { BehaviorSubject, combineLatest, forkJoin, from, Observable, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, forkJoin, from, Observable, of, Subject, Subscription } from 'rxjs';
 import { catchError, map, retry, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { DefaultLoader, TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_TRANSPILER, TranslocoTranspiler } from './transloco.transpiler';
@@ -122,7 +122,13 @@ export class TranslocoService implements OnDestroy {
         catchError(() => this.handleFailure(lang, mergedOptions)),
         tap(translation => {
           if (Array.isArray(translation)) {
-            translation.forEach(t => this.handleSuccess(t.lang, t.translation));
+            translation.forEach(t => {
+              this.handleSuccess(t.lang, t.translation);
+              // Save the fallback in cache so we'll not create a redundant request
+              if (t.lang !== lang) {
+                this.cache.set(t.lang, of({}));
+              }
+            });
             return;
           }
           this.handleSuccess(lang, translation);
