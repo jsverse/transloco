@@ -22,6 +22,7 @@ import { InsertChange } from '../utils/change';
 import { findRootModule } from '../utils/find-module';
 import { getProject, setEnvironments } from '../utils/projects';
 import { SchemaOptions, Loaders, TranslationFileTypes } from './schema';
+import { stringifyList } from '../utils/array';
 
 function jsonTranslationFileCreator(source, lang) {
   return source.create(
@@ -155,7 +156,7 @@ export default function(options: SchemaOptions): Rule {
     const configProviderTemplate = `{
       provide: TRANSLOCO_CONFIG,
       useValue: {
-        availableLangs: [${langs}],
+        availableLangs: [${stringifyList(langs)}],
         defaultLang: '${langs[0]}',
         prodMode: ${prodMode},
       } as TranslocoConfig
