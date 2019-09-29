@@ -20,7 +20,7 @@ import { TRANSLOCO_LANG } from './transloco-lang';
 import { TRANSLOCO_LOADING_TEMPLATE } from './transloco-loading-template';
 import { TRANSLOCO_SCOPE } from './transloco-scope';
 import { TranslocoService } from './transloco.service';
-import { HashMap, Translation } from './types';
+import { HashMap } from './types';
 import { getPipeValue, isEqual } from './helpers';
 import { shouldListenToLangChanges } from './shared';
 
@@ -30,7 +30,6 @@ import { shouldListenToLangChanges } from './shared';
 export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   subscription: Subscription = Subscription.EMPTY;
   view: EmbeddedViewRef<any>;
-  private missingKeysCache = {};
   private translationMemo: { [key: string]: { value: any; params: HashMap } } = {};
 
   @Input('transloco') key: string;
@@ -81,9 +80,8 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
         the scopes translations are merged to the global when using this strategy */
         const scope = this.getScope();
         const targetLang = scope ? this.getLang() : this.langName;
-        const translation = this.translocoService.getTranslation(targetLang);
         this.langName = targetLang;
-        this.tpl === null ? this.simpleStrategy() : this.structuralStrategy(translation);
+        this.tpl === null ? this.simpleStrategy() : this.structuralStrategy(targetLang, this.inlineRead);
         this.cdr.markForCheck();
         this.initialized = true;
       });
@@ -101,51 +99,33 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     this.host.nativeElement.innerText = this.translocoService.translate(this.key, this.params, this.langName);
   }
 
-  private structuralStrategy(translation: Translation) {
-    const withProxy = this.proxied(translation, this.inlineRead);
+  private structuralStrategy(lang: string, read: string | undefined) {
+    this.translationMemo = {};
+
     if (this.view) {
-      this.view.context['$implicit'] = withProxy;
+      this.view.context['$implicit'] = this.getTranslateFn(lang, read);
     } else {
       this.detachLoader();
       this.view = this.vcr.createEmbeddedView(this.tpl, {
-        $implicit: withProxy,
-        tParams: (key: string, params: HashMap) => {
-          if (this.translationMemo.hasOwnProperty(key) && isEqual(this.translationMemo[key].params, params)) {
-            return this.translationMemo[key].value;
-          }
-          this.translationMemo[key] = {
-            params,
-            value: this.translocoService.translate(key, params)
-          };
-          return this.translationMemo[key].value;
-        }
+        $implicit: this.getTranslateFn(lang, read)
       });
     }
   }
 
-  private proxied(translation: Translation, read: string | undefined) {
-    return new Proxy(
-      {},
-      {
-        get: (target: Translation, key: string) => {
-          const resolveKey = read ? `${read}.${key}` : key;
-          const value = translation[resolveKey];
-
-          if (!value) {
-            /**
-             * Components that don't use onPush will trigger it twice, so we need to cache it
-             */
-            if (!this.missingKeysCache[resolveKey]) {
-              this.missingKeysCache[resolveKey] = this.translocoService.handleMissingKey(key, value);
-            }
-
-            return this.missingKeysCache[resolveKey];
-          }
-
-          return value;
-        }
+  private getTranslateFn(lang: string, read: string | undefined) {
+    return (key: string, params: HashMap) => {
+      const withRead = read ? `${read}.${key}` : key;
+      const withParams = params ? `${withRead}${JSON.stringify(params)}` : withRead;
+      if (this.translationMemo.hasOwnProperty(withParams)) {
+        return this.translationMemo[withParams].value;
       }
-    );
+      this.translationMemo[withParams] = {
+        params,
+        value: this.translocoService.translate(withRead, params, lang)
+      };
+
+      return this.translationMemo[withParams].value;
+    };
   }
 
   private getLoadingTpl(): View {

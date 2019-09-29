@@ -26,7 +26,7 @@ export class TranslocoService implements OnDestroy {
   private defaultLang: string;
   private mergedConfig: TranslocoConfig;
   private availableLangs: AvailableLangs = [];
-
+  private isResolvedMissingOnce = false;
   private lang: BehaviorSubject<string>;
   langChanges$: Observable<string>;
 
@@ -320,8 +320,11 @@ export class TranslocoService implements OnDestroy {
       return '';
     }
 
-    if (this.useFallbackTranslation()) {
-      return this.translate(key, params, this.firstFallbackLang);
+    if (this.useFallbackTranslation() && !this.isResolvedMissingOnce) {
+      this.isResolvedMissingOnce = true;
+      const value = this.translate(key, params, this.firstFallbackLang);
+      this.isResolvedMissingOnce = false;
+      return value;
     }
 
     return this.missingHandler.handle(key, this.config);
