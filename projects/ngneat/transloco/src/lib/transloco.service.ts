@@ -123,6 +123,7 @@ export class TranslocoService implements OnDestroy {
         tap(translation => {
           if (Array.isArray(translation)) {
             translation.forEach(t => this.handleSuccess(t.lang, t.translation));
+            return;
           }
           this.handleSuccess(lang, translation);
         }),
