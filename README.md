@@ -62,8 +62,6 @@ Install the library using Angular CLI:
 
 `ng add @ngneat/transloco`
 
-![Demo](transloco.gif)
-
 As part of the installation process you'll be presented with questions; Once you answer them, everything you need will automatically be created for you. Let's take a closer look at the generated files:
 
 First, Transloco creates boilerplate files for the requested translations:
