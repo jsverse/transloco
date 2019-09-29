@@ -6,7 +6,6 @@ export { TRANSLOCO_LOADER, TranslocoLoader } from './lib/transloco.loader';
 export { TranslocoConfig, TRANSLOCO_CONFIG, defaultConfig } from './lib/transloco.config';
 export { TRANSLOCO_TRANSPILER, DefaultTranspiler, TranslocoTranspiler } from './lib/transloco.transpiler';
 export { Translation, FailedEvent, HashMap, LoadedEvent, TranslocoEvents } from './lib/types';
-export { TranslocoParamsPipe } from './lib/transloco-params.pipe';
 export { TRANSLOCO_SCOPE } from './lib/transloco-scope';
 export { TRANSLOCO_LOADING_TEMPLATE } from './lib/transloco-loading-template';
 export { TRANSLOCO_LANG } from './lib/transloco-lang';
