@@ -738,7 +738,6 @@ Transloco provides a schematics [command](https://github.com/ngneat/transloco/bl
 | Structural Directive              | ✅                                                                                                            | ❌                                                              | ❌           | ❌             |
 | Attribute Directive               | ✅                                                                                                            | ✅                                                              | ✅           | ✅             |
 | Pipe                              | ✅                                                                                                            | ✅                                                              | ❌           | ✅             |
-| Ivy support                       | ✅                                                                                                            | ❌ [See here](https://github.com/ngx-translate/core/issues/958) | ✅           | ✅ \*\*        |
 | Pluralization                     | ✅ [Official Plugin](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-messageformat) | ✅ External library                                             | ✅           | ✅             |
 | Locale                            | ✅ [Official Plugin](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-locale)        | ❌                                                              | ✅           | ✅             |
 
