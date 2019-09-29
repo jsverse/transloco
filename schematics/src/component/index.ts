@@ -5,7 +5,7 @@ import { tap } from 'rxjs/operators';
 export default function(options): Rule {
   return (host: Tree, context: SchematicContext) => {
     const template = `<ng-template transloco let-t>
-  <h1> {{ t.title }} </h1>
+  <h1> {{ t('title') }} </h1>
 </ng-template>
 `;
 
