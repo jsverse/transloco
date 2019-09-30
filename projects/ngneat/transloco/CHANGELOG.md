@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.8.0](https://github.com/ngneat/transloco/compare/v1.7.8...v1.8.0) (2019-09-30)
+
+### Bug Fixes
+
+- 🐛 ng-add: fix hard coded fallbackLang ([#90](https://github.com/ngneat/transloco/issues/90)) ([9b1239f](https://github.com/ngneat/transloco/commit/9b1239f))
+
+### Features
+
+- 🎸 v2 changes ([430fadf](https://github.com/ngneat/transloco/commit/430fadf))
+- 🤖 Add schematics for transloco scope ([#79](https://github.com/ngneat/transloco/issues/79)) ([aea9495](https://github.com/ngneat/transloco/commit/aea9495))
+
+### BREAKING CHANGES
+
+- See in BREAKING_CHANGES.md file
+
 ## [1.3.0](https://github.com/ngneat/transloco/compare/v1.2.0...v1.3.0) (2019-08-26)
 
 ### Bug Fixes
