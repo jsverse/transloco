@@ -8,29 +8,52 @@ export function run(path) {
   path = p.join(dir, path, '/**/*');
   const htmlFiles = glob.sync(`${path}.html`);
   const structuralRegex = /<([a-zA-Z-]*)[^*>]*\*transloco=('|")\s*let\s+(?<varName>\w*)[^>]*\2>[^]+?<\/\1\s*>/g;
-  const templateKey = varName => new RegExp(`${varName}(?:(?:\\[(?:'|"))|\\.)([^}|:]*)`, 'g');
+  const templateKey = varName =>
+    new RegExp(`(?<rawKey>${varName}(?:(?:\\[(?:'|"))|\\.)(?:[^}|:]*))(?<param>[\\s\\w|:{}]*)}}`, 'g');
   for (const file of htmlFiles) {
     let str = fs.readFileSync(file).toString('utf8');
     if (!str.includes('*transloco')) continue;
-    let result = structuralRegex.exec(str);
-    while (result) {
-      const [matchedStr] = result;
-      let { varName } = result.groups;
-      let scopeKeys = matchedStr.match(templateKey(varName));
-      scopeKeys &&
-        scopeKeys.forEach(rawKey => {
-          /** The raw key may contain square braces we need to align it to '.' */
-          let [key, ...inner] = rawKey
-            .trim()
-            .replace(/\[/g, '.')
-            .replace(/'|"|\]|\?/g, '')
-            .replace(`${varName}.`, '')
-            .split('.');
-          if (inner.length) {
-            str = str.replace(rawKey, `${varName}['${key}.${inner.join('.')}']`);
+    let structuralSearch = structuralRegex.exec(str);
+    while (structuralSearch) {
+      const [matchedStr] = structuralSearch;
+      let { varName } = structuralSearch.groups;
+      const keyRegex = templateKey(varName);
+      let newStructuralStr = matchedStr;
+      let keySearch = keyRegex.exec(matchedStr);
+      let hasMatches = !!keySearch;
+      while (keySearch) {
+        const { rawKey, param } = keySearch.groups;
+        /** The raw key may contain square braces we need to align it to '.' */
+        let [key, ...inner] = rawKey
+          .trim()
+          .replace(/\[/g, '.')
+          .replace(/'|"|\]|\?/g, '')
+          .replace(`${varName}.`, '')
+          .split('.');
+        let callEnd = ')';
+        const pipes = (param && param.split('|')) || [];
+        const [paramsPipe] = pipes.filter(pipe => pipe.includes('translocoParams'));
+        if (paramsPipe) {
+          const paramValue = paramsPipe.substring(paramsPipe.indexOf('{'), paramsPipe.lastIndexOf('}') + 1);
+          if (paramValue) {
+            callEnd = `, ${paramValue})`;
           }
-        });
-      result = structuralRegex.exec(str);
+        }
+        if (inner.length) {
+          key = `${key}.${inner.join('.')}`;
+        }
+        newStructuralStr = paramsPipe
+          ? newStructuralStr.replace(
+              `${rawKey}${param}`,
+              `${varName}('${key}'${callEnd} ${pipes.filter(pipe => !pipe.includes('translocoParams')).join('|')}`
+            )
+          : newStructuralStr.replace(rawKey, `${varName}('${key}'${callEnd}`);
+        keySearch = keyRegex.exec(matchedStr);
+      }
+      if (hasMatches) {
+        str = str.replace(matchedStr, newStructuralStr);
+      }
+      structuralSearch = structuralRegex.exec(str);
     }
     fs.writeFileSync(file, str, { encoding: 'utf8' });
   }
