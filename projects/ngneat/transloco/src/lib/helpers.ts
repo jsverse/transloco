@@ -158,7 +158,3 @@ export function toNumber(value: number | string): number | null {
 
   return null;
 }
-
-export function isEqual(a: any, b: any) {
-  return JSON.stringify(a) === JSON.stringify(b);
-}

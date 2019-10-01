@@ -21,7 +21,7 @@ import { TRANSLOCO_LOADING_TEMPLATE } from './transloco-loading-template';
 import { TRANSLOCO_SCOPE } from './transloco-scope';
 import { TranslocoService } from './transloco.service';
 import { HashMap } from './types';
-import { getPipeValue, isEqual } from './helpers';
+import { getPipeValue } from './helpers';
 import { shouldListenToLangChanges } from './shared';
 
 @Directive({
@@ -104,11 +104,9 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
 
     if (this.view) {
       this.view.context['$implicit'] = this.getTranslateFn(lang, read);
-      this.view.context['translate'] = this.getTranslateFn(lang, read);
     } else {
       this.detachLoader();
       this.view = this.vcr.createEmbeddedView(this.tpl, {
-        translate: this.getTranslateFn(lang, read),
         $implicit: this.getTranslateFn(lang, read)
       });
     }
