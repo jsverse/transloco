@@ -104,9 +104,11 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
 
     if (this.view) {
       this.view.context['$implicit'] = this.getTranslateFn(lang, read);
+      this.view.context['translate'] = this.getTranslateFn(lang, read);
     } else {
       this.detachLoader();
       this.view = this.vcr.createEmbeddedView(this.tpl, {
+        translate: this.getTranslateFn(lang, read),
         $implicit: this.getTranslateFn(lang, read)
       });
     }

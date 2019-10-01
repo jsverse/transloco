@@ -1,19 +1,9 @@
 # Transloco V2
 
-- Each translation file is now flatten in runtime. This change brings the following benefits:
-
-- Lower memory consumption.
-- Faster value accessor.
-- Missing handler for the structural directive.
-
-So now when using the structural directive, you should use the bracket notation:
+- Structural directive is now a **memoized** function:
 
 ```html
-// before 
-{{ t.a.b }} {{ t.hello }} 
-
-// After 
-{{ t['a.b'] }} {{ t.hello }}
+// before {{ t.a.b }} {{ t.hello }} // After {{ t('a.b') }} {{ t('hello') }}
 ```
 
 - Dedicated method for when you need to query an object instead of a key:
@@ -54,6 +44,7 @@ We need this information to know whether we're dealing with a `language` or a `s
 
 ## Features
 
+- Each translation file is now flatten in runtime. This change brings benefits such as lower memory consumption, and faster value accessor.
 - Missing handler support for the structural directive.
 - Transloco optimizes library which will minify the translation files, flatten AOT, and removes comments.
 - Support a fallback language for missing translation value or key.
