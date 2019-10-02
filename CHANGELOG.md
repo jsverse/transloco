@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.1](https://github.com/ngneat/transloco/compare/v2.0.0...v2.0.1) (2019-10-02)
+
+### Bug Fixes
+
+- 🐛 missing handler fix allow empty values in pipe ([2efbe6c](https://github.com/ngneat/transloco/commit/2efbe6c))
+
 ## [2.0.0](https://github.com/ngneat/transloco/compare/v1.7.8...v2.0.0) (2019-10-02)
 
 ### Bug Fixes
