@@ -10,7 +10,7 @@ export function run(path) {
   const templateRegex = /<ng-template[^>]*transloco[^>]*>[^]+?<\/ng-template>/g;
   const structuralRegex = /<([a-zA-Z-]*)[^*>]*\*transloco=('|")\s*let\s+(?<varName>\w*)[^>]*\2>[^]+?<\/\1\s*>/g;
   const templateKey = varName =>
-    new RegExp(`(?<rawKey>${varName}(?:(?:\\[(?:'|"))|\\.)(?:[^}|:]*))(?<param>[\\s\\w|:{}"'$&!?%@#^)(]*)}}`, 'g');
+    new RegExp(`(?<rawKey>${varName}(?:(?:\\[(?:'|"))|\\.)(?:[^}|:]*))(?<param>[\\s\\w|:{}'"$&!?%@#^)(]*)}}`, 'g');
   for (const file of htmlFiles) {
     let str = fs.readFileSync(file).toString('utf8');
     if (!str.includes('transloco')) continue;
@@ -55,7 +55,7 @@ export function run(path) {
         if (hasMatches) {
           str = str.replace(matchedStr, newStructuralStr);
         }
-        containerSearch = structuralRegex.exec(str);
+        containerSearch = rgx.exec(str);
       }
     });
     fs.writeFileSync(file, str, { encoding: 'utf8' });
