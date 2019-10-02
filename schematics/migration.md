@@ -55,7 +55,7 @@ The `TranslateService` injections will be replaced with `TranslocoService`.
 2. `translateService.onLangChange` will be replaced with `translateService.langChanges$`.
 3. `translateService.use(...)` calls will be replaced with `translateService.setActiveLang(...)`.
 4. `translateService.instant(...)` calls will be replaced with `translateService.translate(...)`.
-5. `translateService.get(...)` calls will be replaced with `translateService.selectTranslate(...)`.
+5. `translateService.get(...)` calls will be replaced with `translateService.selectTranslate(...)` and `take(1)` needs to be manually added `translateService.selectTranslate(...).pipe(take(1))` in order to prevent listening to language changes.
 6. `translateService.stream(...)` calls will be replaced with `translateService.selectTranslate(...)`.
 7. `translateService.set(...)` calls will be replaced with `translateService.setTranslation(...)`.
 
