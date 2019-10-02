@@ -5,7 +5,7 @@ export function getValue(obj: object, path: string) {
   if (obj && obj.hasOwnProperty(path)) {
     return obj[path];
   }
-  return path.split('.').reduce((p, c) => (p && p[c]) || null, obj);
+  return path.split('.').reduce((p, c) => p && p[c], obj);
 }
 
 export function setValue(obj: any, prop: string, val: any) {

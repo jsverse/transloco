@@ -3,7 +3,13 @@
 - Structural directive is now a **memoized** function:
 
 ```html
-// before {{ t.a.b }} {{ t.hello }} // After {{ t('a.b') }} {{ t('hello') }}
+// before {{ t.a.b }} {{ t.hello }} {{ t.someKey | translocoParams: { value: 'value' } }}
+```
+
+After:
+
+```html
+{{ t('a.b') }} {{ t('hello') }} {{ t('someKey', { value: 'value') }}
 ```
 
 - Dedicated method for when you need to query an object instead of a key:

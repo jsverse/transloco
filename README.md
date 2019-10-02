@@ -8,7 +8,7 @@
 The internationalization (i18n) library for Angular
 
 [![Build Status](https://img.shields.io/travis/datorama/akita.svg?style=flat-square)](https://travis-ci.org/ngneat/transloco)
-[![All Contributors](https://img.shields.io/badge/all_contributors-9-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-10-orange.svg?style=flat-square)](#contributors-)
 [![commitizen](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)]()
 [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)]()
 [![coc-badge](https://img.shields.io/badge/codeof-conduct-ff69b4.svg?style=flat-square)]()
@@ -30,6 +30,7 @@ The internationalization (i18n) library for Angular
 
 - [Installation](#installation)
 - [Transloco Config](#config-options)
+- [Set the Available Languages](#set-the-available-languages)
 - [Translation in the Template](#translation-in-the-template)
 - [Programmatical Translation](#programmatical-translation)
 - [Service API](#service-api)
@@ -87,8 +88,8 @@ import { environment } from '../environments/environment';
     {
       provide: TRANSLOCO_CONFIG,
       useValue: {
+        availableLangs: ['en', 'es'],
         prodMode: environment.production,
-        listenToLangChange: true,
         defaultLang: 'en'
       }
     }
@@ -233,7 +234,6 @@ export class AppComponent {
     this.service.translate('hello', { value: 'world' });
     this.service.translate(['hello', 'key']);
     this.service.translate('hello', params, 'en');
-    this.service.translate<T>(translate => translate.someKey);
   }
 }
 ```
@@ -246,7 +246,7 @@ this.service.selectTranslate('hello', params, lang).subscribe(value => ...);
 
 // When quering an object that should be transpiled
 // For example: { a: { b: 'Hello {{ value }}', c: 'Hey {{ dynamic }}' }}
-this.service.selectTranslate('a', {
+this.service.selectTranslateObject('a', {
   'b': { value: '' },
   'c': { dynamic: '' }
 }).subscribe(obj => ...);
@@ -266,6 +266,8 @@ Note that `selectTranslate` will emit each time the active language is changed.
 - `setDefaultLang` - Sets the default language
 - `getActiveLang` - Gets the current active language
 - `setActiveLang` - Sets the current active language
+- `getAvailableLangs` - Gets the available languages
+- `setAvailableLangs` - Sets the available languages
 
 ```ts
 service.setActiveLang(lang);
@@ -429,24 +431,6 @@ Now we can access it through `customName` instead of the original scope name (`t
 <span transloco="customName.submit"></span>
 ```
 
-Note that to use it in the current version (1.x.x), we need to set `config.scopeStrategy` to `shared`. In the next major release, it will be the default.
-
-### Programmatically Translations for Scopes
-
-Since `TranslocoService` is a singleton each time we need to programmatically translate a scope key, we have to specify it in `translate` method.
-
-Translating scope key of active language:
-
-```typescript
-this.service.translate('title', {}, 'my-scope|scoped');
-```
-
-You could also get translation scope of a specific language:
-
-```typescript
-this.service.translate('title', {}, 'my-scope/en');
-```
-
 ## Using Multiple Languages Simultaneously
 
 There are times you may need to use a different language in a specific part of the template, or in a particular component or module. This can be achieved in a similar way to the previous example, except here set the `TRANSLOCO_LANG` provider either in **lazy module** providers list, the component providers or in the template.
@@ -584,7 +568,7 @@ This handler is responsible for handling missing keys. The default handler calls
 
 ```ts
 export class CustomHandler implements TranslocoMissingHandler {
-  handle(key: string, params: HashMap, config: TranslocoConfig) {
+  handle(key: string, config: TranslocoConfig) {
     return '...';
   }
 }
@@ -594,8 +578,6 @@ export const custom = {
   useClass: CustomHandler
 };
 ```
-
-**Note:** The missing handler is [**not supported when using structural directive.**](https://github.com/ngneat/transloco/issues/52#issuecomment-526313689)
 
 #### Transloco Fallback Strategy
 
@@ -642,6 +624,7 @@ When running specs, we want to have the languages available immediately, in a sy
 ```ts
 import { TranslocoTestingModule } from '@ngneat/transloco';
 import en from '../../assets/i18n/en.json';
+import scopeScope from '../../assets/i18n/some-scope/en.json';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -649,7 +632,8 @@ describe('AppComponent', () => {
       imports: [
         RouterTestingModule,
         TranslocoTestingModule.withLangs({
-          en
+          en,
+          'some-scope/en': scopeScope
         }, translocoConfig?)
       ],
       declarations: [AppComponent]
@@ -722,13 +706,10 @@ Transloco provides a schematics [command](https://github.com/ngneat/transloco/bl
 | Structural Directive              | ✅                                                                                                            | ❌                                                              | ❌           | ❌             |
 | Attribute Directive               | ✅                                                                                                            | ✅                                                              | ✅           | ✅             |
 | Pipe                              | ✅                                                                                                            | ✅                                                              | ❌           | ✅             |
-| Ivy support                       | ✅                                                                                                            | ❌ [See here](https://github.com/ngx-translate/core/issues/958) | ✅           | ✅ \*\*        |
 | Pluralization                     | ✅ [Official Plugin](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-messageformat) | ✅ External library                                             | ✅           | ✅             |
 | Locale                            | ✅ [Official Plugin](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-locale)        | ❌                                                              | ✅           | ✅             |
 
 (\*) Works **only** by creating a new service instance and mark it as isolated, and it's not supported at the directive level.
-
-(\*\*) Doesn't work with [@Language](https://github.com/robisim74/angular-l10n/issues/257) decorator when used in AOT.
 
 If you find any mistakes in the table, open an issue, and we'll fix them asap, thanks in advance.
 
@@ -740,6 +721,7 @@ If you find any mistakes in the table, open an issue, and we'll fix them asap, t
 - [Preload Languages](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-preload-langs) (official)
 - [Translators Comments](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-remove-comments) (official)
 - [Locale](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-locale) (official)
+- [Transloco Optimize](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-optimize) (official)
 
 ## Recipes
 
@@ -780,6 +762,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="https://github.com/DerSizeS"><img src="https://avatars3.githubusercontent.com/u/708090?v=4" width="100px;" alt="Oleg Teterin"/><br /><sub><b>Oleg Teterin</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=DerSizeS" title="Code">💻</a></td>
     <td align="center"><a href="https://twitter.com/maxime1992"><img src="https://avatars0.githubusercontent.com/u/4950209?v=4" width="100px;" alt="Maxime"/><br /><sub><b>Maxime</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=maxime1992" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/zufarzhan"><img src="https://avatars3.githubusercontent.com/u/22148960?v=4" width="100px;" alt="Zufar Ismanov"/><br /><sub><b>Zufar Ismanov</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=zufarzhan" title="Code">💻</a> <a href="#ideas-zufarzhan" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>
 

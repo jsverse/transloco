@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/ngneat/transloco/compare/v1.7.8...v2.0.0) (2019-10-02)
+
+### Bug Fixes
+
+- 🐛 ng-add: fix hard coded fallbackLang ([#90](https://github.com/ngneat/transloco/issues/90)) ([9b1239f](https://github.com/ngneat/transloco/commit/9b1239f))
+- schematics ng-add availabeLangs ([8b6424d](https://github.com/ngneat/transloco/commit/8b6424d))
+
+### Features
+
+- 🎸 change structural to function ([1945686](https://github.com/ngneat/transloco/commit/1945686))
+- 🎸 missing translation fallback ([8151c24](https://github.com/ngneat/transloco/commit/8151c24))
+- 🎸 v2 changes ([430fadf](https://github.com/ngneat/transloco/commit/430fadf))
+- 🤖 Add schematics for transloco scope ([#79](https://github.com/ngneat/transloco/issues/79)) ([aea9495](https://github.com/ngneat/transloco/commit/aea9495))
+
+### Tests
+
+- 💍 add fallback specs ([d5d91e6](https://github.com/ngneat/transloco/commit/d5d91e6))
+- 💍 update lazy spec ([ab2e627](https://github.com/ngneat/transloco/commit/ab2e627))
+
+### BREAKING CHANGES
+
+- See in BREAKING_CHANGES.md file
+
 ### [1.7.9](https://github.com/ngneat/transloco/compare/v1.7.8...v1.7.9) (2019-09-17)
 
 ### [1.7.8](https://github.com/ngneat/transloco/compare/v1.7.7...v1.7.8) (2019-09-11)

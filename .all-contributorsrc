@@ -76,7 +76,8 @@
       "avatar_url": "https://avatars0.githubusercontent.com/u/8522558?v=4",
       "profile": "https://www.codamit.dev",
       "contributions": [
-        "doc"
+        "doc",
+        "code"
       ]
     },
     {
@@ -95,6 +96,16 @@
       "profile": "https://twitter.com/maxime1992",
       "contributions": [
         "doc"
+      ]
+    },
+    {
+      "login": "zufarzhan",
+      "name": "Zufar Ismanov",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/22148960?v=4",
+      "profile": "https://github.com/zufarzhan",
+      "contributions": [
+        "code",
+        "ideas"
       ]
     }
   ],
