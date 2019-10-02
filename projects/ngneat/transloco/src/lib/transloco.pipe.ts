@@ -66,8 +66,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
   private updateValue(key: string, params?: HashMap): void {
     const scope = getScopeFromLang(this.langName);
     const targetLang = scope ? getLangFromScope(this.langName) : this.langName;
-    const translation = this.translocoService.translate(key, params, targetLang) as string;
-    this.value = translation || key;
+    this.value = this.translocoService.translate(key, params, targetLang) as string;
     this.cdr.markForCheck();
   }
 }
