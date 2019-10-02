@@ -3,10 +3,12 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { TRANSLOCO_SCOPE, TranslocoTestingModule } from '@ngneat/transloco';
 import { By } from '@angular/platform-browser';
 import en from '../../assets/i18n/en.json';
+import es from '../../assets/i18n/es.json';
 import admin from '../../assets/i18n/admin-page/en.json';
+import adminSpanish from '../../assets/i18n/admin-page/es.json';
 import { LazyComponent } from './lazy.component';
 
-describe('LazyComponent', () => {
+fdescribe('LazyComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'admin-page' }],
@@ -15,10 +17,12 @@ describe('LazyComponent', () => {
         TranslocoTestingModule.withLangs(
           {
             en,
-            'admin-page/en': admin
+            es,
+            'admin-page/en': admin,
+            'admin-page/es': adminSpanish
           },
           {
-            defaultLang: 'en'
+            defaultLang: 'es'
           }
         )
       ],
@@ -29,6 +33,6 @@ describe('LazyComponent', () => {
   it('should work', function() {
     const fixture = TestBed.createComponent(LazyComponent);
     fixture.detectChanges();
-    expect(fixture.debugElement.query(By.css('.admin-title')).nativeElement.innerText).toBe('Admin english');
+    expect(fixture.debugElement.query(By.css('.admin-title')).nativeElement.innerText).toBe('Admin spanish');
   });
 });

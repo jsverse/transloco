@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { TranslocoLoaderComponent } from './loader-component.component';
 import { TranslocoDirective } from './transloco.directive';
 import { DefaultTranspiler, TRANSLOCO_TRANSPILER } from './transloco.transpiler';
-import { TranslocoParamsPipe } from './transloco-params.pipe';
 import { TranslocoPipe } from './transloco.pipe';
 import { DefaultHandler, TRANSLOCO_MISSING_HANDLER } from './transloco-missing-handler';
 import { DefaultInterceptor, TRANSLOCO_INTERCEPTOR } from './transloco.interceptor';
@@ -30,9 +29,9 @@ export const defaultProviders = [
 ];
 
 @NgModule({
-  declarations: [TranslocoDirective, TranslocoParamsPipe, TranslocoPipe, TranslocoLoaderComponent],
+  declarations: [TranslocoDirective, TranslocoPipe, TranslocoLoaderComponent],
   providers: [defaultProviders],
-  exports: [TranslocoDirective, TranslocoParamsPipe, TranslocoPipe],
+  exports: [TranslocoDirective, TranslocoPipe],
   entryComponents: [TranslocoLoaderComponent]
 })
 export class TranslocoModule {}

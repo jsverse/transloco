@@ -18,7 +18,7 @@ The script will iterate recursively over all your `HTML` files and will replace 
 
 ```html
 <ng-container *transloco="let t">
-  <p>{{ t['title']}}</p>
+  <p>{{ t('title')}}</p>
 </ng-container>
 ```
 

@@ -1,8 +1,8 @@
 <h4>Set Translation</h4>
 
 <ng-container *transloco="let t">
-  <p data-cy="set-key">{{ t['home'] }}</p>
-  <p data-cy="add-key">Press Add new key to see me: {{ t['newKey'] }}</p>
+  <p data-cy="set-key">{{ t('home') }}</p>
+  <p data-cy="add-key">Press Add new key to see me: {{ t('newKey') }}</p>
 </ng-container>
 
 <button data-cy="set-translation-key-btn" class="btn btn-outline-primary my-2 my-sm-0" (click)="updateTitle()">
@@ -18,7 +18,7 @@
 <h4>Add Translation Object</h4>
 
 <ng-container *transloco="let t">
-  <p data-cy="translation-object">New translation object title: {{ t['newTranslation.title'] }}</p>
+  <p data-cy="translation-object">New translation object title: {{ t('newTranslation.title') }}</p>
 </ng-container>
 
 <button data-cy="add-translation-btn" class="btn btn-outline-primary my-2 my-sm-0" (click)="addTranslationObj()">

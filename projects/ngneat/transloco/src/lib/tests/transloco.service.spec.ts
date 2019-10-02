@@ -10,6 +10,7 @@ import { DefaultFallbackStrategy, TranslocoFallbackStrategy } from '../transloco
 import { isString } from '../helpers';
 import { DefaultLoader } from '../transloco.loader';
 import flatten from 'flat';
+import { serialize } from '@angular/compiler/src/i18n/serializers/xml_helper';
 
 function createSpy() {
   return jasmine.createSpy();
@@ -521,4 +522,47 @@ describe('missingHandler.allowEmpty', () => {
     expect(value).toEqual('');
     expect(service.missingHandler.handle).not.toHaveBeenCalled();
   });
+});
+
+describe('missingHandler.useFallbackTranslation', () => {
+  let service;
+  beforeEach(() => {
+    service = createService({
+      fallbackLang: 'es',
+      missingHandler: {
+        allowEmpty: false,
+        useFallbackTranslation: true
+      }
+    });
+  });
+
+  it('should load both', fakeAsync(() => {
+    spyOn(service.loader, 'getTranslation').and.callThrough();
+    service.load('en').subscribe();
+    runLoader();
+    expect(service.loader.getTranslation).toHaveBeenCalledTimes(2);
+    expect(service.loader.getTranslation.calls.allArgs()).toEqual([['en'], ['es']]);
+  }));
+
+  it('should get the translation from the fallback when there is no key', fakeAsync(() => {
+    spyOn(service.loader, 'getTranslation').and.callThrough();
+    service.load('en').subscribe();
+    runLoader(2000);
+    expect(service.translate('fallback')).toEqual("I'm a spanish fallback");
+  }));
+
+  it('should get the translation from the fallback when the value is empty', fakeAsync(() => {
+    spyOn(service.loader, 'getTranslation').and.callThrough();
+    service.load('en').subscribe();
+    runLoader(2000);
+    expect(service.translate('empty', { value: 'hello' })).toEqual("I'm a spanish empty fallback hello");
+  }));
+
+  it('should respect allow empty', fakeAsync(() => {
+    service.mergedConfig.missingHandler.allowEmpty = true;
+    spyOn(service.loader, 'getTranslation').and.callThrough();
+    service.load('en').subscribe();
+    runLoader(2000);
+    expect(service.translate('empty', { value: 'hello' })).toEqual('');
+  }));
 });

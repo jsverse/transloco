@@ -13,5 +13,6 @@
     "title": "Title english",
     "desc": "Desc english"
   },
-  "key.is.like.path": "key is like path"
+  "key.is.like.path": "key is like path",
+  "empty": ""
 }

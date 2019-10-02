@@ -51,6 +51,9 @@ import { TranslocoMessageFormatModule } from '@ngneat/transloco-messageformat';
         reRenderOnLangChange: true,
         fallbackLang: 'es',
         defaultLang: 'en',
+        missingHandler: {
+          useFallbackTranslation: true
+        },
         scopeMapping: {
           'todos-page': 'todos',
           'transpilers/messageformat': 'mf'

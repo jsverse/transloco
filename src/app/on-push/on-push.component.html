@@ -1,13 +1,9 @@
 <h3 class="mb">Structural Directive</h3>
 <ng-container *transloco="let t">
   <ul class="list-group">
-    <li class="list-group-item" data-cy="regular"><b>Regular: </b>{{ t['home'] }}</li>
-    <li class="list-group-item" data-cy="with-params">
-      <b>With params: </b>{{ t['alert'] | translocoParams: { value: dynamic } }}
-    </li>
-    <li class="list-group-item" data-cy="with-translation-reuse">
-      <b>With translation reuse: </b> {{ t['a.b.c'] | translocoParams }}
-    </li>
+    <li class="list-group-item" data-cy="regular"><b>Regular: </b>{{ t('home') }}</li>
+    <li class="list-group-item" data-cy="with-params"><b>With params: </b>{{ t('alert', { value: dynamic }) }}</li>
+    <li class="list-group-item" data-cy="with-translation-reuse"><b>With translation reuse: </b> {{ t('a.b.c') }}</li>
   </ul>
 </ng-container>
 

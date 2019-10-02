@@ -4,5 +4,5 @@
   "lib": {
     "entryFile": "src/public-api.ts"
   },
-  "whitelistedNonPeerDependencies": ["ora", "replace-in-file", "messageformat"]
+  "whitelistedNonPeerDependencies": ["ora", "replace-in-file", "flat"]
 }
