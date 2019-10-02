@@ -12,5 +12,7 @@
   "nested": {
     "title": "Title spanish",
     "desc": "Desc spanish"
-  }
+  },
+  "fallback": "I'm a spanish fallback",
+  "empty": "I'm a spanish empty fallback {{value}}"
 }

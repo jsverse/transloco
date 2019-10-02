@@ -1,10 +1,10 @@
 import { Inject, Injectable, OnDestroy, Optional } from '@angular/core';
-import { BehaviorSubject, combineLatest, from, Observable, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, forkJoin, from, Observable, of, Subject, Subscription } from 'rxjs';
 import { catchError, map, retry, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { DefaultLoader, TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_TRANSPILER, TranslocoTranspiler } from './transloco.transpiler';
 import { AvailableLangs, HashMap, SetTranslationOptions, TranslateParams, Translation, TranslocoEvents } from './types';
-import { getLangFromScope, getScopeFromLang, isString, size, toCamelCase } from './helpers';
+import { getLangFromScope, getScopeFromLang, isString, mergeDeep, size, toCamelCase } from './helpers';
 import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './transloco-missing-handler';
 import { TRANSLOCO_INTERCEPTOR, TranslocoInterceptor } from './transloco.interceptor';
@@ -22,10 +22,11 @@ export class TranslocoService implements OnDestroy {
   private subscription: Subscription;
   private translations = new Map<string, Translation>();
   private cache = new Map<string, Observable<Translation>>();
+  private firstFallbackLang: string | null = null;
   private defaultLang: string;
   private mergedConfig: TranslocoConfig;
   private availableLangs: AvailableLangs = [];
-
+  private isResolvedMissingOnce = false;
   private lang: BehaviorSubject<string>;
   langChanges$: Observable<string>;
 
@@ -47,8 +48,9 @@ export class TranslocoService implements OnDestroy {
       this.loader = new DefaultLoader(this.translations);
     }
     service = this;
-    this.mergedConfig = { ...defaultConfig, ...this.userConfig };
+    this.mergedConfig = mergeDeep(defaultConfig, userConfig);
     this.setAvailableLangs(this.mergedConfig.availableLangs);
+    this.setFallbackLangForMissingTranslation(this.mergedConfig);
     this.setDefaultLang(this.mergedConfig.defaultLang);
     this.lang = new BehaviorSubject<string>(this.getDefaultLang());
     // Don't use distinctUntilChanged as we need the ability to update
@@ -99,10 +101,38 @@ export class TranslocoService implements OnDestroy {
   load(lang: string, options?: { fallbackLangs: string[] | null }): Observable<Translation> {
     if (this.cache.has(lang) === false) {
       const mergedOptions = { ...{ fallbackLangs: null }, ...(options || {}) };
-      const load$ = from(this.loader.getTranslation(lang)).pipe(
+      let loadTranslation: Observable<Translation | { translation: Translation; lang: string }[]>;
+
+      if (this.useFallbackTranslation(lang)) {
+        const loadBoth = [lang, this.firstFallbackLang].map(l =>
+          from(this.loader.getTranslation(l)).pipe(
+            map(t => ({
+              translation: t,
+              lang: l
+            }))
+          )
+        );
+        loadTranslation = forkJoin(loadBoth);
+      } else {
+        loadTranslation = from(this.loader.getTranslation(lang));
+      }
+
+      const load$ = loadTranslation.pipe(
         retry(this.config.failedRetries),
         catchError(() => this.handleFailure(lang, mergedOptions)),
-        tap(translation => this.handleSuccess(lang, translation)),
+        tap(translation => {
+          if (Array.isArray(translation)) {
+            translation.forEach(t => {
+              this.handleSuccess(t.lang, t.translation);
+              // Save the fallback in cache so we'll not create a redundant request
+              if (t.lang !== lang) {
+                this.cache.set(t.lang, of({}));
+              }
+            });
+            return;
+          }
+          this.handleSuccess(lang, translation);
+        }),
         shareReplay(1)
       );
 
@@ -137,7 +167,7 @@ export class TranslocoService implements OnDestroy {
     const value = translation[key];
 
     if (!value) {
-      return this.handleMissingKey(key, value);
+      return this.handleMissingKey(key, value, params);
     }
 
     return this.parser.transpile(value, params, translation);
@@ -292,9 +322,16 @@ export class TranslocoService implements OnDestroy {
     this.setTranslation(newValue, lang);
   }
 
-  handleMissingKey(key: string, value: any) {
+  handleMissingKey(key: string, value: any, params?: HashMap) {
     if (this.config.missingHandler.allowEmpty && value === '') {
       return '';
+    }
+
+    if (this.useFallbackTranslation() && !this.isResolvedMissingOnce) {
+      this.isResolvedMissingOnce = true;
+      const value = this.translate(key, params, this.firstFallbackLang);
+      this.isResolvedMissingOnce = false;
+      return value;
     }
 
     return this.missingHandler.handle(key, this.config);
@@ -348,6 +385,10 @@ export class TranslocoService implements OnDestroy {
     }
 
     return (this.getAvailableLangs() as { id: string }[]).map(l => l.id);
+  }
+
+  private useFallbackTranslation(lang?: string) {
+    return this.config.missingHandler.useFallbackTranslation && lang !== this.firstFallbackLang;
   }
 
   private handleSuccess(lang: string, translation: Translation) {
@@ -404,6 +445,12 @@ export class TranslocoService implements OnDestroy {
     });
 
     return this.load(resolveLang);
+  }
+
+  private setFallbackLangForMissingTranslation({ fallbackLang }: TranslocoConfig): void {
+    if (this.useFallbackTranslation && fallbackLang) {
+      this.firstFallbackLang = Array.isArray(fallbackLang) ? fallbackLang[0] : fallbackLang;
+    }
   }
 
   ngOnDestroy() {

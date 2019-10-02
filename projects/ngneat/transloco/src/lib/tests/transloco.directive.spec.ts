@@ -1,5 +1,5 @@
 import { fakeAsync } from '@angular/core/testing';
-import { TranslocoDirective, TranslocoParamsPipe, TranslocoService } from '../../public-api';
+import { TranslocoDirective, TranslocoService } from '../../public-api';
 import { createHostComponentFactory, HostComponent, SpectatorWithHost } from '@netbasal/spectator';
 import { TranslocoLoaderComponent } from '../loader-component.component';
 import { TemplateHandler } from '../template-handler';
@@ -15,7 +15,6 @@ describe('TranslocoDirective', () => {
   let host: SpectatorWithHost<TranslocoDirective>;
   const createHost = createHostComponentFactory({
     component: TranslocoDirective,
-    declarations: [TranslocoParamsPipe],
     providers: providersMock
   });
 
@@ -141,7 +140,7 @@ describe('TranslocoDirective', () => {
   describe('Structural directive', () => {
     it('should load scoped translation', fakeAsync(() => {
       host = createHost(
-        `<section *transloco="let t; scope: 'lazy-page'"><div>{{t['lazyPage.title']}}</div></section>`,
+        `<section *transloco="let t; scope: 'lazy-page'"><div>{{t('lazyPage.title')}}</div></section>`,
         false
       );
       testScopedTranslation(host);
@@ -163,8 +162,8 @@ describe('TranslocoDirective', () => {
       host = createHost(
         `
         <section *transloco="let t; scope: 'lazy-page'">
-        <div class="scoped">{{t['lazyPage.title']}}</div>
-        <div class="global">{{t.home}}</div>
+        <div class="scoped">{{t('lazyPage.title')}}</div>
+        <div class="global">{{t('home')}}</div>
         </section>`,
         false
       );
@@ -175,8 +174,8 @@ describe('TranslocoDirective', () => {
       host = createHost(
         `
         <section *transloco="let t; scope: 'lazy-page'">
-        <div class="scoped">{{t['lazyPage.title']}}</div>
-        <div class="global">{{t.home}}</div>
+        <div class="scoped">{{t('lazyPage.title')}}</div>
+        <div class="global">{{t('home')}}</div>
         </section>`,
         false
       );
@@ -198,11 +197,11 @@ describe('TranslocoDirective', () => {
 
     it('should set the translation value', fakeAsync(() => {
       host = createHost(`
-        <section *transloco="let t">
-           <div>{{t.home }}</div>
-           <span>{{t.fromList}}</span>
-           <p>{{t['a.b.c'] | translocoParams}}</p>
-           <p>{{t['a.b.c']  | translocoParams:{fromList: "value"} }}</p>
+        <section *transloco="let t;">
+           <div>{{t('home') }}</div>
+           <span>{{t('fromList')}}</span>
+           <p>{{t('a.b.c')}}</p>
+           <h2>{{t('a.b.c', {fromList: "value"}) }}</h2>
         </section>
      `);
       runLoader();
@@ -211,11 +210,11 @@ describe('TranslocoDirective', () => {
       expect(host.queryHost('div')).toHaveText('home english');
       expect(host.queryHost('span')).toHaveText('from list');
       expect(host.queryHost('p')).toHaveText('a.b.c from list english');
-      expect(host.queryHostAll('p')[1]).toHaveText('a.b.c value english');
+      expect(host.queryHost('h2')).toHaveText('a.b.c value english');
     }));
 
     it('should get translation of a nested property using read', fakeAsync(() => {
-      host = createHost(`<section *transloco="let t; read: 'nested'"><div>{{t.title}}</div></section>`, false);
+      host = createHost(`<section *transloco="let t; read: 'nested'"><div>{{t('title')}}</div></section>`, false);
       testTranslationWithRead(host);
     }));
   });
@@ -225,10 +224,10 @@ describe('TranslocoDirective', () => {
       host = createHost(
         `
       <section *transloco="let t;">
-        <h1>{{ t.home }}</h1>     
+        <h1>{{ t('home') }}</h1>     
       </section>
       <section *transloco="let t; lang: 'es'">
-       <h2>{{ t.home }}</h2>     
+       <h2>{{ t('home') }}</h2>     
       </section>
       `,
         false
@@ -253,10 +252,10 @@ describe('TranslocoDirective', () => {
       host = createHost(
         `
       <section *transloco="let t;">
-        <h1>{{ t.home }}</h1>     
+        <h1>{{ t('home') }}</h1>     
       </section>
       <section *transloco="let t; lang: 'es'; scope: 'lazy-page'">
-       <h2>{{ t['lazyPage.title'] }}</h2>     
+       <h2>{{ t('lazyPage.title') }}</h2>     
       </section>
       `,
         false
@@ -286,9 +285,9 @@ describe('TranslocoDirective', () => {
       host = createHost(
         `
       <section *transloco="let t;">
-        <h1>{{ t.home }}</h1>  
+        <h1>{{ t('home') }}</h1>  
         <section *transloco="let inline; lang: 'en|static'">
-          <h2>{{ inline.home }}</h2>         
+          <h2>{{ inline('home') }}</h2>         
         </section>      
       </section>
       `,
@@ -315,7 +314,7 @@ describe('TranslocoDirective', () => {
       spyOn<TemplateHandler>(TemplateHandler.prototype, 'detachView').and.callThrough();
       host = createHost(`
         <section *transloco="let t; scope: 'lazy-page'; loadingTpl: loading">
-          <h1 data-cy="lazy-page">{{ t.title }}</h1>
+          <h1 data-cy="lazy-page">{{ t('title') }}</h1>
         </section>
 
         <ng-template #loading>
@@ -335,7 +334,7 @@ describe('TranslocoDirective', () => {
       spyOn<TemplateHandler>(TemplateHandler.prototype, 'attachView').and.callThrough();
       host = createHost(`
         <section *transloco="let t; scope: 'lazy-page';">
-          <h1 data-cy="lazy-page">{{ t.title }}</h1>
+          <h1 data-cy="lazy-page">{{ t('title') }}</h1>
         </section>
       `);
 
@@ -346,7 +345,7 @@ describe('TranslocoDirective', () => {
   describe('default loader template', () => {
     const createHost = createHostComponentFactory({
       component: TranslocoDirective,
-      declarations: [TranslocoParamsPipe, TranslocoLoaderComponent],
+      declarations: [TranslocoLoaderComponent],
       entryComponents: [TranslocoLoaderComponent],
       providers: [...providersMock, loadingTemplateMock]
     });
@@ -357,7 +356,7 @@ describe('TranslocoDirective', () => {
 
       host = createHost(`
         <section *transloco="let t; scope: 'lazy-page';">
-          <h1 data-cy="lazy-page">{{ t.title }}</h1>
+          <h1 data-cy="lazy-page">{{ t('title') }}</h1>
         </section>
       `);
 
@@ -372,7 +371,7 @@ describe('TranslocoDirective', () => {
     it('should use the inline loader template instead of default', fakeAsync(() => {
       host = createHost(`
         <section *transloco="let t; scope: 'lazy-page'; loadingTpl: loading">
-          <h1 data-cy="lazy-page">{{ t.title }}</h1>
+          <h1 data-cy="lazy-page">{{ t('title') }}</h1>
         </section>
 
         <ng-template #loading>

@@ -1,14 +1,9 @@
 # Transloco V2
 
-
 - Structural directive is now a **memoized** function:
 
 ```html
-// before 
-{{ t.a.b }} {{ t.hello }} 
-
-// After 
-{{ t('a.b') }} {{ t('hello') }}
+// before {{ t.a.b }} {{ t.hello }} // After {{ t('a.b') }} {{ t('hello') }}
 ```
 
 - Dedicated method for when you need to query an object instead of a key:
@@ -46,6 +41,10 @@ We need this information to know whether we're dealing with a `language` or a `s
 - Remove messageformat from the library in favor of the external library.
 
 **We created a schematics command that'll do most of the work for you**
+
+```
+ng g @ngneat/transloco:upgrade
+```
 
 ## Features
 
