@@ -2,6 +2,10 @@
 <ng-container *transloco="let t">
   <p data-cy="regular" class="admin-title">{{ t('adminPage.title') }}</p>
 </ng-container>
+<h4>Read from the default scope `admin-page`</h4>
+<ng-container *transloco="let t; read: 'adminPage'">
+  <p data-cy="read" class="admin-read">{{ t('read') }}</p>
+</ng-container>
 
 <h4>Scope is set to `lazy-page` inline in the directive</h4>
 <ng-container *transloco="let t; scope: 'lazy-page'; loadingTpl: loading">

@@ -8,7 +8,7 @@ import admin from '../../assets/i18n/admin-page/en.json';
 import adminSpanish from '../../assets/i18n/admin-page/es.json';
 import { LazyComponent } from './lazy.component';
 
-fdescribe('LazyComponent', () => {
+describe('LazyComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'admin-page' }],
@@ -30,9 +30,14 @@ fdescribe('LazyComponent', () => {
     }).compileComponents();
   }));
 
-  it('should work', function() {
+  it('should get scoped title translation', function() {
     const fixture = TestBed.createComponent(LazyComponent);
     fixture.detectChanges();
     expect(fixture.debugElement.query(By.css('.admin-title')).nativeElement.innerText).toBe('Admin spanish');
+  });
+  it('should get scoped translation with read', function() {
+    const fixture = TestBed.createComponent(LazyComponent);
+    fixture.detectChanges();
+    expect(fixture.debugElement.query(By.css('.admin-read')).nativeElement.innerText).toBe('Admin read spanish');
   });
 });
