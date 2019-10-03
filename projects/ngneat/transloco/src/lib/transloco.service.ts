@@ -216,7 +216,7 @@ export class TranslocoService implements OnDestroy {
     return this.parser.transpile(value, params, translation);
   }
 
-  selectTranslateObject<T = any>(key: TranslateParams, params?: HashMap, lang = this.getActiveLang()): Observable<T> {
+  selectTranslateObject<T = any>(key: TranslateParams, params?: HashMap, lang?: string): Observable<T> {
     return this.selectTranslate(key, params, lang, true);
   }
 
