@@ -1,4 +1,5 @@
 import { MessageFormatTranspiler } from './messageformat.transpiler';
+import { flatten } from '@ngneat/transloco';
 
 describe('MessageFormatTranspiler', () => {
   const config = {};
@@ -56,7 +57,12 @@ describe('MessageFormatTranspiler', () => {
   });
 
   it('should translate simple string multiple keys from lang', () => {
-    const lang = { withKeys: 'with keys', from: 'from', lang: 'lang', nes: { ted: 'supporting nested values!' } };
+    const lang = flatten({
+      withKeys: 'with keys',
+      from: 'from',
+      lang: 'lang',
+      nes: { ted: 'supporting nested values!' }
+    });
     const parsed = parser.transpile('Hello {{ withKeys }} {{ from }} {{ lang }} {{nes.ted}}', {}, lang);
     expect(parsed).toEqual('Hello with keys from lang supporting nested values!');
   });
