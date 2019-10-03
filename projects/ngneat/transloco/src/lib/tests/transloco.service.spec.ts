@@ -59,6 +59,7 @@ describe('TranslocoService', () => {
       expect(service.translate('alert', { value: 'val' })).toEqual('alert val english');
       expect(service.translate('a.b.c')).toEqual('a.b.c from list english');
       expect(service.translate('key.is.like.path')).toEqual('key is like path');
+      expect(service.translate('array')).toEqual(['hello-1', 'hello-2']);
     }));
 
     it('should support multi key translation', fakeAsync(() => {
@@ -138,6 +139,54 @@ describe('TranslocoService', () => {
       }));
     });
 
+    describe('translateObject', () => {
+      it('should return an object', fakeAsync(() => {
+        loadLang();
+        expect(service.translateObject('a')).toEqual({ b: { c: 'a.b.c {{fromList}} english' } });
+      }));
+      it('should return a nested object', fakeAsync(() => {
+        loadLang();
+        expect(service.translateObject('a.b')).toEqual({ c: 'a.b.c {{fromList}} english' });
+      }));
+      it('should should support params', fakeAsync(() => {
+        loadLang();
+        expect(service.translateObject('a.b', { c: { fromList: 'Hello' } })).toEqual({ c: 'a.b.c Hello english' });
+      }));
+    });
+
+    describe('selectTranslationObject', () => {
+      it('should return an object', fakeAsync(() => {
+        const spy = createSpy();
+        service.selectTranslateObject('a').subscribe(spy);
+        runLoader();
+        expect(spy).toHaveBeenCalledWith({ b: { c: 'a.b.c {{fromList}} english' } });
+      }));
+
+      it('should return a nested object', fakeAsync(() => {
+        const spy = createSpy();
+        service.selectTranslateObject('a.b').subscribe(spy);
+        runLoader();
+        expect(spy).toHaveBeenCalledWith({ c: 'a.b.c {{fromList}} english' });
+      }));
+
+      it('should return listen to lang changes', fakeAsync(() => {
+        const spy = createSpy();
+        service.selectTranslateObject('a.b').subscribe(spy);
+        runLoader();
+        expect(spy).toHaveBeenCalledWith({ c: 'a.b.c {{fromList}} english' });
+        service.setActiveLang('es');
+        runLoader();
+        expect(spy).toHaveBeenCalledWith({ c: 'a.b.c {{fromList}} spanish' });
+      }));
+
+      it('should should support params', fakeAsync(() => {
+        const spy = createSpy();
+        service.selectTranslateObject('a.b', { c: { fromList: 'Hello' } }).subscribe(spy);
+        runLoader();
+        expect(spy).toHaveBeenCalledWith({ c: 'a.b.c Hello english' });
+      }));
+    });
+
     describe('getTranslation', () => {
       it('should return an empty object when no translations loaded', () => {
         expect(service.getTranslation('en')).toEqual({});
@@ -146,7 +195,7 @@ describe('TranslocoService', () => {
 
       it('should return the translation file', fakeAsync(() => {
         loadLang();
-        expect(service.getTranslation('en')).toEqual(flatten(mockLangs['en']));
+        expect(service.getTranslation('en')).toEqual(flatten(mockLangs['en'], { safe: true }));
       }));
 
       it('should return the translations map', fakeAsync(() => {
@@ -154,22 +203,22 @@ describe('TranslocoService', () => {
         loadLang('es');
         const map = service.getTranslation();
         expect(map instanceof Map).toEqual(true);
-        expect(map.get('en')).toEqual(flatten(mockLangs['en']));
-        expect(map.get('es')).toEqual(flatten(mockLangs['es']));
+        expect(map.get('en')).toEqual(flatten(mockLangs['en'], { safe: true }));
+        expect(map.get('es')).toEqual(flatten(mockLangs['es'], { safe: true }));
       }));
 
       it('should select the active translations lang', fakeAsync(() => {
         const spy = jasmine.createSpy();
         service.selectTranslation().subscribe(spy);
         runLoader();
-        expect(spy).toHaveBeenCalledWith(flatten(mockLangs['en']));
+        expect(spy).toHaveBeenCalledWith(flatten(mockLangs['en'], { safe: true }));
       }));
 
       it('should select the translations lang when passing one', fakeAsync(() => {
         const spy = jasmine.createSpy();
         service.selectTranslation('es').subscribe(spy);
         runLoader();
-        expect(spy).toHaveBeenCalledWith(flatten(mockLangs['es']));
+        expect(spy).toHaveBeenCalledWith(flatten(mockLangs['es'], { safe: true }));
       }));
     });
 
@@ -191,7 +240,7 @@ describe('TranslocoService', () => {
       it('should add translation to the map after passing through the interceptor', () => {
         spyOn(_service.interceptor, 'preSaveTranslation').and.callThrough();
         const lang = 'en';
-        const translation = flatten(mockLangs[lang]);
+        const translation = flatten(mockLangs[lang], { safe: true });
         _service.setTranslation(translation, lang);
         expect(_service.interceptor.preSaveTranslation).toHaveBeenCalledWith(translation, lang);
         expect(_service.translations.set).toHaveBeenCalledWith(lang, translation);
@@ -209,14 +258,20 @@ describe('TranslocoService', () => {
 
         it("should merge the scope with the scope's global lang", () => {
           _service.setTranslation(translation, lang);
-          const merged = { ...flatten(mockLangs.en), ...flatten({ lazyPage: { ...translation } }) };
+          const merged = {
+            ...flatten(mockLangs.en, { safe: true }),
+            ...flatten({ lazyPage: { ...translation } }, { safe: true })
+          };
           expect(_service.translations.set).toHaveBeenCalledWith('en', merged);
         });
 
         it("should map the scope's name in the merged translation", () => {
           _service.mergedConfig.scopeMapping = { 'lazy-page': 'kazaz' };
           _service.setTranslation(translation, lang);
-          const merged = { ...flatten(mockLangs.en), ...flatten({ kazaz: { ...translation } }) };
+          const merged = {
+            ...flatten(mockLangs.en, { safe: true }),
+            ...flatten({ kazaz: { ...translation } }, { safe: true })
+          };
           expect(_service.translations.set).toHaveBeenCalledWith('en', merged);
         });
       });
