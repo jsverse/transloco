@@ -1,5 +1,5 @@
 import en from '../../../../../../src/assets/i18n/en.json';
-import { DefaultTranspiler, TranslocoService } from '../../public-api';
+import { DefaultTranspiler, flatten, TranslocoService } from '../../public-api';
 import { createService, mockLangs, runLoader } from './transloco.mocks';
 import { fakeAsync } from '@angular/core/testing';
 import { catchError, filter, map, pluck } from 'rxjs/operators';
@@ -9,8 +9,6 @@ import { DefaultInterceptor } from '../transloco.interceptor';
 import { DefaultFallbackStrategy, TranslocoFallbackStrategy } from '../transloco-fallback-strategy';
 import { isString } from '../helpers';
 import { DefaultLoader } from '../transloco.loader';
-import flatten from 'flat';
-import { serialize } from '@angular/compiler/src/i18n/serializers/xml_helper';
 
 function createSpy() {
   return jasmine.createSpy();
@@ -59,6 +57,7 @@ describe('TranslocoService', () => {
       expect(service.translate('alert', { value: 'val' })).toEqual('alert val english');
       expect(service.translate('a.b.c')).toEqual('a.b.c from list english');
       expect(service.translate('key.is.like.path')).toEqual('key is like path');
+      expect(service.translate('array')).toEqual(['hello-1', 'hello-2']);
     }));
 
     it('should support multi key translation', fakeAsync(() => {
@@ -138,6 +137,54 @@ describe('TranslocoService', () => {
       }));
     });
 
+    describe('translateObject', () => {
+      it('should return an object', fakeAsync(() => {
+        loadLang();
+        expect(service.translateObject('a')).toEqual({ b: { c: 'a.b.c {{fromList}} english' } });
+      }));
+      it('should return a nested object', fakeAsync(() => {
+        loadLang();
+        expect(service.translateObject('a.b')).toEqual({ c: 'a.b.c {{fromList}} english' });
+      }));
+      it('should should support params', fakeAsync(() => {
+        loadLang();
+        expect(service.translateObject('a.b', { c: { fromList: 'Hello' } })).toEqual({ c: 'a.b.c Hello english' });
+      }));
+    });
+
+    describe('selectTranslationObject', () => {
+      it('should return an object', fakeAsync(() => {
+        const spy = createSpy();
+        service.selectTranslateObject('a').subscribe(spy);
+        runLoader();
+        expect(spy).toHaveBeenCalledWith({ b: { c: 'a.b.c {{fromList}} english' } });
+      }));
+
+      it('should return a nested object', fakeAsync(() => {
+        const spy = createSpy();
+        service.selectTranslateObject('a.b').subscribe(spy);
+        runLoader();
+        expect(spy).toHaveBeenCalledWith({ c: 'a.b.c {{fromList}} english' });
+      }));
+
+      it('should return listen to lang changes', fakeAsync(() => {
+        const spy = createSpy();
+        service.selectTranslateObject('a.b').subscribe(spy);
+        runLoader();
+        expect(spy).toHaveBeenCalledWith({ c: 'a.b.c {{fromList}} english' });
+        service.setActiveLang('es');
+        runLoader();
+        expect(spy).toHaveBeenCalledWith({ c: 'a.b.c {{fromList}} spanish' });
+      }));
+
+      it('should should support params', fakeAsync(() => {
+        const spy = createSpy();
+        service.selectTranslateObject('a.b', { c: { fromList: 'Hello' } }).subscribe(spy);
+        runLoader();
+        expect(spy).toHaveBeenCalledWith({ c: 'a.b.c Hello english' });
+      }));
+    });
+
     describe('getTranslation', () => {
       it('should return an empty object when no translations loaded', () => {
         expect(service.getTranslation('en')).toEqual({});
@@ -209,14 +256,20 @@ describe('TranslocoService', () => {
 
         it("should merge the scope with the scope's global lang", () => {
           _service.setTranslation(translation, lang);
-          const merged = { ...flatten(mockLangs.en), ...flatten({ lazyPage: { ...translation } }) };
+          const merged = {
+            ...flatten(mockLangs.en),
+            ...flatten({ lazyPage: { ...translation } })
+          };
           expect(_service.translations.set).toHaveBeenCalledWith('en', merged);
         });
 
         it("should map the scope's name in the merged translation", () => {
           _service.mergedConfig.scopeMapping = { 'lazy-page': 'kazaz' };
           _service.setTranslation(translation, lang);
-          const merged = { ...flatten(mockLangs.en), ...flatten({ kazaz: { ...translation } }) };
+          const merged = {
+            ...flatten(mockLangs.en),
+            ...flatten({ kazaz: { ...translation } })
+          };
           expect(_service.translations.set).toHaveBeenCalledWith('en', merged);
         });
       });

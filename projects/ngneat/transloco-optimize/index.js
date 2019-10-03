@@ -12,7 +12,7 @@ function translocoOptimize(params) {
       files.forEach(filePath => {
         fs.readFile(filePath, 'utf8', function(err, translation) {
           const toObject = JSON.parse(translation);
-          const flattenObject = flatten(toObject);
+          const flattenObject = flatten(toObject, { safe: true });
           const withoutComments = removeComments(flattenObject, params.commentsKey);
           fs.writeFile(filePath, JSON.stringify(withoutComments), 'utf8', function(err) {
             count++;

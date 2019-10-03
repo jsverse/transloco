@@ -1,4 +1,4 @@
-import { DefaultTranspiler } from '../../public-api';
+import { DefaultTranspiler, flatten } from '../../public-api';
 
 describe('TranslocoTranspiler', () => {
   const parser = new DefaultTranspiler();
@@ -14,18 +14,23 @@ describe('TranslocoTranspiler', () => {
   });
 
   it('should translate simple string with a key from lang', () => {
-    const parsed = parser.transpile('Hello {{ world }}', {}, { world: 'World' });
+    const parsed = parser.transpile('Hello {{ world }}', {}, flatten({ world: 'World' }));
     expect(parsed).toEqual('Hello World');
   });
 
   it('should translate simple string multiple keys from lang', () => {
-    const lang = { withKeys: 'with keys', from: 'from', lang: 'lang', nes: { ted: 'supporting nested values!' } };
+    const lang = flatten({
+      withKeys: 'with keys',
+      from: 'from',
+      lang: 'lang',
+      nes: { ted: 'supporting nested values!' }
+    });
     const parsed = parser.transpile('Hello {{ withKeys }} {{ from }} {{ lang }} {{nes.ted}}', {}, lang);
     expect(parsed).toEqual('Hello with keys from lang supporting nested values!');
   });
 
   it('should translate simple string with params and from lang', () => {
-    const parsed = parser.transpile('Hello {{ from }} {{ name }}', { name: 'Transloco' }, { from: 'from' });
+    const parsed = parser.transpile('Hello {{ from }} {{ name }}', { name: 'Transloco' }, flatten({ from: 'from' }));
     expect(parsed).toEqual('Hello from Transloco');
   });
 
