@@ -212,7 +212,7 @@ export class TranslocoService implements OnDestroy {
 
     const translation = this.getTranslation(lang);
     // TODO: optimize it (we can build this specific object)
-    const value = flatten.unflatten(translation)[key];
+    const value = flatten.unflatten(translation, { safe: true })[key];
     return this.parser.transpile(value, params, translation);
   }
 
@@ -285,9 +285,12 @@ export class TranslocoService implements OnDestroy {
     if (scope) {
       const { scopeMapping = {} } = this.config;
       const key = scopeMapping[scope] || toCamelCase(scope);
-      flattenScopeOrTranslation = flatten({
-        [key]: translation
-      });
+      flattenScopeOrTranslation = flatten(
+        {
+          [key]: translation
+        },
+        { safe: true }
+      );
     }
 
     const currentLang = scope ? getLangFromScope(lang) : lang;
@@ -298,7 +301,7 @@ export class TranslocoService implements OnDestroy {
     };
 
     const withHook = this.interceptor.preSaveTranslation(mergedTranslation, currentLang);
-    const flattenTranslation = this.mergedConfig.flatten.aot ? withHook : flatten(withHook);
+    const flattenTranslation = this.mergedConfig.flatten.aot ? withHook : flatten(withHook, { safe: true });
 
     this.translations.set(currentLang, flattenTranslation);
     mergedOptions.emitChange && this.setActiveLang(this.getActiveLang());
