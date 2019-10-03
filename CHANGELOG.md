@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.2](https://github.com/ngneat/transloco/compare/v2.0.1...v2.0.2) (2019-10-03)
+
+### Bug Fixes
+
+- 🐛 fix v2 upgrade script ([e390ae4](https://github.com/ngneat/transloco/commit/e390ae4))
+
 ### [2.0.1](https://github.com/ngneat/transloco/compare/v2.0.0...v2.0.1) (2019-10-02)
 
 ### Bug Fixes
