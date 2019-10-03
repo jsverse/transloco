@@ -17,7 +17,7 @@ export class DefaultTranspiler implements TranslocoTranspiler {
           return params[match];
         }
 
-        return translation[match] || '';
+        return isDefined(translation[match]) ? translation[match] : '';
       });
     }
 

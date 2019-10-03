@@ -1,3 +1,6 @@
+import { Translation } from './types';
+import flat from 'flat';
+
 export function getValue(obj: object, path: string) {
   /* For cases where the key is like: 'general.something.thing' */
   if (obj && obj.hasOwnProperty(path)) {
@@ -157,4 +160,12 @@ export function toNumber(value: number | string): number | null {
   }
 
   return null;
+}
+
+export function unflatten(obj: Translation): Translation {
+  return flat.unflatten(obj, { safe: true });
+}
+
+export function flatten(obj: Translation): Translation {
+  return flat(obj, { safe: true });
 }

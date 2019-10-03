@@ -4,12 +4,21 @@ import { catchError, map, retry, shareReplay, switchMap, tap } from 'rxjs/operat
 import { DefaultLoader, TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_TRANSPILER, TranslocoTranspiler } from './transloco.transpiler';
 import { AvailableLangs, HashMap, SetTranslationOptions, TranslateParams, Translation, TranslocoEvents } from './types';
-import { getLangFromScope, getScopeFromLang, getValue, isString, mergeDeep, size, toCamelCase } from './helpers';
+import {
+  getLangFromScope,
+  getScopeFromLang,
+  getValue,
+  isString,
+  mergeDeep,
+  size,
+  toCamelCase,
+  unflatten,
+  flatten
+} from './helpers';
 import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './transloco-missing-handler';
 import { TRANSLOCO_INTERCEPTOR, TranslocoInterceptor } from './transloco.interceptor';
 import { TRANSLOCO_FALLBACK_STRATEGY, TranslocoFallbackStrategy } from './transloco-fallback-strategy';
-import flatten from 'flat';
 
 let service: TranslocoService;
 
@@ -212,7 +221,7 @@ export class TranslocoService implements OnDestroy {
 
     const translation = this.getTranslation(lang);
     // TODO: optimize it (we can build this specific object)
-    const value = getValue(flatten.unflatten(translation, { safe: true }), key);
+    const value = getValue(unflatten(translation), key);
     return this.parser.transpile(value, params, translation);
   }
 
@@ -285,12 +294,7 @@ export class TranslocoService implements OnDestroy {
     if (scope) {
       const { scopeMapping = {} } = this.config;
       const key = scopeMapping[scope] || toCamelCase(scope);
-      flattenScopeOrTranslation = flatten(
-        {
-          [key]: translation
-        },
-        { safe: true }
-      );
+      flattenScopeOrTranslation = flatten({ [key]: translation });
     }
 
     const currentLang = scope ? getLangFromScope(lang) : lang;
@@ -301,7 +305,7 @@ export class TranslocoService implements OnDestroy {
     };
 
     const withHook = this.interceptor.preSaveTranslation(mergedTranslation, currentLang);
-    const flattenTranslation = this.mergedConfig.flatten.aot ? withHook : flatten(withHook, { safe: true });
+    const flattenTranslation = this.mergedConfig.flatten.aot ? withHook : flatten(withHook);
 
     this.translations.set(currentLang, flattenTranslation);
     mergedOptions.emitChange && this.setActiveLang(this.getActiveLang());

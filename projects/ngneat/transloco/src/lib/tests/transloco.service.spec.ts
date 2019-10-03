@@ -1,5 +1,5 @@
 import en from '../../../../../../src/assets/i18n/en.json';
-import { DefaultTranspiler, TranslocoService } from '../../public-api';
+import { DefaultTranspiler, flatten, TranslocoService } from '../../public-api';
 import { createService, mockLangs, runLoader } from './transloco.mocks';
 import { fakeAsync } from '@angular/core/testing';
 import { catchError, filter, map, pluck } from 'rxjs/operators';
@@ -9,8 +9,6 @@ import { DefaultInterceptor } from '../transloco.interceptor';
 import { DefaultFallbackStrategy, TranslocoFallbackStrategy } from '../transloco-fallback-strategy';
 import { isString } from '../helpers';
 import { DefaultLoader } from '../transloco.loader';
-import flatten from 'flat';
-import { serialize } from '@angular/compiler/src/i18n/serializers/xml_helper';
 
 function createSpy() {
   return jasmine.createSpy();
@@ -195,7 +193,7 @@ describe('TranslocoService', () => {
 
       it('should return the translation file', fakeAsync(() => {
         loadLang();
-        expect(service.getTranslation('en')).toEqual(flatten(mockLangs['en'], { safe: true }));
+        expect(service.getTranslation('en')).toEqual(flatten(mockLangs['en']));
       }));
 
       it('should return the translations map', fakeAsync(() => {
@@ -203,22 +201,22 @@ describe('TranslocoService', () => {
         loadLang('es');
         const map = service.getTranslation();
         expect(map instanceof Map).toEqual(true);
-        expect(map.get('en')).toEqual(flatten(mockLangs['en'], { safe: true }));
-        expect(map.get('es')).toEqual(flatten(mockLangs['es'], { safe: true }));
+        expect(map.get('en')).toEqual(flatten(mockLangs['en']));
+        expect(map.get('es')).toEqual(flatten(mockLangs['es']));
       }));
 
       it('should select the active translations lang', fakeAsync(() => {
         const spy = jasmine.createSpy();
         service.selectTranslation().subscribe(spy);
         runLoader();
-        expect(spy).toHaveBeenCalledWith(flatten(mockLangs['en'], { safe: true }));
+        expect(spy).toHaveBeenCalledWith(flatten(mockLangs['en']));
       }));
 
       it('should select the translations lang when passing one', fakeAsync(() => {
         const spy = jasmine.createSpy();
         service.selectTranslation('es').subscribe(spy);
         runLoader();
-        expect(spy).toHaveBeenCalledWith(flatten(mockLangs['es'], { safe: true }));
+        expect(spy).toHaveBeenCalledWith(flatten(mockLangs['es']));
       }));
     });
 
@@ -240,7 +238,7 @@ describe('TranslocoService', () => {
       it('should add translation to the map after passing through the interceptor', () => {
         spyOn(_service.interceptor, 'preSaveTranslation').and.callThrough();
         const lang = 'en';
-        const translation = flatten(mockLangs[lang], { safe: true });
+        const translation = flatten(mockLangs[lang]);
         _service.setTranslation(translation, lang);
         expect(_service.interceptor.preSaveTranslation).toHaveBeenCalledWith(translation, lang);
         expect(_service.translations.set).toHaveBeenCalledWith(lang, translation);
@@ -259,8 +257,8 @@ describe('TranslocoService', () => {
         it("should merge the scope with the scope's global lang", () => {
           _service.setTranslation(translation, lang);
           const merged = {
-            ...flatten(mockLangs.en, { safe: true }),
-            ...flatten({ lazyPage: { ...translation } }, { safe: true })
+            ...flatten(mockLangs.en),
+            ...flatten({ lazyPage: { ...translation } })
           };
           expect(_service.translations.set).toHaveBeenCalledWith('en', merged);
         });
@@ -269,8 +267,8 @@ describe('TranslocoService', () => {
           _service.mergedConfig.scopeMapping = { 'lazy-page': 'kazaz' };
           _service.setTranslation(translation, lang);
           const merged = {
-            ...flatten(mockLangs.en, { safe: true }),
-            ...flatten({ kazaz: { ...translation } }, { safe: true })
+            ...flatten(mockLangs.en),
+            ...flatten({ kazaz: { ...translation } })
           };
           expect(_service.translations.set).toHaveBeenCalledWith('en', merged);
         });
