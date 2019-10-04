@@ -164,7 +164,7 @@ export function toNumber(value: number | string): number | null {
 }
 
 export function isTranslocoScope(item: any): item is TranslocoScope {
-  return typeof item.scope === 'string';
+  return item && typeof item.scope === 'string';
 }
 
 export function unflatten(obj: Translation): Translation {

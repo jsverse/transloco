@@ -51,11 +51,11 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
           const lang = this.providerLang || activeLang;
           let providerScope;
           if (this.providerScope) {
+            providerScope = this.providerScope;
             if (isTranslocoScope(this.providerScope)) {
-              providerScope = this.providerScope.scope;
-              this.translocoService._setScopeAlias(providerScope, this.providerScope.alias);
-            } else {
-              providerScope = this.providerScope;
+              const { scope, alias } = this.providerScope;
+              providerScope = scope;
+              this.translocoService._setScopeAlias(providerScope, alias);
             }
           }
           this.langName = providerScope ? `${providerScope}/${lang}` : lang;

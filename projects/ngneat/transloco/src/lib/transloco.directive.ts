@@ -70,8 +70,9 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
           const lang = this.getLang();
           const scope = this.getScope();
           this.langName = scope ? `${scope}/${lang}` : lang;
-          if (!this.inlineScope && this.providerScope && isTranslocoScope(this.providerScope)) {
-            this.translocoService._setScopeAlias(this.providerScope.scope, this.providerScope.alias);
+          if (!this.inlineScope && isTranslocoScope(this.providerScope)) {
+            const { scope, alias } = this.providerScope;
+            this.translocoService._setScopeAlias(scope, alias);
           }
           return this.translocoService._loadDependencies(this.langName);
         }),
@@ -137,9 +138,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
 
   // inline => providers
   private getScope() {
-    const providerScope =
-      this.providerScope && isTranslocoScope(this.providerScope) ? this.providerScope.scope : this.providerScope;
-    return this.inlineScope || providerScope;
+    return this.inlineScope || (isTranslocoScope(this.providerScope) ? this.providerScope.scope : this.providerScope);
   }
 
   // inline => providers => global

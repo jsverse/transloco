@@ -48,7 +48,6 @@
     "flat": "^4.1.0",
     "git-cz": "^3.2.1",
     "lodash.omitby": "^4.6.0",
-    "messageformat": "^2.3.0",
     "rxjs": "~6.3.3",
     "tslib": "^1.9.0",
     "zone.js": "~0.8.26"
@@ -71,7 +70,7 @@
     "codelyzer": "~4.5.0",
     "copy": "^0.3.2",
     "cross-env": "^5.2.0",
-    "cypress": "3.4.0",
+    "cypress": "^3.4.1",
     "husky": "^3.0.1",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
