@@ -1,6 +1,7 @@
 import { Rule, SchematicsException } from '@angular-devkit/schematics';
-import { run } from './v2';
+import { exit } from 'process';
 import { SchemaOptions } from './schema';
+import { run } from './v2';
 
 export default function(options: SchemaOptions): Rule {
   return () => {
@@ -11,6 +12,7 @@ export default function(options: SchemaOptions): Rule {
       `);
     }
 
-    return run(options.path);
+    run(options.path);
+    exit();
   };
 }

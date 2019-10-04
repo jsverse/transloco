@@ -46,7 +46,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
 
   constructor(
     private translocoService: TranslocoService,
-    @Optional() private tpl: TemplateRef<any>,
+    @Optional() private tpl: TemplateRef<{ $implicit: (key: string, params?: HashMap) => any }>,
     @Optional() @Inject(TRANSLOCO_SCOPE) private providerScope: string | TranslocoScope | null,
     @Optional() @Inject(TRANSLOCO_LANG) private providerLang: string | null,
     @Optional() @Inject(TRANSLOCO_LOADING_TEMPLATE) private providedLoadingTpl: Type<any> | string,
@@ -115,7 +115,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  private getTranslateFn(lang: string, read: string | undefined) {
+  private getTranslateFn(lang: string, read: string | undefined): (key: string, params?: HashMap) => any {
     return (key: string, params: HashMap) => {
       const withRead = read ? `${read}.${key}` : key;
       const withParams = params ? `${withRead}${JSON.stringify(params)}` : withRead;

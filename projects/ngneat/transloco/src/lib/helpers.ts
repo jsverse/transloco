@@ -1,4 +1,6 @@
 import { TranslocoScope } from './transloco-scope';
+import { Translation } from './types';
+import flat from 'flat';
 
 export function getValue(obj: object, path: string) {
   /* For cases where the key is like: 'general.something.thing' */
@@ -163,4 +165,12 @@ export function toNumber(value: number | string): number | null {
 
 export function isTranslocoScope(item: any): item is TranslocoScope {
   return typeof item.scope === 'string';
+}
+
+export function unflatten(obj: Translation): Translation {
+  return flat.unflatten(obj, { safe: true });
+}
+
+export function flatten(obj: Translation): Translation {
+  return flat(obj, { safe: true });
 }

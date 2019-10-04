@@ -1,4 +1,5 @@
 {
+  "array": ["hola-1", "hola-2"],
   "alert": "alert {{value}} spanish",
   "home": "home spanish",
   "fromList": "from list",

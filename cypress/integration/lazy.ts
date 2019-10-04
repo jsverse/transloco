@@ -6,6 +6,7 @@ export function generateContentLoader() {
 export function generateLazyContent(lang = 'english') {
   // Structural Directive
   cy.get(`[data-cy=regular]`).should('contain', `Admin ${lang}`);
+  cy.get(`[data-cy=read]`).should('contain', `Admin read ${lang}`);
   cy.get(`[data-cy=lazy-page]`).should('contain', `Admin Lazy ${lang}`);
 }
 

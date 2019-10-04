@@ -9,8 +9,10 @@ export function run(path) {
   const htmlFiles = glob.sync(`${path}.html`);
   const templateRegex = /<ng-template[^>]*transloco[^>]*>[^]+?<\/ng-template>/g;
   const structuralRegex = /<([a-zA-Z-]*)[^*>]*\*transloco=('|")\s*let\s+(?<varName>\w*)[^>]*\2>[^]+?<\/\1\s*>/g;
-  const templateKey = varName =>
-    new RegExp(`(?<rawKey>${varName}(?:(?:\\[(?:'|"))|\\.)(?:[^}|:]*))(?<param>[\\s\\w|:{}'"$&!?%@#^)(]*)}}`, 'g');
+  const coreKeyRegex = varName =>
+    `(?<rawKey>${varName}(?:(?:\\[('|").+\\1\\])|(?:\\.\\w+))+)(?<param>[\\s\\w|:{}'"$&!?%@#^)(]*)`;
+  const bindingKey = varName => new RegExp(`("|')\\s*${coreKeyRegex(varName)}\\1`, 'g');
+  const templateKey = varName => new RegExp(`{{\\s*${coreKeyRegex(varName)}}}`, 'g');
   for (const file of htmlFiles) {
     let str = fs.readFileSync(file).toString('utf8');
     if (!str.includes('transloco')) continue;
@@ -19,39 +21,41 @@ export function run(path) {
       while (containerSearch) {
         const [matchedStr] = containerSearch;
         let { varName } = index === 0 ? containerSearch.groups : matchedStr.match(/let-(?<varName>\w*)/).groups;
-        const keyRegex = templateKey(varName);
         let newStructuralStr = matchedStr;
-        let keySearch = keyRegex.exec(matchedStr);
-        let hasMatches = !!keySearch;
-        while (keySearch) {
-          const { rawKey, param } = keySearch.groups;
-          /** The raw key may contain square braces we need to align it to '.' */
-          let [key, ...inner] = rawKey
-            .trim()
-            .replace(/\[/g, '.')
-            .replace(/'|"|\]|\?/g, '')
-            .replace(`${varName}.`, '')
-            .split('.');
-          let callEnd = ')';
-          const pipes = (param && param.split('|')) || [];
-          const [paramsPipe] = pipes.filter(pipe => pipe.includes('translocoParams'));
-          if (paramsPipe) {
-            const paramValue = paramsPipe.substring(paramsPipe.indexOf('{'), paramsPipe.lastIndexOf('}') + 1);
-            if (paramValue) {
-              callEnd = `, ${paramValue})`;
+        let hasMatches;
+        [templateKey(varName), bindingKey(varName)].forEach(keyRegex => {
+          let keySearch = keyRegex.exec(matchedStr);
+          hasMatches = hasMatches || !!keySearch;
+          while (keySearch) {
+            const { rawKey, param } = keySearch.groups;
+            /** The raw key may contain square braces we need to align it to '.' */
+            let [key, ...inner] = rawKey
+              .trim()
+              .replace(/\[/g, '.')
+              .replace(/'|"|\]|\?/g, '')
+              .replace(`${varName}.`, '')
+              .split('.');
+            let callEnd = ')';
+            const pipes = (param && param.split('|')) || [];
+            const [paramsPipe] = pipes.filter(pipe => pipe.includes('translocoParams'));
+            if (paramsPipe) {
+              const paramValue = paramsPipe.substring(paramsPipe.indexOf('{'), paramsPipe.lastIndexOf('}') + 1);
+              if (paramValue) {
+                callEnd = `, ${paramValue})`;
+              }
             }
+            if (inner.length) {
+              key = `${key}.${inner.join('.')}`;
+            }
+            newStructuralStr = paramsPipe
+              ? newStructuralStr.replace(
+                  `${rawKey}${param}`,
+                  `${varName}('${key}'${callEnd} ${pipes.filter(pipe => !pipe.includes('translocoParams')).join('|')}`
+                )
+              : newStructuralStr.replace(rawKey, `${varName}('${key}'${callEnd}`);
+            keySearch = keyRegex.exec(matchedStr);
           }
-          if (inner.length) {
-            key = `${key}.${inner.join('.')}`;
-          }
-          newStructuralStr = paramsPipe
-            ? newStructuralStr.replace(
-                `${rawKey}${param}`,
-                `${varName}('${key}'${callEnd} ${pipes.filter(pipe => !pipe.includes('translocoParams')).join('|')}`
-              )
-            : newStructuralStr.replace(rawKey, `${varName}('${key}'${callEnd}`);
-          keySearch = keyRegex.exec(matchedStr);
-        }
+        });
         if (hasMatches) {
           str = str.replace(matchedStr, newStructuralStr);
         }

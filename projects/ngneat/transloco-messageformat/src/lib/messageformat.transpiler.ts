@@ -29,7 +29,7 @@ export class MessageFormatTranspiler extends DefaultTranspiler {
         const message = this.messageFormat.compile(transpiled);
         value = setValue(value, p, message(params[p]));
       });
-    } else {
+    } else if (!Array.isArray(value)) {
       const transpiled = super.transpile(value, params, translation);
 
       const message = this.messageFormat.compile(transpiled);
