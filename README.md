@@ -398,7 +398,9 @@ Now we can access each one of the `todos` keys by using the `todos` namespace:
 <span transloco="toods.submit"></span>
 ```
 
-By default, the namespace will be the scope name (camel cased), but we can override it by using the `config.scopeMapping` config:
+By default, the namespace will be the scope name (camel cased), but we can override it in two ways:
+
+1. by using the `config.scopeMapping` config:
 
 ```ts
 {
@@ -409,6 +411,15 @@ By default, the namespace will be the scope name (camel cased), but we can overr
       todos: 'customName'
     }
   }
+}
+```
+
+2. by providing custom `alias` name in the module/component scope provider:
+
+```ts
+{
+  provide: TRANSLOCO_SCOPE,
+  useValue: { scope: 'todos', alias: 'customName' }
 }
 ```
 

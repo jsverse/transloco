@@ -18,10 +18,10 @@ import { switchMap, take } from 'rxjs/operators';
 import { TemplateHandler, View } from './template-handler';
 import { TRANSLOCO_LANG } from './transloco-lang';
 import { TRANSLOCO_LOADING_TEMPLATE } from './transloco-loading-template';
-import { TRANSLOCO_SCOPE } from './transloco-scope';
+import { TRANSLOCO_SCOPE, TranslocoScope } from './transloco-scope';
 import { TranslocoService } from './transloco.service';
 import { HashMap } from './types';
-import { getPipeValue } from './helpers';
+import { getPipeValue, isTranslocoScope } from './helpers';
 import { shouldListenToLangChanges } from './shared';
 
 @Directive({
@@ -47,7 +47,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   constructor(
     private translocoService: TranslocoService,
     @Optional() private tpl: TemplateRef<{ $implicit: (key: string, params?: HashMap) => any }>,
-    @Optional() @Inject(TRANSLOCO_SCOPE) private providerScope: string | null,
+    @Optional() @Inject(TRANSLOCO_SCOPE) private providerScope: string | TranslocoScope | null,
     @Optional() @Inject(TRANSLOCO_LANG) private providerLang: string | null,
     @Optional() @Inject(TRANSLOCO_LOADING_TEMPLATE) private providedLoadingTpl: Type<any> | string,
     private vcr: ViewContainerRef,
@@ -70,6 +70,10 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
           const lang = this.getLang();
           const scope = this.getScope();
           this.langName = scope ? `${scope}/${lang}` : lang;
+          if (!this.inlineScope && isTranslocoScope(this.providerScope)) {
+            const { scope, alias } = this.providerScope;
+            this.translocoService._setScopeAlias(scope, alias);
+          }
           return this.translocoService._loadDependencies(this.langName);
         }),
         listenToLangChange ? source => source : take(1)
@@ -134,7 +138,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
 
   // inline => providers
   private getScope() {
-    return this.inlineScope || this.providerScope;
+    return this.inlineScope || (isTranslocoScope(this.providerScope) ? this.providerScope.scope : this.providerScope);
   }
 
   // inline => providers => global

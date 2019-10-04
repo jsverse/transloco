@@ -393,6 +393,16 @@ export class TranslocoService implements OnDestroy {
     return langOrScope;
   }
 
+  /**
+   * @internal
+   */
+  _setScopeAlias(scope: string, alias: string) {
+    if (!this.mergedConfig.scopeMapping) {
+      this.mergedConfig.scopeMapping = {};
+    }
+    this.mergedConfig.scopeMapping[scope] = alias;
+  }
+
   private getAvailableLangsIds(): string[] {
     const first = this.getAvailableLangs()[0];
 

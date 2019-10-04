@@ -3,7 +3,13 @@ import { TranslocoDirective, TranslocoService } from '../../public-api';
 import { createHostComponentFactory, HostComponent, SpectatorWithHost } from '@netbasal/spectator';
 import { TranslocoLoaderComponent } from '../loader-component.component';
 import { TemplateHandler } from '../template-handler';
-import { loadingTemplateMock, providersMock, runLoader, setlistenToLangChange } from './transloco.mocks';
+import {
+  loadingTemplateMock,
+  providersMock,
+  runLoader,
+  scopeAliasMock,
+  setlistenToLangChange
+} from './transloco.mocks';
 
 describe('TranslocoDirective', () => {
   let host: SpectatorWithHost<TranslocoDirective>;
@@ -139,6 +145,18 @@ describe('TranslocoDirective', () => {
       );
       testScopedTranslation(host);
     }));
+
+    // TODO test loading of scoped translations with specified in component alias
+    // it('should load scoped translations with specified in provider alias', fakeAsync(() => {
+    //   host = createHost(
+    //     `<section *transloco="let t;"><div>{{t.myScopeAlias.title}}</div></section>`,
+    //     {
+    //       detectChanges: false,
+    //       providers: [scopeAliasMock]
+    //     }
+    //   );
+    //   testScopedTranslation(host, 'Lazy scope alias English', 'Lazy scope alias Spanish');
+    // }));
 
     it("should load scoped translation even if global didn't load", fakeAsync(() => {
       host = createHost(

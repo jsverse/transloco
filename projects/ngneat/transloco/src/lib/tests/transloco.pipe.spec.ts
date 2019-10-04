@@ -41,6 +41,18 @@ describe('TranslocoPipe', () => {
     expect(translateServiceMock.translate).toHaveBeenCalledWith('title', {}, 'es');
   }));
 
+  it('should load scoped translation with scope alias', fakeAsync(() => {
+    spyOn(translateServiceMock, 'translate').and.callThrough();
+    pipe = new TranslocoPipe(translateServiceMock, { scope: 'lazy-scope-alias', alias: 'myScopeAlias' }, null, cdrMock);
+    (pipe as any).listenToLangChange = true;
+    pipe.transform('title', {});
+    runLoader();
+    expect(translateServiceMock.translate).toHaveBeenCalledWith('title', {}, 'en');
+    translateServiceMock.setActiveLang('es');
+    runLoader();
+    expect(translateServiceMock.translate).toHaveBeenCalledWith('title', {}, 'es');
+  }));
+
   describe('updateValue', () => {
     it('should update the value, set the cache and mark for check', fakeAsync(() => {
       const key = 'home';
