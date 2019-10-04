@@ -1,3 +1,4 @@
+import { TranslocoScope } from './transloco-scope';
 import { Translation } from './types';
 import flat from 'flat';
 
@@ -160,6 +161,10 @@ export function toNumber(value: number | string): number | null {
   }
 
   return null;
+}
+
+export function isTranslocoScope(item: any): item is TranslocoScope {
+  return typeof item.scope === 'string';
 }
 
 export function unflatten(obj: Translation): Translation {

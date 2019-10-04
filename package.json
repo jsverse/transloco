@@ -48,6 +48,7 @@
     "flat": "^4.1.0",
     "git-cz": "^3.2.1",
     "lodash.omitby": "^4.6.0",
+    "messageformat": "^2.3.0",
     "rxjs": "~6.3.3",
     "tslib": "^1.9.0",
     "zone.js": "~0.8.26"

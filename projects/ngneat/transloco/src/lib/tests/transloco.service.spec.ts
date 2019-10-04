@@ -272,6 +272,13 @@ describe('TranslocoService', () => {
           };
           expect(_service.translations.set).toHaveBeenCalledWith('en', merged);
         });
+
+        it("should change scope's name based on alias", () => {
+          _service._setScopeAlias('lazy-page', 'myScopeAlias');
+          _service.setTranslation(translation, lang);
+          const merged = { ...flatten(mockLangs.en), ...flatten({ myScopeAlias: { ...translation } }) };
+          expect(_service.translations.set).toHaveBeenCalledWith('en', merged);
+        });
       });
     });
 
