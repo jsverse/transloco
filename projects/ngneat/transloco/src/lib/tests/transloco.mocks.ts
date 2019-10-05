@@ -10,6 +10,8 @@ import enLazy from '../../../../../../src/assets/i18n/lazy-page/en.json';
 import esLazy from '../../../../../../src/assets/i18n/lazy-page/es.json';
 import enLazyScopeAlias from '../../../../../../src/assets/i18n/lazy-scope-alias/en.json';
 import esLazyScopeAlias from '../../../../../../src/assets/i18n/lazy-scope-alias/es.json';
+import enMF from '../../../../../../src/assets/i18n/transpilers/messageformat/en.json';
+import esMF from '../../../../../../src/assets/i18n/transpilers/messageformat/es.json';
 import { tick } from '@angular/core/testing';
 import { TranslocoService } from '../transloco.service';
 import { TRANSLOCO_LOADING_TEMPLATE } from '../transloco-loading-template';
@@ -23,7 +25,9 @@ export const mockLangs = {
   'lazy-page/en': enLazy,
   'lazy-page/es': esLazy,
   'lazy-scope-alias/en': enLazyScopeAlias,
-  'lazy-scope-alias/es': esLazyScopeAlias
+  'lazy-scope-alias/es': esLazyScopeAlias,
+  'transpilers/messageformat/en': enMF,
+  'transpilers/messageformat/es': esMF
 };
 
 export const loader = {

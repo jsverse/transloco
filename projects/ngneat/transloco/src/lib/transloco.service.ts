@@ -163,10 +163,20 @@ export class TranslocoService implements OnDestroy {
    * translate('scope.someKey', { }, 'en')
    */
   translate<T = any>(key: TranslateParams, params: HashMap = {}, lang = this.getActiveLang()): T {
-    const resolveLang = this._isLangScoped(lang) ? this.getActiveLang() : lang;
-    if (Array.isArray(key)) {
-      return key.map(k => this.translate(k, params, resolveLang)) as any;
+    let resolveLang = lang;
+    let scope;
+    if (this._isLangScoped(lang)) {
+      const langFromScope = getLangFromScope(lang);
+      const hasLang = this._isLang(langFromScope);
+      resolveLang = hasLang ? langFromScope : this.getActiveLang();
+      scope = this.getMappedScope(hasLang ? getScopeFromLang(lang) : lang);
     }
+
+    if (Array.isArray(key)) {
+      return key.map(k => this.translate(scope ? `${scope}.${k}` : k, params, resolveLang)) as any;
+    }
+
+    key = scope ? `${scope}.${key}` : key;
 
     if (!key) {
       return this.missingHandler.handle(key, this.config);
@@ -292,8 +302,7 @@ export class TranslocoService implements OnDestroy {
 
     // Merged the scoped language into the active language
     if (scope) {
-      const { scopeMapping = {} } = this.config;
-      const key = scopeMapping[scope] || toCamelCase(scope);
+      const key = this.getMappedScope(scope);
       flattenScopeOrTranslation = flatten({ [key]: translation });
     }
 
@@ -353,6 +362,13 @@ export class TranslocoService implements OnDestroy {
 
   /**
    * @internal
+   */
+  _isLang(lang: string) {
+    return this.getAvailableLangsIds().indexOf(lang) !== -1;
+  }
+
+  /**
+   * @internal
    *
    * We always want to make sure the global lang is loaded
    * before loading the scope since you can access both via the pipe/directive.
@@ -371,7 +387,10 @@ export class TranslocoService implements OnDestroy {
    * @internal
    */
   _completeScopeWithLang(langOrScope: string) {
-    return this._isLangScoped(langOrScope) ? `${langOrScope}/${this.getActiveLang()}` : langOrScope;
+    if (this._isLangScoped(langOrScope) && !this._isLang(getLangFromScope(langOrScope))) {
+      return `${langOrScope}/${this.getActiveLang()}`;
+    }
+    return langOrScope;
   }
 
   /**
@@ -462,5 +481,10 @@ export class TranslocoService implements OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+  }
+
+  private getMappedScope(scope: string): string {
+    const { scopeMapping = {} } = this.config;
+    return scopeMapping[scope] || toCamelCase(scope);
   }
 }

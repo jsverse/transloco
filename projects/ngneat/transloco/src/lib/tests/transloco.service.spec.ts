@@ -122,18 +122,46 @@ describe('TranslocoService', () => {
         expect(spy).toHaveBeenCalledTimes(1);
       }));
 
-      it('should support scoped lang', fakeAsync(() => {
+      it('should support scope', fakeAsync(() => {
         const spy = createSpy();
-        service.selectTranslate('lazyPage.title', null, 'lazy-page').subscribe(spy);
+        service.selectTranslate('title', null, 'lazy-page').subscribe(spy);
         runLoader();
         expect(spy).toHaveBeenCalledWith('Admin Lazy english');
       }));
 
-      it('should support scoped lang with param', fakeAsync(() => {
+      it('should support scope with lang', fakeAsync(() => {
         const spy = createSpy();
-        service.selectTranslate('lazyPage.withParam', { param: 'Transloco' }, 'lazy-page').subscribe(spy);
+        service.selectTranslate('title', null, 'lazy-page/es').subscribe(spy);
+        runLoader();
+        expect(spy).toHaveBeenCalledWith('Admin Lazy spanish');
+      }));
+
+      it('should support scope with param', fakeAsync(() => {
+        const spy = createSpy();
+        service.selectTranslate('withParam', { param: 'Transloco' }, 'lazy-page').subscribe(spy);
         runLoader();
         expect(spy).toHaveBeenCalledWith('Admin Lazy english Transloco');
+      }));
+
+      it('should support scope with lang and params', fakeAsync(() => {
+        const spy = createSpy();
+        service.selectTranslate('withParam', { param: 'Transloco' }, 'lazy-page/es').subscribe(spy);
+        runLoader();
+        expect(spy).toHaveBeenCalledWith('Admin Lazy spanish Transloco');
+      }));
+
+      it('should support nested scope with params', fakeAsync(() => {
+        const spy = createSpy();
+        service.selectTranslate('params', { value: 'Transloco' }, 'transpilers/messageformat').subscribe(spy);
+        runLoader();
+        expect(spy).toHaveBeenCalledWith('Replaces standard Transloco - english');
+      }));
+
+      it('should support nested scope with lang and params', fakeAsync(() => {
+        const spy = createSpy();
+        service.selectTranslate('params', { value: 'Transloco' }, 'transpilers/messageformat/es').subscribe(spy);
+        runLoader();
+        expect(spy).toHaveBeenCalledWith('Replaces standard Transloco - spanish');
       }));
     });
 
