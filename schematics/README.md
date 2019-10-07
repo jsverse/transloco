@@ -85,7 +85,7 @@ Creates boilerplate translation files for given languages, and add Transloco con
 ### Overview
 
 Migration script from `ngx-translate`. For more information about the script see:
-[migrartion.md](https://github.com/ngneat/transloco/tree/master/schematics/migration.md)
+[ngx-translate-migration.md](https://github.com/ngneat/transloco/tree/master/schematics/migrate/ngx-translate-migration.md)
 
 ### Command
 
@@ -186,7 +186,7 @@ Note if this flag won't be provide a new Module should be created.
 ### Overview
 
 The Library's upgrade script from lower versions. For more information about the script see:
-[upgrade.md](https://github.com/ngneat/transloco/tree/master/schematics/upgrade.md)
+[v2-upgrade.md](https://github.com/ngneat/transloco/tree/master/schematics/upgrade/v2-upgrade.md)
 
 ### Command
 
