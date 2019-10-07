@@ -688,7 +688,7 @@ import { getBrowserLang, getBrowserCultureLang } from '@ngneat/transloco';
 
 ## Migration from ngx-translate
 
-Transloco provides a schematics [command](https://github.com/ngneat/transloco/blob/master/schematics/migrate/ngx-translate-migration.md) that will help you with the migration process.
+Transloco provides a schematics [command](https://github.com/ngneat/transloco/blob/master/schematics/src/migrate/ngx-translate-migration.md) that will help you with the migration process.
 
 ## Comparison to other libraries
 

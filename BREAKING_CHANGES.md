@@ -52,7 +52,7 @@ We need this information to know whether we're dealing with a `language` or a `s
 ng g @ngneat/transloco:upgrade
 ```
 
-See [v2-upgrade.md](https://github.com/ngneat/transloco/tree/master/schematics/upgrade/v2-upgrade.md) for more information.
+See [v2-upgrade.md](https://github.com/ngneat/transloco/tree/master/schematics/src/upgrade/v2-upgrade.md) for more information.
 
 ## Features
 
