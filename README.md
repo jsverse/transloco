@@ -41,6 +41,7 @@ The internationalization (i18n) library for Angular
 - [SSR Support](#ssr-support)
 - [Unit Testing](#unit-testing)
 - [Additional Functionality](#additional-functionality)
+- [ngx-translate Migration](#migration-from-ngx-translate)
 - [Plugins](#plugins)
 - [Comparison to other libraries](#comparison-to-other-libraries)
 - [Schematics Support](https://github.com/ngneat/transloco/blob/master/schematics/README.md)
