@@ -8,7 +8,7 @@
 The internationalization (i18n) library for Angular
 
 [![Build Status](https://img.shields.io/travis/datorama/akita.svg?style=flat-square)](https://travis-ci.org/ngneat/transloco)
-[![All Contributors](https://img.shields.io/badge/all_contributors-10-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-11-orange.svg?style=flat-square)](#contributors-)
 [![commitizen](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)]()
 [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)]()
 [![coc-badge](https://img.shields.io/badge/codeof-conduct-ff69b4.svg?style=flat-square)]()
@@ -759,12 +759,13 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/theblushingcrow"><img src="https://avatars3.githubusercontent.com/u/638818?v=4" width="100px;" alt="Inbal Sinai"/><br /><sub><b>Inbal Sinai</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=theblushingcrow" title="Documentation">📖</a></td>
     <td align="center"><a href="http://www.larskniep.nl"><img src="https://avatars1.githubusercontent.com/u/1215195?v=4" width="100px;" alt="Lars Kniep"/><br /><sub><b>Lars Kniep</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=larscom" title="Code">💻</a> <a href="#ideas-larscom" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/fxck"><img src="https://avatars1.githubusercontent.com/u/1303561?v=4" width="100px;" alt="Aleš"/><br /><sub><b>Aleš</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=fxck" title="Code">💻</a> <a href="#ideas-fxck" title="Ideas, Planning, & Feedback">🤔</a></td>
-    <td align="center"><a href="https://www.codamit.dev"><img src="https://avatars0.githubusercontent.com/u/8522558?v=4" width="100px;" alt="Koala"/><br /><sub><b>Koala</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=Edouardbozon" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://www.codamit.dev"><img src="https://avatars0.githubusercontent.com/u/8522558?v=4" width="100px;" alt="Koala"/><br /><sub><b>Koala</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=Edouardbozon" title="Documentation">📖</a> <a href="https://github.com/ngneat/transloco/commits?author=Edouardbozon" title="Code">💻</a></td>
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/DerSizeS"><img src="https://avatars3.githubusercontent.com/u/708090?v=4" width="100px;" alt="Oleg Teterin"/><br /><sub><b>Oleg Teterin</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=DerSizeS" title="Code">💻</a></td>
     <td align="center"><a href="https://twitter.com/maxime1992"><img src="https://avatars0.githubusercontent.com/u/4950209?v=4" width="100px;" alt="Maxime"/><br /><sub><b>Maxime</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=maxime1992" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/zufarzhan"><img src="https://avatars3.githubusercontent.com/u/22148960?v=4" width="100px;" alt="Zufar Ismanov"/><br /><sub><b>Zufar Ismanov</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=zufarzhan" title="Code">💻</a> <a href="#ideas-zufarzhan" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/sk222sw"><img src="https://avatars0.githubusercontent.com/u/8642363?v=4" width="100px;" alt="Sonny Kjellberg"/><br /><sub><b>Sonny Kjellberg</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=sk222sw" title="Documentation">📖</a></td>
   </tr>
 </table>
 
