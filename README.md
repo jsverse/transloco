@@ -722,6 +722,7 @@ If you find any mistakes in the table, open an issue, and we'll fix them asap, t
 - [Translators Comments](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-remove-comments) (official)
 - [Locale](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-locale) (official)
 - [Transloco Optimize](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-optimize) (official)
+- [Translations Validator](https://github.com/ngneat/transloco/tree/master/projects/ngneat/transloco-validator) (official)
 
 ## Recipes
 
