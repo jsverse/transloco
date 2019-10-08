@@ -396,7 +396,7 @@ Now we can access each one of the `todos` keys by using the `todos` namespace:
 ```html
 {{ 'todos.title' | transloco }}
 
-<span transloco="toods.submit"></span>
+<span transloco="todos.submit"></span>
 ```
 
 By default, the namespace will be the scope name (camel cased), but we can override it in two ways:
