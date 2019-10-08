@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "id": "SchematicsTranslocoScope",
+  "title": "Add new transloco scope module, along with translation files.",
+  "type": "object",
+  "properties": {
+    "rootTranslationPath": {
+      "type": "string",
+      "description": "The folder that contain the root translation files.",
+      "x-prompt": "Enter the root translation files path",
+      "default": "src/assets/i18n",
+      "alias": "root"
+    },
+    "translationPaths": {
+      "type": "string",
+      "description": "A list of all the translation files Path.",
+      "x-prompt": "Enter all the translation files path containing folder paths",
+      "default": "src/assets/i18n",
+      "alias": "paths"
+    },
+    "outDir": {
+      "type": "string",
+      "description": "The output directory.",
+      "x-prompt": "Enter output directory path.",
+      "default": "dist-i18n",
+      "alias": "o"
+    },
+    "translateFormat": {
+      "type": "string",
+      "description": "The translation files format.",
+      "default": "JSON",
+      "enum": ["JSON", "Typescript"]
+    },
+    "project": {
+      "type": "string",
+      "description": "The root project name."
+    }
+  },
+  "required": []
+}
