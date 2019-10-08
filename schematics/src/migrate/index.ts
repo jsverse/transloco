@@ -1,5 +1,5 @@
 import { Rule, SchematicsException, noop } from '@angular-devkit/schematics';
-import { run } from './migration';
+import { run } from './ngx-translate-migration';
 import { SchemaOptions } from './schema';
 
 export default function(options: SchemaOptions): Rule {

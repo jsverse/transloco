@@ -15,12 +15,13 @@
   "dependencies": {
     "@angular-devkit/core": "^8.1.2",
     "@angular-devkit/schematics": "^8.1.2",
+    "@schematics/angular": ">=7.3.9 <9.0.0",
     "@types/jasmine": "^3.3.9",
     "@types/node": "^8.0.31",
-    "@schematics/angular": ">=7.3.9 <9.0.0",
+    "glob": "^7.1.4",
     "jasmine": "^3.3.1",
-    "typescript": "~3.4.3",
+    "ora": "^3.4.0",
     "replace-in-file": "^4.1.2",
-    "ora": "^3.4.0"
+    "typescript": "~3.4.3"
   }
 }
