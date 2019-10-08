@@ -23,5 +23,8 @@
     "ora": "^3.4.0",
     "replace-in-file": "^4.1.2",
     "typescript": "~3.4.3"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.1.1"
   }
 }
