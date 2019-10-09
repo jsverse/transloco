@@ -31,8 +31,8 @@ import { environment } from '../environments/environment';
 {
   ...
   flatten: {
-    aot: environment.production;
-  };
+    aot: environment.production,
+  },
 };
 ```
 
