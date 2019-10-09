@@ -25,6 +25,10 @@ const routes: Routes = [
     loadChildren: './scope-sharing/scope-sharing.module#ScopeSharingModule'
   },
   {
+    path: 'inline-loaders',
+    loadChildren: './inline-loaders/inline-loaders.module#InlineLoadersModule'
+  },
+  {
     path: 'dynamic-translation',
     loadChildren: './dynamic-translation/dynamic-translation.module#DynamicTranslationModule'
   },

@@ -163,7 +163,7 @@ export function toNumber(value: number | string): number | null {
   return null;
 }
 
-export function isTranslocoScope(item: any): item is TranslocoScope {
+export function isScopeObject(item: any): item is TranslocoScope {
   return item && typeof item.scope === 'string';
 }
 

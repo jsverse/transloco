@@ -20,8 +20,8 @@ import { TRANSLOCO_LANG } from './transloco-lang';
 import { TRANSLOCO_LOADING_TEMPLATE } from './transloco-loading-template';
 import { TRANSLOCO_SCOPE, TranslocoScope } from './transloco-scope';
 import { TranslocoService } from './transloco.service';
-import { HashMap } from './types';
-import { getPipeValue, isTranslocoScope } from './helpers';
+import { HashMap, InlineLoader } from './types';
+import { getPipeValue, isFunction, isScopeObject } from './helpers';
 import { shouldListenToLangChanges } from './shared';
 
 @Directive({
@@ -69,12 +69,17 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
         switchMap(() => {
           const lang = this.getLang();
           const scope = this.getScope();
+          let inlineLoader: InlineLoader | null;
+
           this.langName = scope ? `${scope}/${lang}` : lang;
-          if (!this.inlineScope && isTranslocoScope(this.providerScope)) {
-            const { scope, alias } = this.providerScope;
+          if (!this.inlineScope && isScopeObject(this.providerScope)) {
+            const { scope, alias = scope, translations } = this.providerScope;
+
             this.translocoService._setScopeAlias(scope, alias);
+            inlineLoader = translations;
           }
-          return this.translocoService._loadDependencies(this.langName);
+
+          return this.translocoService._loadDependencies(this.langName, inlineLoader);
         }),
         listenToLangChange ? source => source : take(1)
       )
@@ -138,7 +143,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
 
   // inline => providers
   private getScope() {
-    return this.inlineScope || (isTranslocoScope(this.providerScope) ? this.providerScope.scope : this.providerScope);
+    return this.inlineScope || (isScopeObject(this.providerScope) ? this.providerScope.scope : this.providerScope);
   }
 
   // inline => providers => global

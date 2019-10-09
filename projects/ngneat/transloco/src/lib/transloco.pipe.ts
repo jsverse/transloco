@@ -5,7 +5,7 @@ import { switchMap, take } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { TRANSLOCO_SCOPE, TranslocoScope } from './transloco-scope';
 import { TRANSLOCO_LANG } from './transloco-lang';
-import { getLangFromScope, getScopeFromLang, isTranslocoScope } from './helpers';
+import { getLangFromScope, getScopeFromLang, isScopeObject } from './helpers';
 import { shouldListenToLangChanges } from './shared';
 
 @Pipe({
@@ -52,7 +52,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
           let providerScope;
           if (this.providerScope) {
             providerScope = this.providerScope;
-            if (isTranslocoScope(this.providerScope)) {
+            if (isScopeObject(this.providerScope)) {
               const { scope, alias } = this.providerScope;
               providerScope = scope;
               this.translocoService._setScopeAlias(providerScope, alias);

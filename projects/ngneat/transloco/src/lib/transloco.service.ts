@@ -3,7 +3,15 @@ import { BehaviorSubject, combineLatest, forkJoin, from, Observable, of, Subject
 import { catchError, map, retry, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { DefaultLoader, TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_TRANSPILER, TranslocoTranspiler } from './transloco.transpiler';
-import { AvailableLangs, HashMap, SetTranslationOptions, TranslateParams, Translation, TranslocoEvents } from './types';
+import {
+  AvailableLangs,
+  HashMap,
+  InlineLoader,
+  SetTranslationOptions,
+  TranslateParams,
+  Translation,
+  TranslocoEvents
+} from './types';
 import {
   getLangFromScope,
   getScopeFromLang,
@@ -107,23 +115,40 @@ export class TranslocoService implements OnDestroy {
     return this.availableLangs;
   }
 
-  load(lang: string, options?: { fallbackLangs: string[] | null }): Observable<Translation> {
+  load(
+    lang: string,
+    options?: { fallbackLangs?: string[] | null; inlineLoader?: InlineLoader }
+  ): Observable<Translation> {
     if (this.cache.has(lang) === false) {
-      const mergedOptions = { ...{ fallbackLangs: null }, ...(options || {}) };
+      const mergedOptions = { ...{ fallbackLangs: null, inlineLoader: null }, ...(options || {}) };
       let loadTranslation: Observable<Translation | { translation: Translation; lang: string }[]>;
 
       if (this.useFallbackTranslation(lang)) {
-        const loadBoth = [lang, this.firstFallbackLang].map(l =>
-          from(this.loader.getTranslation(l)).pipe(
+        const fallback = this._isLang(lang)
+          ? this.firstFallbackLang
+          : `${getScopeFromLang(lang)}/${this.firstFallbackLang}`;
+        console.log({
+          lang,
+          fallback
+        });
+
+        const loadBoth = [lang, fallback].map(l => {
+          const loader = mergedOptions.inlineLoader
+            ? from(mergedOptions.inlineLoader[getLangFromScope(lang)]())
+            : from(this.loader.getTranslation(l));
+          return loader.pipe(
             map(t => ({
               translation: t,
               lang: l
             }))
-          )
-        );
+          );
+        });
         loadTranslation = forkJoin(loadBoth);
       } else {
-        loadTranslation = from(this.loader.getTranslation(lang));
+        const loader = mergedOptions.inlineLoader
+          ? mergedOptions.inlineLoader[getLangFromScope(lang)]()
+          : this.loader.getTranslation(lang);
+        loadTranslation = from(loader);
       }
 
       const load$ = loadTranslation.pipe(
@@ -301,6 +326,7 @@ export class TranslocoService implements OnDestroy {
     let flattenScopeOrTranslation = translation;
 
     // Merged the scoped language into the active language
+
     if (scope) {
       const key = this.getMappedScope(scope);
       flattenScopeOrTranslation = flatten({ [key]: translation });
@@ -373,14 +399,15 @@ export class TranslocoService implements OnDestroy {
    * We always want to make sure the global lang is loaded
    * before loading the scope since you can access both via the pipe/directive.
    */
-  _loadDependencies(langName: string): Observable<Translation | Translation[]> {
+  _loadDependencies(langName: string, inlineLoader: InlineLoader): Observable<Translation | Translation[]> {
     const split = langName.split('/');
     const [lang] = split.slice(-1);
     if (split.length > 1 && !size(this.getTranslation(lang))) {
-      return combineLatest(this.load(lang), this.load(langName));
+      // lang is the main lang like en, and langName is the complete scope page like todos/en
+      return combineLatest(this.load(lang), this.load(langName, { inlineLoader }));
     }
 
-    return this.load(langName);
+    return this.load(langName, { inlineLoader });
   }
 
   /**
@@ -414,7 +441,9 @@ export class TranslocoService implements OnDestroy {
   }
 
   private useFallbackTranslation(lang?: string) {
-    return this.config.missingHandler.useFallbackTranslation && lang !== this.firstFallbackLang;
+    return (
+      this.config.missingHandler.useFallbackTranslation && lang !== this.firstFallbackLang && !this.cache.get(lang)
+    );
   }
 
   private handleSuccess(lang: string, translation: Translation) {

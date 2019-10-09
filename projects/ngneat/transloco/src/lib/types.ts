@@ -1,3 +1,5 @@
+import { Observable } from 'rxjs';
+
 export type HashMap<T = any> = { [key: string]: T };
 
 export type LoadedEvent = {
@@ -21,3 +23,4 @@ export type PersistStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>
 export type TranslateParams = string | string[];
 export type AvailableLangs = string[] | { id: string; label: string }[];
 export type SetTranslationOptions = { merge?: boolean; emitChange?: boolean };
+export type InlineLoader = () => HashMap<Observable<Translation> | Promise<Translation>>;
