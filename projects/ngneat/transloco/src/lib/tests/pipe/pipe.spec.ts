@@ -1,7 +1,7 @@
-import { TranslocoPipe, TranslocoService } from '../../public-api';
+import { TranslocoPipe, TranslocoService } from '@ngneat/transloco';
 import { Mock } from 'ts-mocks';
 import { ChangeDetectorRef } from '@angular/core';
-import { createService, runLoader } from './transloco.mocks';
+import { createService, runLoader } from '../transloco.mocks';
 import { fakeAsync } from '@angular/core/testing';
 import { of } from 'rxjs';
 

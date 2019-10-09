@@ -9,7 +9,6 @@ import {
   getScopeFromLang,
   getValue,
   isString,
-  mergeDeep,
   size,
   toCamelCase,
   unflatten,
@@ -19,6 +18,7 @@ import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.co
 import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './transloco-missing-handler';
 import { TRANSLOCO_INTERCEPTOR, TranslocoInterceptor } from './transloco.interceptor';
 import { TRANSLOCO_FALLBACK_STRATEGY, TranslocoFallbackStrategy } from './transloco-fallback-strategy';
+import { mergeConfig } from './merge-config';
 
 let service: TranslocoService;
 
@@ -57,7 +57,8 @@ export class TranslocoService implements OnDestroy {
       this.loader = new DefaultLoader(this.translations);
     }
     service = this;
-    this.mergedConfig = mergeDeep(defaultConfig, userConfig);
+    this.mergedConfig = mergeConfig(defaultConfig, userConfig);
+
     this.setAvailableLangs(this.mergedConfig.availableLangs);
     this.setFallbackLangForMissingTranslation(this.mergedConfig);
     this.setDefaultLang(this.mergedConfig.defaultLang);
@@ -237,18 +238,6 @@ export class TranslocoService implements OnDestroy {
 
   selectTranslateObject<T = any>(key: TranslateParams, params?: HashMap, lang?: string): Observable<T> {
     return this.selectTranslate(key, params, lang, true);
-  }
-
-  /**
-   *  Translate a given value
-   *
-   *  @example
-   *  transpile('Hello {{ value }}', { value: 'World' })
-   *  transpile('Hello {{ value }}', { value: 'World' }, 'es')
-   */
-  transpile(value: string, params: HashMap = {}, lang = this.getActiveLang()): string {
-    const translation = this.translations.get(lang);
-    return this.parser.transpile(value, params, translation);
   }
 
   /**

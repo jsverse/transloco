@@ -62,7 +62,7 @@
     "@commitlint/config-angular": "8.1.0",
     "@commitlint/config-conventional": "8.1.0",
     "@cypress/webpack-preprocessor": "4.1.0",
-    "@netbasal/spectator": "^3.9.4",
+    "@ngneat/spectator": "^4.4.0",
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "~8.9.4",

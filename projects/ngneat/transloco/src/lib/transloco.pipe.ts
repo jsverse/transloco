@@ -5,7 +5,7 @@ import { switchMap, take } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { TRANSLOCO_SCOPE, TranslocoScope } from './transloco-scope';
 import { TRANSLOCO_LANG } from './transloco-lang';
-import { getLangFromScope, getScopeFromLang, isTranslocoScope } from './helpers';
+import { getLangFromScope, getPipeValue, getScopeFromLang, isTranslocoScope } from './helpers';
 import { shouldListenToLangChanges } from './shared';
 
 @Pipe({
@@ -19,6 +19,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
   lastParams: HashMap;
   private listenToLangChange: boolean;
   private langName: string;
+  private init = true;
 
   constructor(
     private translocoService: TranslocoService,
@@ -48,7 +49,14 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
     this.subscription = this.translocoService.langChanges$
       .pipe(
         switchMap(activeLang => {
-          const lang = this.providerLang || activeLang;
+          let lang = this.init && this.providerLang ? this.providerLang : activeLang;
+
+          if (this.providerLang && this.init) {
+            const [_, extractLang] = getPipeValue(this.providerLang, 'static');
+            lang = extractLang;
+          }
+          this.init = false;
+
           let providerScope;
           if (this.providerScope) {
             providerScope = this.providerScope;
@@ -59,6 +67,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
             }
           }
           this.langName = providerScope ? `${providerScope}/${lang}` : lang;
+
           return this.translocoService._loadDependencies(this.langName);
         }),
         this.listenToLangChange ? source => source : take(1)
