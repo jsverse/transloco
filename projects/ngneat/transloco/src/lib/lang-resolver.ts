@@ -1,4 +1,4 @@
-import { getLangFromScope, getPipeValue, getScopeFromLang } from './helpers';
+import { getLangFromScope, getPipeValue, getScopeFromLang } from './shared';
 
 type LangResolverParams = {
   inline: string | undefined;
@@ -54,15 +54,15 @@ export class LangResolver {
 
   /**
    *
-   * Resolve the complete lang
+   * Resolve the lang path for loading
    *
    * @example
    *
-   * resolveFullLang('todos', 'en') => todos/en
-   * resolveFullLang('en') => en
+   * resolveLangPath('todos', 'en') => todos/en
+   * resolveLangPath('en') => en
    *
    */
-  resolveFullLang(lang: string, scope: string | undefined) {
+  resolveLangPath(lang: string, scope: string | undefined) {
     return scope ? `${scope}/${lang}` : lang;
   }
 }

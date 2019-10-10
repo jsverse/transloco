@@ -4,21 +4,13 @@ import { catchError, map, retry, shareReplay, switchMap, tap } from 'rxjs/operat
 import { DefaultLoader, TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_TRANSPILER, TranslocoTranspiler } from './transloco.transpiler';
 import { AvailableLangs, HashMap, SetTranslationOptions, TranslateParams, Translation, TranslocoEvents } from './types';
-import {
-  getLangFromScope,
-  getScopeFromLang,
-  getValue,
-  isString,
-  size,
-  toCamelCase,
-  unflatten,
-  flatten
-} from './helpers';
+import { getValue, isString, size, toCamelCase, unflatten, flatten } from './helpers';
 import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './transloco-missing-handler';
 import { TRANSLOCO_INTERCEPTOR, TranslocoInterceptor } from './transloco.interceptor';
 import { TRANSLOCO_FALLBACK_STRATEGY, TranslocoFallbackStrategy } from './transloco-fallback-strategy';
 import { mergeConfig } from './merge-config';
+import { getLangFromScope, getScopeFromLang } from './shared';
 
 let service: TranslocoService;
 

@@ -22,3 +22,6 @@ export { getBrowserCultureLang, getBrowserLang } from './lib/browser-lang';
 export * from './lib/types';
 export * from './lib/helpers';
 export { ProviderScope } from './lib/types';
+export { getPipeValue } from './lib/shared';
+export { getLangFromScope } from './lib/shared';
+export { getScopeFromLang } from './lib/shared';

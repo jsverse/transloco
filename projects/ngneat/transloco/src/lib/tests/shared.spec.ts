@@ -1,4 +1,4 @@
-import { getLangFromScope, getPipeValue, getScopeFromLang } from '../helpers';
+import { getLangFromScope, getPipeValue, getScopeFromLang, shouldListenToLangChanges } from '../shared';
 
 describe('getPipeValue', () => {
   it('should work', () => {
@@ -25,4 +25,32 @@ describe('getScopeFromLang', () => {
     expect(getScopeFromLang('some/nested/es')).toEqual('some/nested');
     expect(getScopeFromLang('')).toEqual('');
   });
+});
+
+describe('shouldListenToLangChanges', () => {
+
+  it('should return false when lang contains static', () => {
+    expect(shouldListenToLangChanges({
+      config: {
+        reRenderOnLangChange: true
+      }
+    } as any, 'es|static')).toEqual(false);
+  });
+
+  it('should return true when lang does not contains static and reRenderOnLangChange is true', () => {
+    expect(shouldListenToLangChanges({
+      config: {
+        reRenderOnLangChange: true
+      }
+    } as any, 'es')).toEqual(true);
+  });
+
+  it('should return false when lang does not contains static and reRenderOnLangChange is false', () => {
+    expect(shouldListenToLangChanges({
+      config: {
+        reRenderOnLangChange: false
+      }
+    } as any, 'es')).toEqual(false);
+  });
+
 });

@@ -1,11 +1,11 @@
 import { ChangeDetectorRef, Inject, OnDestroy, Optional, Pipe, PipeTransform } from '@angular/core';
 import { TranslocoService } from './transloco.service';
 import { HashMap, ProviderScope } from './types';
-import { switchMap, take } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { TRANSLOCO_SCOPE } from './transloco-scope';
 import { TRANSLOCO_LANG } from './transloco-lang';
-import { shouldListenToLangChanges } from './shared';
+import { listenOrNotOperator, shouldListenToLangChanges } from './shared';
 import { LangResolver } from './lang-resolver';
 import { ScopeResolver } from './scope-resolver';
 
@@ -18,7 +18,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
   private lastValue: string | undefined;
   private lastKey: string | undefined;
   private listenToLangChange: boolean;
-  private currentLang: string;
+  private path: string;
   private langResolver = new LangResolver();
   private scopeResolver = new ScopeResolver(this.translocoService);
 
@@ -55,11 +55,11 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
           });
 
           let scope = this.scopeResolver.resolve({ inline: undefined, provider: this.providerScope });
-          this.currentLang = this.langResolver.resolveFullLang(lang, scope);
+          this.path = this.langResolver.resolveLangPath(lang, scope);
 
-          return this.translocoService._loadDependencies(this.currentLang);
+          return this.translocoService._loadDependencies(this.path);
         }),
-        this.listenToLangChange ? source => source : take(1)
+        listenOrNotOperator(this.listenToLangChange)
       )
       .subscribe(() => this.updateValue(key, params));
 
@@ -71,7 +71,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
   }
 
   private updateValue(key: string, params?: HashMap | undefined) {
-    const lang = this.langResolver.resolveLangBasedOnScope(this.currentLang);
+    const lang = this.langResolver.resolveLangBasedOnScope(this.path);
     this.lastValue = this.translocoService.translate(key, params, lang);
     this.cdr.markForCheck();
   }

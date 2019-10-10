@@ -99,8 +99,8 @@ describe('LangResolver', () => {
   });
 
   it('should resolve full lang', () => {
-    expect(resolver.resolveFullLang('en', undefined)).toEqual('en');
-    expect(resolver.resolveFullLang('en', 'todos')).toEqual('todos/en');
-    expect(resolver.resolveFullLang('es', 'todos/nested')).toEqual('todos/nested/es');
+    expect(resolver.resolveLangPath('en', undefined)).toEqual('en');
+    expect(resolver.resolveLangPath('en', 'todos')).toEqual('todos/en');
+    expect(resolver.resolveLangPath('es', 'todos/nested')).toEqual('todos/nested/es');
   });
 });
