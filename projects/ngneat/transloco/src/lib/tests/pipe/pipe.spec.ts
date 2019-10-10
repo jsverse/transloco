@@ -5,7 +5,7 @@ import { createService, runLoader } from '../transloco.mocks';
 import { fakeAsync } from '@angular/core/testing';
 import { of } from 'rxjs';
 
-fdescribe('TranslocoPipe', () => {
+describe('TranslocoPipe', () => {
   let translateServiceMock;
   let cdrMock;
   let pipe;

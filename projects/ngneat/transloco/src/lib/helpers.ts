@@ -1,5 +1,4 @@
-import { TranslocoScope } from './transloco-scope';
-import { Translation } from './types';
+import { ProviderScope, Translation } from './types';
 import flat from 'flat';
 
 export function getValue(obj: object, path: string) {
@@ -76,6 +75,9 @@ export function coerceArray(val) {
  *
  */
 export function getScopeFromLang(lang: string): string {
+  if (!lang) {
+    return '';
+  }
   const split = lang.split('/');
   split.pop();
   return split.join('/');
@@ -88,6 +90,9 @@ export function getScopeFromLang(lang: string): string {
  *
  */
 export function getLangFromScope(lang: string): string {
+  if (!lang) {
+    return '';
+  }
   const split = lang.split('/');
   return split.pop();
 }
@@ -145,7 +150,7 @@ export function toNumber(value: number | string): number | null {
   return null;
 }
 
-export function isTranslocoScope(item: any): item is TranslocoScope {
+export function isScopeObject(item: any): item is ProviderScope {
   return item && typeof item.scope === 'string';
 }
 

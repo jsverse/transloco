@@ -18,13 +18,14 @@ import { fakeAsync } from '@angular/core/testing';
     <h1>{{ 'nested.title' | transloco }}</h1>
     <span>{{ 'alert' | transloco: { value: 'netanel' } }}</span>
     <h3>{{ 'alert' | transloco: { value: value } }}</h3>
+    <h5>{{ 'home' | transloco: null:'es' }}</h5>
   `
 })
 class TestPipe {
   value = 'hey';
 }
 
-fdescribe('Pipe', () => {
+describe('Pipe', () => {
   describe('Pipe basic', () => {
     let spectator: Spectator<TestPipe>;
     const createComponent = createComponentFactory({
@@ -40,6 +41,9 @@ fdescribe('Pipe', () => {
       expect(spectator.query('p')).toHaveText('home english');
       expect(spectator.query('h1')).toHaveText('Title english');
       expect(spectator.query('span')).toHaveText('alert netanel english');
+
+      // should support inline lang
+      expect(spectator.query('h5')).toHaveText('home spanish');
     }));
 
     it('should support dynamic params', fakeAsync(() => {

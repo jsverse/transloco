@@ -6,7 +6,7 @@ export { TRANSLOCO_LOADER, TranslocoLoader } from './lib/transloco.loader';
 export { TranslocoConfig, TRANSLOCO_CONFIG, defaultConfig } from './lib/transloco.config';
 export { TRANSLOCO_TRANSPILER, DefaultTranspiler, TranslocoTranspiler } from './lib/transloco.transpiler';
 export { Translation, FailedEvent, HashMap, LoadedEvent, TranslocoEvents } from './lib/types';
-export { TranslocoScope, TRANSLOCO_SCOPE } from './lib/transloco-scope';
+export { TRANSLOCO_SCOPE } from './lib/transloco-scope';
 export { TRANSLOCO_LOADING_TEMPLATE } from './lib/transloco-loading-template';
 export { TRANSLOCO_LANG } from './lib/transloco-lang';
 export { TestingLoader, TranslocoTestingModule } from './lib/transloco-testing.module';
@@ -21,3 +21,4 @@ export { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './lib/transl
 export { getBrowserCultureLang, getBrowserLang } from './lib/browser-lang';
 export * from './lib/types';
 export * from './lib/helpers';
+export { ProviderScope } from './lib/types';

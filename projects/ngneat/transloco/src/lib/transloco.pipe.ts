@@ -1,12 +1,13 @@
 import { ChangeDetectorRef, Inject, OnDestroy, Optional, Pipe, PipeTransform } from '@angular/core';
 import { TranslocoService } from './transloco.service';
-import { HashMap } from './types';
+import { HashMap, ProviderScope } from './types';
 import { switchMap, take } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
-import { TRANSLOCO_SCOPE, TranslocoScope } from './transloco-scope';
+import { TRANSLOCO_SCOPE } from './transloco-scope';
 import { TRANSLOCO_LANG } from './transloco-lang';
-import { getLangFromScope, getPipeValue, getScopeFromLang, isTranslocoScope } from './helpers';
 import { shouldListenToLangChanges } from './shared';
+import { LangResolver } from './lang-resolver';
+import { ScopeResolver } from './scope-resolver';
 
 @Pipe({
   name: 'transloco',
@@ -17,24 +18,26 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
   private lastValue: string | undefined;
   private lastKey: string | undefined;
   private listenToLangChange: boolean;
-  private langName: string;
-  private init = true;
+  private currentLang: string;
+  private langResolver = new LangResolver();
+  private scopeResolver = new ScopeResolver(this.translocoService);
 
   constructor(
     private translocoService: TranslocoService,
-    @Optional() @Inject(TRANSLOCO_SCOPE) private providerScope: string | TranslocoScope | null,
+    @Optional() @Inject(TRANSLOCO_SCOPE) private providerScope: string | ProviderScope | null,
     @Optional() @Inject(TRANSLOCO_LANG) private providerLang: string | null,
     private cdr: ChangeDetectorRef
   ) {
     this.listenToLangChange = shouldListenToLangChanges(this.translocoService, this.providerLang);
   }
 
-  transform(key: string, params?: HashMap): string {
+  transform(key: string, params?: HashMap | undefined, inlineLang?: string | undefined): string {
     if (!key) {
       return key;
     }
 
     const keyName = params ? `${key}${JSON.stringify(params)}` : key;
+
     if (keyName === this.lastKey) {
       return this.lastValue;
     }
@@ -45,26 +48,16 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
     this.subscription = this.translocoService.langChanges$
       .pipe(
         switchMap(activeLang => {
-          let lang = this.init && this.providerLang ? this.providerLang : activeLang;
+          const lang = this.langResolver.resolve({
+            inline: inlineLang,
+            provider: this.providerLang,
+            active: activeLang
+          });
 
-          if (this.providerLang && this.init) {
-            const [_, extractLang] = getPipeValue(this.providerLang, 'static');
-            lang = extractLang;
-          }
-          this.init = false;
+          let scope = this.scopeResolver.resolve({ inline: undefined, provider: this.providerScope });
+          this.currentLang = this.langResolver.resolveFullLang(lang, scope);
 
-          let providerScope;
-          if (this.providerScope) {
-            providerScope = this.providerScope;
-            if (isTranslocoScope(this.providerScope)) {
-              const { scope, alias } = this.providerScope;
-              providerScope = scope;
-              this.translocoService._setScopeAlias(providerScope, alias);
-            }
-          }
-          this.langName = providerScope ? `${providerScope}/${lang}` : lang;
-
-          return this.translocoService._loadDependencies(this.langName);
+          return this.translocoService._loadDependencies(this.currentLang);
         }),
         this.listenToLangChange ? source => source : take(1)
       )
@@ -77,10 +70,9 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  private updateValue(key: string, params?: HashMap): void {
-    const scope = getScopeFromLang(this.langName);
-    const targetLang = scope ? getLangFromScope(this.langName) : this.langName;
-    this.lastValue = this.translocoService.translate(key, params, targetLang) as string;
+  private updateValue(key: string, params?: HashMap | undefined) {
+    const lang = this.langResolver.resolveLangBasedOnScope(this.currentLang);
+    this.lastValue = this.translocoService.translate(key, params, lang);
     this.cdr.markForCheck();
   }
 }
