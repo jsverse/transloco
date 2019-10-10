@@ -4,13 +4,14 @@ import { catchError, map, retry, shareReplay, switchMap, tap } from 'rxjs/operat
 import { DefaultLoader, TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_TRANSPILER, TranslocoTranspiler } from './transloco.transpiler';
 import { AvailableLangs, HashMap, SetTranslationOptions, TranslateParams, Translation, TranslocoEvents } from './types';
-import { getValue, isString, size, toCamelCase, unflatten, flatten } from './helpers';
+import { flatten, getValue, isString, size, toCamelCase, unflatten } from './helpers';
 import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './transloco-missing-handler';
 import { TRANSLOCO_INTERCEPTOR, TranslocoInterceptor } from './transloco.interceptor';
 import { TRANSLOCO_FALLBACK_STRATEGY, TranslocoFallbackStrategy } from './transloco-fallback-strategy';
 import { mergeConfig } from './merge-config';
 import { getLangFromScope, getScopeFromLang } from './shared';
+import { getFallbacksLoaders } from './get-fallbacks-loaders';
 
 let service: TranslocoService;
 
@@ -100,48 +101,45 @@ export class TranslocoService implements OnDestroy {
     return this.availableLangs;
   }
 
-  load(lang: string, options?: { fallbackLangs: string[] | null }): Observable<Translation> {
-    if (this.cache.has(lang) === false) {
+  load(path: string, options?: { fallbackLangs: string[] | null }): Observable<Translation> {
+    if (this.cache.has(path) === false) {
       const mergedOptions = { ...{ fallbackLangs: null }, ...(options || {}) };
       let loadTranslation: Observable<Translation | { translation: Translation; lang: string }[]>;
 
-      if (this.useFallbackTranslation(lang)) {
-        const loadBoth = [lang, this.firstFallbackLang].map(l =>
-          from(this.loader.getTranslation(l)).pipe(
-            map(t => ({
-              translation: t,
-              lang: l
-            }))
-          )
-        );
-        loadTranslation = forkJoin(loadBoth);
+      if (this.useFallbackTranslation(path)) {
+        // if the path is scope the fallback should be `scope/fallbackLang`;
+        const fallback = this._isLangScoped(path)
+          ? `${getScopeFromLang(path)}/${this.firstFallbackLang}`
+          : this.firstFallbackLang;
+        const loaders = getFallbacksLoaders(this.loader, path, fallback);
+        loadTranslation = forkJoin(loaders);
       } else {
-        loadTranslation = from(this.loader.getTranslation(lang));
+        loadTranslation = from(this.loader.getTranslation(path));
       }
 
       const load$ = loadTranslation.pipe(
         retry(this.config.failedRetries),
-        catchError(() => this.handleFailure(lang, mergedOptions)),
+        catchError(() => this.handleFailure(path, mergedOptions)),
         tap(translation => {
           if (Array.isArray(translation)) {
             translation.forEach(t => {
               this.handleSuccess(t.lang, t.translation);
               // Save the fallback in cache so we'll not create a redundant request
-              if (t.lang !== lang) {
+              if (t.lang !== path) {
                 this.cache.set(t.lang, of({}));
               }
             });
             return;
           }
-          this.handleSuccess(lang, translation);
+          this.handleSuccess(path, translation);
         }),
         shareReplay(1)
       );
 
-      this.cache.set(lang, load$);
+      this.cache.set(path, load$);
     }
 
-    return this.cache.get(lang);
+    return this.cache.get(path);
   }
 
   /**
