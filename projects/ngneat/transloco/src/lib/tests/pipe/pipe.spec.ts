@@ -5,10 +5,10 @@ import { createService, runLoader } from '../transloco.mocks';
 import { fakeAsync } from '@angular/core/testing';
 import { of } from 'rxjs';
 
-describe('TranslocoPipe', () => {
+fdescribe('TranslocoPipe', () => {
   let translateServiceMock;
   let cdrMock;
-  let pipe: TranslocoPipe;
+  let pipe;
 
   beforeEach(() => {
     translateServiceMock = new Mock<TranslocoService>(createService()).Object;
@@ -58,10 +58,9 @@ describe('TranslocoPipe', () => {
       const key = 'home';
       pipe.transform(key);
       expect(pipe.lastKey).toBe(key);
-      expect(pipe.lastParams).toEqual({});
       runLoader();
-      expect((pipe as any).updateValue).toHaveBeenCalledWith(key, {});
-      expect(pipe.value).toBe('home english');
+      expect((pipe as any).updateValue).toHaveBeenCalledWith(key, undefined);
+      expect(pipe.lastValue).toBe('home english');
       expect(cdrMock.markForCheck).toHaveBeenCalled();
     }));
 
@@ -69,7 +68,7 @@ describe('TranslocoPipe', () => {
       const key = 'kazaz';
       pipe.transform(key);
       runLoader();
-      expect(pipe.value).toBe(key);
+      expect(pipe.lastValue).toBe(key);
       expect(cdrMock.markForCheck).toHaveBeenCalled();
     }));
   });
@@ -90,13 +89,13 @@ describe('TranslocoPipe', () => {
     it('should perform translate', fakeAsync(() => {
       pipe.transform('home');
       runLoader();
-      expect(pipe.value).toBe('home english');
+      expect(pipe.lastValue).toBe('home english');
     }));
 
     it('should perform translate with params', fakeAsync(() => {
       pipe.transform('alert', { value: 'value' });
       runLoader();
-      expect(pipe.value).toBe('alert value english');
+      expect(pipe.lastValue).toBe('alert value english');
     }));
 
     it('should return the value from the cache', fakeAsync(() => {

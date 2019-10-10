@@ -13,10 +13,9 @@ import { shouldListenToLangChanges } from './shared';
   pure: false
 })
 export class TranslocoPipe implements PipeTransform, OnDestroy {
-  subscription: Subscription = Subscription.EMPTY;
-  value: string = '';
-  lastKey: string;
-  lastParams: HashMap;
+  private subscription: Subscription | null = null;
+  private lastValue: string | undefined;
+  private lastKey: string | undefined;
   private listenToLangChange: boolean;
   private langName: string;
   private init = true;
@@ -30,21 +29,18 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
     this.listenToLangChange = shouldListenToLangChanges(this.translocoService, this.providerLang);
   }
 
-  transform(key: string, params: HashMap = {}): string {
+  transform(key: string, params?: HashMap): string {
     if (!key) {
       return key;
     }
 
-    if (key === this.lastKey && JSON.stringify(params) === JSON.stringify(this.lastParams)) {
-      return this.value;
+    const keyName = params ? `${key}${JSON.stringify(params)}` : key;
+    if (keyName === this.lastKey) {
+      return this.lastValue;
     }
 
-    /* Cache this key and params */
-    this.lastKey = key;
-    this.lastParams = params;
-
-    /* Clean previous subscription if exists */
-    this.subscription.unsubscribe();
+    this.lastKey = keyName;
+    this.subscription && this.subscription.unsubscribe();
 
     this.subscription = this.translocoService.langChanges$
       .pipe(
@@ -74,7 +70,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
       )
       .subscribe(() => this.updateValue(key, params));
 
-    return this.value;
+    return this.lastValue;
   }
 
   ngOnDestroy() {
@@ -84,7 +80,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
   private updateValue(key: string, params?: HashMap): void {
     const scope = getScopeFromLang(this.langName);
     const targetLang = scope ? getLangFromScope(this.langName) : this.langName;
-    this.value = this.translocoService.translate(key, params, targetLang) as string;
+    this.lastValue = this.translocoService.translate(key, params, targetLang) as string;
     this.cdr.markForCheck();
   }
 }
