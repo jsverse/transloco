@@ -42,8 +42,8 @@ You can also use it as a function:
 import translocoOptimize from '@ngneat/transloco-optimize';
 import { task } from 'gulp';
 
-const locales = `${config.paths.dist}${config.paths.assets.locales}`;
+const pathToLocales = ...  // e.g: `${__dirname}/dist/${appName}/assets/i18n`;
 task('transloco:optimize', function(cb) {
-  translocoOptimize({ dist: locales }).then(cb);
+  translocoOptimize({ dist: pathToLocales }).then(cb);
 });
 ```
