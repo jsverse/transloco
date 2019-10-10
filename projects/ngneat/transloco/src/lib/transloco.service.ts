@@ -158,10 +158,18 @@ export class TranslocoService implements OnDestroy {
   translate<T = any>(key: TranslateParams, params: HashMap = {}, lang = this.getActiveLang()): T {
     let resolveLang = lang;
     let scope;
+
+    // If lang is scope we need to check the following cases:
+    // todos/es => in this case we should take `es` as lang
+    // todos => in this case we should set the active lang as lang
     if (this._isLangScoped(lang)) {
+      // en for example
       const langFromScope = getLangFromScope(lang);
+      // en is lang
       const hasLang = this._isLang(langFromScope);
+      // take en
       resolveLang = hasLang ? langFromScope : this.getActiveLang();
+      // find the scope
       scope = this.getMappedScope(hasLang ? getScopeFromLang(lang) : lang);
     }
 
@@ -354,14 +362,18 @@ export class TranslocoService implements OnDestroy {
    * We always want to make sure the global lang is loaded
    * before loading the scope since you can access both via the pipe/directive.
    */
-  _loadDependencies(langName: string): Observable<Translation | Translation[]> {
-    const split = langName.split('/');
-    const [lang] = split.slice(-1);
-    if (split.length > 1 && !size(this.getTranslation(lang))) {
-      return combineLatest(this.load(lang), this.load(langName));
+  _loadDependencies(path: string): Observable<Translation | Translation[]> {
+    const mainLang = getLangFromScope(path);
+
+    if (this._isLangScoped(path) && !this.isLoadedTranslation(mainLang)) {
+      return combineLatest(this.load(mainLang), this.load(path));
     }
 
-    return this.load(langName);
+    return this.load(path);
+  }
+
+  private isLoadedTranslation(lang: string) {
+    return size(this.getTranslation(lang));
   }
 
   /**
