@@ -219,6 +219,8 @@ without having to repeat the `dashboard` key in each translation.
 
 <span [attr.alt]="'hello' | transloco">Attribute</span>
 <span [title]="'hello' | transloco">Property</span>
+
+<span>{{ 'alert' | transloco:params:'es' }}</span>
 ```
 
 ## Programmatical Translation
