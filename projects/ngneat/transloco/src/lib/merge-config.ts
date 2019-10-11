@@ -1,4 +1,4 @@
-import { TranslocoConfig } from '@ngneat/transloco';
+import { TranslocoConfig } from './transloco.config';
 
 export function mergeConfig(defaultConfig: TranslocoConfig, userConfig: Partial<TranslocoConfig>) {
   return {
