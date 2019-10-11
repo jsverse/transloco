@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.1.2](https://github.com/ngneat/transloco/compare/v2.1.1...v2.1.2) (2019-10-11)
+
+### Bug Fixes
+
+- 🐛 inline lang for pipe ([72082c0](https://github.com/ngneat/transloco/commit/72082c0))
+
+### Tests
+
+- 💍 refactor and add specs ([ae7210a](https://github.com/ngneat/transloco/commit/ae7210a))
+
 ### [2.1.1](https://github.com/ngneat/transloco/compare/v2.1.0...v2.1.1) (2019-10-05)
 
 ### Bug Fixes
