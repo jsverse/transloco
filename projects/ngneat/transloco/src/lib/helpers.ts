@@ -1,5 +1,4 @@
-import { TranslocoScope } from './transloco-scope';
-import { Translation } from './types';
+import { ProviderScope, Translation } from './types';
 import flat from 'flat';
 
 export function getValue(obj: object, path: string) {
@@ -72,29 +71,6 @@ export function coerceArray(val) {
 /*
  * @example
  *
- * given: lazy-page/en => lazy-page
- *
- */
-export function getScopeFromLang(lang: string): string {
-  const split = lang.split('/');
-  split.pop();
-  return split.join('/');
-}
-
-/*
- * @example
- *
- * given: lazy-page/en => en
- *
- */
-export function getLangFromScope(lang: string): string {
-  const split = lang.split('/');
-  return split.pop();
-}
-
-/*
- * @example
- *
  * given: path-to-happiness => pathToHappiness
  * given: path_to_happiness => pathToHappiness
  * given: path-to_happiness => pathToHappiness
@@ -108,23 +84,6 @@ export function toCamelCase(str: string): string {
 
 export function isBrowser() {
   return typeof window !== 'undefined';
-}
-
-/**
- * @example
- *
- * getPipeValue('todos|scoped', 'scoped') [true, 'todos']
- * getPipeValue('en|static', 'static') [true, 'en']
- * getPipeValue('en', 'static') [false, 'en']
- */
-export function getPipeValue(str: string, value: string, char = '|'): [boolean, string] {
-  if (isString(str)) {
-    const splitted = str.split(char);
-    const lastItem = splitted.pop();
-    return lastItem === value ? [true, splitted.toString()] : [false, lastItem];
-  }
-
-  return [false, ''];
 }
 
 export function isNil(value: any) {
@@ -145,7 +104,7 @@ export function toNumber(value: number | string): number | null {
   return null;
 }
 
-export function isTranslocoScope(item: any): item is TranslocoScope {
+export function isScopeObject(item: any): item is ProviderScope {
   return item && typeof item.scope === 'string';
 }
 

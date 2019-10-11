@@ -14,21 +14,22 @@ import {
   ViewContainerRef
 } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { switchMap, take } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { TemplateHandler, View } from './template-handler';
 import { TRANSLOCO_LANG } from './transloco-lang';
 import { TRANSLOCO_LOADING_TEMPLATE } from './transloco-loading-template';
-import { TRANSLOCO_SCOPE, TranslocoScope } from './transloco-scope';
+import { TRANSLOCO_SCOPE } from './transloco-scope';
 import { TranslocoService } from './transloco.service';
-import { HashMap } from './types';
-import { getPipeValue, isTranslocoScope } from './helpers';
-import { shouldListenToLangChanges } from './shared';
+import { HashMap, TranslocoScope } from './types';
+import { listenOrNotOperator, shouldListenToLangChanges } from './shared';
+import { LangResolver } from './lang-resolver';
+import { ScopeResolver } from './scope-resolver';
 
 @Directive({
   selector: '[transloco]'
 })
 export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
-  subscription: Subscription = Subscription.EMPTY;
+  subscription: Subscription | null;
   view: EmbeddedViewRef<any>;
   private translationMemo: { [key: string]: { value: any; params: HashMap } } = {};
 
@@ -39,15 +40,18 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   @Input('translocoLang') inlineLang: string | undefined;
   @Input('translocoLoadingTpl') inlineTpl: TemplateRef<any> | undefined;
 
-  private langName: string;
+  private currentLang: string;
   private loaderTplHandler: TemplateHandler = null;
   // Whether we already rendered the view once
   private initialized = false;
+  private path: string;
+  private langResolver = new LangResolver();
+  private scopeResolver = new ScopeResolver(this.translocoService);
 
   constructor(
     private translocoService: TranslocoService,
     @Optional() private tpl: TemplateRef<{ $implicit: (key: string, params?: HashMap) => any }>,
-    @Optional() @Inject(TRANSLOCO_SCOPE) private providerScope: string | TranslocoScope | null,
+    @Optional() @Inject(TRANSLOCO_SCOPE) private providerScope: TranslocoScope,
     @Optional() @Inject(TRANSLOCO_LANG) private providerLang: string | null,
     @Optional() @Inject(TRANSLOCO_LOADING_TEMPLATE) private providedLoadingTpl: Type<any> | string,
     private vcr: ViewContainerRef,
@@ -66,26 +70,26 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
 
     this.subscription = this.translocoService.langChanges$
       .pipe(
-        switchMap(() => {
-          const lang = this.getLang();
-          const scope = this.getScope();
-          this.langName = scope ? `${scope}/${lang}` : lang;
-          if (!this.inlineScope && isTranslocoScope(this.providerScope)) {
-            const { scope, alias } = this.providerScope;
-            this.translocoService._setScopeAlias(scope, alias);
-          }
-          return this.translocoService._loadDependencies(this.langName);
+        switchMap(activeLang => {
+          const lang = this.langResolver.resolve({
+            inline: this.inlineLang,
+            provider: this.providerLang,
+            active: activeLang
+          });
+          const scope = this.scopeResolver.resolve({
+            inline: this.inlineScope,
+            provider: this.providerScope
+          });
+
+          this.path = this.langResolver.resolveLangPath(lang, scope);
+
+          return this.translocoService._loadDependencies(this.path);
         }),
-        listenToLangChange ? source => source : take(1)
+        listenOrNotOperator(listenToLangChange)
       )
       .subscribe(() => {
-        /* In case the scope strategy is set to 'shared' we want to load the scope's language instead of the scope
-        itself in order to expose the global translations as well.
-        the scopes translations are merged to the global when using this strategy */
-        const scope = this.getScope();
-        const targetLang = scope ? this.getLang() : this.langName;
-        this.langName = targetLang;
-        this.tpl === null ? this.simpleStrategy() : this.structuralStrategy(targetLang, this.inlineRead);
+        this.currentLang = this.langResolver.resolveLangBasedOnScope(this.path);
+        this.tpl === null ? this.simpleStrategy() : this.structuralStrategy(this.currentLang, this.inlineRead);
         this.cdr.markForCheck();
         this.initialized = true;
       });
@@ -100,13 +104,14 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
 
   private simpleStrategy() {
     this.detachLoader();
-    this.host.nativeElement.innerText = this.translocoService.translate(this.key, this.params, this.langName);
+    this.host.nativeElement.innerText = this.translocoService.translate(this.key, this.params, this.currentLang);
   }
 
   private structuralStrategy(lang: string, read: string | undefined) {
     this.translationMemo = {};
 
     if (this.view) {
+      // when the lang changes we need to change the reference so Angular will update the view
       this.view.context['$implicit'] = this.getTranslateFn(lang, read);
     } else {
       this.detachLoader();
@@ -136,36 +141,8 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     return this.inlineTpl || this.providedLoadingTpl;
   }
 
-  // inline => providers
-  private getScope() {
-    return this.inlineScope || (isTranslocoScope(this.providerScope) ? this.providerScope.scope : this.providerScope);
-  }
-
-  // inline => providers => global
-  private getLang() {
-    /**
-     * When the user changes the lang we need to update
-     * the view. Otherwise, the lang will remain the inline/provided lang
-     */
-    if (this.initialized) {
-      return this.translocoService.getActiveLang();
-    }
-
-    if (this.inlineLang) {
-      const [_, lang] = getPipeValue(this.inlineLang, 'static');
-      return lang;
-    }
-
-    if (this.providerLang) {
-      const [_, lang] = getPipeValue(this.providerLang, 'static');
-      return lang;
-    }
-
-    return this.translocoService.getActiveLang();
-  }
-
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.subscription && this.subscription.unsubscribe();
   }
 
   private detachLoader() {

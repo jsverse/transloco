@@ -54,6 +54,14 @@ describe('missingHandler', () => {
       expect(service.translate('empty', { value: 'hello' })).toEqual("I'm a spanish empty fallback hello");
     }));
 
+    it('should load the scope fallback when working with scopes', fakeAsync(() => {
+      spyOn(service.loader, 'getTranslation').and.callThrough();
+      service.load('lazy-page/en').subscribe();
+      runLoader(2000);
+      expect(service.loader.getTranslation.calls.allArgs()).toEqual([['lazy-page/en'], ['lazy-page/es']]);
+      expect(service.translate('empty', {}, 'lazy-page/en')).toEqual('resolved from es');
+    }));
+
     it('should respect allow empty', fakeAsync(() => {
       service.mergedConfig.missingHandler.allowEmpty = true;
       spyOn(service.loader, 'getTranslation').and.callThrough();

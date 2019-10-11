@@ -12,168 +12,181 @@ import {
 } from '@ngneat/transloco';
 import { fakeAsync } from '@angular/core/testing';
 
+const listenToLangChanges = {
+  provide: TRANSLOCO_CONFIG,
+  useValue: { ...defaultConfig, availableLangs: ['en', 'es'], reRenderOnLangChange: true } as TranslocoConfig
+};
+
 @Component({
   template: `
     <p>{{ 'home' | transloco }}</p>
     <h1>{{ 'nested.title' | transloco }}</h1>
     <span>{{ 'alert' | transloco: { value: 'netanel' } }}</span>
+    <h3>{{ 'alert' | transloco: { value: value } }}</h3>
+    <h5>{{ 'home' | transloco: null:'es' }}</h5>
   `
 })
-class TestPipe {}
+class TestPipe {
+  value = 'hey';
+}
 
 describe('Pipe', () => {
-  let spectator: Spectator<TestPipe>;
-  const createComponent = createComponentFactory({
-    component: TestPipe,
-    imports: [TranslocoModule],
-    providers: providersMock
+  describe('Pipe basic', () => {
+    let spectator: Spectator<TestPipe>;
+    const createComponent = createComponentFactory({
+      component: TestPipe,
+      imports: [TranslocoModule],
+      providers: providersMock
+    });
+
+    it('should translate', fakeAsync(() => {
+      spectator = createComponent();
+      runLoader();
+      spectator.detectChanges();
+      expect(spectator.query('p')).toHaveText('home english');
+      expect(spectator.query('h1')).toHaveText('Title english');
+      expect(spectator.query('span')).toHaveText('alert netanel english');
+
+      // should support inline lang
+      expect(spectator.query('h5')).toHaveText('home spanish');
+    }));
+
+    it('should support dynamic params', fakeAsync(() => {
+      spectator = createComponent();
+      runLoader();
+      spectator.detectChanges();
+      expect(spectator.query('h3')).toHaveText('alert hey english');
+      spectator.component.value = 'changed';
+      spectator.detectChanges();
+      expect(spectator.query('h3')).toHaveText('alert changed english');
+    }));
+
+    it('should translate and listen to lang changes', fakeAsync(() => {
+      spectator = createComponent({
+        detectChanges: false,
+        providers: [listenToLangChanges]
+      });
+      const service = spectator.get(TranslocoService);
+      spectator.detectChanges();
+      runLoader();
+      spectator.detectChanges();
+      expect(spectator.query('p')).toHaveText('home english');
+      expect(spectator.query('h1')).toHaveText('Title english');
+      expect(spectator.query('span')).toHaveText('alert netanel english');
+      service.setActiveLang('es');
+      runLoader();
+      spectator.detectChanges();
+      expect(spectator.query('p')).toHaveText('home spanish');
+      expect(spectator.query('h1')).toHaveText('Title spanish');
+      expect(spectator.query('span')).toHaveText('alert netanel spanish');
+    }));
   });
 
-  it('should translate', fakeAsync(() => {
-    spectator = createComponent();
-    runLoader();
-    spectator.detectChanges();
-    expect(spectator.query('p')).toHaveText('home english');
-    expect(spectator.query('h1')).toHaveText('Title english');
-    expect(spectator.query('span')).toHaveText('alert netanel english');
-  }));
-
-  it('should translate and listen to lang changes', fakeAsync(() => {
-    spectator = createComponent({
-      detectChanges: false,
+  describe('Provider lang', () => {
+    let spectator: Spectator<TestPipe>;
+    const createComponent = createComponentFactory({
+      component: TestPipe,
+      imports: [TranslocoModule],
       providers: [
+        providersMock,
+        {
+          provide: TRANSLOCO_LANG,
+          useValue: 'es'
+        },
+        listenToLangChanges
+      ]
+    });
+
+    it('should support provider lang', fakeAsync(() => {
+      spectator = createComponent();
+      runLoader();
+      spectator.detectChanges();
+      expect(spectator.query('p')).toHaveText('home spanish');
+      expect(spectator.query('h1')).toHaveText('Title spanish');
+      expect(spectator.query('span')).toHaveText('alert netanel spanish');
+      // not static should changed
+      spectator.get(TranslocoService).setActiveLang('en');
+      runLoader();
+      spectator.detectChanges();
+      expect(spectator.query('p')).toHaveText('home english');
+      expect(spectator.query('h1')).toHaveText('Title english');
+      expect(spectator.query('span')).toHaveText('alert netanel english');
+    }));
+  });
+
+  describe('Provider lang static', () => {
+    let spectator: Spectator<TestPipe>;
+    const createComponent = createComponentFactory({
+      component: TestPipe,
+      imports: [TranslocoModule],
+      providers: [
+        providersMock,
+        {
+          provide: TRANSLOCO_LANG,
+          useValue: 'es|static'
+        },
+        listenToLangChanges
+      ]
+    });
+
+    it('should support provider lang static', fakeAsync(() => {
+      spectator = createComponent();
+      runLoader();
+      spectator.detectChanges();
+      expect(spectator.query('p')).toHaveText('home spanish');
+      expect(spectator.query('h1')).toHaveText('Title spanish');
+      expect(spectator.query('span')).toHaveText('alert netanel spanish');
+      // static should NOT changed
+      spectator.get(TranslocoService).setActiveLang('en');
+      runLoader();
+      spectator.detectChanges();
+      expect(spectator.query('p')).toHaveText('home spanish');
+      expect(spectator.query('h1')).toHaveText('Title spanish');
+      expect(spectator.query('span')).toHaveText('alert netanel spanish');
+    }));
+  });
+
+  @Component({
+    template: `
+      <p>{{ 'lazyPage.title' | transloco }}</p>
+      <h1>{{ 'nested.title' | transloco }}</h1>
+      <span>{{ 'alert' | transloco: { value: 'netanel' } }}</span>
+    `
+  })
+  class TestScopePipe {}
+
+  describe('Scope lang', () => {
+    let spectator: Spectator<TestScopePipe>;
+    const createComponent = createComponentFactory({
+      component: TestScopePipe,
+      imports: [TranslocoModule],
+      providers: [
+        providersMock,
+        {
+          provide: TRANSLOCO_SCOPE,
+          useValue: 'lazy-page'
+        },
         {
           provide: TRANSLOCO_CONFIG,
           useValue: { ...defaultConfig, availableLangs: ['en', 'es'], reRenderOnLangChange: true } as TranslocoConfig
         }
       ]
     });
-    const service = spectator.get(TranslocoService);
-    spectator.detectChanges();
-    runLoader();
-    spectator.detectChanges();
-    expect(spectator.query('p')).toHaveText('home english');
-    expect(spectator.query('h1')).toHaveText('Title english');
-    expect(spectator.query('span')).toHaveText('alert netanel english');
-    service.setActiveLang('es');
-    runLoader();
-    spectator.detectChanges();
-    expect(spectator.query('p')).toHaveText('home spanish');
-    expect(spectator.query('h1')).toHaveText('Title spanish');
-    expect(spectator.query('span')).toHaveText('alert netanel spanish');
-  }));
-});
 
-describe('Provider lang', () => {
-  let spectator: Spectator<TestPipe>;
-  const createComponent = createComponentFactory({
-    component: TestPipe,
-    imports: [TranslocoModule],
-    providers: [
-      providersMock,
-      {
-        provide: TRANSLOCO_LANG,
-        useValue: 'es'
-      },
-      {
-        provide: TRANSLOCO_CONFIG,
-        useValue: { ...defaultConfig, availableLangs: ['en', 'es'], reRenderOnLangChange: true } as TranslocoConfig
-      }
-    ]
+    it('should support scope', fakeAsync(() => {
+      spectator = createComponent();
+      runLoader();
+      spectator.detectChanges();
+      expect(spectator.query('p')).toHaveText('Admin Lazy english');
+      expect(spectator.query('h1')).toHaveText('Title english');
+      expect(spectator.query('span')).toHaveText('alert netanel english');
+      // not static should changed
+      spectator.get(TranslocoService).setActiveLang('es');
+      runLoader();
+      spectator.detectChanges();
+      expect(spectator.query('p')).toHaveText('Admin Lazy spanish');
+      expect(spectator.query('h1')).toHaveText('Title spanish');
+      expect(spectator.query('span')).toHaveText('alert netanel spanish');
+    }));
   });
-
-  it('should support provider lang', fakeAsync(() => {
-    spectator = createComponent();
-    runLoader();
-    spectator.detectChanges();
-    expect(spectator.query('p')).toHaveText('home spanish');
-    expect(spectator.query('h1')).toHaveText('Title spanish');
-    expect(spectator.query('span')).toHaveText('alert netanel spanish');
-    // not static should changed
-    spectator.get(TranslocoService).setActiveLang('en');
-    runLoader();
-    spectator.detectChanges();
-    expect(spectator.query('p')).toHaveText('home english');
-    expect(spectator.query('h1')).toHaveText('Title english');
-    expect(spectator.query('span')).toHaveText('alert netanel english');
-  }));
-});
-
-describe('Provider lang static', () => {
-  let spectator: Spectator<TestPipe>;
-  const createComponent = createComponentFactory({
-    component: TestPipe,
-    imports: [TranslocoModule],
-    providers: [
-      providersMock,
-      {
-        provide: TRANSLOCO_LANG,
-        useValue: 'es|static'
-      },
-      {
-        provide: TRANSLOCO_CONFIG,
-        useValue: { ...defaultConfig, availableLangs: ['en', 'es'], reRenderOnLangChange: true } as TranslocoConfig
-      }
-    ]
-  });
-
-  it('should support provider lang static', fakeAsync(() => {
-    spectator = createComponent();
-    runLoader();
-    spectator.detectChanges();
-    expect(spectator.query('p')).toHaveText('home spanish');
-    expect(spectator.query('h1')).toHaveText('Title spanish');
-    expect(spectator.query('span')).toHaveText('alert netanel spanish');
-    // static should NOT changed
-    spectator.get(TranslocoService).setActiveLang('en');
-    runLoader();
-    spectator.detectChanges();
-    expect(spectator.query('p')).toHaveText('home spanish');
-    expect(spectator.query('h1')).toHaveText('Title spanish');
-    expect(spectator.query('span')).toHaveText('alert netanel spanish');
-  }));
-});
-
-@Component({
-  template: `
-    <p>{{ 'lazyPage.title' | transloco }}</p>
-    <h1>{{ 'nested.title' | transloco }}</h1>
-    <span>{{ 'alert' | transloco: { value: 'netanel' } }}</span>
-  `
-})
-class TestScopePipe {}
-
-describe('Scope lang', () => {
-  let spectator: Spectator<TestScopePipe>;
-  const createComponent = createComponentFactory({
-    component: TestScopePipe,
-    imports: [TranslocoModule],
-    providers: [
-      providersMock,
-      {
-        provide: TRANSLOCO_SCOPE,
-        useValue: 'lazy-page'
-      },
-      {
-        provide: TRANSLOCO_CONFIG,
-        useValue: { ...defaultConfig, availableLangs: ['en', 'es'], reRenderOnLangChange: true } as TranslocoConfig
-      }
-    ]
-  });
-
-  it('should support scope', fakeAsync(() => {
-    spectator = createComponent();
-    runLoader();
-    spectator.detectChanges();
-    expect(spectator.query('p')).toHaveText('Admin Lazy english');
-    expect(spectator.query('h1')).toHaveText('Title english');
-    expect(spectator.query('span')).toHaveText('alert netanel english');
-    // not static should changed
-    spectator.get(TranslocoService).setActiveLang('es');
-    runLoader();
-    spectator.detectChanges();
-    expect(spectator.query('p')).toHaveText('Admin Lazy spanish');
-    expect(spectator.query('h1')).toHaveText('Title spanish');
-    expect(spectator.query('span')).toHaveText('alert netanel spanish');
-  }));
 });

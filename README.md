@@ -620,23 +620,34 @@ export const environment = {
 
 ## Unit Testing
 
-When running specs, we want to have the languages available immediately, in a synchronous fashion. Transloco provides you with a `TranslocoTestingModule`, where you can pass the languages you need in your specs. For example:
+When running specs, we want to have the languages available immediately, in a synchronous fashion. Transloco provides you with a `TranslocoTestingModule`, where you can pass the languages you need in your specs, and the config.
+We recommend to be DRY and create a module factory function that we can use in each spec, For example:
 
 ```ts
+// transloco-testing.module.ts
 import { TranslocoTestingModule } from '@ngneat/transloco';
-import en from '../../assets/i18n/en.json';
-import scopeScope from '../../assets/i18n/some-scope/en.json';
+import en from '../assets/i18n/en.json';
+import es from '../assets/i18n/es.json';
 
+export function getTranslocoModule(config: Partial<TranslocoConfig> = {}) {
+  return TranslocoTestingModule.withLangs(
+    { en, es },
+    {
+      availableLangs: ['en', 'es'],
+      defaultLang: 'en',
+      ...config
+    }
+  );
+}
+```
+
+Now we can use it in each spec:
+
+```ts
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        TranslocoTestingModule.withLangs({
-          en,
-          'some-scope/en': scopeScope
-        }, translocoConfig?)
-      ],
+      imports: [getTranslocoModule()],
       declarations: [AppComponent]
     }).compileComponents();
   }));
@@ -648,6 +659,30 @@ describe('AppComponent', () => {
   });
 });
 ```
+
+You can find an example [here](https://github.com/ngneat/transloco/blob/master/src/app/on-push/on-push.component.spec.ts)
+
+If you need to test scopes you should add them as languages, for example:
+
+```ts
+export function getTranslocoModule(config: Partial<TranslocoConfig> = {}) {
+  return TranslocoTestingModule.withLangs(
+    {
+      en,
+      es,
+      'admin-page/en': admin,
+      'admin-page/es': adminSpanish
+    },
+    {
+      availableLangs: ['en', 'es'],
+      defaultLang: 'en',
+      ...config
+    }
+  );
+}
+```
+
+You can find an example [here](https://github.com/ngneat/transloco/blob/master/src/app/lazy/lazy.component.spec.ts)
 
 Note that in order to import JSON files, you need to configure the TypeScript compiler by adding the following properties in `tsconfig.json`:
 
