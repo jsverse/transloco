@@ -12,6 +12,11 @@ import {
 } from '@ngneat/transloco';
 import { fakeAsync } from '@angular/core/testing';
 
+const listenToLangChanges = {
+  provide: TRANSLOCO_CONFIG,
+  useValue: { ...defaultConfig, availableLangs: ['en', 'es'], reRenderOnLangChange: true } as TranslocoConfig
+};
+
 @Component({
   template: `
     <p>{{ 'home' | transloco }}</p>
@@ -59,12 +64,7 @@ describe('Pipe', () => {
     it('should translate and listen to lang changes', fakeAsync(() => {
       spectator = createComponent({
         detectChanges: false,
-        providers: [
-          {
-            provide: TRANSLOCO_CONFIG,
-            useValue: { ...defaultConfig, availableLangs: ['en', 'es'], reRenderOnLangChange: true } as TranslocoConfig
-          }
-        ]
+        providers: [listenToLangChanges]
       });
       const service = spectator.get(TranslocoService);
       spectator.detectChanges();
@@ -93,10 +93,7 @@ describe('Pipe', () => {
           provide: TRANSLOCO_LANG,
           useValue: 'es'
         },
-        {
-          provide: TRANSLOCO_CONFIG,
-          useValue: { ...defaultConfig, availableLangs: ['en', 'es'], reRenderOnLangChange: true } as TranslocoConfig
-        }
+        listenToLangChanges
       ]
     });
 
@@ -128,10 +125,7 @@ describe('Pipe', () => {
           provide: TRANSLOCO_LANG,
           useValue: 'es|static'
         },
-        {
-          provide: TRANSLOCO_CONFIG,
-          useValue: { ...defaultConfig, availableLangs: ['en', 'es'], reRenderOnLangChange: true } as TranslocoConfig
-        }
+        listenToLangChanges
       ]
     });
 
