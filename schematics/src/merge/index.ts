@@ -1,9 +1,9 @@
-import { PathFragment } from '@angular-devkit/core';
-import { Rule, Tree, SchematicContext, DirEntry, SchematicsException, EmptyTree } from '@angular-devkit/schematics';
-import { from } from 'rxjs';
-import { getProject } from '../utils/projects';
-import { SchemaOptions } from './schema';
-const glob = require('glob');
+import {PathFragment} from '@angular-devkit/core';
+import {Rule, Tree, SchematicContext, DirEntry, SchematicsException, EmptyTree} from '@angular-devkit/schematics';
+import {getProject} from '../utils/projects';
+import {SchemaOptions} from './schema';
+import {getConfig} from '@ngneat/utils';
+
 
 const p = require('path');
 
@@ -15,37 +15,37 @@ function hasSubdirs(dir: DirEntry) {
   return dir.subdirs && dir.subdirs.length;
 }
 
+function hasFiles(dir: DirEntry) {
+  return dir.subfiles && dir.subfiles.length;
+}
+
 function getTranslationKey(prefix = '', key) {
   return prefix ? `${prefix}.${key}` : key;
 }
 
-function reduceTranslations(host: Tree, dir: DirEntry, translationJson, lang: string, prefix = '') {
-  if (!hasSubdirs(dir)) return translationJson;
-  dir.subdirs.forEach(subDirName => {
-    const subDir = dir.dir(subDirName);
-    const key = getTranslationKey(prefix, subDirName);
-    subDir.subfiles
-      .filter(fileName => fileName.includes(`${lang}.json`))
-      .forEach(fileName => {
-        if (translationJson[key]) {
-          throw new SchematicsException(
-            `key: ${key} is already exist in translation file, please rename it and rerun the command.`
-          );
-        }
-        translationJson[key] = getFileContent(fileName, subDir);
-      });
-    if (hasSubdirs(subDir)) {
-      reduceTranslations(host, subDir, translationJson, lang, key);
-    }
-  });
+function reduceTranslations(host: Tree, dirPath: string, translationJson, lang: string, key = '') {
+  const dir = host.getDir(dirPath);
+  if (!hasFiles(dir)) return translationJson;
+  dir.subfiles
+    // TODO: support other formats.
+    .filter(fileName => fileName.includes(`${lang}.json`))
+    .forEach(fileName => {
+      if (translationJson[key]) {
+        throw new SchematicsException(
+          `key: ${key} is already exist in translation file, please rename it and rerun the command.`
+        );
+      }
+      translationJson[key] = getFileContent(fileName, dir);
+    });
+  if (hasSubdirs(dir)) {
+    dir.subdirs.forEach(subDirName => {
+      const subDir    = dir.dir(subDirName);
+      const nestedKey = getTranslationKey(key, subDirName);
+      reduceTranslations(host, subDir.path, translationJson, lang, nestedKey);
+    })
+  }
 
   return translationJson;
-}
-
-function reduceTranslations2(path: string, translationJson: object, lang: string, prefix = '') {
-  glob(path, {}, function(er, files) {
-    console.log(files);
-  });
 }
 
 function getTranslationsRoot(host: Tree, options: SchemaOptions): string {
@@ -63,38 +63,27 @@ function getRootTranslationFiles(host: Tree, root: string): { lang: string; tran
   }));
 }
 
-function getTranslationEntryPaths(options: SchemaOptions, rootDir: string): string[] {
-  if (Array.isArray(options.translationPaths)) {
-    return options.translationPaths;
-  } else if (typeof options.translationPaths === 'string') {
-    return options.translationPaths.split(',');
+function getTranslationEntryPaths(host: Tree, rootDirPath: string): {scope: string, path: string}[] {
+  const translocoConfig = getConfig();
+  if (translocoConfig.scopePathMap && Object.keys(translocoConfig.scopePathMap).length) {
+    return Object.entries(translocoConfig.scopePathMap)
+        .map(([scope, path]: [string, string]) => ({scope, path}));
   }
-
-  return [rootDir];
+  const rootDir = host.getDir(rootDirPath);
+  return rootDir.subdirs.map(subDir => ({scope: subDir, path: p.join(rootDirPath, subDir)}));
 }
 
 export default function(options: SchemaOptions): Rule {
   return (host: Tree, context: SchematicContext) => {
-    const path = process.cwd();
-    // console.log(p.join(path, 'src/assets/**/*.json'));
-    //   console.log(glob);
-    // const promise = new Promise((res, rej) => {
-    //
-    //   glob(`**/*.ts`, {}, function(er, files) {
-    //     console.log(files);
-    //     console.log(er);
-    //     res();
-    //   });
-    // });
-    //console.log(a);
+
     const root = getTranslationsRoot(host, options);
     const rootTranslations = getRootTranslationFiles(host, root);
-    const translationEntryPaths = getTranslationEntryPaths(options, root);
+    const translationEntryPaths = getTranslationEntryPaths(host, root);
 
     const output = rootTranslations.map(t => ({
       lang: t.lang,
       translation: translationEntryPaths.reduce((acc, path) => {
-        return reduceTranslations(host, host.getDir(path), t.translation, t.lang);
+        return reduceTranslations(host, path.path, t.translation, t.lang, path.scope);
       }, t.translation)
     }));
 
@@ -103,7 +92,6 @@ export default function(options: SchemaOptions): Rule {
       treeSource.create(`${options.outDir}/${o.lang}.json`, JSON.stringify(o.translation, null, 2));
     });
 
-    // return from(promise) as any;
     return treeSource;
   };
 }
