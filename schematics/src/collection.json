@@ -36,6 +36,11 @@
       "factory": "./merge/",
       "schema": "./merge/schema.json",
       "description": "Merge the translation files into one."
+    },
+    "spill": {
+      "factory": "./spill/",
+      "schema": "./spill/schema.json",
+      "description": "Merge the translation files into one."
     }
   }
 }
