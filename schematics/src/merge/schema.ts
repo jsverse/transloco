@@ -11,10 +11,6 @@ export interface SchemaOptions extends Schema {
    */
   rootTranslationPath: string;
   /**
-   * A list of all the translation files Path.
-   */
-  translationPaths: string | string[];
-  /**
    * The output directory.
    */
   outDir: string;

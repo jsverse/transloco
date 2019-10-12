@@ -11,13 +11,6 @@
       "default": "src/assets/i18n",
       "alias": "root"
     },
-    "translationPaths": {
-      "type": "string",
-      "description": "A list of all the translation files Path.",
-      "x-prompt": "Enter all the translation files path containing folder paths",
-      "default": "src/assets/i18n",
-      "alias": "paths"
-    },
     "outDir": {
       "type": "string",
       "description": "The output directory.",
