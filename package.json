@@ -16,6 +16,7 @@
     "build:messageformat": "ng build @ngneat/transloco-messageformat",
     "build:preload-langs": "ng build @ngneat/transloco-preload-langs",
     "build:locale": "ng build @ngneat/transloco-locale",
+    "build:utils": "ng build @ngneat/transloco-utils",
     "test": "ng test @ngneat/transloco",
     "test:persist-lang": "ng test @ngneat/transloco-persist-lang",
     "test:persist-translations": "ng test @ngneat/transloco-persist-translations",
