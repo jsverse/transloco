@@ -16,7 +16,7 @@ npm i messageformat @ngneat/transloco-messageformat
 
 The `MessageFormatTranspiler` is compatible with the `DefaultTranspiler` and therefore you can switch without worry that it will break your current translations.
 
-It then enables support for the following within your i18n translation files:
+It enables support for the following within your i18n translation files:
 
 ```js
 {
@@ -25,7 +25,7 @@ It then enables support for the following within your i18n translation files:
 }
 ```
 
-Add the following to the imports array in your `app.module.ts`:
+To enable this plugin, add the following to the imports array in your `app.module.ts`:
 
 ```ts
 import { TranslocoMessageFormatModule } from '@ngneat/transloco-messageformat';
@@ -39,15 +39,6 @@ import { TranslocoMessageFormatModule } from '@ngneat/transloco-messageformat';
   ]
 })
 
-```
-
-It then enables support for the following within your i18n translation files:
-
-```js
-{
-  "mySelectRule": "{myVar, select, val1 {Value 1} val2 {Value 2} other {Other Value}}",
-  "myPluralRule": "{myCount, plural, =0 {no results} one {1 result} other {# results}}"
-}
 ```
 
 ### Locale initialization
