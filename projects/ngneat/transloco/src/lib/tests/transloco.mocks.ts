@@ -92,7 +92,7 @@ export function createService(config: Partial<TranslocoConfig> = {}) {
     new DefaultTranspiler(),
     new DefaultHandler(),
     new DefaultInterceptor(),
-    { defaultLang: 'en', ...config, availableLangs: ['en', 'es'] },
+    { defaultLang: 'en', availableLangs: ['en', 'es'], ...config },
     new DefaultFallbackStrategy({ defaultLang: 'en', fallbackLang: 'en' })
   );
 }

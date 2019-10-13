@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { TRANSLOCO_SCOPE } from '@ngneat/transloco';
 
-export function en() {
-  return import('../translation/en.json').then(res => res.default);
-}
-
-export function es() {
-  return import('../translation/es.json').then(res => res.default);
+function loader() {
+  return ['en', 'es'].reduce((acc, lang) => {
+    acc[lang] = () => import(`../i18n/${lang}.json`);
+    return acc;
+  }, {});
 }
 
 @Component({
@@ -15,13 +14,12 @@ export function es() {
   providers: [
     {
       provide: TRANSLOCO_SCOPE,
-      useFactory: () => ({
+      useValue: {
         scope: 'inline',
-        translations: { en, es }
-      })
+        loader: loader()
+      }
     }
-  ],
-  styleUrls: ['./inline.component.css']
+  ]
 })
 export class InlineComponent implements OnInit {
   constructor() {}

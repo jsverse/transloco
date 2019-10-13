@@ -52,7 +52,7 @@ import { TranslocoMessageFormatModule } from '@ngneat/transloco-messageformat';
         fallbackLang: 'es',
         defaultLang: 'en',
         missingHandler: {
-          useFallbackTranslation: true
+          useFallbackTranslation: false
         },
         scopeMapping: {
           'todos-page': 'todos',

@@ -3,7 +3,7 @@ import { TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { HashMap, Translation } from './types';
 import { Observable, of } from 'rxjs';
 import { defaultProviders, TranslocoModule } from './transloco.module';
-import { TranslocoConfig, TRANSLOCO_CONFIG } from './transloco.config';
+import { TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 
 export class TestingLoader implements TranslocoLoader {
   constructor(@Inject('translocoLangs') private langs: HashMap<Translation>) {}

@@ -5,7 +5,7 @@ This package provides validation for translation files. It validates that the JS
 ## Installation
 
 - Set up husky and [lint-staged](https://github.com/okonet/lint-staged#examples)
-- Run `npm i @ngneat/transloco-validator`
+- Run `npm i @ngneat/transloco-validator --save-dev`
 
 ## Usage
 
@@ -17,7 +17,7 @@ This package provides validation for translation files. It validates that the JS
     }
   },
   "lint-staged": {
-    "src/i18n/*.json": ["transloco-validator"]
+    "src/assets/i18n/*.json": ["transloco-validator"]
   }
 }
 ```

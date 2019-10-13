@@ -1,5 +1,4 @@
-import { TranslocoScope } from './transloco-scope';
-import { Translation } from './types';
+import { ProviderScope, Translation } from './types';
 import flat from 'flat';
 
 export function getValue(obj: object, path: string) {
@@ -69,47 +68,6 @@ export function coerceArray(val) {
   return Array.isArray(val) ? val : [val];
 }
 
-export function mergeDeep(target: Object, ...sources: Object[]) {
-  if (!sources.length) return target;
-  const source = sources.shift();
-
-  if (isObject(target) && isObject(source)) {
-    for (const key in source) {
-      if (isObject(source[key])) {
-        if (!target[key]) Object.assign(target, { [key]: {} });
-        mergeDeep(target[key], source[key]);
-      } else {
-        Object.assign(target, { [key]: source[key] });
-      }
-    }
-  }
-
-  return mergeDeep(target, ...sources);
-}
-
-/*
- * @example
- *
- * given: lazy-page/en => lazy-page
- *
- */
-export function getScopeFromLang(lang: string): string {
-  const split = lang.split('/');
-  split.pop();
-  return split.join('/');
-}
-
-/*
- * @example
- *
- * given: lazy-page/en => en
- *
- */
-export function getLangFromScope(lang: string): string {
-  const split = lang.split('/');
-  return split.pop();
-}
-
 /*
  * @example
  *
@@ -126,23 +84,6 @@ export function toCamelCase(str: string): string {
 
 export function isBrowser() {
   return typeof window !== 'undefined';
-}
-
-/**
- * @example
- *
- * getPipeValue('todos|scoped', 'scoped') [true, 'todos']
- * getPipeValue('en|static', 'static') [true, 'en']
- * getPipeValue('en', 'static') [false, 'en']
- */
-export function getPipeValue(str: string, value: string, char = '|'): [boolean, string] {
-  if (isString(str)) {
-    const splitted = str.split(char);
-    const lastItem = splitted.pop();
-    return lastItem === value ? [true, splitted.toString()] : [false, lastItem];
-  }
-
-  return [false, ''];
 }
 
 export function isNil(value: any) {
@@ -163,8 +104,12 @@ export function toNumber(value: number | string): number | null {
   return null;
 }
 
-export function isScopeObject(item: any): item is TranslocoScope {
+export function isScopeObject(item: any): item is ProviderScope {
   return item && typeof item.scope === 'string';
+}
+
+export function hasInlineLoader(item: any): item is ProviderScope {
+  return item && isObject(item.loader);
 }
 
 export function unflatten(obj: Translation): Translation {

@@ -25,13 +25,18 @@ service.selectTranslateObject('a.b', params);
 ```
 
 - `MissingHandler` interface: removes the second redundant `params` param. (only relevant if you implemented a custom handler)
+
+We also made minor changes in `TranslocoConfig`:
+
 - It's now required to set the available languages in your application:
+- We have changed the `listenToLangChange` flag to a more clear `reRenderOnLangChange`:
 
 ```ts
 {
   provide: TRANSLOCO_CONFIG,
   useValue: {
-    availabeLangs: ['en', 'es']
+    availabeLangs: ['en', 'es'],
+    reRenderOnLangChange: true
   }
 }
 ```

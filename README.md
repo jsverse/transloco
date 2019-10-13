@@ -8,7 +8,7 @@
 The internationalization (i18n) library for Angular
 
 [![Build Status](https://img.shields.io/travis/datorama/akita.svg?style=flat-square)](https://travis-ci.org/ngneat/transloco)
-[![All Contributors](https://img.shields.io/badge/all_contributors-10-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-11-orange.svg?style=flat-square)](#contributors-)
 [![commitizen](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)]()
 [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)]()
 [![coc-badge](https://img.shields.io/badge/codeof-conduct-ff69b4.svg?style=flat-square)]()
@@ -219,6 +219,8 @@ without having to repeat the `dashboard` key in each translation.
 
 <span [attr.alt]="'hello' | transloco">Attribute</span>
 <span [title]="'hello' | transloco">Property</span>
+
+<span>{{ 'alert' | transloco:params:'es' }}</span>
 ```
 
 ## Programmatical Translation
@@ -396,7 +398,7 @@ Now we can access each one of the `todos` keys by using the `todos` namespace:
 ```html
 {{ 'todos.title' | transloco }}
 
-<span transloco="toods.submit"></span>
+<span transloco="todos.submit"></span>
 ```
 
 By default, the namespace will be the scope name (camel cased), but we can override it in two ways:
@@ -620,23 +622,34 @@ export const environment = {
 
 ## Unit Testing
 
-When running specs, we want to have the languages available immediately, in a synchronous fashion. Transloco provides you with a `TranslocoTestingModule`, where you can pass the languages you need in your specs. For example:
+When running specs, we want to have the languages available immediately, in a synchronous fashion. Transloco provides you with a `TranslocoTestingModule`, where you can pass the languages you need in your specs, and the config.
+We recommend to be DRY and create a module factory function that we can use in each spec, For example:
 
 ```ts
+// transloco-testing.module.ts
 import { TranslocoTestingModule } from '@ngneat/transloco';
-import en from '../../assets/i18n/en.json';
-import scopeScope from '../../assets/i18n/some-scope/en.json';
+import en from '../assets/i18n/en.json';
+import es from '../assets/i18n/es.json';
 
+export function getTranslocoModule(config: Partial<TranslocoConfig> = {}) {
+  return TranslocoTestingModule.withLangs(
+    { en, es },
+    {
+      availableLangs: ['en', 'es'],
+      defaultLang: 'en',
+      ...config
+    }
+  );
+}
+```
+
+Now we can use it in each spec:
+
+```ts
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        TranslocoTestingModule.withLangs({
-          en,
-          'some-scope/en': scopeScope
-        }, translocoConfig?)
-      ],
+      imports: [getTranslocoModule()],
       declarations: [AppComponent]
     }).compileComponents();
   }));
@@ -648,6 +661,30 @@ describe('AppComponent', () => {
   });
 });
 ```
+
+You can find an example [here](https://github.com/ngneat/transloco/blob/master/src/app/on-push/on-push.component.spec.ts)
+
+If you need to test scopes you should add them as languages, for example:
+
+```ts
+export function getTranslocoModule(config: Partial<TranslocoConfig> = {}) {
+  return TranslocoTestingModule.withLangs(
+    {
+      en,
+      es,
+      'admin-page/en': admin,
+      'admin-page/es': adminSpanish
+    },
+    {
+      availableLangs: ['en', 'es'],
+      defaultLang: 'en',
+      ...config
+    }
+  );
+}
+```
+
+You can find an example [here](https://github.com/ngneat/transloco/blob/master/src/app/lazy/lazy.component.spec.ts)
 
 Note that in order to import JSON files, you need to configure the TypeScript compiler by adding the following properties in `tsconfig.json`:
 
@@ -759,12 +796,13 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/theblushingcrow"><img src="https://avatars3.githubusercontent.com/u/638818?v=4" width="100px;" alt="Inbal Sinai"/><br /><sub><b>Inbal Sinai</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=theblushingcrow" title="Documentation">📖</a></td>
     <td align="center"><a href="http://www.larskniep.nl"><img src="https://avatars1.githubusercontent.com/u/1215195?v=4" width="100px;" alt="Lars Kniep"/><br /><sub><b>Lars Kniep</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=larscom" title="Code">💻</a> <a href="#ideas-larscom" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/fxck"><img src="https://avatars1.githubusercontent.com/u/1303561?v=4" width="100px;" alt="Aleš"/><br /><sub><b>Aleš</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=fxck" title="Code">💻</a> <a href="#ideas-fxck" title="Ideas, Planning, & Feedback">🤔</a></td>
-    <td align="center"><a href="https://www.codamit.dev"><img src="https://avatars0.githubusercontent.com/u/8522558?v=4" width="100px;" alt="Koala"/><br /><sub><b>Koala</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=Edouardbozon" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://www.codamit.dev"><img src="https://avatars0.githubusercontent.com/u/8522558?v=4" width="100px;" alt="Koala"/><br /><sub><b>Koala</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=Edouardbozon" title="Documentation">📖</a> <a href="https://github.com/ngneat/transloco/commits?author=Edouardbozon" title="Code">💻</a></td>
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/DerSizeS"><img src="https://avatars3.githubusercontent.com/u/708090?v=4" width="100px;" alt="Oleg Teterin"/><br /><sub><b>Oleg Teterin</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=DerSizeS" title="Code">💻</a></td>
     <td align="center"><a href="https://twitter.com/maxime1992"><img src="https://avatars0.githubusercontent.com/u/4950209?v=4" width="100px;" alt="Maxime"/><br /><sub><b>Maxime</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=maxime1992" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/zufarzhan"><img src="https://avatars3.githubusercontent.com/u/22148960?v=4" width="100px;" alt="Zufar Ismanov"/><br /><sub><b>Zufar Ismanov</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=zufarzhan" title="Code">💻</a> <a href="#ideas-zufarzhan" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/sk222sw"><img src="https://avatars0.githubusercontent.com/u/8642363?v=4" width="100px;" alt="Sonny Kjellberg"/><br /><sub><b>Sonny Kjellberg</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=sk222sw" title="Documentation">📖</a></td>
   </tr>
 </table>
 

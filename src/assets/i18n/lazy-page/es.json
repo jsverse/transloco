@@ -1,4 +1,5 @@
 {
   "title": "Admin Lazy spanish",
-  "withParam": "Admin Lazy spanish {{param}}"
+  "withParam": "Admin Lazy spanish {{param}}",
+  "empty": "resolved from es"
 }
