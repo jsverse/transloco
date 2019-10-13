@@ -1,32 +1,19 @@
-import { PathFragment } from '@angular-devkit/core';
-import { Rule, Tree, SchematicContext, DirEntry, SchematicsException, EmptyTree } from '@angular-devkit/schematics';
-import { getProject } from '../utils/projects';
-import { getConfig, getTranslationsRoot, getTranslationFiles, getTranslationEntryPaths } from '../utils/transloco';
+import { Rule, Tree, SchematicContext, SchematicsException, EmptyTree } from '@angular-devkit/schematics';
+import {
+  getTranslationsRoot,
+  getTranslationFiles,
+  getTranslationEntryPaths,
+  hasFiles,
+  getJsonFileContent,
+  hasSubdirs,
+  getTranslationKey
+} from '../utils/transloco';
 import { SchemaOptions } from './schema';
-
-const p = require('path');
-
-function getJsonFileContent(fileName: PathFragment, dir: DirEntry) {
-  return JSON.parse(dir.file(fileName).content.toString('utf-8'));
-}
-
-function hasSubdirs(dir: DirEntry) {
-  return dir.subdirs && dir.subdirs.length;
-}
-
-function hasFiles(dir: DirEntry) {
-  return dir.subfiles && dir.subfiles.length;
-}
-
-function getTranslationKey(prefix = '', key) {
-  return prefix ? `${prefix}.${key}` : key;
-}
 
 function reduceTranslations(host: Tree, dirPath: string, translationJson, lang: string, key = '') {
   const dir = host.getDir(dirPath);
   if (!hasFiles(dir)) return translationJson;
   dir.subfiles
-    // TODO: support other formats.
     .filter(fileName => fileName.includes(`${lang}.json`))
     .forEach(fileName => {
       if (translationJson[key]) {

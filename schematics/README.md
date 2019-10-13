@@ -205,3 +205,75 @@ The Library's upgrade script from lower versions. For more information about the
   `default`: `./src/app`
 
   `alias`: `p`
+
+## Merge
+
+### Overview
+
+Merge all of the project's translation files into one.
+
+By default the merge script will go over the root translation file directory and will refer every sub directory as scope.
+
+Note, if you have more then one entry folder for your translation files, you will have to add a mapping for each folder entry and the scope name. It could be done using `scopePathMap` property in your `transloco.config.js` file.
+
+### Command
+
+```
+  ng genrate @ngneat/transloco:merge
+```
+
+### Options
+
+#### The folder that contain the root translation files.
+
+- `--root-translationPath`
+
+  `type`: `string`
+
+  `default`: `src/assets/i18n`
+
+  `alias`: `root`
+
+#### The output directory path.
+
+- `--out-dir`
+
+  `type`: `string`
+
+  `default`: `dist-i18n`
+
+  `alias`: `o`
+
+## Spill
+
+### Overview
+
+Does the opposite process of `merge` command. It spill the translated files between the project's translation files.
+
+### Command
+
+```
+  ng genrate @ngneat/transloco:merge
+```
+
+### Options
+
+#### The folder that contain the root translation files.
+
+- `--root-translationPath`
+
+  `type`: `string`
+
+  `default`: `src/assets/i18n`
+
+  `alias`: `root`
+
+#### The path of the source directory that contain the translated files.
+
+- `--out-dir`
+
+  `type`: `string`
+
+  `default`: `dist-i18n`
+
+  `alias`: `o`

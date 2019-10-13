@@ -15,10 +15,6 @@ export interface SchemaOptions extends Schema {
    */
   outDir: string;
   /**
-   * The translation files format.
-   */
-  translateFormat: TranslationFileTypes;
-  /**
    * The root project name.
    */
   project: string;
