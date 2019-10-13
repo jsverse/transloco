@@ -20,11 +20,10 @@ import { TRANSLOCO_LANG } from './transloco-lang';
 import { TRANSLOCO_LOADING_TEMPLATE } from './transloco-loading-template';
 import { TRANSLOCO_SCOPE } from './transloco-scope';
 import { TranslocoService } from './transloco.service';
-import { HashMap, InlineLoader, TranslocoScope } from './types';
-import { listenOrNotOperator, prependScope, resolveInlineLoader, shouldListenToLangChanges } from './shared';
+import { HashMap, TranslocoScope } from './types';
+import { listenOrNotOperator, resolveInlineLoader, shouldListenToLangChanges } from './shared';
 import { LangResolver } from './lang-resolver';
 import { ScopeResolver } from './scope-resolver';
-import { hasInlineLoader } from './helpers';
 
 @Directive({
   selector: '[transloco]'

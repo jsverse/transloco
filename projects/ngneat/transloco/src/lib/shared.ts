@@ -64,7 +64,7 @@ export function listenOrNotOperator(listenToLangChange: boolean) {
   return listenToLangChange ? source => source : take(1);
 }
 
-export function prependScope(inlineLoader, scope) {
+function prependScope(inlineLoader, scope) {
   return Object.keys(inlineLoader).reduce((acc, lang) => {
     acc[`${scope}/${lang}`] = inlineLoader[lang];
     return acc;
