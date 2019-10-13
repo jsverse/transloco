@@ -1,14 +1,18 @@
 import { PathFragment } from '@angular-devkit/core';
 import { DirEntry, Tree } from '@angular-devkit/schematics';
+import { getConfig as getTranslocoConfig, TranslocoConfig } from '@ngneat/transloco-utils';
 import { getProject } from './projects';
+
 const p = require('path');
 
 export function getConfig() {
-  return {
-    scopePathMap: {
-      'admin-scope': 'src/app/home/translations'
-    }
-  } as any;
+  let config: TranslocoConfig = {};
+  try {
+    config = getTranslocoConfig();
+    return config;
+  } finally {
+  }
+  return config;
 }
 
 export function getJsonFileContent(fileName: PathFragment, dir: DirEntry) {
