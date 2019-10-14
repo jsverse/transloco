@@ -32,9 +32,9 @@
       "schema": "./upgrade/schema.json",
       "description": "Run an upgrade script."
     },
-    "merge": {
-      "factory": "./merge/",
-      "schema": "./merge/schema.json",
+    "build": {
+      "factory": "./build/",
+      "schema": "./build/schema.json",
       "description": "Merge the translation files into one."
     },
     "spill": {

@@ -177,7 +177,7 @@ Note if this flag won't be provide a new Module should be created.
 
 #### Define the location of the translation files.
 
-- `--translation-filesPath`
+- `--translation-path`
 
   `type`: `string`
 
@@ -206,7 +206,7 @@ The Library's upgrade script from lower versions. For more information about the
 
   `alias`: `p`
 
-## Merge
+## Build
 
 ### Overview
 
@@ -219,14 +219,14 @@ Note, if you have more then one entry folder for your translation files, you wil
 ### Command
 
 ```
-  ng genrate @ngneat/transloco:merge
+  ng genrate @ngneat/transloco:build
 ```
 
 ### Options
 
 #### The folder that contain the root translation files.
 
-- `--root-translationPath`
+- `--translation-path`
 
   `type`: `string`
 
@@ -260,7 +260,7 @@ Does the opposite process of `merge` command. It spill the translated files betw
 
 #### The folder that contain the root translation files.
 
-- `--root-translationPath`
+- `--translation-path`
 
   `type`: `string`
 

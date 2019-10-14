@@ -4,7 +4,7 @@
   "description": "A blank schematics",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "jest --watch"
+    "test": "npm run build && jest --watch"
   },
   "keywords": [
     "schematics"

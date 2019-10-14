@@ -14,7 +14,7 @@ describe('Spill', () => {
 
   let appTree: UnitTestTree;
   const options = {
-    rootTranslationPath: 'src/assets/i18n',
+    translationPath: 'src/assets/i18n',
     source: 'dist-i18n'
   };
 
@@ -32,12 +32,12 @@ describe('Spill', () => {
       const translatedEn = { hello: 'hello translated' };
       const translatedEs = { hello: 'hola translated' };
       setupMerged(translatedEn, translatedEs);
-      appTree.create(`${options.rootTranslationPath}/en.json`, '');
-      appTree.create(`${options.rootTranslationPath}/es.json`, '');
+      appTree.create(`${options.translationPath}/en.json`, '');
+      appTree.create(`${options.translationPath}/es.json`, '');
 
       const tree = await schematicRunner.runSchematicAsync('spill', options, appTree).toPromise();
-      const resES = JSON.parse(tree.readContent(`${options.rootTranslationPath}/es.json`));
-      const resEn = JSON.parse(tree.readContent(`${options.rootTranslationPath}/en.json`));
+      const resES = JSON.parse(tree.readContent(`${options.translationPath}/es.json`));
+      const resEn = JSON.parse(tree.readContent(`${options.translationPath}/en.json`));
       expect(resES).toEqual(translatedEs);
       expect(resEn).toEqual(translatedEn);
     });
@@ -46,13 +46,13 @@ describe('Spill', () => {
       const translatedEn = { scope: { hello: 'hello translated' } };
       const translatedEs = { scope: { hello: 'hola translated' } };
       setupMerged(translatedEn, translatedEs);
-      appTree.create(`${options.rootTranslationPath}/scope/en.json`, '');
-      appTree.create(`${options.rootTranslationPath}/scope/es.json`, '');
+      appTree.create(`${options.translationPath}/scope/en.json`, '');
+      appTree.create(`${options.translationPath}/scope/es.json`, '');
 
       const tree = await schematicRunner.runSchematicAsync('spill', options, appTree).toPromise();
 
-      const resES = JSON.parse(tree.readContent(`${options.rootTranslationPath}/scope/es.json`));
-      const resEn = JSON.parse(tree.readContent(`${options.rootTranslationPath}/scope/en.json`));
+      const resES = JSON.parse(tree.readContent(`${options.translationPath}/scope/es.json`));
+      const resEn = JSON.parse(tree.readContent(`${options.translationPath}/scope/en.json`));
       expect(resES).toEqual(translatedEs.scope);
       expect(resEn).toEqual(translatedEn.scope);
     });

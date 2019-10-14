@@ -1,4 +1,5 @@
 import { Rule, Tree, SchematicContext, SchematicsException, EmptyTree } from '@angular-devkit/schematics';
+import {TranslationFileFormat} from '../types';
 import {
   getTranslationsRoot,
   getTranslationFiles,
@@ -8,8 +9,10 @@ import {
   hasSubdirs,
   getTranslationKey
 } from '../utils/transloco';
-import { SchemaOptions } from './schema';
+import {SchemaOptions} from './schema';
 const fs = require('fs-extra');
+
+type Builder = (tree: Tree, path: string, content: Object) => void;
 
 function reduceTranslations(host: Tree, dirPath: string, translationJson, lang: string, key = '') {
   const dir = host.getDir(dirPath);
@@ -42,6 +45,25 @@ function deletePrevFiles(host: Tree, options: SchemaOptions) {
   }
 }
 
+const jsonBuilder: Builder = (tree: Tree, path: string, content: Object) => {
+  tree.create(`${path}.json`, JSON.stringify(content, null, 2));
+};
+
+function builderFactory(format: TranslationFileFormat): Builder {
+  switch (format) {
+    case TranslationFileFormat.JSON:
+      return jsonBuilder;
+    case TranslationFileFormat.PO:
+      // TODO:
+      return jsonBuilder;
+    case TranslationFileFormat.XLIFF:
+      // TODO:
+      return jsonBuilder;
+    default:
+      return jsonBuilder;
+  }
+}
+
 export default function(options: SchemaOptions): Rule {
   return (host: Tree, context: SchematicContext) => {
 
@@ -58,8 +80,9 @@ export default function(options: SchemaOptions): Rule {
     }));
 
     const treeSource = new EmptyTree();
+    const builder = builderFactory(options.format);
     output.forEach(o => {
-      treeSource.create(`${options.outDir}/${o.lang}.json`, JSON.stringify(o.translation, null, 2));
+      builder(treeSource, `${options.outDir}/${o.lang}`, o.translation);
     });
 
     return treeSource;

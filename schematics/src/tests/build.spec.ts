@@ -11,12 +11,12 @@ import scopeEs from './mocks/scope-es';
 
 const collectionPath = path.join(__dirname, '../collection.json');
 
-describe('Merge', () => {
+fdescribe('Build', () => {
   const schematicRunner = new SchematicTestRunner('schematics', collectionPath);
 
   let appTree: UnitTestTree;
   const options = {
-    rootTranslationPath: 'src/assets/i18n',
+    translationPath: 'src/assets/i18n',
     outDir: 'dist-i18n'
   };
 
@@ -33,30 +33,30 @@ describe('Merge', () => {
     });
 
     it('should merge translation files to dist', async () => {
-      const tree = await schematicRunner.runSchematicAsync('merge', options, appTree).toPromise();
+      const tree = await schematicRunner.runSchematicAsync('build', options, appTree).toPromise();
       expect(tree.files).toEqual(['/dist-i18n/es.json', '/dist-i18n/en.json']);
     });
 
     it('should merge scopes correctly', async () => {
-      const tree = await schematicRunner.runSchematicAsync('merge', options, appTree).toPromise();
+      const tree = await schematicRunner.runSchematicAsync('build', options, appTree).toPromise();
 
       expect(tree.readContent('/dist-i18n/es.json')).toMatchSnapshot();
       expect(tree.readContent('/dist-i18n/en.json')).toMatchSnapshot();
     });
 
     it('should delete output files on rerun', async () => {
-      await schematicRunner.runSchematicAsync('merge', options, appTree).toPromise();
-      const tree = await schematicRunner.runSchematicAsync('merge', options, appTree).toPromise();
+      await schematicRunner.runSchematicAsync('build', options, appTree).toPromise();
+      const tree = await schematicRunner.runSchematicAsync('build', options, appTree).toPromise();
       expect(tree.files).toEqual(['/dist-i18n/es.json', '/dist-i18n/en.json']);
     });
 
     it('should take default path', async () => {
-      const tree = await schematicRunner.runSchematicAsync('merge', {}, appTree).toPromise();
+      const tree = await schematicRunner.runSchematicAsync('build', {}, appTree).toPromise();
       expect(tree.files).toEqual(['/dist-i18n/es.json', '/dist-i18n/en.json']);
     });
 
     it('should take default project path', async () => {
-      const tree = await schematicRunner.runSchematicAsync('merge', { project: 'bar' }, appTree).toPromise();
+      const tree = await schematicRunner.runSchematicAsync('build', { project: 'bar' }, appTree).toPromise();
       expect(tree.files).toEqual(['/dist-i18n/es.json', '/dist-i18n/en.json']);
     });
   });
@@ -72,7 +72,7 @@ describe('Merge', () => {
 
     it('should use scope map strategy', async () => {
       setup();
-      const tree = await schematicRunner.runSchematicAsync('merge', options, appTree).toPromise();
+      const tree = await schematicRunner.runSchematicAsync('build', options, appTree).toPromise();
 
       expect(tree.readContent('/dist-i18n/es.json')).toMatchSnapshot();
       expect(tree.readContent('/dist-i18n/en.json')).toMatchSnapshot();
@@ -84,7 +84,7 @@ describe('Merge', () => {
         scopeB: 'src/app/i18n/scope2'
       };
       setup(scopePathMap);
-      const tree = await schematicRunner.runSchematicAsync('merge', options, appTree).toPromise();
+      const tree = await schematicRunner.runSchematicAsync('build', options, appTree).toPromise();
 
       expect(tree.readContent('/dist-i18n/es.json')).toMatchSnapshot();
       expect(tree.readContent('/dist-i18n/en.json')).toMatchSnapshot();
@@ -96,7 +96,7 @@ describe('Merge', () => {
         libB: 'projects/baz/assets/i18n'
       };
       setup(scopePathMap);
-      const tree = await schematicRunner.runSchematicAsync('merge', options, appTree).toPromise();
+      const tree = await schematicRunner.runSchematicAsync('build', options, appTree).toPromise();
 
       expect(tree.readContent('/dist-i18n/es.json')).toMatchSnapshot();
       expect(tree.readContent('/dist-i18n/en.json')).toMatchSnapshot();

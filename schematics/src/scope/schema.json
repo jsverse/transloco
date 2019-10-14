@@ -31,7 +31,7 @@
       "type": "string",
       "default": "JSON"
     },
-    "translationFilesPath": {
+    "translationPath": {
       "description": "The to the translation files, relative to the project's root.",
       "type": "string"
     },

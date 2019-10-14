@@ -1,4 +1,5 @@
 import { Rule, Tree, SchematicContext } from '@angular-devkit/schematics';
+import { TranslationFileFormat } from '../types';
 import {
   getTranslationsRoot,
   getTranslationEntryPaths,
@@ -9,6 +10,8 @@ import {
   getTranslationKey
 } from '../utils/transloco';
 import { SchemaOptions } from './schema';
+
+type Parser = (content: string) => any;
 
 function reduceTranslations(host: Tree, dirPath: string, translationJson, lang: string, key = '') {
   const dir = host.getDir(dirPath);
@@ -33,10 +36,27 @@ function reduceTranslations(host: Tree, dirPath: string, translationJson, lang: 
   return translationJson;
 }
 
+function parserFactory(format: TranslationFileFormat): Parser {
+  switch (format) {
+    case TranslationFileFormat.JSON:
+      return JSON.parse;
+    case TranslationFileFormat.PO:
+    // TODO:
+    // return jsonBuilder;
+    case TranslationFileFormat.XLIFF:
+    // TODO:
+    // return jsonBuilder;
+    default:
+      return JSON.parse;
+  }
+}
+
 export default function(options: SchemaOptions): Rule {
   return (host: Tree, context: SchematicContext) => {
     const root = getTranslationsRoot(host, options);
-    const translatedFiles = getTranslationFiles(host, options.source);
+    const parser = parserFactory(options.format);
+
+    const translatedFiles = getTranslationFiles(host, options.source, parser);
     const translationEntryPaths = getTranslationEntryPaths(host, root);
 
     const newTranslation = {};

@@ -9,8 +9,8 @@ export function getConfig(): TranslocoConfig {
   return getTranslocoConfig() || {};
 }
 
-export function getJsonFileContent(fileName: PathFragment, dir: DirEntry) {
-  return JSON.parse(dir.file(fileName).content.toString('utf-8'));
+export function getJsonFileContent(fileName: PathFragment, dir: DirEntry, parser = JSON.parse) {
+  return parser(dir.file(fileName).content.toString('utf-8'));
 }
 
 export function setFileContent(host: Tree, dirPath: string, fileName: PathFragment, content) {
@@ -29,10 +29,10 @@ export function getTranslationKey(prefix = '', key) {
   return prefix ? `${prefix}.${key}` : key;
 }
 
-export function getTranslationsRoot(host: Tree, options: { project: string; rootTranslationPath?: string }): string {
+export function getTranslationsRoot(host: Tree, options: { project?: string; translationPath?: string }): string {
   const translocoConfig = getConfig();
-  if (options.rootTranslationPath) {
-    return options.rootTranslationPath;
+  if (options.translationPath) {
+    return options.translationPath;
   } else if (translocoConfig && translocoConfig.rootTranslationPath) {
     return translocoConfig.rootTranslationPath;
   } else {
@@ -42,11 +42,11 @@ export function getTranslationsRoot(host: Tree, options: { project: string; root
   }
 }
 
-export function getTranslationFiles(host: Tree, root: string): { lang: string; translation: Object }[] {
+export function getTranslationFiles(host: Tree, root: string, parser?): { lang: string; translation: Object }[] {
   const rootDir = host.getDir(root);
   return rootDir.subfiles.map(fileName => ({
     lang: fileName.split('.')[0],
-    translation: getJsonFileContent(fileName, rootDir)
+    translation: getJsonFileContent(fileName, rootDir, parser)
   }));
 }
 
