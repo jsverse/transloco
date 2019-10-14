@@ -16,6 +16,7 @@
     "build:messageformat": "ng build @ngneat/transloco-messageformat",
     "build:preload-langs": "ng build @ngneat/transloco-preload-langs",
     "build:locale": "ng build @ngneat/transloco-locale",
+    "build:utils": "ng build @ngneat/transloco-utils",
     "test": "ng test @ngneat/transloco",
     "test:persist-lang": "ng test @ngneat/transloco-persist-lang",
     "test:persist-translations": "ng test @ngneat/transloco-persist-translations",
@@ -35,7 +36,6 @@
     "transloco:optimize": "transloco-optimize dist/transloco-playground/assets/i18n"
   },
   "dependencies": {
-    "messageformat": "2.3.0",
     "@angular/animations": "~7.2.0",
     "@angular/common": "~7.2.0",
     "@angular/compiler": "~7.2.0",
@@ -48,6 +48,7 @@
     "flat": "^4.1.0",
     "git-cz": "^3.2.1",
     "lodash.omitby": "^4.6.0",
+    "messageformat": "2.3.0",
     "rxjs": "~6.3.3",
     "tslib": "^1.9.0",
     "zone.js": "~0.8.26"

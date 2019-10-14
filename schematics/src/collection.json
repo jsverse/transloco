@@ -31,6 +31,16 @@
       "factory": "./upgrade/",
       "schema": "./upgrade/schema.json",
       "description": "Run an upgrade script."
+    },
+    "build": {
+      "factory": "./build/",
+      "schema": "./build/schema.json",
+      "description": "Merge the translation files into one."
+    },
+    "spill": {
+      "factory": "./spill/",
+      "schema": "./spill/schema.json",
+      "description": "Merge the translation files into one."
     }
   }
 }

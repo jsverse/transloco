@@ -1,0 +1,29 @@
+{
+  "name": "@ngneat/transloco-utils",
+  "version": "1.0.2",
+  "description": "Transloco utils library",
+  "keywords": [
+    "angular",
+    "angular 2",
+    "i18n",
+    "transloco",
+    "translate",
+    "utils",
+    "config"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "peerDependencies": {
+    "@angular/common": "^7.2.0",
+    "@angular/core": "^7.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^12.7.12",
+    "@types/cosmiconfig": "^5.0.3"
+  },
+  "dependencies": {
+    "cosmiconfig": "^5.2.1"
+  }
+}

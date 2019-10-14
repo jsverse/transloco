@@ -18,7 +18,7 @@ export interface SchemaOptions extends Schema {
   /**
    * The path of the translation files.
    */
-  translationFilesPath: string;
+  translationPath: string;
   /**
    * The translation files type.
    */

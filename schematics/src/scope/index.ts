@@ -42,7 +42,7 @@ function getTranslationFilesFromAssets(host, translationsPath) {
 
 function addTranslationFiles(options, rootPath, host: Tree): Source {
   const translationsPath = options.translationFilesPath
-    ? p.join(rootPath, options.translationFilesPath)
+    ? p.join(rootPath, options.translationPath)
     : p.join(rootPath, 'assets', 'i18n');
 
   options.langs = options.langs
@@ -56,9 +56,7 @@ export default function(options: SchemaOptions): Rule {
   return (host: Tree, context: SchematicContext) => {
     const project = getProject(host, options.project);
     const path = (project && project.sourceRoot) || 'src';
-    const translationFiles: any = options.skipCreation
-      ? noop()
-      : mergeWith(addTranslationFiles(options, path, host));
+    const translationFiles: any = options.skipCreation ? noop() : mergeWith(addTranslationFiles(options, path, host));
 
     if (options.module) {
       const projectPath = getProjectPath(host, project, options);

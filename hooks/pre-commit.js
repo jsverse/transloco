@@ -4,6 +4,7 @@ const chalk = require('chalk');
 /** Map of forbidden words and their match regex */
 const words = {
   fit: '\\s*fit\\(',
+  fdescribe: '\\s*fdescribe\\(',
   debugger: '(debugger);?'
 };
 let status = 0;

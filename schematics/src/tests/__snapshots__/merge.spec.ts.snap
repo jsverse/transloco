@@ -1,0 +1,169 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Feature default strategy should merge scopes correctly 1`] = `
+"{
+  \\"hello\\": \\"hola\\",
+  \\"scope\\": {
+    \\"hello\\": \\"hola scope\\"
+  }
+}"
+`;
+
+exports[`Feature default strategy should merge scopes correctly 2`] = `
+"{
+  \\"hello\\": \\"hello\\",
+  \\"scope\\": {
+    \\"hello\\": \\"hello scope\\"
+  }
+}"
+`;
+
+exports[`Feature scope map strategy should use multi projects scopes 1`] = `
+"{
+  \\"hello\\": \\"hola\\",
+  \\"libA\\": {
+    \\"hello\\": \\"hola scope\\"
+  },
+  \\"libB\\": {
+    \\"hello\\": \\"hola scope\\"
+  }
+}"
+`;
+
+exports[`Feature scope map strategy should use multi projects scopes 2`] = `
+"{
+  \\"hello\\": \\"hello\\",
+  \\"libA\\": {
+    \\"hello\\": \\"hello scope\\"
+  },
+  \\"libB\\": {
+    \\"hello\\": \\"hello scope\\"
+  }
+}"
+`;
+
+exports[`Feature scope map strategy should use scope map strategy 1`] = `
+"{
+  \\"hello\\": \\"hola\\",
+  \\"scope\\": {
+    \\"hello\\": \\"hola scope\\"
+  }
+}"
+`;
+
+exports[`Feature scope map strategy should use scope map strategy 2`] = `
+"{
+  \\"hello\\": \\"hello\\",
+  \\"scope\\": {
+    \\"hello\\": \\"hello scope\\"
+  }
+}"
+`;
+
+exports[`Feature scope map strategy should use scope map strategy multi scopes 1`] = `
+"{
+  \\"hello\\": \\"hola\\",
+  \\"scopeA\\": {
+    \\"hello\\": \\"hola scope\\"
+  },
+  \\"scopeB\\": {
+    \\"hello\\": \\"hola scope\\"
+  }
+}"
+`;
+
+exports[`Feature scope map strategy should use scope map strategy multi scopes 2`] = `
+"{
+  \\"hello\\": \\"hello\\",
+  \\"scopeA\\": {
+    \\"hello\\": \\"hello scope\\"
+  },
+  \\"scopeB\\": {
+    \\"hello\\": \\"hello scope\\"
+  }
+}"
+`;
+
+exports[`Merge default strategy should merge scopes correctly 1`] = `
+"{
+  \\"hello\\": \\"hola\\",
+  \\"scope\\": {
+    \\"hello\\": \\"hola scope\\"
+  }
+}"
+`;
+
+exports[`Merge default strategy should merge scopes correctly 2`] = `
+"{
+  \\"hello\\": \\"hello\\",
+  \\"scope\\": {
+    \\"hello\\": \\"hello scope\\"
+  }
+}"
+`;
+
+exports[`Merge scope map strategy should use multi projects scopes 1`] = `
+"{
+  \\"hello\\": \\"hola\\",
+  \\"libA\\": {
+    \\"hello\\": \\"hola scope\\"
+  },
+  \\"libB\\": {
+    \\"hello\\": \\"hola scope\\"
+  }
+}"
+`;
+
+exports[`Merge scope map strategy should use multi projects scopes 2`] = `
+"{
+  \\"hello\\": \\"hello\\",
+  \\"libA\\": {
+    \\"hello\\": \\"hello scope\\"
+  },
+  \\"libB\\": {
+    \\"hello\\": \\"hello scope\\"
+  }
+}"
+`;
+
+exports[`Merge scope map strategy should use scope map strategy 1`] = `
+"{
+  \\"hello\\": \\"hola\\",
+  \\"scope\\": {
+    \\"hello\\": \\"hola scope\\"
+  }
+}"
+`;
+
+exports[`Merge scope map strategy should use scope map strategy 2`] = `
+"{
+  \\"hello\\": \\"hello\\",
+  \\"scope\\": {
+    \\"hello\\": \\"hello scope\\"
+  }
+}"
+`;
+
+exports[`Merge scope map strategy should use scope map strategy multi scopes 1`] = `
+"{
+  \\"hello\\": \\"hola\\",
+  \\"scopeA\\": {
+    \\"hello\\": \\"hola scope\\"
+  },
+  \\"scopeB\\": {
+    \\"hello\\": \\"hola scope\\"
+  }
+}"
+`;
+
+exports[`Merge scope map strategy should use scope map strategy multi scopes 2`] = `
+"{
+  \\"hello\\": \\"hello\\",
+  \\"scopeA\\": {
+    \\"hello\\": \\"hello scope\\"
+  },
+  \\"scopeB\\": {
+    \\"hello\\": \\"hello scope\\"
+  }
+}"
+`;
