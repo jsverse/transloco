@@ -1,4 +1,4 @@
 export interface TranslocoConfig {
-  rootTranslationPath?: string;
+  rootTranslationsPath?: string;
   scopePathMap?: { [key: string]: string };
 }

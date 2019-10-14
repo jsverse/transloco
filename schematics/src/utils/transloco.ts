@@ -6,7 +6,7 @@ import { getProject } from './projects';
 const p = require('path');
 
 export function getConfig(): TranslocoConfig {
-  return getTranslocoConfig() || {};
+  return getTranslocoConfig();
 }
 
 export function getJsonFileContent(fileName: PathFragment, dir: DirEntry, parser = JSON.parse) {
@@ -33,8 +33,8 @@ export function getTranslationsRoot(host: Tree, options: { project?: string; tra
   const translocoConfig = getConfig();
   if (options.translationPath) {
     return options.translationPath;
-  } else if (translocoConfig && translocoConfig.rootTranslationPath) {
-    return translocoConfig.rootTranslationPath;
+  } else if (translocoConfig && translocoConfig.rootTranslationsPath) {
+    return translocoConfig.rootTranslationsPath;
   } else {
     const project = getProject(host, options.project);
     const rootPath = (project && project.sourceRoot) || 'src';
