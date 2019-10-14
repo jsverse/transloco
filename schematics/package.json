@@ -15,7 +15,7 @@
   "dependencies": {
     "@angular-devkit/core": "^8.1.2",
     "@angular-devkit/schematics": "^8.1.2",
-    "@ngneat/transloco-utils": "^1.0.0",
+    "@ngneat/transloco-utils": "^1.0.1",
     "@schematics/angular": ">=7.3.9 <9.0.0",
     "fs-extra": "^8.1.0",
     "glob": "^7.1.4",

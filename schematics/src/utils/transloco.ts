@@ -1,11 +1,12 @@
 import { PathFragment } from '@angular-devkit/core';
 import { DirEntry, Tree } from '@angular-devkit/schematics';
+import {el} from '@angular/platform-browser/testing/src/browser_util';
 import { getConfig as getTranslocoConfig, TranslocoConfig } from '@ngneat/transloco-utils';
 import { getProject } from './projects';
 
 const p = require('path');
 
-export function getConfig() {
+export function getConfig(): TranslocoConfig {
   return getTranslocoConfig() || {};
 }
 
@@ -30,10 +31,16 @@ export function getTranslationKey(prefix = '', key) {
 }
 
 export function getTranslationsRoot(host: Tree, options: { project: string; rootTranslationPath?: string }): string {
-  const project = getProject(host, options.project);
-  const rootPath = (project && project.sourceRoot) || 'src';
-
-  return options.rootTranslationPath ? options.rootTranslationPath : p.join(rootPath, 'assets', 'i18n');
+  const translocoConfig = getConfig();
+  if(options.rootTranslationPath) {
+    return options.rootTranslationPath;
+  } else if(translocoConfig && translocoConfig.rootTranslationPath) {
+    return translocoConfig.rootTranslationPath;
+  } else {
+    const project = getProject(host, options.project);
+    const rootPath = (project && project.sourceRoot) || 'src';
+    return p.join(rootPath, 'assets', 'i18n');
+  }
 }
 
 export function getTranslationFiles(host: Tree, root: string): { lang: string; translation: Object }[] {
