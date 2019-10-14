@@ -11,7 +11,7 @@ import scopeEs from './mocks/scope-es';
 
 const collectionPath = path.join(__dirname, '../collection.json');
 
-describe('Feature', () => {
+describe('Merge', () => {
   const schematicRunner = new SchematicTestRunner('schematics', collectionPath);
 
   let appTree: UnitTestTree;
