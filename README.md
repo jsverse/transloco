@@ -36,7 +36,7 @@ It exposes a rich API to manage translations efficiently and cleanly. It provide
 - 😎 Use [schematics](https://app.gitbook.com/@netbasal/s/transloco/schematics/ng-add)
 - 👉 Checkout the [sample application](https://transloco.netlify.com/home)
 - 📖 Read the blog [posts](https://app.gitbook.com/@netbasal/s/transloco/general/blog-posts)
-- 🍄 Join Akita's [Gitter](https://gitter.im/ngneat-transloco/lobby?source=orgpage) room
+- 🍄 Join Transloco's [Gitter](https://gitter.im/ngneat-transloco/lobby?source=orgpage) room
 
 ## Core Team
 
