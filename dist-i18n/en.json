@@ -1,0 +1,36 @@
+{
+  "array": [
+    "hello-1",
+    "hello-2"
+  ],
+  "alert": "alert {{value}} english",
+  "home": "home english",
+  "fromList": "from list",
+  "a": {
+    "b": {
+      "c": "a.b.c {{fromList}} english"
+    }
+  },
+  "b": "b english",
+  "c": "c english",
+  "nested": {
+    "title": "Title english",
+    "desc": "Desc english"
+  },
+  "key.is.like.path": "key is like path",
+  "empty": "",
+  "admin-page": {
+    "title": "Admin english",
+    "read": "Admin read english"
+  },
+  "lazy-page": {
+    "title": "Admin Lazy english",
+    "withParam": "Admin Lazy english {{param}}"
+  },
+  "lazy-scope-alias": {
+    "title": "Lazy scope alias English"
+  },
+  "todos-page": {
+    "title": "My scope name was mapped! english"
+  }
+}

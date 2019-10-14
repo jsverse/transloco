@@ -9,6 +9,7 @@ import {
   getTranslationKey
 } from '../utils/transloco';
 import { SchemaOptions } from './schema';
+const fs = require('fs-extra');
 
 function reduceTranslations(host: Tree, dirPath: string, translationJson, lang: string, key = '') {
   const dir = host.getDir(dirPath);
@@ -34,8 +35,17 @@ function reduceTranslations(host: Tree, dirPath: string, translationJson, lang: 
   return translationJson;
 }
 
+function deletePrevFiles(host: Tree, options: SchemaOptions) {
+
+  if(fs.existsSync(options.outDir)) {
+    fs.removeSync(options.outDir);
+  }
+}
+
 export default function(options: SchemaOptions): Rule {
   return (host: Tree, context: SchematicContext) => {
+
+    deletePrevFiles(host, options);
     const root = getTranslationsRoot(host, options);
     const rootTranslations = getTranslationFiles(host, root);
     const translationEntryPaths = getTranslationEntryPaths(host, root);

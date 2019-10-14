@@ -6,13 +6,7 @@ import { getProject } from './projects';
 const p = require('path');
 
 export function getConfig() {
-  let config: TranslocoConfig = {};
-  try {
-    config = getTranslocoConfig();
-    return config;
-  } finally {
-  }
-  return config;
+  return getTranslocoConfig() || {};
 }
 
 export function getJsonFileContent(fileName: PathFragment, dir: DirEntry) {
