@@ -1,6 +1,5 @@
 import { PathFragment } from '@angular-devkit/core';
 import { DirEntry, Tree } from '@angular-devkit/schematics';
-import {el} from '@angular/platform-browser/testing/src/browser_util';
 import { getConfig as getTranslocoConfig, TranslocoConfig } from '@ngneat/transloco-utils';
 import { getProject } from './projects';
 
@@ -32,9 +31,9 @@ export function getTranslationKey(prefix = '', key) {
 
 export function getTranslationsRoot(host: Tree, options: { project: string; rootTranslationPath?: string }): string {
   const translocoConfig = getConfig();
-  if(options.rootTranslationPath) {
+  if (options.rootTranslationPath) {
     return options.rootTranslationPath;
-  } else if(translocoConfig && translocoConfig.rootTranslationPath) {
+  } else if (translocoConfig && translocoConfig.rootTranslationPath) {
     return translocoConfig.rootTranslationPath;
   } else {
     const project = getProject(host, options.project);
