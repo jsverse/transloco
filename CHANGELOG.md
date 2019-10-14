@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.2.0](https://github.com/ngneat/transloco/compare/v2.1.2...v2.2.0) (2019-10-14)
+
+### Features
+
+- 🎸 add merge translation files command ([28f1af9](https://github.com/ngneat/transloco/commit/28f1af9))
+- 🎸 add spill schematics command ([f3ad130](https://github.com/ngneat/transloco/commit/f3ad130))
+- 🎸 inline loaders ([1648de4](https://github.com/ngneat/transloco/commit/1648de4))
+
+### Tests
+
+- 💍 schematics spill command ([d57fa82](https://github.com/ngneat/transloco/commit/d57fa82))
+- 💍 test schematics merge command ([5484520](https://github.com/ngneat/transloco/commit/5484520))
+
 ### [2.1.2](https://github.com/ngneat/transloco/compare/v2.1.1...v2.1.2) (2019-10-11)
 
 ### Bug Fixes
