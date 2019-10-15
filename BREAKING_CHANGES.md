@@ -35,7 +35,7 @@ We also made minor changes in `TranslocoConfig`:
 {
   provide: TRANSLOCO_CONFIG,
   useValue: {
-    availabeLangs: ['en', 'es'],
+    availableLangs: ['en', 'es'],
     reRenderOnLangChange: true
   }
 }
