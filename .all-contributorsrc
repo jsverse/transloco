@@ -125,6 +125,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "AlexAegis",
+      "name": "Győri Sándor",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/16900547?v=4",
+      "profile": "https://alexaegis.github.io/loreplotter/",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7
