@@ -22,7 +22,7 @@ It exposes a rich API to manage translations efficiently and cleanly. It provide
 <hr />
 
 [![Build Status](https://img.shields.io/travis/datorama/akita.svg?style=flat-square)](https://travis-ci.org/ngneat/transloco)
-[![All Contributors](https://img.shields.io/badge/all_contributors-11-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-12-orange.svg?style=flat-square)](#contributors-)
 [![commitizen](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)]()
 [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)]()
 [![coc-badge](https://img.shields.io/badge/codeof-conduct-ff69b4.svg?style=flat-square)]()
@@ -70,6 +70,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://twitter.com/maxime1992"><img src="https://avatars0.githubusercontent.com/u/4950209?v=4" width="100px;" alt="Maxime"/><br /><sub><b>Maxime</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=maxime1992" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/zufarzhan"><img src="https://avatars3.githubusercontent.com/u/22148960?v=4" width="100px;" alt="Zufar Ismanov"/><br /><sub><b>Zufar Ismanov</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=zufarzhan" title="Code">💻</a> <a href="#ideas-zufarzhan" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/sk222sw"><img src="https://avatars0.githubusercontent.com/u/8642363?v=4" width="100px;" alt="Sonny Kjellberg"/><br /><sub><b>Sonny Kjellberg</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=sk222sw" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/ThierryDD"><img src="https://avatars3.githubusercontent.com/u/184425?v=4" width="100px;" alt="Thierry"/><br /><sub><b>Thierry</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=ThierryDD" title="Documentation">📖</a></td>
   </tr>
 </table>
 

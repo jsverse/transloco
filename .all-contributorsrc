@@ -116,6 +116,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "ThierryDD",
+      "name": "Thierry",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/184425?v=4",
+      "profile": "https://github.com/ThierryDD",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7
