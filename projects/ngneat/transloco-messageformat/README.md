@@ -74,7 +74,7 @@ This is how you would enable bi-directional support and add a custom formatter, 
     TranslocoMessageFormatModule.init(
       {
         biDiSupport: true,
-        formatters: { upcase: v => v.toUpperCase() }
+        customFormatters: { upcase: v => v.toUpperCase() }
       }
     )
   ]
