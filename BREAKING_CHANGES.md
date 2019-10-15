@@ -9,7 +9,7 @@
 After:
 
 ```html
-{{ t('a.b') }} {{ t('hello') }} {{ t('someKey', { value: 'value') }}
+{{ t('a.b') }} {{ t('hello') }} {{ t('someKey', { value: 'value' }) }}
 ```
 
 - Dedicated method for when you need to query an object instead of a key:
