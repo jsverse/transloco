@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.2.1](https://github.com/ngneat/transloco/compare/v2.2.0...v2.2.1) (2019-10-17)
+
+### Bug Fixes
+
+- 🐛 protect unsubscribing in pipe ([b55bd59](https://github.com/ngneat/transloco/commit/b55bd59)), closes [#137](https://github.com/ngneat/transloco/issues/137)
+
 ## [2.2.0](https://github.com/ngneat/transloco/compare/v2.1.2...v2.2.0) (2019-10-14)
 
 ### Features
