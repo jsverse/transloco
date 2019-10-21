@@ -7,6 +7,7 @@ export type TranslocoConfig = {
   prodMode?: boolean;
   fallbackLang?: string | string[];
   failedRetries?: number;
+  /** @deprecated */
   scopeMapping?: HashMap<string>;
   availableLangs?: AvailableLangs;
   flatten?: {
