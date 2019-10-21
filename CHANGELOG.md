@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.2.2](https://github.com/ngneat/transloco/compare/v2.2.1...v2.2.2) (2019-10-21)
+
+### Bug Fixes
+
+- 🐛 remove redundant dep ([dad9269](https://github.com/ngneat/transloco/commit/dad9269))
+
 ### [2.2.1](https://github.com/ngneat/transloco/compare/v2.2.0...v2.2.1) (2019-10-17)
 
 ### Bug Fixes
