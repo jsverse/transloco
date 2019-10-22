@@ -31,11 +31,11 @@ It exposes a rich API to manage translations efficiently and cleanly. It provide
 [![spectator](https://img.shields.io/badge/tested%20with-spectator-2196F3.svg?style=flat-square)]()
 [![Join the chat at https://gitter.im/ngneat-transloco](https://badges.gitter.im/gitterHQ/gitter.svg)](https://gitter.im/ngneat-transloco/lobby?source=orgpage)
 
-- 🤓 Learn about it on the [docs site](https://app.gitbook.com/@netbasal/s/transloco/)
+- 🤓 Learn about it on the [docs site](https://netbasal.gitbook.io/transloco/)
 - 🚀 See it in action on [StackBlitz](https://stackblitz.com/edit/ngneat-transloco)
-- 😎 Use [schematics](https://app.gitbook.com/@netbasal/s/transloco/schematics/ng-add)
+- 😎 Use [schematics](https://netbasal.gitbook.io/transloco/schematics/ng-add)
 - 👉 Checkout the [sample application](https://transloco.netlify.com/home)
-- 📖 Read the blog [posts](https://app.gitbook.com/@netbasal/s/transloco/general/blog-posts)
+- 📖 Read the blog [posts](https://netbasal.gitbook.io/transloco/general/blog-posts)
 - 🍄 Join Transloco's [Gitter](https://gitter.im/ngneat-transloco/lobby?source=orgpage) room
 
 ## Core Team
