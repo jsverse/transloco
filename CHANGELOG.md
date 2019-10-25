@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.3.0](https://github.com/ngneat/transloco/compare/v2.2.2...v2.3.0) (2019-10-25)
+
+### Features
+
+- 🎸 add logMissingKey option to missing handler ([c2d368b](https://github.com/ngneat/transloco/commit/c2d368b))
+
 ### [2.2.2](https://github.com/ngneat/transloco/compare/v2.2.1...v2.2.2) (2019-10-21)
 
 ### Bug Fixes
