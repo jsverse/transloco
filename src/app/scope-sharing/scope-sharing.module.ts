@@ -14,7 +14,13 @@ const routes: Routes = [
 @NgModule({
   declarations: [ScopeSharingComponent],
   providers: [
-    { provide: TRANSLOCO_SCOPE, useValue: 'todos-page' },
+    {
+      provide: TRANSLOCO_SCOPE,
+      useValue: {
+        scope: 'todos-page',
+        alias: 'todos'
+      }
+    },
     {
       provide: TRANSLOCO_LOADING_TEMPLATE,
       useValue: `<span id="default-loading-template">Loading template...</span>`

@@ -14,6 +14,14 @@ const routes: Routes = [
 @NgModule({
   declarations: [TranspilersComponent],
   imports: [CommonModule, RouterModule.forChild(routes), TranslocoModule],
-  providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'transpilers/messageformat' }]
+  providers: [
+    {
+      provide: TRANSLOCO_SCOPE,
+      useValue: {
+        scope: 'transpilers/messageformat',
+        alias: 'mf'
+      }
+    }
+  ]
 })
 export class TranspilersModule {}

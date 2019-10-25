@@ -14,6 +14,7 @@ export type TranslocoConfig = {
     aot?: boolean;
   };
   missingHandler?: {
+    logMissingKey?: boolean;
     useFallbackTranslation?: boolean;
     allowEmpty?: boolean;
   };
@@ -33,6 +34,7 @@ export const defaultConfig: TranslocoConfig = {
   failedRetries: 2,
   availableLangs: [],
   missingHandler: {
+    logMissingKey: true,
     useFallbackTranslation: false,
     allowEmpty: false
   },
