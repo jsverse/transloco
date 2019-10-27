@@ -1,6 +1,6 @@
 {
   "name": "@ngneat/transloco-remove-comments",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Angular Transloco remove comments from translation file",
   "main": "index.js",
   "bin": {

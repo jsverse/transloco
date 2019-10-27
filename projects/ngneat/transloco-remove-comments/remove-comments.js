@@ -27,7 +27,7 @@ function isObject(obj) {
 
 function removeComments(translation, keyName) {
   return omitDeepLodash(translation, (v, k) => {
-    return k.includes(keyName);
+    return k.endsWith(keyName);
   });
 }
 
