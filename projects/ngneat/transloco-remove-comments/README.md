@@ -13,23 +13,6 @@ For each translation key that requires a description, we can add a companion key
 }
 ```
 
-We don't want these keys to get into our final bundle, so we can remove them using this library when building the production environment.
-
-## Installation
-
-```
-npm install @ngneat/transloco-remove-comments
-```
-
-## Usage
-
-Add to your package.json the following script:
-
-```json
-"scripts": {
-  "remove-comments": "transloco-remove-comments dist/appName/assets/i18n",
-  "build:prod": "ng build --prod && npm run remove-comments",
-}
-```
+We don't want these keys to get into our final bundle, so we can remove them using the [optimize](https://netbasal.gitbook.io/transloco/plugins/transloco-optimize) library when building the production environment.
 
 The library will take care of removing these keys from the translation files specified in the path.
