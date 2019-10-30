@@ -311,10 +311,10 @@ export class TranslocoService implements OnDestroy {
       ...flattenScopeOrTranslation
     };
 
-    const withHook = this.interceptor.preSaveTranslation(mergedTranslation, currentLang);
-    const flattenTranslation = this.mergedConfig.flatten.aot ? withHook : flatten(withHook);
+    const flattenTranslation = this.mergedConfig.flatten.aot ? mergedTranslation : flatten(mergedTranslation);
+    const withHook = this.interceptor.preSaveTranslation(flattenTranslation, currentLang);
 
-    this.translations.set(currentLang, flattenTranslation);
+    this.translations.set(currentLang, withHook);
     mergedOptions.emitChange && this.setActiveLang(this.getActiveLang());
   }
 
