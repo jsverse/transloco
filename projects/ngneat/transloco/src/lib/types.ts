@@ -1,20 +1,19 @@
-import { Observable } from 'rxjs';
-
 export type HashMap<T = any> = { [key: string]: T };
 
 export type LoadedEvent = {
   type: 'translationLoadSuccess';
   wasFailure: boolean;
   payload: {
+    scope: string | null;
+    langName: string;
+    /** @deprecated */
     lang: string;
   };
 };
 
 export type FailedEvent = {
   type: 'translationLoadFailure';
-  payload: {
-    lang: string;
-  };
+  payload: LoadedEvent['payload'];
 };
 
 export type TranslocoEvents = LoadedEvent | FailedEvent;

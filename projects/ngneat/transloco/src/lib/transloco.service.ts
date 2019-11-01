@@ -19,7 +19,7 @@ import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './transloco-
 import { TRANSLOCO_INTERCEPTOR, TranslocoInterceptor } from './transloco.interceptor';
 import { TRANSLOCO_FALLBACK_STRATEGY, TranslocoFallbackStrategy } from './transloco-fallback-strategy';
 import { mergeConfig } from './merge-config';
-import { getLangFromScope, getScopeFromLang } from './shared';
+import { getEventPayload, getLangFromScope, getScopeFromLang } from './shared';
 import { getFallbacksLoaders } from './get-fallbacks-loaders';
 import { resolveLoader } from './resolve-loader';
 
@@ -196,7 +196,7 @@ export class TranslocoService implements OnDestroy {
     const value = translation[key];
 
     if (!value) {
-      return this.handleMissingKey(key, value, params);
+      return this._handleMissingKey(key, value, params);
     }
 
     return this.parser.transpile(value, params, translation);
@@ -336,7 +336,10 @@ export class TranslocoService implements OnDestroy {
     this.setTranslation(newValue, lang);
   }
 
-  handleMissingKey(key: string, value: any, params?: HashMap) {
+  /**
+   * @internal
+   */
+  _handleMissingKey(key: string, value: any, params?: HashMap) {
     if (this.config.missingHandler.allowEmpty && value === '') {
       return '';
     }
@@ -425,9 +428,7 @@ export class TranslocoService implements OnDestroy {
       this.events.next({
         wasFailure: !!this.failedLangs.size,
         type: 'translationLoadSuccess',
-        payload: {
-          lang
-        }
+        payload: getEventPayload(lang)
       });
 
       this.failedCounter = 0;
@@ -467,9 +468,7 @@ export class TranslocoService implements OnDestroy {
     this.failedCounter++;
     this.events.next({
       type: 'translationLoadFailure',
-      payload: {
-        lang
-      }
+      payload: getEventPayload(lang)
     });
 
     return this.load(resolveLang);
