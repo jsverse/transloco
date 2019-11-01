@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.4.0](https://github.com/ngneat/transloco/compare/v2.3.1...v2.4.0) (2019-11-01)
+
+### Features
+
+- 🎸 add scope to event payload ([f70db69](https://github.com/ngneat/transloco/commit/f70db69))
+
 ### [2.3.1](https://github.com/ngneat/transloco/compare/v2.3.0...v2.3.1) (2019-10-30)
 
 ### Bug Fixes
