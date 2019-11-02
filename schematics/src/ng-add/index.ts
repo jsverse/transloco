@@ -13,7 +13,8 @@ import {
   url,
   Source,
   mergeWith,
-  noop
+  noop,
+  schematic
 } from '@angular-devkit/schematics';
 import { createSourceFile, SourceFile, ScriptTarget } from 'typescript';
 import { LIB_NAME } from '../schematics.consts';
@@ -179,7 +180,8 @@ export default function(options: SchemaOptions): Rule {
       addImportsToModuleFile(options, ['translocoLoader'], './transloco.loader'),
       addImportsToModuleFile(options, ['TranslocoModule', 'TRANSLOCO_CONFIG', 'TranslocoConfig']),
       addImportsToModuleDeclaration(options, ['TranslocoModule']),
-      addProvidersToModuleDeclaration(options, [configProviderTemplate, 'translocoLoader'])
+      addProvidersToModuleDeclaration(options, [configProviderTemplate, 'translocoLoader']),
+      options.translocoKeysManager ? schematic('keysManager', { ...options, translationPath: assetsPath }) : noop()
     ])(host, context);
   };
 }

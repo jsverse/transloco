@@ -31,6 +31,12 @@
       "type": "boolean",
       "default": false
     },
+    "translocoKeysManager": {
+      "description": "Add Transloco Keys Manager plugin to your project.",
+      "x-prompt": "\uD83D\uDCA5 Do you want to add Transloco Keys Manager?",
+      "type": "boolean",
+      "default": true
+    },
     "path": {
       "type": "string",
       "default": "assets/i18n/",
