@@ -32,7 +32,7 @@
       "schema": "./upgrade/schema.json",
       "description": "Run an upgrade script."
     },
-    "keysManager": {
+    "keys-manager": {
       "aliases": ["km"],
       "factory": "./keys-manager/",
       "schema": "./keys-manager/schema.json",
