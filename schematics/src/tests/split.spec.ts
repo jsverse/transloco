@@ -9,7 +9,7 @@ import scopeEs from './mocks/scope-es';
 
 const collectionPath = path.join(__dirname, '../collection.json');
 
-describe('Spill', () => {
+describe('Split', () => {
   const schematicRunner = new SchematicTestRunner('schematics', collectionPath);
 
   let appTree: UnitTestTree;
@@ -35,7 +35,7 @@ describe('Spill', () => {
       appTree.create(`${options.translationPath}/en.json`, '');
       appTree.create(`${options.translationPath}/es.json`, '');
 
-      const tree = await schematicRunner.runSchematicAsync('spill', options, appTree).toPromise();
+      const tree = await schematicRunner.runSchematicAsync('split', options, appTree).toPromise();
       const resES = JSON.parse(tree.readContent(`${options.translationPath}/es.json`));
       const resEn = JSON.parse(tree.readContent(`${options.translationPath}/en.json`));
       expect(resES).toEqual(translatedEs);
