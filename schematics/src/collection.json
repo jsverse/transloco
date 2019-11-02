@@ -38,16 +38,16 @@
       "schema": "./keys-manager/schema.json",
       "description": "Add Transloco Keys Manager plugin to your project."
     },
-    "build": {
-      "aliases": ["join"],
-      "factory": "./build/",
-      "schema": "./build/schema.json",
+    "join": {
+      "aliases": ["build"],
+      "factory": "./join/",
+      "schema": "./join/schema.json",
       "description": "Merge the translation files into one."
     },
-    "spill": {
-      "aliases": ["split"],
-      "factory": "./spill/",
-      "schema": "./spill/schema.json",
+    "split": {
+      "aliases": ["spill"],
+      "factory": "./split/",
+      "schema": "./split/schema.json",
       "description": "split the translated files over the project's translation files."
     }
   }
