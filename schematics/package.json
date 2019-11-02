@@ -1,7 +1,6 @@
 {
   "name": "transloco-schematics",
   "version": "0.0.0",
-  "description": "A blank schematics",
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "npm run build && jest --watch"

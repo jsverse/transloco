@@ -1,48 +1,34 @@
 import {
-  SchematicContext,
-  Tree,
-  Rule,
+  apply,
+  chain,
   EmptyTree,
   HostTree,
-  apply,
-  source,
-  move,
-  chain,
-  SchematicsException,
-  template,
-  url,
-  Source,
   mergeWith,
+  move,
   noop,
-  schematic
+  Rule,
+  schematic,
+  SchematicContext,
+  SchematicsException,
+  source,
+  Source,
+  template,
+  Tree,
+  url
 } from '@angular-devkit/schematics';
-import { createSourceFile, SourceFile, ScriptTarget } from 'typescript';
+import { createSourceFile, ScriptTarget, SourceFile } from 'typescript';
 import { LIB_NAME } from '../schematics.consts';
-import { addImportToModule, insertImport, addProviderToModule } from '../utils/ast-utils';
+import { addImportToModule, addProviderToModule, insertImport } from '../utils/ast-utils';
 import { InsertChange } from '../utils/change';
 import { findRootModule } from '../utils/find-module';
 import { getProject, setEnvironments } from '../utils/projects';
-import { SchemaOptions, Loaders, TranslationFileTypes } from './schema';
+import { Loaders, SchemaOptions, TranslationFileTypes } from './schema';
 import { stringifyList } from '../utils/array';
 
 function jsonTranslationFileCreator(source, lang) {
   return source.create(
     `${lang}.json`,
-    `{
-  "title": "transloco ${lang}",
-  "dynamic": "transloco {{value}}"
-}
-`
-  );
-}
-
-function typescriptTranslationFileCreator(source, lang) {
-  return source.create(
-    `${lang}.ts`,
-    `export default {
-  title: "transloco ${lang}",
-  dynamic: "transloco {{value}}"
-};
+    `{}
 `
   );
 }
@@ -144,10 +130,7 @@ export default function(options: SchemaOptions): Rule {
     const isLib = project.projectType === 'library';
     const assetsPath = `${sourceRoot}/${options.path}`;
 
-    const translationCreator =
-      options.translateType === TranslationFileTypes.Typescript
-        ? typescriptTranslationFileCreator
-        : jsonTranslationFileCreator;
+    const translationCreator = jsonTranslationFileCreator;
 
     const translateFiles = apply(source(createTranslateFiles(langs, translationCreator)), [move('/', assetsPath)]);
 
@@ -181,7 +164,7 @@ export default function(options: SchemaOptions): Rule {
       addImportsToModuleFile(options, ['TranslocoModule', 'TRANSLOCO_CONFIG', 'TranslocoConfig']),
       addImportsToModuleDeclaration(options, ['TranslocoModule']),
       addProvidersToModuleDeclaration(options, [configProviderTemplate, 'translocoLoader']),
-      options.translocoKeysManager ? schematic('keysManager', { ...options, translationPath: assetsPath }) : noop()
+      options.translocoKeysManager ? schematic('keys-manager', { ...options, translationPath: assetsPath }) : noop()
     ])(host, context);
   };
 }

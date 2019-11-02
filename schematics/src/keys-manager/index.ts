@@ -6,8 +6,8 @@ import { createConfig } from '../utils/transloco';
 import { SchemaOptions } from './schema';
 
 function installKeysManager(host: Tree, context: SchematicContext) {
-  addPackageToPackageJson(host, 'devDependencies', '@angular-builders/custom-webpack', 'latest');
-  addPackageToPackageJson(host, 'devDependencies', '@ngneat/transloco-keys-manager', 'latest');
+  addPackageToPackageJson(host, 'devDependencies', 'ngx-build-plus', '^9.0.2');
+  addPackageToPackageJson(host, 'devDependencies', '@ngneat/transloco-keys-manager', '1.0.0-beta.3');
   context.addTask(new NodePackageInstallTask());
 }
 
@@ -15,8 +15,7 @@ export function updateAngularJson(host: Tree, options) {
   const angularJson = getWorkspace(host);
   if (angularJson) {
     const project = angularJson.projects[options.project || angularJson.defaultProject];
-    project.architect.serve.builder = '@angular-builders/custom-webpack:dev-server';
-    project.architect.serve.options.customWebpackConfig = { path: './webpack.config.js' };
+    project.architect.serve.builder = 'ngx-build-plus:dev-server';
   }
 
   setWorkspace(host, angularJson);
@@ -26,10 +25,10 @@ export function createWebpackConfig(host: Tree) {
   const webpackConfig = `const { TranslocoExtractKeysWebpackPlugin } = require('@ngneat/transloco-keys-manager');
  
 module.exports = {
- plugins: [ new TranslocoExtractKeysWebpackPlugin() ]
+  plugins: [new TranslocoExtractKeysWebpackPlugin()]
 };
 `;
-  host.create('webpack.config.js', webpackConfig);
+  host.create('webpack-dev.config.js', webpackConfig);
 }
 
 function updateTranslocoConfig(host: Tree, langs: string[], translationsPath: string) {
@@ -37,7 +36,9 @@ function updateTranslocoConfig(host: Tree, langs: string[], translationsPath: st
 }
 
 function addKeysDetectiveScript(host: Tree) {
-  addScriptToPackageJson(host, 'keysDetective', 'transloco-keys-manager -f');
+  addScriptToPackageJson(host, 'start', 'ng serve --extra-webpack-config webpack-dev.config.js');
+  addScriptToPackageJson(host, 'i18n:extract', 'transloco-keys-manager extract');
+  addScriptToPackageJson(host, 'i18n:find', 'transloco-keys-manager find');
 }
 
 export default function(options: SchemaOptions): Rule {
