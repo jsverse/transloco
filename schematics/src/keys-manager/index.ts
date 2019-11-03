@@ -7,7 +7,7 @@ import { SchemaOptions } from './schema';
 
 function installKeysManager(host: Tree, context: SchematicContext) {
   addPackageToPackageJson(host, 'devDependencies', 'ngx-build-plus', '^9.0.2');
-  addPackageToPackageJson(host, 'devDependencies', '@ngneat/transloco-keys-manager', '1.0.0-beta.3');
+  addPackageToPackageJson(host, 'devDependencies', '@ngneat/transloco-keys-manager', '1.0.0-beta.4');
   context.addTask(new NodePackageInstallTask());
 }
 
@@ -35,9 +35,20 @@ function updateTranslocoConfig(host: Tree, langs: string[], translationsPath: st
   createConfig(host, langs, translationsPath);
 }
 
-function addKeysDetectiveScript(host: Tree) {
-  addScriptToPackageJson(host, 'start', 'ng serve --extra-webpack-config webpack-dev.config.js');
-  addScriptToPackageJson(host, 'i18n:extract', 'transloco-keys-manager extract');
+function addKeysDetectiveScript(host: Tree, strategy: string) {
+  if (strategy === 'Both') {
+    addScriptToPackageJson(host, 'start', 'ng serve --extra-webpack-config webpack-dev.config.js');
+    addScriptToPackageJson(host, 'i18n:extract', 'transloco-keys-manager extract');
+  }
+
+  if (strategy === 'CLI') {
+    addScriptToPackageJson(host, 'i18n:extract', 'transloco-keys-manager extract');
+  }
+
+  if (strategy === 'Webpack Plugin') {
+    addScriptToPackageJson(host, 'start', 'ng serve --extra-webpack-config webpack-dev.config.js');
+  }
+
   addScriptToPackageJson(host, 'i18n:find', 'transloco-keys-manager find');
 }
 
@@ -46,10 +57,13 @@ export default function(options: SchemaOptions): Rule {
     const langs = options.langs.split(',').map(l => l.trim());
 
     installKeysManager(host, context);
-    createWebpackConfig(host);
+    if (['Webpack Plugin', 'Both'].includes(options.strategy)) {
+      createWebpackConfig(host);
+      updateAngularJson(host, options);
+    }
+
     updateTranslocoConfig(host, langs, options.translationPath);
-    addKeysDetectiveScript(host);
-    updateAngularJson(host, options);
+    addKeysDetectiveScript(host, options.strategy);
 
     return host;
   };

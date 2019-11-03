@@ -7,7 +7,6 @@ import {
   move,
   noop,
   Rule,
-  schematic,
   SchematicContext,
   SchematicsException,
   source,
@@ -163,8 +162,7 @@ export default function(options: SchemaOptions): Rule {
       addImportsToModuleFile(options, ['translocoLoader'], './transloco.loader'),
       addImportsToModuleFile(options, ['TranslocoModule', 'TRANSLOCO_CONFIG', 'TranslocoConfig']),
       addImportsToModuleDeclaration(options, ['TranslocoModule']),
-      addProvidersToModuleDeclaration(options, [configProviderTemplate, 'translocoLoader']),
-      options.translocoKeysManager ? schematic('keys-manager', { ...options, translationPath: assetsPath }) : noop()
+      addProvidersToModuleDeclaration(options, [configProviderTemplate, 'translocoLoader'])
     ])(host, context);
   };
 }

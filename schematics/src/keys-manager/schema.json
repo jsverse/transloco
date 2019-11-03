@@ -4,6 +4,12 @@
   "title": "Add Transloco Keys Manager to your project",
   "type": "object",
   "properties": {
+    "strategy": {
+      "x-prompt": "Which strategy do you want to use?",
+      "type": "string",
+      "default": "both",
+      "enum": ["CLI", "Webpack Plugin", "Both"]
+    },
     "langs": {
       "type": "string",
       "description": "The languages of the project.",
