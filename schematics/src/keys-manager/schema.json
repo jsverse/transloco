@@ -5,6 +5,7 @@
   "type": "object",
   "properties": {
     "strategy": {
+      "description": "The strategy which will be used to work with the CLI.",
       "x-prompt": "Which strategy do you want to use?",
       "type": "string",
       "default": "both",

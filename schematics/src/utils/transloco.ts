@@ -1,6 +1,7 @@
 import { PathFragment } from '@angular-devkit/core';
 import { DirEntry, Tree } from '@angular-devkit/schematics';
 import { getConfig as getTranslocoConfig, TranslocoConfig } from '@ngneat/transloco-utils';
+import { stringify } from 'querystring';
 import { CONFIG_FILE } from '../schematics.consts';
 import { stringifyList } from './array';
 import { getProject } from './projects';
@@ -20,6 +21,16 @@ export function createConfig(host: Tree, langs: string[], rootTranslationsPath =
 };`;
     host.create(CONFIG_FILE, config);
   }
+}
+
+export function updateConfig(host: Tree, config: TranslocoConfig) {
+  const originalConfig = getConfig();
+  if (!originalConfig || Object.keys(originalConfig).length === 0) {
+    return createConfig(host, config.langs, config.rootTranslationsPath);
+  }
+  const stringifyConfig = JSON.stringify({ ...config, ...originalConfig }, null, 2);
+  const content = `module.exports = ${stringifyConfig};`;
+  host.overwrite(CONFIG_FILE, content);
 }
 
 export function getJsonFileContent(fileName: PathFragment, dir: DirEntry, parser = JSON.parse) {

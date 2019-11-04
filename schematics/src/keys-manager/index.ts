@@ -1,8 +1,9 @@
-import { Rule, Tree, SchematicContext } from '@angular-devkit/schematics';
+import { Rule, Tree, SchematicContext, SchematicsException } from '@angular-devkit/schematics';
 import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
+import { TranslocoConfig } from '@ngneat/transloco-utils';
 import { addPackageToPackageJson, addScriptToPackageJson } from '../utils/package';
 import { getWorkspace, setWorkspace } from '../utils/projects';
-import { createConfig } from '../utils/transloco';
+import { getConfig, updateConfig } from '../utils/transloco';
 import { SchemaOptions } from './schema';
 
 function installKeysManager(host: Tree, context: SchematicContext) {
@@ -31,10 +32,6 @@ module.exports = {
   host.create('webpack-dev.config.js', webpackConfig);
 }
 
-function updateTranslocoConfig(host: Tree, langs: string[], translationsPath: string) {
-  createConfig(host, langs, translationsPath);
-}
-
 function addKeysDetectiveScript(host: Tree, strategy: string) {
   if (strategy === 'Both') {
     addScriptToPackageJson(host, 'start', 'ng serve --extra-webpack-config webpack-dev.config.js');
@@ -52,9 +49,39 @@ function addKeysDetectiveScript(host: Tree, strategy: string) {
   addScriptToPackageJson(host, 'i18n:find', 'transloco-keys-manager find');
 }
 
+function updateTranslocoConfig(host, options) {
+  const config: TranslocoConfig = getConfig() || {};
+  let shouldUpdate = false;
+  if (!config.rootTranslationsPath) {
+    if (!options.translationPath) {
+      throw new SchematicsException('Please provide the translation root path by using the --translation-path flag');
+    }
+    config.rootTranslationsPath = options.translationPath;
+    shouldUpdate = true;
+  }
+  if (!config.langs) {
+    if (!options.langs) {
+      throw new SchematicsException(
+        'Please provide the available languages either by using --langs or through the "langs" property in transloco.config.js file'
+      );
+    }
+
+    config.langs = options.langs.split(',').map(l => l.trim());
+    shouldUpdate = true;
+  }
+  if (!config.keysManager) {
+    config.keysManager = {};
+    shouldUpdate = true;
+  }
+
+  if (shouldUpdate) {
+    updateConfig(host, config);
+  }
+}
+
 export default function(options: SchemaOptions): Rule {
   return (host: Tree, context: SchematicContext) => {
-    const langs = options.langs.split(',').map(l => l.trim());
+    updateTranslocoConfig(host, options);
 
     installKeysManager(host, context);
     if (['Webpack Plugin', 'Both'].includes(options.strategy)) {
@@ -62,7 +89,6 @@ export default function(options: SchemaOptions): Rule {
       updateAngularJson(host, options);
     }
 
-    updateTranslocoConfig(host, langs, options.translationPath);
     addKeysDetectiveScript(host, options.strategy);
 
     return host;

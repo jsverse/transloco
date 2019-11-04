@@ -21,6 +21,7 @@ import { addImportToModule, addProviderToModule, insertImport } from '../utils/a
 import { InsertChange } from '../utils/change';
 import { findRootModule } from '../utils/find-module';
 import { getProject, setEnvironments } from '../utils/projects';
+import {createConfig} from '../utils/transloco';
 import { Loaders, SchemaOptions, TranslationFileTypes } from './schema';
 import { stringifyList } from '../utils/array';
 
@@ -148,6 +149,8 @@ export default function(options: SchemaOptions): Rule {
     if (options.ssr) {
       updateEnvironmentBaseUrl(host, sourceRoot, 'http://localhost:4200');
     }
+
+    createConfig(host, langs, assetsPath);
 
     return chain([
       mergeWith(translateFiles),
