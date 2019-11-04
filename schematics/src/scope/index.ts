@@ -70,7 +70,10 @@ export default function(options: SchemaOptions): Rule {
     const cmpRule = externalSchematic('@schematics/angular', 'module', options);
     const tree$ = (chain([cmpRule, translationFiles])(host, context) as Observable<Tree>).pipe(
       tap(tree => {
-        const modulePath = tree.actions.find(action => !!action.path.match(/\.module\.ts/)).path;
+        const modulePath = tree.actions.find(
+          action => !!action.path.match(/\.module\.ts/) && !action.path.match(/-routing\.module\.ts/)
+        ).path;
+        console.log(modulePath);
         addScopeToModule(tree, modulePath, options.name);
       })
     );
