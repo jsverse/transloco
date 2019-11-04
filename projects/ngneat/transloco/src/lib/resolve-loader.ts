@@ -9,7 +9,7 @@ export function resolveLoader(path: string, mainLoader: TranslocoLoader, inlineL
       throw `You're using an inline loader but didn't provide a loader for ${path}`;
     }
 
-    return inlineLoader[path]().then(res => res.default);
+    return inlineLoader[path]().then(res => (res.default ? res.default : res));
   }
 
   return mainLoader.getTranslation(path);
