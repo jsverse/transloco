@@ -37,4 +37,8 @@ export interface SchemaOptions {
    * If the user is working with server side rendering.
    */
   ssr: boolean;
+  /**
+   * If the user is working with server side rendering.
+   */
+  translocoKeysManager: boolean;
 }
