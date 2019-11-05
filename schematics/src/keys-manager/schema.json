@@ -13,9 +13,7 @@
     },
     "langs": {
       "type": "string",
-      "description": "The languages of the project.",
-      "x-prompt": "Which languages do you use?",
-      "default": "en, es"
+      "description": "The languages of the project."
     },
     "translationPath": {
       "type": "string",
