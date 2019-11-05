@@ -17,6 +17,7 @@
     "@schematics/angular": ">=7.3.9 <9.0.0",
     "fs-extra": "^8.1.0",
     "glob": "^7.1.4",
+    "lodash.kebabcase": "^4.1.1",
     "jasmine": "^3.3.1",
     "ora": "^3.4.0",
     "replace-in-file": "^4.1.2",
