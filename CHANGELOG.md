@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.5.0](https://github.com/ngneat/transloco/compare/v2.4.0...v2.5.0) (2019-11-05)
+
+### Bug Fixes
+
+- 🐛 schematics scope ignore routing.module file ([57dbcd5](https://github.com/ngneat/transloco/commit/57dbcd5))
+
+### Features
+
+- 🎸 inline-loader support any kind of promise ([34bc788](https://github.com/ngneat/transloco/commit/34bc788))
+- 🎸 schematics command to install keys manager ([38c885b](https://github.com/ngneat/transloco/commit/38c885b))
+
 ## [2.4.0](https://github.com/ngneat/transloco/compare/v2.3.1...v2.4.0) (2019-11-01)
 
 ### Features
