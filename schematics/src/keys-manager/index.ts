@@ -8,7 +8,7 @@ import { SchemaOptions } from './schema';
 
 function installKeysManager(host: Tree, context: SchematicContext) {
   addPackageToPackageJson(host, 'devDependencies', 'ngx-build-plus', '^9.0.2');
-  addPackageToPackageJson(host, 'devDependencies', '@ngneat/transloco-keys-manager', '1.0.0-beta.4');
+  addPackageToPackageJson(host, 'devDependencies', '@ngneat/transloco-keys-manager', '^1.0.0');
   context.addTask(new NodePackageInstallTask());
 }
 
