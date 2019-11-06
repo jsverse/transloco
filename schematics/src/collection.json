@@ -49,6 +49,11 @@
       "factory": "./split/",
       "schema": "./split/schema.json",
       "description": "split the translated files over the project's translation files."
+    },
+    "ng-migrate": {
+      "factory": "./ng-migrate/",
+      "schema": "./ng-migrate/schema.json",
+      "description": "split the translated files over the project's translation files."
     }
   }
 }

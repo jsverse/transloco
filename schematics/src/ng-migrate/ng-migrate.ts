@@ -5,9 +5,8 @@ const path = require('path');
 
 const regex = /<([\w-]*)\s*(?=[^>]*i18n)[^>]*i18n(?:(?:=("|')(?<attrValue>[^>]*?)\2)|(?:-(?<propName>[\w-]*)[^>]*\4=("|')(?<propValue>[^>]*?)\5))?[^>]*(?:>(?<innerText>[^]*?)<\/\1)?/g;
 
-module.exports = run;
+export function run({ input, output, langs }) {
 
-function run({ input, output, langs }) {
   const files = glob.sync(`${process.cwd()}/${input}/**/*.html`);
   let translation = {};
   for (const filePath of files) {
