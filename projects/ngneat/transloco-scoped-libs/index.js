@@ -3,7 +3,9 @@ const fs = require('fs');
 
 function copyScopeTranslationFiles(files, scopeDir) {
   insertPathToGitIgnore(scopeDir);
+  // TODO: Use `for of` when you don't need the index. It's cleaner and you don't need a callback
   files.forEach(filePath => {
+    // TODO: anti pattern to override a callback param
     filePath = path.normalize(filePath);
     const fileName = path.basename(filePath);
     const dest = path.join(scopeDir, fileName);
@@ -17,6 +19,7 @@ function copyScopeTranslationFiles(files, scopeDir) {
 }
 
 function mergeTranslationFile(file, dest) {
+  // TODO: Why merge? the single source of truth is the origin file
   const originContent = JSON.parse(fs.readFileSync(dest, 'utf8') || '{}');
   const destContent = JSON.parse(fs.readFileSync(file, 'utf8') || '{}');
   fs.writeFileSync(dest, JSON.stringify({ ...originContent, ...destContent }, null, 2), { encoding: 'utf8' });
