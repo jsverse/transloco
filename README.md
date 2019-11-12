@@ -14,6 +14,7 @@ It exposes a rich API to manage translations efficiently and cleanly. It provide
 ✅ Support for Multiple Fallbacks<br>
 ✅ Support for Testing<br>
 ✅ Support for SSR<br>
+✅ Supports Ivy<br>
 ✅ Rich Plugins<br>
 ✅ Hackable<br>
 ✅ Schematics<br>
