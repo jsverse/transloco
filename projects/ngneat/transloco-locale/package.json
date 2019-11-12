@@ -28,9 +28,5 @@
     "angular translate",
     "angular i18n",
     "transloco"
-  ],
-  "i18n": {
-    "scope": "tl",
-    "path": "src/i18n"
-  }
+  ]
 }
