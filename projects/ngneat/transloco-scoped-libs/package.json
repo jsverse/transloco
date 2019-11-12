@@ -1,0 +1,31 @@
+{
+  "name": "@ngneat/transloco-scoped-libs",
+  "version": "1.0.1",
+  "description": "Angular Transloco optimization process for production environments",
+  "main": "index.js",
+  "bin": {
+    "transloco-scoped-libs": "cli.js"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "Netanel Basal",
+  "keywords": [
+    "angular",
+    "angular 2",
+    "i18n",
+    "translate",
+    "angular translate",
+    "angular i18n",
+    "transloco",
+    "comments",
+    "build",
+    "optimize"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "glob": "^7.1.4",
+    "@ngneat/transloco-utils": "^1.0.6",
+    "ncp": "^2.0.0"
+  }
+}
