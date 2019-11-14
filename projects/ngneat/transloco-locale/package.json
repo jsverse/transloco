@@ -30,7 +30,8 @@
     "transloco"
   ],
   "i18n": [{
-    "scope": "test-scope",
+    "scope": "locale",
     "path": "**/i18n"
   }]
+
 }

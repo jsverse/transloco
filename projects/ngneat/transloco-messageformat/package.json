@@ -26,5 +26,9 @@
     "@angular/core": ">=4.3.0 <9.0.0",
     "@ngneat/transloco": "^1.6.0",
     "messageformat": "^2.3.0"
-  }
+  },
+  "i18n": [{
+    "scope": "mf",
+    "path": "**/i18n"
+  }]
 }
