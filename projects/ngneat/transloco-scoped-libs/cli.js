@@ -10,57 +10,74 @@ const chokidar = require('chokidar');
 const commandLineArgs = require('command-line-args');
 
 const optionDefinitions = [{ name: 'watch', alias: 'w', type: Boolean, defaultValue: false }];
-
 const cliParams = commandLineArgs(optionDefinitions);
 
 const config = translocoUtils.getConfig();
 
-/**
- *
- * TODO:
- * - Add scopedLibs to TranslocoUtils types
- * - Check if it exists
- * - Test it with a library that exists in node_modules
- * - Use `for of` when you don't need the index. It's cleaner and you don't need a callback
- * - Add a script in our main `package.json` so we can test it
- */
-config.scopedLibs.forEach(lib => {
+if (!config.scopedLibs || config.scopedLibs.length === 0) {
+  throw new Error('please add "scopedLibs" configuration in transloco.config.js file.');
+}
+for (let lib of config.scopedLibs) {
   const pkg = getPackageJson(lib);
   if (!pkg.content.i18n) {
     throw new Error('package.json is missing i18n information.');
   }
-  // TODO throw if they didn't pass rootTranslationsPath
-  const output = path.resolve(config.rootTranslationsPath);
 
+  if (!config.rootTranslationsPath) {
+    throw new Error('please specify "rootTranslationsPath" in transloco.config.js file.');
+  }
+
+  const output = path.resolve(config.rootTranslationsPath);
   const input = path.dirname(pkg.path);
 
-  // TOOD: what is .scope? It should look like this:
-  /**
-   * {
-   *   i18n: {
-   *     scope: path,
-   *     scope: path
-   *   }
-   * }
-   */
-  const scopeDir = path.join(output, pkg.content.i18n.scope);
+  getScopesFiles(input, output, pkg.content.i18n)
+    .then(scopeFilesArr => {
+      run(output, scopeFilesArr);
+      if (cliParams.watch) {
+        watch(scopeFilesArr);
+      }
+    })
+    .catch(err => console.error(err));
+}
 
-  utils.mkRecursiveDirSync(output, pkg.content.i18n.scope);
+function run(outputDir, scopeFilesArr) {
+  for (let scope of scopeFilesArr) {
+    utils.mkRecursiveDirSync(outputDir, scope.name);
+    copyScopeTranslationFiles(scope.files, scope.dir);
+  }
+}
 
-  glob(`${path.join(input, pkg.content.i18n.path)}/**/*.json`, {}, function(er, files) {
-    // TODO: if error throw it
+function watch(scopeFilesArr) {
+  const files = scopeFilesArr.reduce((acc, cur) => acc.concat(cur.files), []);
+  chokidar.watch(files).on('change', file => reRunOnChange(scopeFilesArr, file));
+}
 
-    copyScopeTranslationFiles(files, scopeDir);
-    if (cliParams.watch) {
-      chokidar
-        .watch(files)
-        .on('add', file => copyScopeTranslationFiles([file], scopeDir))
-        .on('change', file => {
-          copyScopeTranslationFiles([file], scopeDir);
-        });
+function reRunOnChange(scopeFilesArr, file) {
+  console.log(`copy content from file: ${file}`);
+  const unixFormatted = utils.toLinuxFormat(file);
+  const scope = scopeFilesArr.find(scope => scope.files.includes(unixFormatted));
+  copyScopeTranslationFiles([unixFormatted], scope.dir);
+}
+
+function getScopesFiles(input, output, scopes) {
+  const acc = [];
+  let counter = 0;
+
+  return new Promise((res, rej) => {
+    for (let scope of scopes) {
+      glob(`${path.join(input, scope.path)}/**/*.json`, {}, function(err, files) {
+        if (err) {
+          return rej(err);
+        }
+        counter++;
+        acc.push({ name: scope.scope, dir: path.join(output, scope.scope), files: files });
+        if (counter === scopes.length) {
+          res(acc);
+        }
+      });
     }
   });
-});
+}
 
 function getPackageJson(lib) {
   let pkgPath = path.join(process.cwd(), lib, 'package.json');
@@ -68,6 +85,5 @@ function getPackageJson(lib) {
     pkgPath = path.resolve(path.join('node_modules', lib, 'package.json'));
   }
   const file = fs.readFileSync(pkgPath);
-  // TODO: throw a msg if it doesn't exists
   return { path: pkgPath, content: file ? JSON.parse(file) : null };
 }

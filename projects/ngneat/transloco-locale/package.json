@@ -28,5 +28,9 @@
     "angular translate",
     "angular i18n",
     "transloco"
-  ]
+  ],
+  "i18n": [{
+    "scope": "test-scope",
+    "path": "**/i18n"
+  }]
 }

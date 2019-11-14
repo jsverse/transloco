@@ -12,4 +12,8 @@ function mkRecursiveDirSync(entry, src) {
   });
 }
 
-module.exports = { mkRecursiveDirSync };
+function toLinuxFormat(p) {
+  return p.split(path.sep).join('/');
+}
+
+module.exports = { mkRecursiveDirSync, toLinuxFormat };
