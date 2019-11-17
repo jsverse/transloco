@@ -2,7 +2,7 @@
   "name": "transloco-snippets",
   "displayName": "transloco",
   "description": "Code snippets for Angular Transloco",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "publisher": "shaharkazaz",
   "icon": "logo.png",
   "engines": {
