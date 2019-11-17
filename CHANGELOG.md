@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.6.0](https://github.com/ngneat/transloco/compare/v2.5.2...v2.6.0) (2019-11-17)
+
+### Features
+
+- 🎸 add schematics migration script from angular ([#151](https://github.com/ngneat/transloco/issues/151)) ([bc07dfa](https://github.com/ngneat/transloco/commit/bc07dfa))
+- 🎸 allow changing the fallback languages dynamically ([2719981](https://github.com/ngneat/transloco/commit/2719981))
+
 ### [2.5.2](https://github.com/ngneat/transloco/compare/v2.5.1...v2.5.2) (2019-11-05)
 
 ### Bug Fixes
