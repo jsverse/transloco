@@ -4,6 +4,8 @@ const chalk = require('chalk');
 const glob = require('glob');
 const chokidar = require('chokidar');
 
+let scopeFilesMap = [];
+
 /**
  *
  * @param {{watch: boolean, rootTranslationsPath: string, scopedLibs: string[]}}
@@ -34,6 +36,9 @@ function run({ watch, rootTranslationsPath, scopedLibs }) {
     for (let scopeConfig of pkg.content.i18n) {
       glob(`${path.join(input, scopeConfig.path)}/**/*.json`, {}, function(err, files) {
         if (err) console.log(chalk.red(err));
+        // save the files with the scope to provide an API for the webpack loader.
+        scopeFilesMap.push({scopeConfig, files, output});
+
         copyScopes(output, scopeConfig.scope, files, scopeConfig.strategy);
         if (watch) {
           chokidar
@@ -43,6 +48,17 @@ function run({ watch, rootTranslationsPath, scopedLibs }) {
       });
     }
   }
+}
+
+function onFilesChanged(filePaths) {
+  for (let filePath of filePaths) {
+    const scope = getScopeFromFile(filePath);
+    scope && copyScopes(scope.output, scope.scope, [file], scope.strategy);
+  }
+}
+
+function getScopeFromFile(filePath) {
+  return scopeFilesMap.find(scope => scope.files.includes(filePath));
 }
 
 function copyScopes(outputDir, scope, files, strategy) {
@@ -90,4 +106,4 @@ function setTranslationFile(file, dest, strategy, scopeName) {
   utils.writeJson(dest, content);
 }
 
-module.exports = run;
+module.exports = {run, onFilesChanged};
