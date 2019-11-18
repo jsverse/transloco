@@ -3,6 +3,8 @@ const utils = require('./utils');
 const chalk = require('chalk');
 const glob = require('glob');
 const chokidar = require('chokidar');
+const translocoUtils = require('@ngneat/transloco-utils');
+const config = translocoUtils.getConfig();
 
 let scopeFilesMap = [];
 
@@ -14,7 +16,10 @@ let scopeFilesMap = [];
  * rootTranslationsPath - the root directory of the translation files.
  * scopedLibs - list of all translation scoped project paths.
  */
-function run({ watch, rootTranslationsPath, scopedLibs }) {
+function run({ watch, rootTranslationsPath, scopedLibs } = {}) {
+  rootTranslationsPath = rootTranslationsPath || config.rootTranslationsPath;
+  scopedLibs = scopedLibs || config.scopedLibs;
+
   if (!rootTranslationsPath) {
     return console.log(chalk.red('please specify "rootTranslationsPath" in transloco.config.js file.'));
   }
@@ -22,8 +27,8 @@ function run({ watch, rootTranslationsPath, scopedLibs }) {
     return console.log(chalk.red('Please add "scopedLibs" configuration in transloco.config.js file.'));
   }
 
-  const startMsg = watch ? 'Run in watch mode' : 'Script start';
-  console.log(chalk.green(startMsg));
+  const startMsg = watch ? 'Running Transloco Scoped Libs in watch mode' : 'Starting Transloco Scoped Libs...';
+  console.log(chalk.magenta(startMsg));
 
   for (let lib of scopedLibs) {
     const pkg = utils.getPackageJson(lib);
@@ -37,7 +42,7 @@ function run({ watch, rootTranslationsPath, scopedLibs }) {
       glob(`${path.join(input, scopeConfig.path)}/**/*.json`, {}, function(err, files) {
         if (err) console.log(chalk.red(err));
         // save the files with the scope to provide an API for the webpack loader.
-        scopeFilesMap.push({scopeConfig, files, output});
+        scopeFilesMap.push({ scopeConfig, files, output });
 
         copyScopes(output, scopeConfig.scope, files, scopeConfig.strategy);
         if (watch) {
@@ -78,10 +83,10 @@ function copyScopeTranslationFiles(files, destinationPath, strategy, extension, 
     const dest = path.join(destinationPath, fileName);
 
     console.log(
-      'copy translation from file:',
-      chalk.cyan(utils.cutPath(normalized)),
+      '✅ Copy translation from file:',
+      chalk.blue(utils.cutPath(normalized)),
       'to:',
-      chalk.cyan(utils.cutPath(dest))
+      chalk.blue(utils.cutPath(dest))
     );
 
     if (strategy === 'join') {
@@ -106,4 +111,4 @@ function setTranslationFile(file, dest, strategy, scopeName) {
   utils.writeJson(dest, content);
 }
 
-module.exports = {run, onFilesChanged};
+module.exports = { run, onFilesChanged };
