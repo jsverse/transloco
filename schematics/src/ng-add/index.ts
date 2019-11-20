@@ -21,7 +21,8 @@ import { addImportToModule, addProviderToModule, insertImport } from '../utils/a
 import { InsertChange } from '../utils/change';
 import { findRootModule } from '../utils/find-module';
 import { getProject, setEnvironments } from '../utils/projects';
-import {createConfig} from '../utils/transloco';
+import { checkIfTranslationFilesExist } from '../utils/translations';
+import { createConfig } from '../utils/transloco';
 import { Loaders, SchemaOptions, TranslationFileTypes } from './schema';
 import { stringifyList } from '../utils/array';
 
@@ -153,7 +154,7 @@ export default function(options: SchemaOptions): Rule {
     createConfig(host, langs, assetsPath);
 
     return chain([
-      mergeWith(translateFiles),
+      checkIfTranslationFilesExist(assetsPath, langs, '.json', true) ? noop() : mergeWith(translateFiles),
       options.loader === Loaders.Http
         ? chain([
             addImportsToModuleFile(options, ['HttpClientModule'], '@angular/common/http'),
