@@ -34,15 +34,17 @@ export function typescriptTranslationFileCreator(source, lang) {
   );
 }
 
-export function checkIfTranslationFilesExist(path: string, langs: string[], extension: string) {
-  langs.forEach(lang => {
+export function checkIfTranslationFilesExist(path: string, langs: string[], extension: string, skipThrow?: boolean) {
+  for (let lang of langs) {
     const filePath = p.resolve(`${path}/${lang}${extension}`);
     if (fs.existsSync(filePath)) {
-      throw new SchematicsException(
-        `Translation file ${filePath} is already exist, please use --skip-creation`
-      );
+      if (skipThrow) {
+        return true;
+      }
+      throw new SchematicsException(`Translation file ${filePath} is already exist, please use --skip-creation`);
     }
-  });
+  }
+  return false;
 }
 
 export function createTranslateFilesFromOptions(
@@ -58,9 +60,7 @@ export function createTranslateFilesFromOptions(
 
   checkIfTranslationFilesExist(translationFilePath, options.langs, extension);
 
-  return apply(source(createTranslateFiles(options.langs, translationCreator)), [
-    move('/', translationFilePath)
-  ]);
+  return apply(source(createTranslateFiles(options.langs, translationCreator)), [move('/', translationFilePath)]);
 }
 
 export function createTranslateFiles(langs: string[], creator): HostTree {
