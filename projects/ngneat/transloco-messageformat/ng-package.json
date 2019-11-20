@@ -3,5 +3,6 @@
   "dest": "../../../dist/ngneat/transloco-messageformat",
   "lib": {
     "entryFile": "src/public-api.ts"
-  }
+  },
+  "whitelistedNonPeerDependencies": ["messageformat"]
 }
