@@ -15,7 +15,7 @@ import {
 } from './types';
 import { flatten, getValue, isString, size, toCamelCase, unflatten } from './helpers';
 import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
-import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './transloco-missing-handler';
+import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler, TranslocoMissingInfo } from './transloco-missing-handler';
 import { TRANSLOCO_INTERCEPTOR, TranslocoInterceptor } from './transloco.interceptor';
 import { TRANSLOCO_FALLBACK_STRATEGY, TranslocoFallbackStrategy } from './transloco-fallback-strategy';
 import { mergeConfig } from './merge-config';
@@ -189,7 +189,7 @@ export class TranslocoService implements OnDestroy {
     key = scope ? `${scope}.${key}` : key;
 
     if (!key) {
-      return this.missingHandler.handle(key, this.config);
+      return this.missingHandler.handle(key, this.getMissingInfo());
     }
 
     const translation = this.getTranslation(resolveLang);
@@ -361,7 +361,7 @@ export class TranslocoService implements OnDestroy {
       return value;
     }
 
-    return this.missingHandler.handle(key, this.config);
+    return this.missingHandler.handle(key, this.getMissingInfo());
   }
 
   /**
@@ -430,6 +430,15 @@ export class TranslocoService implements OnDestroy {
     }
 
     return (this.getAvailableLangs() as { id: string }[]).map(l => l.id);
+  }
+
+  private getMissingInfo(): TranslocoMissingInfo {
+    return {
+      ...this.config,
+      activeLang: this.getActiveLang(),
+      availableLangs: this.availableLangs,
+      defaultLang: this.defaultLang
+    };
   }
 
   private useFallbackTranslation(lang?: string) {
