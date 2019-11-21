@@ -2,6 +2,54 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.6.1](https://github.com/ngneat/transloco/compare/v2.6.0...v2.6.1) (2019-11-20)
+
+### Bug Fixes
+
+- 🐛 ng-add: skip translation files creation if exist ([#163](https://github.com/ngneat/transloco/issues/163)) ([a9c1bcf](https://github.com/ngneat/transloco/commit/a9c1bcf))
+
+## [2.6.0](https://github.com/ngneat/transloco/compare/v2.5.2...v2.6.0) (2019-11-17)
+
+### Features
+
+- 🎸 add schematics migration script from angular ([#151](https://github.com/ngneat/transloco/issues/151)) ([bc07dfa](https://github.com/ngneat/transloco/commit/bc07dfa))
+- 🎸 allow changing the fallback languages dynamically ([2719981](https://github.com/ngneat/transloco/commit/2719981))
+
+### [2.5.2](https://github.com/ngneat/transloco/compare/v2.5.1...v2.5.2) (2019-11-05)
+
+### Bug Fixes
+
+- 🐛 remove default langs ([d9b6b26](https://github.com/ngneat/transloco/commit/d9b6b26))
+
+### [2.5.1](https://github.com/ngneat/transloco/compare/v2.5.0...v2.5.1) (2019-11-05)
+
+### Bug Fixes
+
+- 🐛 add utils ([c6233b7](https://github.com/ngneat/transloco/commit/c6233b7))
+
+## [2.5.0](https://github.com/ngneat/transloco/compare/v2.4.0...v2.5.0) (2019-11-05)
+
+### Bug Fixes
+
+- 🐛 schematics scope ignore routing.module file ([57dbcd5](https://github.com/ngneat/transloco/commit/57dbcd5))
+
+### Features
+
+- 🎸 inline-loader support any kind of promise ([34bc788](https://github.com/ngneat/transloco/commit/34bc788))
+- 🎸 schematics command to install keys manager ([38c885b](https://github.com/ngneat/transloco/commit/38c885b))
+
+## [2.4.0](https://github.com/ngneat/transloco/compare/v2.3.1...v2.4.0) (2019-11-01)
+
+### Features
+
+- 🎸 add scope to event payload ([f70db69](https://github.com/ngneat/transloco/commit/f70db69))
+
+### [2.3.1](https://github.com/ngneat/transloco/compare/v2.3.0...v2.3.1) (2019-10-30)
+
+### Bug Fixes
+
+- 🐛 predavetranslation should always be flat ([2f12e71](https://github.com/ngneat/transloco/commit/2f12e71)), closes [#145](https://github.com/ngneat/transloco/issues/145)
+
 ## [2.3.0](https://github.com/ngneat/transloco/compare/v2.2.2...v2.3.0) (2019-10-25)
 
 ### Features

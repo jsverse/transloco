@@ -19,6 +19,12 @@ export function getWorkspace(host: Tree): WorkspaceSchema {
   return JSON.parse(config);
 }
 
+export function setWorkspace(host: Tree, workspace): void {
+  const path = getWorkspacePath(host);
+
+  host.overwrite(path, JSON.stringify(workspace, null, 2));
+}
+
 export function getProject(host: Tree, project?: string) {
   const workspace = getWorkspace(host);
   if (workspace) {

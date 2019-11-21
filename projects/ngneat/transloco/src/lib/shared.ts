@@ -74,3 +74,11 @@ function prependScope(inlineLoader, scope) {
 export function resolveInlineLoader(providerScope: TranslocoScope | null, scope: string): InlineLoader | null {
   return hasInlineLoader(providerScope) ? prependScope(providerScope.loader, scope) : null;
 }
+
+export function getEventPayload(lang: string) {
+  return {
+    scope: getScopeFromLang(lang) || null,
+    langName: getLangFromScope(lang),
+    lang
+  };
+}

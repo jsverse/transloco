@@ -11,7 +11,7 @@ import scopeEs from './mocks/scope-es';
 
 const collectionPath = path.join(__dirname, '../collection.json');
 
-describe('Build', () => {
+describe('Join', () => {
   const schematicRunner = new SchematicTestRunner('schematics', collectionPath);
 
   let appTree: UnitTestTree;
@@ -33,7 +33,7 @@ describe('Build', () => {
     });
 
     it('should merge translation files to dist', async () => {
-      const tree = await schematicRunner.runSchematicAsync('build', options, appTree).toPromise();
+      const tree = await schematicRunner.runSchematicAsync('join', options, appTree).toPromise();
       expect(tree.files).toEqual(['/dist-i18n/es.json', '/dist-i18n/en.json']);
     });
 

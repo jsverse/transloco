@@ -32,15 +32,28 @@
       "schema": "./upgrade/schema.json",
       "description": "Run an upgrade script."
     },
-    "build": {
-      "factory": "./build/",
-      "schema": "./build/schema.json",
+    "keys-manager": {
+      "aliases": ["km"],
+      "factory": "./keys-manager/",
+      "schema": "./keys-manager/schema.json",
+      "description": "Add Transloco Keys Manager plugin to your project."
+    },
+    "join": {
+      "aliases": ["build"],
+      "factory": "./join/",
+      "schema": "./join/schema.json",
       "description": "Merge the translation files into one."
     },
-    "spill": {
-      "factory": "./spill/",
-      "schema": "./spill/schema.json",
-      "description": "Merge the translation files into one."
+    "split": {
+      "aliases": ["spill"],
+      "factory": "./split/",
+      "schema": "./split/schema.json",
+      "description": "split the translated files over the project's translation files."
+    },
+    "ng-migrate": {
+      "factory": "./ng-migrate/",
+      "schema": "./ng-migrate/schema.json",
+      "description": "split the translated files over the project's translation files."
     }
   }
 }

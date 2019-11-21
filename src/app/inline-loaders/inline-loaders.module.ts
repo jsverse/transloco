@@ -1,12 +1,25 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 import { InlineLoadersRoutingModule } from './inline-loaders-routing.module';
 import { InlineComponent } from './inline/inline.component';
-import { TranslocoModule } from '@ngneat/transloco';
+import { TRANSLOCO_SCOPE, TranslocoModule } from '@ngneat/transloco';
+
+const loader = ['en'].reduce((acc: any, lang: string) => {
+  acc[lang] = () => import(`./i18n/${lang}.json`);
+  return acc;
+}, {});
 
 @NgModule({
   declarations: [InlineComponent],
-  imports: [TranslocoModule, CommonModule, InlineLoadersRoutingModule]
+  providers: [
+    {
+      provide: TRANSLOCO_SCOPE,
+      useValue: {
+        scope: 'inline',
+        loader
+      }
+    }
+  ],
+  imports: [InlineLoadersRoutingModule, TranslocoModule]
 })
 export class InlineLoadersModule {}

@@ -19,7 +19,7 @@ import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './transloco-
 import { TRANSLOCO_INTERCEPTOR, TranslocoInterceptor } from './transloco.interceptor';
 import { TRANSLOCO_FALLBACK_STRATEGY, TranslocoFallbackStrategy } from './transloco-fallback-strategy';
 import { mergeConfig } from './merge-config';
-import { getLangFromScope, getScopeFromLang } from './shared';
+import { getEventPayload, getLangFromScope, getScopeFromLang } from './shared';
 import { getFallbacksLoaders } from './get-fallbacks-loaders';
 import { resolveLoader } from './resolve-loader';
 
@@ -196,7 +196,7 @@ export class TranslocoService implements OnDestroy {
     const value = translation[key];
 
     if (!value) {
-      return this.handleMissingKey(key, value, params);
+      return this._handleMissingKey(key, value, params);
     }
 
     return this.parser.transpile(value, params, translation);
@@ -336,7 +336,20 @@ export class TranslocoService implements OnDestroy {
     this.setTranslation(newValue, lang);
   }
 
-  handleMissingKey(key: string, value: any, params?: HashMap) {
+  /**
+   * Sets the fallback lang for the currently active language
+   * @param fallbackLang
+   */
+  setFallbackLangForMissingTranslation({ fallbackLang }: TranslocoConfig): void {
+    if (this.useFallbackTranslation && fallbackLang) {
+      this.firstFallbackLang = Array.isArray(fallbackLang) ? fallbackLang[0] : fallbackLang;
+    }
+  }
+
+  /**
+   * @internal
+   */
+  _handleMissingKey(key: string, value: any, params?: HashMap) {
     if (this.config.missingHandler.allowEmpty && value === '') {
       return '';
     }
@@ -381,10 +394,6 @@ export class TranslocoService implements OnDestroy {
     return this.load(path, { inlineLoader });
   }
 
-  private isLoadedTranslation(lang: string) {
-    return size(this.getTranslation(lang));
-  }
-
   /**
    * @internal
    */
@@ -403,6 +412,14 @@ export class TranslocoService implements OnDestroy {
       this.mergedConfig.scopeMapping = {};
     }
     this.mergedConfig.scopeMapping[scope] = alias;
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
+  private isLoadedTranslation(lang: string) {
+    return size(this.getTranslation(lang));
   }
 
   private getAvailableLangsIds(): string[] {
@@ -425,9 +442,7 @@ export class TranslocoService implements OnDestroy {
       this.events.next({
         wasFailure: !!this.failedLangs.size,
         type: 'translationLoadSuccess',
-        payload: {
-          lang
-        }
+        payload: getEventPayload(lang)
       });
 
       this.failedCounter = 0;
@@ -467,22 +482,10 @@ export class TranslocoService implements OnDestroy {
     this.failedCounter++;
     this.events.next({
       type: 'translationLoadFailure',
-      payload: {
-        lang
-      }
+      payload: getEventPayload(lang)
     });
 
     return this.load(resolveLang);
-  }
-
-  private setFallbackLangForMissingTranslation({ fallbackLang }: TranslocoConfig): void {
-    if (this.useFallbackTranslation && fallbackLang) {
-      this.firstFallbackLang = Array.isArray(fallbackLang) ? fallbackLang[0] : fallbackLang;
-    }
-  }
-
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
   }
 
   private getMappedScope(scope: string): string {

@@ -1,6 +1,6 @@
 {
   "name": "@ngneat/transloco",
-  "version": "2.3.0",
+  "version": "2.6.1",
   "description": "The internationalization (i18n) library for Angular",
   "schematics": "./schematics/collection.json",
   "publishConfig": {
@@ -39,12 +39,13 @@
     }
   ],
   "dependencies": {
+    "@ngneat/transloco-utils": "^1.0.6",
     "replace-in-file": "^4.1.2",
     "ora": "^3.4.0",
     "flat": "4.1.0"
   },
   "peerDependencies": {
-    "@angular/core": ">=4.3.0 <9.0.0",
+    "@angular/core": ">=6.0.0 <9.0.0",
     "rxjs": ">=6.0.0 || ^5.6.0-forward-compat.4"
   },
   "license": "MIT"
