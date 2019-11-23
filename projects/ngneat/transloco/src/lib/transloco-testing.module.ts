@@ -32,7 +32,11 @@ export class TranslocoTestingModule {
         defaultProviders,
         {
           provide: TRANSLOCO_CONFIG,
-          useValue: { prodMode: true, ...config }
+          useValue: {
+            prodMode: true,
+            missingHandler: { logMissingKey: false },
+            ...config
+          }
         }
       ]
     };
