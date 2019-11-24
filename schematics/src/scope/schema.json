@@ -17,6 +17,11 @@
       "type": "string",
       "description": "The path at which module to add scope to, relative to the workspace root."
     },
+    "inlineLoader": {
+      "description": "Should create scope with inline loader.",
+      "type": "boolean",
+      "alias": "il"
+    },
     "langs": {
       "description": "The languages of the project.",
       "type": "string",
