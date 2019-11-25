@@ -3,12 +3,12 @@ import { TranslocoConfig } from './transloco.config';
 
 export const TRANSLOCO_MISSING_HANDLER = new InjectionToken('TRANSLOCO_MISSING_HANDLER');
 
-export interface TranslocoMissingInfo extends TranslocoConfig {
+export interface TranslocoMissingHandlerData extends TranslocoConfig {
   activeLang: string;
 }
 
 export interface TranslocoMissingHandler {
-  handle(key: string, info: TranslocoMissingInfo): any;
+  handle(key: string, data: TranslocoMissingHandlerData): any;
 }
 
 export class DefaultHandler implements TranslocoMissingHandler {

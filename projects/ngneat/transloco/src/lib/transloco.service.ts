@@ -15,7 +15,7 @@ import {
 } from './types';
 import { flatten, getValue, isString, size, toCamelCase, unflatten } from './helpers';
 import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
-import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler, TranslocoMissingInfo } from './transloco-missing-handler';
+import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler, TranslocoMissingHandlerData } from './transloco-missing-handler';
 import { TRANSLOCO_INTERCEPTOR, TranslocoInterceptor } from './transloco.interceptor';
 import { TRANSLOCO_FALLBACK_STRATEGY, TranslocoFallbackStrategy } from './transloco-fallback-strategy';
 import { mergeConfig } from './merge-config';
@@ -432,7 +432,7 @@ export class TranslocoService implements OnDestroy {
     return (this.getAvailableLangs() as { id: string }[]).map(l => l.id);
   }
 
-  private getMissingInfo(): TranslocoMissingInfo {
+  private getMissingInfo(): TranslocoMissingHandlerData {
     return {
       ...this.config,
       activeLang: this.getActiveLang(),
