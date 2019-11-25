@@ -23,7 +23,7 @@ It exposes a rich API to manage translations efficiently and cleanly. It provide
 <hr />
 
 [![Build Status](https://img.shields.io/travis/datorama/akita.svg?style=flat-square)](https://travis-ci.org/ngneat/transloco)
-[![All Contributors](https://img.shields.io/badge/all_contributors-14-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-15-orange.svg?style=flat-square)](#contributors-)
 [![commitizen](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)]()
 [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)]()
 [![coc-badge](https://img.shields.io/badge/codeof-conduct-ff69b4.svg?style=flat-square)]()
@@ -74,6 +74,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/ThierryDD"><img src="https://avatars3.githubusercontent.com/u/184425?v=4" width="100px;" alt="Thierry"/><br /><sub><b>Thierry</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=ThierryDD" title="Documentation">📖</a></td>
     <td align="center"><a href="https://alexaegis.github.io/loreplotter/"><img src="https://avatars3.githubusercontent.com/u/16900547?v=4" width="100px;" alt="Győri Sándor"/><br /><sub><b>Győri Sándor</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=AlexAegis" title="Documentation">📖</a></td>
     <td align="center"><a href="https://www.webtrix.be"><img src="https://avatars1.githubusercontent.com/u/4103756?v=4" width="100px;" alt="Maarten Tibau"/><br /><sub><b>Maarten Tibau</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=maartentibau" title="Documentation">📖</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/MatthiasKunnen"><img src="https://avatars3.githubusercontent.com/u/16807587?v=4" width="100px;" alt="Matthias Kunnen"/><br /><sub><b>Matthias Kunnen</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=MatthiasKunnen" title="Code">💻</a></td>
   </tr>
 </table>
 
