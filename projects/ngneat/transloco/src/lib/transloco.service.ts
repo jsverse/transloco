@@ -189,7 +189,7 @@ export class TranslocoService implements OnDestroy {
     key = scope ? `${scope}.${key}` : key;
 
     if (!key) {
-      return this.missingHandler.handle(key, this.getMissingInfo());
+      return this.missingHandler.handle(key, this.getMissingHandlerData());
     }
 
     const translation = this.getTranslation(resolveLang);
@@ -361,7 +361,7 @@ export class TranslocoService implements OnDestroy {
       return value;
     }
 
-    return this.missingHandler.handle(key, this.getMissingInfo());
+    return this.missingHandler.handle(key, this.getMissingHandlerData());
   }
 
   /**
@@ -432,7 +432,7 @@ export class TranslocoService implements OnDestroy {
     return (this.getAvailableLangs() as { id: string }[]).map(l => l.id);
   }
 
-  private getMissingInfo(): TranslocoMissingHandlerData {
+  private getMissingHandlerData(): TranslocoMissingHandlerData {
     return {
       ...this.config,
       activeLang: this.getActiveLang(),
