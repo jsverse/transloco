@@ -1,3 +1,4 @@
 module.exports = {
-  rootTranslationPath: 'src/assets/i18n'
+  rootTranslationsPath: 'src/assets/i18n',
+  scopedLibs: ['./projects/ngneat/transloco-locale', './projects/ngneat/transloco-messageformat']
 };
