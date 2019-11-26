@@ -3,8 +3,12 @@ import { Observable, of } from 'rxjs';
 import { Translation } from './types';
 
 export interface TranslocoLoader {
-  getTranslation(lang: string): Observable<Translation> | Promise<Translation>;
+  getTranslation(lang: string, data: TranslocoLoaderData): Observable<Translation> | Promise<Translation>;
 }
+
+export type TranslocoLoaderData = {
+  scope: string;
+};
 
 export class DefaultLoader implements TranslocoLoader {
   constructor(private translations: Map<string, Translation>) {}

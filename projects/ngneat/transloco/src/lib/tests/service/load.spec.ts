@@ -36,7 +36,7 @@ describe('load', () => {
     spyOn((service as any).loader, 'getTranslation').and.callThrough();
     service.load('en').subscribe();
     runLoader();
-    expect((service as any).loader.getTranslation).toHaveBeenCalledWith('en');
+    expect((service as any).loader.getTranslation).toHaveBeenCalledWith('en', { scope: null });
     expect((service as any).translations.size).toEqual(1);
   }));
 
