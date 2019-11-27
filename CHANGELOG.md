@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.9.0](https://github.com/ngneat/transloco/compare/v2.8.0...v2.9.0) (2019-11-27)
+
+### Features
+
+- 🎸 add inline loader flag to scope ([#175](https://github.com/ngneat/transloco/issues/175)) ([8c1383e](https://github.com/ngneat/transloco/commit/8c1383e))
+
 ## [2.8.0](https://github.com/ngneat/transloco/compare/v2.7.0...v2.8.0) (2019-11-26)
 
 ### Features
