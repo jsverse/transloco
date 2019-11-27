@@ -10,7 +10,7 @@ export interface SchemaOptions extends Schema {
   /**
    * The languages of the project.
    */
-  langs: string;
+  langs: string | string[];
   /**
    * Skip the creation of the translation files.
    */
@@ -31,4 +31,8 @@ export interface SchemaOptions extends Schema {
    * The root project name.
    */
   project: string;
+  /**
+   * Should create scope with inline loader.
+   */
+  inlineLoader: boolean;
 }
