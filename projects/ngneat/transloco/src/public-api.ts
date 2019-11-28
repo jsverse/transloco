@@ -17,7 +17,11 @@ export {
   TranslocoFallbackStrategy,
   DefaultFallbackStrategy
 } from './lib/transloco-fallback-strategy';
-export { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './lib/transloco-missing-handler';
+export {
+  TRANSLOCO_MISSING_HANDLER,
+  TranslocoMissingHandler,
+  TranslocoMissingHandlerData,
+} from './lib/transloco-missing-handler';
 export { getBrowserCultureLang, getBrowserLang } from './lib/browser-lang';
 export * from './lib/types';
 export * from './lib/helpers';
