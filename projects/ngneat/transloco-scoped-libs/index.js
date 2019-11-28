@@ -7,52 +7,97 @@ const translocoUtils = require('@ngneat/transloco-utils');
 const config = translocoUtils.getConfig();
 
 let scopeFilesMap = [];
+const example = `
+  e.g: 
+  module.exports = {
+    scopedLibs: [{
+      src: './projects/core',
+      dist: ['./projects/spa/src/assets/i18n', './src/assets/i18n/']
+    }]
+  };
+`;
+
+const i18nExample = `
+  e.g:
+  {
+    "i18n": [
+      {
+        "scope": "core",
+        "path": "src/lib/i18n"
+      }
+    ]
+  }
+`;
 
 /**
  *
- * @param {{watch: boolean, rootTranslationsPath: string, scopedLibs: string[]}}
+ * @param {
+ *  watch: boolean,
+ *  rootTranslationsPath: string,
+ *  scopedLibs: (string | {src: string. dist: string | string[]})[]
+ * }
  *
  * watch - if true the script will run in watch mode
  * rootTranslationsPath - the root directory of the translation files.
  * scopedLibs - list of all translation scoped project paths.
  */
 function run({ watch, rootTranslationsPath, scopedLibs } = {}) {
-  rootTranslationsPath = rootTranslationsPath || config.rootTranslationsPath;
-  scopedLibs = scopedLibs || config.scopedLibs;
+  const defaultTranslationPath = rootTranslationsPath || config.rootTranslationsPath;
 
-  if (!rootTranslationsPath) {
-    return console.log(chalk.red('please specify "rootTranslationsPath" in transloco.config.js file.'));
-  }
-  if (!scopedLibs || scopedLibs.length === 0) {
-    return console.log(chalk.red('Please add "scopedLibs" configuration in transloco.config.js file.'));
-  }
+  scopedLibs = coerceScopedLibs(scopedLibs || config.scopedLibs, defaultTranslationPath);
 
   const startMsg = watch ? 'Running Transloco Scoped Libs in watch mode' : 'Starting Transloco Scoped Libs...';
   console.log(chalk.magenta(startMsg));
 
   for (let lib of scopedLibs) {
-    const pkg = utils.getPackageJson(lib);
+    if (!lib.src) {
+      return console.log(chalk.red(`Please specify the library's src.`, example));
+    }
+    const pkg = utils.getPackageJson(lib.src);
     if (!pkg.content.i18n) {
-      return console.log(chalk.red('package.json is missing i18n information.'));
+      return console.log(chalk.red('package.json is missing i18n information.', i18nExample));
     }
 
-    const output = path.resolve(rootTranslationsPath);
+    if (!lib.dist || lib.dist.length === 0) {
+      return console.log(
+        chalk.red(
+          'please specify dist path, by either set "rootTranslationsPath" or specify the "dist" for each library',
+          example
+        )
+      );
+    }
+
+    const outputs = lib.dist.map(o => path.resolve(o));
     const input = path.dirname(pkg.path);
     for (let scopeConfig of pkg.content.i18n) {
       glob(`${path.join(input, scopeConfig.path)}/**/*.json`, {}, function(err, files) {
         if (err) console.log(chalk.red(err));
-        // save the files with the scope to provide an API for the webpack loader.
-        scopeFilesMap.push({ scopeConfig, files, output });
 
-        copyScopes(output, scopeConfig.scope, files, scopeConfig.strategy);
+        for (let output of outputs) {
+          // save the files with the scope to provide an API for the webpack loader.
+          scopeFilesMap.push({ scopeConfig, files, output });
+          copyScopes(output, scopeConfig.scope, files, scopeConfig.strategy);
+        }
+
         if (watch) {
           chokidar
             .watch(files)
-            .on('change', file => copyScopes(output, scopeConfig.scope, [file], scopeConfig.strategy));
+            .on('change', file =>
+              outputs.forEach(output => copyScopes(output, scopeConfig.scope, [file], scopeConfig.strategy))
+            );
         }
       });
     }
   }
+}
+
+function coerceScopedLibs(scopedLibs, defaultPath) {
+  if (!scopedLibs || scopedLibs.length === 0) {
+    return console.log(chalk.red('Please add "scopedLibs" configuration in transloco.config.js file.', example));
+  }
+  return scopedLibs.map(lib =>
+    utils.isString(lib) ? { src: lib, dist: [defaultPath] } : { ...lib, dist: utils.coerceArray(lib.dist) }
+  );
 }
 
 function onFilesChanged(filePaths) {
@@ -70,8 +115,9 @@ function copyScopes(outputDir, scope, files, strategy) {
   if (strategy === 'join') {
     copyScopeTranslationFiles(files, outputDir, strategy, '.vendor.json', scope);
   } else {
-    utils.mkRecursiveDirSync(outputDir, scope);
-    copyScopeTranslationFiles(files, path.join(outputDir, scope), strategy, '.json', scope);
+    const dest = path.join(outputDir, scope);
+    utils.mkRecursiveDirSync(dest, scope);
+    copyScopeTranslationFiles(files, dest, strategy, '.json', scope);
   }
 }
 
