@@ -2,15 +2,17 @@ const path = require('path');
 const fs = require('fs');
 const chalk = require('chalk');
 
-function mkRecursiveDirSync(entry, src) {
-  if (fs.existsSync(path.join(entry, src))) {
+function mkRecursiveDirSync(dest) {
+  if (fs.existsSync(dest)) {
     return;
   }
-  const folders = src.split(path.sep);
-  folders.forEach(folder => {
-    entry = path.join(entry, folder);
-    fs.mkdirSync(entry);
-  });
+  dest.split(path.sep).reduce((prevPath, folder) => {
+    const currentPath = path.join(prevPath, folder, path.sep);
+    if (!fs.existsSync(currentPath)) {
+      fs.mkdirSync(currentPath);
+    }
+    return currentPath;
+  }, '');
 }
 
 function toLinuxFormat(p) {
@@ -34,7 +36,7 @@ function insertPathToGitIgnore(route) {
   const gitIgnorePath = path.resolve('.gitignore');
   const normalize = cutPath(route);
   let gitIgnore = fs.readFileSync(gitIgnorePath, 'utf8');
-  if (gitIgnore.indexOf(normalize) === -1) {
+  if (gitIgnore.indexOf('\n' + normalize) === -1) {
     gitIgnore = `${gitIgnore}\n${normalize}`;
     fs.writeFileSync(gitIgnorePath, gitIgnore);
   }
@@ -53,6 +55,15 @@ function writeJson(path, content) {
   return fs.writeFileSync(path, JSON.stringify(content, null, 2), { encoding: 'utf8' });
 }
 
+function coerceArray(val) {
+  if (val == null) return [];
+  return Array.isArray(val) ? val : [val];
+}
+
+function isString(val) {
+  return typeof val === 'string';
+}
+
 module.exports = {
   mkRecursiveDirSync,
   toLinuxFormat,
@@ -60,5 +71,7 @@ module.exports = {
   getPackageJson,
   insertPathToGitIgnore,
   readJson,
+  coerceArray,
+  isString,
   writeJson
 };
