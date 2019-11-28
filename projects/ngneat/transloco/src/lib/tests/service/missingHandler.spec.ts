@@ -37,7 +37,7 @@ describe('missingHandler', () => {
       service.load('en').subscribe();
       runLoader();
       expect(service.loader.getTranslation).toHaveBeenCalledTimes(2);
-      expect(service.loader.getTranslation.calls.allArgs()).toEqual([['en'], ['es']]);
+      expect(service.loader.getTranslation.calls.allArgs()).toEqual([['en', { scope: null }], ['es', { scope: null }]]);
     }));
 
     it('should get the translation from the fallback when there is no key', fakeAsync(() => {
@@ -58,7 +58,10 @@ describe('missingHandler', () => {
       spyOn(service.loader, 'getTranslation').and.callThrough();
       service.load('lazy-page/en').subscribe();
       runLoader(2000);
-      expect(service.loader.getTranslation.calls.allArgs()).toEqual([['lazy-page/en'], ['lazy-page/es']]);
+      expect(service.loader.getTranslation.calls.allArgs()).toEqual([
+        ['lazy-page/en', { scope: 'lazy-page' }],
+        ['lazy-page/es', { scope: 'lazy-page' }]
+      ]);
       expect(service.translate('empty', {}, 'lazy-page/en')).toEqual('resolved from es');
     }));
 

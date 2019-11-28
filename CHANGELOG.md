@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.9.0](https://github.com/ngneat/transloco/compare/v2.8.0...v2.9.0) (2019-11-27)
+
+### Features
+
+- 🎸 add inline loader flag to scope ([#175](https://github.com/ngneat/transloco/issues/175)) ([8c1383e](https://github.com/ngneat/transloco/commit/8c1383e))
+
+## [2.8.0](https://github.com/ngneat/transloco/compare/v2.7.0...v2.8.0) (2019-11-26)
+
+### Features
+
+- 🎸 pass scope name to loader ([c32b10c](https://github.com/ngneat/transloco/commit/c32b10c))
+
+## [2.7.0](https://github.com/ngneat/transloco/compare/v2.6.0...v2.7.0) (2019-11-25)
+
+### Bug Fixes
+
+- 🐛 ng-add: skip translation files creation if exist ([#163](https://github.com/ngneat/transloco/issues/163)) ([a9c1bcf](https://github.com/ngneat/transloco/commit/a9c1bcf))
+- 🐛 remove missing keys warnings in tests ([#169](https://github.com/ngneat/transloco/issues/169)) ([741d356](https://github.com/ngneat/transloco/commit/741d356))
+
+### Features
+
+- access to active language and up-to-date config in MissingHandler ([#167](https://github.com/ngneat/transloco/issues/167)) ([30af5c5](https://github.com/ngneat/transloco/commit/30af5c5)), closes [#164](https://github.com/ngneat/transloco/issues/164)
+
+### [2.6.2](https://github.com/ngneat/transloco/compare/v2.6.1...v2.6.2) (2019-11-23)
+
+### Bug Fixes
+
+- 🐛 remove missing keys warnings in tests ([#169](https://github.com/ngneat/transloco/issues/169)) ([741d356](https://github.com/ngneat/transloco/commit/741d356))
+
 ### [2.6.1](https://github.com/ngneat/transloco/compare/v2.6.0...v2.6.1) (2019-11-20)
 
 ### Bug Fixes

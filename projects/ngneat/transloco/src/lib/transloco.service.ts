@@ -15,7 +15,11 @@ import {
 } from './types';
 import { flatten, getValue, isString, size, toCamelCase, unflatten } from './helpers';
 import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
-import { TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler } from './transloco-missing-handler';
+import {
+  TRANSLOCO_MISSING_HANDLER,
+  TranslocoMissingHandler,
+  TranslocoMissingHandlerData
+} from './transloco-missing-handler';
 import { TRANSLOCO_INTERCEPTOR, TranslocoInterceptor } from './transloco.interceptor';
 import { TRANSLOCO_FALLBACK_STRATEGY, TranslocoFallbackStrategy } from './transloco-fallback-strategy';
 import { mergeConfig } from './merge-config';
@@ -114,17 +118,17 @@ export class TranslocoService implements OnDestroy {
   load(path: string, options: LoadOptions = {}): Observable<Translation> {
     if (this.cache.has(path) === false) {
       let loadTranslation: Observable<Translation | { translation: Translation; lang: string }[]>;
+      const isScope = this._isLangScoped(path);
+      const scope = isScope ? getScopeFromLang(path) : null;
 
       if (this.useFallbackTranslation(path)) {
         // if the path is scope the fallback should be `scope/fallbackLang`;
-        const fallback = this._isLangScoped(path)
-          ? `${getScopeFromLang(path)}/${this.firstFallbackLang}`
-          : this.firstFallbackLang;
+        const fallback = isScope ? `${scope}/${this.firstFallbackLang}` : this.firstFallbackLang;
 
-        const loaders = getFallbacksLoaders(path, fallback, this.loader, options.inlineLoader);
+        const loaders = getFallbacksLoaders(path, fallback, this.loader, options.inlineLoader, { scope });
         loadTranslation = forkJoin(loaders);
       } else {
-        const loader = resolveLoader(path, this.loader, options.inlineLoader);
+        const loader = resolveLoader(path, this.loader, options.inlineLoader, { scope });
         loadTranslation = from(loader);
       }
 
@@ -189,7 +193,7 @@ export class TranslocoService implements OnDestroy {
     key = scope ? `${scope}.${key}` : key;
 
     if (!key) {
-      return this.missingHandler.handle(key, this.config);
+      return this.missingHandler.handle(key, this.getMissingHandlerData());
     }
 
     const translation = this.getTranslation(resolveLang);
@@ -361,7 +365,7 @@ export class TranslocoService implements OnDestroy {
       return value;
     }
 
-    return this.missingHandler.handle(key, this.config);
+    return this.missingHandler.handle(key, this.getMissingHandlerData());
   }
 
   /**
@@ -430,6 +434,15 @@ export class TranslocoService implements OnDestroy {
     }
 
     return (this.getAvailableLangs() as { id: string }[]).map(l => l.id);
+  }
+
+  private getMissingHandlerData(): TranslocoMissingHandlerData {
+    return {
+      ...this.config,
+      activeLang: this.getActiveLang(),
+      availableLangs: this.availableLangs,
+      defaultLang: this.defaultLang
+    };
   }
 
   private useFallbackTranslation(lang?: string) {

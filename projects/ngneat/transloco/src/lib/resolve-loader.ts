@@ -1,8 +1,13 @@
-import { TranslocoLoader } from './transloco.loader';
+import { TranslocoLoader, TranslocoLoaderData } from './transloco.loader';
 import { InlineLoader } from './types';
 import { isFunction } from './helpers';
 
-export function resolveLoader(path: string, mainLoader: TranslocoLoader, inlineLoader: InlineLoader) {
+export function resolveLoader(
+  path: string,
+  mainLoader: TranslocoLoader,
+  inlineLoader: InlineLoader,
+  data: TranslocoLoaderData
+) {
   if (inlineLoader) {
     const pathLoader = inlineLoader[path];
     if (isFunction(pathLoader) === false) {
@@ -12,5 +17,5 @@ export function resolveLoader(path: string, mainLoader: TranslocoLoader, inlineL
     return inlineLoader[path]().then(res => (res.default ? res.default : res));
   }
 
-  return mainLoader.getTranslation(path);
+  return mainLoader.getTranslation(path, data);
 }
