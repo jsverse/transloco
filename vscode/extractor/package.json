@@ -1,0 +1,74 @@
+{
+  "name": "transloco-extract",
+  "displayName": "transloco extract",
+  "description": "VSCode editor selection transloco extractor",
+  "version": "0.0.6",
+  "publisher": "gcidev",
+  "repository": {
+    "type": "github",
+    "url": "https://github.com/pnocera/translocoExtract"
+  },
+  "engines": {
+    "vscode": "^1.40.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:extension.translocoExtract"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.translocoExtract",
+        "title": "Transloco Extract"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "extension.translocoExtract",
+          "group": "YourGroup@1"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "translocoExtract",
+      "properties": {
+        "translocoExtract.rootTranslationsPath": {
+          "type": "string",
+          "default": "**/assets/i18n/**/*.json",
+          "description": "The translation JSON files path pattern"
+        },
+        "translocoExtract.type": {
+          "type": "string",
+          "default": "pipe",
+          "description": "Whether to replace it with a pipe or t function"
+        },
+        "translocoExtract.defaultValue": {
+          "type": "string",
+          "description": "The default value for the new key"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.1.1",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^12.11.7",
+    "@types/vscode": "^1.40.0",
+    "glob": "^7.1.5",
+    "mocha": "^6.2.2",
+    "typescript": "^3.6.4",
+    "tslint": "^5.20.0",
+    "vscode-test": "^1.2.2"
+  }
+}
