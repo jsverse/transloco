@@ -5,16 +5,11 @@
 
 <h4>Two scopes using structural directives:</h4>
 <ng-container *transloco="let t">
-  <p data-cy="multiple-scopes-structural-one">{{ t('AdminPageAlias.title') }}</p>
-  <p data-cy="multiple-scopes-structural-two">{{ t('LazyPageAlias.title') }}</p>
+  <p data-cy="regular">{{ t('AdminPageAlias.title') }}</p>
+  <p data-cy="lazy-page">{{ t('LazyPageAlias.title') }}</p>
 </ng-container>
 
 <ng-container *transloco="let t; read: 'AdminPageAlias'">
-  <p data-cy="multiple-scopes-structural-three" class="admin-read">{{ t('read') }}</p>
+  <p data-cy="read" class="admin-read">{{ t('read') }}</p>
 </ng-container>
-
-<ng-container *transloco="let t; scope: 'lazy-scope-alias';">
-  <p data-cy="multiple-scopes-structural-four">{{ t('lazyScopeAlias.title') }}</p>
-</ng-container>
-
 
