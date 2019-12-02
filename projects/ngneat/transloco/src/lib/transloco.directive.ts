@@ -13,14 +13,14 @@ import {
   Type,
   ViewContainerRef
 } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { forkJoin, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { TemplateHandler, View } from './template-handler';
 import { TRANSLOCO_LANG } from './transloco-lang';
 import { TRANSLOCO_LOADING_TEMPLATE } from './transloco-loading-template';
 import { TRANSLOCO_SCOPE } from './transloco-scope';
 import { TranslocoService } from './transloco.service';
-import { HashMap, TranslocoScope } from './types';
+import { HashMap, ProviderScope, TranslocoScope } from './types';
 import { listenOrNotOperator, resolveInlineLoader, shouldListenToLangChanges } from './shared';
 import { LangResolver } from './lang-resolver';
 import { ScopeResolver } from './scope-resolver';
@@ -76,15 +76,10 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
             provider: this.providerLang,
             active: activeLang
           });
-          const scope = this.scopeResolver.resolve({
-            inline: this.inlineScope,
-            provider: this.providerScope
-          });
 
-          this.path = this.langResolver.resolveLangPath(lang, scope);
-          const inlineLoader = resolveInlineLoader(this.providerScope, scope);
-
-          return this.translocoService._loadDependencies(this.path, inlineLoader);
+          return (Array.isArray(this.providerScope)) ?
+            forkJoin((<any>this.providerScope).map(x => this.resolveScope(lang, x)))
+            : this.resolveScope(lang, this.providerScope);
         }),
         listenOrNotOperator(listenToLangChange)
       )
@@ -148,5 +143,17 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
 
   private detachLoader() {
     this.loaderTplHandler && this.loaderTplHandler.detachView();
+  }
+
+  private resolveScope(lang: string, providerScope: string | ProviderScope | null) {
+    const scope = this.scopeResolver.resolve({
+      inline: this.inlineScope,
+      provider: providerScope
+    });
+
+    this.path = this.langResolver.resolveLangPath(lang, scope);
+    const inlineLoader = resolveInlineLoader(providerScope, scope);
+
+    return this.translocoService._loadDependencies(this.path, inlineLoader);
   }
 }

@@ -1,0 +1,20 @@
+<h4>Two scopes are defined in this module:</h4>
+<p data-cy="multiple-scopes">
+  admin-page: {{'AdminPageAlias.title' | transloco}}<br />
+  lazy-page: {{'LazyPageAlias.title' | transloco}}</p>
+
+<h4>Two scopes using structural directives:</h4>
+<ng-container *transloco="let t">
+  <p data-cy="multiple-scopes-structural-one">{{ t('AdminPageAlias.title') }}</p>
+  <p data-cy="multiple-scopes-structural-two">{{ t('LazyPageAlias.title') }}</p>
+</ng-container>
+
+<ng-container *transloco="let t; read: 'AdminPageAlias'">
+  <p data-cy="multiple-scopes-structural-three" class="admin-read">{{ t('read') }}</p>
+</ng-container>
+
+<ng-container *transloco="let t; scope: 'lazy-scope-alias';">
+  <p data-cy="multiple-scopes-structural-four">{{ t('lazyScopeAlias.title') }}</p>
+</ng-container>
+
+
