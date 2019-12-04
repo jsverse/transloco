@@ -111,6 +111,13 @@ export class TranslocoService implements OnDestroy {
     this.availableLangs = langs;
   }
 
+  /**
+   * Gets the available languages.
+   * 
+   * @returns
+   * An array of the available languages. Can be either a `string[]` or a `{ id: string; label: string }[]` 
+   * depending on how the available languages are set in your module.
+   */
   getAvailableLangs() {
     return this.availableLangs;
   }
@@ -179,7 +186,7 @@ export class TranslocoService implements OnDestroy {
       // en for example
       const langFromScope = getLangFromScope(lang);
       // en is lang
-      const hasLang = this._isLang(langFromScope);
+      const hasLang = this.isLang(langFromScope);
       // take en
       resolveLang = hasLang ? langFromScope : this.getActiveLang();
       // find the scope
@@ -376,9 +383,12 @@ export class TranslocoService implements OnDestroy {
   }
 
   /**
-   * @internal
+   * Checks if a given string is one of the specified available languages.
+   * @returns
+   * True if the given string is an available language.
+   * False if the given string is not an available language.
    */
-  _isLang(lang: string) {
+  isLang(lang: string): boolean {
     return this.getAvailableLangsIds().indexOf(lang) !== -1;
   }
 
@@ -402,7 +412,7 @@ export class TranslocoService implements OnDestroy {
    * @internal
    */
   _completeScopeWithLang(langOrScope: string) {
-    if (this._isLangScoped(langOrScope) && !this._isLang(getLangFromScope(langOrScope))) {
+    if (this._isLangScoped(langOrScope) && !this.isLang(getLangFromScope(langOrScope))) {
       return `${langOrScope}/${this.getActiveLang()}`;
     }
     return langOrScope;
