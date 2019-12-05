@@ -27,6 +27,7 @@ export type ProviderScope = {
   loader?: InlineLoader;
   alias?: string;
 };
+export type MaybeArray<T> = T | T[];
 export type TranslocoScope = ProviderScope | string | undefined;
 export type InlineLoader = HashMap<() => Promise<Translation>>;
 export type LoadOptions = { fallbackLangs?: string[] | null; inlineLoader?: InlineLoader | null };

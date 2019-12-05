@@ -1,15 +1,24 @@
 <h4>Two scopes are defined in this module:</h4>
 <p data-cy="multiple-scopes">
-  admin-page: {{'AdminPageAlias.title' | transloco}}<br />
-  lazy-page: {{'LazyPageAlias.title' | transloco}}</p>
+  admin-page: <span class="admin-page-title">{{'AdminPageAlias.title' | transloco}}</span><br />
+  lazy-page: <span class="lazy-page-title">{{'LazyPageAlias.title' | transloco}}</span></p>
 
 <h4>Two scopes using structural directives:</h4>
 <ng-container *transloco="let t">
+  admin-page:<br />
   <p data-cy="regular">{{ t('AdminPageAlias.title') }}</p>
-  <p data-cy="lazy-page">{{ t('LazyPageAlias.title') }}</p>
+</ng-container>
+<ng-container *transloco="let t">
+  lazy-page:<br />
+  <p data-cy="regular">{{ t('LazyPageAlias.title') }}</p>
 </ng-container>
 
+<h4>Two scopes using structural directives (using read):</h4>
 <ng-container *transloco="let t; read: 'AdminPageAlias'">
-  <p data-cy="read" class="admin-read">{{ t('read') }}</p>
+  admin-page: <p data-cy="read" class="admin-read">{{ t('read') }}</p>
+</ng-container>
+
+<ng-container *transloco="let t; read: 'LazyPageAlias'">
+  lazy-page: <p data-cy="read" class="admin-read">{{ t('title') }}</p>
 </ng-container>
 

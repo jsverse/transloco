@@ -117,10 +117,10 @@ export class TranslocoService implements OnDestroy {
 
   load(path: string, options: LoadOptions = {}): Observable<Translation> {
     if (this.cache.has(path) === false) {
+
       let loadTranslation: Observable<Translation | { translation: Translation; lang: string }[]>;
       const isScope = this._isLangScoped(path);
       const scope = isScope ? getScopeFromLang(path) : null;
-
       if (this.useFallbackTranslation(path)) {
         // if the path is scope the fallback should be `scope/fallbackLang`;
         const fallback = isScope ? `${scope}/${this.firstFallbackLang}` : this.firstFallbackLang;
@@ -337,6 +337,7 @@ export class TranslocoService implements OnDestroy {
       ...this.getTranslation(lang),
       [key]: withHook
     };
+
     this.setTranslation(newValue, lang);
   }
 
@@ -394,7 +395,6 @@ export class TranslocoService implements OnDestroy {
     if (this._isLangScoped(path) && !this.isLoadedTranslation(mainLang)) {
       return combineLatest(this.load(mainLang), this.load(path, { inlineLoader }));
     }
-
     return this.load(path, { inlineLoader });
   }
 

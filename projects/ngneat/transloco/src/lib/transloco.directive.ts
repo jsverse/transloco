@@ -13,14 +13,14 @@ import {
   Type,
   ViewContainerRef
 } from '@angular/core';
-import { forkJoin, Subscription } from 'rxjs';
+import { forkJoin, Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { TemplateHandler, View } from './template-handler';
 import { TRANSLOCO_LANG } from './transloco-lang';
 import { TRANSLOCO_LOADING_TEMPLATE } from './transloco-loading-template';
 import { TRANSLOCO_SCOPE } from './transloco-scope';
 import { TranslocoService } from './transloco.service';
-import { HashMap, ProviderScope, TranslocoScope } from './types';
+import { HashMap, MaybeArray, Translation, TranslocoScope } from './types';
 import { listenOrNotOperator, resolveInlineLoader, shouldListenToLangChanges } from './shared';
 import { LangResolver } from './lang-resolver';
 import { ScopeResolver } from './scope-resolver';
@@ -51,7 +51,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   constructor(
     private translocoService: TranslocoService,
     @Optional() private tpl: TemplateRef<{ $implicit: (key: string, params?: HashMap) => any }>,
-    @Optional() @Inject(TRANSLOCO_SCOPE) private providerScope: TranslocoScope,
+    @Optional() @Inject(TRANSLOCO_SCOPE) private providerScope: MaybeArray<TranslocoScope>,
     @Optional() @Inject(TRANSLOCO_LANG) private providerLang: string | null,
     @Optional() @Inject(TRANSLOCO_LOADING_TEMPLATE) private providedLoadingTpl: Type<any> | string,
     private vcr: ViewContainerRef,
@@ -77,9 +77,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
             active: activeLang
           });
 
-          return (Array.isArray(this.providerScope)) ?
-            forkJoin((<any>this.providerScope).map(x => this.resolveScope(lang, x)))
-            : this.resolveScope(lang, this.providerScope);
+          return this.resolveScope(lang, this.providerScope);
         }),
         listenOrNotOperator(listenToLangChange)
       )
@@ -145,15 +143,16 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     this.loaderTplHandler && this.loaderTplHandler.detachView();
   }
 
-  private resolveScope(lang: string, providerScope: string | ProviderScope | null) {
-    const scope = this.scopeResolver.resolve({
-      inline: this.inlineScope,
-      provider: providerScope
-    });
+  private resolveScope(lang: string, providerScope: MaybeArray<TranslocoScope>): Observable<Translation | Translation[]> {
+    const resolveAndLoad = (providerScope: TranslocoScope) => {
+      let resolvedScope = this.scopeResolver.resolve({ inline: this.inlineScope, provider: providerScope });
+      this.path = this.langResolver.resolveLangPath(lang, resolvedScope);
+      const inlineLoader = resolveInlineLoader(providerScope, resolvedScope);
+      return this.translocoService._loadDependencies(this.path, inlineLoader);
+    };
 
-    this.path = this.langResolver.resolveLangPath(lang, scope);
-    const inlineLoader = resolveInlineLoader(providerScope, scope);
-
-    return this.translocoService._loadDependencies(this.path, inlineLoader);
+    return Array.isArray(providerScope) ?
+      forkJoin((<TranslocoScope[]>providerScope).map(provider => resolveAndLoad(provider)))
+      : resolveAndLoad(providerScope);
   }
 }

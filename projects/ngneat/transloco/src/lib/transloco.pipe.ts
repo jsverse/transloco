@@ -1,6 +1,6 @@
-import { ChangeDetectorRef, Inject, OnDestroy, Optional, Pipe, PipeTransform, Provider } from '@angular/core';
+import { ChangeDetectorRef, Inject, OnDestroy, Optional, Pipe, PipeTransform } from '@angular/core';
 import { TranslocoService } from './transloco.service';
-import { HashMap, ProviderScope, Translation } from './types';
+import { HashMap, MaybeArray, Translation, TranslocoScope } from './types';
 import { switchMap } from 'rxjs/operators';
 import { forkJoin, Observable, Subscription } from 'rxjs';
 import { TRANSLOCO_SCOPE } from './transloco-scope';
@@ -24,7 +24,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
 
   constructor(
     private translocoService: TranslocoService,
-    @Optional() @Inject(TRANSLOCO_SCOPE) private providerScope: string | string[] | ProviderScope | ProviderScope[] | null,
+    @Optional() @Inject(TRANSLOCO_SCOPE) private providerScope: MaybeArray<TranslocoScope>,
     @Optional() @Inject(TRANSLOCO_LANG) private providerLang: string | null,
     private cdr: ChangeDetectorRef
   ) {
@@ -54,9 +54,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
             active: activeLang
           });
 
-          return (Array.isArray(this.providerScope)) ?
-            forkJoin((<any>this.providerScope).map(x => this.resolveScope(lang, x)))
-            : this.resolveScope(lang, this.providerScope);
+          return this.resolveScope(lang, this.providerScope);
         }),
         listenOrNotOperator(this.listenToLangChange)
       )
@@ -75,12 +73,16 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
     this.cdr.markForCheck();
   }
 
-  private resolveScope(lang: string, providerScope: string | ProviderScope | null) {
-    let resolvedScope = this.scopeResolver.resolve({ inline: undefined, provider: providerScope });
-    this.path = this.langResolver.resolveLangPath(lang, resolvedScope);
+  private resolveScope(lang: string, providerScope: MaybeArray<TranslocoScope>): Observable<Translation | Translation[]> {
+    const resolveAndLoad = (providerScope: TranslocoScope) => {
+      let resolvedScope = this.scopeResolver.resolve({ inline: undefined, provider: providerScope });
+      this.path = this.langResolver.resolveLangPath(lang, resolvedScope);
+      const inlineLoader = resolveInlineLoader(providerScope, resolvedScope);
+      return this.translocoService._loadDependencies(this.path, inlineLoader);
+    };
 
-    const inlineLoader = resolveInlineLoader(providerScope, resolvedScope);
-
-    return this.translocoService._loadDependencies(this.path, inlineLoader);
+    return Array.isArray(providerScope) ?
+      forkJoin((<TranslocoScope[]>providerScope).map(provider => resolveAndLoad(provider)))
+      : resolveAndLoad(providerScope);
   }
 }

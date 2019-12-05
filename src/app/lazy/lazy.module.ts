@@ -22,4 +22,5 @@ const routes: Routes = [
   ],
   imports: [CommonModule, RouterModule.forChild(routes), TranslocoModule]
 })
-export class LazyModule {}
+export class LazyModule {
+}
