@@ -25,7 +25,7 @@ const p = require('path');
 
 function getProviderValue(options: SchemaOptions) {
   const name = dasherize(options.name);
-  if (!options.inlineLoader) return name;
+  if (!options.inlineLoader) return `'${name}'`;
   return `{ scope: '${name}', loader }`;
 }
 

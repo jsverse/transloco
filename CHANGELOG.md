@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.10.0](https://github.com/ngneat/transloco/compare/v2.8.0...v2.10.0) (2019-12-03)
+
+### Bug Fixes
+
+- 🐛 preSaveTranslation should get the flattend object ([9174141](https://github.com/ngneat/transloco/commit/9174141)), closes [#145](https://github.com/ngneat/transloco/issues/145)
+- 🐛 schematics scope useValue type ([2a2873c](https://github.com/ngneat/transloco/commit/2a2873c))
+- export TranslocoMissingHandlerData ([#174](https://github.com/ngneat/transloco/issues/174)) ([c32d589](https://github.com/ngneat/transloco/commit/c32d589))
+
+### Features
+
+- 🎸 add inline loader flag to scope ([#175](https://github.com/ngneat/transloco/issues/175)) ([8c1383e](https://github.com/ngneat/transloco/commit/8c1383e))
+
 ## [2.9.0](https://github.com/ngneat/transloco/compare/v2.8.0...v2.9.0) (2019-11-27)
 
 ### Features
