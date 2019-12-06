@@ -152,6 +152,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "adgoncal",
+      "name": "Allan G",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/10856791?v=4",
+      "profile": "https://github.com/adgoncal",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7
