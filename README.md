@@ -23,7 +23,7 @@ It exposes a rich API to manage translations efficiently and cleanly. It provide
 <hr />
 
 [![Build Status](https://img.shields.io/travis/datorama/akita.svg?style=flat-square)](https://travis-ci.org/ngneat/transloco)
-[![All Contributors](https://img.shields.io/badge/all_contributors-17-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-18-orange.svg?style=flat-square)](#contributors-)
 [![commitizen](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)]()
 [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)]()
 [![coc-badge](https://img.shields.io/badge/codeof-conduct-ff69b4.svg?style=flat-square)]()
@@ -79,6 +79,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/MatthiasKunnen"><img src="https://avatars3.githubusercontent.com/u/16807587?v=4" width="100px;" alt="Matthias Kunnen"/><br /><sub><b>Matthias Kunnen</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=MatthiasKunnen" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/adgoncal"><img src="https://avatars1.githubusercontent.com/u/10856791?v=4" width="100px;" alt="Allan G"/><br /><sub><b>Allan G</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=adgoncal" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/SansDK"><img src="https://avatars1.githubusercontent.com/u/25609266?v=4" width="100px;" alt="SansDK"/><br /><sub><b>SansDK</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=SansDK" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/mohamedaarab1994"><img src="https://avatars2.githubusercontent.com/u/36154561?v=4" width="100px;" alt="Mohamed Aarab"/><br /><sub><b>Mohamed Aarab</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=mohamedaarab1994" title="Code">💻</a> <a href="https://github.com/ngneat/transloco/commits?author=mohamedaarab1994" title="Tests">⚠️</a></td>
   </tr>
 </table>
 
