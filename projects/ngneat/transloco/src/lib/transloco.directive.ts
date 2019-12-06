@@ -77,7 +77,9 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
             active: activeLang
           });
 
-          return this.resolveScope(lang, this.providerScope);
+          return Array.isArray(this.providerScope) ?
+            forkJoin((<TranslocoScope[]>this.providerScope).map(providerScope => this.resolveScope(lang, providerScope)))
+            : this.resolveScope(lang, this.providerScope);
         }),
         listenOrNotOperator(listenToLangChange)
       )
@@ -143,16 +145,10 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     this.loaderTplHandler && this.loaderTplHandler.detachView();
   }
 
-  private resolveScope(lang: string, providerScope: MaybeArray<TranslocoScope>): Observable<Translation | Translation[]> {
-    const resolveAndLoad = (providerScope: TranslocoScope) => {
-      let resolvedScope = this.scopeResolver.resolve({ inline: this.inlineScope, provider: providerScope });
-      this.path = this.langResolver.resolveLangPath(lang, resolvedScope);
-      const inlineLoader = resolveInlineLoader(providerScope, resolvedScope);
-      return this.translocoService._loadDependencies(this.path, inlineLoader);
-    };
-
-    return Array.isArray(providerScope) ?
-      forkJoin((<TranslocoScope[]>providerScope).map(provider => resolveAndLoad(provider)))
-      : resolveAndLoad(providerScope);
+  private resolveScope(lang: string, providerScope: TranslocoScope): Observable<Translation | Translation[]> {
+    let resolvedScope = this.scopeResolver.resolve({ inline: this.inlineScope, provider: providerScope });
+    this.path = this.langResolver.resolveLangPath(lang, resolvedScope);
+    const inlineLoader = resolveInlineLoader(providerScope, resolvedScope);
+    return this.translocoService._loadDependencies(this.path, inlineLoader);
   }
 }

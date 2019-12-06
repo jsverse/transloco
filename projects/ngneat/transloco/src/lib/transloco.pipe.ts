@@ -54,7 +54,9 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
             active: activeLang
           });
 
-          return this.resolveScope(lang, this.providerScope);
+          return Array.isArray(this.providerScope) ?
+            forkJoin((<TranslocoScope[]>this.providerScope).map(providerScope => this.resolveScope(lang, providerScope)))
+            : this.resolveScope(lang, this.providerScope);
         }),
         listenOrNotOperator(this.listenToLangChange)
       )
@@ -73,16 +75,10 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
     this.cdr.markForCheck();
   }
 
-  private resolveScope(lang: string, providerScope: MaybeArray<TranslocoScope>): Observable<Translation | Translation[]> {
-    const resolveAndLoad = (providerScope: TranslocoScope) => {
+  private resolveScope(lang: string, providerScope: TranslocoScope): Observable<Translation | Translation[]> {
       let resolvedScope = this.scopeResolver.resolve({ inline: undefined, provider: providerScope });
       this.path = this.langResolver.resolveLangPath(lang, resolvedScope);
       const inlineLoader = resolveInlineLoader(providerScope, resolvedScope);
       return this.translocoService._loadDependencies(this.path, inlineLoader);
-    };
-
-    return Array.isArray(providerScope) ?
-      forkJoin((<TranslocoScope[]>providerScope).map(provider => resolveAndLoad(provider)))
-      : resolveAndLoad(providerScope);
   }
 }
