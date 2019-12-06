@@ -1,12 +1,12 @@
 # Transloco Schematics
 
-Transloco schematics built on top of `schematics/angular` and provides CLI commands for generating transloco boilerplate files.
+Transloco schematics are built on top of `schematics/angular` and provide CLI commands for generating transloco boilerplate files.
 
 ## Ng-add
 
 ### Overview
 
-Creates boilerplate translation files for given languages, and add Transloco configuration for the project's root module.
+Creates boilerplate translation files for the given languages, and adds Transloco configuration for the project's root module.
 
 ### Command
 
@@ -24,7 +24,7 @@ Creates boilerplate translation files for given languages, and add Transloco con
 
   `default`: `en, es`
 
-#### Provides the translation files loader.
+#### Provide the translation files loader.
 
 - `--loader`
 
@@ -48,7 +48,7 @@ Creates boilerplate translation files for given languages, and add Transloco con
 
   `alias`: `t`
 
-#### Provides the configuration that is needed for a project using server side rendering.
+#### Provide the configuration that is needed for a project using server side rendering.
 
 - `--ssr`
 
@@ -90,7 +90,7 @@ Migration script from `ngx-translate`. For more information about the script see
 ### Command
 
 ```
-  ng genrate @ngneat/transloco:migrate
+  ng generate @ngneat/transloco:migrate
 ```
 
 ### Options
@@ -161,13 +161,13 @@ Note if this flag won't be provide a new Module should be created.
 
   `alias`: `la`
 
-#### Skip the translation files creation.
+#### Skip the creation of the translation files.
 
 - `--skip-creation`
 
   `type`: `boolean`
 
-#### Define the translation files format.
+#### Define the format of the translation files.
 
 - `--translate-type`
 
@@ -191,7 +191,7 @@ The Library's upgrade script from lower versions. For more information about the
 ### Command
 
 ```
-  ng genrate @ngneat/transloco:upgrade
+  ng generate @ngneat/transloco:upgrade
 ```
 
 ### Options
@@ -206,25 +206,25 @@ The Library's upgrade script from lower versions. For more information about the
 
   `alias`: `p`
 
-## Build
+## Join
 
 ### Overview
 
 Merge all of the project's translation files into one.
 
-By default the merge script will go over the root translation file directory and will refer every sub directory as scope.
+By default the join command will go over the root translation file directory and will refer every sub directory as scope.
 
-Note, if you have more then one entry folder for your translation files, you will have to add a mapping for each folder entry and the scope name. It could be done using `scopePathMap` property in your `transloco.config.js` file.
+Note, if you have more than one entry folder for your translation files, you will have to add a mapping for each folder entry and the scope name. It could be done using `scopePathMap` property in your `transloco.config.js` file.
 
 ### Command
 
 ```
-  ng genrate @ngneat/transloco:build
+  ng generate @ngneat/transloco:join
 ```
 
 ### Options
 
-#### The folder that contain the root translation files.
+#### The folder that contains the root translation files.
 
 - `--translation-path`
 
@@ -244,21 +244,21 @@ Note, if you have more then one entry folder for your translation files, you wil
 
   `alias`: `o`
 
-## Spill
+## Split
 
 ### Overview
 
-Does the opposite process of `merge` command. It spill the translated files between the project's translation files.
+Does the opposite process of `join` command. It splits the translated files between the project's translation files.
 
 ### Command
 
 ```
-  ng genrate @ngneat/transloco:merge
+  ng generate @ngneat/transloco:split
 ```
 
 ### Options
 
-#### The folder that contain the root translation files.
+#### The folder that contains the root translation files.
 
 - `--translation-path`
 
@@ -268,9 +268,9 @@ Does the opposite process of `merge` command. It spill the translated files betw
 
   `alias`: `root`
 
-#### The path of the source directory that contain the translated files.
+#### The path of the source directory that contains the translated files.
 
-- `--out-dir`
+- `source`
 
   `type`: `string`
 
