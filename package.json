@@ -44,7 +44,7 @@
     "@angular/platform-browser": "~7.2.0",
     "@angular/platform-browser-dynamic": "~7.2.0",
     "@angular/router": "~7.2.0",
-    "@ngneat/transloco-utils": "^1.0.4",
+    "@ngneat/transloco-utils": "^1.0.6",
     "core-js": "^2.5.4",
     "flat": "^4.1.0",
     "git-cz": "^3.2.1",

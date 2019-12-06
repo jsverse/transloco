@@ -1,14 +1,18 @@
 import { PathFragment } from '@angular-devkit/core';
 import { DirEntry, Tree } from '@angular-devkit/schematics';
 import { getConfig as getTranslocoConfig, TranslocoConfig } from '@ngneat/transloco-utils';
+import { SchemaOptions } from '../join/schema';
 import { CONFIG_FILE } from '../schematics.consts';
 import { stringifyList } from './array';
 import { getProject } from './projects';
 
 const p = require('path');
+let config;
 
 export function getConfig(): TranslocoConfig {
-  return getTranslocoConfig();
+  if (config) return config;
+  config = getTranslocoConfig();
+  return config;
 }
 
 export function createConfig(host: Tree, langs: string[], rootTranslationsPath = 'src/assets/i18n/') {
@@ -80,4 +84,8 @@ export function getTranslationEntryPaths(host: Tree, rootDirPath: string): { sco
   }
   const rootDir = host.getDir(rootDirPath);
   return rootDir.subdirs.map(subDir => ({ scope: subDir, path: p.join(rootDirPath, subDir) }));
+}
+
+export function getDefaultLang(options: SchemaOptions) {
+  return options.defaultLang || getConfig().defaultLang;
 }

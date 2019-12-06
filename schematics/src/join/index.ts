@@ -1,5 +1,5 @@
 import { Rule, Tree, SchematicContext, SchematicsException, EmptyTree } from '@angular-devkit/schematics';
-import {TranslationFileFormat} from '../types';
+import { TranslationFileFormat } from '../types';
 import {
   getTranslationsRoot,
   getTranslationFiles,
@@ -7,15 +7,19 @@ import {
   hasFiles,
   getJsonFileContent,
   hasSubdirs,
-  getTranslationKey
+  getTranslationKey,
+  getDefaultLang
 } from '../utils/transloco';
-import {SchemaOptions} from './schema';
+import { SchemaOptions } from './schema';
 const fs = require('fs-extra');
 
 type Builder = (tree: Tree, path: string, content: Object) => void;
 
 function reduceTranslations(host: Tree, dirPath: string, translationJson, lang: string, key = '') {
   const dir = host.getDir(dirPath);
+  if (!fs.existsSync(dirPath)) {
+    throw new SchematicsException(`Could not resolve path to dir: ${dirPath}`);
+  }
   if (!hasFiles(dir)) return translationJson;
   dir.subfiles
     .filter(fileName => fileName.includes(`${lang}.json`))
@@ -39,8 +43,7 @@ function reduceTranslations(host: Tree, dirPath: string, translationJson, lang: 
 }
 
 function deletePrevFiles(host: Tree, options: SchemaOptions) {
-
-  if(fs.existsSync(options.outDir)) {
+  if (fs.existsSync(options.outDir)) {
     fs.removeSync(options.outDir);
   }
 }
@@ -66,11 +69,20 @@ function builderFactory(format: TranslationFileFormat): Builder {
 
 export default function(options: SchemaOptions): Rule {
   return (host: Tree, context: SchematicContext) => {
-
     deletePrevFiles(host, options);
     const root = getTranslationsRoot(host, options);
-    const rootTranslations = getTranslationFiles(host, root);
+    const defaultLang = getDefaultLang(options);
+    if (!options.includeDefaultLang && !defaultLang) {
+      throw new SchematicsException(
+        `Please specify the default project's language using --default-Lang or in transloco.config.js file.`
+      );
+    }
+    let rootTranslations = getTranslationFiles(host, root);
     const translationEntryPaths = getTranslationEntryPaths(host, root);
+
+    if (!options.includeDefaultLang) {
+      rootTranslations = rootTranslations.filter(t => t.lang !== defaultLang);
+    }
 
     const output = rootTranslations.map(t => ({
       lang: t.lang,

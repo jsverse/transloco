@@ -86,6 +86,9 @@ export default function(options: SchemaOptions): Rule {
     if (options.module) {
       const projectPath = getProjectPath(host, project, options);
       const modulePath = findModuleFromOptions(host, options, projectPath);
+      if (options.inlineLoader) {
+        addInlineLoader(host, modulePath, options.name, options.langs);
+      }
       if (modulePath) {
         addScopeToModule(host, modulePath, options);
         return mergeWith(source(createTranslationFiles(options, rootPath, modulePath, host)))(host, context);
