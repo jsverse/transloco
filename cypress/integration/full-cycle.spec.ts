@@ -34,6 +34,17 @@ describe('Transloco Full Cycle', () => {
     changeLang('en');
     generateContentWithoutLoader();
 
+    cy.visit('/lazy-multiple-scopes');
+    /* it should display lazy translation */
+    changeLang('es');
+    generateLazyContent('spanish');
+    changeLang('en');
+    generateLazyContent();
+    /* should not display loader template after loaded once */
+    changeLang('es');
+    changeLang('en');
+    generateContentWithoutLoader();
+
     /* Test scope sharing page */
 
     cy.visit('scope-sharing');

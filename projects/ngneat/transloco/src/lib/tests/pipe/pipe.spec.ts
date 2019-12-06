@@ -53,6 +53,28 @@ describe('TranslocoPipe', () => {
     expect(translateServiceMock.translate).toHaveBeenCalledWith('title', {}, 'es');
   }));
 
+  it('should load scope translation with multiple provided scopes', fakeAsync(() => {
+    spyOn(translateServiceMock, 'translate').and.callThrough();
+    pipe = new TranslocoPipe(translateServiceMock, [{ scope: 'lazy-page', alias: 'lazyPageAlias' }, { scope: 'admin-page', alias: 'adminPageAlias' }], null, cdrMock);
+    (pipe as any).listenToLangChange = true;
+    pipe.transform('lazyPageAlias.title', {});
+    runLoader();
+    expect(translateServiceMock.translate).toHaveBeenCalledWith('lazyPageAlias.title', {}, 'en');
+
+    pipe.transform('adminPageAlias.title', {});
+    runLoader();
+    expect(translateServiceMock.translate).toHaveBeenCalledWith('adminPageAlias.title', {}, 'en');
+
+    translateServiceMock.setActiveLang('es');
+    pipe.transform('lazyPageAlias.title', {});
+    runLoader();
+    expect(translateServiceMock.translate).toHaveBeenCalledWith('lazyPageAlias.title', {}, 'es');
+
+    pipe.transform('adminPageAlias.title', {});
+    runLoader();
+    expect(translateServiceMock.translate).toHaveBeenCalledWith('adminPageAlias.title', {}, 'es');
+  }));
+
   describe('updateValue', () => {
     it('should update the value, set the cache and mark for check', fakeAsync(() => {
       const key = 'home';

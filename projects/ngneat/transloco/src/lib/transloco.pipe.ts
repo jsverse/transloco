@@ -1,8 +1,8 @@
 import { ChangeDetectorRef, Inject, OnDestroy, Optional, Pipe, PipeTransform } from '@angular/core';
 import { TranslocoService } from './transloco.service';
-import { HashMap, ProviderScope } from './types';
+import { HashMap, MaybeArray, Translation, TranslocoScope } from './types';
 import { switchMap } from 'rxjs/operators';
-import { Subscription } from 'rxjs';
+import { forkJoin, Observable, Subscription } from 'rxjs';
 import { TRANSLOCO_SCOPE } from './transloco-scope';
 import { TRANSLOCO_LANG } from './transloco-lang';
 import { listenOrNotOperator, resolveInlineLoader, shouldListenToLangChanges } from './shared';
@@ -24,7 +24,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
 
   constructor(
     private translocoService: TranslocoService,
-    @Optional() @Inject(TRANSLOCO_SCOPE) private providerScope: string | ProviderScope | null,
+    @Optional() @Inject(TRANSLOCO_SCOPE) private providerScope: MaybeArray<TranslocoScope>,
     @Optional() @Inject(TRANSLOCO_LANG) private providerLang: string | null,
     private cdr: ChangeDetectorRef
   ) {
@@ -54,12 +54,9 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
             active: activeLang
           });
 
-          let scope = this.scopeResolver.resolve({ inline: undefined, provider: this.providerScope });
-          this.path = this.langResolver.resolveLangPath(lang, scope);
-
-          const inlineLoader = resolveInlineLoader(this.providerScope, scope);
-
-          return this.translocoService._loadDependencies(this.path, inlineLoader);
+          return Array.isArray(this.providerScope) ?
+            forkJoin((<TranslocoScope[]>this.providerScope).map(providerScope => this.resolveScope(lang, providerScope)))
+            : this.resolveScope(lang, this.providerScope);
         }),
         listenOrNotOperator(this.listenToLangChange)
       )
@@ -76,5 +73,12 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
     const lang = this.langResolver.resolveLangBasedOnScope(this.path);
     this.lastValue = this.translocoService.translate(key, params, lang);
     this.cdr.markForCheck();
+  }
+
+  private resolveScope(lang: string, providerScope: TranslocoScope): Observable<Translation | Translation[]> {
+      let resolvedScope = this.scopeResolver.resolve({ inline: undefined, provider: providerScope });
+      this.path = this.langResolver.resolveLangPath(lang, resolvedScope);
+      const inlineLoader = resolveInlineLoader(providerScope, resolvedScope);
+      return this.translocoService._loadDependencies(this.path, inlineLoader);
   }
 }
