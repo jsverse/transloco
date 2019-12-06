@@ -161,6 +161,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "SansDK",
+      "name": "SansDK",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/25609266?v=4",
+      "profile": "https://github.com/SansDK",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
