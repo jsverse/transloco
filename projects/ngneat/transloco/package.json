@@ -42,7 +42,8 @@
     "@ngneat/transloco-utils": "^1.0.6",
     "replace-in-file": "^4.1.2",
     "ora": "^3.4.0",
-    "flat": "4.1.0"
+    "flat": "4.1.0",
+    "lodash.kebabcase": "^4.1.1"
   },
   "peerDependencies": {
     "@angular/core": ">=6.0.0 <9.0.0",

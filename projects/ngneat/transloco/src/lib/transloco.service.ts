@@ -13,7 +13,7 @@ import {
   Translation,
   TranslocoEvents
 } from './types';
-import { flatten, getValue, isString, size, toCamelCase, unflatten } from './helpers';
+import { flatten, getValue, isString, size, toCamelCase, unflatten, isNil } from './helpers';
 import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 import {
   TRANSLOCO_MISSING_HANDLER,
@@ -113,9 +113,9 @@ export class TranslocoService implements OnDestroy {
 
   /**
    * Gets the available languages.
-   * 
+   *
    * @returns
-   * An array of the available languages. Can be either a `string[]` or a `{ id: string; label: string }[]` 
+   * An array of the available languages. Can be either a `string[]` or a `{ id: string; label: string }[]`
    * depending on how the available languages are set in your module.
    */
   getAvailableLangs() {
@@ -124,7 +124,6 @@ export class TranslocoService implements OnDestroy {
 
   load(path: string, options: LoadOptions = {}): Observable<Translation> {
     if (this.cache.has(path) === false) {
-
       let loadTranslation: Observable<Translation | { translation: Translation; lang: string }[]>;
       const isScope = this._isLangScoped(path);
       const scope = isScope ? getScopeFromLang(path) : null;
@@ -228,13 +227,28 @@ export class TranslocoService implements OnDestroy {
       this.load(lang).pipe(
         map(() => (_isObject ? this.translateObject(key, params, lang) : this.translate(key, params, lang)))
       );
-    if (isString(lang)) {
-      const langOrScope = this._completeScopeWithLang(lang);
-      return load(langOrScope);
-    } else {
-      // if the user doesn't pass lang, we need to listen to lang changes and update the value accordingly
+    if (isNil(lang)) {
       return this.langChanges$.pipe(switchMap(lang => load(lang)));
     }
+
+    if (this.isLang(lang) || this.isScopeWithLang(lang)) {
+      return load(lang);
+    }
+    // it's a scope
+    const scope = lang;
+    return this.langChanges$.pipe(switchMap(lang => load(`${scope}/${lang}`)));
+  }
+
+  /**
+   * Whether the scope with lang
+   *
+   * @example
+   *
+   * todos/en => true
+   * todos => false
+   */
+  private isScopeWithLang(lang: string) {
+    return this.isLang(getLangFromScope(lang));
   }
 
   /**
