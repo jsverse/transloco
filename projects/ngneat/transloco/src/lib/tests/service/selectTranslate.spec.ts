@@ -55,6 +55,25 @@ describe('selectTranslate', () => {
     expect(spy).toHaveBeenCalledWith('Admin Lazy spanish');
   }));
 
+  it('should listen to lang change when passing just the scope', fakeAsync(() => {
+    const spy = jasmine.createSpy();
+    service.selectTranslate('title', null, 'lazy-page').subscribe(spy);
+    runLoader();
+    service.setActiveLang('en');
+    runLoader();
+    expect(spy).toHaveBeenCalledTimes(2);
+  }));
+
+  it('should not listen to lang change when passing scope with lang', fakeAsync(() => {
+    const spy = jasmine.createSpy();
+    service.selectTranslate('title', null, 'lazy-page/es').subscribe(spy);
+    runLoader();
+    service.setActiveLang('en');
+    runLoader();
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledWith('Admin Lazy spanish');
+  }));
+
   it('should support scope with param', fakeAsync(() => {
     const spy = jasmine.createSpy();
     service.selectTranslate('withParam', { param: 'Transloco' }, 'lazy-page').subscribe(spy);
