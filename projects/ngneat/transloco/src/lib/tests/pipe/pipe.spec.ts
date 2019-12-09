@@ -21,6 +21,11 @@ describe('TranslocoPipe', () => {
     spyOn(pipe as any, 'updateValue').and.callThrough();
   });
 
+  it('should return empty string as default', () => {
+    pipe = new TranslocoPipe(translateServiceMock, null, 'es', cdrMock);
+    expect(pipe.transform('title', {})).toBe('');
+  });
+
   it('should use provided language', fakeAsync(() => {
     spyOn(translateServiceMock, 'translate').and.callThrough();
     pipe = new TranslocoPipe(translateServiceMock, null, 'es', cdrMock);
@@ -55,7 +60,12 @@ describe('TranslocoPipe', () => {
 
   it('should load scope translation with multiple provided scopes', fakeAsync(() => {
     spyOn(translateServiceMock, 'translate').and.callThrough();
-    pipe = new TranslocoPipe(translateServiceMock, [{ scope: 'lazy-page', alias: 'lazyPageAlias' }, { scope: 'admin-page', alias: 'adminPageAlias' }], null, cdrMock);
+    pipe = new TranslocoPipe(
+      translateServiceMock,
+      [{ scope: 'lazy-page', alias: 'lazyPageAlias' }, { scope: 'admin-page', alias: 'adminPageAlias' }],
+      null,
+      cdrMock
+    );
     (pipe as any).listenToLangChange = true;
     pipe.transform('lazyPageAlias.title', {});
     runLoader();
