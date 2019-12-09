@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.11.2](https://github.com/ngneat/transloco/compare/v2.11.0...v2.11.2) (2019-12-09)
+
+### Bug Fixes
+
+- 🐛 pipe return empty string by default ([#192](https://github.com/ngneat/transloco/issues/192)) ([156cd62](https://github.com/ngneat/transloco/commit/156cd62))
+- 🐛 select translations with scope should listen to lang change ([6031046](https://github.com/ngneat/transloco/commit/6031046))
+
 ### [2.11.1](https://github.com/ngneat/transloco/compare/v2.11.0...v2.11.1) (2019-12-07)
 
 ### Bug Fixes
