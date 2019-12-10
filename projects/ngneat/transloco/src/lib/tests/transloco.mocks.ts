@@ -1,6 +1,6 @@
 import { DefaultTranspiler, TRANSLOCO_TRANSPILER } from '../transloco.transpiler';
 import { TRANSLOCO_LOADER } from '../transloco.loader';
-import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from '../transloco.config';
+import { TRANSLOCO_CONFIG, TranslocoConfig, provideTranslocoConfig } from '../transloco.config';
 import { timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DefaultHandler, TRANSLOCO_MISSING_HANDLER } from '../transloco-missing-handler';
@@ -40,11 +40,6 @@ export const loader = {
   }
 };
 
-export const configProviderMock = (config = {}) => ({
-  provide: TRANSLOCO_CONFIG,
-  useValue: { ...defaultConfig, ...config, availableLangs: ['en', 'es'] } as TranslocoConfig
-});
-
 export const loaderProviderMock = {
   provide: TRANSLOCO_LOADER,
   useValue: loader
@@ -72,7 +67,7 @@ export const fallbackStrategyProviderMock = {
 };
 
 export const providersMock = [
-  configProviderMock(),
+  provideTranslocoConfig({ availableLangs: ['en', 'es'] }),
   interceptorProviderMock,
   loaderProviderMock,
   transpilerProviderMock,

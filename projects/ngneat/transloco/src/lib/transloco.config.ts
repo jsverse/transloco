@@ -42,3 +42,17 @@ export const defaultConfig: TranslocoConfig = {
     aot: false
   }
 };
+
+/**
+ * Sets up TRANSLOCO_CONFIG provider
+ *
+ * @param config The partial config object to load, this is optional,
+ * will be spread after defaultConfig.
+ * @returns TRANSLOCO_CONFIG Provider given the optional config parameter.
+ */
+export function provideTranslocoConfig(config: Partial<TranslocoConfig> = defaultConfig) {
+  return {
+    provide: TRANSLOCO_CONFIG,
+    useValue: { ...defaultConfig, ...config }
+  };
+}

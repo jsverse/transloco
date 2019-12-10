@@ -1,21 +1,14 @@
 import { createComponentFactory, Spectator } from '@ngneat/spectator';
 import { Component } from '@angular/core';
 import { providersMock, runLoader } from '../transloco.mocks';
-import {
-  defaultConfig,
-  TRANSLOCO_CONFIG,
-  TRANSLOCO_LANG,
-  TRANSLOCO_SCOPE,
-  TranslocoConfig,
-  TranslocoModule,
-  TranslocoService
-} from '@ngneat/transloco';
+import { defaultConfig, TRANSLOCO_LANG, TRANSLOCO_SCOPE, TranslocoModule, TranslocoService } from '@ngneat/transloco';
 import { fakeAsync } from '@angular/core/testing';
+import { provideTranslocoConfig } from '../../transloco.config';
 
-export const listenToLangChangesProvider = {
-  provide: TRANSLOCO_CONFIG,
-  useValue: { ...defaultConfig, availableLangs: ['en', 'es'], reRenderOnLangChange: true } as TranslocoConfig
-};
+export const listenToLangChangesProvider = provideTranslocoConfig({
+  availableLangs: ['en', 'es'],
+  reRenderOnLangChange: true
+});
 
 @Component({
   template: `
