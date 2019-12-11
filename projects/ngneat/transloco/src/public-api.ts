@@ -3,7 +3,7 @@ export { TranslocoDirective } from './lib/transloco.directive';
 export { TranslocoPipe } from './lib/transloco.pipe';
 export { TranslocoModule, defaultProviders } from './lib/transloco.module';
 export { TRANSLOCO_LOADER, TranslocoLoader } from './lib/transloco.loader';
-export { TranslocoConfig, TRANSLOCO_CONFIG, defaultConfig } from './lib/transloco.config';
+export { TranslocoConfig, TRANSLOCO_CONFIG, defaultConfig, provideTranslocoConfig } from './lib/transloco.config';
 export { TRANSLOCO_TRANSPILER, DefaultTranspiler, TranslocoTranspiler } from './lib/transloco.transpiler';
 export { Translation, FailedEvent, HashMap, LoadedEvent, TranslocoEvents } from './lib/types';
 export { TRANSLOCO_SCOPE } from './lib/transloco-scope';
@@ -20,7 +20,7 @@ export {
 export {
   TRANSLOCO_MISSING_HANDLER,
   TranslocoMissingHandler,
-  TranslocoMissingHandlerData,
+  TranslocoMissingHandlerData
 } from './lib/transloco-missing-handler';
 export { getBrowserCultureLang, getBrowserLang } from './lib/browser-lang';
 export * from './lib/types';
