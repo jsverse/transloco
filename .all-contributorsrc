@@ -180,6 +180,16 @@
         "code",
         "test"
       ]
+    },
+    {
+      "login": "wesleygrimes",
+      "name": "Wes Grimes",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/324308?v=4",
+      "profile": "https://wesleygrimes.com",
+      "contributions": [
+        "code",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7
