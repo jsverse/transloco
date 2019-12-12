@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.12.1](https://github.com/ngneat/transloco/compare/v2.12.0...v2.12.1) (2019-12-12)
+
+### Bug Fixes
+
+- 🐛 deprecate provideTranslocoConfig ([#198](https://github.com/ngneat/transloco/issues/198)) ([a8957d2](https://github.com/ngneat/transloco/commit/a8957d2))
+
 ## [2.12.0](https://github.com/ngneat/transloco/compare/v2.11.0...v2.12.0) (2019-12-11)
 
 ### Bug Fixes
