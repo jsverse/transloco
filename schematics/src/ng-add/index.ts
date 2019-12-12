@@ -138,11 +138,16 @@ export default function(options: SchemaOptions): Rule {
     options.module = findRootModule(host, options.module, sourceRoot) as string;
     const modulePath = options.module.substring(0, options.module.lastIndexOf('/') + 1);
     const prodMode = isLib ? 'false' : 'environment.production';
-    const configProviderTemplate = `provideTranslocoConfig({
-      availableLangs: [${stringifyList(langs)}],
-      defaultLang: '${langs[0]}',
-      prodMode: ${prodMode},
-    })`;
+
+    const configProviderTemplate = `{
+      provide: TRANSLOCO_CONFIG,
+      useValue: translocoConfig({
+        availableLangs: [${stringifyList(langs)}],
+        defaultLang: '${langs[0]}',
+        reRenderOnLangChange: true,
+        prodMode: ${prodMode},
+      })
+    }`;
 
     if (options.ssr) {
       updateEnvironmentBaseUrl(host, sourceRoot, 'http://localhost:4200');
@@ -160,8 +165,8 @@ export default function(options: SchemaOptions): Rule {
         : noop(),
       mergeWith(getLoaderTemplates(options, modulePath)),
       isLib ? noop() : addImportsToModuleFile(options, ['environment'], '../environments/environment'),
-      addImportsToModuleFile(options, ['translocoLoader'], './transloco.loader'),
-      addImportsToModuleFile(options, ['TranslocoModule', 'provideTranslocoConfig']),
+      addImportsToModuleFile(options, ['translocoLoader'], './transloco-loader'),
+      addImportsToModuleFile(options, ['TranslocoModule', 'translocoConfig', 'TRANSLOCO_CONFIG']),
       addImportsToModuleDeclaration(options, ['TranslocoModule']),
       addProvidersToModuleDeclaration(options, [configProviderTemplate, 'translocoLoader'])
     ])(host, context);

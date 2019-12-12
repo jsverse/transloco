@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { TranslocoLocaleModule } from '@ngneat/transloco-locale';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { TranslocoModule, provideTranslocoConfig } from '@ngneat/transloco';
+import { TranslocoModule, TRANSLOCO_CONFIG, translocoConfig } from '@ngneat/transloco';
 import { HttpClientModule } from '@angular/common/http';
 import { HomeComponent } from './home/home.component';
 import { OnPushComponent } from './on-push/on-push.component';
@@ -43,16 +43,19 @@ import { TranslocoMessageFormatModule } from '@ngneat/transloco-messageformat';
   ],
   providers: [
     httpLoader,
-    provideTranslocoConfig({
-      prodMode: environment.production,
-      availableLangs: [{ id: 'en', label: 'English' }, { id: 'es', label: 'Spanish' }],
-      reRenderOnLangChange: true,
-      fallbackLang: 'es',
-      defaultLang: 'en',
-      missingHandler: {
-        useFallbackTranslation: false
-      }
-    })
+    {
+      provide: TRANSLOCO_CONFIG,
+      useValue: translocoConfig({
+        prodMode: environment.production,
+        availableLangs: [{ id: 'en', label: 'English' }, { id: 'es', label: 'Spanish' }],
+        reRenderOnLangChange: true,
+        fallbackLang: 'es',
+        defaultLang: 'en',
+        missingHandler: {
+          useFallbackTranslation: false
+        }
+      })
+    }
   ],
   bootstrap: [AppComponent]
 })
