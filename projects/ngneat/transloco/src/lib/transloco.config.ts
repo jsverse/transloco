@@ -44,15 +44,21 @@ export const defaultConfig: TranslocoConfig = {
 };
 
 /**
- * Sets up TRANSLOCO_CONFIG provider
- *
- * @param config The partial config object to load, this is optional,
- * will be spread after defaultConfig.
- * @returns TRANSLOCO_CONFIG Provider given the optional config parameter.
+ * @deprecated
  */
 export function provideTranslocoConfig(config: Partial<TranslocoConfig> = defaultConfig): Provider {
   return {
     provide: TRANSLOCO_CONFIG,
     useValue: { ...defaultConfig, ...config }
   };
+}
+
+/**
+ * Sets up TranslocoConfig object.
+ *
+ * @param config The partial config object to load, this is optional,
+ * will be spread after defaultConfig.
+ */
+export function translocoConfig(config: Partial<TranslocoConfig> = defaultConfig): TranslocoConfig {
+  return { ...defaultConfig, ...config };
 }
