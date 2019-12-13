@@ -10,7 +10,7 @@ import {
 import { Injectable, NgModule } from '@angular/core';
 <% if (importEnv) {%>import { environment } from '../environments/environment';<% } %>
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class TranslocoHttpLoader implements TranslocoLoader {
   constructor(private http: HttpClient) {}
 
