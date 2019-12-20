@@ -1,6 +1,6 @@
 {
   "name": "@ngneat/transloco-scoped-libs",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Angular Transloco support tool for libraries with translations",
   "main": "index.js",
   "bin": {

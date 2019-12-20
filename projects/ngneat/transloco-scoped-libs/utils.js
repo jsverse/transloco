@@ -34,6 +34,9 @@ function getPackageJson(lib) {
 
 function insertPathToGitIgnore(route) {
   const gitIgnorePath = path.resolve('.gitignore');
+  if (!fs.existsSync(gitIgnorePath)) {
+    return;
+  }
   const normalize = cutPath(route);
   let gitIgnore = fs.readFileSync(gitIgnorePath, 'utf8');
   if (gitIgnore.indexOf('\n' + normalize) === -1) {
