@@ -4,7 +4,8 @@ import {
   Translation,
   TranslocoLoader,
   TRANSLOCO_CONFIG,
-  translocoConfig
+  translocoConfig,
+  TranslocoModule
 } from '@ngneat/transloco';
 import {Injectable, NgModule} from '@angular/core';
 <% if (importEnv) {%>import {environment} from '../environments/environment';<% } %>
@@ -21,12 +22,15 @@ export class TranslocoHttpLoader implements TranslocoLoader {
 
 
 @NgModule({
+  imports: [ TranslocoModule ],
+  exports: [ TranslocoModule ],
   providers: [
     {
       provide: TRANSLOCO_CONFIG,
       useValue: translocoConfig({
         availableLangs: [<%=stringifyList(langs)%>],
         defaultLang: '<%=langs[0]%>',
+        // Remove this option if your application doesn't support changing language in runtime.
         reRenderOnLangChange: true,
         prodMode: <%=prodMode%>,
       })
@@ -34,4 +38,4 @@ export class TranslocoHttpLoader implements TranslocoLoader {
     { provide: TRANSLOCO_LOADER, useClass: TranslocoHttpLoader }
   ]
 })
-export class TranslocoModule {}
+export class TranslocoRootModule {}
