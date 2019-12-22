@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import {
   TRANSLOCO_LOADER,
   Translation,
@@ -22,7 +22,7 @@ export class TranslocoHttpLoader implements TranslocoLoader {
 
 
 @NgModule({
-  imports: [ TranslocoModule ],
+  imports: [ TranslocoModule, HttpClientModule ],
   exports: [ TranslocoModule ],
   providers: [
     {
