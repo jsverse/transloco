@@ -13,6 +13,20 @@ describe('selectTranslationObject', () => {
     expect(spy).toHaveBeenCalledWith({ b: { c: 'a.b.c {{fromList}} english' } });
   }));
 
+  it('should work with scope', fakeAsync(() => {
+    const spy = jasmine.createSpy();
+    service.selectTranslateObject('obj', {}, 'lazy-page').subscribe(spy);
+    runLoader();
+    expect(spy).toHaveBeenCalledWith({ a: { b: 'a.b english' } });
+  }));
+
+  it('should work with scope and lang', fakeAsync(() => {
+    const spy = jasmine.createSpy();
+    service.selectTranslateObject('obj', {}, 'lazy-page/es').subscribe(spy);
+    runLoader();
+    expect(spy).toHaveBeenCalledWith({ a: { b: 'a.b spanish' } });
+  }));
+
   it('should return a nested object', fakeAsync(() => {
     const spy = jasmine.createSpy();
     service.selectTranslateObject('a.b').subscribe(spy);

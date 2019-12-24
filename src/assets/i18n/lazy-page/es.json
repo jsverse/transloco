@@ -1,5 +1,8 @@
 {
   "title": "Admin Lazy spanish",
   "withParam": "Admin Lazy spanish {{param}}",
-  "empty": "resolved from es"
+  "empty": "resolved from es",
+  "obj": {
+    "a.b": "a.b spanish"
+  }
 }

@@ -175,22 +175,7 @@ export class TranslocoService implements OnDestroy {
    * translate('scope.someKey', { }, 'en')
    */
   translate<T = any>(key: TranslateParams, params: HashMap = {}, lang = this.getActiveLang()): T {
-    let resolveLang = lang;
-    let scope;
-
-    // If lang is scope we need to check the following cases:
-    // todos/es => in this case we should take `es` as lang
-    // todos => in this case we should set the active lang as lang
-    if (this._isLangScoped(lang)) {
-      // en for example
-      const langFromScope = getLangFromScope(lang);
-      // en is lang
-      const hasLang = this.isLang(langFromScope);
-      // take en
-      resolveLang = hasLang ? langFromScope : this.getActiveLang();
-      // find the scope
-      scope = this.getMappedScope(hasLang ? getScopeFromLang(lang) : lang);
-    }
+    const { scope, resolveLang } = this.resolveLangAndScope(lang);
 
     if (Array.isArray(key)) {
       return key.map(k => this.translate(scope ? `${scope}.${k}` : k, params, resolveLang)) as any;
@@ -260,11 +245,13 @@ export class TranslocoService implements OnDestroy {
    *
    */
   translateObject<T = any>(key: TranslateParams, params?: HashMap, lang = this.getActiveLang()): T {
-    if (Array.isArray(key)) {
-      return key.map(k => this.translateObject(k, params, lang)) as any;
-    }
+    const { resolveLang, scope } = this.resolveLangAndScope(lang);
 
-    const translation = this.getTranslation(lang);
+    if (Array.isArray(key)) {
+      return key.map(k => this.translateObject(scope ? `${scope}.${k}` : k, params, resolveLang)) as any;
+    }
+    const translation = this.getTranslation(resolveLang);
+    key = scope ? `${scope}.${key}` : key;
     // TODO: optimize it (we can build this specific object)
     const value = getValue(unflatten(translation), key);
     return this.parser.transpile(value, params, translation);
@@ -528,5 +515,27 @@ export class TranslocoService implements OnDestroy {
   private getMappedScope(scope: string): string {
     const { scopeMapping = {} } = this.config;
     return scopeMapping[scope] || toCamelCase(scope);
+  }
+
+  /**
+   * If lang is scope we need to check the following cases:
+   * todos/es => in this case we should take `es` as lang
+   * todos => in this case we should set the active lang as lang
+   */
+  private resolveLangAndScope(lang: string) {
+    let resolveLang = lang;
+    let scope;
+
+    if (this._isLangScoped(lang)) {
+      // en for example
+      const langFromScope = getLangFromScope(lang);
+      // en is lang
+      const hasLang = this.isLang(langFromScope);
+      // take en
+      resolveLang = hasLang ? langFromScope : this.getActiveLang();
+      // find the scope
+      scope = this.getMappedScope(hasLang ? getScopeFromLang(lang) : lang);
+    }
+    return { scope, resolveLang };
   }
 }
