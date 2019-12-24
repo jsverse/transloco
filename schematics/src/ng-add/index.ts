@@ -17,14 +17,14 @@ import {
 } from '@angular-devkit/schematics';
 import { createSourceFile, ScriptTarget, SourceFile } from 'typescript';
 import { LIB_NAME } from '../schematics.consts';
-import { addImportToModule, addProviderToModule, insertImport } from '../utils/ast-utils';
+import { stringifyList } from '../utils/array';
+import { addImportToModule, insertImport } from '../utils/ast-utils';
 import { InsertChange } from '../utils/change';
 import { findRootModule } from '../utils/find-module';
 import { getProject, setEnvironments } from '../utils/projects';
 import { checkIfTranslationFilesExist } from '../utils/translations';
 import { createConfig } from '../utils/transloco';
-import { Loaders, SchemaOptions, TranslationFileTypes } from './schema';
-import { stringifyList } from '../utils/array';
+import {SchemaOptions, Loaders} from './schema';
 
 function jsonTranslationFileCreator(source, lang) {
   return source.create(
@@ -90,25 +90,16 @@ export function addImportsToModuleDeclaration(options: SchemaOptions, imports: s
   };
 }
 
-export function addProvidersToModuleDeclaration(options: SchemaOptions, providers: string[]): Rule {
-  return host => {
-    const module = getModuleFile(host, options);
-
-    const providerChanges = addProviderToModule(module, options.module, providers.join(',\n    ') + '\n  ', LIB_NAME);
-
-    return applyChanges(host, options.module, providerChanges as InsertChange[]);
-  };
-}
-
-function getLoaderTemplates(options, path): Source {
-  const loaderFolder = options.loader === Loaders.Webpack ? 'webpack-loader' : 'http-loader';
-
-  return apply(url(`./files/${loaderFolder}`), [
+function createTranslocoModule(isLib: boolean, ssr: boolean, langs: string[], path): Source {
+  return apply(url(`./files/transloco-module`), [
     template({
       ts: 'ts',
-      ssr: options.ssr,
-      prefix: options.ssr ? '${environment.baseUrl}' : '',
-      suffix: options.format === TranslationFileTypes.JSON ? '.json' : ''
+      stringifyList: stringifyList,
+      isLib: isLib,
+      langs: langs,
+      importEnv: ssr || !isLib,
+      loaderPrefix: ssr ? '${environment.baseUrl}' : '',
+      prodMode: isLib ? 'false' : 'environment.production'
     }),
     move('/', path)
   ]);
@@ -137,17 +128,6 @@ export default function(options: SchemaOptions): Rule {
 
     options.module = findRootModule(host, options.module, sourceRoot) as string;
     const modulePath = options.module.substring(0, options.module.lastIndexOf('/') + 1);
-    const prodMode = isLib ? 'false' : 'environment.production';
-
-    const configProviderTemplate = `{
-      provide: TRANSLOCO_CONFIG,
-      useValue: translocoConfig({
-        availableLangs: [${stringifyList(langs)}],
-        defaultLang: '${langs[0]}',
-        reRenderOnLangChange: true,
-        prodMode: ${prodMode},
-      })
-    }`;
 
     if (options.ssr) {
       updateEnvironmentBaseUrl(host, sourceRoot, 'http://localhost:4200');
@@ -156,19 +136,16 @@ export default function(options: SchemaOptions): Rule {
     createConfig(host, langs, assetsPath);
 
     return chain([
-      checkIfTranslationFilesExist(assetsPath, langs, '.json', true) ? noop() : mergeWith(translateFiles),
       options.loader === Loaders.Http
         ? chain([
-            addImportsToModuleFile(options, ['HttpClientModule'], '@angular/common/http'),
-            addImportsToModuleDeclaration(options, ['HttpClientModule'])
-          ])
+          addImportsToModuleFile(options, ['HttpClientModule'], '@angular/common/http'),
+          addImportsToModuleDeclaration(options, ['HttpClientModule'])
+        ])
         : noop(),
-      mergeWith(getLoaderTemplates(options, modulePath)),
-      isLib ? noop() : addImportsToModuleFile(options, ['environment'], '../environments/environment'),
-      addImportsToModuleFile(options, ['translocoLoader'], './transloco-loader'),
-      addImportsToModuleFile(options, ['TranslocoModule', 'translocoConfig', 'TRANSLOCO_CONFIG']),
-      addImportsToModuleDeclaration(options, ['TranslocoModule']),
-      addProvidersToModuleDeclaration(options, [configProviderTemplate, 'translocoLoader'])
+      checkIfTranslationFilesExist(assetsPath, langs, '.json', true) ? noop() : mergeWith(translateFiles),
+      mergeWith(createTranslocoModule(isLib, options.ssr, langs, modulePath)),
+      addImportsToModuleFile(options, ['TranslocoRootModule'], './transloco-root.module'),
+      addImportsToModuleDeclaration(options, ['TranslocoRootModule'])
     ])(host, context);
   };
 }
