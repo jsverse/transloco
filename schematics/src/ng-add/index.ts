@@ -24,7 +24,7 @@ import { findRootModule } from '../utils/find-module';
 import { getProject, setEnvironments } from '../utils/projects';
 import { checkIfTranslationFilesExist } from '../utils/translations';
 import { createConfig } from '../utils/transloco';
-import { SchemaOptions } from './schema';
+import {SchemaOptions, Loaders} from './schema';
 
 function jsonTranslationFileCreator(source, lang) {
   return source.create(
@@ -136,6 +136,12 @@ export default function(options: SchemaOptions): Rule {
     createConfig(host, langs, assetsPath);
 
     return chain([
+      options.loader === Loaders.Http
+        ? chain([
+          addImportsToModuleFile(options, ['HttpClientModule'], '@angular/common/http'),
+          addImportsToModuleDeclaration(options, ['HttpClientModule'])
+        ])
+        : noop(),
       checkIfTranslationFilesExist(assetsPath, langs, '.json', true) ? noop() : mergeWith(translateFiles),
       mergeWith(createTranslocoModule(isLib, options.ssr, langs, modulePath)),
       addImportsToModuleFile(options, ['TranslocoRootModule'], './transloco-root.module'),
