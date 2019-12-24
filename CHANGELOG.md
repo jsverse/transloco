@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.12.2](https://github.com/ngneat/transloco/compare/v2.12.1...v2.12.2) (2019-12-24)
+
+### Bug Fixes
+
+- 🐛 select translate object not working with scopes ([32e1ad7](https://github.com/ngneat/transloco/commit/32e1ad7)), closes [#207](https://github.com/ngneat/transloco/issues/207)
+
 ### [2.12.1](https://github.com/ngneat/transloco/compare/v2.12.0...v2.12.1) (2019-12-12)
 
 ### Bug Fixes
