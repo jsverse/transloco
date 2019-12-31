@@ -1,5 +1,5 @@
 import { Inject, Injectable, OnDestroy, Optional } from '@angular/core';
-import { BehaviorSubject, combineLatest, forkJoin, from, Observable, of, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, EMPTY, forkJoin, from, Observable, of, Subject, Subscription } from 'rxjs';
 import { catchError, map, retry, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { DefaultLoader, TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_TRANSPILER, TranslocoTranspiler } from './transloco.transpiler';
@@ -13,7 +13,7 @@ import {
   Translation,
   TranslocoEvents
 } from './types';
-import { flatten, getValue, isString, size, toCamelCase, unflatten, isNil } from './helpers';
+import { flatten, getValue, isNil, isString, size, toCamelCase, unflatten } from './helpers';
 import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 import {
   TRANSLOCO_MISSING_HANDLER,
@@ -140,7 +140,6 @@ export class TranslocoService implements OnDestroy {
 
       const load$ = loadTranslation.pipe(
         retry(this.config.failedRetries),
-        catchError(() => this.handleFailure(path, options)),
         tap(translation => {
           if (Array.isArray(translation)) {
             translation.forEach(t => {
@@ -154,6 +153,7 @@ export class TranslocoService implements OnDestroy {
           }
           this.handleSuccess(path, translation);
         }),
+        catchError(() => this.handleFailure(path, options)),
         shareReplay(1)
       );
 
@@ -325,7 +325,6 @@ export class TranslocoService implements OnDestroy {
 
     const flattenTranslation = this.mergedConfig.flatten.aot ? mergedTranslation : flatten(mergedTranslation);
     const withHook = this.interceptor.preSaveTranslation(flattenTranslation, currentLang);
-
     this.translations.set(currentLang, withHook);
     mergedOptions.emitChange && this.setActiveLang(this.getActiveLang());
   }
@@ -462,26 +461,27 @@ export class TranslocoService implements OnDestroy {
 
   private handleSuccess(lang: string, translation: Translation) {
     this.setTranslation(translation, lang, { emitChange: false });
-    if (this.failedLangs.has(lang) === false) {
-      this.events.next({
-        wasFailure: !!this.failedLangs.size,
-        type: 'translationLoadSuccess',
-        payload: getEventPayload(lang)
-      });
-
-      this.failedCounter = 0;
-    } else {
-      this.cache.delete(lang);
-      this.failedLangs.delete(lang);
-    }
+    this.failedCounter = 0;
+    this.events.next({
+      wasFailure: !!this.failedLangs.size,
+      type: 'translationLoadSuccess',
+      payload: getEventPayload(lang)
+    });
+    this.failedLangs.forEach(l => this.cache.delete(l));
+    this.failedLangs.clear();
   }
 
   private handleFailure(lang: string, mergedOptions) {
     const splitted = lang.split('/');
-
-    this.failedLangs.add(lang);
     const fallbacks = mergedOptions.fallbackLangs || this.fallbackStrategy.getNextLangs(lang);
     const nextLang = fallbacks[this.failedCounter];
+    this.failedLangs.add(lang);
+
+    // This handles the case where a loaded fallback language is requested again
+    if (this.cache.has(nextLang)) {
+      this.handleSuccess(nextLang, this.getTranslation(nextLang));
+      return EMPTY;
+    }
 
     const isFallbackLang = nextLang === splitted[splitted.length - 1];
 

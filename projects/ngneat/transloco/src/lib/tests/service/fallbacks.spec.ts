@@ -21,7 +21,7 @@ describe('Multiple fallbacks', () => {
           return timer(1000).pipe(
             map(() => mockLangs[lang]),
             map(translation => {
-              if (lang === 'notExists' || lang === 'fallbackNotExists') {
+              if (lang === 'notExists' || lang === 'fallbackNotExists' || lang === 'notExists2') {
                 throw new Error('error');
               }
               return translation;
@@ -52,6 +52,37 @@ describe('Multiple fallbacks', () => {
       // it should set the fallback lang as active
       expect(service.getActiveLang()).toEqual('es');
 
+      // clear the cache
+      expect((service as any).cache.size).toEqual(1);
+    }));
+
+    it('should load the fallbackLang only once', fakeAsync(() => {
+      const service = new TranslocoService(
+        loader,
+        new DefaultTranspiler(),
+        new DefaultHandler(),
+        new DefaultInterceptor(),
+        { defaultLang: 'en' },
+        new DefaultFallbackStrategy({ fallbackLang: 'es', defaultLang: 'en', failedRetries: 2 })
+      );
+
+      spyOn(service, 'load').and.callThrough();
+      service.load('notExists').subscribe();
+      // notExists will try 3 times then the fallback
+      runLoader(4);
+      expect(service.load).toHaveBeenCalledTimes(2);
+      expect((service.load as jasmine.Spy).calls.argsFor(0)).toEqual(['notExists']);
+      expect((service.load as jasmine.Spy).calls.argsFor(1)).toEqual(['es']);
+
+      // it should set the fallback lang as active
+      expect(service.getActiveLang()).toEqual('es');
+      service.load('notExists2').subscribe();
+      // notExists2 will try 3 times then the fallback
+      runLoader(4);
+      expect((service.load as jasmine.Spy).calls.argsFor(2)).toEqual(['notExists2']);
+      // Ensure that we don't call es again
+      expect((service.load as jasmine.Spy).calls.argsFor(3)).toEqual([]);
+      expect(service.getActiveLang()).toEqual('es');
       // clear the cache
       expect((service as any).cache.size).toEqual(1);
     }));
