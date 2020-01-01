@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.12.3](https://github.com/ngneat/transloco/compare/v2.12.2...v2.12.3) (2020-01-01)
+
+### Bug Fixes
+
+- 🐛 same fallback lang should not load again ([#211](https://github.com/ngneat/transloco/issues/211)) ([5498dee](https://github.com/ngneat/transloco/commit/5498dee)), closes [#210](https://github.com/ngneat/transloco/issues/210)
+
 ### [2.12.2](https://github.com/ngneat/transloco/compare/v2.12.1...v2.12.2) (2019-12-24)
 
 ### Bug Fixes
