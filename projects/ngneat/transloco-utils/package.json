@@ -17,9 +17,9 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "12.7.12",
-    "@types/cosmiconfig": "5.0.3"
+    "@types/cosmiconfig": "6.0.0"
   },
   "dependencies": {
-    "cosmiconfig": "5.2.1"
+    "cosmiconfig": "6.0.0"
   }
 }
