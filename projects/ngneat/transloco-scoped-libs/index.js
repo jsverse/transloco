@@ -8,7 +8,7 @@ const config = translocoUtils.getConfig();
 
 let scopeFilesMap = [];
 const example = `
-  e.g: 
+  e.g:
   module.exports = {
     scopedLibs: [{
       src: './projects/core',
@@ -38,10 +38,11 @@ const i18nExample = `
  * }
  *
  * watch - if true the script will run in watch mode
+ * modifyGitignore - if true tries to add an entry to the .gitignore for each of the translation files
  * rootTranslationsPath - the root directory of the translation files.
  * scopedLibs - list of all translation scoped project paths.
  */
-function run({ watch, rootTranslationsPath, scopedLibs } = {}) {
+function run({ watch, modifyGitignore, rootTranslationsPath, scopedLibs } = {}) {
   const defaultTranslationPath = rootTranslationsPath || config.rootTranslationsPath;
 
   scopedLibs = coerceScopedLibs(scopedLibs || config.scopedLibs, defaultTranslationPath);
@@ -76,7 +77,7 @@ function run({ watch, rootTranslationsPath, scopedLibs } = {}) {
         for (let output of outputs) {
           // save the files with the scope to provide an API for the webpack loader.
           scopeFilesMap.push({ scopeConfig, files, output });
-          copyScopes(output, scopeConfig.scope, files, scopeConfig.strategy);
+          copyScopes(output, scopeConfig.scope, files, scopeConfig.strategy, modifyGitignore);
         }
 
         if (watch) {
@@ -111,17 +112,17 @@ function getScopeFromFile(filePath) {
   return scopeFilesMap.find(scope => scope.files.includes(filePath));
 }
 
-function copyScopes(outputDir, scope, files, strategy) {
+function copyScopes(outputDir, scope, files, strategy, modifyGitignore) {
   if (strategy === 'join') {
-    copyScopeTranslationFiles(files, outputDir, strategy, '.vendor.json', scope);
+    copyScopeTranslationFiles(files, outputDir, strategy, '.vendor.json', scope, modifyGitignore);
   } else {
     const dest = path.join(outputDir, scope);
     utils.mkRecursiveDirSync(dest, scope);
-    copyScopeTranslationFiles(files, dest, strategy, '.json', scope);
+    copyScopeTranslationFiles(files, dest, strategy, '.json', scope, modifyGitignore);
   }
 }
 
-function copyScopeTranslationFiles(files, destinationPath, strategy, extension, scopeName) {
+function copyScopeTranslationFiles(files, destinationPath, strategy, extension, scopeName, modifyGitignore) {
   for (let filePath of files) {
     const normalized = path.normalize(filePath);
     const lang = path.basename(normalized).split('.')[0];
@@ -135,10 +136,12 @@ function copyScopeTranslationFiles(files, destinationPath, strategy, extension, 
       chalk.blue(utils.cutPath(dest))
     );
 
-    if (strategy === 'join') {
-      utils.insertPathToGitIgnore(dest);
-    } else {
-      utils.insertPathToGitIgnore(destinationPath);
+    if (modifyGitignore) {
+      if (strategy === 'join') {
+        utils.insertPathToGitIgnore(dest);
+      } else {
+        utils.insertPathToGitIgnore(destinationPath);
+      }
     }
 
     setTranslationFile(normalized, dest, strategy, scopeName);
