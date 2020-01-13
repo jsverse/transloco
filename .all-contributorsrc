@@ -190,6 +190,15 @@
         "code",
         "test"
       ]
+    },
+    {
+      "login": "Dorrro",
+      "name": "Dorian Sobacki",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/1622671?v=4",
+      "profile": "https://github.com/Dorrro",
+      "contributions": [
+        "plugin"
+      ]
     }
   ],
   "contributorsPerLine": 7
