@@ -6,14 +6,14 @@ const commandLineArgs = require('command-line-args');
 
 const optionDefinitions = [
   { name: 'watch', alias: 'w', type: Boolean, defaultValue: false },
-  { name: 'modifyGitignore', alias: 'm', type: Boolean, defaultValue: true }
+  { name: 'skip-gitignore', alias: 'm', type: Boolean, defaultValue: false }
 ];
 const cliParams = commandLineArgs(optionDefinitions);
 const config = translocoUtils.getConfig();
 
 run({
   watch: cliParams.watch,
-  modifyGitignore: cliParams.modifyGitignore,
+  skipGitignore: cliParams['skip-gitignore'],
   rootTranslationsPath: config.rootTranslationsPath,
   scopedLibs: config.scopedLibs
 });
