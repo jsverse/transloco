@@ -118,17 +118,22 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   }
 
   private getTranslateFn(lang: string, read: string | undefined): (key: string, params?: HashMap) => any {
-    return (key: string, params: HashMap) => {
+    return (key: string, params: HashMap | boolean, asObject = false) => {
       const withRead = read ? `${read}.${key}` : key;
-      const withParams = params ? `${withRead}${JSON.stringify(params)}` : withRead;
+      let withParams = withRead;
+      let isObject = asObject || (typeof params === 'boolean' && params);
+      if (typeof params === 'object' && params !== null) {
+        withParams = `${withRead}${JSON.stringify(params)}`;
+      }
       if (this.translationMemo.hasOwnProperty(withParams)) {
         return this.translationMemo[withParams].value;
       }
       this.translationMemo[withParams] = {
-        params,
-        value: this.translocoService.translate(withRead, params, lang)
+        params: params as HashMap,
+        value: isObject
+          ? this.translocoService.translateObject(withRead, params as HashMap, lang)
+          : this.translocoService.translate(withRead, params as HashMap, lang)
       };
-
       return this.translationMemo[withParams].value;
     };
   }

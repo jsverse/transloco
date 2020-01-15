@@ -15,6 +15,7 @@ describe('Structural directive', () => {
            <span>{{t('fromList')}}</span>
            <p>{{t('a.b.c')}}</p>
            <h2>{{t('a.b.c', {fromList: "value"}) }}</h2>
+           <a>{{t('nested', true) | json }}</a>
         </section>
      `);
     runLoader();
@@ -24,6 +25,9 @@ describe('Structural directive', () => {
     expect(spectator.queryHost('span')).toHaveText('from list');
     expect(spectator.queryHost('p')).toHaveText('a.b.c from list english');
     expect(spectator.queryHost('h2')).toHaveText('a.b.c value english');
+    expect(spectator.queryHost('a')).toHaveText(
+      JSON.stringify({ desc: 'Desc english', title: 'Title english' }, null, 2)
+    );
   }));
 
   it('should set the translation value and listen to lang changes', fakeAsync(() => {
@@ -34,6 +38,7 @@ describe('Structural directive', () => {
            <span>{{t('fromList')}}</span>
            <p>{{t('a.b.c')}}</p>
            <h2>{{t('a.b.c', {fromList: "value"}) }}</h2>
+           <a>{{t('nested', true) | json }}</a>
         </section>
      `,
       { detectChanges: false }
@@ -48,6 +53,9 @@ describe('Structural directive', () => {
     expect(spectator.queryHost('span')).toHaveText('from list');
     expect(spectator.queryHost('p')).toHaveText('a.b.c from list english');
     expect(spectator.queryHost('h2')).toHaveText('a.b.c value english');
+    expect(spectator.queryHost('a')).toHaveText(
+      JSON.stringify({ desc: 'Desc english', title: 'Title english' }, null, 2)
+    );
     (service as TranslocoService).setActiveLang('es');
     runLoader();
     spectator.detectChanges();
@@ -55,6 +63,9 @@ describe('Structural directive', () => {
     expect(spectator.queryHost('span')).toHaveText('from list');
     expect(spectator.queryHost('p')).toHaveText('a.b.c from list spanish');
     expect(spectator.queryHost('h2')).toHaveText('a.b.c value spanish');
+    expect(spectator.queryHost('a')).toHaveText(
+      JSON.stringify({ desc: 'Desc spanish', title: 'Title spanish' }, null, 2)
+    );
   }));
 
   it('should create embedded view once', fakeAsync(() => {
