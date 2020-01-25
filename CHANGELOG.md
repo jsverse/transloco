@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.13.0](https://github.com/ngneat/transloco/compare/v2.12.4...v2.13.0) (2020-01-25)
+
+### Features
+
+- 🎸 add support for getting config from path ([31c180a](https://github.com/ngneat/transloco/commit/31c180a))
+- 🎸 support inline loader for select translate ([#225](https://github.com/ngneat/transloco/issues/225)) ([a2b1867](https://github.com/ngneat/transloco/commit/a2b1867))
+
 ### [2.12.3](https://github.com/ngneat/transloco/compare/v2.12.2...v2.12.3) (2020-01-01)
 
 ### Bug Fixes
