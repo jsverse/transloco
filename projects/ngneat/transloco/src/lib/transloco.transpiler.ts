@@ -6,6 +6,7 @@ export const TRANSLOCO_TRANSPILER = new InjectionToken('TRANSLOCO_TRANSPILER');
 
 export interface TranslocoTranspiler {
   transpile(value: any, params: HashMap<any>, translation: HashMap): any;
+  onLangChanged?(lang: string): void;
 }
 
 export class DefaultTranspiler implements TranslocoTranspiler {

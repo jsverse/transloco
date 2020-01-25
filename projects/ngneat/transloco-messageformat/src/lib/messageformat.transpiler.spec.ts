@@ -134,4 +134,15 @@ describe('MessageFormatTranspiler', () => {
 
     expect(parser.transpile(messages.answer, { obj: { q: 3, a: 42 } }, {})).toBe('Answer: 42');
   });
+
+  it('should switch locale in runtime', () => {
+    const config = { locales: 'en' };
+    const parser = new MessageFormatTranspiler(config);
+    const polishKey = '{count, plural, =0 {none} one {# thing} few {# things} many {# things} other {# things}}';
+    const params = { count: 2 };
+
+    expect(() => parser.transpile(polishKey, params, {})).toThrowError();
+    parser.setLocale('pl');
+    expect(parser.transpile(polishKey, params, {})).toBe('2 things');
+  });
 });
