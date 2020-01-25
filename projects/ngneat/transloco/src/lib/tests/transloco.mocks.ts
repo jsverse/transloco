@@ -19,7 +19,7 @@ import { TranslocoService } from '../transloco.service';
 import { TRANSLOCO_LOADING_TEMPLATE } from '../transloco-loading-template';
 import { DefaultInterceptor, TRANSLOCO_INTERCEPTOR } from '../transloco.interceptor';
 import { DefaultFallbackStrategy, TRANSLOCO_FALLBACK_STRATEGY } from '../transloco-fallback-strategy';
-import { TRANSLOCO_SCOPE } from '@ngneat/transloco';
+import { TRANSLOCO_SCOPE, ProviderScope } from '@ngneat/transloco';
 
 export const mockLangs = {
   en,
@@ -104,4 +104,18 @@ export function createService(config: Partial<TranslocoConfig> = {}) {
 export const scopeAliasMock = {
   provide: TRANSLOCO_SCOPE,
   useValue: { scope: 'lazy-scope-alias', alias: 'myScopeAlias' }
+};
+
+export const inlineScope: ProviderScope = {
+  scope: 'todos',
+  loader: {
+    en: () =>
+      Promise.resolve({
+        default: { title: 'Todos Title English' }
+      }),
+    es: () =>
+      Promise.resolve({
+        default: { title: 'Todos Title Spanish' }
+      })
+  }
 };
