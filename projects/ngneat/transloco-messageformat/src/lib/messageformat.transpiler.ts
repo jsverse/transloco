@@ -2,17 +2,23 @@ import { Injectable, Inject, Optional } from '@angular/core';
 import { DefaultTranspiler, HashMap, Translation, isObject, setValue, getValue } from '@ngneat/transloco';
 
 import * as MessageFormat from 'messageformat';
-import { MessageformatConfig, TRANSLOCO_MESSAGE_FORMAT_CONFIG } from './messageformat.config';
+import { MessageformatConfig, TRANSLOCO_MESSAGE_FORMAT_CONFIG, MFLocale } from './messageformat.config';
+
+function mfFactory(locales?: MFLocale, messageConfig?: MessageFormat.Options): MessageFormat {
+  //@ts-ignore
+  return new MessageFormat(locales, messageConfig);
+}
 
 @Injectable()
 export class MessageFormatTranspiler extends DefaultTranspiler {
   private messageFormat: MessageFormat;
+  private messageConfig: MessageFormat.Options;
 
   constructor(@Optional() @Inject(TRANSLOCO_MESSAGE_FORMAT_CONFIG) config: MessageformatConfig) {
     super();
     const { locales, ...messageConfig } = config || { locales: undefined };
-    //@ts-ignore
-    this.messageFormat = new MessageFormat(locales, messageConfig);
+    this.messageConfig = messageConfig;
+    this.messageFormat = mfFactory(locales, messageConfig);
   }
 
   transpile(value: any, params: HashMap<any> = {}, translation: Translation): any {
@@ -37,5 +43,13 @@ export class MessageFormatTranspiler extends DefaultTranspiler {
     }
 
     return value;
+  }
+
+  onLangChanged(lang: string) {
+    this.setLocale(lang);
+  }
+
+  setLocale(locale: MFLocale) {
+    this.messageFormat = mfFactory(locale, this.messageConfig);
   }
 }

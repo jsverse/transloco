@@ -6,6 +6,8 @@ export const TRANSLOCO_MESSAGE_FORMAT_CONFIG = new InjectionToken<MessageformatC
   'TRANSLOCO_MESSAGE_FORMAT_CONFIG'
 );
 
+export type MFLocale = { [locale: string]: Function } | string[] | string;
+
 export interface MessageformatConfig extends MessageFormat.Options {
-  locales?: { [locale: string]: Function } | string[] | string;
+  locales?: MFLocale;
 }
