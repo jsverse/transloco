@@ -1,5 +1,6 @@
 import { fakeAsync } from '@angular/core/testing';
-import { createService, runLoader } from '../transloco.mocks';
+import { TRANSLOCO_SCOPE, ProviderScope } from '@ngneat/transloco';
+import { createService, runLoader, inlineScope } from '../transloco.mocks';
 
 describe('selectTranslate', () => {
   let service;
@@ -101,4 +102,19 @@ describe('selectTranslate', () => {
     runLoader();
     expect(spy).toHaveBeenCalledWith('Replaces standard Transloco - spanish');
   }));
+
+  describe('inline loader', () => {
+    it('select translate with inline loader', fakeAsync(() => {
+      const spy = jasmine.createSpy();
+      service.selectTranslate('title', {}, inlineScope).subscribe(spy);
+      runLoader();
+      expect(spy).toHaveBeenCalledWith('Todos Title English');
+    }));
+    it('should support scope with lang and params', fakeAsync(() => {
+      const spy = jasmine.createSpy();
+      service.selectTranslate('withParam', { param: 'Transloco' }, { scope: 'lazy-page' }).subscribe(spy);
+      runLoader();
+      expect(spy).toHaveBeenCalledWith('Admin Lazy english Transloco');
+    }));
+  });
 });

@@ -8,25 +8,13 @@ import {
 } from '@ngneat/transloco';
 import { createFactory } from './directive/shared';
 import { fakeAsync } from '@angular/core/testing';
-import { providersMock, runLoader, setlistenToLangChange } from './transloco.mocks';
+import { providersMock, runLoader, setlistenToLangChange, inlineScope } from './transloco.mocks';
 import { Component } from '@angular/core';
 import { listenToLangChangesProvider } from './pipe/pipe-integration.spec';
 
 const inlineLoaders = {
   provide: TRANSLOCO_SCOPE,
-  useValue: {
-    scope: 'todos',
-    loader: {
-      en: () =>
-        Promise.resolve({
-          default: { title: 'Todos Title English' }
-        }),
-      es: () =>
-        Promise.resolve({
-          default: { title: 'Todos Title Spanish' }
-        })
-    }
-  } as ProviderScope
+  useValue: inlineScope
 };
 
 function updateView(spectator, service) {

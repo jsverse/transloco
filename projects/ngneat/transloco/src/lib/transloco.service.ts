@@ -11,9 +11,11 @@ import {
   SetTranslationOptions,
   TranslateParams,
   Translation,
-  TranslocoEvents
+  TranslocoEvents,
+  TranslocoScope,
+  ProviderScope
 } from './types';
-import { flatten, getValue, isNil, isString, size, toCamelCase, unflatten } from './helpers';
+import { flatten, getValue, isNil, isString, size, toCamelCase, unflatten, isScopeObject } from './helpers';
 import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 import {
   TRANSLOCO_MISSING_HANDLER,
@@ -23,7 +25,7 @@ import {
 import { TRANSLOCO_INTERCEPTOR, TranslocoInterceptor } from './transloco.interceptor';
 import { TRANSLOCO_FALLBACK_STRATEGY, TranslocoFallbackStrategy } from './transloco-fallback-strategy';
 import { mergeConfig } from './merge-config';
-import { getEventPayload, getLangFromScope, getScopeFromLang } from './shared';
+import { getEventPayload, getLangFromScope, getScopeFromLang, resolveInlineLoader } from './shared';
 import { getFallbacksLoaders } from './get-fallbacks-loaders';
 import { resolveLoader } from './resolve-loader';
 
@@ -206,23 +208,38 @@ export class TranslocoService implements OnDestroy {
    * selectTranslate<string>('hello').subscribe(value => ...)
    * selectTranslate<string>('hello', {}, 'es').subscribe(value => ...)
    * selectTranslate<string>('hello', {}, 'todos').subscribe(value => ...)
+   * selectTranslate<string>('hello', {}, { scope: 'todos' }).subscribe(value => ...)
    *
    */
-  selectTranslate<T = any>(key: TranslateParams, params?: HashMap, lang?: string, _isObject = false): Observable<T> {
-    const load = lang =>
-      this.load(lang).pipe(
+  selectTranslate<T = any>(
+    key: TranslateParams,
+    params?: HashMap,
+    lang?: string | TranslocoScope,
+    _isObject = false
+  ): Observable<T> {
+    let inlineLoader = null;
+    const load = (lang, options?: LoadOptions) =>
+      this.load(lang, options).pipe(
         map(() => (_isObject ? this.translateObject(key, params, lang) : this.translate(key, params, lang)))
       );
     if (isNil(lang)) {
       return this.langChanges$.pipe(switchMap(lang => load(lang)));
     }
 
+    if (isScopeObject(lang)) {
+      // it's a scope object.
+      const providerScope = lang as ProviderScope;
+      lang = providerScope.scope;
+      inlineLoader = resolveInlineLoader(providerScope, providerScope.scope);
+    }
+
+    lang = lang as string;
     if (this.isLang(lang) || this.isScopeWithLang(lang)) {
       return load(lang);
     }
     // it's a scope
     const scope = lang;
-    return this.langChanges$.pipe(switchMap(lang => load(`${scope}/${lang}`)));
+    return this.langChanges$.pipe(switchMap(lang => load(`${scope}/${lang}`, { inlineLoader })));
   }
 
   /**
