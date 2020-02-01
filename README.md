@@ -38,6 +38,7 @@ It exposes a rich API to manage translations efficiently and cleanly. It provide
 - 👉 Checkout the [sample application](https://transloco.netlify.com/home)
 - 📖 Read the blog [posts](https://netbasal.gitbook.io/transloco/general/blog-posts)
 - 🍄 Join Transloco's [Gitter](https://gitter.im/ngneat-transloco/lobby?source=orgpage) room
+- ❓ Find answers in our [FAQ](https://netbasal.gitbook.io/transloco/general/faq) section
 
 ## Core Team
 
