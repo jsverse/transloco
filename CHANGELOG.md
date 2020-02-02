@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.13.1](https://github.com/ngneat/transloco/compare/v2.13.0...v2.13.1) (2020-02-02)
+
+### Bug Fixes
+
+- 🐛 testing module should work with ivy ([2a68be7](https://github.com/ngneat/transloco/commit/2a68be7))
+
 ## [2.13.0](https://github.com/ngneat/transloco/compare/v2.12.4...v2.13.0) (2020-01-25)
 
 ### Features
