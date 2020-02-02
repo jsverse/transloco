@@ -1,10 +1,11 @@
-import { Inject, ModuleWithProviders, NgModule } from '@angular/core';
+import { Inject, Injectable, ModuleWithProviders, NgModule } from '@angular/core';
 import { TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { HashMap, Translation } from './types';
 import { Observable, of } from 'rxjs';
 import { defaultProviders, TranslocoModule } from './transloco.module';
 import { TranslocoConfig, TRANSLOCO_CONFIG, translocoConfig } from './transloco.config';
 
+@Injectable()
 export class TestingLoader implements TranslocoLoader {
   constructor(@Inject('translocoLangs') private langs: HashMap<Translation>) {}
 
