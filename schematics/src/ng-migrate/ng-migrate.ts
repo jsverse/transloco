@@ -97,7 +97,7 @@ function getTranslation(template) {
 function getNewTemplate(template) {
   return template.replace(regex, function(match, tag, mark, attrValue, propName, propMark, propValue, innerText) {
     let replace = ' i18n';
-    const key = resolveKey(attrValue, propName || innerText);
+    const key = resolveKey(attrValue, propValue || innerText);
     let value = innerText;
     let newValue = `{{ '${key}' | transloco }}`;
 
