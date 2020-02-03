@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.13.2](https://github.com/ngneat/transloco/compare/v2.13.1...v2.13.2) (2020-02-03)
+
 ### [2.13.1](https://github.com/ngneat/transloco/compare/v2.13.0...v2.13.1) (2020-02-02)
 
 ### Bug Fixes
