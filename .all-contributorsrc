@@ -199,6 +199,15 @@
       "contributions": [
         "plugin"
       ]
+    },
+    {
+      "login": "denistrofimov",
+      "name": "Denis Trofimov",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/2663876?v=4",
+      "profile": "http://denistrofimov.com",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
