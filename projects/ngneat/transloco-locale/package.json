@@ -1,12 +1,11 @@
 {
   "name": "@ngneat/transloco-locale",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "The localization (l10n) library plugin for Angular and Transloco",
   "peerDependencies": {
     "@angular/common": ">=4.3.0",
     "@angular/core": ">=4.3.0",
-    "rxjs": ">=6.0.0 || ^5.6.0-forward-compat.4",
-    "@ngneat/transloco": "^1.7.9"
+    "rxjs": ">=6.0.0 || ^5.6.0-forward-compat.4"
   },
   "publishConfig": {
     "access": "public"
