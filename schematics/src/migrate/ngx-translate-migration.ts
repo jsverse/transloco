@@ -166,7 +166,7 @@ export function run(path) {
       console.log('\n              🌵 Done! 🌵');
       console.log('Welcome to a better translation experience 🌐');
       console.log(
-        '\nFor more information about this script please visit 👉 https://github.com/ngneat/transloco/tree/v1/migration/migration.md\n'
+        '\nFor more information about this script please visit 👉 https://netbasal.gitbook.io/transloco/schematics/migrate/migration-from-ngx-translate\n'
       );
     });
 }
