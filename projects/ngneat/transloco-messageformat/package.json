@@ -26,7 +26,7 @@
     "messageformat": "^2.3.0"
   },
   "peerDependencies": {
-    "@angular/core": ">=4.3.0 <9.0.0",
+    "@angular/core": ">=4.3.0 <10.0.0",
     "@ngneat/transloco": "^2.13.0"
   }
 }
