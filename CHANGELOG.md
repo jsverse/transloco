@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.13.4](https://github.com/ngneat/transloco/compare/v2.13.3...v2.13.4) (2020-02-29)
+
+### Bug Fixes
+
+- **types:** Add additional formatting options ([#247](https://github.com/ngneat/transloco/issues/247)) ([05b6d79](https://github.com/ngneat/transloco/commit/05b6d79))
+- 🐛 update peed dependencies ([a1a813a](https://github.com/ngneat/transloco/commit/a1a813a))
+
 ### [2.13.3](https://github.com/ngneat/transloco/compare/v2.13.2...v2.13.3) (2020-02-12)
 
 ### [2.13.2](https://github.com/ngneat/transloco/compare/v2.13.1...v2.13.2) (2020-02-03)
