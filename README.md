@@ -23,7 +23,7 @@ It exposes a rich API to manage translations efficiently and cleanly. It provide
 <hr />
 
 [![Build Status](https://img.shields.io/travis/datorama/akita.svg?style=flat-square)](https://travis-ci.org/ngneat/transloco)
-[![All Contributors](https://img.shields.io/badge/all_contributors-21-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-22-orange.svg?style=flat-square)](#contributors-)
 [![commitizen](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)]()
 [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)]()
 [![coc-badge](https://img.shields.io/badge/codeof-conduct-ff69b4.svg?style=flat-square)]()
@@ -84,6 +84,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://wesleygrimes.com"><img src="https://avatars0.githubusercontent.com/u/324308?v=4" width="100px;" alt="Wes Grimes"/><br /><sub><b>Wes Grimes</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=wesleygrimes" title="Code">💻</a> <a href="https://github.com/ngneat/transloco/commits?author=wesleygrimes" title="Tests">⚠️</a></td>
     <td align="center"><a href="https://github.com/Dorrro"><img src="https://avatars1.githubusercontent.com/u/1622671?v=4" width="100px;" alt="Dorian Sobacki"/><br /><sub><b>Dorian Sobacki</b></sub></a><br /><a href="#plugin-Dorrro" title="Plugin/utility libraries">🔌</a></td>
     <td align="center"><a href="http://denistrofimov.com"><img src="https://avatars3.githubusercontent.com/u/2663876?v=4" width="100px;" alt="Denis Trofimov"/><br /><sub><b>Denis Trofimov</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=denistrofimov" title="Code">💻</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://tane.dev"><img src="https://avatars3.githubusercontent.com/u/376930?v=4" width="100px;" alt="Tane Piper"/><br /><sub><b>Tane Piper</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=tanepiper" title="Code">💻</a></td>
   </tr>
 </table>
 

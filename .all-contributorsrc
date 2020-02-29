@@ -208,6 +208,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "tanepiper",
+      "name": "Tane Piper",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/376930?v=4",
+      "profile": "https://tane.dev",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
