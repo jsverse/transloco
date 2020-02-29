@@ -1,6 +1,6 @@
-import { defaultConfig, LocaleConfig } from '../../transloco-locale.config';
 import { TranslocoCurrencyPipe } from '../../pipes/transloco-currency.pipe';
-import { createFakeService, createFakeCDR, LOCALE_CURRENCY_MOCK, LOCALE_CONFIG_MOCK } from '../mocks';
+import { defaultConfig, LocaleConfig } from '../../transloco-locale.config';
+import { createFakeService, createFakeCDR, LOCALE_CONFIG_MOCK } from '../mocks';
 
 describe('TranslocoCurrencyPipe', () => {
   let service;
@@ -10,7 +10,7 @@ describe('TranslocoCurrencyPipe', () => {
   beforeEach(() => {
     service = createFakeService();
     cdr = createFakeCDR();
-    pipe = new TranslocoCurrencyPipe(service, cdr, defaultConfig.localeConfig, LOCALE_CURRENCY_MOCK);
+    pipe = new TranslocoCurrencyPipe(service, cdr, defaultConfig.localeConfig);
   });
 
   it('should transform number to currency', () => {
@@ -20,7 +20,7 @@ describe('TranslocoCurrencyPipe', () => {
 
   it('should take the currency from the locale', () => {
     service = createFakeService('es-ES');
-    pipe = new TranslocoCurrencyPipe(service, cdr, defaultConfig.localeConfig, LOCALE_CURRENCY_MOCK);
+    pipe = new TranslocoCurrencyPipe(service, cdr, defaultConfig.localeConfig);
     expect(pipe.transform('123')).toContain('€');
   });
 
@@ -51,7 +51,7 @@ describe('TranslocoCurrencyPipe', () => {
         global: { currency: { useGrouping: true, maximumFractionDigits: 2 } },
         localeBased: {}
       };
-      const pipe = new TranslocoCurrencyPipe(service, cdr, config, LOCALE_CURRENCY_MOCK);
+      const pipe = new TranslocoCurrencyPipe(service, cdr, config);
       pipe.transform('123');
       const call = (Intl.NumberFormat as any).calls.argsFor(0);
       expect(call[1].useGrouping).toBeTruthy();
@@ -69,7 +69,7 @@ describe('TranslocoCurrencyPipe', () => {
     it('should take number options from locale settings', () => {
       service = createFakeService('es-ES');
 
-      pipe = new TranslocoCurrencyPipe(service, cdr, LOCALE_CONFIG_MOCK, LOCALE_CURRENCY_MOCK);
+      pipe = new TranslocoCurrencyPipe(service, cdr, LOCALE_CONFIG_MOCK);
       pipe.transform('123');
 
       const call = (Intl.NumberFormat as any).calls.argsFor(0);
@@ -81,7 +81,7 @@ describe('TranslocoCurrencyPipe', () => {
     it('should take passed transform config options', () => {
       service = createFakeService('es-ES');
 
-      pipe = new TranslocoCurrencyPipe(service, cdr, LOCALE_CONFIG_MOCK, LOCALE_CURRENCY_MOCK);
+      pipe = new TranslocoCurrencyPipe(service, cdr, LOCALE_CONFIG_MOCK);
 
       const config = { useGrouping: false, maximumFractionDigits: 3 };
       pipe.transform('123', undefined, config);
@@ -95,7 +95,7 @@ describe('TranslocoCurrencyPipe', () => {
     it('should override default config with the locale config', () => {
       service = createFakeService('es-ES');
 
-      pipe = new TranslocoCurrencyPipe(service, cdr, LOCALE_CONFIG_MOCK, LOCALE_CURRENCY_MOCK);
+      pipe = new TranslocoCurrencyPipe(service, cdr, LOCALE_CONFIG_MOCK);
       pipe.transform('123');
 
       const call = (Intl.NumberFormat as any).calls.argsFor(0);
@@ -107,7 +107,7 @@ describe('TranslocoCurrencyPipe', () => {
     it('should fallback to default config when there are no settings for the current locale', () => {
       service = createFakeService('en-US');
 
-      pipe = new TranslocoCurrencyPipe(service, cdr, LOCALE_CONFIG_MOCK, LOCALE_CURRENCY_MOCK);
+      pipe = new TranslocoCurrencyPipe(service, cdr, LOCALE_CONFIG_MOCK);
 
       pipe.transform('123');
 
