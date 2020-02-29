@@ -9,7 +9,7 @@ export function run(path) {
   path = p.join(dir, path, '/**/*');
 
   const noSpecFiles = { ignore: `${path}spec.ts`, files: `${path}.ts` };
-  const pipeContent = `([^}\\r\\n]*?\\|)\\s*(translate)\\s*(?::\\s*{[^}\\r\\n]+})?\\s*(\\s*\\|[\\s\\r\\t\\n]*\\w*)*\\s*`;
+  const pipeContent = `\\s*([^}\\r\\n]*?\\|)\\s*(translate)\\s*(?::\\s*{[^}\\r\\n]+})?\\s*(\\s*\\|[\\s\\r\\t\\n]*\\w*)*\\s*`;
   const [directive, pipe, pipeInBinding] = [
     /(translate|\[translate(?:Params)?\])=("|')[^"']*\2/gm,
     new RegExp(`{{${pipeContent}}}`, 'gm'),
