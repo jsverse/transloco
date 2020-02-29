@@ -1,16 +1,15 @@
 import { ScopeResolver } from '../scope-resolver';
 
-const spy = jasmine.createSpy('setScopeAlias');
-
 describe('ScopeResolver', () => {
   let resolver: ScopeResolver;
+  let spy;
 
-  beforeEach(
-    () =>
-      (resolver = new ScopeResolver({
-        _setScopeAlias: spy
-      } as any))
-  );
+  beforeEach(() => {
+    spy = jasmine.createSpy('setScopeAlias');
+    resolver = new ScopeResolver({
+      _setScopeAlias: spy
+    } as any);
+  });
 
   it('should return inline scope', () => {
     expect(
@@ -54,7 +53,6 @@ describe('ScopeResolver', () => {
   });
 
   it('should return provider scope with object and set the alias as the scope name if not provided', () => {
-    spy.calls.reset();
     expect(
       resolver.resolve({
         inline: undefined,

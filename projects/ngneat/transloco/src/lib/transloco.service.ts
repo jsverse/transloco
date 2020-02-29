@@ -270,8 +270,8 @@ export class TranslocoService implements OnDestroy {
     }
     const translation = this.getTranslation(resolveLang);
     key = scope ? `${scope}.${key}` : key;
-    // TODO: optimize it (we can build this specific object)
-    const value = getValue(unflatten(translation), key);
+
+    const value = unflatten(this.getObjectByKey(translation, key));
     return this.parser.transpile(value, params, translation);
   }
 
@@ -370,9 +370,10 @@ export class TranslocoService implements OnDestroy {
    * Sets the fallback lang for the currently active language
    * @param fallbackLang
    */
-  setFallbackLangForMissingTranslation({ fallbackLang }: TranslocoConfig): void {
-    if (this.useFallbackTranslation && fallbackLang) {
-      this.firstFallbackLang = Array.isArray(fallbackLang) ? fallbackLang[0] : fallbackLang;
+  setFallbackLangForMissingTranslation({ fallbackLang }: Pick<TranslocoConfig, 'fallbackLang'>): void {
+    const lang = Array.isArray(fallbackLang) ? fallbackLang[0] : fallbackLang;
+    if (this.useFallbackTranslation(lang) && fallbackLang) {
+      this.firstFallbackLang = lang;
     }
   }
 
@@ -385,6 +386,7 @@ export class TranslocoService implements OnDestroy {
     }
 
     if (this.useFallbackTranslation() && !this.isResolvedMissingOnce) {
+      // We need to set it to true to prevent a loop
       this.isResolvedMissingOnce = true;
       const value = this.translate(key, params, this.firstFallbackLang);
       this.isResolvedMissingOnce = false;
@@ -473,6 +475,10 @@ export class TranslocoService implements OnDestroy {
     };
   }
 
+  /**
+   * Use a fallback translation set for missing keys of the primary language
+   * This is unrelated to the fallback language (which changes the active language)
+   */
   private useFallbackTranslation(lang?: string) {
     return this.config.missingHandler.useFallbackTranslation && lang !== this.firstFallbackLang;
   }
@@ -555,5 +561,18 @@ export class TranslocoService implements OnDestroy {
       scope = this.getMappedScope(hasLang ? getScopeFromLang(lang) : lang);
     }
     return { scope, resolveLang };
+  }
+
+  private getObjectByKey(translation: Translation, key: string) {
+    const result = {};
+    const prefix = `${key}.`;
+
+    for (const currentKey in translation) {
+      if (currentKey.startsWith(prefix)) {
+        result[currentKey.replace(prefix, '')] = translation[currentKey];
+      }
+    }
+
+    return result;
   }
 }
