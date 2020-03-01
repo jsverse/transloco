@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.13.5](https://github.com/ngneat/transloco/compare/v2.13.4...v2.13.5) (2020-03-01)
+
+### Bug Fixes
+
+- 🐛 ngx migration support new line in pipes ([00f1eae](https://github.com/ngneat/transloco/commit/00f1eae)), closes [#244](https://github.com/ngneat/transloco/issues/244)
+- 🐛 set fallback translation ([ff34773](https://github.com/ngneat/transloco/commit/ff34773)), closes [#232](https://github.com/ngneat/transloco/issues/232)
+
 ### [2.13.4](https://github.com/ngneat/transloco/compare/v2.13.3...v2.13.4) (2020-02-29)
 
 ### Bug Fixes
