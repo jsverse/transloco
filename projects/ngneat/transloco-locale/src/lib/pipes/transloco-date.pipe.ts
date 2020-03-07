@@ -1,6 +1,6 @@
 import { Pipe, ChangeDetectorRef, PipeTransform, Inject } from '@angular/core';
 import { isNil } from '@ngneat/transloco';
-import { toDate, localizeDate } from '../helpers';
+import { toDate } from '../helpers';
 import { getDefaultOptions } from '../shared';
 import { LOCALE_CONFIG, LocaleConfig } from '../transloco-locale.config';
 import { TranslocoLocaleService } from '../transloco-locale.service';
@@ -38,8 +38,7 @@ export class TranslocoDatePipe extends TranslocoLocalePipe implements PipeTransf
     if (isNil(value)) return '';
     locale = this.getLocale(locale);
 
-    value = toDate(value);
-    return localizeDate(value, locale, {
+    return this.translocoLocaleService.localizeDate(toDate(value), locale, {
       ...getDefaultOptions(locale, 'date', this.localeConfig),
       ...options
     });

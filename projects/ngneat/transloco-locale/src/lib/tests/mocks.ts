@@ -1,14 +1,14 @@
 import { of } from 'rxjs';
+import { TranslocoService } from '../../../../transloco/src/lib/transloco.service';
 import LOCALE_CURRENCY from '../locale-currency';
+import { DefaultDateTransformer, DefaultNumberTransformer } from '../transloco-locale.transformers';
+import { TranslocoLocaleService } from '../transloco-locale.service';
 import { Locale } from '../transloco-locale.types';
 import createSpy = jasmine.createSpy;
 import { LocaleConfig } from '../../lib/transloco-locale.config';
 
 export function createFakeService(locale: Locale = 'en-US') {
-  return {
-    getLocale: createSpy().and.callFake(() => locale),
-    localeChanges$: of(locale)
-  };
+  return mockService(mockTranslocoService(locale), locale);
 }
 
 export function createFakeCDR(locale: string = 'en-US') {
@@ -60,3 +60,26 @@ export const LOCALE_CONFIG_MOCK: LocaleConfig = {
     }
   }
 };
+
+export const mockTranslocoService = (locale?: Locale): TranslocoService =>
+  ({
+    langChanges$: locale ? of(locale) : of()
+  } as any);
+export const mockService = (
+  translocoService = mockTranslocoService(),
+  locale = DEFAULT_LOCALE_MOCK,
+  langLocale = LANG_LOCALE_MOCK,
+  config = LOCALE_CONFIG_MOCK,
+  localeCurrencyMapping = LOCALE_CURRENCY_MOCK,
+  numberTransformer = new DefaultNumberTransformer(),
+  dateTransformer = new DefaultDateTransformer()
+) =>
+  new TranslocoLocaleService(
+    translocoService,
+    langLocale,
+    locale,
+    config,
+    localeCurrencyMapping,
+    numberTransformer,
+    dateTransformer
+  );

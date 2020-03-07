@@ -1,6 +1,5 @@
 import { Pipe, PipeTransform, ChangeDetectorRef, Inject } from '@angular/core';
 import { isNil, HashMap } from '@ngneat/transloco';
-import { localizeNumber } from '../helpers';
 import { getDefaultOptions } from '../shared';
 import { LOCALE_CURRENCY_MAPPING, LOCALE_CONFIG, LocaleConfig } from '../transloco-locale.config';
 import { TranslocoLocaleService } from '../transloco-locale.service';
@@ -15,8 +14,7 @@ export class TranslocoCurrencyPipe extends TranslocoLocalePipe implements PipeTr
   constructor(
     protected translocoLocaleService: TranslocoLocaleService,
     protected cdr: ChangeDetectorRef,
-    @Inject(LOCALE_CONFIG) private localeConfig: LocaleConfig,
-    @Inject(LOCALE_CURRENCY_MAPPING) private localeCurrencyMapping: HashMap<Currency>
+    @Inject(LOCALE_CONFIG) private localeConfig: LocaleConfig
   ) {
     super(translocoLocaleService, cdr);
   }
@@ -39,22 +37,14 @@ export class TranslocoCurrencyPipe extends TranslocoLocalePipe implements PipeTr
     locale?: Locale
   ): string {
     if (isNil(value)) return '';
-
     locale = this.getLocale(locale);
 
     const options = {
+      ...getDefaultOptions(locale, 'currency', this.localeConfig),
       ...numberFormatOptions,
       currencyDisplay: display,
-      style: 'currency',
-      currency: currencyCode || this.getCurrencyCode(this.translocoLocaleService.getLocale())
+      currency: currencyCode || this.translocoLocaleService._resolveCurrencyCode()
     };
-    return localizeNumber(value, locale, {
-      ...getDefaultOptions(locale, 'currency', this.localeConfig),
-      ...options
-    });
-  }
-
-  private getCurrencyCode(locale: Locale) {
-    return this.localeCurrencyMapping[locale] || 'USD';
+    return this.translocoLocaleService.localizeNumber(value, 'currency', locale, options);
   }
 }

@@ -11,6 +11,12 @@ import {
   LOCALE_DEFAULT_LOCALE,
   LOCALE_CONFIG
 } from './transloco-locale.config';
+import {
+  TRANSLOCO_DATE_TRANSFORMER,
+  TRANSLOCO_NUMBER_TRANSFORMER,
+  DefaultDateTransformer,
+  DefaultNumberTransformer
+} from './transloco-locale.transformers';
 
 export const pipes = [TranslocoCurrencyPipe, TranslocoDatePipe, TranslocoDecimalPipe, TranslocoPercentPipe];
 
@@ -38,6 +44,14 @@ export class TranslocoLocaleModule {
         {
           provide: LOCALE_DEFAULT_LOCALE,
           useValue: config.defaultLocale || defaultConfig.defaultLocale
+        },
+        {
+          provide: TRANSLOCO_DATE_TRANSFORMER,
+          useClass: DefaultDateTransformer
+        },
+        {
+          provide: TRANSLOCO_NUMBER_TRANSFORMER,
+          useClass: DefaultNumberTransformer
         }
       ]
     };

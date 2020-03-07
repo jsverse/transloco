@@ -2,7 +2,7 @@ import { fakeAsync, tick } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { TranslocoLocaleService } from '../transloco-locale.service';
-import { LANG_LOCALE_MOCK, DEFAULT_LOCALE_MOCK } from './mocks';
+import { LANG_LOCALE_MOCK, DEFAULT_LOCALE_MOCK, mockService } from './mocks';
 
 describe('TranslocoLocaleService', () => {
   let service: TranslocoLocaleService;
@@ -12,7 +12,7 @@ describe('TranslocoLocaleService', () => {
       const translocoService: any = {
         langChanges$: of()
       };
-      service = new TranslocoLocaleService(translocoService, LANG_LOCALE_MOCK, DEFAULT_LOCALE_MOCK);
+      service = mockService(translocoService);
       expect(service.getLocale()).toEqual('en-US');
     });
 
@@ -20,7 +20,7 @@ describe('TranslocoLocaleService', () => {
       const translocoService: any = {
         langChanges$: of('en-US')
       };
-      service = new TranslocoLocaleService(translocoService, LANG_LOCALE_MOCK, DEFAULT_LOCALE_MOCK);
+      service = mockService(translocoService);
       expect(service.getLocale()).toEqual('en-US');
     });
 
@@ -28,7 +28,7 @@ describe('TranslocoLocaleService', () => {
       const translocoService: any = {
         langChanges$: of('en')
       };
-      service = new TranslocoLocaleService(translocoService, LANG_LOCALE_MOCK, DEFAULT_LOCALE_MOCK);
+      service = mockService(translocoService);
       expect(service.getLocale()).toEqual('en-US');
     });
 
@@ -36,7 +36,7 @@ describe('TranslocoLocaleService', () => {
       const translocoService: any = {
         langChanges$: of('fr')
       };
-      service = new TranslocoLocaleService(translocoService, LANG_LOCALE_MOCK, DEFAULT_LOCALE_MOCK);
+      service = mockService(translocoService);
       expect(service.getLocale()).toEqual('en-US');
     });
   });
@@ -46,7 +46,7 @@ describe('TranslocoLocaleService', () => {
       const translocoService: any = {
         langChanges$: of('en')
       };
-      service = new TranslocoLocaleService(translocoService, LANG_LOCALE_MOCK, DEFAULT_LOCALE_MOCK);
+      service = mockService(translocoService);
     });
 
     it('should set a given locale', () => {
@@ -70,7 +70,7 @@ describe('TranslocoLocaleService', () => {
         langChanges$: of('en-US')
       };
       const spy = jasmine.createSpy();
-      service = new TranslocoLocaleService(translocoService, LANG_LOCALE_MOCK, DEFAULT_LOCALE_MOCK);
+      service = mockService(translocoService);
       service.localeChanges$.subscribe(spy);
       expect(spy).toHaveBeenCalledTimes(1);
       expect(spy).toHaveBeenCalledWith('en-US');
@@ -81,7 +81,7 @@ describe('TranslocoLocaleService', () => {
         langChanges$: of('en')
       };
       const spy = jasmine.createSpy();
-      service = new TranslocoLocaleService(translocoService, LANG_LOCALE_MOCK, DEFAULT_LOCALE_MOCK);
+      service = mockService(translocoService);
       service.localeChanges$.subscribe(spy);
       expect(spy).toHaveBeenCalledTimes(1);
       expect(spy).toHaveBeenCalledWith('en-US');
@@ -92,7 +92,7 @@ describe('TranslocoLocaleService', () => {
         langChanges$: of('en', 'es').pipe(delay(100))
       };
       const spy = jasmine.createSpy();
-      service = new TranslocoLocaleService(translocoService, LANG_LOCALE_MOCK, DEFAULT_LOCALE_MOCK);
+      service = mockService(translocoService);
       service.localeChanges$.subscribe(spy);
       tick(100);
       expect(spy).toHaveBeenCalledTimes(2);
@@ -103,7 +103,7 @@ describe('TranslocoLocaleService', () => {
         langChanges$: of()
       };
       const spy = jasmine.createSpy();
-      service = new TranslocoLocaleService(translocoService, LANG_LOCALE_MOCK, DEFAULT_LOCALE_MOCK);
+      service = mockService(translocoService);
       service.localeChanges$.subscribe(spy);
       service.setLocale('en-US');
       expect(spy).toHaveBeenCalledWith('en-US');

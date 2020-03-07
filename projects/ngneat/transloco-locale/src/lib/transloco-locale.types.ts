@@ -26,6 +26,11 @@ export interface NumberFormatOptions {
 }
 
 /**
+ * The number display formatting type.
+ */
+export type NumberTypes = 'currency' | 'decimal' | 'percent';
+
+/**
  * Allowed values with Date and Time formats
  */
 export type DateFormatStyles = 'full' | 'long' | 'medium' | 'short';
@@ -48,7 +53,6 @@ export type DateNumberFormats = 'numeric' | '2-digit';
 /**
  * Supported Intl calender types
  */
-
 export interface DateFormatOptions {
   /**
    * The date formatting style.

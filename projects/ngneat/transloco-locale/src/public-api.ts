@@ -10,3 +10,4 @@ export * from './lib/pipes/transloco-date.pipe';
 export * from './lib/pipes/transloco-currency.pipe';
 export * from './lib/pipes/transloco-percent.pipe';
 export * from './lib/pipes/transloco-decimal.pipe';
+export * from './lib/transloco-locale.transformers';
