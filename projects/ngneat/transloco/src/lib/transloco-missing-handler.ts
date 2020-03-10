@@ -1,5 +1,7 @@
 import { InjectionToken } from '@angular/core';
+
 import { TranslocoConfig } from './transloco.config';
+import { HashMap } from './types';
 
 export const TRANSLOCO_MISSING_HANDLER = new InjectionToken('TRANSLOCO_MISSING_HANDLER');
 
@@ -8,7 +10,7 @@ export interface TranslocoMissingHandlerData extends TranslocoConfig {
 }
 
 export interface TranslocoMissingHandler {
-  handle(key: string, data: TranslocoMissingHandlerData): any;
+  handle(key: string, data: TranslocoMissingHandlerData, params?: HashMap): any;
 }
 
 export class DefaultHandler implements TranslocoMissingHandler {
