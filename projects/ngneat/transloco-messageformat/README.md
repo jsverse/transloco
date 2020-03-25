@@ -35,7 +35,7 @@ import { TranslocoMessageFormatModule } from '@ngneat/transloco-messageformat';
 @NgModule({
   imports: [
     ...,
-    TranslocoMessageFormatModule.init()
+    TranslocoMessageFormatModule.forRoot()
   ]
 })
 
@@ -49,7 +49,7 @@ By default, messageformat initializes _all_ locales. You could also provide the 
 @NgModule({
   imports: [
     ...,
-    TranslocoMessageFormatModule.init(
+    TranslocoMessageFormatModule.forRoot(
       {
         locales: 'en-GB'
       }
@@ -71,7 +71,7 @@ This is how you would enable bi-directional support and add a custom formatter, 
 @NgModule({
   imports: [
     ...,
-    TranslocoMessageFormatModule.init(
+    TranslocoMessageFormatModule.forRoot(
       {
         biDiSupport: true,
         customFormatters: { upcase: v => v.toUpperCase() }
