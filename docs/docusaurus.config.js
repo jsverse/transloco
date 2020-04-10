@@ -1,5 +1,5 @@
 module.exports = {
-  title: 'Transloco - The internationalization (i18n) library for Angular',
+  title: 'Transloco',
   tagline: '🚀 The internationalization (i18n) library for Angular 😍',
   baseUrl: '/transloco/',
   url: 'https://github.com/ngneat',
