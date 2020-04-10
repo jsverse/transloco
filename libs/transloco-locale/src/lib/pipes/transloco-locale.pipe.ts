@@ -1,9 +1,9 @@
-import { ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { TranslocoLocaleService } from '../transloco-locale.service';
 import { Locale } from '../../lib/transloco-locale.types';
 
-export class TranslocoLocalePipe implements OnDestroy {
+export class TranslocoLocalePipe {
   private subscription: Subscription;
 
   constructor(protected translocoLocaleService: TranslocoLocaleService, protected cdr: ChangeDetectorRef) {
@@ -16,7 +16,7 @@ export class TranslocoLocalePipe implements OnDestroy {
     return locale || this.translocoLocaleService.getLocale();
   }
 
-  ngOnDestroy(): void {
+  protected onDestroy(): void {
     this.subscription.unsubscribe();
   }
 }

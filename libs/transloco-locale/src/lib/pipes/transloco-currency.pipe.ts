@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Inject, Pipe, PipeTransform } from '@angular/core';
+import { ChangeDetectorRef, Inject, OnDestroy, Pipe, PipeTransform } from '@angular/core';
 import { isNil } from '@ngneat/transloco';
 import { getDefaultOptions } from '../shared';
 import { LOCALE_CONFIG, LocaleConfig } from '../transloco-locale.config';
@@ -10,7 +10,7 @@ import { TranslocoLocalePipe } from './transloco-locale.pipe';
   name: 'translocoCurrency',
   pure: false
 })
-export class TranslocoCurrencyPipe extends TranslocoLocalePipe implements PipeTransform {
+export class TranslocoCurrencyPipe extends TranslocoLocalePipe implements PipeTransform, OnDestroy {
   constructor(
     protected translocoLocaleService: TranslocoLocaleService,
     protected cdr: ChangeDetectorRef,
@@ -46,5 +46,9 @@ export class TranslocoCurrencyPipe extends TranslocoLocalePipe implements PipeTr
       currency: currencyCode || this.translocoLocaleService._resolveCurrencyCode()
     };
     return this.translocoLocaleService.localizeNumber(value, 'currency', locale, options);
+  }
+
+  ngOnDestroy(): void {
+    this.onDestroy();
   }
 }
