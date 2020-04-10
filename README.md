@@ -23,7 +23,7 @@ It exposes a rich API to manage translations efficiently and cleanly. It provide
 <hr />
 
 [![Build Status](https://img.shields.io/travis/datorama/akita.svg?style=flat-square)](https://travis-ci.org/ngneat/transloco)
-[![All Contributors](https://img.shields.io/badge/all_contributors-23-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-24-orange.svg?style=flat-square)](#contributors-)
 [![commitizen](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)]()
 [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)]()
 [![coc-badge](https://img.shields.io/badge/codeof-conduct-ff69b4.svg?style=flat-square)]()
@@ -88,6 +88,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="https://tane.dev"><img src="https://avatars3.githubusercontent.com/u/376930?v=4" width="100px;" alt="Tane Piper"/><br /><sub><b>Tane Piper</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=tanepiper" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/StillUpgrade"><img src="https://avatars0.githubusercontent.com/u/10169092?v=4" width="100px;" alt="StillUpgrade"/><br /><sub><b>StillUpgrade</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=StillUpgrade" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/coderunner"><img src="https://avatars0.githubusercontent.com/u/408380?v=4" width="100px;" alt="Felix Trepanier"/><br /><sub><b>Felix Trepanier</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=coderunner" title="Code">💻</a></td>
   </tr>
 </table>
 

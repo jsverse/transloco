@@ -226,6 +226,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "coderunner",
+      "name": "Felix Trepanier",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/408380?v=4",
+      "profile": "https://github.com/coderunner",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
