@@ -1,0 +1,114 @@
+---
+id: language-api
+title: Language API
+---
+
+Below is a list of the `TranslocoService` API and their usages:
+
+### `getDefaultLang()`
+
+Returns the default language:
+
+```ts title="app.component.ts"
+export class AppComponent {
+  constructor(private translocoService: TranslocoService) {
+    translocoService.getDefaultLang();
+  }
+}
+```
+
+### `setDefaultLang()`
+Sets the default language:
+
+```ts title="app.component.ts"
+export class AppComponent {
+  constructor(private translocoService: TranslocoService) {
+    translocoService.setDefaultLang('es');
+  }
+}
+```
+
+### `getActiveLang()`
+
+Gets the current active language:
+
+```ts title="app.component.ts"
+export class AppComponent {
+  constructor(private translocoService: TranslocoService) {
+    translocoService.getActiveLang();
+  }
+}
+```
+
+### `setActiveLang()`
+Sets the current active language:
+
+```ts title="app.component.ts"
+export class AppComponent {
+  constructor(private translocoService: TranslocoService) {
+    translocoService.setActiveLang('es');
+  }
+}
+```
+
+### `getAvailableLangs()`
+Gets the available languages:
+
+```ts title="app.component.ts"
+export class AppComponent {
+  constructor(private translocoService: TranslocoService) {
+    translocoService.getAvailableLangs();
+  }
+}
+```
+
+### `setFallbackLangForMissingTranslation()`
+Sets the fallback translation language for the currently active language in case of a **missing key**:
+
+```ts title="app.component.ts"
+export class AppComponent {
+  constructor(private translocoService: TranslocoService) {
+    translocoService.setFallbackLangForMissingTranslation({ fallbackLang: 'he' });
+  }
+}
+```
+
+:::caution
+If you pass an array, the first value is used. The reason for that is that fallback translation for a missing key only supports one language.
+:::
+
+### `setAvailableLangs()`
+Sets the available languages:
+
+```ts title="app.component.ts"
+export class AppComponent {
+  constructor(private translocoService: TranslocoService) {
+    translocoService.setAvailableLangs(['en', 'es']);
+
+    // Or use an object
+    translocoService.setAvailableLangs([{ id: 'en', label: 'English' }]);
+  }
+}
+```
+
+### `langChanges$`
+Listens to the language change event:
+
+```ts title="app.component.ts"
+export class AppComponent {
+  constructor(private translocoService: TranslocoService) {
+    translocoService.langChanges$.subscribe(lang => ...);
+  }
+}
+```
+
+### `load()`
+Load the given language, and add it to the service:
+
+```ts title="app.component.ts"
+export class AppComponent {
+  constructor(private translocoService: TranslocoService) {
+    translocoService.load('en').subscribe();
+  }
+}
+```

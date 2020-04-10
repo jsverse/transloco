@@ -47,3 +47,5 @@ testem.log
 Thumbs.db
 cypress/screenshots
 dist-i18n
+docs/build
+docs/.docusaurus

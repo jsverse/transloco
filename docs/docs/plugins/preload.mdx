@@ -1,0 +1,21 @@
+---
+title: Preload Languages
+---
+
+This plugin provides the functionality of preloading the provided languages when the browser is idle by using the `requestIdleCallback` API.
+
+## Installation
+```bash
+npm install @ngneat/transloco-preload-langs
+```
+
+## Usage
+```ts title="app.module.ts"
+import { TranslocoPreloadLangsModule } from '@ngneat/transloco-preload-langs';
+
+@NgModule({
+  imports: [TranslocoPreloadLangsModule.preload(['es', 'some-scope'])],
+  bootstrap: [AppComponent]
+})
+export class AppModule {}
+```

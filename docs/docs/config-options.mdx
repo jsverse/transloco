@@ -1,0 +1,104 @@
+---
+id: config-options
+title: Config Options
+---
+
+Below is a list of the `config` options and their usages:
+
+### `reRenderOnLangChange`
+Applications that don't allow the user to change the language in runtime (i.e., from a dropdown), should leave it `false`.
+It can save on memory by rendering the view once and unsubscribing from the language changes event (defaults to `false`):
+
+```ts
+translocoConfig({
+  reRenderOnLangChange: boolean
+})
+```
+
+### `defaultLang`
+Sets the default language: (defaults to `en`)
+```ts
+translocoConfig({
+  defaultLang: 'en'
+})
+```
+
+### `fallbackLang`
+ Sets the default language/s to use as a fallback. See the `TranslocoFallbackStrategy` section if you need to customize it:
+```ts
+translocoConfig({
+  fallbackLang: 'en',
+  fallbackLang: ['en', 'ru']
+})
+```
+
+### `failedRetries`
+ How many time should Transloco retry to load translation files, in case of a load failure (defaults to 2):
+```ts
+translocoConfig({
+  failedRetries: 1
+})
+```
+
+### `prodMode`
+ Whether the application runs in production mode: (defaults to `false`)
+
+```ts
+import { environment } from '../environments/environment';
+
+translocoConfig({
+  prodMode: environment.production
+})
+```
+
+### `availableLangs`
+ The available languages in your application:
+```ts
+translocoConfig({
+  availableLangs: ['en', 'es']
+})
+```
+
+### `missingHandler.allowEmpty`
+Whether to allow empty values: (defaults to `false`)
+```ts
+translocoConfig({
+  missingHandler: {
+    allowEmpty: true
+  }
+})
+```
+
+### `missingHandler.useFallbackTranslation`
+Whether to use the fallback language for missing keys or values: (defaults to `false`)
+```ts
+translocoConfig({
+  fallbackLang: 'en',
+  missingHandler: {
+    // It will use the first language set in the `fallbackLang` property
+    useFallbackTranslation: true
+  }
+})
+```
+
+### `missingHandler.logMissingKey`
+Whether to `console.warn` a missing key: (defaults to `true`)
+```ts
+translocoConfig({
+  missingHandler: {
+    logMissingKey: false
+  }
+})
+```
+
+### `flatten.aot`
+Check the optimization plugin:
+```ts
+import { environment } from '../environments/environment';
+
+translocoConfig({
+  flatten: {
+    aot: environment.production
+  }
+})
+```

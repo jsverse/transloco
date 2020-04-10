@@ -1,0 +1,86 @@
+---
+id: installation
+title: Installation
+---
+
+
+Install the library using Angular CLI:
+```bash
+ng add @ngneat/transloco
+```
+
+As part of the installation process you'll be presented with questions; Once you answer them, everything you need will automatically be created for you. Let's take a closer look at the generated files:
+
+First, Transloco creates boilerplate files for the requested translations:
+
+```json title="assets/i18n/en.json"
+{
+  "hello": "transloco en",
+  "dynamic": "transloco {{value}}"
+}
+```
+
+```json title="assets/i18n/es.json"
+{
+  "hello": "transloco es",
+  "dynamic": "transloco {{value}}"
+}
+```
+
+Next, it will create a new file, `transloco-root.module.ts` which exposes an Angular's module with a default configuration, and inject it into the `AppModule`:
+
+```ts title="transloco-root.module.ts"
+import { HttpClient } from '@angular/common/http';
+import {
+  TRANSLOCO_LOADER,
+  Translation,
+  TranslocoLoader,
+  TRANSLOCO_CONFIG,
+  translocoConfig,
+  TranslocoModule
+} from '@ngneat/transloco';
+import { Injectable, NgModule } from '@angular/core';
+import { environment } from '../environments/environment';
+
+@Injectable({ providedIn: 'root' })
+export class TranslocoHttpLoader implements TranslocoLoader {
+  constructor(private http: HttpClient) {}
+
+  getTranslation(lang: string) {
+    return this.http.get<Translation>(`/assets/i18n/${lang}.json`);
+  }
+}
+
+@NgModule({
+  exports: [ TranslocoModule ],
+  providers: [
+    {
+      provide: TRANSLOCO_CONFIG,
+      useValue: translocoConfig({
+        availableLangs: ['en', 'es'],
+        defaultLang: 'en',
+        // Remove this option if your application
+        // doesn't support changing language in runtime.
+        reRenderOnLangChange: true,
+        prodMode: environment.production,
+      })
+    },
+    { provide: TRANSLOCO_LOADER, useClass: TranslocoHttpLoader }
+  ]
+})
+export class TranslocoRootModule {}
+```
+
+As you might have noticed it also set an `HttpLoader` into the module's providers. The `HttpLoader` is a class that implements the `TranslocoLoader` interface. It's responsible for instructing Transloco how to load the translation files. It uses Angular HTTP client to fetch the files, based on the given path (We'll see why it called path on the lazy load section).
+
+:::note
+
+When you deploy your application and Transloco is unable to load your language files it might because you need to use a relative path:
+
+```ts
+getTranslation(langPath: string) {
+  return this.http.get(`./assets/i18n/${langPath}.json`);
+}
+```
+:::
+And that's it! Now we are ready to use it in our project.

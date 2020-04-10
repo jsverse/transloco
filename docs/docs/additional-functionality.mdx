@@ -1,0 +1,45 @@
+---
+title: Additional Functionality
+---
+
+### Reference Other Keys
+
+You can point to specific keys in other keys from the same translation file. For example:
+
+```json title="en.json"
+{
+  "alert": "alert {{value}} english",
+  "home": "home english",
+  "fromList": "from {{home}}"
+}
+```
+
+So the result of `service.translate('fromList')` will be: "from home english".
+
+### `translate()`
+
+You don't have to inject the service each time you need to translate a key. Transloco has an exported `translate()` function:
+
+```ts
+import { translate } from '@ngneat/transloco';
+
+translate('hello');
+```
+
+### `getBrowserLang()`
+
+Returns the language code name from the browser, e.g. `"en"`
+```ts
+import { getBrowserLang } from '@ngneat/transloco';
+
+getBrowserLang();
+```
+
+### `getBrowserCultureLang()`
+
+Returns the culture language code name from the browser, e.g. ``"en-US"``
+```ts
+import { getBrowserCultureLang } from '@ngneat/transloco';
+
+getBrowserCultureLang()
+```

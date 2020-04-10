@@ -1,0 +1,110 @@
+---
+id: translation-in-the-template
+title: Translation in The Template
+---
+
+## Structural Directive
+
+Using a structural directive is the **recommended** approach. It's DRY and efficient, as it creates one subscription per template:
+
+```html title="home.component.html"
+<ng-container *transloco="let t">
+  <p>{{ t('title') }}</p>
+
+  <comp [title]="t('title')"></comp>
+</ng-container>
+```
+
+Note that the `t` function is **memoized**. It means that given the same key it will return the result directly from the cache.
+
+We can pass a `params` object as the second parameter:
+
+```html title="home.component.html"
+<ng-container *transloco="let t">
+  <p>{{ t('name', { name: 'Transloco' }) }}</p>
+</ng-container>
+```
+
+```json title="en.json"
+{
+  "name": "My name is {{name}}"
+}
+```
+
+We can instruct the directive to use a `different` language in our template:
+```html {1} title="home.component.html"
+<ng-container *transloco="let t; lang: 'es'">
+  <p>{{ t('title') }}</p>
+</ng-container>
+```
+
+This will translate each key based on the `Spanish` language translation file.
+
+### Utilizing the read input
+We can use the `read` input in the structural directive to get translations of a particular nested (including deeply nested) property.
+
+Let's say we need to use the `dashboard` scope all over the template. Given this translation file:
+```json title="en.json"
+{
+  "foo": "Foo",
+  "bar": "Bar"
+  "dashboard": {
+    "title": "Dashboard Title",
+    "desc": "Dashboard Desc"
+  }
+}
+```
+
+we can write:
+
+```html {1} title="home.component.html"
+<ng-container *transloco="let t; read: 'dashboard'">
+  <p>{{ t('title') }}</p>
+</ng-container>
+```
+
+without having to repeat the `dashboard` key in each translation. Under the hood, it will do the following for you:
+```html title="home.component.html"
+<ng-container *transloco="let t;">
+  <h1>{{ t('dashboard.title') }}</h1>
+  <p>{{ t('dashboard.desc') }}</p>
+</ng-container>
+```
+
+## Pipe
+The second option we have is to use the `transloco` pipe:
+```html title="home.component.html"
+<span>{{ 'home' | transloco }}</span>
+```
+
+Use it with `params`:
+```html title="home.component.html"
+<span>{{ 'alert' | transloco: { value: dynamic } }}</span>
+```
+
+Use it with `inputs`:
+```html title="home.component.html"
+<span [attr.alt]="'hello' | transloco">Attribute</span>
+<span [title]="'hello' | transloco">Property</span>
+```
+
+Use it with a different `language`:
+```html title="home.component.html"
+<span>{{ 'alert' | transloco:params:'es' }}</span>
+```
+
+## Attribute Directive
+The last option we have is to use `transloco` attribute directive:
+```html title="home.component.html"
+<span transloco="home"></span>
+```
+
+Use it with `params`:
+```html title="home.component.html"
+<span transloco="alert" [translocoParams]="{ value: dynamic }"></span>
+```
+
+Use it with a different `language`:
+```html title="home.component.html"
+<span transloco="home" translocoLang="es"></span>
+```

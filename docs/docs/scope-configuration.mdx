@@ -1,0 +1,120 @@
+---
+title: Scope Configuration
+---
+
+:::important
+Note that scopes follow **Angular DI rules**. They only work when declared in a lazy load module, or a component's providers.
+:::
+
+Let's say we have a todos page and we want to create separate translation files for this page, and load them only when the user navigates there.
+First, we need to create a `todos` folder (or whatever name you choose); In it, we create a translation file for each language we want to support:
+
+```bash
+├─ i18n/
+   ├─ en.json
+   ├─ es.json
+   ├─ todos/
+      ├─ en.json
+      ├─ es.json
+```
+
+There are 3 levels of setting the translation scope:
+
+## Lazy Module Providers
+
+We can set it inside the _lazy module module_ providers:
+
+```ts title="todos.module.ts"
+const routes: Routes = [
+  {
+    path: '',
+    component: TodosComponent
+  }
+];
+
+@NgModule({
+  declarations: [TodosComponent],
+  providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'todos' }],
+  imports: [RouterModule.forChild(routes), TranslocoModule]
+})
+export class TodosModule {}
+```
+
+## Component's Providers
+
+We can set it in a _component's providers_:
+
+```ts title="todos.component.ts"
+@Component({
+  selector: 'my-comp',
+  templateUrl: './my-comp.component.html',
+  providers: [
+    {
+      provide: TRANSLOCO_SCOPE,
+      useValue: 'todos'
+    }
+  ]
+})
+export class MyComponent {}
+```
+
+## Inline Input
+We can set the `scope` input in the `transloco` structural directive:
+```ts {1} title="todos.component.html"
+<ng-container *transloco="let t; scope: 'todos';">
+  <h1>{{ t('todos.keyFromTodos') }}</h1>
+</ng-container>
+```
+
+Each one of these options tells Transloco to load the corresponding `scope` based on the active language and merge it under the scope namespace into the active language translation object.
+
+For example, if the active language is `en`, it will load the `todos/en.json` file, and will set the translation to be the following:
+```json
+{
+  "header": "",
+  "login": "",
+  "todos": {
+    "submit": "",
+    "title": ""
+  }
+}
+```
+
+Now we can access each one of the `todos` keys by using the `todos` namespace:
+
+```html title="todos.component.html"
+<ng-container *transloco="let t">
+  <h1>{{ t('todos.title') }}</h1>
+</ng-container>
+
+{{ 'todos.title' | transloco }}
+
+<span transloco="todos.submit"></span>
+```
+
+By default, the namespace will be the `scope` name (camel cased), but we can override it by providing custom `alias` name in the module/component `scope` provider:
+
+```ts {6} title="todos.module.ts"
+@NgModule({
+  declarations: [TodosComponent],
+  providers: [
+    {
+      provide: TRANSLOCO_SCOPE,
+      useValue: { scope: 'todos', alias: 'customName'  }
+    }
+  ],
+  imports: [RouterModule.forChild(routes), TranslocoModule]
+})
+export class TodosModule {}
+```
+
+Now we can access it through `customName` instead of the original scope name (`todos` in our case):
+```html title="todos.component.html"
+<ng-container *transloco="let t">
+  <h1>{{ t('customName.title') }}</h1>
+</ng-container>
+
+{{ 'customName.title' | transloco }}
+
+<span transloco="customName.submit"></span>
+```

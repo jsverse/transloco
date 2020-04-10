@@ -1,0 +1,36 @@
+---
+title: Loading Template
+---
+
+Transloco provides you with a way to define a loading template, that will be used while the translation file is loading.
+
+Similarly to the previous examples, set the `TRANSLOCO_LOADING_TEMPLATE` provider either in lazy module providers, component providers, in the template, or even in the `app.module` itself (affecting the entire app).
+
+For example:
+
+
+```ts {6,7} title="my-comp.component.ts"
+@Component({
+  selector: 'my-comp',
+  templateUrl: './my-comp.component.html',
+  providers: [
+    {
+      provide: TRANSLOCO_LOADING_TEMPLATE,
+      useValue: '<p>loading...</p>'
+    }
+  ]
+})
+export class MyComponent {}
+```
+
+It can take a raw HTML value, or a custom Angular component. Alternatively, here is how to use it directly in the template:
+
+```html {1} title="my-comp.component.html"
+<ng-container *transloco="let t; loadingTpl: loading">
+  <h1>{{ t('title') }}</h1>
+</ng-container>
+
+<ng-template #loading>
+  <h1>Loading...</h1>
+</ng-template>
+```

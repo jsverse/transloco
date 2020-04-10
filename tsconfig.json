@@ -1,28 +1,34 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "baseUrl": "./",
-    "outDir": "./dist/out-tsc",
+    "rootDir": ".",
     "sourceMap": true,
     "declaration": false,
-    "module": "esnext",
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "es5",
+    "target": "es2015",
+    "module": "esnext",
     "typeRoots": ["node_modules/@types"],
-    "lib": ["es2018", "dom"],
+    "lib": ["es2017", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
     "paths": {
-      "@ngneat/transloco": ["./projects/ngneat/transloco/src/public-api.ts"],
-      "@ngneat/transloco-persist-lang": ["./projects/ngneat/transloco-persist-lang/src/public-api.ts"],
-      "@ngneat/transloco-persist-translations": ["./projects/ngneat/transloco-persist-translations/src/public-api.ts"],
-      "@ngneat/transloco-messageformat": ["./projects/ngneat/transloco-messageformat/src/public-api.ts"],
-      "@ngneat/transloco-preload-langs": ["./projects/ngneat/transloco-preload-langs/src/public-api.ts"],
-      "@ngneat/transloco-locale": ["./projects/ngneat/transloco-locale/src/public-api.ts"],
-      "@ngneat/transloco-utils": ["./projects/ngneat/transloco-utils/src/public-api.ts"]
-    }
+      "@ngneat/transloco": ["libs/transloco/src/index.ts"],
+      "@ngneat/transloco-preload-langs": ["libs/transloco-preload-langs/src/index.ts"],
+      "@ngneat/transloco-locale": ["libs/transloco-locale/src/index.ts"],
+      "@ngneat/transloco-messageformat": ["libs/transloco-messageformat/src/index.ts"],
+      "@ngneat/transloco-persist-lang": ["libs/transloco-persist-lang/src/index.ts"],
+      "@ngneat/transloco-persist-translations": ["libs/transloco-persist-translations/src/index.ts"],
+      "@ngneat/transloco-utils": ["libs/transloco-utils/src/index.ts"]
+    },
+    "resolveJsonModule": true,
+    "esModuleInterop": true
+  },
+  "exclude": ["node_modules", "tmp"],
+  "angularCompilerOptions": {
+    "disableTypeScriptVersionCheck": true
   }
 }
