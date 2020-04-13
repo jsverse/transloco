@@ -5,12 +5,12 @@ import { getValue, isString, isObject, setValue, isDefined } from './helpers';
 export const TRANSLOCO_TRANSPILER = new InjectionToken('TRANSLOCO_TRANSPILER');
 
 export interface TranslocoTranspiler {
-  transpile(value: any, params: HashMap<any>, translation: HashMap): any;
+  transpile(value: any, params: HashMap, translation: HashMap): any;
   onLangChanged?(lang: string): void;
 }
 
 export class DefaultTranspiler implements TranslocoTranspiler {
-  transpile(value: any, params: HashMap<any> = {}, translation: Translation): any {
+  transpile(value: any, params: HashMap = {}, translation: Translation): any {
     if (isString(value)) {
       return value.replace(/{{(.*?)}}/g, function(_, match) {
         match = match.trim();

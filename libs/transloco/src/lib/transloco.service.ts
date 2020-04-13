@@ -178,6 +178,8 @@ export class TranslocoService implements OnDestroy {
    * translate('scope.someKey', { }, 'en')
    */
   translate<T = any>(key: TranslateParams, params: HashMap = {}, lang = this.getActiveLang()): T {
+    if (!key) return key as any;
+
     const { scope, resolveLang } = this.resolveLangAndScope(lang);
 
     if (Array.isArray(key)) {
@@ -185,10 +187,6 @@ export class TranslocoService implements OnDestroy {
     }
 
     key = scope ? `${scope}.${key}` : key;
-
-    if (!key) {
-      return this.missingHandler.handle(key, this.getMissingHandlerData(), params);
-    }
 
     const translation = this.getTranslation(resolveLang);
     const value = translation[key];
@@ -388,9 +386,9 @@ export class TranslocoService implements OnDestroy {
     if (this.useFallbackTranslation() && !this.isResolvedMissingOnce) {
       // We need to set it to true to prevent a loop
       this.isResolvedMissingOnce = true;
-      const value = this.translate(key, params, this.firstFallbackLang);
+      const fallbackValue = this.translate(key, params, this.firstFallbackLang);
       this.isResolvedMissingOnce = false;
-      return value;
+      return fallbackValue;
     }
 
     return this.missingHandler.handle(key, this.getMissingHandlerData(), params);
