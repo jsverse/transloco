@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.14.1](https://github.com/ngneat/transloco/compare/v2.14.0...v2.14.1) (2020-04-13)
+
+### Bug Fixes
+
+- 🐛 don't call the missing handler when given an empty key ([86fa12d](https://github.com/ngneat/transloco/commit/86fa12d09c235f5c34a81ee049f94b898e198280))
+
 ## [2.14.0](https://github.com/ngneat/transloco/compare/v2.13.5...v2.14.0) (2020-03-14)
 
 ### Features
