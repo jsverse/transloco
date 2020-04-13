@@ -58,6 +58,12 @@ code {
   height: auto !important;
 }
 
+.container img.gif {
+  width: 700px !important;
+  margin-bottom: 27px !important;
+  height: auto !important;
+}
+
 iframe {
   border: none;
   height: 30px;

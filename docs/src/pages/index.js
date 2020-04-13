@@ -10,30 +10,20 @@ const features = [
   {
     title: <>Clean and DRY templates</>,
     imageUrl: 'img/1.svg',
-    description: (
-      <>
-        Docusaurus was designed from the ground up to be easily installed and used to get your website up and running
-        quickly.
-      </>
-    )
+    description: <>Keep your templates clean and DRY using the Transloco structural directive</>
   },
   {
     title: <>Support for Lazy Load</>,
     imageUrl: 'img/2.svg',
-    description: (
-      <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go ahead and move your docs into the{' '}
-        <code>docs</code> directory.
-      </>
-    )
+    description: <>Load translation files on-demand using Transloco's built-in scope feature</>
   },
   {
     title: <>Rich Plugins</>,
     imageUrl: 'img/3.svg',
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can be extended while reusing the same
-        header and footer.
+        Transloco has a rich plugins ecosystem that provides the tools you need for both development and production
+        environments
       </>
     )
   },
@@ -41,29 +31,21 @@ const features = [
     title: <>Support for Multiple Fallbacks</>,
     imageUrl: 'img/4.svg',
     description: (
-      <>
-        Extend or customize your website layout by reusing React. Docusaurus can be extended while reusing the same
-        header and footer.
-      </>
+      <>Extensive support for fallbacks. Multiple fallbacks for failed requests and missing keys replacement</>
     )
   },
   {
     title: <>Support for SSR</>,
     imageUrl: 'img/5.svg',
-    description: (
-      <>
-        Extend or customize your website layout by reusing React. Docusaurus can be extended while reusing the same
-        header and footer.
-      </>
-    )
+    description: <>Pre-render your translations with Angular SSR and Transloco!</>
   },
   {
     title: <>L10N</>,
     imageUrl: 'img/6.svg',
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can be extended while reusing the same
-        header and footer.
+        Localize your app with Transloco. Transloco provides the <b>transloco-locale</b> package which provides pipes
+        such as <code>Date</code>,<code>Number</code>,<code>Currency</code> and more!
       </>
     )
   }
@@ -88,7 +70,7 @@ function Home() {
   const context = useDocusaurusContext();
   const { siteConfig = {} } = context;
   return (
-    <Layout title={`Hello from ${siteConfig.title}`} description="Description will go into a meta tag in <head />">
+    <Layout title={siteConfig.title} description="Transloco official documentation site">
       <header className={classnames('hero hero--primary', styles.heroBanner)}>
         <div className="container">
           <h1 className="hero__title">{siteConfig.title}</h1>
