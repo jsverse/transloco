@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.14.2](https://github.com/ngneat/transloco/compare/v2.14.1...v2.14.2) (2020-04-14)
+
+### Bug Fixes
+
+- 🐛 downgrade typescript version ([5ffcfd2](https://github.com/ngneat/transloco/commit/5ffcfd26dfde426ecbfa05fedf003ad2f5093cbc))
+
 ### [2.14.1](https://github.com/ngneat/transloco/compare/v2.14.0...v2.14.1) (2020-04-13)
 
 ### Bug Fixes
