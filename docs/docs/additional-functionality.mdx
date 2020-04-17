@@ -27,6 +27,15 @@ You can also pass parameters to the reused key. For example:
 
 So the result of `service.translate('greet', {name: 'John'})` will be: "Hello John, have a good day!".
 
+**Watch out from creating circular referencing!** For Example:
+
+```json title="en.json"
+{
+  "key": "{{key2}}",
+  "key2": "{{key}}"
+}
+```
+
 ### `translate()`
 
 You don't have to inject the service each time you need to translate a key. Transloco has an exported `translate()` function:
