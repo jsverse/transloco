@@ -21,6 +21,17 @@ module.exports = {
           position: 'left'
         },
         {
+          to: 'sampleApp',
+          activeBasePath: 'sampleApp',
+          label: 'Sample App',
+          position: 'left'
+        },
+        {
+          href: 'https://stackblitz.com/edit/ngneat-transloco',
+          label: 'Playground',
+          position: 'right'
+        },
+        {
           href: 'https://github.com/ngneat/transloco/',
           label: 'GitHub',
           position: 'right'
