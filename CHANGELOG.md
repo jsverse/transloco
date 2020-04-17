@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.15.0](https://github.com/ngneat/transloco/compare/v2.14.2...v2.15.0) (2020-04-17)
+
+### Features
+
+- 🎸 supported passing params when reusing keys ([6db0d74](https://github.com/ngneat/transloco/commit/6db0d74d14e449d4f4f703ef3ee8a7dd97198b81)), closes [#259](https://github.com/ngneat/transloco/issues/259)
+
 ### [2.14.2](https://github.com/ngneat/transloco/compare/v2.14.1...v2.14.2) (2020-04-14)
 
 ### Bug Fixes
