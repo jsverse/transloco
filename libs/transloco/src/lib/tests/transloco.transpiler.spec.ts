@@ -30,9 +30,26 @@ describe('TranslocoTranspiler', () => {
     expect(parsed).toEqual('Hello with keys from lang supporting nested values!');
   });
 
+  it('should translate simple string with from lang with nested params', () => {
+    const lang = flatten({
+      dear: 'dear {{name}}',
+      hello: 'Hello {{dear}}'
+    });
+    const parsed = parser.transpile('{{ hello }}', { name: 'world' }, lang);
+    expect(parsed).toEqual('Hello dear world');
+  });
+
   it('should translate simple string with params and from lang', () => {
     const parsed = parser.transpile('Hello {{ from }} {{ name }}', { name: 'Transloco' }, flatten({ from: 'from' }));
     expect(parsed).toEqual('Hello from Transloco');
+  });
+
+  it('should translate simple string with params and from lang with params', () => {
+    const lang = flatten({
+      hello: 'Hello {{name}}'
+    });
+    const parsed = parser.transpile('{{ hello }}, good {{ timeOfDay }}', { name: 'world', timeOfDay: 'morning' }, lang);
+    expect(parsed).toEqual('Hello world, good morning');
   });
 
   it('should return the given value when the value is falsy', () => {

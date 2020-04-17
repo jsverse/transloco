@@ -12,13 +12,13 @@ export interface TranslocoTranspiler {
 export class DefaultTranspiler implements TranslocoTranspiler {
   transpile(value: any, params: HashMap = {}, translation: Translation): any {
     if (isString(value)) {
-      return value.replace(/{{(.*?)}}/g, function(_, match) {
+      return value.replace(/{{(.*?)}}/g, (_, match) => {
         match = match.trim();
         if (isDefined(params[match])) {
           return params[match];
         }
 
-        return isDefined(translation[match]) ? translation[match] : '';
+        return isDefined(translation[match]) ? this.transpile(translation[match], params, translation) : '';
       });
     }
 

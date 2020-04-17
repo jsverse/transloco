@@ -16,6 +16,17 @@ You can point to specific keys in other keys from the same translation file. For
 
 So the result of `service.translate('fromList')` will be: "from home english".
 
+You can also pass parameters to the reused key. For example:
+
+```json title="en.json"
+{
+  "hello": "Hello {{name}},",
+  "greet": "{{hello}}, have a good day!"
+}
+```
+
+So the result of `service.translate('greet', {name: 'John'})` will be: "Hello John, have a good day!".
+
 ### `translate()`
 
 You don't have to inject the service each time you need to translate a key. Transloco has an exported `translate()` function:
