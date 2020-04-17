@@ -13,16 +13,18 @@ npm i @ngneat/transloco-locale
 ```
 
 ## Setup
-Inject `TranslocoLocaleModule` along with `TranslocoModule` into `AppModule`:
+Inject `TranslocoLocaleModule` along with `TranslocoModule` into `TranslocoRootModule`:
 
-```ts title="app.module.ts"
+```ts title="transloco-root.module.ts"
 import { TranslocoLocaleModule } from '@ngneat/transloco-locale';
 
 @NgModule({
-  imports: [TranslocoModule, TranslocoLocaleModule.init()],
-  bootstrap: [AppComponent]
+  imports: [
+    TranslocoLocaleModule.init()
+  ],
+  ...
 })
-export class AppModule {}
+export class TranslocoRootModule {}
 ```
 
 ## Localization Pipes
@@ -121,7 +123,9 @@ Using locale format for the translation files will automatically declare the loc
 Users who don't have more than one locale per language
 could provide a language to locale mapping object using the [config's](#configuration-options) `langToLocaleMapping`:
 
-```ts title="app.module.ts"
+```ts title="transloco-root.module.ts"
+import { TranslocoLocaleModule } from '@ngneat/transloco-locale';
+
 @NgModule({
   imports: [
     TranslocoLocaleModule.init({
@@ -131,16 +135,16 @@ could provide a language to locale mapping object using the [config's](#configur
       }
     })
   ],
-  bootstrap: [AppComponent]
+  ...
 })
-export class AppModule {}
+export class TranslocoRootModule {}
 ```
 
 ### Manually Setting Locale:
 
 The third option in manually setting the locale, this could be done by calling `setLocale` method from `localeService`:
 
-```ts title="app.module.ts"
+```ts title="app.component.ts"
 export class AppComponent {
   constructor(private service: TranslocoLocaleService) {}
 
@@ -167,7 +171,7 @@ The formatted options could be declared in three levels
 
 1. In the module's configuration (as mentioned above):
 
-```ts title="app.module.ts"
+```ts title="transloco-root.module.ts"
 import { TranslocoLocaleModule } from '@ngneat/transloco-locale';
 
 const globalFormatConfig = {
@@ -196,9 +200,10 @@ const esESFormatConfig = {
         }
       }
     })
-  ]
+  ],
+  ...
 })
-export class AppModule {}
+export class TranslocoRootModule {}
 ```
 
 2. It could be set in the component's providers using `LOCALE_CONFIG` token:

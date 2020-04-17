@@ -28,21 +28,23 @@ It then enables support for the following within youIt enables support for the f
 
 To enable this plugin, add the following to the imports array in your `app.module.ts`:
 
-```ts title="app.module.ts"
+```ts title="transloco-root.module.ts"
 import { TranslocoMessageFormatModule } from '@ngneat/transloco-messageformat';
 
 @NgModule({
   imports: [
     TranslocoMessageFormatModule.init()
   ]
+  ...
 })
+export class TranslocoRootModule {}
 ```
 
 ## Locale initialization
 
 By default, messageformat initializes _all_ locales. You could also provide the locales you will need:
 
-```ts title="app.module.ts"
+```ts title="transloco-root.module.ts"
 @NgModule({
   imports: [
     TranslocoMessageFormatModule.init(
@@ -50,8 +52,10 @@ By default, messageformat initializes _all_ locales. You could also provide the 
         locales: 'en-GB'
       }
     )
-  ]
+  ],
+  ...
 })
+export class TranslocoRootModule {}
 ```
 
 The value for `locales` is either a string or an array of strings. The first locale is used as the default locale by messageformat. More info [here](https://messageformat.github.io/messageformat/MessageFormat).
@@ -60,7 +64,7 @@ The value for `locales` is either a string or an array of strings. The first loc
 MessageFormat instances provide some methods to influence its behaviour, among them `addFormatters`, `setBiDiSupport`, and `setStrictNumberSign`. Learn about their meaning [here](https://messageformat.github.io/messageformat/MessageFormat)
 
 This is how you would enable bi-directional support and add a custom formatter, for example:
-```ts title="app.module.ts"
+```ts title="transloco-root.module.ts"
 @NgModule({
   imports: [
     TranslocoMessageFormatModule.init(
@@ -69,6 +73,8 @@ This is how you would enable bi-directional support and add a custom formatter, 
         customFormatters: { upcase: v => v.toUpperCase() }
       }
     )
-  ]
+  ],
+  ...
 })
+export class TranslocoRootModule {}
 ```
