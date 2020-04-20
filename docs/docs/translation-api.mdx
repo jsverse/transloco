@@ -68,7 +68,7 @@ export class AppComponent {
 }
 ```
 
-### `getTranslationObject()`
+### `translateObject()`
 Returns an `object` based on the given path:
 
 ```json title="en.json"
@@ -90,10 +90,10 @@ export class AppComponent {
 
   ngOnInit() {
     // Returns { a, b }
-    this.translocoService.getTranslateObject('path.to.object');
+    this.translocoService.translateObject('path.to.object');
 
     // When quering an object that should be transpiled (see the en.json file)
-    this.translocoService.getTranslateObject('path.to.object', {
+    this.translocoService.translateObject('path.to.object', {
       'b': { value: '' },
       'c': { dynamic: '' }
     });
