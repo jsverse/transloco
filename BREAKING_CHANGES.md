@@ -67,6 +67,6 @@ See [v2-upgrade.md](https://github.com/ngneat/transloco/tree/master/schematics/s
 - Support a fallback language for missing translation value or key.
 - Set a scope alias directly in `TRANSLOCO_SCOPE`.
 
-# Transloco V2.14.1
+## Coming Soon
 
-This version above is built using the Angular's V9 View Engine Compiler. Unfortunately despite Angular wrote that it should be [backward compatible with lower version](https://angular.io/guide/ivy#maintaining-library-compatibility), it seems like it doesn't support projects that uses Angular version that is lower then 8.
+A Transloco CLI tool that builds the translation files based on your code in development. Inform you about missing keys and extras. Stay tuned.

@@ -2,24 +2,6 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [2.15.0](https://github.com/ngneat/transloco/compare/v2.14.2...v2.15.0) (2020-04-17)
-
-### Features
-
-- 🎸 supported passing params when reusing keys ([6db0d74](https://github.com/ngneat/transloco/commit/6db0d74d14e449d4f4f703ef3ee8a7dd97198b81)), closes [#259](https://github.com/ngneat/transloco/issues/259)
-
-### [2.14.2](https://github.com/ngneat/transloco/compare/v2.14.1...v2.14.2) (2020-04-14)
-
-### Bug Fixes
-
-- 🐛 downgrade typescript version ([5ffcfd2](https://github.com/ngneat/transloco/commit/5ffcfd26dfde426ecbfa05fedf003ad2f5093cbc))
-
-### [2.14.1](https://github.com/ngneat/transloco/compare/v2.14.0...v2.14.1) (2020-04-13)
-
-### Bug Fixes
-
-- 🐛 don't call the missing handler when given an empty key ([86fa12d](https://github.com/ngneat/transloco/commit/86fa12d09c235f5c34a81ee049f94b898e198280))
-
 ## [2.14.0](https://github.com/ngneat/transloco/compare/v2.13.5...v2.14.0) (2020-03-14)
 
 ### Features
