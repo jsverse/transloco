@@ -7,6 +7,11 @@ module.exports = {
   organizationName: 'ngneat',
   projectName: 'transloco',
   themeConfig: {
+    algolia: {
+      appId: 'BH4D9OD16A',
+      apiKey: '0fe261e8a7d089862d9a959da892561f',
+      indexName: 'transloco'
+    },
     navbar: {
       title: 'Home',
       logo: {
