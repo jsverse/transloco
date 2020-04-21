@@ -1,4 +1,4 @@
-import { Pipe, PipeTransform, ChangeDetectorRef, Inject } from '@angular/core';
+import { Pipe, PipeTransform, ChangeDetectorRef, Inject, OnDestroy } from '@angular/core';
 import { isNil } from '@ngneat/transloco';
 import { getDefaultOptions } from '../shared';
 import { LOCALE_CONFIG, LocaleConfig } from '../transloco-locale.config';
@@ -10,7 +10,7 @@ import { TranslocoLocalePipe } from './transloco-locale.pipe';
   name: 'translocoDecimal',
   pure: false
 })
-export class TranslocoDecimalPipe extends TranslocoLocalePipe implements PipeTransform {
+export class TranslocoDecimalPipe extends TranslocoLocalePipe implements PipeTransform, OnDestroy {
   constructor(
     protected translocoLocaleService: TranslocoLocaleService,
     protected cdr: ChangeDetectorRef,
@@ -37,5 +37,9 @@ export class TranslocoDecimalPipe extends TranslocoLocalePipe implements PipeTra
       ...numberFormatOptions
     };
     return this.translocoLocaleService.localizeNumber(value, 'decimal', locale, options);
+  }
+
+  ngOnDestroy(): void {
+    super.onDestroy();
   }
 }

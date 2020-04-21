@@ -1,4 +1,4 @@
-import { Pipe, ChangeDetectorRef, PipeTransform, Inject } from '@angular/core';
+import { Pipe, ChangeDetectorRef, PipeTransform, Inject, OnDestroy } from '@angular/core';
 import { isNil } from '@ngneat/transloco';
 import { toDate } from '../helpers';
 import { getDefaultOptions } from '../shared';
@@ -11,7 +11,7 @@ import { TranslocoLocalePipe } from './transloco-locale.pipe';
   name: 'translocoDate',
   pure: false
 })
-export class TranslocoDatePipe extends TranslocoLocalePipe implements PipeTransform {
+export class TranslocoDatePipe extends TranslocoLocalePipe implements PipeTransform, OnDestroy {
   constructor(
     protected translocoLocaleService: TranslocoLocaleService,
     protected cdr: ChangeDetectorRef,
@@ -42,5 +42,9 @@ export class TranslocoDatePipe extends TranslocoLocalePipe implements PipeTransf
       ...getDefaultOptions(locale, 'date', this.localeConfig),
       ...options
     });
+  }
+
+  ngOnDestroy(): void {
+    super.onDestroy();
   }
 }
