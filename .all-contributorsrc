@@ -235,6 +235,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "literalpie",
+      "name": "Benjamin Kindle",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/20398475?v=4",
+      "profile": "http://literalpie.com",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
