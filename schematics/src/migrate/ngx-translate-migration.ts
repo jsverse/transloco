@@ -40,7 +40,7 @@ export function run(path) {
 
   const modules = {
     files: `${path}.ts`,
-    from: /TranslateModule(?![^]*from)(\.(forRoot|forChild)\(({[^}]*})*[^)]*\))?/g,
+    from: /(?<![a-zA-Z])TranslateModule(?![^]*from)(\.(forRoot|forChild)\(({[^}]*})*[^)]*\))?/g,
     to: 'TranslocoModule'
   };
 
