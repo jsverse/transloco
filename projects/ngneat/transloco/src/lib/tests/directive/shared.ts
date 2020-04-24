@@ -21,8 +21,7 @@ function initScopeTest(host: SpectatorHost<TranslocoDirective, HostComponent>, s
 export function testMergedScopedTranslation(spectator: SpectatorHost<TranslocoDirective>, preload?: boolean) {
   const service = spectator.get(TranslocoService);
   if (preload) {
-    service.load('en').subscribe();
-    runLoader();
+    preloadTranslations(spectator);
   }
   initScopeTest(spectator, service);
   expect(spectator.queryHost('.global')).toHaveText(preload ? 'home english' : '');
@@ -56,4 +55,10 @@ export function testTranslationWithRead(spectator: SpectatorHost<TranslocoDirect
   runLoader();
   spectator.detectChanges();
   expect(spectator.queryHost('div')).toHaveText('Title spanish');
+}
+
+export function preloadTranslations(spectator: SpectatorHost<TranslocoDirective>, lang = 'en') {
+  const service = spectator.get(TranslocoService);
+  service.load(lang).subscribe();
+  runLoader();
 }

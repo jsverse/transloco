@@ -60,12 +60,6 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   ) {}
 
   ngOnInit() {
-    const loadingTpl = this.getLoadingTpl();
-    if (loadingTpl) {
-      this.loaderTplHandler = new TemplateHandler(loadingTpl, this.vcr);
-      this.loaderTplHandler.attachView();
-    }
-
     const listenToLangChange = shouldListenToLangChanges(this.translocoService, this.providerLang || this.inlineLang);
 
     this.subscription = this.translocoService.langChanges$
@@ -77,8 +71,10 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
             active: activeLang
           });
 
-          return Array.isArray(this.providerScope) ?
-            forkJoin((<TranslocoScope[]>this.providerScope).map(providerScope => this.resolveScope(lang, providerScope)))
+          return Array.isArray(this.providerScope)
+            ? forkJoin(
+                (<TranslocoScope[]>this.providerScope).map(providerScope => this.resolveScope(lang, providerScope))
+              )
             : this.resolveScope(lang, this.providerScope);
         }),
         listenOrNotOperator(listenToLangChange)
@@ -89,6 +85,12 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
         this.cdr.markForCheck();
         this.initialized = true;
       });
+
+    const loadingTpl = this.getLoadingTpl();
+    if (!this.initialized && loadingTpl) {
+      this.loaderTplHandler = new TemplateHandler(loadingTpl, this.vcr);
+      this.loaderTplHandler.attachView();
+    }
   }
 
   ngOnChanges(changes) {
