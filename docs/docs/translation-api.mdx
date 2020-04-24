@@ -170,7 +170,6 @@ export class AppComponent {
   ngOnInit() {
     this.translocoService.selectTranslateObject('path.to.object', {
       welcome: { value: 'John' },
-      trail: { dynamic: 10 },
       'nested.subscribe': { price: 100 }
     }).subscribe(result => {
       expect(result).toEqual({
