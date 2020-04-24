@@ -78,7 +78,6 @@ export class AppComponent {
     "to": {
       "object": {
          "welcome": "Welcome {{ name }}",
-         "trail": "you have {{ days }} left for you trail",
          "nested": {
             "subscribe": "subscribe today for {{ price }}$"
          }
@@ -97,28 +96,23 @@ export class AppComponent {
   constructor(private translocoService: TranslocoService) {}
 
   ngOnInit() {
-    /* Returns: {
-        welcome: "Welcome {{ name }}",
-        trail: "you have {{ days }} left for you trail",
-        nested: {
-          "subscribe": "subscribe today for {{ price }}$"
-        }
-      } (see the en.json file above) */
-    this.translocoService.translateObject('path.to.object');
+    let result = this.translocoService.translateObject('path.to.object');
+    expect(result).toEqual({
+      welcome: "Welcome {{ name }}",
+      nested: {
+        "subscribe": "subscribe today for {{ price }}$"
+    }});
 
-    /* When queering an object that should be transpiled
-       Returns: {
-          welcome: "Welcome John",
-          trail: "you have 10 left for you trail",
-          nested: {
-            "subscribe": "subscribe today for 100$"
-          }
-        }  */
-    this.translocoService.translateObject('path.to.object', {
+    /* When queering an object that should be transpiled */
+    result = this.translocoService.translateObject('path.to.object', {
       welcome: { value: 'John' },
-      trail: { dynamic: 10 },
       'nested.subscribe': { price: 100 }
     });
+    expect(result).toEqual({
+      welcome: "Welcome John",
+      nested: {
+        "subscribe": "subscribe today for 100$"
+    }});
   }
 }
 ```
@@ -130,38 +124,35 @@ export class AppComponent {
   constructor(private translocoService: TranslocoService) {}
 
   ngOnInit() {
-    /* If there are no parameters to transpile pass an empty `object` or `null`
-       Returns: ["Home", "Hello {{ name }}"] */
+    /* If there are no parameters to transpile pass an empty `object` or `null` */
     let keyParams = {
       home: null,
       hello: {},
     }
-    this.translocoService.translateObject(keyParams);
+    let result = this.translocoService.translateObject(keyParams);
+    expect(result).toEqual(["Home", "Hello {{ name }}"]);
 
-    /* When queering an object that should be transpiled
-       Returns: ["Home", "Hello John"]  */
+    /* When queering an object that should be transpiled */
     keyParams = {
        home: null,
        hello: { name: 'John' },
     }
-    this.translocoService.translateObject(keyParams);
+    result = this.translocoService.translateObject(keyParams);
+    expect(result).toEqual(["Home", "Hello John"]);
 
-    /* Works with object paths
-       Returns: [
-         "Home",
-         { subscribe: "subscribe today for 100$" }
-       ] */
+    /* Works with object paths */
     keyParams = {
        hello: { name: 'John' },
        'path.to.object.nested': {subscribe: {price: 100}}
     }
-    this.translocoService.translateObject(keyParams);
+    result = this.translocoService.translateObject(keyParams);
+    expect(result).toEqual([ "Home", { subscribe: "subscribe today for 100$" }]);
 
-    /* Works with `Map`
-       Returns: ["Home"]  */
+    /* Works with `Map` */
     keyParams = new Map();
     keyParams.set('home', null);
-    this.translocoService.translateObject(keyParams);
+    result = this.translocoService.translateObject(keyParams);
+    expect(result).toEqual(["Home"]);
   }
 }
 ```
@@ -177,28 +168,27 @@ export class AppComponent {
   constructor(private translocoService: TranslocoService) {}
 
   ngOnInit() {
-    /* Returns: {
-         welcome: "Welcome John",
-         trail: "you have 10 left for you trail",
-         nested: {
-           "subscribe": "subscribe today for 100$"
-         }
-       }  */
     this.translocoService.selectTranslateObject('path.to.object', {
       welcome: { value: 'John' },
       trail: { dynamic: 10 },
       'nested.subscribe': { price: 100 }
-    }).subscribe(console.log);
+    }).subscribe(result => {
+      expect(result).toEqual({
+        welcome: "Welcome John",
+        nested: {
+          "subscribe": "subscribe today for 100$"
+        }
+      });
+    });
 
-    /* Returns: [
-         "Home",
-         { subscribe: "subscribe today for 100$" }
-    ] */
     keyParams = {
       hello: { name: 'John' },
       'path.to.object.nested': {subscribe: {price: 100}}
     }
-    this.translocoService.selectTranslateObject(keyParams).subscribe(console.log);
+    this.translocoService.selectTranslateObject(keyParams)
+    .subscribe(result => {
+       expect(result).toEqual(["Home", { subscribe: "subscribe today for 100$" }]);
+    });
   }
 }
 ```
