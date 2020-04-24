@@ -69,48 +69,136 @@ export class AppComponent {
 ```
 
 ### `translateObject()`
-Returns an `object` based on the given path:
 
 ```json title="en.json"
 {
+  "home": "Home",
+  "hello": "Hello {{ name }}",
   "path": {
     "to": {
       "object": {
-         "a": Hello {{ value }}
-         "b": Hello {{ dynamic }}
+         "welcome": "Welcome {{ name }}",
+         "trail": "you have {{ days }} left for you trail",
+         "nested": {
+            "subscribe": "subscribe today for {{ price }}$"
+         }
       }
     }
   }
 }
 ```
 
+The following code is based on the `en.json` above ☝
+
+- Returns an `object` based on the given path:
+
 ```ts title="app.component.ts"
 export class AppComponent {
   constructor(private translocoService: TranslocoService) {}
 
   ngOnInit() {
-    // Returns { a, b }
+    /* Returns: {
+        welcome: "Welcome {{ name }}",
+        trail: "you have {{ days }} left for you trail",
+        nested: {
+          "subscribe": "subscribe today for {{ price }}$"
+        }
+      } (see the en.json file above) */
     this.translocoService.translateObject('path.to.object');
 
-    // When quering an object that should be transpiled (see the en.json file)
+    /* When queering an object that should be transpiled
+       Returns: {
+          welcome: "Welcome John",
+          trail: "you have 10 left for you trail",
+          nested: {
+            "subscribe": "subscribe today for 100$"
+          }
+        }  */
     this.translocoService.translateObject('path.to.object', {
-      'b': { value: '' },
-      'c': { dynamic: '' }
+      welcome: { value: 'John' },
+      trail: { dynamic: 10 },
+      'nested.subscribe': { price: 100 }
     });
   }
 }
 ```
 
-### `selectTranslationObject()`
-Load the translation file and returns the object based on the path:
+- Given a `key: params` map (`object` | `Map`), returns an `array` of translated values:
+
 ```ts title="app.component.ts"
 export class AppComponent {
   constructor(private translocoService: TranslocoService) {}
 
   ngOnInit() {
-    // Returns { a, b }
-    this.translocoService.selectTranslateObject('path.to.object')
-                         .subscribe(console.log)
+    /* If there are no parameters to transpile pass an empty `object` or `null`
+       Returns: ["Home", "Hello {{ name }}"] */
+    let keyParams = {
+      home: null,
+      hello: {},
+    }
+    this.translocoService.translateObject(keyParams);
+
+    /* When queering an object that should be transpiled
+       Returns: ["Home", "Hello John"]  */
+    keyParams = {
+       home: null,
+       hello: { name: 'John' },
+    }
+    this.translocoService.translateObject(keyParams);
+
+    /* Works with object paths
+       Returns: [
+         "Home",
+         { subscribe: "subscribe today for 100$" }
+       ] */
+    keyParams = {
+       hello: { name: 'John' },
+       'path.to.object.nested': {subscribe: {price: 100}}
+    }
+    this.translocoService.translateObject(keyParams);
+
+    /* Works with `Map`
+       Returns: ["Home"]  */
+    keyParams = new Map();
+    keyParams.set('home', null);
+    this.translocoService.translateObject(keyParams);
+  }
+}
+```
+
+### `selectTranslationObject()`
+Load the translation file (if not loaded yet) and behaves the same as `translateObject`.
+The only difference is that this method returns an observable to which you can subscribe.
+
+The following code is based on the `en.json` in `translateObject` ☝
+
+```ts title="app.component.ts"
+export class AppComponent {
+  constructor(private translocoService: TranslocoService) {}
+
+  ngOnInit() {
+    /* Returns: {
+         welcome: "Welcome John",
+         trail: "you have 10 left for you trail",
+         nested: {
+           "subscribe": "subscribe today for 100$"
+         }
+       }  */
+    this.translocoService.selectTranslateObject('path.to.object', {
+      welcome: { value: 'John' },
+      trail: { dynamic: 10 },
+      'nested.subscribe': { price: 100 }
+    }).subscribe(console.log);
+
+    /* Returns: [
+         "Home",
+         { subscribe: "subscribe today for 100$" }
+    ] */
+    keyParams = {
+      hello: { name: 'John' },
+      'path.to.object.nested': {subscribe: {price: 100}}
+    }
+    this.translocoService.selectTranslateObject(keyParams).subscribe(console.log);
   }
 }
 ```
