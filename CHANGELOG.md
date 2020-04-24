@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.17.0](https://github.com/ngneat/transloco/compare/v2.16.1...v2.17.0) (2020-04-24)
+
+### Bug Fixes
+
+- 🐛 don't display loading template if translations were load ([#273](https://github.com/ngneat/transloco/issues/273)) ([c9214ad](https://github.com/ngneat/transloco/commit/c9214ad))
+
+### Features
+
+- 🎸 support translating key-params map ([b261688](https://github.com/ngneat/transloco/commit/b261688)), closes [#272](https://github.com/ngneat/transloco/issues/272)
+
 ### [2.16.1](https://github.com/ngneat/transloco/compare/v2.15.0...v2.16.1) (2020-04-23)
 
 ## [2.14.0](https://github.com/ngneat/transloco/compare/v2.13.5...v2.14.0) (2020-03-14)
