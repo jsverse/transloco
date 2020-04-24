@@ -82,6 +82,12 @@ export class AppComponent {
             "subscribe": "subscribe today for {{ price }}$"
          }
       }
+    },
+    "some": {
+      "object": {
+        "hi": "Hi",
+        "hey": "Hey"
+      }
     }
   }
 }
@@ -96,14 +102,13 @@ export class AppComponent {
   constructor(private translocoService: TranslocoService) {}
 
   ngOnInit() {
-    let result = this.translocoService.translateObject('path.to.object');
+    let result = this.translocoService.translateObject('some.object');
     expect(result).toEqual({
-      welcome: "Welcome {{ name }}",
-      nested: {
-        "subscribe": "subscribe today for {{ price }}$"
-    }});
+      hi: "Hi",
+      hey: "Hey"
+    });
 
-    /* When queering an object that should be transpiled */
+    /* When querying an object that should be transpiled */
     result = this.translocoService.translateObject('path.to.object', {
       welcome: { value: 'John' },
       'nested.subscribe': { price: 100 }
@@ -126,13 +131,12 @@ export class AppComponent {
   ngOnInit() {
     /* If there are no parameters to transpile pass an empty `object` or `null` */
     let keyParams = {
-      home: null,
-      hello: {},
+      home: null, // {}
     }
     let result = this.translocoService.translateObject(keyParams);
-    expect(result).toEqual(["Home", "Hello {{ name }}"]);
+    expect(result).toEqual(["Home"]);
 
-    /* When queering an object that should be transpiled */
+    /* When querying an object that should be transpiled */
     keyParams = {
        home: null,
        hello: { name: 'John' },
