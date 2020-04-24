@@ -1,16 +1,5 @@
 import { Inject, Injectable, OnDestroy, Optional } from '@angular/core';
-import {
-  BehaviorSubject,
-  combineLatest,
-  EMPTY,
-  forkJoin,
-  from,
-  Observable,
-  of,
-  Subject,
-  Subscription,
-  zip
-} from 'rxjs';
+import { BehaviorSubject, combineLatest, EMPTY, forkJoin, from, Observable, of, Subject, Subscription } from 'rxjs';
 import { catchError, map, retry, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { DefaultLoader, TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_TRANSPILER, TranslocoTranspiler } from './transloco.transpiler';
@@ -19,15 +8,15 @@ import {
   HashMap,
   InlineLoader,
   LoadOptions,
+  ProviderScope,
   SetTranslationOptions,
+  TranslateObjectParams,
   TranslateParams,
   Translation,
   TranslocoEvents,
-  TranslocoScope,
-  ProviderScope,
-  TranslateObjectParams
+  TranslocoScope
 } from './types';
-import { flatten, isNil, isString, size, toCamelCase, unflatten, isScopeObject, isEmpty } from './helpers';
+import { flatten, isEmpty, isNil, isScopeObject, isString, size, toCamelCase, unflatten } from './helpers';
 import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 import {
   TRANSLOCO_MISSING_HANDLER,
@@ -311,12 +300,20 @@ export class TranslocoService implements OnDestroy {
       return this.selectTranslate<T>(key, params, lang, true);
     }
 
-    const translations: Observable<any>[] = [];
-    for (const [_key, _params] of this.getEntries(key)) {
-      translations.push(this.selectTranslateObject(_key, _params, lang));
-    }
+    const [[firstKey, firstParams], ...rest] = this.getEntries(key);
 
-    return zip(...translations);
+    /* In order to avoid subscribing multiple times to the load language event by calling selectTranslateObject for each pair,
+     * we listen to when the first key has been translated (the language is loaded) and translate the rest synchronously */
+    return this.selectTranslateObject<T>(firstKey, firstParams, lang).pipe(
+      map(value => {
+        const translations = [value];
+        for (const [_key, _params] of rest) {
+          translations.push(this.translateObject<T>(_key, _params, lang));
+        }
+
+        return translations;
+      })
+    );
   }
 
   /**
