@@ -17,9 +17,10 @@ export type FailedEvent = {
 };
 
 export type TranslocoEvents = LoadedEvent | FailedEvent;
-export type Translation = HashMap<any>;
+export type Translation = HashMap;
 export type PersistStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>;
 export type TranslateParams = string | string[];
+export type TranslateObjectParams = TranslateParams | HashMap | Map<string, HashMap>;
 export type AvailableLangs = string[] | { id: string; label: string }[];
 export type SetTranslationOptions = { merge?: boolean; emitChange?: boolean };
 export type ProviderScope = {

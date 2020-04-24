@@ -1,5 +1,16 @@
 import { Inject, Injectable, OnDestroy, Optional } from '@angular/core';
-import { BehaviorSubject, combineLatest, EMPTY, forkJoin, from, Observable, of, Subject, Subscription } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  EMPTY,
+  forkJoin,
+  from,
+  Observable,
+  of,
+  Subject,
+  Subscription,
+  zip
+} from 'rxjs';
 import { catchError, map, retry, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { DefaultLoader, TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { TRANSLOCO_TRANSPILER, TranslocoTranspiler } from './transloco.transpiler';
@@ -13,9 +24,10 @@ import {
   Translation,
   TranslocoEvents,
   TranslocoScope,
-  ProviderScope
+  ProviderScope,
+  TranslateObjectParams
 } from './types';
-import { flatten, getValue, isNil, isString, size, toCamelCase, unflatten, isScopeObject } from './helpers';
+import { flatten, isNil, isString, size, toCamelCase, unflatten, isScopeObject, isEmpty } from './helpers';
 import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 import {
   TRANSLOCO_MISSING_HANDLER,
@@ -260,21 +272,51 @@ export class TranslocoService implements OnDestroy {
    * service.translateObject('path.to.object', {'subpath': { value: 'someValue'}}) => returns translated object
    *
    */
-  translateObject<T = any>(key: TranslateParams, params?: HashMap, lang = this.getActiveLang()): T {
-    const { resolveLang, scope } = this.resolveLangAndScope(lang);
+  translateObject<T = any>(key: string, params?: HashMap, lang?: string): T;
+  translateObject<T = any>(key: string[], params?: HashMap, lang?: string): T[];
+  translateObject<T = any>(key: TranslateParams, params?: HashMap, lang?: string): T | T[];
+  translateObject<T = any>(key: HashMap | Map<string, HashMap>, params?: null, lang?: string): T[];
+  translateObject<T = any>(key: TranslateObjectParams, params?: HashMap, lang = this.getActiveLang()): T | T[] {
+    if (isString(key) || Array.isArray(key)) {
+      if (Array.isArray(key)) {
+        return key.map(k => this.translateObject(scope ? `${scope}.${k}` : k, params, resolveLang)) as any;
+      }
+      const { resolveLang, scope } = this.resolveLangAndScope(lang);
 
-    if (Array.isArray(key)) {
-      return key.map(k => this.translateObject(scope ? `${scope}.${k}` : k, params, resolveLang)) as any;
+      const translation = this.getTranslation(resolveLang);
+      key = scope ? `${scope}.${key}` : key;
+
+      const value = unflatten(this.getObjectByKey(translation, key));
+      /* If an empty object was returned we want to try and translate the key as a string and not an object */
+      return isEmpty(value) ? this.translate(key, params, lang) : this.parser.transpile(value, params, translation);
     }
-    const translation = this.getTranslation(resolveLang);
-    key = scope ? `${scope}.${key}` : key;
 
-    const value = unflatten(this.getObjectByKey(translation, key));
-    return this.parser.transpile(value, params, translation);
+    const translations: T[] = [];
+    for (const [_key, _params] of this.getEntries(key)) {
+      translations.push(this.translateObject(_key, _params, lang));
+    }
+
+    return translations;
   }
 
-  selectTranslateObject<T = any>(key: TranslateParams, params?: HashMap, lang?: string): Observable<T> {
-    return this.selectTranslate(key, params, lang, true);
+  selectTranslateObject<T = any>(key: string, params?: HashMap, lang?: string): Observable<T>;
+  selectTranslateObject<T = any>(key: string[], params?: HashMap, lang?: string): Observable<T[]>;
+  selectTranslateObject<T = any>(key: HashMap | Map<string, HashMap>, params?: null, lang?: string): Observable<T[]>;
+  selectTranslateObject<T = any>(
+    key: TranslateObjectParams,
+    params?: HashMap,
+    lang?: string
+  ): Observable<T> | Observable<T[]> {
+    if (isString(key) || Array.isArray(key)) {
+      return this.selectTranslate<T>(key, params, lang, true);
+    }
+
+    const translations: Observable<any>[] = [];
+    for (const [_key, _params] of this.getEntries(key)) {
+      translations.push(this.selectTranslateObject(_key, _params, lang));
+    }
+
+    return zip(...translations);
   }
 
   /**
@@ -572,5 +614,9 @@ export class TranslocoService implements OnDestroy {
     }
 
     return result;
+  }
+
+  private getEntries(key: HashMap | Map<string, HashMap>) {
+    return key instanceof Map ? key.entries() : Object.entries(key);
   }
 }

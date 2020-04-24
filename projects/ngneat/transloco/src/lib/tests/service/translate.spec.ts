@@ -53,13 +53,13 @@ describe('translate', () => {
     expect(service.translate(['home', 'alert', 'a.b.c'], { value: 'val' })).toEqual(expected);
   }));
 
-  it('should support scoped langugage', fakeAsync(() => {
+  it('should support scoped language', fakeAsync(() => {
     loadLang(service, 'lazy-page/en');
     // should append the active lang by default
     expect(service.translate('title', {}, 'lazy-page')).toEqual('Admin Lazy english');
   }));
 
-  it('should support scoped langugage with different lang', fakeAsync(() => {
+  it('should support scoped language with different lang', fakeAsync(() => {
     loadLang(service, 'lazy-page/en');
     loadLang(service, 'lazy-page/es');
     expect(service.translate('title', {}, 'lazy-page/es')).toEqual('Admin Lazy spanish');
