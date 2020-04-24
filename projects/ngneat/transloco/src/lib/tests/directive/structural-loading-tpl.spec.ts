@@ -2,7 +2,7 @@ import { fakeAsync } from '@angular/core/testing';
 import { TemplateHandler, TranslocoDirective } from '@ngneat/transloco';
 import { loadingTemplateMock, providersMock, runLoader } from '../transloco.mocks';
 import { createHostFactory, SpectatorHost } from '@ngneat/spectator';
-import { createFactory } from './shared';
+import { createFactory, preloadTranslations } from './shared';
 import { TranslocoLoaderComponent } from '../../loader-component.component';
 
 describe('Loading Template', () => {
@@ -40,6 +40,25 @@ describe('Loading Template', () => {
 
     expect((TemplateHandler.prototype as any).attachView).not.toHaveBeenCalled();
   });
+
+  it('should not attachView if the translation have already loaded', fakeAsync(() => {
+    spyOn<TemplateHandler>(TemplateHandler.prototype, 'attachView').and.callThrough();
+    spectator = createHost(
+      `
+        <section *transloco="let t; scope: 'lazy-page'; loadingTpl: loading">
+          <h1 data-cy="lazy-page">{{ t('title') }}</h1>
+        </section>
+
+        <ng-template #loading>
+          <h1 id="lazy-page-loading">Loading...</h1>
+        </ng-template>
+      `,
+      { detectChanges: false }
+    );
+    preloadTranslations(spectator);
+
+    expect((TemplateHandler.prototype as any).attachView).not.toHaveBeenCalled();
+  }));
 });
 
 describe('Custom loading template', () => {
