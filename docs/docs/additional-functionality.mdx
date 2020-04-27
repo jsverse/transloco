@@ -16,6 +16,18 @@ You can point to specific keys in other keys from the same translation file. For
 
 So the result of `service.translate('fromList')` will be: "from home english".
 
+When using this feature inside a [scope](https://ngneat.github.io/transloco/docs/scope-configuration), make sure you prefix the key reference with the scope name:
+
+```json title="admin/en.json"
+{
+  "alert": "alert {{value}} english",
+  "home": "home english",
+  "fromList": "from {{admin.home}}"
+}
+```
+
+So the result of `service.translate('admin.fromList')` will be: "from home english".
+
 You can also pass parameters to the reused key. For example:
 
 ```json title="en.json"

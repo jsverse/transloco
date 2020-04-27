@@ -3,7 +3,7 @@ import { Observable, of } from 'rxjs';
 import { Translation } from './types';
 
 export interface TranslocoLoader {
-  getTranslation(lang: string, data: TranslocoLoaderData): Observable<Translation> | Promise<Translation>;
+  getTranslation(lang: string, data?: TranslocoLoaderData): Observable<Translation> | Promise<Translation>;
 }
 
 export type TranslocoLoaderData = {
