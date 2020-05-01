@@ -153,10 +153,20 @@ export function run(path) {
       let { step, matchers } = matchersArr[i];
       const msg = `Step ${i + 1}/${matchersArr.length}: Migrating ${step}`;
       spinner = ora().start(msg);
+      const noFilesFound = [];
       for (let matcher of matchers) {
-        await replace(matcher);
+        try {
+          await replace(matcher);
+        } catch (e) {
+          if (e.message.includes('No files match the pattern')) {
+            noFilesFound.push(e.message);
+          } else {
+            throw e;
+          }
+        }
       }
       spinner.succeed(msg);
+      noFilesFound.forEach(pattern => console.log('\x1b[33m%s\x1b[0m', `⚠️ ${pattern}`));
     }
   }
 
@@ -166,7 +176,7 @@ export function run(path) {
       console.log('\n              🌵 Done! 🌵');
       console.log('Welcome to a better translation experience 🌐');
       console.log(
-        '\nFor more information about this script please visit 👉 https://netbasal.gitbook.io/transloco/schematics/migrate/migration-from-ngx-translate\n'
+        '\nFor more information about this script please visit 👉 https://ngneat.github.io/transloco/docs/migration/ngx\n'
       );
     });
 }

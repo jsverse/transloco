@@ -1,12 +1,10 @@
 const kebabCase = require('lodash.kebabcase');
 const glob = require('glob');
 const fs = require('fs-extra');
-const path = require('path');
 
 const regex = /<([\w-]*)\s*(?=[^>]*i18n)[^>]*i18n(?:(?:=("|')(?<attrValue>[^>]*?)\2)|(?:-(?<propName>[\w-]*)[^>]*\4=("|')(?<propValue>[^>]*?)\5))?[^>]*(?:>(?<innerText>[^]*?)<\/\1)?/g;
 
 export function run({ input, output, langs }) {
-
   const files = glob.sync(`${process.cwd()}/${input}/**/*.html`);
   let translation = {};
   for (const filePath of files) {
@@ -26,6 +24,12 @@ export function run({ input, output, langs }) {
       }, {});
     fs.outputJsonSync(`${process.cwd()}/${output}/${lang}.json`, sorted, { spaces: 2 });
   }
+
+  console.log('\n              🌵 Done! 🌵');
+  console.log('Welcome to a better translation experience 🌐');
+  console.log(
+    '\nFor more information about this script please visit 👉 https://ngneat.github.io/transloco/docs/migration/angular\n'
+  );
 }
 
 function resolveKey(attrValue, value) {
