@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.17.1](https://github.com/ngneat/transloco/compare/v2.17.0...v2.17.1) (2020-05-01)
+
+### Bug Fixes
+
+- 🐛 migration script throws error when no files found ([db82974](https://github.com/ngneat/transloco/commit/db82974))
+
 ## [2.17.0](https://github.com/ngneat/transloco/compare/v2.16.1...v2.17.0) (2020-04-24)
 
 ### Bug Fixes
