@@ -9,7 +9,7 @@ import styles from './styles.module.css';
 function SampleApp() {
   const context = useDocusaurusContext();
   const { siteConfig = {} } = context;
-  const iframeStyle = { width: '100%', minHeight: '500px' };
+  const iframeStyle = { width: '100%', minHeight: '80vh' };
   return (
     <Layout title={siteConfig.title} description="Transloco official documentation site">
       <main>
