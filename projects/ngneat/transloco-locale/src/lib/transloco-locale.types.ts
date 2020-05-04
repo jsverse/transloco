@@ -85,7 +85,7 @@ export interface DateFormatOptions {
   /**
    * The weekday formatting style
    */
-  weekDay?: DateStringFormats;
+  weekday?: DateStringFormats;
   /**
    * The era formatting style
    */
