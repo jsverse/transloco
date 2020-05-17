@@ -4,6 +4,12 @@ title: FAQ
 
 A collection of common questions and their answers.
 
+### Is it possible to use an Angular component inside my translation string?
+You can't do it using while AOT compilation, but there are 2 alternatives:
+- Transform your component into a web component using `@angular/elements` and use the HTML tag in your translation.
+- Separate your translation into 2 parts and insert the desired component between.
+
+
 ### Can I use HTML markings inside a translation?
 Yes, you can! Pass the translated string in an `innerHTML` binding.
 
