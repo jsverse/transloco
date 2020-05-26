@@ -437,7 +437,7 @@ export class TranslocoService implements OnDestroy {
    * @internal
    */
   _isLangScoped(lang: string) {
-    return this.getAvailableLangsIds().indexOf(lang) === -1;
+    return this.getAvailableLangsIds().indexOf(lang) === -1 && lang.indexOf('/') !== -1;
   }
 
   /**
