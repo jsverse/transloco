@@ -11,8 +11,8 @@ export interface LocaleFormatOptions {
 }
 
 export interface LocaleConfig {
-  global: LocaleFormatOptions;
-  localeBased: HashMap<LocaleFormatOptions>;
+  global?: LocaleFormatOptions;
+  localeBased?: HashMap<LocaleFormatOptions>;
 }
 
 export interface TranslocoLocaleConfig {

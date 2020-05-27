@@ -1,10 +1,9 @@
 import { Pipe, ChangeDetectorRef, PipeTransform, Inject, OnDestroy } from '@angular/core';
 import { isNil } from '@ngneat/transloco';
-import { toDate } from '../helpers';
 import { getDefaultOptions } from '../shared';
 import { LOCALE_CONFIG, LocaleConfig } from '../transloco-locale.config';
 import { TranslocoLocaleService } from '../transloco-locale.service';
-import { DateFormatOptions, Locale } from '../transloco-locale.types';
+import { DateFormatOptions, Locale, ValidDate } from '../transloco-locale.types';
 import { TranslocoLocalePipe } from './transloco-locale.pipe';
 
 @Pipe({
@@ -34,11 +33,11 @@ export class TranslocoDatePipe extends TranslocoLocalePipe implements PipeTransf
    * 1 | translocoDate: { dateStyle: 'medium' } // Jan 1, 1970
    * '2019-02-08' | translocoDate: { dateStyle: 'medium' } // Feb 8, 2019
    */
-  transform(value: Date | string | number, options: DateFormatOptions = {}, locale?: Locale) {
-    if (isNil(value)) return '';
+  transform(date: ValidDate, options: DateFormatOptions = {}, locale?: Locale) {
+    if (isNil(date)) return '';
     locale = this.getLocale(locale);
 
-    return this.translocoLocaleService.localizeDate(toDate(value), locale, {
+    return this.translocoLocaleService.localizeDate(date, locale, {
       ...getDefaultOptions(locale, 'date', this.localeConfig),
       ...options
     });

@@ -2,7 +2,7 @@ import { Injectable, Inject, OnDestroy } from '@angular/core';
 import { TranslocoService, HashMap } from '@ngneat/transloco';
 import { Observable, BehaviorSubject, Subscription } from 'rxjs';
 import { map, distinctUntilChanged, filter } from 'rxjs/operators';
-import { isLocaleFormat } from './helpers';
+import { isLocaleFormat, toDate } from './helpers';
 import { getDefaultOptions } from './shared';
 import {
   LOCALE_LANG_MAPPING,
@@ -17,7 +17,7 @@ import {
   TranslocoDateTransformer,
   TranslocoNumberTransformer
 } from './transloco-locale.transformers';
-import { Locale, DateFormatOptions, NumberTypes, Currency } from './transloco-locale.types';
+import { Locale, DateFormatOptions, NumberTypes, Currency, ValidDate } from './transloco-locale.types';
 
 @Injectable({
   providedIn: 'root'
@@ -76,9 +76,9 @@ export class TranslocoLocaleService implements OnDestroy {
    * localizeDate(1, 'en-US', { dateStyle: 'medium' }) // Jan 1, 1970
    * localizeDate('2019-02-08', 'en-US', { dateStyle: 'medium' }) // Feb 8, 2019
    */
-  localizeDate(date: Date, locale: Locale = this.getLocale(), options?: DateFormatOptions): string {
+  localizeDate(date: ValidDate, locale: Locale = this.getLocale(), options?: DateFormatOptions): string {
     options = options ? options : getDefaultOptions(locale, 'date', this.localeConfig);
-    return this.dateTransformer.transform(date, locale, options);
+    return this.dateTransformer.transform(toDate(date), locale, options);
   }
 
   /**

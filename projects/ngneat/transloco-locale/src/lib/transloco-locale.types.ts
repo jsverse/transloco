@@ -129,3 +129,5 @@ export type Locale = string;
 
 //ISO 4217 currency string (e.g. USD, EUR).
 export type Currency = string;
+
+export type ValidDate = Date | string | number;
