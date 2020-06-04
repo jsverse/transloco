@@ -4,11 +4,11 @@ import { isBrowser } from './helpers';
  * Returns the language code name from the browser, e.g. "en"
  */
 export function getBrowserLang(): string | undefined {
-  if (isBrowser() === false) {
+  let browserLang = getBrowserCultureLang();
+  if (isBrowser() === false || !browserLang) {
     return undefined;
   }
 
-  let browserLang = getBrowserCultureLang();
   if (browserLang.indexOf('-') !== -1) {
     browserLang = browserLang.split('-')[0];
   }
