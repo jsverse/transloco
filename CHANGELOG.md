@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.17.2](https://github.com/ngneat/transloco/compare/v2.17.1...v2.17.2) (2020-06-04)
+
+### Bug Fixes
+
+- 🐛 getBrowserLang throws error when browser has no lang ([52c86c0](https://github.com/ngneat/transloco/commit/52c86c0)), closes [#289](https://github.com/ngneat/transloco/issues/289)
+
 ### [2.17.1](https://github.com/ngneat/transloco/compare/v2.17.0...v2.17.1) (2020-05-01)
 
 ### Bug Fixes
