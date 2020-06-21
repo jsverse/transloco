@@ -5,7 +5,7 @@ export interface TranslocoConfig {
   scopePathMap?: { [key: string]: string };
   langs?: string[];
   keysManager?: {
-    input?: string;
+    input?: string | string[];
     output?: string;
     marker?: string;
     addMissingKeys?: boolean;
