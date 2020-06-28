@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.17.3](https://github.com/ngneat/transloco/compare/v2.17.2...v2.17.3) (2020-06-28)
+
+### Bug Fixes
+
+- 🐛 Angular v10 BC fixes ([84ad417](https://github.com/ngneat/transloco/commit/84ad417))
+
 ### [2.17.2](https://github.com/ngneat/transloco/compare/v2.17.1...v2.17.2) (2020-06-04)
 
 ### Bug Fixes
