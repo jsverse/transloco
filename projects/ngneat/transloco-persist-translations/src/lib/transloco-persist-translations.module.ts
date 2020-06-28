@@ -9,7 +9,9 @@ import {
 
 @NgModule()
 export class TranslocoPersistTranslationsModule {
-  static init(config: Partial<TranslocoPersistTranslationsConfig>): ModuleWithProviders {
+  static init(
+    config: Partial<TranslocoPersistTranslationsConfig>
+  ): ModuleWithProviders<TranslocoPersistTranslationsModule> {
     return {
       ngModule: TranslocoPersistTranslationsModule,
       providers: [

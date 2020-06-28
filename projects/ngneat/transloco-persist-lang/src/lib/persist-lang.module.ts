@@ -4,7 +4,7 @@ import { PersistLangConfig, TRANSLOCO_PERSIST_LANG_CONFIG } from './persist-lang
 
 @NgModule()
 export class TranslocoPersistLangModule {
-  static init(config: PersistLangConfig): ModuleWithProviders {
+  static init(config: PersistLangConfig): ModuleWithProviders<TranslocoPersistLangModule> {
     return {
       ngModule: TranslocoPersistLangModule,
       providers: [{ provide: TRANSLOCO_PERSIST_LANG_CONFIG, useValue: config }, config.storage]

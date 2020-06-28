@@ -25,7 +25,7 @@ export const pipes = [TranslocoCurrencyPipe, TranslocoDatePipe, TranslocoDecimal
   exports: pipes
 })
 export class TranslocoLocaleModule {
-  static init(config: TranslocoLocaleConfig = {}): ModuleWithProviders {
+  static init(config: TranslocoLocaleConfig = {}): ModuleWithProviders<TranslocoLocaleModule> {
     return {
       ngModule: TranslocoLocaleModule,
       providers: [

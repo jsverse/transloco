@@ -18,7 +18,10 @@ export class TestingLoader implements TranslocoLoader {
   exports: [TranslocoModule]
 })
 export class TranslocoTestingModule {
-  static withLangs(langs: HashMap<Translation>, config: Partial<TranslocoConfig> = {}): ModuleWithProviders {
+  static withLangs(
+    langs: HashMap<Translation>,
+    config: Partial<TranslocoConfig> = {}
+  ): ModuleWithProviders<TranslocoTestingModule> {
     return {
       ngModule: TranslocoTestingModule,
       providers: [

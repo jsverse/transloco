@@ -35,7 +35,7 @@ export class TranslocoPreloadLangsModule implements OnDestroy {
   private idleCallbackId: any;
   private subscription: Subscription = Subscription.EMPTY;
 
-  static preload(langs: string[]): ModuleWithProviders {
+  static preload(langs: string[]): ModuleWithProviders<TranslocoPreloadLangsModule> {
     return {
       ngModule: TranslocoPreloadLangsModule,
       providers: [{ provide: 'PreloadLangs', useValue: langs }]
