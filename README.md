@@ -33,6 +33,7 @@ It exposes a rich API to manage translations efficiently and cleanly. It provide
 [![Join the chat at https://gitter.im/ngneat-transloco](https://badges.gitter.im/gitterHQ/gitter.svg)](https://gitter.im/ngneat-transloco/lobby?source=orgpage)
 
 - 🤓 Learn about it on the [docs site](https://ngneat.github.io/transloco/)
+- 🎥 Watch our instructional [video guides](https://www.youtube.com/watch?v=AlSorJRuK1g&list=PLTuTW7EgL6ouXk5BqE4zWdDJkAuC4HTWi)
 - 🚀 See it in action on [StackBlitz](https://stackblitz.com/edit/ngneat-transloco)
 - 😎 Use [schematics](https://netbasal.gitbook.io/transloco/schematics/ng-add)
 - 👉 Checkout the [sample application](https://transloco.netlify.com/home)
