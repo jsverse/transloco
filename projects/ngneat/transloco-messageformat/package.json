@@ -26,6 +26,6 @@
     "messageformat": "^2.3.0"
   },
   "peerDependencies": {
-    "@angular/core": ">=4.3.0 <10.0.0"
+    "@angular/core": ">=4.3.0 <11.0.0"
   }
 }
