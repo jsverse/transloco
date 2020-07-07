@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.17.4](https://github.com/ngneat/transloco/compare/v2.17.2...v2.17.4) (2020-07-07)
+
+### Bug Fixes
+
+- 🐛 angular cli installing old transloco version ([79f8e10](https://github.com/ngneat/transloco/commit/79f8e10)), closes [#304](https://github.com/ngneat/transloco/issues/304)
+- 🐛 Angular v10 BC fixes ([84ad417](https://github.com/ngneat/transloco/commit/84ad417))
+
 ### [2.17.3](https://github.com/ngneat/transloco/compare/v2.17.2...v2.17.3) (2020-06-28)
 
 ### Bug Fixes
