@@ -13,10 +13,11 @@ module.exports = {
       indexName: 'transloco'
     },
     navbar: {
-      title: 'Home',
+      title: 'Transloco',
       logo: {
         alt: 'Transloco',
-        src: 'img/logo.png'
+        src: 'img/logo.png',
+        srcDark: 'img/logo-white.png'
       },
       links: [
         {

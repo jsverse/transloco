@@ -51,12 +51,17 @@ module.exports = {
       id: 'faq'
     },
     {
+      type: 'link',
+      label: 'Video Guides ↗',
+      href: 'https://www.youtube.com/playlist?list=PLTuTW7EgL6ouXk5BqE4zWdDJkAuC4HTWi'
+    },
+    {
       type: 'category',
       label: 'Tools',
       items: [
         {
           type: 'link',
-          label: 'Keys Manager',
+          label: 'Keys Manager ↗',
           href: 'https://github.com/ngneat/transloco-keys-manager'
         },
         'tools/validator',

@@ -30,6 +30,10 @@
   width: 100%;
 }
 
+.feature {
+  padding: 2vw 2vw;
+}
+
 .featureImage {
   height: 200px;
   width: 200px;
