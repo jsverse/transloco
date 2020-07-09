@@ -9,7 +9,7 @@ function SampleApp() {
   return (
     <Layout title={siteConfig.title} description="Transloco official documentation site">
       <main>
-        <iframe src="http://transloco-playground.surge.sh" width="100%" frameBorder="0" style={iframeStyle}></iframe>
+        <iframe src="https://transloco-playground.surge.sh" width="100%" frameBorder="0" style={iframeStyle}></iframe>
       </main>
     </Layout>
   );

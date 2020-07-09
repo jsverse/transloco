@@ -72,35 +72,17 @@ function logo() {
       <g id="transloco" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="Artboard-Copy-7" transform="translate(-108.000000, -47.000000)">
           <g id="Group-2" transform="translate(107.000000, 47.000000)">
-            <text
-              id="{"
-              font-family="EuphemiaUCAS-Bold, Euphemia UCAS"
-              font-size="61"
-              font-weight="bold"
-              fill="currentColor"
-            >
+            <text id="{" font-family="Arial" font-size="61" font-weight="300" fill="currentColor">
               <tspan x="0" y="234">
                 {'{'}
               </tspan>
             </text>
-            <text
-              id="}"
-              font-family="EuphemiaUCAS-Bold, Euphemia UCAS"
-              font-size="61"
-              font-weight="bold"
-              fill="currentColor"
-            >
+            <text id="}" font-family="Arial" font-size="61" font-weight="300" fill="currentColor">
               <tspan x="407" y="233">
                 }
               </tspan>
             </text>
-            <text
-              id="TransLoco"
-              font-family="KohinoorTelugu-Light, Kohinoor Telugu"
-              font-size="71"
-              font-weight="300"
-              fill="currentColor"
-            >
+            <text id="TransLoco" font-family="Arial" font-size="59" font-weight="300" fill="currentColor">
               <tspan x="32" y="238">
                 TRANSLOCO
               </tspan>
