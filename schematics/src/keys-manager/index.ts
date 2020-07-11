@@ -1,15 +1,14 @@
-import { Rule, Tree, SchematicContext, SchematicsException } from '@angular-devkit/schematics';
-import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
+import { Rule, Tree, SchematicsException } from '@angular-devkit/schematics';
 import { TranslocoConfig } from '@ngneat/transloco-utils';
-import { addPackageToPackageJson, addScriptToPackageJson } from '../utils/package';
+import { execSync } from 'child_process';
+import { addScriptToPackageJson } from '../utils/package';
 import { getWorkspace, setWorkspace } from '../utils/projects';
 import { getConfig, updateConfig } from '../utils/transloco';
 import { SchemaOptions } from './schema';
 
-function installKeysManager(host: Tree, context: SchematicContext) {
-  addPackageToPackageJson(host, 'devDependencies', 'ngx-build-plus', '^9.0.2');
-  addPackageToPackageJson(host, 'devDependencies', '@ngneat/transloco-keys-manager', '^1.0.0');
-  context.addTask(new NodePackageInstallTask());
+function installKeysManager() {
+  console.log('Installing packages for tooling...');
+  execSync('npm install --save-dev @ngneat/transloco-keys-manager ngx-build-plus');
 }
 
 export function updateAngularJson(host: Tree, options) {
@@ -80,10 +79,11 @@ function updateTranslocoConfig(host, options) {
 }
 
 export default function(options: SchemaOptions): Rule {
-  return (host: Tree, context: SchematicContext) => {
+  return (host: Tree) => {
+    // first install dependencies via command line to get the latest versions.
+    installKeysManager();
     updateTranslocoConfig(host, options);
 
-    installKeysManager(host, context);
     if (['Webpack Plugin', 'Both'].includes(options.strategy)) {
       createWebpackConfig(host);
       updateAngularJson(host, options);
