@@ -1,6 +1,6 @@
 <br />
 <p align="center">
- <img width="50%" height="50%" src="./logo.png">
+ <img width="50%" height="50%" src="./logo.svg">
 </p>
 
 > The internationalization (i18n) library for Angular
