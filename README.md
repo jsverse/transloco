@@ -5,7 +5,7 @@
 
 > The internationalization (i18n) library for Angular
 
-Transloco is an internationalization (i18n) library for Angular. It allows you to define translations for your content in different languages and switch between them easily in runtime.
+Transloco allows you to define translations for your content in different languages and switch between them easily in runtime.
 It exposes a rich API to manage translations efficiently and cleanly. It provides multiple plugins that will improve your development experience. Here is a small taste of the features it offers:
 
 ✅ Clean and DRY templates <br>

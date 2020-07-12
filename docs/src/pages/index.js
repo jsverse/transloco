@@ -9,12 +9,12 @@ import styles from './styles.module.css';
 const features = [
   {
     title: <>Clean and DRY templates</>,
-    imageUrl: 'img/1.svg',
+    imageUrl: 'img/clean.svg',
     description: <>Keep your templates clean and DRY using the Transloco structural directive</>
   },
   {
     title: <>Support for Lazy Load</>,
-    imageUrl: 'img/animal.svg',
+    imageUrl: 'img/sloth.svg',
     description: <>Load translation files on-demand using Transloco's built-in scope feature</>
   },
   {
@@ -36,7 +36,7 @@ const features = [
   },
   {
     title: <>Support for SSR</>,
-    imageUrl: 'img/database.svg',
+    imageUrl: 'img/server.svg',
     description: <>Pre-render your translations with Angular SSR and Transloco!</>
   },
   {
@@ -53,7 +53,7 @@ const features = [
 
 const videoGuides = {
   title: "We've got you covered",
-  imageUrl: 'img/7.png',
+  imageUrl: 'img/academic-hat.png',
   description: (
     <p>
       To help you get started, we made the Transloco Guide! watch the videos, follow the docs, and you will master
