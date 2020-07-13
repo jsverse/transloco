@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.17.5](https://github.com/ngneat/transloco/compare/v2.17.4...v2.17.5) (2020-07-11)
+
+### Bug Fixes
+
+- 🐛 update keys manager installation to latest version ([#308](https://github.com/ngneat/transloco/issues/308)) ([d6f6526](https://github.com/ngneat/transloco/commit/d6f6526))
+
 ### [2.17.4](https://github.com/ngneat/transloco/compare/v2.17.2...v2.17.4) (2020-07-07)
 
 ### Bug Fixes
