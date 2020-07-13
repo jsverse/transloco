@@ -28,8 +28,9 @@ module.exports = {
           className: 'first-nav-element'
         },
         {
-          href: 'https://www.youtube.com/playlist?list=PLTuTW7EgL6ouXk5BqE4zWdDJkAuC4HTWi',
-          label: 'Video Guides ↗',
+          to: 'videoGuides',
+          activeBasePath: 'videoGuides',
+          label: 'Video Guides',
           position: 'left'
         },
         {
@@ -44,10 +45,16 @@ module.exports = {
           position: 'left'
         },
         {
+          href: 'https://gitter.im/ngneat-transloco/lobby',
+          label: '',
+          position: 'right',
+          className: 'header-icon-link header-gitter-link'
+        },
+        {
           href: 'https://github.com/ngneat/transloco/',
           label: '',
           position: 'right',
-          className: 'header-github-link'
+          className: 'header-icon-link header-github-link'
         }
       ]
     },

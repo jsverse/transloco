@@ -164,7 +164,7 @@ function youtubeButton(className) {
   return button({
     text: '▶ Watch The Guide️',
     className: `youtube margin-left--md ${className}`,
-    href: 'https://www.youtube.com/watch?v=AlSorJRuK1g&list=PLTuTW7EgL6ouXk5BqE4zWdDJkAuC4HTWi&index=2'
+    to: useBaseUrl('videoGuides')
   });
 }
 
@@ -230,7 +230,7 @@ function Home() {
         <iframe
           width="560"
           height="315"
-          src="https://www.youtube.com/embed/AlSorJRuK1g"
+          src="https://www.youtube.com/embed/MYkYcafJdGw"
           frameBorder="0"
           allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
