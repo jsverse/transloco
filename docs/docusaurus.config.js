@@ -24,6 +24,13 @@ module.exports = {
           to: 'docs/installation',
           activeBasePath: 'docs',
           label: 'Docs',
+          position: 'left',
+          className: 'first-nav-element'
+        },
+        {
+          to: 'videoGuides',
+          activeBasePath: 'videoGuides',
+          label: 'Video Guides',
           position: 'left'
         },
         {
@@ -34,13 +41,20 @@ module.exports = {
         },
         {
           href: 'https://stackblitz.com/edit/ngneat-transloco',
-          label: 'Playground',
-          position: 'right'
+          label: 'Playground ↗',
+          position: 'left'
+        },
+        {
+          href: 'https://gitter.im/ngneat-transloco/lobby',
+          label: '',
+          position: 'right',
+          className: 'header-icon-link header-gitter-link'
         },
         {
           href: 'https://github.com/ngneat/transloco/',
-          label: 'GitHub',
-          position: 'right'
+          label: '',
+          position: 'right',
+          className: 'header-icon-link header-github-link'
         }
       ]
     },
@@ -94,7 +108,8 @@ module.exports = {
       copyright: `Copyright © ${new Date().getFullYear()} Transloco, Inc. Built with Docusaurus.`
     },
     prism: {
-      theme: require('prism-react-renderer/themes/nightOwlLight')
+      theme: require('prism-react-renderer/themes/nightOwlLight'),
+      darkTheme: require('prism-react-renderer/themes/nightOwl')
     },
     sidebarCollapsible: true
   },

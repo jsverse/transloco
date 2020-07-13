@@ -51,11 +51,6 @@ module.exports = {
       id: 'faq'
     },
     {
-      type: 'link',
-      label: 'Video Guides ↗',
-      href: 'https://www.youtube.com/playlist?list=PLTuTW7EgL6ouXk5BqE4zWdDJkAuC4HTWi'
-    },
-    {
       type: 'category',
       label: 'Tools',
       items: [

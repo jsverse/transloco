@@ -1,11 +1,11 @@
 <br />
 <p align="center">
- <img width="50%" height="50%" src="./logo.png">
+ <img width="50%" height="50%" src="./logo.svg">
 </p>
 
 > The internationalization (i18n) library for Angular
 
-Transloco is an internationalization (i18n) library for Angular. It allows you to define translations for your content in different languages and switch between them easily in runtime.
+Transloco allows you to define translations for your content in different languages and switch between them easily in runtime.
 It exposes a rich API to manage translations efficiently and cleanly. It provides multiple plugins that will improve your development experience. Here is a small taste of the features it offers:
 
 ✅ Clean and DRY templates <br>
@@ -33,7 +33,7 @@ It exposes a rich API to manage translations efficiently and cleanly. It provide
 [![Join the chat at https://gitter.im/ngneat-transloco](https://badges.gitter.im/gitterHQ/gitter.svg)](https://gitter.im/ngneat-transloco/lobby?source=orgpage)
 
 - 🤓 Learn about it on the [docs site](https://ngneat.github.io/transloco/)
-- 🎥 Watch our instructional [video guides](https://www.youtube.com/watch?v=AlSorJRuK1g&list=PLTuTW7EgL6ouXk5BqE4zWdDJkAuC4HTWi)
+- 🎥 Watch our instructional [video guides](https://www.youtube.com/watch?v=MYkYcafJdGw&list=PLTuTW7EgL6ouXk5BqE4zWdDJkAuC4HTWi)
 - 🚀 See it in action on [StackBlitz](https://stackblitz.com/edit/ngneat-transloco)
 - 😎 Use [schematics](https://netbasal.gitbook.io/transloco/schematics/ng-add)
 - 👉 Checkout the [sample application](https://transloco.netlify.com/home)
