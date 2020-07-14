@@ -35,11 +35,11 @@ It exposes a rich API to manage translations efficiently and cleanly. It provide
 - 🤓 Learn about it on the [docs site](https://ngneat.github.io/transloco/)
 - 🎥 Watch our instructional [video guides](https://www.youtube.com/watch?v=MYkYcafJdGw&list=PLTuTW7EgL6ouXk5BqE4zWdDJkAuC4HTWi)
 - 🚀 See it in action on [StackBlitz](https://stackblitz.com/edit/ngneat-transloco)
-- 😎 Use [schematics](https://netbasal.gitbook.io/transloco/schematics/ng-add)
+- 😎 Use [schematics](https://ngneat.github.io/transloco/docs/schematics)
 - 👉 Checkout the [sample application](https://transloco.netlify.com/home)
-- 📖 Read the blog [posts](https://netbasal.gitbook.io/transloco/general/blog-posts)
+- 📖 Read the blog [posts](https://ngneat.github.io/transloco/docs/blog-posts)
 - 🍄 Join Transloco's [Gitter](https://gitter.im/ngneat-transloco/lobby?source=orgpage) room
-- ❓ Find answers in our [FAQ](https://netbasal.gitbook.io/transloco/general/faq) section
+- ❓ Find answers in our [FAQ](https://ngneat.github.io/transloco/docs/faq) section
 
 ## Core Team
 

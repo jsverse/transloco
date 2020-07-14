@@ -48,6 +48,10 @@ module.exports = {
     },
     {
       type: 'doc',
+      id: 'blog-posts'
+    },
+    {
+      type: 'doc',
       id: 'faq'
     },
     {
@@ -68,7 +72,7 @@ module.exports = {
     {
       type: 'category',
       label: 'Plugins',
-      items: ['plugins/message-format', 'plugins/persist', 'plugins/preload', 'plugins/locale']
+      items: ['plugins/message-format', 'plugins/persist', 'plugins/preload', 'plugins/locale', 'plugins/third-party']
     },
     {
       type: 'doc',

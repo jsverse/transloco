@@ -162,7 +162,16 @@ function docsButton() {
 
 function youtubeButton(className) {
   return button({
-    text: '▶ Watch The Guide️',
+    text: (
+      <>
+        <div className={classnames(styles.buttons)}>
+          <svg height="18" width="13" fill="currentColor" className="margin-right--sm">
+            <polygon points="0,3 0,16 13,9" />
+          </svg>
+          <span>Watch The Guide️</span>
+        </div>
+      </>
+    ),
     className: `youtube margin-left--md ${className}`,
     to: useBaseUrl('videoGuides')
   });
@@ -222,7 +231,7 @@ function Home() {
             <h2>{videoGuides.title}</h2>
           </div>
           {videoGuides.description}
-          <div className="margin-top--xl actions">
+          <div className="actions">
             {docsButton()}
             {youtubeButton()}
           </div>

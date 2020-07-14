@@ -127,6 +127,7 @@ header iframe {
 }
 .video-container .actions {
   display: flex;
+  margin-top: 2.5rem;
 }
 
 .video-container iframe {
@@ -221,7 +222,7 @@ header iframe {
   max-width: 60%;
   height: 98px;
   min-height: 98px;
-  overflow-x: scroll;
+  overflow-x: auto;
 }
 
 .video-thumbnail {
@@ -245,4 +246,65 @@ header iframe {
 .video-thumbnail.selected {
   opacity: 1;
   border-color: dodgerblue;
+}
+
+[data-theme='dark'] .blog-post {
+  border-color: rgb(102, 102, 104);
+  box-shadow: rgba(255, 255, 255, 0.11) 0 3px 8px 0;
+}
+.blog-post {
+  transition: border 0.2s ease-in-out;
+  display: flex;
+  border-radius: 5px;
+  text-decoration: none;
+  page-break-inside: avoid;
+  color: inherit;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgb(230, 236, 241);
+  box-shadow: rgba(116, 129, 141, 0.1) 0 3px 8px 0;
+  margin: 30px 0;
+}
+
+.blog-post:hover {
+  color: inherit;
+  text-decoration: none;
+  border-color: var(--ifm-link-color);
+}
+
+.blog-post.plugin .blog-title {
+  font-size: 24px;
+  text-align: center;
+}
+.blog-post.plugin .blog-description {
+  text-align: center;
+}
+
+.blog-post .blog-preview {
+  flex: 1;
+  overflow: hidden;
+  padding: 24px;
+  min-height: 160px;
+}
+.blog-post .blog-title {
+  font-size: 16px;
+  font-weight: 500;
+}
+.blog-post .blog-description {
+  opacity: 0.5;
+  margin: 8px 0;
+  max-height: 50px;
+}
+.blog-post .blog-source {
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.blog-post .blog-image {
+  width: 160px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  flex: 0 0 auto;
+  border-radius: 5px;
 }
