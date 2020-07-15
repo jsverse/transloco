@@ -87,10 +87,6 @@ module.exports = {
       type: 'category',
       label: 'Recipes',
       items: ['recipes/prefetch', 'recipes/xliff', 'recipes/generateLocaleFileUsingGoogleTranslate']
-    },
-    {
-      type: 'doc',
-      id: 'comparison'
     }
   ]
 };

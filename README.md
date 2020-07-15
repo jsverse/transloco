@@ -10,15 +10,15 @@ It exposes a rich API to manage translations efficiently and cleanly. It provide
 
 ✅ Clean and DRY templates <br>
 ✅ Support for Lazy Load<br>
-✅ Support for Multiple Languagues<br>
+✅ Support for Multiple Languages Simultaneously<br>
 ✅ Support for Multiple Fallbacks<br>
 ✅ Support for Testing<br>
 ✅ Support for SSR<br>
+✅ Support for L10N
 ✅ Supports Ivy<br>
 ✅ Rich Plugins<br>
 ✅ Hackable<br>
 ✅ Schematics<br>
-✅ L10N
 
 <hr />
 
