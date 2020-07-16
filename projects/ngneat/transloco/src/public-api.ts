@@ -10,7 +10,14 @@ export {
   provideTranslocoConfig,
   translocoConfig
 } from './lib/transloco.config';
-export { TRANSLOCO_TRANSPILER, DefaultTranspiler, TranslocoTranspiler } from './lib/transloco.transpiler';
+export {
+  TRANSLOCO_TRANSPILER,
+  DefaultTranspiler,
+  TranslocoTranspiler,
+  FunctionalTranspiler,
+  getFunctionArgs,
+  TranslocoTranspilerFunction
+} from './lib/transloco.transpiler';
 export { Translation, FailedEvent, HashMap, LoadedEvent, TranslocoEvents } from './lib/types';
 export { TRANSLOCO_SCOPE } from './lib/transloco-scope';
 export { TRANSLOCO_LOADING_TEMPLATE } from './lib/transloco-loading-template';
