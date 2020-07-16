@@ -41,8 +41,9 @@ module.exports = {
         },
         {
           href: 'https://stackblitz.com/edit/ngneat-transloco',
-          label: 'Playground ↗',
-          position: 'left'
+          label: 'Playground',
+          position: 'left',
+          className: 'header-playground-link'
         },
         {
           href: 'https://gitter.im/ngneat-transloco/lobby',

@@ -46,24 +46,6 @@ export const customInterceptor = {
 };
 ```
 
-## The Transpiler
-The transpiler is responsible for resolving the given value. For example, the default transpiler transpiles `Hello {{ key }}` and replaces the dynamic variable `key` based on the given params, or the translation object.
-
-```ts
-import { TranslocoTranspiler } from '@ngneat/transloco';
-
-export class CustomTranspiler implements TranslocoTranspiler {
-  transpile(value: any, params, translation: Translation) {
-    return ...;
-  }
-}
-
-export const customTranspiler = {
-  provide: TRANSLOCO_TRANSPILER,
-  useClass: CustomTranspiler
-}
-```
-
 ## Missing Handler
 
 This handler is responsible for handling missing keys. The default handler calls `console.warn()` with the key when config.isProdMode is set to `false`, and returns an empty string to use as a replacement for the missing key's value.

@@ -44,6 +44,10 @@ module.exports = {
     },
     {
       type: 'doc',
+      id: 'transpiler'
+    },
+    {
+      type: 'doc',
       id: 'hack'
     },
     {

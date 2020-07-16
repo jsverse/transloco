@@ -15,7 +15,7 @@ npm i messageformat @ngneat/transloco-messageformat
 ```
 
 ## Usage
-The `MessageFormatTranspiler` is compatible with the DefaultTranspiler and therefore you can switch without worry that it will break your current translations.
+The `MessageFormatTranspiler` is compatible with the `DefaultTranspiler` and therefore you can switch without worry that it will break your current translations.
 
 It then enables support for the following within youIt enables support for the following within your i18n translation files:
 
@@ -26,7 +26,7 @@ It then enables support for the following within youIt enables support for the f
 }
 ```
 
-To enable this plugin, add the following to the imports array in your `app.module.ts`:
+To enable this plugin, add the following import in your `TranslocoRootModule`:
 
 ```ts title="transloco-root.module.ts"
 import { TranslocoMessageFormatModule } from '@ngneat/transloco-messageformat';

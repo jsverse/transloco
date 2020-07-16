@@ -119,3 +119,10 @@ export const inlineScope: ProviderScope = {
       })
   }
 };
+
+export const transpilerFunctions = {
+  upperCase: { transpile: v => v.toUpperCase() },
+  testParams: { transpile: v => `Hello {{person}} ${v}` },
+  testKeyReference: { transpile: () => `{{fromList}}` },
+  returnSecondParam: { transpile: (_, v) => v }
+};
