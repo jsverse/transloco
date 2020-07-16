@@ -76,6 +76,21 @@ export interface TranslocoTranspilerFunction {
   transpile(...args: string[]): any;
 }
 
+export function getFunctionArgs(argsString: string): string[] {
+  const splitted = argsString ? argsString.split(',') : [];
+  const args = [];
+  for (let i = 0; i < splitted.length; i++) {
+    let value = splitted[i].trim();
+    while (value[value.length - 1] === '\\') {
+      i++;
+      value = value.replace('\\', ',') + splitted[i];
+    }
+    args.push(value);
+  }
+
+  return args;
+}
+
 export class FunctionalTranspiler extends DefaultTranspiler implements TranslocoTranspiler {
   constructor(private injector: Injector) {
     super();
@@ -86,9 +101,18 @@ export class FunctionalTranspiler extends DefaultTranspiler implements Transloco
       const transpiled = value.replace(
         /\[\[\s*(?<functionName>\w+)\((?<args>.*)\)\s*]]/g,
         (match: string, functionName: string, args: string) => {
-          const func: TranslocoTranspilerFunction = this.injector.get(functionName);
+          try {
+            const func: TranslocoTranspilerFunction = this.injector.get(functionName);
 
-          return func.transpile(...this.getFunctionArgs(args));
+            return func.transpile(...getFunctionArgs(args));
+          } catch (e) {
+            let message = `There is an error in: '${value}'. 
+                          Check that the you used the right syntax in your translation and that the implementation of ${functionName} is correct.`;
+            if (e.message.includes('NullInjectorError')) {
+              message = `You are using the '${functionName}' function in your translation but no provider was found!`;
+            }
+            throw new Error(message);
+          }
         }
       );
 
@@ -100,20 +124,5 @@ export class FunctionalTranspiler extends DefaultTranspiler implements Transloco
     }
 
     return value;
-  }
-
-  private getFunctionArgs(argsString: string): string[] {
-    const splitted = argsString.split(',');
-    const args = [];
-    for (let i = 0; i < splitted.length; i++) {
-      let value = splitted[i].trim();
-      while (value[value.length - 1] === '\\') {
-        i++;
-        value = value.replace('\\', ',') + splitted[i];
-      }
-      args.push(value);
-    }
-
-    return args;
   }
 }

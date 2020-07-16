@@ -1,4 +1,4 @@
-import { DefaultTranspiler, FunctionalTranspiler, TranslocoTranspiler } from '../transloco.transpiler';
+import { DefaultTranspiler, FunctionalTranspiler, getFunctionArgs, TranslocoTranspiler } from '../transloco.transpiler';
 import { flatten } from '../helpers';
 import { transpilerFunctions } from './transloco.mocks';
 
@@ -43,6 +43,23 @@ describe('TranslocoTranspiler', () => {
     it('should handle a param that includes a comma', () => {
       const parsed = parser.transpile('[[ returnSecondParam(noop, one\\, two, noop) ]]', {}, {});
       expect(parsed).toEqual('one, two');
+    });
+
+    describe('getFunctionArgs', () => {
+      it('should return an empty array', () => {
+        const rawArgs = '';
+        expect(getFunctionArgs(rawArgs)).toEqual([]);
+      });
+
+      it('should split the string by a comma and remove extra spaces', () => {
+        const rawArgs = ',one,    two, three, ,four and five';
+        expect(getFunctionArgs(rawArgs)).toEqual(['', 'one', 'two', 'three', '', 'four and five']);
+      });
+
+      it('should handle an escaped comma', () => {
+        const rawArgs = `Hi there\\, how are you?,   I'm ok`;
+        expect(getFunctionArgs(rawArgs)).toEqual(['Hi there, how are you?', `I'm ok`]);
+      });
     });
   });
 
