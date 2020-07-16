@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.18.0](https://github.com/ngneat/transloco/compare/v2.17.5...v2.18.0) (2020-07-16)
+
+### Features
+
+- 🎸 functional transpiler ([d3c5262](https://github.com/ngneat/transloco/commit/d3c5262))
+
 ### [2.17.5](https://github.com/ngneat/transloco/compare/v2.17.4...v2.17.5) (2020-07-11)
 
 ### Bug Fixes
