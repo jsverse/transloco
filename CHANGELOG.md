@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.18.2](https://github.com/ngneat/transloco/compare/v2.18.1...v2.18.2) (2020-07-16)
+
+### Bug Fixes
+
+- 🐛 add injectable decorator ([94bb9ee](https://github.com/ngneat/transloco/commit/94bb9ee))
+
 ### [2.18.1](https://github.com/ngneat/transloco/compare/v2.18.0...v2.18.1) (2020-07-16)
 
 ### Bug Fixes
