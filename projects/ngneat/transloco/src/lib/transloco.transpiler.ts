@@ -1,4 +1,4 @@
-import { InjectionToken, Injector } from '@angular/core';
+import { Injectable, InjectionToken, Injector } from '@angular/core';
 import { HashMap, Translation } from './types';
 import { getValue, isString, isObject, setValue, isDefined } from './helpers';
 
@@ -91,6 +91,7 @@ export function getFunctionArgs(argsString: string): string[] {
   return args;
 }
 
+@Injectable()
 export class FunctionalTranspiler extends DefaultTranspiler implements TranslocoTranspiler {
   constructor(private injector: Injector) {
     super();

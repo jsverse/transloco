@@ -15,15 +15,13 @@ The `FunctionalTranspiler` is compatible with the `DefaultTranspiler` and theref
 To enable this transpiler, add the following provider in your `TranslocoRootModule`:
 
 ```ts title="transloco-root.module.ts"
-import { Injector } from '@angular/core'
 import { FunctionalTranspiler, TRANSLOCO_TRANSPILER } from '@ngneat/transloco';
 
 @NgModule({
   ...
   providers: [{
     provide: TRANSLOCO_TRANSPILER,
-    useClass: FunctionalTranspiler,
-    deps: [Injector]
+    useClass: FunctionalTranspiler
   }]
 })
 export class TranslocoRootModule {}
@@ -57,7 +55,6 @@ As you can see the `transpile` function can accept any number of arguments, you 
 Now we will add this transpiler function to the `TranslocoRootModule` providers:
 
 ```ts title="transloco-root.module.ts"
-import { Injector } from '@angular/core'
 import { FunctionalTranspiler, TRANSLOCO_TRANSPILER } from '@ngneat/transloco';
 import { FeatureFlagResolver } from './has-feature-flag';
 
@@ -65,8 +62,7 @@ import { FeatureFlagResolver } from './has-feature-flag';
   ...
   providers: [{
     provide: TRANSLOCO_TRANSPILER,
-    useClass: FunctionalTranspiler,
-    deps: [Injector]
+    useClass: FunctionalTranspiler
   },
   {
     provide: 'hasFeatureFlag', // ====> The function name used in the translation
