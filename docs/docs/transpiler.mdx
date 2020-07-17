@@ -3,7 +3,7 @@ title: The Transpiler
 ---
 
 The transpiler is responsible for resolving the given value.  
-For example, when given `Hello {{ key }}` the default transpiler will replace the dynamic variable `key` based on the given params, or the translation object.
+For example, when given `Hello {{ key }}` the default transpiler will replace the dynamic variable `key` based on the given params, or in some cases, within the [translation object itself](./additional-functionality#reference-other-keys).
 
 ## Functional Transpiler
 
@@ -85,7 +85,7 @@ In this case, we are checking if the user has `newDashboard` flag, in case he do
 
 ### Usage Notes 
 
-If the function returns a string that includes the interpolation syntax (`{{value}}`), the transpiler will replace it with the `params` or [other keys references](../additional-functionality#reference-other-keys) just like the default.
+If the function returns a string that includes the interpolation syntax (`{{value}}`), the transpiler will replace it with the `params` or [other keys references](./additional-functionality#reference-other-keys) just like the default.
 
 If you function param needs to include a comma you need to escape it:
 ```json title="en.json"
