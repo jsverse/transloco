@@ -100,7 +100,7 @@ export class FunctionalTranspiler extends DefaultTranspiler implements Transloco
   transpile(value: any, params: HashMap = {}, translation: Translation): any {
     if (isString(value)) {
       const transpiled = value.replace(
-        /\[\[\s*(?<functionName>\w+)\((?<args>.*)\)\s*]]/g,
+        /\[\[\s*(\w+)\((.*)\)\s*]]/g,
         (match: string, functionName: string, args: string) => {
           try {
             const func: TranslocoTranspilerFunction = this.injector.get(functionName);
