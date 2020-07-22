@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.18.3](https://github.com/ngneat/transloco/compare/v2.18.2...v2.18.3) (2020-07-22)
+
+### Bug Fixes
+
+- 🐛 remove unused group naming in regex ([0258c07](https://github.com/ngneat/transloco/commit/0258c07)), closes [#313](https://github.com/ngneat/transloco/issues/313)
+
 ### [2.18.2](https://github.com/ngneat/transloco/compare/v2.18.1...v2.18.2) (2020-07-16)
 
 ### Bug Fixes
