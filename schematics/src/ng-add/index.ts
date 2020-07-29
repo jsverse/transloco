@@ -24,7 +24,7 @@ import { findRootModule } from '../utils/find-module';
 import { getProject, setEnvironments } from '../utils/projects';
 import { checkIfTranslationFilesExist } from '../utils/translations';
 import { createConfig } from '../utils/transloco';
-import {SchemaOptions, Loaders} from './schema';
+import { SchemaOptions, Loaders } from './schema';
 
 function jsonTranslationFileCreator(source, lang) {
   return source.create(
@@ -101,7 +101,7 @@ function createTranslocoModule(isLib: boolean, ssr: boolean, langs: string[], pa
       loaderPrefix: ssr ? '${environment.baseUrl}' : '',
       prodMode: isLib ? 'false' : 'environment.production'
     }),
-    move('/', path)
+    move('/transloco/', path)
   ]);
 }
 
@@ -138,9 +138,9 @@ export default function(options: SchemaOptions): Rule {
     return chain([
       options.loader === Loaders.Http
         ? chain([
-          addImportsToModuleFile(options, ['HttpClientModule'], '@angular/common/http'),
-          addImportsToModuleDeclaration(options, ['HttpClientModule'])
-        ])
+            addImportsToModuleFile(options, ['HttpClientModule'], '@angular/common/http'),
+            addImportsToModuleDeclaration(options, ['HttpClientModule'])
+          ])
         : noop(),
       checkIfTranslationFilesExist(assetsPath, langs, '.json', true) ? noop() : mergeWith(translateFiles),
       mergeWith(createTranslocoModule(isLib, options.ssr, langs, modulePath)),
