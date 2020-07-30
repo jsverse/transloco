@@ -101,7 +101,7 @@ function createTranslocoModule(isLib: boolean, ssr: boolean, langs: string[], pa
       loaderPrefix: ssr ? '${environment.baseUrl}' : '',
       prodMode: isLib ? 'false' : 'environment.production'
     }),
-    move('/transloco/', path)
+    move('/', path)
   ]);
 }
 
@@ -127,7 +127,7 @@ export default function(options: SchemaOptions): Rule {
     const translateFiles = apply(source(createTranslateFiles(langs, translationCreator)), [move('/', assetsPath)]);
 
     options.module = findRootModule(host, options.module, sourceRoot) as string;
-    const modulePath = options.module.substring(0, options.module.lastIndexOf('/') + 1);
+    const modulePath = options.module.substring(0, options.module.lastIndexOf('/') + 1) + 'transloco/';
 
     if (options.ssr) {
       updateEnvironmentBaseUrl(host, sourceRoot, 'http://localhost:4200');
