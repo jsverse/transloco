@@ -1,17 +1,20 @@
-import { Rule, Tree, SchematicsException } from '@angular-devkit/schematics';
+import { Rule, Tree, SchematicsException, SchematicContext } from '@angular-devkit/schematics';
 import { TranslocoConfig } from '@ngneat/transloco-utils';
-import { execSync } from 'child_process';
 import { addScriptToPackageJson } from '../utils/package';
 import { getWorkspace, setWorkspace } from '../utils/projects';
 import { getConfig, updateConfig } from '../utils/transloco';
 import { SchemaOptions } from './schema';
 
-function installKeysManager() {
-  console.log('Installing packages for tooling...');
-  execSync('npm install --save-dev @ngneat/transloco-keys-manager ngx-build-plus');
+import { addPackageJsonDependency, NodeDependencyType } from '@schematics/angular/utility/dependencies';
+import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
+import { KEYS_MANAGER_VERSION, NGX_BUILD_PLUS_VERSION } from '../schematics.consts';
+
+function installDependencies(context: SchematicContext) {
+  context.logger.log('info', `🔍 Installing packages...`);
+  context.addTask(new NodePackageInstallTask());
 }
 
-export function updateAngularJson(host: Tree, options) {
+export function updateAngularJson(host: Tree, options: SchemaOptions) {
   const angularJson = getWorkspace(host);
   if (angularJson) {
     const project = angularJson.projects[options.project || angularJson.defaultProject];
@@ -31,24 +34,24 @@ module.exports = {
   host.create('webpack-dev.config.js', webpackConfig);
 }
 
-function addKeysDetectiveScript(host: Tree, strategy: string) {
-  if (strategy === 'Both') {
+function addKeysDetectiveScript(host: Tree, options: SchemaOptions) {
+  if (options.strategy === 'Both') {
     addScriptToPackageJson(host, 'start', 'ng serve --extra-webpack-config webpack-dev.config.js');
     addScriptToPackageJson(host, 'i18n:extract', 'transloco-keys-manager extract');
   }
 
-  if (strategy === 'CLI') {
+  if (options.strategy === 'CLI') {
     addScriptToPackageJson(host, 'i18n:extract', 'transloco-keys-manager extract');
   }
 
-  if (strategy === 'Webpack Plugin') {
+  if (options.strategy === 'Webpack Plugin') {
     addScriptToPackageJson(host, 'start', 'ng serve --extra-webpack-config webpack-dev.config.js');
   }
 
   addScriptToPackageJson(host, 'i18n:find', 'transloco-keys-manager find');
 }
 
-function updateTranslocoConfig(host, options) {
+function updateTranslocoConfig(host: Tree, options: SchemaOptions) {
   const config: TranslocoConfig = getConfig() || {};
   let shouldUpdate = false;
   if (!config.rootTranslationsPath) {
@@ -79,17 +82,30 @@ function updateTranslocoConfig(host, options) {
 }
 
 export default function(options: SchemaOptions): Rule {
-  return (host: Tree) => {
-    // first install dependencies via command line to get the latest versions.
-    installKeysManager();
+  return (host: Tree, context: SchematicContext) => {
+    addPackageJsonDependency(host, {
+      name: '@ngneat/transloco-keys-manager',
+      version: `^${KEYS_MANAGER_VERSION}`,
+      overwrite: false,
+      type: NodeDependencyType.Dev
+    });
+
     updateTranslocoConfig(host, options);
 
     if (['Webpack Plugin', 'Both'].includes(options.strategy)) {
+      addPackageJsonDependency(host, {
+        name: 'ngx-build-plus',
+        version: `^${NGX_BUILD_PLUS_VERSION}`,
+        overwrite: false,
+        type: NodeDependencyType.Dev
+      });
       createWebpackConfig(host);
       updateAngularJson(host, options);
     }
 
-    addKeysDetectiveScript(host, options.strategy);
+    addKeysDetectiveScript(host, options);
+
+    installDependencies(context);
 
     return host;
   };
