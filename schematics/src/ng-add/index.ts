@@ -144,7 +144,7 @@ export default function(options: SchemaOptions): Rule {
         : noop(),
       checkIfTranslationFilesExist(assetsPath, langs, '.json', true) ? noop() : mergeWith(translateFiles),
       mergeWith(createTranslocoModule(isLib, options.ssr, langs, modulePath)),
-      addImportsToModuleFile(options, ['TranslocoRootModule'], './transloco-root.module'),
+      addImportsToModuleFile(options, ['TranslocoRootModule'], './transloco/transloco-root.module'),
       addImportsToModuleDeclaration(options, ['TranslocoRootModule'])
     ])(host, context);
   };
