@@ -91,6 +91,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/StillUpgrade"><img src="https://avatars0.githubusercontent.com/u/10169092?v=4" width="100px;" alt=""/><br /><sub><b>StillUpgrade</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=StillUpgrade" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/coderunner"><img src="https://avatars0.githubusercontent.com/u/408380?v=4" width="100px;" alt=""/><br /><sub><b>Felix Trepanier</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=coderunner" title="Code">💻</a></td>
     <td align="center"><a href="http://literalpie.com"><img src="https://avatars1.githubusercontent.com/u/20398475?v=4" width="100px;" alt=""/><br /><sub><b>Benjamin Kindle</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=literalpie" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/karmasakshi"><img src="https://avatars3.githubusercontent.com/u/4698762?v=4" width="100px;" alt=""/><br /><sub><b>Karmasakshi Goyal</b></sub></a><br /><a href="#tool-karmasakshi" title="Tools">🔧</a></td>
   </tr>
 </table>
 
