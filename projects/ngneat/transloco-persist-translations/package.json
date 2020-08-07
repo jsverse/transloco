@@ -1,6 +1,6 @@
 {
   "name": "@ngneat/transloco-persist-translations",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Persist translations for Angular Transloco",
   "publishConfig": {
     "access": "public"
