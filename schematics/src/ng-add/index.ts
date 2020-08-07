@@ -24,7 +24,7 @@ import { findRootModule } from '../utils/find-module';
 import { getProject, setEnvironments } from '../utils/projects';
 import { checkIfTranslationFilesExist } from '../utils/translations';
 import { createConfig } from '../utils/transloco';
-import {SchemaOptions, Loaders} from './schema';
+import { SchemaOptions, Loaders } from './schema';
 
 function jsonTranslationFileCreator(source, lang) {
   return source.create(
@@ -127,7 +127,7 @@ export default function(options: SchemaOptions): Rule {
     const translateFiles = apply(source(createTranslateFiles(langs, translationCreator)), [move('/', assetsPath)]);
 
     options.module = findRootModule(host, options.module, sourceRoot) as string;
-    const modulePath = options.module.substring(0, options.module.lastIndexOf('/') + 1);
+    const modulePath = options.module.substring(0, options.module.lastIndexOf('/') + 1) + 'transloco/';
 
     if (options.ssr) {
       updateEnvironmentBaseUrl(host, sourceRoot, 'http://localhost:4200');
@@ -138,13 +138,13 @@ export default function(options: SchemaOptions): Rule {
     return chain([
       options.loader === Loaders.Http
         ? chain([
-          addImportsToModuleFile(options, ['HttpClientModule'], '@angular/common/http'),
-          addImportsToModuleDeclaration(options, ['HttpClientModule'])
-        ])
+            addImportsToModuleFile(options, ['HttpClientModule'], '@angular/common/http'),
+            addImportsToModuleDeclaration(options, ['HttpClientModule'])
+          ])
         : noop(),
       checkIfTranslationFilesExist(assetsPath, langs, '.json', true) ? noop() : mergeWith(translateFiles),
       mergeWith(createTranslocoModule(isLib, options.ssr, langs, modulePath)),
-      addImportsToModuleFile(options, ['TranslocoRootModule'], './transloco-root.module'),
+      addImportsToModuleFile(options, ['TranslocoRootModule'], './transloco/transloco-root.module'),
       addImportsToModuleDeclaration(options, ['TranslocoRootModule'])
     ])(host, context);
   };
