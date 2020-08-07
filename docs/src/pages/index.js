@@ -193,7 +193,11 @@ function Home() {
   const context = useDocusaurusContext();
   const { siteConfig = {} } = context;
   return (
-    <Layout title={siteConfig.title} description="Transloco official documentation site">
+    <Layout
+      description="Transloco the Angular translations library (i18n) official documentation site"
+      keywords={['Angular', 'Transloco', 'i18n', 'translations', 'translate']}
+      permalink={siteConfig.baseUrl}
+    >
       <header className={classnames('hero', styles.heroBanner)}>
         <div className="container">
           {logo()}

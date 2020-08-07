@@ -25,7 +25,11 @@ function VideoGuides() {
   const { siteConfig = {} } = context;
 
   return (
-    <Layout title={siteConfig.title}>
+    <Layout
+      description="Transloco the Angular translations library (i18n) video guides"
+      keywords={['Angular', 'Transloco', 'i18n', 'translations', 'translate', 'video', 'video guides']}
+      permalink={siteConfig.baseUrl + 'videoGuides'}
+    >
       <main>
         <div className="video-preview margin-top--xl margin-bottom--xl">
           <iframe

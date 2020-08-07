@@ -1,5 +1,5 @@
 module.exports = {
-  title: 'Transloco',
+  title: 'Transloco Angular translations (i18n)',
   tagline: '🚀 The internationalization (i18n) library for Angular 😍',
   baseUrl: '/transloco/',
   url: 'https://github.com/ngneat',
@@ -7,6 +7,7 @@ module.exports = {
   organizationName: 'ngneat',
   projectName: 'transloco',
   themeConfig: {
+    image: 'img/logo.png',
     algolia: {
       appId: 'BH4D9OD16A',
       apiKey: '0fe261e8a7d089862d9a959da892561f',
@@ -19,7 +20,7 @@ module.exports = {
         src: 'img/logo.png',
         srcDark: 'img/logo-white.png'
       },
-      links: [
+      items: [
         {
           to: 'docs/installation',
           activeBasePath: 'docs',
@@ -47,13 +48,13 @@ module.exports = {
         },
         {
           href: 'https://gitter.im/ngneat-transloco/lobby',
-          label: '',
+          label: ' ',
           position: 'right',
           className: 'header-icon-link header-gitter-link'
         },
         {
           href: 'https://github.com/ngneat/transloco/',
-          label: '',
+          label: ' ',
           position: 'right',
           className: 'header-icon-link header-github-link'
         }
@@ -84,7 +85,7 @@ module.exports = {
             },
             {
               label: 'FAQ',
-              href: 'docs/faq'
+              to: 'docs/faq'
             }
           ]
         },
