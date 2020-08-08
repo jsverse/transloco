@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "start": "docusaurus start",
-    "build": "docusaurus build",
+    "build": "docusaurus build && node post-build",
     "swizzle": "docusaurus swizzle",
-    "deploy": "GIT_USER=NetanelBasal USE_SSH=true docusaurus deploy"
+    "deploy": "npm run build && GIT_USER=NetanelBasal USE_SSH=true docusaurus deploy --skip-build"
   },
   "dependencies": {
     "@docusaurus/core": "^2.0.0-alpha.61",

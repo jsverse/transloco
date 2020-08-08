@@ -1,13 +1,13 @@
 module.exports = {
-  title: 'Transloco Angular translations (i18n)',
+  title: 'Transloco Angular i18n',
   tagline: '🚀 The internationalization (i18n) library for Angular 😍',
   baseUrl: '/transloco/',
-  url: 'https://github.com/ngneat',
+  url: 'https://ngneat.github.io',
   favicon: 'img/favicon.ico',
   organizationName: 'ngneat',
   projectName: 'transloco',
   themeConfig: {
-    image: 'img/logo.png',
+    image: 'img/large-logo.png',
     algolia: {
       appId: 'BH4D9OD16A',
       apiKey: '0fe261e8a7d089862d9a959da892561f',
