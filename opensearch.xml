@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/"
                        xmlns:moz="http://www.mozilla.org/2006/browser/search/">
-  <ShortName>Transloco Angular translations (i18n)</ShortName>
-  <Description>Search Transloco Angular translations (i18n)</Description>
+  <ShortName>Transloco Angular i18n</ShortName>
+  <Description>Search Transloco Angular i18n</Description>
   <InputEncoding>UTF-8</InputEncoding>
-  <Image width="16" height="16" type="image/x-icon">https://github.com/ngneat/img/favicon.ico</Image>
-  <Url type="text/html" method="get" template="https://github.com/ngneat/search?q={searchTerms}"/>
-  <Url type="application/opensearchdescription+xml" rel="self" template="https://github.com/ngneat/opensearch.xml" />
-  <moz:SearchForm>https://github.com/ngneat</moz:SearchForm>
+  <Image width="16" height="16" type="image/x-icon">https://ngneat.github.io/img/favicon.ico</Image>
+  <Url type="text/html" method="get" template="https://ngneat.github.io/search?q={searchTerms}"/>
+  <Url type="application/opensearchdescription+xml" rel="self" template="https://ngneat.github.io/opensearch.xml" />
+  <moz:SearchForm>https://ngneat.github.io</moz:SearchForm>
 </OpenSearchDescription>
