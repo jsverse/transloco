@@ -21,7 +21,7 @@ export function localizeNumber(value: number | string, locale: Locale, options: 
 
 export function localizeDate(date: Date, locale: Locale, options: DateFormatOptions): string {
   if (isDate(date)) {
-    return date.toLocaleDateString(locale, options);
+    return new Intl.DateTimeFormat(locale, options).format(date);
   }
   return '';
 }

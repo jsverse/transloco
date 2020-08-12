@@ -11,7 +11,6 @@ describe('TranslocoDatePipe', () => {
     service = createFakeService();
     cdr = createFakeCDR();
     date = new Date(2019, 9, 7, 12, 0, 0);
-    spyOn(date, 'toLocaleDateString').and.callThrough();
   });
 
   it('should transform date to locale formatted date', () => {
@@ -20,28 +19,46 @@ describe('TranslocoDatePipe', () => {
   });
 
   it('should consider a given format over the current locale', () => {
+    spyOn(Intl, 'DateTimeFormat').and.callThrough();
     const pipe = new TranslocoDatePipe(service, cdr, defaultConfig.localeConfig);
     pipe.transform(date, { dateStyle: 'medium', timeStyle: 'medium' });
-    expect(date.toLocaleDateString).toHaveBeenCalledWith('en-US', { dateStyle: 'medium', timeStyle: 'medium' });
+    const call = (Intl.DateTimeFormat as any).calls.argsFor(0);
+
+    expect(call[1].dateStyle).toEqual('medium');
+    expect(call[1].timeStyle).toEqual('medium');
   });
 
   it('should consider a global date config', () => {
+    spyOn(Intl, 'DateTimeFormat').and.callThrough();
     const pipe = new TranslocoDatePipe(service, cdr, LOCALE_CONFIG_MOCK);
     pipe.transform(date);
-    expect(date.toLocaleDateString).toHaveBeenCalledWith('en-US', { dateStyle: 'medium', timeStyle: 'medium' });
+    const call = (Intl.DateTimeFormat as any).calls.argsFor(0);
+
+    expect(call[1].dateStyle).toEqual('medium');
+    expect(call[1].timeStyle).toEqual('medium');
   });
 
   it('should consider a locale config over global', () => {
+    spyOn(Intl, 'DateTimeFormat').and.callThrough();
     service = createFakeService('es-ES');
     const pipe = new TranslocoDatePipe(service, cdr, LOCALE_CONFIG_MOCK);
     pipe.transform(date);
-    expect(date.toLocaleDateString).toHaveBeenCalledWith('es-ES', { dateStyle: 'long', timeStyle: 'long' });
+
+    const call = (Intl.DateTimeFormat as any).calls.argsFor(0);
+
+    expect(call[0]).toEqual('es-ES');
+    expect(call[1].dateStyle).toEqual('long');
+    expect(call[1].timeStyle).toEqual('long');
   });
 
   it('should consider a given config over the global config', () => {
+    spyOn(Intl, 'DateTimeFormat').and.callThrough();
     const pipe = new TranslocoDatePipe(service, cdr, LOCALE_CONFIG_MOCK);
     pipe.transform(date, { dateStyle: 'full' });
-    expect(date.toLocaleDateString).toHaveBeenCalledWith('en-US', { dateStyle: 'full', timeStyle: 'medium' });
+
+    const call = (Intl.DateTimeFormat as any).calls.argsFor(0);
+
+    expect(call[1].dateStyle).toEqual('full');
   });
 
   it('should handle none date values', () => {
