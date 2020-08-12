@@ -253,6 +253,15 @@
       "contributions": [
         "tool"
       ]
+    },
+    {
+      "login": "Siedlerchr",
+      "name": "Christoph",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/320228?v=4",
+      "profile": "https://github.com/Siedlerchr",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
