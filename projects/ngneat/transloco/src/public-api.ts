@@ -16,8 +16,7 @@ export {
   TranslocoTranspiler,
   FunctionalTranspiler,
   getFunctionArgs,
-  TranslocoTranspilerFunction,
-  RegExTranspiler
+  TranslocoTranspilerFunction
 } from './lib/transloco.transpiler';
 export { Translation, FailedEvent, HashMap, LoadedEvent, TranslocoEvents } from './lib/types';
 export { TRANSLOCO_SCOPE } from './lib/transloco-scope';

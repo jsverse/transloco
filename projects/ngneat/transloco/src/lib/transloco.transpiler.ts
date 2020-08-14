@@ -1,20 +1,26 @@
-import { Injectable, InjectionToken, Injector } from '@angular/core';
+import { Inject, Injectable, InjectionToken, Injector, Optional } from '@angular/core';
 import { HashMap, Translation } from './types';
-import { getValue, isString, isObject, setValue, isDefined } from './helpers';
+import { getValue, isDefined, isObject, isString, setValue } from './helpers';
+import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 
 export const TRANSLOCO_TRANSPILER = new InjectionToken('TRANSLOCO_TRANSPILER');
 
 export interface TranslocoTranspiler {
   transpile(value: any, params: HashMap, translation: HashMap): any;
+
   onLangChanged?(lang: string): void;
 }
 
 export class DefaultTranspiler implements TranslocoTranspiler {
-  protected valueMatchRegex: RegExp = /{{(.*?)}}/g;
+  protected interpolationRegExp: RegExp;
+
+  constructor(@Optional() @Inject(TRANSLOCO_CONFIG) userConfig?: TranslocoConfig) {
+    this.interpolationRegExp = getInterpolationRegExpFromConfig(userConfig);
+  }
 
   transpile(value: any, params: HashMap = {}, translation: Translation): any {
     if (isString(value)) {
-      return value.replace(this.valueMatchRegex, (_, match) => {
+      return value.replace(this.interpolationRegExp, (_, match) => {
         match = match.trim();
         if (isDefined(params[match])) {
           return params[match];
@@ -74,6 +80,19 @@ export class DefaultTranspiler implements TranslocoTranspiler {
   }
 }
 
+function getInterpolationRegExpFromConfig(userConfig?: TranslocoConfig): RegExp {
+  const interpolation = userConfig ? userConfig.interpolation : defaultConfig.interpolation;
+  if (interpolation instanceof RegExp) {
+    if (interpolation.flags.indexOf('g') === -1) {
+      throw new Error('interpolation regex should contain global flag');
+    }
+
+    return interpolation;
+  }
+
+  return new RegExp(`${interpolation[0]}(.*?)${interpolation[1]}`, 'g');
+}
+
 export interface TranslocoTranspilerFunction {
   transpile(...args: string[]): any;
 }
@@ -127,12 +146,5 @@ export class FunctionalTranspiler extends DefaultTranspiler implements Transloco
     }
 
     return value;
-  }
-}
-
-export class RegExTranspiler extends DefaultTranspiler implements TranslocoTranspiler {
-  constructor(valueMatchRegex: RegExp) {
-    super();
-    this.valueMatchRegex = valueMatchRegex;
   }
 }

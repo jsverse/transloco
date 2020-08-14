@@ -1,21 +1,20 @@
-import {
-  DefaultTranspiler,
-  FunctionalTranspiler,
-  getFunctionArgs,
-  RegExTranspiler,
-  TranslocoTranspiler
-} from '../transloco.transpiler';
+import { DefaultTranspiler, FunctionalTranspiler, getFunctionArgs, TranslocoTranspiler } from '../transloco.transpiler';
 import { flatten } from '../helpers';
 import { transpilerFunctions } from './transloco.mocks';
-
-const defaultMatchTokens = {
-  start: '{{',
-  end: '}}'
-};
+import { translocoConfig } from '@ngneat/transloco';
 
 describe('TranslocoTranspiler', () => {
   describe('DefaultTranspiler', () => {
     testDefaultBehaviour(new DefaultTranspiler());
+  });
+
+  describe('DefaultTranspiler with custom interpolation', () => {
+    testDefaultBehaviour(new DefaultTranspiler(translocoConfig({ interpolation: ['<<', '>>'] })), ['<<', '>>']);
+    testDefaultBehaviour(new DefaultTranspiler(translocoConfig({ interpolation: /<<<(.*?)>>>/g })), ['<<<', '>>>']);
+
+    it('should throw an error when global flag is not set on interpolation regex', () => {
+      expect(() => new DefaultTranspiler(translocoConfig({ interpolation: /<<<(.*?)>>>/ }))).toThrow();
+    });
   });
 
   describe('FunctionalTranspiler', () => {
@@ -74,23 +73,19 @@ describe('TranslocoTranspiler', () => {
     });
   });
 
-  describe('RegExTranspiler', () => {
-    const singleCurlyBraceTranspiler = new RegExTranspiler(/{(.*?)}/g);
-    testDefaultBehaviour(singleCurlyBraceTranspiler, { start: '{', end: '}' });
-
-    const tripleAngleBracketTranspiler = new RegExTranspiler(/<<<(.*?)>>>/g);
-    testDefaultBehaviour(tripleAngleBracketTranspiler, { start: '<<<', end: '>>>' });
-  });
-
-  function testDefaultBehaviour(parser: TranslocoTranspiler, matchTokens = defaultMatchTokens) {
+  function testDefaultBehaviour(parser: TranslocoTranspiler, interpolationMarkings: [string, string] = ['{{', '}}']) {
     it('should translate simple string from params', () => {
-      const parsed = parser.transpile(`Hello ${matchTokens.start} value ${matchTokens.end}`, { value: 'World' }, {});
+      const parsed = parser.transpile(
+        `Hello ${interpolationMarkings[0]} value ${interpolationMarkings[1]}`,
+        { value: 'World' },
+        {}
+      );
       expect(parsed).toEqual('Hello World');
     });
 
     it('should translate simple string with multiple params', () => {
       const parsed = parser.transpile(
-        `Hello ${matchTokens.start} from ${matchTokens.end} ${matchTokens.start} name ${matchTokens.end}`,
+        `Hello ${interpolationMarkings[0]} from ${interpolationMarkings[1]} ${interpolationMarkings[0]} name ${interpolationMarkings[1]}`,
         { name: 'Transloco', from: 'from' },
         {}
       );
@@ -99,7 +94,7 @@ describe('TranslocoTranspiler', () => {
 
     it('should translate simple string with a key from lang', () => {
       const parsed = parser.transpile(
-        `Hello ${matchTokens.start} world ${matchTokens.end}`,
+        `Hello ${interpolationMarkings[0]} world ${interpolationMarkings[1]}`,
         {},
         flatten({ world: 'World' })
       );
@@ -114,7 +109,7 @@ describe('TranslocoTranspiler', () => {
         nes: { ted: 'supporting nested values!' }
       });
       const parsed = parser.transpile(
-        `Hello ${matchTokens.start} withKeys ${matchTokens.end} ${matchTokens.start} from ${matchTokens.end} ${matchTokens.start} lang ${matchTokens.end} ${matchTokens.start}nes.ted${matchTokens.end}`,
+        `Hello ${interpolationMarkings[0]} withKeys ${interpolationMarkings[1]} ${interpolationMarkings[0]} from ${interpolationMarkings[1]} ${interpolationMarkings[0]} lang ${interpolationMarkings[1]} ${interpolationMarkings[0]}nes.ted${interpolationMarkings[1]}`,
         {},
         lang
       );
@@ -123,16 +118,20 @@ describe('TranslocoTranspiler', () => {
 
     it('should translate simple string with from lang with nested params', () => {
       const lang = flatten({
-        dear: `dear ${matchTokens.start}name${matchTokens.end}`,
-        hello: `Hello ${matchTokens.start}dear${matchTokens.end}`
+        dear: `dear ${interpolationMarkings[0]}name${interpolationMarkings[1]}`,
+        hello: `Hello ${interpolationMarkings[0]}dear${interpolationMarkings[1]}`
       });
-      const parsed = parser.transpile(`${matchTokens.start} hello ${matchTokens.end}`, { name: 'world' }, lang);
+      const parsed = parser.transpile(
+        `${interpolationMarkings[0]} hello ${interpolationMarkings[1]}`,
+        { name: 'world' },
+        lang
+      );
       expect(parsed).toEqual('Hello dear world');
     });
 
     it('should translate simple string with params and from lang', () => {
       const parsed = parser.transpile(
-        `Hello ${matchTokens.start} from ${matchTokens.end} ${matchTokens.start} name ${matchTokens.end}`,
+        `Hello ${interpolationMarkings[0]} from ${interpolationMarkings[1]} ${interpolationMarkings[0]} name ${interpolationMarkings[1]}`,
         { name: 'Transloco' },
         flatten({ from: 'from' })
       );
@@ -141,10 +140,10 @@ describe('TranslocoTranspiler', () => {
 
     it('should translate simple string with params and from lang with params', () => {
       const lang = flatten({
-        hello: `Hello ${matchTokens.start}name${matchTokens.end}`
+        hello: `Hello ${interpolationMarkings[0]}name${interpolationMarkings[1]}`
       });
       const parsed = parser.transpile(
-        `${matchTokens.start} hello ${matchTokens.end}, good ${matchTokens.start} timeOfDay ${matchTokens.end}`,
+        `${interpolationMarkings[0]} hello ${interpolationMarkings[1]}, good ${interpolationMarkings[0]} timeOfDay ${interpolationMarkings[1]}`,
         { name: 'world', timeOfDay: 'morning' },
         lang
       );
@@ -161,16 +160,16 @@ describe('TranslocoTranspiler', () => {
       const translation = {
         a: 'Hello',
         j: {
-          r: `Hey ${matchTokens.start}value${matchTokens.end}`
+          r: `Hey ${interpolationMarkings[0]}value${interpolationMarkings[1]}`
         },
         b: {
-          flat: `Flat ${matchTokens.start} dynamic ${matchTokens.end}`,
+          flat: `Flat ${interpolationMarkings[0]} dynamic ${interpolationMarkings[1]}`,
           c: {
             otherKey: 'otherKey',
-            d: `Hello ${matchTokens.start}value${matchTokens.end}`
+            d: `Hello ${interpolationMarkings[0]}value${interpolationMarkings[1]}`
           },
           g: {
-            h: `Name ${matchTokens.start} name ${matchTokens.end}`
+            h: `Name ${interpolationMarkings[0]} name ${interpolationMarkings[1]}`
           }
         }
       };

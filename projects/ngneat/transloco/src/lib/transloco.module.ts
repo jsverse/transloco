@@ -11,7 +11,8 @@ import { TRANSLOCO_CONFIG } from './transloco.config';
 export const defaultProviders = [
   {
     provide: TRANSLOCO_TRANSPILER,
-    useClass: DefaultTranspiler
+    useClass: DefaultTranspiler,
+    deps: [TRANSLOCO_CONFIG]
   },
   {
     provide: TRANSLOCO_MISSING_HANDLER,
