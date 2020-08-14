@@ -117,3 +117,31 @@ export const customTranspiler = {
   useClass: CustomTranspiler
 }
 ```
+
+## RegExTranspiler
+
+In addition to the default transpiler, Transloco also exposes the `RegExTranspiler` which allows you to specify your own regular expression to match message parameters.
+
+The `RegExTranspiler` expects one capturing group for the parameters.
+
+To enable this transpiler, add the following provider in your `TranslocoRootModule` (provided with your own regex):
+
+```ts title="transloco-root.module.ts"
+import { RegExTranspiler, TRANSLOCO_TRANSPILER } from '@ngneat/transloco';
+
+@NgModule({
+  ...
+  providers: [{
+    provide: TRANSLOCO_TRANSPILER,
+    useFactory: () => new RegExTranspiler(/<<<(.*?)>>>/g)
+  }]
+})
+export class TranslocoRootModule {}
+```
+
+Your message bundle must now specify parameters with triple angle brackets:
+```json title="en.json"
+{
+  "hello": "Hello <<<value>>>"
+}
+```

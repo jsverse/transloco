@@ -10,9 +10,11 @@ export interface TranslocoTranspiler {
 }
 
 export class DefaultTranspiler implements TranslocoTranspiler {
+  protected valueMatchRegex: RegExp = /{{(.*?)}}/g;
+
   transpile(value: any, params: HashMap = {}, translation: Translation): any {
     if (isString(value)) {
-      return value.replace(/{{(.*?)}}/g, (_, match) => {
+      return value.replace(this.valueMatchRegex, (_, match) => {
         match = match.trim();
         if (isDefined(params[match])) {
           return params[match];
@@ -125,5 +127,12 @@ export class FunctionalTranspiler extends DefaultTranspiler implements Transloco
     }
 
     return value;
+  }
+}
+
+export class RegExTranspiler extends DefaultTranspiler implements TranslocoTranspiler {
+  constructor(valueMatchRegex: RegExp) {
+    super();
+    this.valueMatchRegex = valueMatchRegex;
   }
 }

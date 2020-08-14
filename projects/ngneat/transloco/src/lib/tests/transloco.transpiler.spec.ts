@@ -1,6 +1,17 @@
-import { DefaultTranspiler, FunctionalTranspiler, getFunctionArgs, TranslocoTranspiler } from '../transloco.transpiler';
+import {
+  DefaultTranspiler,
+  FunctionalTranspiler,
+  getFunctionArgs,
+  RegExTranspiler,
+  TranslocoTranspiler
+} from '../transloco.transpiler';
 import { flatten } from '../helpers';
 import { transpilerFunctions } from './transloco.mocks';
+
+const defaultMatchTokens = {
+  start: '{{',
+  end: '}}'
+};
 
 describe('TranslocoTranspiler', () => {
   describe('DefaultTranspiler', () => {
@@ -63,19 +74,35 @@ describe('TranslocoTranspiler', () => {
     });
   });
 
-  function testDefaultBehaviour(parser: TranslocoTranspiler) {
+  describe('RegExTranspiler', () => {
+    const singleCurlyBraceTranspiler = new RegExTranspiler(/{(.*?)}/g);
+    testDefaultBehaviour(singleCurlyBraceTranspiler, { start: '{', end: '}' });
+
+    const tripleAngleBracketTranspiler = new RegExTranspiler(/<<<(.*?)>>>/g);
+    testDefaultBehaviour(tripleAngleBracketTranspiler, { start: '<<<', end: '>>>' });
+  });
+
+  function testDefaultBehaviour(parser: TranslocoTranspiler, matchTokens = defaultMatchTokens) {
     it('should translate simple string from params', () => {
-      const parsed = parser.transpile('Hello {{ value }}', { value: 'World' }, {});
+      const parsed = parser.transpile(`Hello ${matchTokens.start} value ${matchTokens.end}`, { value: 'World' }, {});
       expect(parsed).toEqual('Hello World');
     });
 
     it('should translate simple string with multiple params', () => {
-      const parsed = parser.transpile('Hello {{ from }} {{ name }}', { name: 'Transloco', from: 'from' }, {});
+      const parsed = parser.transpile(
+        `Hello ${matchTokens.start} from ${matchTokens.end} ${matchTokens.start} name ${matchTokens.end}`,
+        { name: 'Transloco', from: 'from' },
+        {}
+      );
       expect(parsed).toEqual('Hello from Transloco');
     });
 
     it('should translate simple string with a key from lang', () => {
-      const parsed = parser.transpile('Hello {{ world }}', {}, flatten({ world: 'World' }));
+      const parsed = parser.transpile(
+        `Hello ${matchTokens.start} world ${matchTokens.end}`,
+        {},
+        flatten({ world: 'World' })
+      );
       expect(parsed).toEqual('Hello World');
     });
 
@@ -86,30 +113,38 @@ describe('TranslocoTranspiler', () => {
         lang: 'lang',
         nes: { ted: 'supporting nested values!' }
       });
-      const parsed = parser.transpile('Hello {{ withKeys }} {{ from }} {{ lang }} {{nes.ted}}', {}, lang);
+      const parsed = parser.transpile(
+        `Hello ${matchTokens.start} withKeys ${matchTokens.end} ${matchTokens.start} from ${matchTokens.end} ${matchTokens.start} lang ${matchTokens.end} ${matchTokens.start}nes.ted${matchTokens.end}`,
+        {},
+        lang
+      );
       expect(parsed).toEqual('Hello with keys from lang supporting nested values!');
     });
 
     it('should translate simple string with from lang with nested params', () => {
       const lang = flatten({
-        dear: 'dear {{name}}',
-        hello: 'Hello {{dear}}'
+        dear: `dear ${matchTokens.start}name${matchTokens.end}`,
+        hello: `Hello ${matchTokens.start}dear${matchTokens.end}`
       });
-      const parsed = parser.transpile('{{ hello }}', { name: 'world' }, lang);
+      const parsed = parser.transpile(`${matchTokens.start} hello ${matchTokens.end}`, { name: 'world' }, lang);
       expect(parsed).toEqual('Hello dear world');
     });
 
     it('should translate simple string with params and from lang', () => {
-      const parsed = parser.transpile('Hello {{ from }} {{ name }}', { name: 'Transloco' }, flatten({ from: 'from' }));
+      const parsed = parser.transpile(
+        `Hello ${matchTokens.start} from ${matchTokens.end} ${matchTokens.start} name ${matchTokens.end}`,
+        { name: 'Transloco' },
+        flatten({ from: 'from' })
+      );
       expect(parsed).toEqual('Hello from Transloco');
     });
 
     it('should translate simple string with params and from lang with params', () => {
       const lang = flatten({
-        hello: 'Hello {{name}}'
+        hello: `Hello ${matchTokens.start}name${matchTokens.end}`
       });
       const parsed = parser.transpile(
-        '{{ hello }}, good {{ timeOfDay }}',
+        `${matchTokens.start} hello ${matchTokens.end}, good ${matchTokens.start} timeOfDay ${matchTokens.end}`,
         { name: 'world', timeOfDay: 'morning' },
         lang
       );
@@ -126,16 +161,16 @@ describe('TranslocoTranspiler', () => {
       const translation = {
         a: 'Hello',
         j: {
-          r: 'Hey {{value}}'
+          r: `Hey ${matchTokens.start}value${matchTokens.end}`
         },
         b: {
-          flat: 'Flat {{ dynamic }}',
+          flat: `Flat ${matchTokens.start} dynamic ${matchTokens.end}`,
           c: {
             otherKey: 'otherKey',
-            d: 'Hello {{value}}'
+            d: `Hello ${matchTokens.start}value${matchTokens.end}`
           },
           g: {
-            h: 'Name {{ name }}'
+            h: `Name ${matchTokens.start} name ${matchTokens.end}`
           }
         }
       };
