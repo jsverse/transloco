@@ -12,15 +12,15 @@ export interface TranslocoTranspiler {
 }
 
 export class DefaultTranspiler implements TranslocoTranspiler {
-  protected interpolationRegExp: RegExp;
+  protected interpolationMatcher: RegExp;
 
   constructor(@Optional() @Inject(TRANSLOCO_CONFIG) userConfig?: TranslocoConfig) {
-    this.interpolationRegExp = getInterpolationRegExpFromConfig(userConfig);
+    this.interpolationMatcher = resolveMatcher(userConfig);
   }
 
   transpile(value: any, params: HashMap = {}, translation: Translation): any {
     if (isString(value)) {
-      return value.replace(this.interpolationRegExp, (_, match) => {
+      return value.replace(this.interpolationMatcher, (_, match) => {
         match = match.trim();
         if (isDefined(params[match])) {
           return params[match];
@@ -80,17 +80,10 @@ export class DefaultTranspiler implements TranslocoTranspiler {
   }
 }
 
-function getInterpolationRegExpFromConfig(userConfig?: TranslocoConfig): RegExp {
-  const interpolation = userConfig ? userConfig.interpolation : defaultConfig.interpolation;
-  if (interpolation instanceof RegExp) {
-    if (interpolation.flags.indexOf('g') === -1) {
-      throw new Error('interpolation regex should contain global flag');
-    }
+function resolveMatcher(userConfig?: TranslocoConfig): RegExp {
+  const [start, end] = userConfig && userConfig.interpolation ? userConfig.interpolation : defaultConfig.interpolation;
 
-    return interpolation;
-  }
-
-  return new RegExp(`${interpolation[0]}(.*?)${interpolation[1]}`, 'g');
+  return new RegExp(`${start}(.*?)${end}`, 'g');
 }
 
 export interface TranslocoTranspilerFunction {

@@ -7,36 +7,9 @@ The transpiler is responsible for resolving the given value.
 For example, when given `Hello {{ key }}` the default transpiler will replace the dynamic variable `key` based on the given params, or in some cases, within the [translation object itself](./additional-functionality#reference-other-keys).
 
 ## DefaultTranspiler
-The default transpiler can be configured with a custom interpolation regular expression or start and end markings to match message parameters.
+The default transpiler can be configured with custom interpolation start and end markings to match message parameters.
 
-When passing in a regular expression, the `DefaultTranspiler` expects one capturing group and the global flag to be enabled.
-
-To configure the `DefaultTranspiler` you must provide a Transloco config with the interpolation property set. For example:
-
-```ts title="transloco-root.module.ts"
-import { TRANSLOCO_CONFIG, translocoConfig } from '@ngneat/transloco';
-
-@NgModule({
-  ...
-  providers: [
-    {
-      provide: TRANSLOCO_CONFIG,
-      useValue: translocoConfig({
-        interpolation: /<<<(.*?)>>>/g // or ['<<<', '>>>']
-      })
-    }
-  ]
-})
-export class TranslocoRootModule {}
-```
-
-Your message bundle must now specify parameters with triple angle brackets:
-```json title="en.json"
-{
-  "hello": "Hello <<<value>>>"
-}
-```
-
+To configure the `DefaultTranspiler` interpolation markings you must provide a Transloco config with the [interpolation](./config-options#interpolation) property set. 
 
 ## Functional Transpiler
 

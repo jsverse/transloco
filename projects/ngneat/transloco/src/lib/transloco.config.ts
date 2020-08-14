@@ -18,7 +18,7 @@ export type TranslocoConfig = {
     useFallbackTranslation?: boolean;
     allowEmpty?: boolean;
   };
-  interpolation?: RegExp | [string, string];
+  interpolation?: [string, string];
 };
 
 export const TRANSLOCO_CONFIG = new InjectionToken('TRANSLOCO_CONFIG', {
@@ -42,7 +42,7 @@ export const defaultConfig: TranslocoConfig = {
   flatten: {
     aot: false
   },
-  interpolation: /{{(.*?)}}/g
+  interpolation: ['{{', '}}']
 };
 
 /**
