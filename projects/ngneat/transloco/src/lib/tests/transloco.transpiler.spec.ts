@@ -1,7 +1,7 @@
 import { DefaultTranspiler, FunctionalTranspiler, getFunctionArgs, TranslocoTranspiler } from '../transloco.transpiler';
 import { flatten } from '../helpers';
 import { transpilerFunctions } from './transloco.mocks';
-import { translocoConfig } from '@ngneat/transloco';
+import { defaultConfig, translocoConfig } from '@ngneat/transloco';
 
 describe('TranslocoTranspiler', () => {
   describe('DefaultTranspiler', () => {
@@ -68,15 +68,18 @@ describe('TranslocoTranspiler', () => {
     });
   });
 
-  function testDefaultBehaviour(parser: TranslocoTranspiler, interpolationMarkings: [string, string] = ['{{', '}}']) {
+  function testDefaultBehaviour(
+    parser: TranslocoTranspiler,
+    interpolationMarkings: [string, string] = defaultConfig.interpolation
+  ) {
     it('should translate simple string from params', () => {
-      const parsed = parser.transpile(`Hello ${wrapParam('value', interpolationMarkings)}`, { value: 'World' }, {});
+      const parsed = parser.transpile(`Hello ${wrapParam('value')}`, { value: 'World' }, {});
       expect(parsed).toEqual('Hello World');
     });
 
     it('should translate simple string with multiple params', () => {
       const parsed = parser.transpile(
-        `Hello ${wrapParam('from', interpolationMarkings)} ${wrapParam('name', interpolationMarkings)}`,
+        `Hello ${wrapParam('from')} ${wrapParam('name')}`,
         { name: 'Transloco', from: 'from' },
         {}
       );
@@ -84,11 +87,7 @@ describe('TranslocoTranspiler', () => {
     });
 
     it('should translate simple string with a key from lang', () => {
-      const parsed = parser.transpile(
-        `Hello ${wrapParam('world', interpolationMarkings)}`,
-        {},
-        flatten({ world: 'World' })
-      );
+      const parsed = parser.transpile(`Hello ${wrapParam('world')}`, {}, flatten({ world: 'World' }));
       expect(parsed).toEqual('Hello World');
     });
 
@@ -100,10 +99,7 @@ describe('TranslocoTranspiler', () => {
         nes: { ted: 'supporting nested values!' }
       });
       const parsed = parser.transpile(
-        `Hello ${wrapParam('withKeys', interpolationMarkings)} ${wrapParam('from', interpolationMarkings)} ${wrapParam(
-          'lang',
-          interpolationMarkings
-        )} ${wrapParam('nes.ted', interpolationMarkings)}`,
+        `Hello ${wrapParam('withKeys')} ${wrapParam('from')} ${wrapParam('lang')} ${wrapParam('nes.ted')}`,
         {},
         lang
       );
@@ -112,16 +108,16 @@ describe('TranslocoTranspiler', () => {
 
     it('should translate simple string with from lang with nested params', () => {
       const lang = flatten({
-        dear: `dear ${wrapParam('name', interpolationMarkings)}`,
-        hello: `Hello ${wrapParam('dear', interpolationMarkings)}`
+        dear: `dear ${wrapParam('name')}`,
+        hello: `Hello ${wrapParam('dear')}`
       });
-      const parsed = parser.transpile(`${wrapParam('hello', interpolationMarkings)}`, { name: 'world' }, lang);
+      const parsed = parser.transpile(`${wrapParam('hello')}`, { name: 'world' }, lang);
       expect(parsed).toEqual('Hello dear world');
     });
 
     it('should translate simple string with params and from lang', () => {
       const parsed = parser.transpile(
-        `Hello ${wrapParam('from', interpolationMarkings)} ${wrapParam('name', interpolationMarkings)}`,
+        `Hello ${wrapParam('from')} ${wrapParam('name')}`,
         { name: 'Transloco' },
         flatten({ from: 'from' })
       );
@@ -130,10 +126,10 @@ describe('TranslocoTranspiler', () => {
 
     it('should translate simple string with params and from lang with params', () => {
       const lang = flatten({
-        hello: `Hello ${wrapParam('name', interpolationMarkings)}`
+        hello: `Hello ${wrapParam('name')}`
       });
       const parsed = parser.transpile(
-        `${wrapParam('hello', interpolationMarkings)}, good ${wrapParam('timeOfDay', interpolationMarkings)}`,
+        `${wrapParam('hello')}, good ${wrapParam('timeOfDay')}`,
         { name: 'world', timeOfDay: 'morning' },
         lang
       );
@@ -150,16 +146,16 @@ describe('TranslocoTranspiler', () => {
       const translation = {
         a: 'Hello',
         j: {
-          r: `Hey ${wrapParam('value', interpolationMarkings)}`
+          r: `Hey ${wrapParam('value')}`
         },
         b: {
-          flat: `Flat ${wrapParam('dynamic', interpolationMarkings)}`,
+          flat: `Flat ${wrapParam('dynamic')}`,
           c: {
             otherKey: 'otherKey',
-            d: `Hello ${wrapParam('value', interpolationMarkings)}`
+            d: `Hello ${wrapParam('value')}`
           },
           g: {
-            h: `Name ${wrapParam('name', interpolationMarkings)}`
+            h: `Name ${wrapParam('name')}`
           }
         }
       };
@@ -216,9 +212,9 @@ describe('TranslocoTranspiler', () => {
         });
       });
     });
-  }
 
-  function wrapParam(param: string, interpolationMarkings: [string, string]) {
-    return `${interpolationMarkings[0]} ${param} ${interpolationMarkings[1]}`;
+    function wrapParam(param: string) {
+      return `${interpolationMarkings[0]} ${param} ${interpolationMarkings[1]}`;
+    }
   }
 });
