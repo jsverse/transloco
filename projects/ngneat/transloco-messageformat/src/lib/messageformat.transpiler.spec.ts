@@ -46,17 +46,17 @@ describe('MessageFormatTranspiler', () => {
   });
 
   it('should translate simple param and interpolate params inside messageformat string', () => {
-    const message =
-      'The {{ value }} { gender, select, male {boy named {{ name }} won his} female {girl named {{ name }} won her} other {person named {{ name }} won their}} race';
-    const parsedMale = parser.transpile(message, { value: 'smart', gender: 'male', name: 'Henkie' }, {});
+    const parsedMale = parser.transpile(
+      'The {{ value }} { gender, select, male {boy named {{ name }} won his} female {girl named {{ name }} won her} other {person named {{ name }} won their}} race',
+      { value: 'smart', gender: 'male', name: 'Henkie' },
+      {}
+    );
     expect(parsedMale).toEqual('The smart boy named Henkie won his race');
   });
 
   it('should translate simple param and interpolate params inside messageformat string using custom interpolation markers', () => {
-    const message =
-      'The <<< value >>> { gender, select, male {boy named <<< name >>> won his} female {girl named <<< name >>> won her} other {person named <<< name >>> won their}} race';
     const parsedMale = parserWithCustomInterpolation.transpile(
-      message,
+      'The <<< value >>> { gender, select, male {boy named <<< name >>> won his} female {girl named <<< name >>> won her} other {person named <<< name >>> won their}} race',
       { value: 'smart', gender: 'male', name: 'Henkie' },
       {}
     );
