@@ -1,8 +1,9 @@
-import { Injectable, Inject, Optional } from '@angular/core';
-import { DefaultTranspiler, HashMap, Translation, isObject, setValue, getValue } from '@ngneat/transloco';
+import { Inject, Injectable, Optional } from '@angular/core';
+import { DefaultTranspiler, getValue, HashMap, isObject, setValue, Translation } from '@ngneat/transloco';
 
 import * as MessageFormat from 'messageformat';
-import { MessageformatConfig, TRANSLOCO_MESSAGE_FORMAT_CONFIG, MFLocale } from './messageformat.config';
+import { MessageformatConfig, MFLocale, TRANSLOCO_MESSAGE_FORMAT_CONFIG } from './messageformat.config';
+import { TRANSLOCO_CONFIG, TranslocoConfig } from '../../../transloco/src/lib/transloco.config';
 
 function mfFactory(locales?: MFLocale, messageConfig?: MessageFormat.Options): MessageFormat {
   //@ts-ignore
@@ -14,8 +15,11 @@ export class MessageFormatTranspiler extends DefaultTranspiler {
   private messageFormat: MessageFormat;
   private messageConfig: MessageFormat.Options;
 
-  constructor(@Optional() @Inject(TRANSLOCO_MESSAGE_FORMAT_CONFIG) config: MessageformatConfig) {
-    super();
+  constructor(
+    @Optional() @Inject(TRANSLOCO_MESSAGE_FORMAT_CONFIG) config: MessageformatConfig,
+    @Optional() @Inject(TRANSLOCO_CONFIG) userConfig?: TranslocoConfig
+  ) {
+    super(userConfig);
     const { locales, ...messageConfig } = config || { locales: undefined };
     this.messageConfig = messageConfig;
     this.messageFormat = mfFactory(locales, messageConfig);

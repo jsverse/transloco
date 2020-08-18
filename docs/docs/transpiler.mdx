@@ -6,6 +6,11 @@ description: The Transpiler | Transloco Angular i18n
 The transpiler is responsible for resolving the given value.  
 For example, when given `Hello {{ key }}` the default transpiler will replace the dynamic variable `key` based on the given params, or in some cases, within the [translation object itself](./additional-functionality#reference-other-keys).
 
+## DefaultTranspiler
+The default transpiler can be configured with custom interpolation start and end markings to match message parameters.
+
+To configure the `DefaultTranspiler` interpolation markings you must provide a Transloco config with the [interpolation](./config-options#interpolation) property set. 
+
 ## Functional Transpiler
 
 In addition to the default transpiler, Transloco also exposes the `FunctionalTranspiler` which allows you to implement function calls into your translation values. This way you can leverage Angular's DI power and make your translations even more flexible.

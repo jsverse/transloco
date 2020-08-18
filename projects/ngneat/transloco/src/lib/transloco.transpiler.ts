@@ -1,18 +1,26 @@
-import { Injectable, InjectionToken, Injector } from '@angular/core';
+import { Inject, Injectable, InjectionToken, Injector, Optional } from '@angular/core';
 import { HashMap, Translation } from './types';
-import { getValue, isString, isObject, setValue, isDefined } from './helpers';
+import { getValue, isDefined, isObject, isString, setValue } from './helpers';
+import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 
 export const TRANSLOCO_TRANSPILER = new InjectionToken('TRANSLOCO_TRANSPILER');
 
 export interface TranslocoTranspiler {
   transpile(value: any, params: HashMap, translation: HashMap): any;
+
   onLangChanged?(lang: string): void;
 }
 
 export class DefaultTranspiler implements TranslocoTranspiler {
+  protected interpolationMatcher: RegExp;
+
+  constructor(@Optional() @Inject(TRANSLOCO_CONFIG) userConfig?: TranslocoConfig) {
+    this.interpolationMatcher = resolveMatcher(userConfig);
+  }
+
   transpile(value: any, params: HashMap = {}, translation: Translation): any {
     if (isString(value)) {
-      return value.replace(/{{(.*?)}}/g, (_, match) => {
+      return value.replace(this.interpolationMatcher, (_, match) => {
         match = match.trim();
         if (isDefined(params[match])) {
           return params[match];
@@ -70,6 +78,12 @@ export class DefaultTranspiler implements TranslocoTranspiler {
 
     return result;
   }
+}
+
+function resolveMatcher(userConfig?: TranslocoConfig): RegExp {
+  const [start, end] = userConfig && userConfig.interpolation ? userConfig.interpolation : defaultConfig.interpolation;
+
+  return new RegExp(`${start}(.*?)${end}`, 'g');
 }
 
 export interface TranslocoTranspilerFunction {

@@ -54,6 +54,7 @@ import { TranslocoMessageFormatModule } from '@ngneat/transloco-messageformat';
         missingHandler: {
           useFallbackTranslation: false
         }
+        // interpolation: ['<<<', '>>>']
       })
     }
   ],

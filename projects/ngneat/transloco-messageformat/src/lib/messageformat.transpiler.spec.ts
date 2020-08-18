@@ -1,9 +1,13 @@
 import { MessageFormatTranspiler } from './messageformat.transpiler';
-import { flatten } from '@ngneat/transloco';
+import { flatten, translocoConfig } from '@ngneat/transloco';
 
 describe('MessageFormatTranspiler', () => {
   const config = {};
   const parser = new MessageFormatTranspiler(config);
+  const parserWithCustomInterpolation = new MessageFormatTranspiler(
+    config,
+    translocoConfig({ interpolation: ['<<<', '>>>'] })
+  );
 
   it('should translate simple SELECT messageformat string from params when first param given', () => {
     const parsed = parser.transpile(
@@ -32,13 +36,31 @@ describe('MessageFormatTranspiler', () => {
     expect(parsed).toEqual('The person won their race');
   });
 
-  it('should translate simple parmas and SELECT messageformat string from params when no param given', () => {
+  it('should translate simple params and SELECT messageformat string from params when no param given', () => {
     const parsed = parser.transpile(
       'The {{value}} { gender, select, male {boy won his} female {girl won her} other {person won their}} race',
       { value: 'smart', gender: '' },
       {}
     );
     expect(parsed).toEqual('The smart person won their race');
+  });
+
+  it('should translate simple param and interpolate params inside messageformat string', () => {
+    const parsedMale = parser.transpile(
+      'The {{ value }} { gender, select, male {boy named {{ name }} won his} female {girl named {{ name }} won her} other {person named {{ name }} won their}} race',
+      { value: 'smart', gender: 'male', name: 'Henkie' },
+      {}
+    );
+    expect(parsedMale).toEqual('The smart boy named Henkie won his race');
+  });
+
+  it('should translate simple param and interpolate params inside messageformat string using custom interpolation markers', () => {
+    const parsedMale = parserWithCustomInterpolation.transpile(
+      'The <<< value >>> { gender, select, male {boy named <<< name >>> won his} female {girl named <<< name >>> won her} other {person named <<< name >>> won their}} race',
+      { value: 'smart', gender: 'male', name: 'Henkie' },
+      {}
+    );
+    expect(parsedMale).toEqual('The smart boy named Henkie won his race');
   });
 
   it('should translate simple string from params', () => {
