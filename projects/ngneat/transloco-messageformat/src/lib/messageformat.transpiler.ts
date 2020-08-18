@@ -1,9 +1,17 @@
 import { Inject, Injectable, Optional } from '@angular/core';
-import { DefaultTranspiler, getValue, HashMap, isObject, setValue, Translation } from '@ngneat/transloco';
+import {
+  DefaultTranspiler,
+  getValue,
+  HashMap,
+  isObject,
+  setValue,
+  Translation,
+  TRANSLOCO_CONFIG,
+  TranslocoConfig
+} from '@ngneat/transloco';
 
 import * as MessageFormat from 'messageformat';
 import { MessageformatConfig, MFLocale, TRANSLOCO_MESSAGE_FORMAT_CONFIG } from './messageformat.config';
-import { TRANSLOCO_CONFIG, TranslocoConfig } from '../../../transloco/src/lib/transloco.config';
 
 function mfFactory(locales?: MFLocale, messageConfig?: MessageFormat.Options): MessageFormat {
   //@ts-ignore
