@@ -262,6 +262,17 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Waterstraal",
+      "name": "Mike Markus",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/2691730?v=4",
+      "profile": "https://github.com/Waterstraal",
+      "contributions": [
+        "code",
+        "doc",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7

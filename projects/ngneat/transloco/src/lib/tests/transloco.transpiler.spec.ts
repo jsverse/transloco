@@ -70,8 +70,12 @@ describe('TranslocoTranspiler', () => {
 
   function testDefaultBehaviour(
     parser: TranslocoTranspiler,
-    interpolationMarkings: [string, string] = defaultConfig.interpolation
+    [start, end]: [string, string] = defaultConfig.interpolation
   ) {
+    function wrapParam(param: string) {
+      return `${start} ${param} ${end}`;
+    }
+
     it('should translate simple string from params', () => {
       const parsed = parser.transpile(`Hello ${wrapParam('value')}`, { value: 'World' }, {});
       expect(parsed).toEqual('Hello World');
@@ -212,9 +216,5 @@ describe('TranslocoTranspiler', () => {
         });
       });
     });
-
-    function wrapParam(param: string) {
-      return `${interpolationMarkings[0]} ${param} ${interpolationMarkings[1]}`;
-    }
   }
 });

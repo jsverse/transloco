@@ -93,6 +93,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="http://literalpie.com"><img src="https://avatars1.githubusercontent.com/u/20398475?v=4" width="100px;" alt=""/><br /><sub><b>Benjamin Kindle</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=literalpie" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/karmasakshi"><img src="https://avatars3.githubusercontent.com/u/4698762?v=4" width="100px;" alt=""/><br /><sub><b>Karmasakshi Goyal</b></sub></a><br /><a href="#tool-karmasakshi" title="Tools">🔧</a></td>
     <td align="center"><a href="https://github.com/Siedlerchr"><img src="https://avatars1.githubusercontent.com/u/320228?v=4" width="100px;" alt=""/><br /><sub><b>Christoph</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=Siedlerchr" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/Waterstraal"><img src="https://avatars0.githubusercontent.com/u/2691730?v=4" width="100px;" alt=""/><br /><sub><b>Mike Markus</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=Waterstraal" title="Code">💻</a> <a href="https://github.com/ngneat/transloco/commits?author=Waterstraal" title="Documentation">📖</a> <a href="https://github.com/ngneat/transloco/commits?author=Waterstraal" title="Tests">⚠️</a></td>
   </tr>
 </table>
 
