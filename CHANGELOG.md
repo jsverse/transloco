@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.19.0](https://github.com/ngneat/transloco/compare/v2.18.4...v2.19.0) (2020-08-18)
+
+### Features
+
+- 🎸 Add interpolation to configuration ([#330](https://github.com/ngneat/transloco/issues/330)) ([cf07bfc](https://github.com/ngneat/transloco/commit/cf07bfc))
+
 ### [2.18.4](https://github.com/ngneat/transloco/compare/v2.18.3...v2.18.4) (2020-08-07)
 
 ### Bug Fixes
