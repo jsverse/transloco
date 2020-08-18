@@ -336,12 +336,32 @@ export class TranslocoService implements OnDestroy {
    *
    * @example
    *
-   * selectTranslation().subscribe()
+   * selectTranslation().subscribe() - will return the current lang translation
    * selectTranslation('es').subscribe()
+   * selectTranslation('admin-page').subscribe() - will return the current lang scope translation
+   * selectTranslation('admin-page/es').subscribe()
    */
   selectTranslation(lang?: string): Observable<Translation> {
-    const language = lang || this.getActiveLang();
-    return this.load(language).pipe(map(() => this.getTranslation(language)));
+    let language$ = this.langChanges$;
+    if (lang) {
+      if (this.isLang(lang)) {
+        language$ = of(lang);
+      } else {
+        const { scope } = this.resolveLangAndScope(lang);
+        const mapToScopeValue = language =>
+          map(() => flatten(this.translateObject(scope, null, getLangFromScope(language))));
+        const scopeLangSpecified = getLangFromScope(lang) !== lang;
+        if (scopeLangSpecified) {
+          return this.load(lang).pipe(mapToScopeValue(lang));
+        }
+
+        return language$.pipe(
+          switchMap(currentLang => this.load(`${lang}/${currentLang}`).pipe(mapToScopeValue(currentLang)))
+        );
+      }
+    }
+
+    return language$.pipe(switchMap(language => this.load(language).pipe(map(() => this.getTranslation(language)))));
   }
 
   /**
