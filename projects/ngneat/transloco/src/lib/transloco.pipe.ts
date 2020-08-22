@@ -31,7 +31,8 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
     this.listenToLangChange = shouldListenToLangChanges(this.translocoService, this.providerLang);
   }
 
-  transform(key: string, params?: HashMap | undefined, inlineLang?: string | undefined): string {
+  // null is for handling strict mode + async pipe types https://github.com/ngneat/transloco/issues/311
+  transform(key: string | null, params?: HashMap | undefined, inlineLang?: string | undefined): string {
     if (!key) {
       return key;
     }
