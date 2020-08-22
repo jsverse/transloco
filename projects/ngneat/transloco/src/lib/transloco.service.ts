@@ -326,9 +326,21 @@ export class TranslocoService implements OnDestroy {
    * getTranslation('admin-page/en')
    */
   getTranslation(): Map<string, Translation>;
-  getTranslation(lang: string): Translation;
-  getTranslation(lang?: string): Map<string, Translation> | Translation {
-    return lang ? this.translations.get(lang) || {} : this.translations;
+  getTranslation(langOrScope: string): Translation;
+  getTranslation(langOrScope?: string): Map<string, Translation> | Translation {
+    if (langOrScope) {
+      if (this.isLang(langOrScope)) {
+        return this.translations.get(langOrScope) || {};
+      } else {
+        // This is a scope, build the scope value from the translation object
+        const { scope, resolveLang } = this.resolveLangAndScope(langOrScope);
+        const translation = this.translations.get(resolveLang) || {};
+
+        return this.getObjectByKey(translation, scope);
+      }
+    }
+
+    return this.translations;
   }
 
   /**
@@ -344,24 +356,11 @@ export class TranslocoService implements OnDestroy {
   selectTranslation(lang?: string): Observable<Translation> {
     let language$ = this.langChanges$;
     if (lang) {
-      if (this.isLang(lang)) {
+      const scopeLangSpecified = getLangFromScope(lang) !== lang;
+      if (this.isLang(lang) || scopeLangSpecified) {
         language$ = of(lang);
       } else {
-        const { scope } = this.resolveLangAndScope(lang);
-        const mapToScopeValue = language =>
-          map(() => {
-            const translation = this.getTranslation(getLangFromScope(language));
-
-            return this.getObjectByKey(translation, scope);
-          });
-        const scopeLangSpecified = getLangFromScope(lang) !== lang;
-        if (scopeLangSpecified) {
-          return this.load(lang).pipe(mapToScopeValue(lang));
-        }
-
-        return language$.pipe(
-          switchMap(currentLang => this.load(`${lang}/${currentLang}`).pipe(mapToScopeValue(currentLang)))
-        );
+        language$ = this.langChanges$.pipe(map(currentLang => `${lang}/${currentLang}`));
       }
     }
 

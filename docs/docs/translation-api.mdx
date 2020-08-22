@@ -31,14 +31,14 @@ Note that in order to safely use this method, you are responsible for ensuring t
 If you aren't sure, you can use the `selectTranslate()` method instead:
 
 ### `selectTranslate()`
-Returns an `observable` that when subscribed load the translation file and emits the translation of the given key:
+Returns an `observable` that when subscribed loads the translation file and emits the translation of the given key:
 
 ```ts title="app.component.ts"
 export class AppComponent {
   constructor(private translocoService: TranslocoService) {}
 
+  // Don't forget to unsubscribe
   ngOnInit() {
-    // Don't forget to unsubscribe
     this.translocoService.selectTranslate('hello')
                          .subscribe(value => ...);
 
@@ -198,7 +198,7 @@ export class AppComponent {
 ```
 
 ### `getTranslation()`
-Returns the selected language translation or, if a language isn't passed, all of them:
+Returns the selected language translation or a scope translation, if a language isn't passed, the method will return the entire translation map:
 ```ts title="app.component.ts"
 export class AppComponent {
   constructor(private translocoService: TranslocoService) {}
@@ -206,23 +206,33 @@ export class AppComponent {
   ngOnInit() {
     this.translocoService.getTranslation();
     this.translocoService.getTranslation('es');
+    this.translocoService.getTranslation('todos/es');
   }
 }
 ```
 
 ### `selectTranslation()`
-Load and returns the active language translation object:
+Returns an observable that when subscribed loads and emits the given language translation object, if no language is passed the active language will be used.  
+This method can also be used to retrieve a scope translation object:
 
 ```ts title="app.component.ts"
 export class AppComponent {
   constructor(private translocoService: TranslocoService) {}
 
+  // Don't forget to unsubscribe
   ngOnInit() {
-    this.translocoService.selectTranslation()
-                         .subscribe(console.log);
-
     this.translocoService.selectTranslation('es')
                          .subscribe(console.log);
+                         
+    this.translocoService.selectTranslation('todos/es')
+                         .subscribe(console.log);
+                                                                    
+    // Will emit a new value on language changes.                     
+    this.translocoService.selectTranslation()
+                         .subscribe(console.log);
+                                                         
+    this.translocoService.selectTranslation('todos')
+                         .subscribe(console.log);   
   }
 }
 ```
