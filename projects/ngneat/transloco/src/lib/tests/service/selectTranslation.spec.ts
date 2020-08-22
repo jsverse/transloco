@@ -32,6 +32,10 @@ describe('selectTranslation', () => {
     service.selectTranslation('es').subscribe(spy);
     runLoader();
     expect(spy).toHaveBeenCalledWith(flatten(mockLangs['es']));
+    service.setActiveLang('en');
+    runLoader();
+    service.setActiveLang('es');
+    expect(spy).toHaveBeenCalledTimes(1);
   }));
 
   it('should select the translation scope when passing one', fakeAsync(() => {
@@ -39,5 +43,9 @@ describe('selectTranslation', () => {
     service.selectTranslation('lazy-page/es').subscribe(spy);
     runLoader();
     expect(spy).toHaveBeenCalledWith(flatten(mockLangs['lazy-page/es']));
+    service.setActiveLang('en');
+    runLoader();
+    service.setActiveLang('es');
+    expect(spy).toHaveBeenCalledTimes(1);
   }));
 });

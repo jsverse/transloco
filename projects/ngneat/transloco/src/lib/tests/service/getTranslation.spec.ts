@@ -19,7 +19,7 @@ describe('getTranslation', () => {
   }));
 
   it('should return the scope translation flatten', fakeAsync(() => {
-    const lang = 'lazy-page/en';
+    const lang = 'lazy-page/es';
     loadLang(service, lang);
     expect(service.getTranslation(lang)).toEqual(flatten(mockLangs[lang]));
   }));
