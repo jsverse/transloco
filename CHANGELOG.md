@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.19.1](https://github.com/ngneat/transloco/compare/v2.19.0...v2.19.1) (2020-08-22)
+
+### Bug Fixes
+
+- 🐛 pipe key type in strict mode ([faa58a5](https://github.com/ngneat/transloco/commit/faa58a5)), closes [#311](https://github.com/ngneat/transloco/issues/311)
+- 🐛 select translation on lang change ([f2e5415](https://github.com/ngneat/transloco/commit/f2e5415))
+
+### Tests
+
+- 💍 update tests ([427c99f](https://github.com/ngneat/transloco/commit/427c99f))
+
 ## [2.19.0](https://github.com/ngneat/transloco/compare/v2.18.4...v2.19.0) (2020-08-18)
 
 ### Features
