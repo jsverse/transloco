@@ -349,7 +349,11 @@ export class TranslocoService implements OnDestroy {
       } else {
         const { scope } = this.resolveLangAndScope(lang);
         const mapToScopeValue = language =>
-          map(() => flatten(this.translateObject(scope, null, getLangFromScope(language))));
+          map(() => {
+            const translation = this.getTranslation(getLangFromScope(language));
+
+            return this.getObjectByKey(translation, scope);
+          });
         const scopeLangSpecified = getLangFromScope(lang) !== lang;
         if (scopeLangSpecified) {
           return this.load(lang).pipe(mapToScopeValue(lang));
