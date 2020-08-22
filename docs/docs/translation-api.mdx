@@ -212,7 +212,7 @@ export class AppComponent {
 ```
 
 ### `selectTranslation()`
-Returns an observable that when subscribed loads and emits the given language translation object, if no language is passed the active language will be used.  
+Returns an `observable` that when subscribed loads and emits the given language translation object, if no language is passed the active language will be used.  
 This method can also be used to retrieve a scope translation object:
 
 ```ts title="app.component.ts"
@@ -288,3 +288,7 @@ export class AppComponent {
     ).subscribe(({ langName, scope }) => ...);
 }
 ```
+
+:::important
+Note that these events will only fire when the translation is loaded from the server, meaning that when switching from a given lang and back won't trigger the events again since the language is loaded from the cache. 
+:::
