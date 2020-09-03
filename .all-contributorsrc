@@ -273,6 +273,15 @@
         "doc",
         "test"
       ]
+    },
+    {
+      "login": "minutuslausus",
+      "name": "Gergő Nagy",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/7690112?v=4",
+      "profile": "https://github.com/minutuslausus",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7

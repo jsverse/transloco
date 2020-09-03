@@ -95,6 +95,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/Siedlerchr"><img src="https://avatars1.githubusercontent.com/u/320228?v=4" width="100px;" alt=""/><br /><sub><b>Christoph</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=Siedlerchr" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/Waterstraal"><img src="https://avatars0.githubusercontent.com/u/2691730?v=4" width="100px;" alt=""/><br /><sub><b>Mike Markus</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=Waterstraal" title="Code">💻</a> <a href="https://github.com/ngneat/transloco/commits?author=Waterstraal" title="Documentation">📖</a> <a href="https://github.com/ngneat/transloco/commits?author=Waterstraal" title="Tests">⚠️</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/minutuslausus"><img src="https://avatars1.githubusercontent.com/u/7690112?v=4" width="100px;" alt=""/><br /><sub><b>Gergő Nagy</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=minutuslausus" title="Documentation">📖</a></td>
+  </tr>
 </table>
 
 <!-- markdownlint-enable -->
