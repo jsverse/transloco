@@ -187,8 +187,7 @@ export const httpLoader = { provide: TRANSLOCO_LOADER, useClass: HttpLoader };
 Add custom Webpack support by using a tool such as [ngx-build-plus](https://github.com/manfredsteyer/ngx-build-plus), and add the plugin to `webpack.config` file:
 
 ```js title="webpack.config.js"
-const { TranslocoScopedLibsWebpackPlugin } =
-require('@ngneat/transloco-scoped-libs/webpack');
+const TranslocoScopedLibsWebpackPlugin = require('@ngneat/transloco-scoped-libs/webpack');
 
 module.exports = {
   plugins: [new TranslocoScopedLibsWebpackPlugin()]
