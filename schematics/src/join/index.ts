@@ -12,6 +12,7 @@ import {
 } from '../utils/transloco';
 import { SchemaOptions } from './schema';
 import { normalize } from '@angular-devkit/core';
+import { setProp } from '../utils/json-utils';
 const fs = require('fs-extra');
 
 type Builder = (tree: Tree, path: string, content: Object) => void;
@@ -25,12 +26,7 @@ function reduceTranslations(host: Tree, dirPath: string, translationJson, lang: 
   dir.subfiles
     .filter(fileName => fileName.includes(`${lang}.json`))
     .forEach(fileName => {
-      if (translationJson[key]) {
-        throw new SchematicsException(
-          `key: ${key} is already exist in translation file, please rename it and rerun the command.`
-        );
-      }
-      translationJson[key] = getJsonFileContent(fileName, dir);
+      setProp(translationJson, key, getJsonFileContent(fileName, dir));
     });
   if (hasSubdirs(dir)) {
     dir.subdirs.forEach(subDirName => {
