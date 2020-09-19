@@ -98,6 +98,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="https://github.com/minutuslausus"><img src="https://avatars1.githubusercontent.com/u/7690112?v=4" width="100px;" alt=""/><br /><sub><b>Gergő Nagy</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=minutuslausus" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/gamtiq"><img src="https://avatars3.githubusercontent.com/u/1177323?v=4" width="100px;" alt=""/><br /><sub><b>Denis Sikuler</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=gamtiq" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/steflen"><img src="https://avatars0.githubusercontent.com/u/18015545?v=4" width="100px;" alt=""/><br /><sub><b>steflen</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=steflen" title="Documentation">📖</a></td>
   </tr>
 </table>
 
