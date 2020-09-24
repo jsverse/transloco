@@ -49,7 +49,7 @@ export const loader = ['en', 'es'].reduce((acc, lang) => {
       provide: TRANSLOCO_SCOPE,
       useValue: {
         scope: 'scopeName',
-        loader
+        loader: loader
       }
     }
   ],
