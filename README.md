@@ -8,21 +8,21 @@
 Transloco allows you to define translations for your content in different languages and switch between them easily in runtime.
 It exposes a rich API to manage translations efficiently and cleanly. It provides multiple plugins that will improve your development experience. Here is a small taste of the features it offers:
 
-✅ Clean and DRY templates <br>
-✅ Support for Lazy Load<br>
-✅ Support for Multiple Languages Simultaneously<br>
-✅ Support for Multiple Fallbacks<br>
-✅ Support for Testing<br>
-✅ Support for SSR<br>
-✅ Support for L10N<br>
-✅ Supports Ivy<br>
-✅ Rich Plugins<br>
-✅ Hackable<br>
-✅ Schematics<br>
+✅ Clean and DRY templates  
+✅ Support for Lazy Load  
+✅ Support for Multiple Languages Simultaneously  
+✅ Support for Multiple Fallbacks  
+✅ Support for Testing  
+✅ Support for SSR  
+✅ Support for L10N  
+✅ Supports Ivy  
+✅ Rich Plugins  
+✅ Hackable  
+✅ Schematics
 
 <hr />
 
-[![Build Status](https://img.shields.io/travis/datorama/akita.svg?style=flat-square)](https://travis-ci.org/ngneat/transloco)
+[![Build Status](https://travis-ci.org/ngneat/transloco.svg?branch=master)](https://travis-ci.org/ngneat/transloco)
 [![All Contributors](https://img.shields.io/badge/all_contributors-23-orange.svg?style=flat-square)](#contributors-)
 [![commitizen](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)]()
 [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)]()
