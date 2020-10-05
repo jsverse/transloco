@@ -21,4 +21,8 @@ export class LocaleComponent implements OnInit {
   public setLocale(locale: Locale) {
     this.localeService.setLocale(locale);
   }
+
+  public get currencySymbol() {
+    return this.localeService.getCurrencySymbol();
+  }
 }
