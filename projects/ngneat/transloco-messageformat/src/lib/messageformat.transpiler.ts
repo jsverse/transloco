@@ -15,7 +15,31 @@ import { MessageformatConfig, MFLocale, TRANSLOCO_MESSAGE_FORMAT_CONFIG } from '
 
 function mfFactory(locales?: MFLocale, messageConfig?: MessageFormat.Options): MessageFormat {
   //@ts-ignore
-  return new MessageFormat(locales, messageConfig);
+  return wrapMfCompile(new MessageFormat(locales, messageConfig));
+}
+
+function wrapMfCompile(mf: MessageFormat): MessageFormat {
+  const orgCompile: (messages: MessageFormat.SrcMessage, locale?: string) => MessageFormat.Msg = mf.compile;
+  const cache: Map<string, MessageFormat.Msg> = new Map();
+
+  mf.compile = function(messages: MessageFormat.SrcMessage, locale?: string): MessageFormat.Msg {
+    const cacheKey: string | false = typeof messages === 'string' && `[__${locale || 'NO_LOCALE'}__],${messages}`;
+    const cachedMsg: MessageFormat.Msg = cache.get(cacheKey);
+
+    if (cachedMsg) {
+      return cachedMsg;
+    }
+
+    const msg: MessageFormat.Msg = orgCompile.call(this, messages, locale);
+
+    if (cacheKey) {
+      cache.set(cacheKey, msg);
+    }
+
+    return msg;
+  };
+
+  return mf;
 }
 
 @Injectable()

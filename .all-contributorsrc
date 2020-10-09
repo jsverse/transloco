@@ -318,6 +318,15 @@
       "contributions": [
         "test"
       ]
+    },
+    {
+      "login": "k3nsei",
+      "name": "Piotr Stępniewski",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/190422?v=4",
+      "profile": "https://github.com/k3nsei",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7

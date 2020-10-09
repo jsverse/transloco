@@ -101,6 +101,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/steflen"><img src="https://avatars0.githubusercontent.com/u/18015545?v=4" width="100px;" alt=""/><br /><sub><b>steflen</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=steflen" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/StanevichIvan"><img src="https://avatars1.githubusercontent.com/u/20155344?v=4" width="100px;" alt=""/><br /><sub><b>Ivan Stanevich</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=StanevichIvan" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/chrsi"><img src="https://avatars2.githubusercontent.com/u/1976206?v=4" width="100px;" alt=""/><br /><sub><b>Christian Siber</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=chrsi" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/k3nsei"><img src="https://avatars2.githubusercontent.com/u/190422?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Piotr Stępniewski</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=k3nsei" title="Code">💻</a></td>
   </tr>
 </table>
 
