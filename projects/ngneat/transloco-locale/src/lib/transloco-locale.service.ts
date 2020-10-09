@@ -65,9 +65,9 @@ export class TranslocoLocaleService implements OnDestroy {
   /**
    * Get the currency symbol for the currently set locale.
    */
-  getCurrencySymbol() {
-    const currency = this.localeCurrencyMapping[this._locale];
-    const numberFormat = new Intl.NumberFormat(this._locale, {
+  getCurrencySymbol(locale = this.getLocale()) {
+    const currency = this.localeCurrencyMapping[locale];
+    const numberFormat = new Intl.NumberFormat(locale, {
       style: 'currency',
       currencyDisplay: 'symbol',
       currency: currency,
