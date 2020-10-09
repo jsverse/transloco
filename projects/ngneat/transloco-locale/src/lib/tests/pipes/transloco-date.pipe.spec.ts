@@ -1,6 +1,7 @@
 import { TranslocoDatePipe } from '../../pipes/transloco-date.pipe';
 import { createFakeService, createFakeCDR, LOCALE_CONFIG_MOCK } from '../mocks';
 import { defaultConfig } from '../../transloco-locale.config';
+import { DateFormatOptions } from '../../transloco-locale.types';
 
 describe('TranslocoDatePipe', () => {
   let service;
@@ -80,6 +81,9 @@ describe('TranslocoDatePipe', () => {
 
   it('should transform an ISO 8601 string to date', () => {
     const pipe = new TranslocoDatePipe(service, cdr, LOCALE_CONFIG_MOCK);
-    expect(pipe.transform('2019-09-12T19:51:33Z')).toEqual('Sep 12, 2019, 10:51:33 PM');
+
+    const dateFormat: DateFormatOptions = { dateStyle: 'medium', timeStyle: 'medium' };
+    const expectedDate = Intl.DateTimeFormat('en-US', dateFormat).format(Date.UTC(2019, 8, 12, 19, 51, 33));
+    expect(pipe.transform('2019-09-12T19:51:33Z')).toEqual(expectedDate);
   });
 });
