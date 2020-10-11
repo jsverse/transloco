@@ -259,6 +259,7 @@ Note the format option of the global, locale's format and the one's being passed
 - `localizeNumber()` - Transform a number into the locale's number format according to the number type.
 - `getLocale` - Gets the active locale.
 - `setLocale` - Sets the active locale.
+- `getCurrencySymbol` - Gets the currency symbol for a given locale. If no locale is specified the currently active one is used.
 
 ```ts
 translocoLocaleService.localeChanges$.subscribe(activeLocale => ...)
@@ -269,6 +270,8 @@ translocoLocaleService.localizeNumber(1000, 'currency') // $1,000.00
 
 const locale = translocoLocaleService.getLocale();
 translocoLocaleService.setLocale('en-US')
+
+translocoLocaleService.getCurrencySymbol() // $
 ```
 
 ## Localization Transformer

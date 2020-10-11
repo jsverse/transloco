@@ -13,6 +13,7 @@ export function testLocaleContentUS() {
   cy.get(`[data-cy=number-percent]`).should('contain', '100%');
 
   // Currency Pipe
+  cy.get(`[data-cy=currency-symbol-only]`).should('contain', '$');
   cy.get(`[data-cy=currency-symbol]`).should('contain', '$1,000,000.00');
   cy.get(`[data-cy=currency-name]`).should('contain', '1,000,000.00 US dollars');
   cy.get(`[data-cy=currency-custom-digit]`).should('contain', '$1,000,000');
@@ -33,6 +34,7 @@ export function testLocaleContentES() {
   cy.get(`[data-cy=number-percent]`).should('contain', '100');
 
   // Currency Pipe
+  cy.get(`[data-cy=currency-symbol-only]`).should('contain', '€');
   cy.get(`[data-cy=currency-symbol]`).should('contain', '1.000.000,00');
   cy.get(`[data-cy=currency-name]`).should('contain', '1.000.000,00 euros');
   cy.get(`[data-cy=currency-custom-digit]`).should('contain', '1.000.000');

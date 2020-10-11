@@ -63,6 +63,28 @@ export class TranslocoLocaleService implements OnDestroy {
   }
 
   /**
+   * Get the currency symbol for the currently set locale.
+   */
+  getCurrencySymbol(locale = this.getLocale()) {
+    const currency = this.localeCurrencyMapping[locale];
+    const numberFormat = new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currencyDisplay: 'symbol',
+      currency: currency,
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    });
+
+    const pivot = 0;
+
+    return numberFormat
+      .format(pivot)
+      .split(pivot.toString())
+      .map(element => element.trim())
+      .find(element => !!element);
+  }
+
+  /**
    * Transform a date into the locale's date format.
    *
    * The date expression: a `Date` object, a number
