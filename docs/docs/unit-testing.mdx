@@ -8,7 +8,7 @@ When running specs, we want to have the languages available immediately, in a sy
 We recommend to be DRY and create a module factory function that we can use in each spec, For example:
 ```ts title="transloco-module.spec.ts"
 
-import { TranslocoTestingModule } from '@ngneat/transloco';
+import { TranslocoTestingModule, TranslocoConfig } from '@ngneat/transloco';
 import en from '../assets/i18n/en.json';
 import es from '../assets/i18n/es.json';
 
