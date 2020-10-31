@@ -7,6 +7,24 @@ import { mockService } from './mocks';
 describe('TranslocoLocaleService', () => {
   let service: TranslocoLocaleService;
 
+  describe('getCurrencySymbol', () => {
+    it('should return symbol for locals with prefix notation', () => {
+      const translocoService: any = {
+        langChanges$: of('en-US')
+      };
+      service = mockService(translocoService);
+      expect(service.getCurrencySymbol()).toEqual('$');
+    });
+
+    it('should return symbol for locals with postfix notation', () => {
+      const translocoService: any = {
+        langChanges$: of('de-DE')
+      };
+      service = mockService(translocoService);
+      expect(service.getCurrencySymbol()).toEqual('€');
+    });
+  });
+
   describe('getLocale', () => {
     it('should return the default locale', () => {
       const translocoService: any = {

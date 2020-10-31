@@ -8,22 +8,22 @@
 Transloco allows you to define translations for your content in different languages and switch between them easily in runtime.
 It exposes a rich API to manage translations efficiently and cleanly. It provides multiple plugins that will improve your development experience. Here is a small taste of the features it offers:
 
-✅ Clean and DRY templates <br>
-✅ Support for Lazy Load<br>
-✅ Support for Multiple Languages Simultaneously<br>
-✅ Support for Multiple Fallbacks<br>
-✅ Support for Testing<br>
-✅ Support for SSR<br>
-✅ Support for L10N<br>
-✅ Supports Ivy<br>
-✅ Rich Plugins<br>
-✅ Hackable<br>
-✅ Schematics<br>
+✅ Clean and DRY templates  
+✅ Support for Lazy Load  
+✅ Support for Multiple Languages Simultaneously  
+✅ Support for Multiple Fallbacks  
+✅ Support for Testing  
+✅ Support for SSR  
+✅ Support for L10N  
+✅ Supports Ivy  
+✅ Rich Plugins  
+✅ Hackable  
+✅ Schematics
 
 <hr />
 
-[![Build Status](https://img.shields.io/travis/datorama/akita.svg?style=flat-square)](https://travis-ci.org/ngneat/transloco)
-[![All Contributors](https://img.shields.io/badge/all_contributors-23-orange.svg?style=flat-square)](#contributors-)
+[![Build Status](https://travis-ci.org/ngneat/transloco.svg?branch=master)](https://travis-ci.org/ngneat/transloco)
+[![All Contributors](https://img.shields.io/badge/all_contributors-33-orange.svg?style=flat-square)](#contributors-)
 [![commitizen](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)]()
 [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)]()
 [![coc-badge](https://img.shields.io/badge/codeof-conduct-ff69b4.svg?style=flat-square)]()
@@ -36,7 +36,7 @@ It exposes a rich API to manage translations efficiently and cleanly. It provide
 - 🎥 Watch our instructional [video guides](https://www.youtube.com/watch?v=MYkYcafJdGw&list=PLTuTW7EgL6ouXk5BqE4zWdDJkAuC4HTWi)
 - 🚀 See it in action on [StackBlitz](https://stackblitz.com/edit/ngneat-transloco)
 - 😎 Use [schematics](https://ngneat.github.io/transloco/docs/schematics)
-- 👉 Checkout the [sample application](https://transloco.netlify.com/home)
+- 👉 Checkout the [sample application](https://ngneat.github.io/transloco/sampleApp)
 - 📖 Read the blog [posts](https://ngneat.github.io/transloco/docs/blog-posts)
 - 🍄 Join Transloco's [Gitter](https://gitter.im/ngneat-transloco/lobby?source=orgpage) room
 - ❓ Find answers in our [FAQ](https://ngneat.github.io/transloco/docs/faq) section
@@ -99,6 +99,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/minutuslausus"><img src="https://avatars1.githubusercontent.com/u/7690112?v=4" width="100px;" alt=""/><br /><sub><b>Gergő Nagy</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=minutuslausus" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/gamtiq"><img src="https://avatars3.githubusercontent.com/u/1177323?v=4" width="100px;" alt=""/><br /><sub><b>Denis Sikuler</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=gamtiq" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/steflen"><img src="https://avatars0.githubusercontent.com/u/18015545?v=4" width="100px;" alt=""/><br /><sub><b>steflen</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=steflen" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/StanevichIvan"><img src="https://avatars1.githubusercontent.com/u/20155344?v=4" width="100px;" alt=""/><br /><sub><b>Ivan Stanevich</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=StanevichIvan" title="Documentation">📖</a></td>
   </tr>
 </table>
 

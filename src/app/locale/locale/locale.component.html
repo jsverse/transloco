@@ -46,6 +46,7 @@
 
 <h3 class="mtb">Currency Format</h3>
 <ul class="list-group">
+  <li class="list-group-item" data-cy="currency-symbol-only"><b>Symbol: </b>{{ currencySymbol }}</li>
   <li class="list-group-item" data-cy="currency-symbol"><b>Symbol currency: </b>{{ 1000000 | translocoCurrency }}</li>
   <li class="list-group-item" data-cy="currency-name">
     <b>Name currency: </b>{{ 1000000 | translocoCurrency: 'name' }}

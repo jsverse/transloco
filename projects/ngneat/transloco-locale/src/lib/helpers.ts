@@ -11,7 +11,9 @@ export const ISO8601_DATE_REGEX = /^(\d{4})-?(\d\d)-?(\d\d)(?:T(\d\d)(?::?(\d\d)
  * isLocaleFormat('en-US') // true
  */
 export function isLocaleFormat(val: string): val is Locale {
-  return typeof val === 'string' && !!val.match(/[a-z]{2}-[A-Z]{2}/);
+  const irregulars = `en-GB-oed|i-ami|i-bnn|i-default|i-enochian|i-hak|i-klingon|i-lux|i-mingo|i-navajo|i-pwn|i-tao|i-tay|i-tsu|sgn-BE-FR|sgn-BE-NL|sgn-CH-DE|art-lojban|cel-gaulish|no-bok|no-nyn|zh-guoyu|zh-hakka|zh-min|zh-min-nan|zh-xiang|zh-Hans|zh-hant`;
+  const BCPFormat = `[a-z]{2}-[A-Z]{2}`;
+  return typeof val === 'string' && !!val.match(RegExp(`(${irregulars})|(${BCPFormat})`));
 }
 
 export function localizeNumber(value: number | string, locale: Locale, options: NumberFormatOptions): string {

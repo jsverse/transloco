@@ -19,28 +19,28 @@ Well, this is why we've created the Scoped Library Extractor tool, which will do
 For example, here we have created a new CLI project, with the main application (app), and another library with translations (core):
 
 ```bash
-📦projects
- ┣ 📂core
- ┃ ┣ 📂src
- ┃ ┃ ┣ 📂lib
- ┃ ┃ ┃ ┣ 📜core.component.ts
- ┃ ┃ ┃ ┣ 📜core.module.ts
- ┃ ┃ ┃ ┣ 📂i18n
- ┃ ┃ ┃ ┃ ┣ 📜en.json
- ┃ ┃ ┃ ┃ ┗ 📜es.json
- ┃ ┃ ┣ 📜public-api.ts
- ┣ 📜ng-package.json
- ┣ 📜package.json
-📦src
- ┣ 📂app
- ┃ ┣ 📜app.component.html
- ┃ ┣ 📜app.component.ts
- ┃ ┣ 📜app.module.ts
- ┃ ┗ 📜transloco.loader.ts
- ┣ 📂assets
- ┃ ┣ 📂i18n
- ┃ ┃ ┣ 📜en.json
- ┃ ┃ ┗ 📜es.json
+📦 projects
+ ┣ 📂 core
+ ┃ ┣ 📂 src
+ ┃ ┃ ┣ 📂 lib
+ ┃ ┃ ┃ ┣ 📜 core.component.ts
+ ┃ ┃ ┃ ┣ 📜 core.module.ts
+ ┃ ┃ ┃ ┣ 📂 i18n
+ ┃ ┃ ┃ ┃ ┣ 📜 en.json
+ ┃ ┃ ┃ ┃ ┗ 📜 es.json
+ ┃ ┃ ┣ 📜 public-api.ts
+ ┣ 📜 ng-package.json
+ ┣ 📜 package.json
+📦 src
+ ┣ 📂 app
+ ┃ ┣ 📜 app.component.html
+ ┃ ┣ 📜 app.component.ts
+ ┃ ┣ 📜 app.module.ts
+ ┃ ┗ 📜 transloco.loader.ts
+ ┣ 📂 assets
+ ┃ ┣ 📂 i18n
+ ┃ ┃ ┣ 📜 en.json
+ ┃ ┃ ┗ 📜 es.json
 ```
 
 Now we need to declare the [scope](../scope-configuration) in the `CoreModule`:
@@ -92,11 +92,11 @@ The first thing we need to do is to add i18n configuration with the path to the 
 }
 ```
 
-Next, we need to add the library's path into `transloco.config.js` as following (we can also pass `npm` package ):
+Next, we need to add the library's path into `transloco.config.js` as following (we can also pass `npm` package):
 ```js title="transloco.config.js"
 module.exports = {
   scopedLibs: ['./projects/core/', '@lib/name']
-};​
+};
 ```
 
 If **multiple** destination is needed you could also pass `scopedLibs` as an object:
@@ -108,7 +108,7 @@ module.exports = {
       dist: ['./projects/spa/src/assets/i18n', './src/assets/i18n/']
     }
   ]
-};​
+};
 ```
 
 Note that the path should refer to the location of the library's `package.json` file.
