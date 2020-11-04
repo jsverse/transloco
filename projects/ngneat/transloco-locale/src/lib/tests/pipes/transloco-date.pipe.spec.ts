@@ -81,9 +81,6 @@ describe('TranslocoDatePipe', () => {
 
   it('should transform an ISO 8601 string to date', () => {
     const pipe = new TranslocoDatePipe(service, cdr, LOCALE_CONFIG_MOCK);
-
-    const dateFormat: DateFormatOptions = { dateStyle: 'medium', timeStyle: 'medium' };
-    const expectedDate = Intl.DateTimeFormat('en-US', dateFormat).format(Date.UTC(2019, 8, 12, 19, 51, 33));
-    expect(pipe.transform('2019-09-12T19:51:33Z')).toEqual(expectedDate);
+    expect(pipe.transform('2019-09-12T19:51:33Z', { timeZone: 'UTC' }, 'en-US')).toEqual('Sep 12, 2019, 7:51:33 PM');
   });
 });
