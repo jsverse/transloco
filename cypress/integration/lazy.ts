@@ -8,7 +8,6 @@ export function generateLazyContent(lang = 'english') {
   cy.get(`[data-cy=regular]`).should('contain', `Admin ${lang}`);
   cy.get(`[data-cy=read]`).should('contain', `Admin read ${lang}`);
   cy.get(`[data-cy=lazy-page]`).should('contain', `Admin Lazy ${lang}`);
-  cy.get(`[data-cy=multiple-scopes]`).should('contain', `Admin ${lang}`);
 }
 
 export function generateContentWithoutLoader() {
