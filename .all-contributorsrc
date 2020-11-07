@@ -309,6 +309,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "chrsi",
+      "name": "Christian Siber",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/1976206?v=4",
+      "profile": "https://github.com/chrsi",
+      "contributions": [
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7
