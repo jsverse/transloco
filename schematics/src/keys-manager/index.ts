@@ -1,4 +1,5 @@
 import { Rule, Tree, SchematicsException } from '@angular-devkit/schematics';
+import { getConfiguredPackageManager } from '@angular/cli/utilities/config';
 import { TranslocoConfig } from '@ngneat/transloco-utils';
 import { execSync } from 'child_process';
 import { addScriptToPackageJson } from '../utils/package';
@@ -8,7 +9,11 @@ import { SchemaOptions } from './schema';
 
 function installKeysManager() {
   console.log('Installing packages for tooling...');
-  execSync('npm install --save-dev @ngneat/transloco-keys-manager ngx-build-plus');
+  if (getConfiguredPackageManager() === 'yarn') {
+    execSync('yarn add --dev @ngneat/transloco-keys-manager ngx-build-plus');
+  } else {
+    execSync('npm install --save-dev @ngneat/transloco-keys-manager ngx-build-plus');
+  }
 }
 
 export function updateAngularJson(host: Tree, options) {
