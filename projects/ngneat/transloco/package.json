@@ -1,6 +1,6 @@
 {
   "name": "@ngneat/transloco",
-  "version": "2.19.2",
+  "version": "2.19.3",
   "description": "The internationalization (i18n) library for Angular",
   "schematics": "./schematics/collection.json",
   "publishConfig": {
@@ -38,7 +38,7 @@
       "url": "https://github.com/itayod"
     }
   ],
-  "dependencies": { 
+  "dependencies": {
     "@ngneat/transloco-utils": "^1.0.6",
     "replace-in-file": "^4.1.2",
     "ora": "^3.4.0",
