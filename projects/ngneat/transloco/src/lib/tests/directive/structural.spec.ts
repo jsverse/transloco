@@ -130,4 +130,35 @@ describe('Structural directive', () => {
       testTranslationWithRead(spectator);
     }));
   });
+
+  describe('CurrentLang', () => {
+    let service;
+
+    beforeEach(fakeAsync(() => {
+      spectator = createHost(
+        `
+        <section *transloco="let t; currentLang as currentLang">
+           <div>{{ currentLang }}</div>
+        </section>
+     `,
+        { detectChanges: false }
+      );
+      service = spectator.get(TranslocoService) as any;
+      setlistenToLangChange(service);
+      spectator.detectChanges();
+      runLoader();
+    }));
+
+    it('should expose currentLang to the template', fakeAsync(() => {
+      spectator.detectChanges();
+      expect(spectator.queryHost('div')).toHaveText('en');
+    }));
+
+    it('should change on langChanges', fakeAsync(() => {
+      (service as TranslocoService).setActiveLang('es');
+      runLoader();
+      spectator.detectChanges();
+      expect(spectator.queryHost('div')).toHaveText('es');
+    }));
+  });
 });
