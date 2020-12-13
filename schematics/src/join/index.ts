@@ -26,6 +26,11 @@ function reduceTranslations(host: Tree, dirPath: string, translationJson, lang: 
   dir.subfiles
     .filter(fileName => fileName.includes(`${lang}.json`))
     .forEach(fileName => {
+      if (translationJson[key]) {
+        throw new SchematicsException(
+          `key: ${key} is already exist in translation file, please rename it and rerun the command.`
+        );
+      }
       setProp(translationJson, key, getJsonFileContent(fileName, dir));
     });
   if (hasSubdirs(dir)) {
