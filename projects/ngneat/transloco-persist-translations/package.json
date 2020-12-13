@@ -1,6 +1,6 @@
 {
   "name": "@ngneat/transloco-persist-translations",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Persist translations for Angular Transloco",
   "publishConfig": {
     "access": "public"
@@ -21,7 +21,7 @@
   },
   "license": "MIT",
   "peerDependencies": {
-    "@angular/core": ">=4.3.0 <11.0.0",
+    "@angular/core": ">=4.3.0",
     "rxjs": ">=6.0.0 || ^5.6.0-forward-compat.4"
   }
 }
