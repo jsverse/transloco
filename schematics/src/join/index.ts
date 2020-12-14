@@ -11,6 +11,7 @@ import {
   getDefaultLang
 } from '../utils/transloco';
 import { SchemaOptions } from './schema';
+import { normalize } from '@angular-devkit/core';
 const fs = require('fs-extra');
 
 type Builder = (tree: Tree, path: string, content: Object) => void;
@@ -20,13 +21,13 @@ function reduceTranslations(host: Tree, dirPath: string, translationJson, lang: 
   if (!fs.existsSync(dirPath)) {
     throw new SchematicsException(`Could not resolve path to dir: ${dirPath}`);
   }
-  if (!hasFiles(dir)) return translationJson;
+  if (!hasFiles(dir) && !hasSubdirs(dir)) return translationJson;
   dir.subfiles
     .filter(fileName => fileName.includes(`${lang}.json`))
     .forEach(fileName => {
       if (translationJson[key]) {
         throw new SchematicsException(
-          `key: ${key} is already exist in translation file, please rename it and rerun the command.`
+          `key: ${key} already exist in translation file, please rename it and rerun the command.`
         );
       }
       translationJson[key] = getJsonFileContent(fileName, dir);
@@ -35,7 +36,7 @@ function reduceTranslations(host: Tree, dirPath: string, translationJson, lang: 
     dir.subdirs.forEach(subDirName => {
       const subDir = dir.dir(subDirName);
       const nestedKey = getTranslationKey(key, subDirName);
-      reduceTranslations(host, subDir.path, translationJson, lang, nestedKey);
+      reduceTranslations(host, normalize(subDir.path).substr(1), translationJson, lang, nestedKey);
     });
   }
 
@@ -86,8 +87,8 @@ export default function(options: SchemaOptions): Rule {
 
     const output = rootTranslations.map(t => ({
       lang: t.lang,
-      translation: translationEntryPaths.reduce((acc, path) => {
-        return reduceTranslations(host, path.path, t.translation, t.lang, path.scope);
+      translation: translationEntryPaths.reduce((acc, entryPath) => {
+        return reduceTranslations(host, entryPath.path, t.translation, t.lang, entryPath.scope);
       }, t.translation)
     }));
 
