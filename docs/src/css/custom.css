@@ -34,6 +34,23 @@ code {
   padding: 5px 8px;
 }
 
+.admonition-important code {
+  background-color: #fffae0;
+  color: #1a1a1a;
+  padding: 2px 4px;
+  font-size: 14px;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+.admonition-important a:hover {
+  color: #1a1a1a;
+}
+
+[data-theme='dark'] .admonition-important a:hover {
+  color: var(--ifm-color-content-secondary);
+}
+
 header.hero {
   transition: background-color 0.2s ease-in-out;
   background-color: #e4f4ff;

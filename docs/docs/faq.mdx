@@ -33,3 +33,18 @@ Using a structural directive is the recommended approach. It’s DRY and efficie
 Moreover, the t function is `memoized`, It means that given the same key, it will return the result directly from the cache.
 
 Furthermore, when using on push change detection strategy (which is recommended) the change detection cycles should greatly reduce.
+
+### Why values don't get translated when using the `translate` in unit tests?
+As stated beneath the function, even in tests, it's you responsibility to make sure the translation are loaded
+before calling it.  
+
+You can make sure you translations are loaded before your test executes by simply setting the `preloadLangs` to `true` in the options passed to
+`TranslocoTestingModule.withOptions`.  
+
+### Why does querying an element inside the `*transloco` directive using `@ViewChild()` not working? 
+The transloco structural directive has an async operation in its internals which is fetching the translations.
+
+Because of that, the contents of the directive won't be available until the translations are fetched, so you can't access 
+the element in the `ngOnInit` nor the `ngAfterViewInit`.
+  
+The simplest way you can gain access to the element on render is by making the `ViewChild` a setter.

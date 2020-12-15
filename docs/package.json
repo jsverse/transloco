@@ -9,12 +9,12 @@
     "deploy": "npm run build && GIT_USER=NetanelBasal USE_SSH=true docusaurus deploy --skip-build"
   },
   "dependencies": {
-    "@docusaurus/core": "^2.0.0-alpha.61",
-    "@docusaurus/preset-classic": "^2.0.0-alpha.61",
+    "@docusaurus/core": "2.0.0-alpha.69",
+    "@docusaurus/preset-classic": "2.0.0-alpha.69",
     "classnames": "^2.2.6",
     "react": "^16.8.4",
     "react-dom": "^16.8.4"
-  },  
+  },
   "browserslist": {
     "production": [
       ">0.2%",
