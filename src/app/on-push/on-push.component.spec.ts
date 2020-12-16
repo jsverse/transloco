@@ -9,7 +9,7 @@ describe('OnPushComponent', () => {
     component: OnPushComponent,
     imports: [
       getTranslocoModule({
-        reRenderOnLangChange: true
+        translocoConfig: { reRenderOnLangChange: true }
       })
     ]
   });

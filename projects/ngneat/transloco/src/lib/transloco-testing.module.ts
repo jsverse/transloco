@@ -9,7 +9,7 @@ import { TranslocoService } from './transloco.service';
 export interface TranslocoTestingOptions {
   translocoConfig?: Partial<TranslocoConfig>;
   preloadLangs?: boolean;
-  langs: HashMap<Translation>;
+  langs?: HashMap<Translation>;
 }
 
 const TRANSLOCO_TEST_LANGS = new InjectionToken<HashMap<Translation>>(
@@ -43,7 +43,7 @@ export function initTranslocoService(
   exports: [TranslocoModule]
 })
 export class TranslocoTestingModule {
-  static withOptions(options: TranslocoTestingOptions) {
+  static forRoot(options: TranslocoTestingOptions) {
     return {
       ngModule: TranslocoTestingModule,
       providers: [
@@ -78,11 +78,11 @@ export class TranslocoTestingModule {
     };
   }
 
-  /** @deprecated - use withOptions instead */
+  /** @deprecated - use forRoot instead */
   static withLangs(
     langs: HashMap<Translation>,
     config: Partial<TranslocoConfig> = {},
-    options: Partial<TranslocoTestingOptions> = {}
+    options: TranslocoTestingOptions = {}
   ): ModuleWithProviders<TranslocoTestingModule> {
     return {
       ngModule: TranslocoTestingModule,

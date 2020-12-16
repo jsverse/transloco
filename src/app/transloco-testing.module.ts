@@ -6,24 +6,23 @@ import adminSpanish from '../assets/i18n/admin-page/es.json';
 import lazy from '../assets/i18n/lazy-page/en.json';
 import lazySpanish from '../assets/i18n/lazy-page/es.json';
 
-export function getTranslocoModule(
-  config: Partial<TranslocoConfig> = {},
-  options: Partial<TranslocoTestingOptions> = {}
-) {
-  return TranslocoTestingModule.withOptions({
+export function getTranslocoModule(options: TranslocoTestingOptions = {}) {
+  const { langs, translocoConfig, ...rest } = options;
+  return TranslocoTestingModule.forRoot({
     langs: {
       en,
       es,
       'admin-page/en': admin,
       'admin-page/es': adminSpanish,
       'lazy-page/en': lazy,
-      'lazy-page/es': lazySpanish
+      'lazy-page/es': lazySpanish,
+      ...langs
     },
     translocoConfig: {
       availableLangs: ['es', 'en'],
       defaultLang: 'es',
-      ...config
+      ...translocoConfig
     },
-    ...options
+    ...rest
   });
 }

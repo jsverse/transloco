@@ -12,14 +12,12 @@ import { TranslocoTestingModule, TranslocoTestingOptions } from '@ngneat/translo
 import en from '../assets/i18n/en.json';
 import es from '../assets/i18n/es.json';
 
-type TestOptions = Omit<TranslocoTestingOptions, 'langs' | 'translocoConfig'>
-export function getTranslocoModule(config: Partial<TranslocoConfig> = {}, options: TestOptions = {}) {
-  return TranslocoTestingModule.withOptions({
+export function getTranslocoModule(options: TranslocoTestingOptions = {}) {
+  return TranslocoTestingModule.forRoot({
     langs: { en, es },
     translocoConfig: {
       availableLangs: ['en', 'es'],
       defaultLang: 'en',
-      ...config
     },
     ...options
   });
@@ -51,8 +49,8 @@ You can find an example [here](https://github.com/ngneat/transloco/blob/master/s
 If you need to test `scopes`, you should add them as `languages`, for example:
 
 ```ts {6,7} title="transloco-module.spec.ts"
-export function getTranslocoModule(config: Partial<TranslocoConfig> = {}, options: TestOptions = {}) {
-  return TranslocoTestingModule.withOptions({
+export function getTranslocoModule(options: TranslocoTestingOptions = {}) {
+  return TranslocoTestingModule.forRoot({
     langs: { 
       en, 
       es,
@@ -62,7 +60,6 @@ export function getTranslocoModule(config: Partial<TranslocoConfig> = {}, option
     translocoConfig: {
       availableLangs: ['en', 'es'],
       defaultLang: 'en',
-      ...config
     },
     ...options
   });

@@ -39,7 +39,7 @@ As stated beneath the function, even in tests, it's you responsibility to make s
 before calling it.  
 
 You can make sure you translations are loaded before your test executes by simply setting the `preloadLangs` to `true` in the options passed to
-`TranslocoTestingModule.withOptions`.  
+`TranslocoTestingModule.forRoot`.  
 
 ### Why does querying an element inside the `*transloco` directive using `@ViewChild()` not working? 
 The transloco structural directive has an async operation in its internals which is fetching the translations.

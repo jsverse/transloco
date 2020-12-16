@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { InlineComponent } from './inline.component';
+import { getTranslocoModule } from '../../transloco-testing.module';
+import { TRANSLOCO_SCOPE } from '@ngneat/transloco';
 
 describe('InlineComponent', () => {
   let component: InlineComponent;
@@ -8,7 +10,14 @@ describe('InlineComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [InlineComponent]
+      imports: [getTranslocoModule()],
+      declarations: [InlineComponent],
+      providers: [
+        {
+          provide: TRANSLOCO_SCOPE,
+          useValue: { scope: 'inline' }
+        }
+      ]
     }).compileComponents();
   }));
 

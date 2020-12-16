@@ -8,12 +8,14 @@ describe('LazyMultipleScopesComponent', () => {
 
   let createComponent = createComponentFactory({
     providers: [
-      { provide: TRANSLOCO_SCOPE, useValue: { scope: 'admin-page', alias: 'AdminPageAlias'}, multi: true},
-      { provide: TRANSLOCO_SCOPE, useValue: { scope: 'lazy-page', alias: 'LazyPageAlias' }, multi: true}
+      { provide: TRANSLOCO_SCOPE, useValue: { scope: 'admin-page', alias: 'AdminPageAlias' }, multi: true },
+      { provide: TRANSLOCO_SCOPE, useValue: { scope: 'lazy-page', alias: 'LazyPageAlias' }, multi: true }
     ],
-    imports: [getTranslocoModule({
-      reRenderOnLangChange: true
-    })],
+    imports: [
+      getTranslocoModule({
+        translocoConfig: { reRenderOnLangChange: true }
+      })
+    ],
     component: LazyMultipleScopesComponent
   });
 
