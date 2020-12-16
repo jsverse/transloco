@@ -147,11 +147,8 @@ describe('TranslocoTranspiler', () => {
     });
 
     describe('Objects', () => {
-      const translation = {
+      const translations = {
         a: 'Hello',
-        j: {
-          r: `Hey ${wrapParam('value')}`
-        },
         b: {
           flat: `Flat ${wrapParam('dynamic')}`,
           c: {
@@ -161,17 +158,20 @@ describe('TranslocoTranspiler', () => {
           g: {
             h: `Name ${wrapParam('name')}`
           }
+        },
+        i: {
+          j: `Hey ${wrapParam('value')}`
         }
       };
 
       it('should support objects', () => {
-        expect(parser.transpile(translation.b, null, {})).toEqual(translation.b);
+        expect(parser.transpile(translations.b, null, {})).toEqual(translations.b);
       });
 
       it('should support params', () => {
         expect(
           parser.transpile(
-            translation.b,
+            translations.b,
             {
               'c.d': { value: 'World' },
               'g.h': { name: 'Transloco' },
@@ -192,19 +192,19 @@ describe('TranslocoTranspiler', () => {
 
         expect(
           parser.transpile(
-            translation.j,
+            translations.i,
             {
-              r: { value: 'Transloco' }
+              j: { value: 'Transloco' }
             },
             {}
           )
         ).toEqual({
-          r: 'Hey Transloco'
+          j: 'Hey Transloco'
         });
 
         expect(
           parser.transpile(
-            translation.b.c,
+            translations.b.c,
             {
               d: { value: 'Transloco' }
             },
@@ -214,6 +214,51 @@ describe('TranslocoTranspiler', () => {
           otherKey: 'otherKey',
           d: 'Hello Transloco'
         });
+      });
+    });
+
+    describe('Arrays', () => {
+      const translations = {
+        a: ['Hello person', 'Hello world'],
+        b: [`Hello ${wrapParam('name')}`, 'Hello world', `Hello there ${wrapParam('name')}`],
+        c: [`Hello ${wrapParam('one')} ${wrapParam('two')}`, wrapParam('three'), `Hello there ${wrapParam('one')}`],
+        d: [wrapParam('ref'), 'Hello'],
+        e: [wrapParam('refWithParam'), wrapParam('ref'), `transloco ${wrapParam('refWithParam')}`]
+      };
+
+      it('should work with arrays', () => {
+        expect(parser.transpile(translations.a, null, {})).toEqual(translations.a);
+      });
+
+      it('should support keys referencing', () => {
+        const translation = { ref: 'Hello world', refWithParam: `Hello ${wrapParam('name')}` };
+        expect(parser.transpile(translations.d, {}, translation)).toEqual(['Hello world', 'Hello']);
+
+        expect(parser.transpile(translations.e, { name: 'Transloco' }, translation)).toEqual([
+          'Hello Transloco',
+          'Hello world',
+          'transloco Hello Transloco'
+        ]);
+      });
+
+      it('should support params', () => {
+        expect(parser.transpile(translations.b, { name: 'Transloco' }, {})).toEqual([
+          'Hello Transloco',
+          'Hello world',
+          'Hello there Transloco'
+        ]);
+
+        expect(
+          parser.transpile(
+            translations.c,
+            {
+              one: 'Transloco1',
+              two: 'Transloco2',
+              three: 'Transloco3'
+            },
+            {}
+          )
+        ).toEqual(['Hello Transloco1 Transloco2', 'Transloco3', 'Hello there Transloco1']);
       });
     });
   }
