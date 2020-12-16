@@ -8,19 +8,19 @@ When running specs, we want to have the languages available immediately, in a sy
 We recommend to be DRY and create a module factory function that we can use in each spec, For example:
 ```ts title="transloco-module.spec.ts"
 
-import { TranslocoTestingModule, TranslocoConfig } from '@ngneat/transloco';
+import { TranslocoTestingModule, TranslocoTestingOptions } from '@ngneat/transloco';
 import en from '../assets/i18n/en.json';
 import es from '../assets/i18n/es.json';
 
-export function getTranslocoModule(config: Partial<TranslocoConfig> = {}) {
-  return TranslocoTestingModule.withLangs(
-    { en, es },
-    {
+export function getTranslocoModule(options: TranslocoTestingOptions = {}) {
+  return TranslocoTestingModule.forRoot({
+    langs: { en, es },
+    translocoConfig: {
       availableLangs: ['en', 'es'],
       defaultLang: 'en',
-      ...config
-    }
-  );
+    },
+    ...options
+  });
 }
 ```
 
@@ -49,20 +49,20 @@ You can find an example [here](https://github.com/ngneat/transloco/blob/master/s
 If you need to test `scopes`, you should add them as `languages`, for example:
 
 ```ts {6,7} title="transloco-module.spec.ts"
-export function getTranslocoModule(config: Partial<TranslocoConfig> = {}) {
-  return TranslocoTestingModule.withLangs(
-    {
-      en,
+export function getTranslocoModule(options: TranslocoTestingOptions = {}) {
+  return TranslocoTestingModule.forRoot({
+    langs: { 
+      en, 
       es,
       'admin-page/en': admin,
-      'admin-page/es': adminSpanish
+      'admin-page/es': adminSpanish,  
     },
-    {
+    translocoConfig: {
       availableLangs: ['en', 'es'],
       defaultLang: 'en',
-      ...config
-    }
-  );
+    },
+    ...options
+  });
 }
 ```
 

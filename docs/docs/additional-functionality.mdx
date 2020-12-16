@@ -59,6 +59,12 @@ import { translate } from '@ngneat/transloco';
 translate('hello');
 ```
 
+:::important
+Note that this function is a proxy to the [TranslocoService.translate](./translation-api#translate) method. 
+It will not work if the service didn't initialize.  
+In order to safely use this method, you are responsible for ensuring that the translation files have been successfully loaded by the time it's called.
+:::
+
 ### `getBrowserLang()`
 
 Returns the language code name from the browser, e.g. `"en"`

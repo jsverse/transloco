@@ -22,7 +22,7 @@ export { Translation, FailedEvent, HashMap, LoadedEvent, TranslocoEvents } from 
 export { TRANSLOCO_SCOPE } from './lib/transloco-scope';
 export { TRANSLOCO_LOADING_TEMPLATE } from './lib/transloco-loading-template';
 export { TRANSLOCO_LANG } from './lib/transloco-lang';
-export { TestingLoader, TranslocoTestingModule } from './lib/transloco-testing.module';
+export { TestingLoader, TranslocoTestingModule, TranslocoTestingOptions } from './lib/transloco-testing.module';
 export { TemplateHandler, View } from './lib/template-handler';
 export { TRANSLOCO_INTERCEPTOR, TranslocoInterceptor } from './lib/transloco.interceptor';
 export {
