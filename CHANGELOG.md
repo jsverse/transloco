@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.20.0](https://github.com/ngneat/transloco/compare/v2.19.2...v2.20.0) (2020-12-17)
+
+### Bug Fixes
+
+- 🐛 service not initialized in testing module ([#382](https://github.com/ngneat/transloco/issues/382)) ([08db253](https://github.com/ngneat/transloco/commit/08db253))
+- 🐛 update peer to support angular 11 ([6f3f973](https://github.com/ngneat/transloco/commit/6f3f973)), closes [#378](https://github.com/ngneat/transloco/issues/378)
+- schematics join ([#348](https://github.com/ngneat/transloco/issues/348)) ([174f178](https://github.com/ngneat/transloco/commit/174f178))
+
+### Features
+
+- 🎸 transpile array values ([#383](https://github.com/ngneat/transloco/issues/383)) ([fc139e0](https://github.com/ngneat/transloco/commit/fc139e0))
+
 ### [2.19.3](https://github.com/ngneat/transloco/compare/v2.19.2...v2.19.3) (2020-12-06)
 
 ### Bug Fixes
