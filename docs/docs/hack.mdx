@@ -72,17 +72,17 @@ The fallback strategy is responsible for loading the fallback translation file, 
 When you need more control over this functionality, you can define your own strategy:
 
 ```ts
-import { TranslocoMissingHandler } from '@ngneat/transloco';
+import { TranslocoFallbackStrategy } from '@ngneat/transloco';
 
-export class CustomHandler implements TranslocoMissingHandler {
-  handle(key: string, config: TranslocoConfig) {
+export class CustomStrategy implements TranslocoFallbackStrategy {
+  getNextLangs(failedLang: string) {
     return '...';
   }
 }
 
-export const customMissingHandler = {
-  provide: TRANSLOCO_MISSING_HANDLER,
-  useClass: CustomHandler
+export const customFallbackStrategy = {
+  provide: TRANSLOCO_FALLBACK_STRATEGY,
+  useClass: CustomStrategy
 };
 ```
 
