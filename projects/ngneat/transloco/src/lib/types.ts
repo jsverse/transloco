@@ -31,4 +31,9 @@ export type ProviderScope = {
 export type MaybeArray<T> = T | T[];
 export type TranslocoScope = ProviderScope | string | undefined;
 export type InlineLoader = HashMap<() => Promise<Translation>>;
-export type LoadOptions = { fallbackLangs?: string[] | null; inlineLoader?: InlineLoader | null };
+export type LoadOptions = {
+  fallbackLangs?: string[] | null;
+  /** @private */
+  failedCounter?: number;
+  inlineLoader?: InlineLoader | null;
+};

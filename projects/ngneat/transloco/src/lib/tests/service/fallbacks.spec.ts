@@ -43,11 +43,17 @@ describe('Multiple fallbacks', () => {
 
       spyOn(service, 'load').and.callThrough();
       service.load('notExists').subscribe();
+
       // notExists will try 3 times then the fallback
-      runLoader(4);
-      expect(service.load).toHaveBeenCalledTimes(2);
       expect((service.load as jasmine.Spy).calls.argsFor(0)).toEqual(['notExists']);
-      expect((service.load as jasmine.Spy).calls.argsFor(1)).toEqual(['es']);
+      runLoader(3);
+      expect((service.load as jasmine.Spy).calls.argsFor(1)).toEqual([
+        'es',
+        { failedCounter: 1, fallbackLangs: ['es'] }
+      ]);
+      runLoader(1);
+
+      expect(service.load).toHaveBeenCalledTimes(2);
 
       // it should set the fallback lang as active
       expect(service.getActiveLang()).toEqual('es');
@@ -68,14 +74,21 @@ describe('Multiple fallbacks', () => {
 
       spyOn(service, 'load').and.callThrough();
       service.load('notExists').subscribe();
+
       // notExists will try 3 times then the fallback
-      runLoader(4);
-      expect(service.load).toHaveBeenCalledTimes(2);
       expect((service.load as jasmine.Spy).calls.argsFor(0)).toEqual(['notExists']);
-      expect((service.load as jasmine.Spy).calls.argsFor(1)).toEqual(['es']);
+      runLoader(3);
+      expect((service.load as jasmine.Spy).calls.argsFor(1)).toEqual([
+        'es',
+        { failedCounter: 1, fallbackLangs: ['es'] }
+      ]);
+      runLoader(1);
+
+      expect(service.load).toHaveBeenCalledTimes(2);
 
       // it should set the fallback lang as active
       expect(service.getActiveLang()).toEqual('es');
+
       service.load('notExists2').subscribe();
       // notExists2 will try 3 times then the fallback
       runLoader(4);
@@ -115,8 +128,14 @@ describe('Multiple fallbacks', () => {
 
   describe('CustomFallbackStrategy', () => {
     class StrategyTest implements TranslocoFallbackStrategy {
+      // It may return arbitrary next langs based on the failed lang.
+      // It should try each of the provided fallback langs.
       getNextLangs(failedLang: string): string[] {
-        return ['it', 'gp', 'en'];
+        if (failedLang === 'notExists') {
+          return ['it', 'gp', 'en'];
+        } else {
+          return ['es'];
+        }
       }
     }
 
@@ -150,12 +169,26 @@ describe('Multiple fallbacks', () => {
 
       spyOn(service, 'load').and.callThrough();
       service.load('notExists').subscribe();
-      // 3 notExists/ 3 it / 3 gp / 1 en = 10
-      runLoader(10);
+
+      // 3 notExists / 3 it / 3 gp / 1 en = 10
       expect((service.load as jasmine.Spy).calls.argsFor(0)).toEqual(['notExists']);
-      expect((service.load as jasmine.Spy).calls.argsFor(1)).toEqual(['it']);
-      expect((service.load as jasmine.Spy).calls.argsFor(2)).toEqual(['gp']);
-      expect((service.load as jasmine.Spy).calls.argsFor(3)).toEqual(['en']);
+      runLoader(3);
+      expect((service.load as jasmine.Spy).calls.argsFor(1)).toEqual([
+        'it',
+        { failedCounter: 1, fallbackLangs: ['it', 'gp', 'en'] }
+      ]);
+      runLoader(3);
+      expect((service.load as jasmine.Spy).calls.argsFor(2)).toEqual([
+        'gp',
+        { failedCounter: 2, fallbackLangs: ['it', 'gp', 'en'] }
+      ]);
+      runLoader(3);
+      expect((service.load as jasmine.Spy).calls.argsFor(3)).toEqual([
+        'en',
+        { failedCounter: 3, fallbackLangs: ['it', 'gp', 'en'] }
+      ]);
+      runLoader(1);
+
       expect(service.load).toHaveBeenCalledTimes(4);
 
       // it should set the fallback lang as active
