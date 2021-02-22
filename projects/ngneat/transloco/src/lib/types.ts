@@ -33,7 +33,7 @@ export type TranslocoScope = ProviderScope | string | undefined;
 export type InlineLoader = HashMap<() => Promise<Translation>>;
 export type LoadOptions = {
   fallbackLangs?: string[] | null;
-  /** @private */
+  /** @internal */
   failedCounter?: number;
   inlineLoader?: InlineLoader | null;
 };
