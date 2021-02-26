@@ -141,20 +141,6 @@ export class TranslocoService implements OnDestroy {
         loadTranslation = from(loader);
       }
 
-      // When starting to load a first choice language,
-      // reset the failed loading counter.
-      if (isNil(options.failedCounter)) {
-        options.failedCounter = 0;
-      }
-
-      // When starting to load a first choice language,
-      // build the fallback languages once.
-      // The `failedCounter` and `fallbackLangs` are reused
-      // in following `load()` calls via `handleFailure()`.
-      if (options.failedCounter === 0 && !options.fallbackLangs) {
-        options.fallbackLangs = this.fallbackStrategy.getNextLangs(path);
-      }
-
       const load$ = loadTranslation.pipe(
         retry(this.config.failedRetries),
         tap(translation => {
@@ -568,6 +554,20 @@ export class TranslocoService implements OnDestroy {
   }
 
   private handleFailure(lang: string, loadOptions: LoadOptions) {
+    // When starting to load a first choice language,
+    // reset the failed loading counter.
+    if (isNil(loadOptions.failedCounter)) {
+      loadOptions.failedCounter = 0;
+    }
+
+    // When starting to load a first choice language,
+    // build the fallback languages once.
+    // The `failedCounter` and `fallbackLangs` are reused
+    // in following `load()` calls via `handleFailure()`.
+    if (loadOptions.failedCounter === 0 && !loadOptions.fallbackLangs) {
+      loadOptions.fallbackLangs = this.fallbackStrategy.getNextLangs(lang);
+    }
+
     const splitted = lang.split('/');
     const fallbacks = loadOptions.fallbackLangs;
     const nextLang = fallbacks[loadOptions.failedCounter];

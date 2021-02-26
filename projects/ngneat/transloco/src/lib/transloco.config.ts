@@ -32,7 +32,6 @@ export const defaultConfig: TranslocoConfig = {
   defaultLang: 'en',
   reRenderOnLangChange: false,
   prodMode: false,
-  fallbackLang: 'en',
   failedRetries: 2,
   availableLangs: [],
   missingHandler: {
