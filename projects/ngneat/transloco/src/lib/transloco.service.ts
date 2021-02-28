@@ -555,17 +555,16 @@ export class TranslocoService implements OnDestroy {
 
   private handleFailure(lang: string, loadOptions: LoadOptions) {
     // When starting to load a first choice language,
-    // reset the failed loading counter.
+    // reset the failed loading counter,
+    // and build the fallback languages once.
+    // The `failedCounter` and `fallbackLangs` are reused
+    // in subsequent `load()` calls via `handleFailure()`.
     if (isNil(loadOptions.failedCounter)) {
       loadOptions.failedCounter = 0;
-    }
 
-    // When starting to load a first choice language,
-    // build the fallback languages once.
-    // The `failedCounter` and `fallbackLangs` are reused
-    // in following `load()` calls via `handleFailure()`.
-    if (loadOptions.failedCounter === 0 && !loadOptions.fallbackLangs) {
-      loadOptions.fallbackLangs = this.fallbackStrategy.getNextLangs(lang);
+      if (!loadOptions.fallbackLangs) {
+        loadOptions.fallbackLangs = this.fallbackStrategy.getNextLangs(lang);
+      }
     }
 
     const splitted = lang.split('/');
