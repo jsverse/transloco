@@ -554,11 +554,8 @@ export class TranslocoService implements OnDestroy {
   }
 
   private handleFailure(lang: string, loadOptions: LoadOptions) {
-    // When starting to load a first choice language,
-    // reset the failed loading counter,
-    // and build the fallback languages once.
-    // The `failedCounter` and `fallbackLangs` are reused
-    // in subsequent `load()` calls via `handleFailure()`.
+    // When starting to load a first choice language, initialize
+    // the failed counter and resolve the fallback langs.
     if (isNil(loadOptions.failedCounter)) {
       loadOptions.failedCounter = 0;
 
