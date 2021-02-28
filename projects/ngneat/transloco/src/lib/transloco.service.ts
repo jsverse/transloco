@@ -52,7 +52,6 @@ export class TranslocoService implements OnDestroy {
   private events = new Subject<TranslocoEvents>();
   events$ = this.events.asObservable();
 
-  private failedCounter = 0;
   private failedLangs = new Set<string>();
 
   constructor(
@@ -545,7 +544,6 @@ export class TranslocoService implements OnDestroy {
 
   private handleSuccess(lang: string, translation: Translation) {
     this.setTranslation(translation, lang, { emitChange: false });
-    this.failedCounter = 0;
     this.events.next({
       wasFailure: !!this.failedLangs.size,
       type: 'translationLoadSuccess',
@@ -555,10 +553,20 @@ export class TranslocoService implements OnDestroy {
     this.failedLangs.clear();
   }
 
-  private handleFailure(lang: string, mergedOptions) {
+  private handleFailure(lang: string, loadOptions: LoadOptions) {
+    // When starting to load a first choice language, initialize
+    // the failed counter and resolve the fallback langs.
+    if (isNil(loadOptions.failedCounter)) {
+      loadOptions.failedCounter = 0;
+
+      if (!loadOptions.fallbackLangs) {
+        loadOptions.fallbackLangs = this.fallbackStrategy.getNextLangs(lang);
+      }
+    }
+
     const splitted = lang.split('/');
-    const fallbacks = mergedOptions.fallbackLangs || this.fallbackStrategy.getNextLangs(lang);
-    const nextLang = fallbacks[this.failedCounter];
+    const fallbacks = loadOptions.fallbackLangs;
+    const nextLang = fallbacks[loadOptions.failedCounter];
     this.failedLangs.add(lang);
 
     // This handles the case where a loaded fallback language is requested again
@@ -587,13 +595,13 @@ export class TranslocoService implements OnDestroy {
       resolveLang = splitted.join('/');
     }
 
-    this.failedCounter++;
+    loadOptions.failedCounter++;
     this.events.next({
       type: 'translationLoadFailure',
       payload: getEventPayload(lang)
     });
 
-    return this.load(resolveLang);
+    return this.load(resolveLang, loadOptions);
   }
 
   private getMappedScope(scope: string): string {
