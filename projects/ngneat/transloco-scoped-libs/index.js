@@ -56,7 +56,7 @@ function run({ watch, skipGitignore, rootTranslationsPath, scopedLibs } = {}) {
     }
     const pkg = utils.getPackageJson(lib.src);
     if (!pkg.content.i18n) {
-      return console.log(chalk.red('package.json is missing i18n information.', i18nExample));
+      return console.log(chalk.red(`${path.join(lib.src, 'package.json')} is missing i18n information.`, i18nExample));
     }
 
     if (!lib.dist || lib.dist.length === 0) {
