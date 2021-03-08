@@ -14,39 +14,40 @@ const routes: Routes = [
   },
   {
     path: 'lazy',
-    loadChildren: './lazy/lazy.module#LazyModule'
+    loadChildren: () => import('./lazy/lazy.module').then(m => m.LazyModule)
   },
   {
     path: 'lazy-scope-alias',
-    loadChildren: './lazy-scope-alias/lazy-scope-alias.module#LazyScopeAliasModule'
+    loadChildren: () => import('./lazy-scope-alias/lazy-scope-alias.module').then(m => m.LazyScopeAliasModule)
   },
   {
     path: 'lazy-multiple-scopes',
-    loadChildren: './lazy-multiple-scopes/lazy-multiple-scopes.module#LazyMultipleScopesModule'
+    loadChildren: () =>
+      import('./lazy-multiple-scopes/lazy-multiple-scopes.module').then(m => m.LazyMultipleScopesModule)
   },
   {
     path: 'scope-sharing',
-    loadChildren: './scope-sharing/scope-sharing.module#ScopeSharingModule'
+    loadChildren: () => import('./scope-sharing/scope-sharing.module').then(m => m.ScopeSharingModule)
   },
   {
     path: 'inline-loaders',
-    loadChildren: './inline-loaders/inline-loaders.module#InlineLoadersModule'
+    loadChildren: () => import('./inline-loaders/inline-loaders.module').then(m => m.InlineLoadersModule)
   },
   {
     path: 'dynamic-translation',
-    loadChildren: './dynamic-translation/dynamic-translation.module#DynamicTranslationModule'
+    loadChildren: () => import('./dynamic-translation/dynamic-translation.module').then(m => m.DynamicTranslationModule)
   },
   {
     path: 'multilangs',
-    loadChildren: './multilangs/multilangs.module#MultilangsModule'
+    loadChildren: () => import('./multilangs/multilangs.module').then(m => m.MultilangsModule)
   },
   {
     path: 'transpilers',
-    loadChildren: './transpilers/transpilers.module#TranspilersModule'
+    loadChildren: () => import('./transpilers/transpilers.module').then(m => m.TranspilersModule)
   },
   {
     path: 'locale',
-    loadChildren: './locale/locale.module#LocaleModule'
+    loadChildren: () => import('./locale/locale.module').then(m => m.LocaleModule)
   }
 ];
 
