@@ -22,6 +22,7 @@ import { TRANSLOCO_SCOPE } from './transloco-scope';
 import { TranslocoService } from './transloco.service';
 import { HashMap, MaybeArray, Translation, TranslocoScope } from './types';
 import { listenOrNotOperator, resolveInlineLoader, shouldListenToLangChanges } from './shared';
+import { isDefined } from './helpers';
 import { LangResolver } from './lang-resolver';
 import { ScopeResolver } from './scope-resolver';
 
@@ -102,7 +103,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
 
   private simpleStrategy() {
     this.detachLoader();
-    this.host.nativeElement.innerText = this.translocoService.translate(this.key, this.params, this.currentLang);
+    this.setContent(this.host.nativeElement, this.translocoService.translate(this.key, this.params, this.currentLang));
   }
 
   private structuralStrategy(lang: string, read: string | undefined) {
@@ -116,6 +117,14 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
       this.view = this.vcr.createEmbeddedView(this.tpl, {
         $implicit: this.getTranslateFn(lang, read)
       });
+    }
+  }
+
+  private setContent(node: any, content: string): void {
+    if (isDefined(node.textContent)) {
+      node.textContent = content;
+    } else {
+      node.data = content;
     }
   }
 
