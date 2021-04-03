@@ -6,7 +6,7 @@ description: Unit Testing | Transloco Angular i18n
 When running specs, we want to have the languages available immediately, in a synchronous fashion. Transloco provides you with a `TranslocoTestingModule`, where you can pass the languages you need in your specs, and the config.
 
 We recommend to be DRY and create a module factory function that we can use in each spec, For example:
-```ts title="transloco-module.spec.ts"
+```ts title="transloco-testing.module.ts"
 
 import { TranslocoTestingModule, TranslocoTestingOptions } from '@ngneat/transloco';
 import en from '../assets/i18n/en.json';
@@ -49,7 +49,7 @@ You can find an example [here](https://github.com/ngneat/transloco/blob/master/s
 
 If you need to test `scopes`, you should add them as `languages`, for example:
 
-```ts {6,7} title="transloco-module.spec.ts"
+```ts {6,7} title="transloco-testing.module.ts"
 export function getTranslocoModule(options: TranslocoTestingOptions = {}) {
   return TranslocoTestingModule.forRoot({
     langs: { 
