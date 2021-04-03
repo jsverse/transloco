@@ -102,6 +102,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/StanevichIvan"><img src="https://avatars1.githubusercontent.com/u/20155344?v=4" width="100px;" alt=""/><br /><sub><b>Ivan Stanevich</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=StanevichIvan" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/chrsi"><img src="https://avatars2.githubusercontent.com/u/1976206?v=4" width="100px;" alt=""/><br /><sub><b>Christian Siber</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=chrsi" title="Tests">⚠️</a></td>
     <td align="center"><a href="http://www.linkedin.com/in/patrickzhong"><img src="https://avatars.githubusercontent.com/u/1198615?v=4" width="100px;" alt=""/><br /><sub><b>Patrick Zhong</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=zhongsp" title="Code">💻</a> <a href="https://github.com/ngneat/transloco/commits?author=zhongsp" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/leoleoff"><img src="https://avatars.githubusercontent.com/u/78927584?v=4" width="100px;" alt=""/><br /><sub><b>leoleoff</b></sub></a><br /><a href="https://github.com/ngneat/transloco/commits?author=leoleoff" title="Documentation">📖</a></td>
   </tr>
 </table>
 

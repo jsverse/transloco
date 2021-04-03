@@ -328,6 +328,15 @@
         "code",
         "test"
       ]
+    },
+    {
+      "login": "leoleoff",
+      "name": "leoleoff",
+      "avatar_url": "https://avatars.githubusercontent.com/u/78927584?v=4",
+      "profile": "https://github.com/leoleoff",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7
