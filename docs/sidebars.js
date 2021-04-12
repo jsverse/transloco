@@ -79,6 +79,11 @@ module.exports = {
       items: ['plugins/message-format', 'plugins/persist', 'plugins/preload', 'plugins/locale', 'plugins/third-party']
     },
     {
+      type: 'category',
+      label: 'Additional Libraries',
+      items: ['additional-libraries/components']
+    },
+    {
       type: 'doc',
       id: 'schematics'
     },
