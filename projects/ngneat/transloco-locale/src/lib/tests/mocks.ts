@@ -20,6 +20,7 @@ export function createFakeCDR(locale: string = 'en-US') {
 export const LOCALE_CURRENCY_MOCK = LOCALE_CURRENCY;
 export const LANG_LOCALE_MOCK = { en: 'en-US', es: 'es-ES' };
 export const DEFAULT_LOCALE_MOCK = 'en-US';
+export const DEFAULT_CURRENCY_MOCK = 'USD';
 export const LOCALE_CONFIG_MOCK: LocaleConfig = {
   global: {
     decimal: {
@@ -68,6 +69,7 @@ export const mockTranslocoService = (locale?: Locale): TranslocoService =>
 export const mockService = (
   translocoService = mockTranslocoService(),
   locale = DEFAULT_LOCALE_MOCK,
+  currency = DEFAULT_CURRENCY_MOCK,
   langLocale = LANG_LOCALE_MOCK,
   config = LOCALE_CONFIG_MOCK,
   localeCurrencyMapping = LOCALE_CURRENCY_MOCK,
@@ -78,6 +80,7 @@ export const mockService = (
     translocoService,
     langLocale,
     locale,
+    currency,
     config,
     localeCurrencyMapping,
     numberTransformer,

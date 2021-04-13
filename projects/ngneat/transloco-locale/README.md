@@ -181,6 +181,7 @@ Let's go over each one of the `config` options:
 
 - `localeConfig?`: Declare the default configuration of the locale's formatting. A general configuration could be set using the `global` property, for a configuration by locale use `localeBased` property (default value determine by the native [Javascript's API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl)).
 - `defaultLocale?`: The default locale formatted in [BCP 47](https://tools.ietf.org/html/bcp47) (default value: `en-US`),
+- `defaultCurrency?`: The default currency formatted in [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html) (default value: `USD`),
 - `langToLocaleMapping?`: A key value `object` that maps Transloco language to it's Locale (default value: `{}`).
 - `localeToCurrencyMapping?`: A key value `object` that maps the Locale to it's currency (formatted in [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html)) (the library provide a default value with all of the existing mapping).
 
