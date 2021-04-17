@@ -3,27 +3,32 @@ title: Using xliff
 description: Recipe - Using xliff | Transloco Angular i18n
 ---
 
-```ts title="loader.ts"
+Install the [`xliff`](https://www.npmjs.com/package/xliff) package:
+```bash
+npm i xliff
+yarn add xliff
+```
+
+Replace the default http loader with the following loader implementation:
+
+```ts title="transloco-root.module.ts"
 import { HttpClient } from '@angular/common/http';
-import { Translation, TRANSLOCO_LOADER, TranslocoLoader } from '@ngneat/transloco';
-import { Injectable } from '@angular/core';
+import {
+  TRANSLOCO_LOADER,
+  Translation,
+  TranslocoLoader,
+  TRANSLOCO_CONFIG,
+  translocoConfig,
+  TranslocoModule
+} from '@ngneat/transloco';
+import { Injectable, NgModule } from '@angular/core';
 import { environment } from '../environments/environment';
-import xliff from 'xliff/xliff12ToJs';
-import { map } from 'rxjs/operators';
-
-@Injectable({ providedIn: 'root' })
-export class HttpLoader implements TranslocoLoader {
-  constructor(private http: HttpClient) {}
-
-  getTranslation(langPath: string) {
-    return this.http.get(`/assets/i18n/${langPath}.xlf`, { responseType: 'text' as 'text' }).pipe(
-      map(translation => {
-        const toJSON = xliff(translation);
-        return toTranslationFormat(toJSON);
-      })
-    );
-  }
-}
+import { from } from 'rxjs';
+import { switchMap, map } from 'rxjs/operators';
+// xliff v1.2
+import xliff from "xliff/esm/xliff12ToJs";
+// xliff v2
+//import xliff from "xliff/esm/xliff2js";
 
 function toTranslationFormat(json) {
   const obj = json.resources.transloco;
@@ -33,10 +38,40 @@ function toTranslationFormat(json) {
   }, {});
 }
 
-export const translocoLoader = { provide: TRANSLOCO_LOADER, useClass: HttpLoader };
+@Injectable({ providedIn: 'root' })
+export class TranslocoXliffHttpLoader implements TranslocoLoader {
+  constructor(private http: HttpClient) {}
+
+  getTranslation(lang: string) {
+    return this.http.get<Translation>(`/assets/i18n/${lang}.xlf`, { responseType: 'text' })
+      .pipe(
+        switchMap((translation) => from(xliff(translation))), 
+        map(toTranslationFormat)
+      );
+  }
+}
+
+@NgModule({
+  exports: [ TranslocoModule ],
+  providers: [
+    {
+      provide: TRANSLOCO_CONFIG,
+      useValue: translocoConfig({
+        availableLangs: ['en', 'es'],
+        defaultLang: 'en',
+        // Remove this option if your application
+        // doesn't support changing language in runtime.
+        reRenderOnLangChange: true,
+        prodMode: environment.production,
+      })
+    },
+    { provide: TRANSLOCO_LOADER, useClass: TranslocoXliffHttpLoader }
+  ]
+})
+export class TranslocoRootModule {}
 ```
 
-The translation file:
+The translation file (xliff v1.2):
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
