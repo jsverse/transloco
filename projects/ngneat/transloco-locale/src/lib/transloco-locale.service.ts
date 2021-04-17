@@ -9,7 +9,8 @@ import {
   LOCALE_DEFAULT_LOCALE,
   LOCALE_CONFIG,
   LocaleConfig,
-  LOCALE_CURRENCY_MAPPING
+  LOCALE_CURRENCY_MAPPING,
+  LOCALE_DEFAULT_CURRENCY
 } from './transloco-locale.config';
 import {
   TRANSLOCO_DATE_TRANSFORMER,
@@ -32,6 +33,7 @@ export class TranslocoLocaleService implements OnDestroy {
     private translocoService: TranslocoService,
     @Inject(LOCALE_LANG_MAPPING) private langLocaleMapping: HashMap<Locale>,
     @Inject(LOCALE_DEFAULT_LOCALE) private defaultLocale: Locale,
+    @Inject(LOCALE_DEFAULT_CURRENCY) private defaultCurrency: Currency,
     @Inject(LOCALE_CONFIG) private localeConfig: LocaleConfig,
     @Inject(LOCALE_CURRENCY_MAPPING) private localeCurrencyMapping: HashMap<Currency>,
     @Inject(TRANSLOCO_NUMBER_TRANSFORMER) private numberTransformer: TranslocoNumberTransformer,
@@ -127,7 +129,7 @@ export class TranslocoLocaleService implements OnDestroy {
    * @internal
    */
   _resolveCurrencyCode(locale: Locale = this.getLocale()) {
-    return this.localeCurrencyMapping[locale] || 'USD';
+    return this.localeCurrencyMapping[locale] || this.defaultCurrency;
   }
 
   private toLocale(val: string | Locale): Locale | null {
