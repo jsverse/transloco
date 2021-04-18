@@ -90,7 +90,7 @@ module.exports = {
     {
       type: 'category',
       label: 'Recipes',
-      items: ['recipes/prefetch', 'recipes/xliff', 'recipes/generateLocaleFileUsingGoogleTranslate']
+      items: ['recipes/prefetch', 'recipes/xliff', 'recipes/google-translate-integration']
     }
   ]
 };
