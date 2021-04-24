@@ -60,7 +60,7 @@ The date expression could be: a `Date` object, a number
 <span> {{ date | translocoDate }} </span>
 <!-- Sep 10, 2019, 10:46:12 PM-->
 <span>
-  {{ date | translocoDate: { dateStyle: 'medium', timeStyle: 'medium' }}
+  {{ date | translocoDate: { dateStyle: 'medium', timeStyle: 'medium' } }}
 </span>
 <!-- 7:40:32 PM Coordinated-->
 <span>
@@ -247,7 +247,7 @@ export class MyComponent {}
 
 ```html
 <span>
-  {{ date | translocoDate: { dateStyle: 'medium', timeStyle: 'medium' }}
+  {{ date | translocoDate: { dateStyle: 'medium', timeStyle: 'medium' } }}
 </span>
 
 <span>
