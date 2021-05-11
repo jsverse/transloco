@@ -74,6 +74,8 @@ export class TranslocoHttpLoader implements TranslocoLoader {
 export class TranslocoRootModule {}
 ```
 
+While `TranslocoRootModule` needs to be imported in your root module, within your feature modules you can simply import `TranslocoModule`.
+
 As you might have noticed it also set an `HttpLoader` into the module's providers. The `HttpLoader` is a class that implements the `TranslocoLoader` interface. It's responsible for instructing Transloco how to load the translation files. It uses Angular HTTP client to fetch the files, based on the given path (We'll see why it called path on the lazy load section).
 
 :::note
@@ -86,4 +88,5 @@ getTranslation(langPath: string) {
 }
 ```
 :::
+
 And that's it! Now we are ready to use it in our project.
