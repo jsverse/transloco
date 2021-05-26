@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.21.0](https://github.com/ngneat/transloco/compare/v2.20.1...v2.21.0) (2021-05-26)
+
+### Bug Fixes
+
+- 🐛 update angular peer dep ([6b96f12](https://github.com/ngneat/transloco/commit/6b96f12))
+- directly specify location of package.json missing i18n config ([#401](https://github.com/ngneat/transloco/issues/401)) ([54ee98a](https://github.com/ngneat/transloco/commit/54ee98a))
+
+### Features
+
+- **locale:** support default currency config ([#423](https://github.com/ngneat/transloco/issues/423)) ([463b170](https://github.com/ngneat/transloco/commit/463b170))
+
 ### [2.20.1](https://github.com/ngneat/transloco/compare/v2.20.0...v2.20.1) (2021-02-28)
 
 ### Bug Fixes
