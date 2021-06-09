@@ -162,7 +162,7 @@ Then, we can use it in our application loader:
 @Injectable({ providedIn: 'root' })
 export class HttpLoader implements TranslocoLoader {
 
-  contructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {}
 
   getTranslation(lang: string, { scope }) {
     const base = this.http.get(`/assets/i18n/${lang}.json`);
