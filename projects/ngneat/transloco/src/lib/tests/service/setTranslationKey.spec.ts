@@ -28,4 +28,11 @@ describe('setTranslationKey', () => {
       a: 'new value'
     });
   }));
+
+  it('should not emit the change if option is set', fakeAsync(() => {
+    loadLang(service);
+    spyOn(service, 'setActiveLang');
+    service.setTranslationKey('a.b', 'newValue', 'en', { emitChange: false });
+    expect(service.setActiveLang).not.toHaveBeenCalled();
+  }));
 });
