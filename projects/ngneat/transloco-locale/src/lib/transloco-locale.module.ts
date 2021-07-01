@@ -10,7 +10,8 @@ import {
   defaultConfig,
   LOCALE_DEFAULT_LOCALE,
   LOCALE_CONFIG,
-  LOCALE_DEFAULT_CURRENCY
+  LOCALE_DEFAULT_CURRENCY,
+  LOCALE_ENABLE_LANG_MAPPING
 } from './transloco-locale.config';
 import {
   TRANSLOCO_DATE_TRANSFORMER,
@@ -57,6 +58,10 @@ export class TranslocoLocaleModule {
         {
           provide: TRANSLOCO_NUMBER_TRANSFORMER,
           useClass: DefaultNumberTransformer
+        },
+        {
+          provide: LOCALE_ENABLE_LANG_MAPPING,
+          useValue: config.langToLocaleMappingEnabled || defaultConfig.langToLocaleMappingEnabled
         }
       ]
     };

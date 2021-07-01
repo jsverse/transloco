@@ -1,61 +1,92 @@
-import { fakeAsync, tick } from '@angular/core/testing';
-import { of } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { Observable, of, Subject } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { TranslocoLocaleService } from '../transloco-locale.service';
 import { mockService } from './mocks';
+import { Locale } from '@ngneat/transloco-locale';
 
 describe('TranslocoLocaleService', () => {
   let service: TranslocoLocaleService;
 
   describe('getCurrencySymbol', () => {
     it('should return symbol for locals with prefix notation', () => {
-      const translocoService: any = {
-        langChanges$: of('en-US')
-      };
-      service = mockService(translocoService);
+      service = mockService();
       expect(service.getCurrencySymbol()).toEqual('$');
     });
 
     it('should return symbol for locals with postfix notation', () => {
-      const translocoService: any = {
-        langChanges$: of('de-DE')
-      };
-      service = mockService(translocoService);
+      service = mockService();
+      service.setLocale('de-DE');
       expect(service.getCurrencySymbol()).toEqual('€');
     });
   });
 
   describe('getLocale', () => {
-    it('should return the default locale', () => {
-      const translocoService: any = {
-        langChanges$: of()
-      };
-      service = mockService(translocoService);
-      expect(service.getLocale()).toEqual('en-US');
+    let service: TranslocoLocaleService;
+    let translocoService: any;
+    let localeChanges: Observable<Locale>;
+
+    describe('With lang mapping', () => {
+      beforeEach(() => {
+        translocoService = {
+          langChanges$: new Subject()
+        };
+        service = mockService({ translocoService });
+        localeChanges = service.localeChanges$.pipe(take(1));
+      });
+
+      it('should return the default locale, no language change', async () => {
+        expect(await localeChanges.toPromise()).toEqual('en-US');
+        expect(service.getLocale()).toEqual('en-US');
+      });
+
+      it('should return the current locale after active language change', async () => {
+        translocoService.langChanges$.next('en-UK');
+
+        expect(await localeChanges.toPromise()).toEqual('en-UK');
+        expect(service.getLocale()).toEqual('en-UK');
+      });
+
+      it('should return ef mapped to en-US', async () => {
+        translocoService.langChanges$.next('es');
+
+        expect(await localeChanges.toPromise()).toEqual('es-ES');
+        expect(service.getLocale()).toEqual('es-ES');
+      });
+
+      it('should not update a wrong locale format', async () => {
+        translocoService.langChanges$.next('uuEF');
+
+        expect(await localeChanges.toPromise()).toEqual('en-US');
+        expect(service.getLocale()).toEqual('en-US');
+      });
     });
 
-    it('should return the current locale', () => {
-      const translocoService: any = {
-        langChanges$: of('en-US')
-      };
-      service = mockService(translocoService);
-      expect(service.getLocale()).toEqual('en-US');
-    });
+    describe('Without lang mapping', () => {
+      beforeEach(() => {
+        translocoService = {
+          langChanges$: new Subject()
+        };
+        service = mockService({ translocoService, langToLocaleMappingEnabled: false });
+        localeChanges = service.localeChanges$.pipe(take(1));
+      });
 
-    it('should return the default locale', () => {
-      const translocoService: any = {
-        langChanges$: of('en')
-      };
-      service = mockService(translocoService);
-      expect(service.getLocale()).toEqual('en-US');
-    });
+      it('should return the default locale', () => {
+        service = mockService();
+        expect(service.getLocale()).toEqual('en-US');
+      });
 
-    it('should not update a none locale format', () => {
-      const translocoService: any = {
-        langChanges$: of('fr')
-      };
-      service = mockService(translocoService);
-      expect(service.getLocale()).toEqual('en-US');
+      it('should return the current locale', async () => {
+        service.setLocale('en-UK');
+        expect(await localeChanges.toPromise()).toEqual('en-UK');
+        expect(service.getLocale()).toEqual('en-UK');
+      });
+
+      it('should not update on lang change', async () => {
+        translocoService.langChanges$.next('en-UK');
+
+        expect(await localeChanges.toPromise()).toEqual('en-US');
+        expect(service.getLocale()).toEqual('en-US');
+      });
     });
   });
 
@@ -64,7 +95,7 @@ describe('TranslocoLocaleService', () => {
       const translocoService: any = {
         langChanges$: of('en')
       };
-      service = mockService(translocoService);
+      service = mockService({ translocoService });
     });
 
     it('should set a given locale', () => {
@@ -88,7 +119,7 @@ describe('TranslocoLocaleService', () => {
         langChanges$: of('en-US')
       };
       const spy = jasmine.createSpy();
-      service = mockService(translocoService);
+      service = mockService({ translocoService });
       service.localeChanges$.subscribe(spy);
       expect(spy).toHaveBeenCalledTimes(1);
       expect(spy).toHaveBeenCalledWith('en-US');
@@ -99,29 +130,18 @@ describe('TranslocoLocaleService', () => {
         langChanges$: of('en')
       };
       const spy = jasmine.createSpy();
-      service = mockService(translocoService);
+      service = mockService({ translocoService });
       service.localeChanges$.subscribe(spy);
       expect(spy).toHaveBeenCalledTimes(1);
       expect(spy).toHaveBeenCalledWith('en-US');
     });
-
-    it('should call subscription after lang change', fakeAsync(() => {
-      const translocoService: any = {
-        langChanges$: of('en', 'es').pipe(delay(100))
-      };
-      const spy = jasmine.createSpy();
-      service = mockService(translocoService);
-      service.localeChanges$.subscribe(spy);
-      tick(100);
-      expect(spy).toHaveBeenCalledTimes(2);
-    }));
 
     it('should call subscription after setting locale', () => {
       const translocoService: any = {
         langChanges$: of()
       };
       const spy = jasmine.createSpy();
-      service = mockService(translocoService);
+      service = mockService({ translocoService });
       service.localeChanges$.subscribe(spy);
       service.setLocale('en-US');
       expect(spy).toHaveBeenCalledWith('en-US');

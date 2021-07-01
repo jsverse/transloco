@@ -8,7 +8,7 @@ import createSpy = jasmine.createSpy;
 import { LocaleConfig } from '../../lib/transloco-locale.config';
 
 export function createFakeService(locale: Locale = 'en-US') {
-  return mockService(mockTranslocoService(locale), locale);
+  return mockService({ translocoService: mockTranslocoService(locale), locale });
 }
 
 export function createFakeCDR(locale: string = 'en-US') {
@@ -21,6 +21,7 @@ export const LOCALE_CURRENCY_MOCK = LOCALE_CURRENCY;
 export const LANG_LOCALE_MOCK = { en: 'en-US', es: 'es-ES' };
 export const DEFAULT_LOCALE_MOCK = 'en-US';
 export const DEFAULT_CURRENCY_MOCK = 'USD';
+export const LOCALE_ENABLE_LANG_MAPPING_MOCK = true;
 export const LOCALE_CONFIG_MOCK: LocaleConfig = {
   global: {
     decimal: {
@@ -66,23 +67,31 @@ export const mockTranslocoService = (locale?: Locale): TranslocoService =>
   ({
     langChanges$: locale ? of(locale) : of()
   } as any);
-export const mockService = (
-  translocoService = mockTranslocoService(),
-  locale = DEFAULT_LOCALE_MOCK,
-  currency = DEFAULT_CURRENCY_MOCK,
-  langLocale = LANG_LOCALE_MOCK,
-  config = LOCALE_CONFIG_MOCK,
-  localeCurrencyMapping = LOCALE_CURRENCY_MOCK,
-  numberTransformer = new DefaultNumberTransformer(),
-  dateTransformer = new DefaultDateTransformer()
-) =>
-  new TranslocoLocaleService(
-    translocoService,
-    langLocale,
-    locale,
-    currency,
-    config,
-    localeCurrencyMapping,
-    numberTransformer,
-    dateTransformer
+
+const defaultMockConf = {
+  translocoService: mockTranslocoService(),
+  locale: DEFAULT_LOCALE_MOCK,
+  currency: DEFAULT_CURRENCY_MOCK,
+  langLocale: LANG_LOCALE_MOCK,
+  config: LOCALE_CONFIG_MOCK,
+  localeCurrencyMapping: LOCALE_CURRENCY_MOCK,
+  numberTransformer: new DefaultNumberTransformer(),
+  dateTransformer: new DefaultDateTransformer(),
+  langToLocaleMappingEnabled: LOCALE_ENABLE_LANG_MAPPING_MOCK
+};
+
+export const mockService = (mockConf?: Partial<typeof defaultMockConf>): TranslocoLocaleService => {
+  const conf = Object.assign({}, defaultMockConf, mockConf);
+
+  return new TranslocoLocaleService(
+    conf.translocoService,
+    conf.langLocale,
+    conf.locale,
+    conf.currency,
+    conf.config,
+    conf.localeCurrencyMapping,
+    conf.numberTransformer,
+    conf.dateTransformer,
+    conf.langToLocaleMappingEnabled
   );
+};

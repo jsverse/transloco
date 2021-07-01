@@ -1,7 +1,7 @@
 import { Injectable, Inject, OnDestroy } from '@angular/core';
 import { TranslocoService, HashMap } from '@ngneat/transloco';
-import { Observable, BehaviorSubject, Subscription } from 'rxjs';
-import { map, distinctUntilChanged, filter } from 'rxjs/operators';
+import { Observable, ReplaySubject } from 'rxjs';
+import { map, distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
 import { isLocaleFormat, toDate } from './helpers';
 import { getDefaultOptions } from './shared';
 import {
@@ -10,7 +10,8 @@ import {
   LOCALE_CONFIG,
   LocaleConfig,
   LOCALE_CURRENCY_MAPPING,
-  LOCALE_DEFAULT_CURRENCY
+  LOCALE_DEFAULT_CURRENCY,
+  LOCALE_ENABLE_LANG_MAPPING
 } from './transloco-locale.config';
 import {
   TRANSLOCO_DATE_TRANSFORMER,
@@ -24,10 +25,11 @@ import { Locale, DateFormatOptions, NumberTypes, Currency, ValidDate } from './t
   providedIn: 'root'
 })
 export class TranslocoLocaleService implements OnDestroy {
-  localeChanges$: Observable<Locale>;
-  private locale: BehaviorSubject<Locale>;
+  private locale$ = new ReplaySubject<Locale>(1);
+  localeChanges$: Observable<Locale> = this.locale$.asObservable().pipe(distinctUntilChanged());
+
   private _locale: Locale | null;
-  private subscription: Subscription;
+  private destroyed$ = new ReplaySubject<boolean>(1);
 
   constructor(
     private translocoService: TranslocoService,
@@ -37,18 +39,19 @@ export class TranslocoLocaleService implements OnDestroy {
     @Inject(LOCALE_CONFIG) private localeConfig: LocaleConfig,
     @Inject(LOCALE_CURRENCY_MAPPING) private localeCurrencyMapping: HashMap<Currency>,
     @Inject(TRANSLOCO_NUMBER_TRANSFORMER) private numberTransformer: TranslocoNumberTransformer,
-    @Inject(TRANSLOCO_DATE_TRANSFORMER) private dateTransformer: TranslocoDateTransformer
+    @Inject(TRANSLOCO_DATE_TRANSFORMER) private dateTransformer: TranslocoDateTransformer,
+    @Inject(LOCALE_ENABLE_LANG_MAPPING) private langToLocaleMappingEnabled: boolean
   ) {
-    this._locale = defaultLocale || this.toLocale(this.translocoService.getActiveLang());
-    this.locale = new BehaviorSubject(this._locale);
-    this.localeChanges$ = this.locale.asObservable().pipe(distinctUntilChanged());
-
-    this.subscription = translocoService.langChanges$
-      .pipe(
-        map(this.toLocale.bind(this)),
-        filter(lang => !!lang)
-      )
-      .subscribe(this.setLocale.bind(this));
+    this.setLocale(defaultLocale);
+    if (this.langToLocaleMappingEnabled) {
+      this.translocoService.langChanges$
+        .pipe(
+          map(this.toLocale.bind(this)),
+          filter(lang => !!lang),
+          takeUntil(this.destroyed$)
+        )
+        .subscribe(this.setLocale.bind(this));
+    }
   }
 
   getLocale() {
@@ -60,7 +63,7 @@ export class TranslocoLocaleService implements OnDestroy {
       console.error(`${locale} isn't a valid locale format`);
       return false;
     }
-    this.locale.next(locale);
+    this.locale$.next(locale);
     this._locale = locale;
   }
 
@@ -136,6 +139,7 @@ export class TranslocoLocaleService implements OnDestroy {
     if (isLocaleFormat(val)) {
       return val;
     }
+
     if (this.langLocaleMapping[val]) {
       return this.langLocaleMapping[val];
     }
@@ -144,6 +148,7 @@ export class TranslocoLocaleService implements OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
   }
 }

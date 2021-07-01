@@ -184,6 +184,7 @@ Let's go over each one of the `config` options:
 - `defaultCurrency?`: The default currency formatted in [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html) (default value: `USD`),
 - `langToLocaleMapping?`: A key value `object` that maps Transloco language to it's Locale (default value: `{}`).
 - `localeToCurrencyMapping?`: A key value `object` that maps the Locale to it's currency (formatted in [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html)) (the library provide a default value with all of the existing mapping).
+- `langToLocaleMappingEnabled?`: A boolean value to enable or disable setting Transloco active language as locale (default value `true`).
 
 ### Locale Format Options
 
