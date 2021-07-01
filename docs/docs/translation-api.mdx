@@ -271,6 +271,7 @@ export class AppComponent {
     this.translocoService.setTranslationKey('key', 'value');
     this.translocoService.setTranslationKey('key.nested', 'value');
     this.translocoService.setTranslationKey('key', 'value', 'en');
+    this.translocoService.setTranslationKey('key', 'value', 'en', { emitChange: false });
   }
 }
 ```
