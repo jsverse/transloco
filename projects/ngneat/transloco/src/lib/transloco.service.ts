@@ -414,15 +414,21 @@ export class TranslocoService implements OnDestroy {
    * setTranslationKey('key', 'value')
    * setTranslationKey('key.nested', 'value')
    * setTranslationKey('key.nested', 'value', 'en')
+   * setTranslationKey('key.nested', 'value', 'en', { emitChange: false } )
    */
-  setTranslationKey(key: string, value: string, lang = this.getActiveLang()) {
+  setTranslationKey(
+    key: string,
+    value: string,
+    lang = this.getActiveLang(),
+    // Todo: Use Omit and merge options and lang to one object in v3
+    options: { emitChange?: SetTranslationOptions['emitChange'] } = {}
+  ) {
     const withHook = this.interceptor.preSaveTranslationKey(key, value, lang);
     const newValue = {
-      ...this.getTranslation(lang),
       [key]: withHook
     };
 
-    this.setTranslation(newValue, lang);
+    this.setTranslation(newValue, lang, { ...options, merge: true });
   }
 
   /**
