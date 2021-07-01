@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "id": "SchematicsTranslocoAdd",
+  "$id": "SchematicsTranslocoAdd",
   "title": "Add Transloco to Your Project",
   "type": "object",
   "properties": {
