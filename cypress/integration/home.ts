@@ -3,6 +3,7 @@ export function testHomeContent(lang = 'english') {
   cy.get(`[data-cy=regular]`).should('contain', `home ${lang}`);
   cy.get(`[data-cy=with-params]`).should('contain', `alert 🦄 ${lang}`);
   cy.get(`[data-cy=with-translation-reuse]`).should('contain', `a.b.c from list ${lang}`);
+  cy.get(`[data-cy=current-lang]`).should('contain', `en`);
 
   // Directive
   cy.get(`[data-cy=d-regular] span`).should('contain', `home ${lang}`);
