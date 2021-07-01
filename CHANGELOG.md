@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.22.0](https://github.com/ngneat/transloco/compare/v2.21.0...v2.22.0) (2021-07-01)
+
+### Features
+
+- 🎸 expose currentLang in structural directive ([#380](https://github.com/ngneat/transloco/issues/380)) ([77b0567](https://github.com/ngneat/transloco/commit/77b0567)), closes [ngneat/transloco#376](https://github.com/ngneat/transloco/issues/376)
+- 🎸 update schematics id to v12 ([86e896d](https://github.com/ngneat/transloco/commit/86e896d))
+- allow to specify options when setting translations by key ([#464](https://github.com/ngneat/transloco/issues/464)) ([e7d97e6](https://github.com/ngneat/transloco/commit/e7d97e6))
+
 ## [2.21.0](https://github.com/ngneat/transloco/compare/v2.20.1...v2.21.0) (2021-05-26)
 
 ### Bug Fixes
