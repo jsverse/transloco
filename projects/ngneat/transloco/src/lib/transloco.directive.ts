@@ -50,7 +50,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
 
   constructor(
     private translocoService: TranslocoService,
-    @Optional() private tpl: TemplateRef<{ $implicit: (key: string, params?: HashMap) => any }>,
+    @Optional() private tpl: TemplateRef<{ $implicit: (key: string, params?: HashMap) => any; currentLang: string }>,
     @Optional() @Inject(TRANSLOCO_SCOPE) private providerScope: MaybeArray<TranslocoScope>,
     @Optional() @Inject(TRANSLOCO_LANG) private providerLang: string | null,
     @Optional() @Inject(TRANSLOCO_LOADING_TEMPLATE) private providedLoadingTpl: Type<any> | string,
@@ -111,10 +111,12 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     if (this.view) {
       // when the lang changes we need to change the reference so Angular will update the view
       this.view.context['$implicit'] = this.getTranslateFn(lang, read);
+      this.view.context['currentLang'] = this.currentLang;
     } else {
       this.detachLoader();
       this.view = this.vcr.createEmbeddedView(this.tpl, {
-        $implicit: this.getTranslateFn(lang, read)
+        $implicit: this.getTranslateFn(lang, read),
+        currentLang: this.currentLang
       });
     }
   }
