@@ -40,10 +40,11 @@ We can instruct the directive to use a `different` language in our template:
 This will translate each key based on the `Spanish` language translation file.
 
 ## Get the current language
-We can obtain the current language key for use in other contexts without injecting the service.
+We can obtain the resolved language by using the `currentLang` context variable:
+
 ```html {1} title="home.component.html"
 <ng-container *transloco="let t; currentLang as currentLang">
-  <p>The current language key is {{ currentLang }}</p>
+  <p>The resolved language is {{ currentLang }}</p>
 </ng-container>
 ```
 
