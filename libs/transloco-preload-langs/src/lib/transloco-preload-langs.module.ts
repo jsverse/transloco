@@ -1,4 +1,4 @@
-import { Inject, ModuleWithProviders, NgModule, OnDestroy } from '@angular/core';
+import { Inject, InjectionToken, ModuleWithProviders, NgModule, OnDestroy } from '@angular/core';
 import { TranslocoService } from '@ngneat/transloco';
 import { forkJoin, Subscription } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -12,8 +12,9 @@ declare global {
 
 window.requestIdleCallback =
   window.requestIdleCallback ||
-  function(cb) {
+  function(cb: Function) {
     const start = Date.now();
+
     return setTimeout(function() {
       cb({
         didTimeout: false,
@@ -26,24 +27,27 @@ window.requestIdleCallback =
 
 window.cancelIdleCallback =
   window.cancelIdleCallback ||
-  function(id) {
+  function(id: number) {
     clearTimeout(id);
   };
+
+const PRELOAD_LANGUAGES = new InjectionToken<string[]>('Languages to be preloaded');
 
 @NgModule()
 export class TranslocoPreloadLangsModule implements OnDestroy {
   private idleCallbackId: any;
-  private subscription: Subscription = Subscription.EMPTY;
+  private subscription: Subscription | undefined;
 
   static preload(langs: string[]): ModuleWithProviders<TranslocoPreloadLangsModule> {
     return {
       ngModule: TranslocoPreloadLangsModule,
-      providers: [{ provide: 'PreloadLangs', useValue: langs }]
+      providers: [{ provide: PRELOAD_LANGUAGES, useValue: langs }]
     };
   }
 
-  constructor(service: TranslocoService, @Inject('PreloadLangs') langs: string[]) {
+  constructor(service: TranslocoService, @Inject(PRELOAD_LANGUAGES) langs: string[]) {
     if (!langs) return;
+
     this.idleCallbackId = window.requestIdleCallback(() => {
       const preloads = langs.map(currentLangOrScope => {
         const lang = service._completeScopeWithLang(currentLangOrScope);
@@ -64,6 +68,6 @@ export class TranslocoPreloadLangsModule implements OnDestroy {
     if (this.idleCallbackId !== undefined) {
       window.cancelIdleCallback(this.idleCallbackId);
     }
-    this.subscription.unsubscribe();
+    this.subscription?.unsubscribe();
   }
 }
