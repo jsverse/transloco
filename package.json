@@ -28,7 +28,7 @@
     "@angular/platform-browser-dynamic": "^12.1.0",
     "@angular/router": "^12.1.0",
     "@nrwl/angular": "12.6.6",
-    "chalk": "^4.1.0",
+    "chalk": "^4.1.2",
     "chokidar": "^3.5.2",
     "command-line-args": "^5.2.0",
     "cosmiconfig": "^7.0.0",

@@ -1,4 +1,52 @@
 {
   "name": "@ngneat/transloco-scoped-libs",
-  "version": "0.0.1"
+  "version": "3.0.0",
+  "description": "Transloco support tool for libraries with translations",
+  "main": "src/lib/transloco-scroped-libs.js",
+  "bin": {
+    "transloco-scoped-libs": "src/index.js"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/ngneat/transloco/issues"
+  },
+  "homepage": "https://github.com/ngneat/transloco#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ngneat/transloco"
+  },
+  "keywords": [
+    "angular",
+    "angular 2",
+    "i18n",
+    "translate",
+    "angular translate",
+    "angular i18n",
+    "transloco",
+    "comments",
+    "build",
+    "optimize"
+  ],
+  "license": "MIT",
+  "author": "Itay Oded",
+  "contributors": [
+    {
+      "name": "Shahar Kazaz",
+      "url": "https://github.com/shaharkazaz"
+    },
+    {
+      "name": "Netanel Basal",
+      "url": "https://netbasal.com"
+    }
+  ],
+  "dependencies": {
+    "@ngneat/transloco-utils": "^1.0.6",
+    "chalk": "^4.1.2",
+    "chokidar": "^3.5.2",
+    "command-line-args": "^5.1.1",
+    "glob": "^7.1.7",
+    "fs-extra": "^9.1.0"
+  }
 }
