@@ -6,7 +6,7 @@ import { testMultiLangContent } from './multi-lang';
 import { testScopeSharingContent } from './scope-sharing';
 import { testTranspilersContent } from './transpilers';
 
-function changeLang(lang) {
+function changeLang(lang: string) {
   cy.get(`[data-cy=${lang}]`).click();
 }
 

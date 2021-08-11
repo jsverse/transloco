@@ -5,7 +5,7 @@
   "modifyObstructiveCode": false,
   "pluginsFile": "./src/plugins/index",
   "supportFile": "./src/support/index.ts",
-  "video": true,
+  "video": false,
   "videosFolder": "../../dist/cypress/apps/transloco-playground-e2e/videos",
   "screenshotsFolder": "../../dist/cypress/apps/transloco-playground-e2e/screenshots",
   "chromeWebSecurity": false
