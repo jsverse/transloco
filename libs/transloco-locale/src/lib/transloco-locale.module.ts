@@ -1,10 +1,10 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
+import { TranslocoLocaleConfig } from '..';
 import { TranslocoCurrencyPipe } from './pipes/transloco-currency.pipe';
 import { TranslocoDatePipe } from './pipes/transloco-date.pipe';
 import { TranslocoDecimalPipe } from './pipes/transloco-decimal.pipe';
 import { TranslocoPercentPipe } from './pipes/transloco-percent.pipe';
 import {
-  TranslocoLocaleConfig,
   LOCALE_CURRENCY_MAPPING,
   LOCALE_LANG_MAPPING,
   defaultConfig,

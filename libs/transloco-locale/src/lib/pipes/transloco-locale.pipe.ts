@@ -13,7 +13,7 @@ export class TranslocoLocalePipe {
   }
 
   protected getLocale(locale: Locale | undefined): Locale {
-    return locale || this.translocoLocaleService.getLocale();
+    return locale || this.translocoLocaleService.getLocale()!;
   }
 
   onDestroy(): void {

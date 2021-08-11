@@ -124,7 +124,7 @@ Transform a given number into current locale's percent number format.
 
 #### Browser Support
 
-<img src="./browser-support.jpeg" />
+See [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat#browser_compatibility) and [Intl.NumberFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat#browser_compatibility).
 
 ### Setting Locale
 

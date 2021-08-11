@@ -1,9 +1,9 @@
 import { Pipe, PipeTransform, ChangeDetectorRef, Inject, OnDestroy } from '@angular/core';
 import { isNil } from '@ngneat/transloco';
 import { getDefaultOptions } from '../shared';
-import { LOCALE_CONFIG, LocaleConfig } from '../transloco-locale.config';
+import { LOCALE_CONFIG } from '../transloco-locale.config';
 import { TranslocoLocaleService } from '../transloco-locale.service';
-import { NumberFormatOptions, Currency, Locale } from '../transloco-locale.types';
+import { NumberFormatOptions, Currency, Locale, LocaleConfig } from '../transloco-locale.types';
 import { TranslocoLocalePipe } from './transloco-locale.pipe';
 
 @Pipe({
