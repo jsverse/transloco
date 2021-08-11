@@ -1,1 +1,0 @@
-vsce publish
