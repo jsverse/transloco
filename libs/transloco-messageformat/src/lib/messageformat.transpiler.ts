@@ -14,7 +14,6 @@ import * as MessageFormat from 'messageformat';
 import { MessageformatConfig, MFLocale, TRANSLOCO_MESSAGE_FORMAT_CONFIG } from './messageformat.config';
 
 function mfFactory(locales?: MFLocale, messageConfig?: MessageFormat.Options): MessageFormat {
-  //@ts-ignore
   return new MessageFormat(locales, messageConfig);
 }
 
@@ -40,7 +39,7 @@ export class MessageFormatTranspiler extends DefaultTranspiler {
 
     if (isObject(value) && params) {
       Object.keys(params).forEach(p => {
-        const v = getValue(value as Object, p);
+        const v = getValue(value, p);
         const getParams = getValue(params, p);
 
         const transpiled = super.transpile(v, getParams, translation);

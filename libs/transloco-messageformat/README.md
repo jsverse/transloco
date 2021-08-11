@@ -1,4 +1,4 @@
-# TRANSLOCO MESSAGE FORMAT
+# Transloco Message Format
 
 Transpiler for `@ngneat/transloco` that uses `messageformat.js` to compile translations using ICU syntax for handling pluralization and gender.
 

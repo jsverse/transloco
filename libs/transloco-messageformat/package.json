@@ -1,11 +1,36 @@
 {
   "name": "@ngneat/transloco-messageformat",
-  "version": "0.0.1",
+  "version": "3.0.0",
+  "description": "Transpiler for Transloco that uses messageformat.js to compile translations using ICU syntax for handling pluralization and gender",
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/ngneat/transloco/issues"
+  },
+  "homepage": "https://github.com/ngneat/transloco#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ngneat/transloco"
+  },
+  "keywords": [
+    "angular",
+    "angular 2",
+    "declension",
+    "i18n",
+    "icu",
+    "gender",
+    "messageformat",
+    "transloco",
+    "pluralization",
+    "translate"
+  ],
+  "license": "MIT",
   "peerDependencies": {
-    "@angular/common": "^12.1.0",
-    "@angular/core": "^12.1.0"
+    "@angular/core": ">=6.0.0"
   },
   "dependencies": {
+    "messageformat": "^2.3.0",
     "tslib": "^2.2.0"
   }
 }
