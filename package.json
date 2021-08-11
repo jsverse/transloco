@@ -37,6 +37,7 @@
     "fs-extra": "^9.1.0",
     "glob": "^7.1.7",
     "messageformat": "^2.3.0",
+    "replace-in-file": "^6.2.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.4"
