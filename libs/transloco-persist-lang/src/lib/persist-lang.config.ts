@@ -3,7 +3,7 @@ import { InjectionToken, Provider } from '@angular/core';
 export type PersistLangConfig = {
   storage: Provider;
   storageKey?: string;
-  getLangFn?: (langs: { cachedLang: string; browserLang: string; cultureLang: string; defaultLang: string }) => string;
+  getLangFn?: (langs: { cachedLang: string | null; browserLang: string; cultureLang: string; defaultLang: string }) => string;
 };
 
 export const TRANSLOCO_PERSIST_LANG_STORAGE = new InjectionToken('TRANSLOCO_PERSIST_LANG_STORAGE');

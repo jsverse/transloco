@@ -5,6 +5,7 @@ export function cookiesStorage(cookieExpiry = 720) {
       const name = encodeURIComponent(key);
       const regexp = new RegExp('(?:^' + name + '|;\\s*' + name + ')=(.*?)(?:;|$)', 'g');
       const result = regexp.exec(document.cookie);
+
       return result ? decodeURIComponent(result[1]) : null;
     },
     setItem(key: string, value: string) {

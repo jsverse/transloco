@@ -55,19 +55,23 @@ export class TranslocoPersistLangService implements OnDestroy {
 
   private setActiveLang() {
     const cachedLang = this.storage.getItem(this.storageKey);
-    const browserLang = getBrowserLang();
-    const cultureLang = getBrowserCultureLang();
     const defaultLang = this.service.config.defaultLang;
-    const activeLang = isFunction(this.config.getLangFn)
-      ? this.config.getLangFn({
-          browserLang,
-          defaultLang,
-          cultureLang,
-          cachedLang
-        })
-      : cachedLang || defaultLang;
+    let activeLang = cachedLang || defaultLang;
 
-    activeLang && this.service.setActiveLang(activeLang);
+    if (isFunction(this.config.getLangFn)) {
+      const browserLang = getBrowserLang()!;
+      const cultureLang = getBrowserCultureLang();
+      activeLang = this.config.getLangFn({
+        browserLang,
+        defaultLang,
+        cultureLang,
+        cachedLang
+      });
+    }
+
+    if (activeLang) {
+      this.service.setActiveLang(activeLang);
+    }
   }
 
   private save(lang: string) {
@@ -82,3 +86,4 @@ export class TranslocoPersistLangService implements OnDestroy {
   }
 
 }
+  
