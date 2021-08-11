@@ -1,0 +1,44 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2017", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@ngneat/transloco": ["libs/transloco/src/index.ts"],
+      "@ngneat/transloco-locale": ["libs/transloco-locale/src/index.ts"],
+      "@ngneat/transloco-messageformat": [
+        "libs/transloco-messageformat/src/index.ts"
+      ],
+      "@ngneat/transloco-optimize": ["libs/transloco-optimize/src/index.ts"],
+      "@ngneat/transloco-persist-lang": [
+        "libs/transloco-persist-lang/src/index.ts"
+      ],
+      "@ngneat/transloco-persist-translations": [
+        "libs/transloco-persist-translations/src/index.ts"
+      ],
+      "@ngneat/transloco-preload-langs": [
+        "libs/transloco-preload-langs/src/index.ts"
+      ],
+      "@ngneat/transloco-schematics": [
+        "libs/transloco-schematics/src/index.ts"
+      ],
+      "@ngneat/transloco-scoped-libs": [
+        "libs/transloco-scoped-libs/src/index.ts"
+      ],
+      "@ngneat/transloco-utils": ["libs/transloco-utils/src/index.ts"],
+      "@ngneat/transloco-validator": ["libs/transloco-validator/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}

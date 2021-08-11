@@ -1,0 +1,71 @@
+{
+  "npmScope": "transloco-nx-shell",
+  "affected": {
+    "defaultBase": "master"
+  },
+  "implicitDependencies": {
+    "package.json": {
+      "dependencies": "*",
+      "devDependencies": "*"
+    },
+    ".eslintrc.json": "*"
+  },
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "@nrwl/workspace/tasks-runners/default",
+      "options": {
+        "cacheableOperations": ["build", "lint", "test", "e2e"]
+      }
+    }
+  },
+  "targetDependencies": {
+    "build": [
+      {
+        "target": "build",
+        "projects": "dependencies"
+      }
+    ]
+  },
+  "projects": {
+    "transloco": {
+      "tags": []
+    },
+    "transloco-locale": {
+      "tags": []
+    },
+    "transloco-messageformat": {
+      "tags": []
+    },
+    "transloco-optimize": {
+      "tags": []
+    },
+    "transloco-persist-lang": {
+      "tags": []
+    },
+    "transloco-persist-translations": {
+      "tags": []
+    },
+    "transloco-playground": {
+      "tags": []
+    },
+    "transloco-playground-e2e": {
+      "tags": [],
+      "implicitDependencies": ["transloco-playground"]
+    },
+    "transloco-preload-langs": {
+      "tags": []
+    },
+    "transloco-schematics": {
+      "tags": []
+    },
+    "transloco-scoped-libs": {
+      "tags": []
+    },
+    "transloco-utils": {
+      "tags": []
+    },
+    "transloco-validator": {
+      "tags": []
+    }
+  }
+}

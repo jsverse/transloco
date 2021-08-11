@@ -1,65 +1,309 @@
 {
-  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
-  "newProjectRoot": "projects",
   "projects": {
+    "transloco": {
+      "projectType": "library",
+      "root": "libs/transloco",
+      "sourceRoot": "libs/transloco/src",
+      "prefix": "transloco-nx-shell",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/angular:package",
+          "outputs": ["dist/libs/transloco"],
+          "options": {
+            "project": "libs/transloco/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "libs/transloco/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "libs/transloco/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/transloco"],
+          "options": {
+            "jestConfig": "libs/transloco/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/transloco/src/**/*.ts",
+              "libs/transloco/src/**/*.html"
+            ]
+          }
+        }
+      }
+    },
+    "transloco-locale": {
+      "projectType": "library",
+      "root": "libs/transloco-locale",
+      "sourceRoot": "libs/transloco-locale/src",
+      "prefix": "transloco-nx-shell",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/angular:package",
+          "outputs": ["dist/libs/transloco-locale"],
+          "options": {
+            "project": "libs/transloco-locale/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "libs/transloco-locale/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "libs/transloco-locale/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/transloco-locale"],
+          "options": {
+            "jestConfig": "libs/transloco-locale/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/transloco-locale/src/**/*.ts",
+              "libs/transloco-locale/src/**/*.html"
+            ]
+          }
+        }
+      }
+    },
+    "transloco-messageformat": {
+      "projectType": "library",
+      "root": "libs/transloco-messageformat",
+      "sourceRoot": "libs/transloco-messageformat/src",
+      "prefix": "transloco-nx-shell",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/angular:package",
+          "outputs": ["dist/libs/transloco-messageformat"],
+          "options": {
+            "project": "libs/transloco-messageformat/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "libs/transloco-messageformat/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "libs/transloco-messageformat/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/transloco-messageformat"],
+          "options": {
+            "jestConfig": "libs/transloco-messageformat/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/transloco-messageformat/src/**/*.ts",
+              "libs/transloco-messageformat/src/**/*.html"
+            ]
+          }
+        }
+      }
+    },
+    "transloco-optimize": {
+      "root": "libs/transloco-optimize",
+      "sourceRoot": "libs/transloco-optimize/src",
+      "projectType": "library",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/workspace:tsc",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/transloco-optimize",
+            "main": "libs/transloco-optimize/src/index.ts",
+            "tsConfig": "libs/transloco-optimize/tsconfig.lib.json",
+            "assets": ["libs/transloco-optimize/*.md"]
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/transloco-optimize/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/transloco-optimize"],
+          "options": {
+            "jestConfig": "libs/transloco-optimize/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "transloco-persist-lang": {
+      "projectType": "library",
+      "root": "libs/transloco-persist-lang",
+      "sourceRoot": "libs/transloco-persist-lang/src",
+      "prefix": "transloco-nx-shell",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/angular:package",
+          "outputs": ["dist/libs/transloco-persist-lang"],
+          "options": {
+            "project": "libs/transloco-persist-lang/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "libs/transloco-persist-lang/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "libs/transloco-persist-lang/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/transloco-persist-lang"],
+          "options": {
+            "jestConfig": "libs/transloco-persist-lang/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/transloco-persist-lang/src/**/*.ts",
+              "libs/transloco-persist-lang/src/**/*.html"
+            ]
+          }
+        }
+      }
+    },
+    "transloco-persist-translations": {
+      "projectType": "library",
+      "root": "libs/transloco-persist-translations",
+      "sourceRoot": "libs/transloco-persist-translations/src",
+      "prefix": "transloco-nx-shell",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/angular:package",
+          "outputs": ["dist/libs/transloco-persist-translations"],
+          "options": {
+            "project": "libs/transloco-persist-translations/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "libs/transloco-persist-translations/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "libs/transloco-persist-translations/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/transloco-persist-translations"],
+          "options": {
+            "jestConfig": "libs/transloco-persist-translations/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/transloco-persist-translations/src/**/*.ts",
+              "libs/transloco-persist-translations/src/**/*.html"
+            ]
+          }
+        }
+      }
+    },
     "transloco-playground": {
-      "root": "",
-      "sourceRoot": "src",
       "projectType": "application",
-      "prefix": "app",
-      "schematics": {},
+      "root": "apps/transloco-playground",
+      "sourceRoot": "apps/transloco-playground/src",
+      "prefix": "transloco-nx-shell",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
+          "outputs": ["{options.outputPath}"],
           "options": {
-            "outputPath": "dist/transloco-playground",
-            "index": "src/index.html",
-            "main": "src/main.ts",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "src/tsconfig.app.json",
-            "assets": ["src/favicon.ico", "src/assets"],
-            "styles": ["src/styles.css"],
-            "scripts": [],
-            "es5BrowserSupport": true
+            "outputPath": "dist/apps/transloco-playground",
+            "index": "apps/transloco-playground/src/index.html",
+            "main": "apps/transloco-playground/src/main.ts",
+            "polyfills": "apps/transloco-playground/src/polyfills.ts",
+            "tsConfig": "apps/transloco-playground/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "apps/transloco-playground/src/favicon.ico",
+              "apps/transloco-playground/src/assets"
+            ],
+            "styles": ["apps/transloco-playground/src/styles.scss"],
+            "scripts": []
           },
           "configurations": {
             "production": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "extractCss": true,
-              "namedChunks": false,
-              "aot": true,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
                 }
-              ]
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "apps/transloco-playground/src/environments/environment.ts",
+                  "with": "apps/transloco-playground/src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
             }
-          }
+          },
+          "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-            "browserTarget": "transloco-playground:build"
-          },
           "configurations": {
             "production": {
               "browserTarget": "transloco-playground:build:production"
+            },
+            "development": {
+              "browserTarget": "transloco-playground:build:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -67,37 +311,36 @@
             "browserTarget": "transloco-playground:build"
           }
         },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "main": "src/test.ts",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "src/tsconfig.spec.json",
-            "karmaConfig": "src/karma.conf.js",
-            "styles": ["src/styles.css"],
-            "scripts": [],
-            "assets": ["src/favicon.ico", "src/assets"]
+            "lintFilePatterns": [
+              "apps/transloco-playground/src/**/*.ts",
+              "apps/transloco-playground/src/**/*.html"
+            ]
           }
         },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/transloco-playground"],
           "options": {
-            "tsConfig": ["src/tsconfig.app.json", "src/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**"]
+            "jestConfig": "apps/transloco-playground/jest.config.js",
+            "passWithNoTests": true
           }
         }
       }
     },
     "transloco-playground-e2e": {
-      "root": "e2e/",
+      "root": "apps/transloco-playground-e2e",
+      "sourceRoot": "apps/transloco-playground-e2e/src",
       "projectType": "application",
-      "prefix": "",
       "architect": {
         "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
+          "builder": "@nrwl/cypress:cypress",
           "options": {
-            "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "transloco-playground:serve"
+            "cypressConfig": "apps/transloco-playground-e2e/cypress.json",
+            "tsConfig": "apps/transloco-playground-e2e/tsconfig.e2e.json",
+            "devServerTarget": "transloco-playground:serve:development"
           },
           "configurations": {
             "production": {
@@ -106,241 +349,207 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": "e2e/tsconfig.e2e.json",
-            "exclude": ["**/node_modules/**"]
+            "lintFilePatterns": ["apps/transloco-playground-e2e/**/*.{js,ts}"]
           }
         }
       }
     },
-    "@ngneat/transloco": {
-      "root": "projects/ngneat/transloco",
-      "sourceRoot": "projects/ngneat/transloco/src",
+    "transloco-preload-langs": {
       "projectType": "library",
-      "prefix": "lib",
+      "root": "libs/transloco-preload-langs",
+      "sourceRoot": "libs/transloco-preload-langs/src",
+      "prefix": "transloco-nx-shell",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@nrwl/angular:package",
+          "outputs": ["dist/libs/transloco-preload-langs"],
           "options": {
-            "tsConfig": "projects/ngneat/transloco/tsconfig.lib.json",
-            "project": "projects/ngneat/transloco/ng-package.json"
-          }
+            "project": "libs/transloco-preload-langs/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "libs/transloco-preload-langs/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "libs/transloco-preload-langs/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/transloco-preload-langs"],
           "options": {
-            "main": "projects/ngneat/transloco/src/test.ts",
-            "tsConfig": "projects/ngneat/transloco/tsconfig.spec.json",
-            "karmaConfig": "projects/ngneat/transloco/karma.conf.js"
+            "jestConfig": "libs/transloco-preload-langs/jest.config.js",
+            "passWithNoTests": true
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["projects/ngneat/transloco/tsconfig.lib.json", "projects/ngneat/transloco/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**"]
+            "lintFilePatterns": [
+              "libs/transloco-preload-langs/src/**/*.ts",
+              "libs/transloco-preload-langs/src/**/*.html"
+            ]
           }
         }
       }
     },
-    "@ngneat/transloco-persist-translations": {
-      "root": "projects/ngneat/transloco-persist-translations",
-      "sourceRoot": "projects/ngneat/transloco-persist-translations/src",
+    "transloco-schematics": {
+      "root": "libs/transloco-schematics",
+      "sourceRoot": "libs/transloco-schematics/src",
       "projectType": "library",
-      "prefix": "lib",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@nrwl/workspace:tsc",
+          "outputs": ["{options.outputPath}"],
           "options": {
-            "tsConfig": "projects/ngneat/transloco-persist-translations/tsconfig.lib.json",
-            "project": "projects/ngneat/transloco-persist-translations/ng-package.json"
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "projects/ngneat/transloco-persist-translations/src/test.ts",
-            "tsConfig": "projects/ngneat/transloco-persist-translations/tsconfig.spec.json",
-            "karmaConfig": "projects/ngneat/transloco-persist-translations/karma.conf.js"
+            "outputPath": "dist/libs/transloco-schematics",
+            "main": "libs/transloco-schematics/src/index.ts",
+            "tsConfig": "libs/transloco-schematics/tsconfig.lib.json",
+            "assets": ["libs/transloco-schematics/*.md"]
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": [
-              "projects/ngneat/transloco-persist-translations/tsconfig.lib.json",
-              "projects/ngneat/transloco-persist-translations/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**"]
+            "lintFilePatterns": ["libs/transloco-schematics/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/transloco-schematics"],
+          "options": {
+            "jestConfig": "libs/transloco-schematics/jest.config.js",
+            "passWithNoTests": true
           }
         }
       }
     },
-    "@ngneat/transloco-persist-lang": {
-      "root": "projects/ngneat/transloco-persist-lang",
-      "sourceRoot": "projects/ngneat/transloco-persist-lang/src",
+    "transloco-scoped-libs": {
+      "root": "libs/transloco-scoped-libs",
+      "sourceRoot": "libs/transloco-scoped-libs/src",
       "projectType": "library",
-      "prefix": "lib",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@nrwl/workspace:tsc",
+          "outputs": ["{options.outputPath}"],
           "options": {
-            "tsConfig": "projects/ngneat/transloco-persist-lang/tsconfig.lib.json",
-            "project": "projects/ngneat/transloco-persist-lang/ng-package.json"
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "projects/ngneat/transloco-persist-lang/src/test.ts",
-            "tsConfig": "projects/ngneat/transloco-persist-lang/tsconfig.spec.json",
-            "karmaConfig": "projects/ngneat/transloco-persist-lang/karma.conf.js"
+            "outputPath": "dist/libs/transloco-scoped-libs",
+            "main": "libs/transloco-scoped-libs/src/index.ts",
+            "tsConfig": "libs/transloco-scoped-libs/tsconfig.lib.json",
+            "assets": ["libs/transloco-scoped-libs/*.md"]
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": [
-              "projects/ngneat/transloco-persist-lang/tsconfig.lib.json",
-              "projects/ngneat/transloco-persist-lang/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**"]
+            "lintFilePatterns": ["libs/transloco-scoped-libs/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/transloco-scoped-libs"],
+          "options": {
+            "jestConfig": "libs/transloco-scoped-libs/jest.config.js",
+            "passWithNoTests": true
           }
         }
       }
     },
-    "@ngneat/transloco-messageformat": {
-      "root": "projects/ngneat/transloco-messageformat",
-      "sourceRoot": "projects/ngneat/transloco-messageformat/src",
+    "transloco-utils": {
+      "root": "libs/transloco-utils",
+      "sourceRoot": "libs/transloco-utils/src",
       "projectType": "library",
-      "prefix": "lib",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@nrwl/workspace:tsc",
+          "outputs": ["{options.outputPath}"],
           "options": {
-            "tsConfig": "projects/ngneat/transloco-messageformat/tsconfig.lib.json",
-            "project": "projects/ngneat/transloco-messageformat/ng-package.json"
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "projects/ngneat/transloco-messageformat/src/test.ts",
-            "tsConfig": "projects/ngneat/transloco-messageformat/tsconfig.spec.json",
-            "karmaConfig": "projects/ngneat/transloco-messageformat/karma.conf.js"
+            "outputPath": "dist/libs/transloco-utils",
+            "main": "libs/transloco-utils/src/index.ts",
+            "tsConfig": "libs/transloco-utils/tsconfig.lib.json",
+            "assets": ["libs/transloco-utils/*.md"]
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": [
-              "projects/ngneat/transloco-messageformat/tsconfig.lib.json",
-              "projects/ngneat/transloco-messageformat/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**"]
+            "lintFilePatterns": ["libs/transloco-utils/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/transloco-utils"],
+          "options": {
+            "jestConfig": "libs/transloco-utils/jest.config.js",
+            "passWithNoTests": true
           }
         }
       }
     },
-    "@ngneat/transloco-preload-langs": {
-      "root": "projects/ngneat/transloco-preload-langs",
-      "sourceRoot": "projects/ngneat/transloco-preload-langs/src",
+    "transloco-validator": {
+      "root": "libs/transloco-validator",
+      "sourceRoot": "libs/transloco-validator/src",
       "projectType": "library",
-      "prefix": "lib",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@nrwl/workspace:tsc",
+          "outputs": ["{options.outputPath}"],
           "options": {
-            "tsConfig": "projects/ngneat/transloco-preload-langs/tsconfig.lib.json",
-            "project": "projects/ngneat/transloco-preload-langs/ng-package.json"
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "projects/ngneat/transloco-preload-langs/src/test.ts",
-            "tsConfig": "projects/ngneat/transloco-preload-langs/tsconfig.spec.json",
-            "karmaConfig": "projects/ngneat/transloco-preload-langs/karma.conf.js"
+            "outputPath": "dist/libs/transloco-validator",
+            "main": "libs/transloco-validator/src/index.ts",
+            "tsConfig": "libs/transloco-validator/tsconfig.lib.json",
+            "assets": ["libs/transloco-validator/*.md"]
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": [
-              "projects/ngneat/transloco-preload-langs/tsconfig.lib.json",
-              "projects/ngneat/transloco-preload-langs/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**"]
+            "lintFilePatterns": ["libs/transloco-validator/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/transloco-validator"],
+          "options": {
+            "jestConfig": "libs/transloco-validator/jest.config.js",
+            "passWithNoTests": true
           }
         }
+      }
+    }
+  },
+  "cli": {
+    "defaultCollection": "@nrwl/angular"
+  },
+  "schematics": {
+    "@nrwl/angular": {
+      "application": {
+        "linter": "eslint"
+      },
+      "library": {
+        "linter": "eslint"
+      },
+      "storybook-configuration": {
+        "linter": "eslint"
       }
     },
-    "@ngneat/transloco-locale": {
-      "root": "projects/ngneat/transloco-locale",
-      "sourceRoot": "projects/ngneat/transloco-locale/src",
-      "projectType": "library",
-      "prefix": "lib",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
-          "options": {
-            "tsConfig": "projects/ngneat/transloco-locale/tsconfig.lib.json",
-            "project": "projects/ngneat/transloco-locale/ng-package.json"
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "projects/ngneat/transloco-locale/src/test.ts",
-            "tsConfig": "projects/ngneat/transloco-locale/tsconfig.spec.json",
-            "karmaConfig": "projects/ngneat/transloco-locale/karma.conf.js"
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "projects/ngneat/transloco-locale/tsconfig.lib.json",
-              "projects/ngneat/transloco-locale/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**"]
-          }
-        }
-      }
+    "@nrwl/angular:application": {
+      "style": "scss",
+      "linter": "eslint",
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
     },
-    "@ngneat/transloco-utils": {
-      "root": "projects/ngneat/transloco-utils",
-      "sourceRoot": "projects/ngneat/transloco-utils/src",
-      "projectType": "library",
-      "prefix": "lib",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
-          "options": {
-            "tsConfig": "projects/ngneat/transloco-utils/tsconfig.lib.json",
-            "project": "projects/ngneat/transloco-utils/ng-package.json"
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "projects/ngneat/transloco-utils/src/test.ts",
-            "tsConfig": "projects/ngneat/transloco-utils/tsconfig.spec.json",
-            "karmaConfig": "projects/ngneat/transloco-utils/karma.conf.js"
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "projects/ngneat/transloco-utils/tsconfig.lib.json",
-              "projects/ngneat/transloco-utils/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**"]
-          }
-        }
-      }
+    "@nrwl/angular:library": {
+      "style": "scss",
+      "linter": "eslint",
+      "unitTestRunner": "jest"
+    },
+    "@nrwl/angular:component": {
+      "style": "scss"
     }
   },
   "defaultProject": "transloco-playground"
