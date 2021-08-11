@@ -1,9 +1,38 @@
 {
   "name": "@ngneat/transloco-persist-translations",
-  "version": "0.0.1",
+  "version": "3.0.0",
+  "description": "Transloco persist translations",
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/ngneat/transloco/issues"
+  },
+  "homepage": "https://github.com/ngneat/transloco#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ngneat/transloco"
+  },
+  "keywords": [
+    "angular",
+    "angular 2",
+    "i18n",
+    "transloco",
+    "translate",
+    "persist",
+    "storage"
+  ],
+  "license": "MIT",
+  "author": "Netanel Basal",
+  "contributors": [
+    {
+      "name": "Shahar Kazaz",
+      "url": "https://github.com/shaharkazaz"
+    }
+  ],
   "peerDependencies": {
-    "@angular/common": "^12.1.0",
-    "@angular/core": "^12.1.0"
+    "@angular/core": ">=6.0.0",
+    "rxjs": ">=6.0.0 || ^5.6.0-forward-compat.4"
   },
   "dependencies": {
     "tslib": "^2.2.0"

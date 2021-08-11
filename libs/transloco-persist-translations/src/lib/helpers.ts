@@ -1,18 +1,14 @@
 import { isObservable, from, of, Observable } from 'rxjs';
 import { isFunction } from '@ngneat/transloco';
 
-export function isPromise(v: any) {
+export function isPromise<T>(v: T): v is Promise<any> {
   return v && isFunction(v.then);
 }
 
-export function observify<T>(asyncOrValue: any): Observable<T> {
+export function observify(asyncOrValue: any): Observable<any> {
   if (isPromise(asyncOrValue) || isObservable(asyncOrValue)) {
     return from(asyncOrValue);
   }
 
   return of(asyncOrValue);
-}
-
-export function now(): number {
-  return new Date().getTime();
 }

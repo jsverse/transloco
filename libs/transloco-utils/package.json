@@ -14,6 +14,17 @@
     "type": "git",
     "url": "https://github.com/ngneat/transloco"
   },
+  "author": "Netanel Basal",
+  "contributors": [
+    {
+      "name": "Shahar Kazaz",
+      "url": "https://github.com/shaharkazaz"
+    },
+    {
+      "name": "Itay Oded",
+      "url": "https://github.com/itayod"
+    }
+  ],
   "keywords": [
     "angular",
     "angular 2",

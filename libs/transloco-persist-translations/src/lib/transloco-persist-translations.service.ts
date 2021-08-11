@@ -1,39 +1,40 @@
 import { isObject, isString, Translation, TranslocoLoader } from '@ngneat/transloco';
 import { from, Observable, of, Subscription } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
-import { now, observify } from './helpers';
+import { observify } from './helpers';
 import {
   defaultConfig,
-  PERSIST_TRANSLATIONS_CONFIG,
+  PERSIST_TRANSLATIONS_STORAGE_CONFIG,
   PERSIST_TRANSLATIONS_LOADER,
   PERSIST_TRANSLATIONS_STORAGE,
-  TranslocoPersistTranslationsConfig
+  StorageConfig
 } from './transloco-persist-translations.config';
 import { Inject, Injectable, OnDestroy } from '@angular/core';
 import { MaybeAsyncStorage } from './transloco.storage';
 
-const getTimestampKey = key => `${key}/timestamp`;
+const getTimestampKey = (key: string) => `${key}/timestamp`;
 
 @Injectable()
 export class TranslocoPersistTranslations implements TranslocoLoader, OnDestroy {
   private subscription: Subscription;
-  private merged: TranslocoPersistTranslationsConfig;
+  private merged: StorageConfig;
   private cache: Translation | null = null;
 
   constructor(
     @Inject(PERSIST_TRANSLATIONS_LOADER) private loader: TranslocoLoader,
     @Inject(PERSIST_TRANSLATIONS_STORAGE) private storage: MaybeAsyncStorage,
-    @Inject(PERSIST_TRANSLATIONS_CONFIG) private config: TranslocoPersistTranslationsConfig
+    @Inject(PERSIST_TRANSLATIONS_STORAGE_CONFIG) private config: StorageConfig
   ) {
-    this.merged = { ...defaultConfig, ...(config || {}) };
+    this.merged = { ...defaultConfig, ...this.config };
     this.subscription = this.clearCurrentStorage().subscribe();
   }
 
   getTranslation(lang: string): Observable<Translation> {
     const storageKey = this.merged.storageKey;
+
     return this.getCached(storageKey).pipe(
       switchMap(translations => {
-        if (translations && translations[lang]) {
+        if (translations?.[lang]) {
           return of(translations[lang]);
         }
 
@@ -54,10 +55,12 @@ export class TranslocoPersistTranslations implements TranslocoLoader, OnDestroy 
     return this.cache
       ? of(this.cache)
       : observify(this.storage.getItem(key)).pipe(
-          map(item => (item ? this.decode<Translation>(key, item) : null)),
-          tap(item => (this.cache = item)),
-          take(1)
-        );
+        map(item => {
+          return item ? this.decode<Translation>(key, item) : null;
+        }),
+        tap(item => {this.cache = item;}),
+        take(1)
+      );
   }
 
   private setCache(key: string, lang: string, translation: Translation) {
@@ -87,7 +90,7 @@ export class TranslocoPersistTranslations implements TranslocoLoader, OnDestroy 
   }
 
   private setTimestamp(key: string): void {
-    this.storage.setItem(getTimestampKey(key), now());
+    this.storage.setItem(getTimestampKey(key), Date.now());
   }
 
   private getTimestamp(key: string): Observable<number> {
@@ -108,7 +111,7 @@ export class TranslocoPersistTranslations implements TranslocoLoader, OnDestroy 
       .pipe(
         filter(time => !!time),
         tap(time => {
-          const isExpired = now() - time >= this.merged.ttl;
+          const isExpired = Date.now() - time >= this.merged.ttl;
           if (isExpired) {
             this.storage.removeItem(storageKey);
           }
