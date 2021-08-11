@@ -1,4 +1,34 @@
 {
   "name": "@ngneat/transloco-utils",
-  "version": "0.0.1"
+  "version": "3.0.0",
+  "description": "Transloco utils library",
+  "main": "src/index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/ngneat/transloco/issues"
+  },
+  "homepage": "https://github.com/ngneat/transloco#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ngneat/transloco"
+  },
+  "keywords": [
+    "angular",
+    "angular 2",
+    "i18n",
+    "translate",
+    "angular translate",
+    "angular i18n",
+    "transloco",
+    "comments",
+    "build",
+    "optimize"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "cosmiconfig": "^7.0.0",
+    "tslib": "^2.3.0"
+  }
 }

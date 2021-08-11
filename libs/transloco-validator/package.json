@@ -1,4 +1,41 @@
 {
   "name": "@ngneat/transloco-validator",
-  "version": "0.0.1"
+  "version": "3.0.0",
+  "description": "Transloco translation files validator",
+  "main": "src/lib/transloco-validator.js",
+  "bin": {
+    "transloco-validator": "src/index.js"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/ngneat/transloco/issues"
+  },
+  "homepage": "https://github.com/ngneat/transloco#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ngneat/transloco"
+  },
+  "author": "Netanel Basal",
+  "contributors": [
+    {
+      "name": "Shahar Kazaz",
+      "url": "https://github.com/shaharkazaz"
+    }
+  ],
+  "keywords": [
+    "angular",
+    "angular 2",
+    "i18n",
+    "transloco",
+    "translate",
+    "translation validator",
+    "JSON validator",
+    "validator"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "find-duplicated-property-keys": "^1.2.7"
+  }
 }

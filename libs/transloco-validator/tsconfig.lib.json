@@ -2,8 +2,11 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
-    "declaration": true,
-    "types": []
+    "sourceMap": false,
+    "declaration": false,
+    "lib": ["ESNext"],
+    "module": "commonjs",
+    "allowSyntheticDefaultImports": true
   },
   "include": ["**/*.ts"],
   "exclude": ["**/*.spec.ts"]
