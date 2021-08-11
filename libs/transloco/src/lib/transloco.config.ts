@@ -1,7 +1,7 @@
 import { InjectionToken, Provider } from '@angular/core';
 import { AvailableLangs, HashMap } from './types';
 
-export type TranslocoConfig = {
+export interface TranslocoConfig {
   defaultLang: string;
   reRenderOnLangChange?: boolean;
   prodMode?: boolean;
@@ -21,10 +21,10 @@ export type TranslocoConfig = {
   interpolation?: [string, string];
 };
 
-export const TRANSLOCO_CONFIG = new InjectionToken('TRANSLOCO_CONFIG', {
+export const TRANSLOCO_CONFIG = new InjectionToken<TranslocoConfig>('TRANSLOCO_CONFIG', {
   providedIn: 'root',
   factory: () => {
-    return {};
+    return { defaultLang: 'en' };
   }
 });
 

@@ -1,18 +1,16 @@
 import { getLangFromScope, getPipeValue, getScopeFromLang } from './shared';
 
-type LangResolverParams = {
-  inline: string | undefined;
-  provider: string | undefined;
-  active: string | undefined;
+interface LangResolverParams {
+  inline?: string;
+  provider?: string;
+  active: string;
 };
 
 export class LangResolver {
   initialized = false;
 
   // inline => provider => active
-  resolve(
-    { inline, provider, active }: LangResolverParams = { inline: undefined, provider: undefined, active: undefined }
-  ) {
+  resolve({ inline, provider, active }: LangResolverParams): string {
     let lang = active;
     /**
      * When the user changes the lang we need to update
@@ -20,6 +18,7 @@ export class LangResolver {
      */
     if (this.initialized) {
       lang = active;
+
       return lang;
     }
 
@@ -34,6 +33,7 @@ export class LangResolver {
     }
 
     this.initialized = true;
+
     return lang;
   }
 
@@ -49,6 +49,7 @@ export class LangResolver {
    */
   resolveLangBasedOnScope(lang: string) {
     const scope = getScopeFromLang(lang);
+
     return scope ? getLangFromScope(lang) : lang;
   }
 
@@ -62,7 +63,7 @@ export class LangResolver {
    * resolveLangPath('en') => en
    *
    */
-  resolveLangPath(lang: string, scope: string | undefined) {
+  resolveLangPath(lang: string, scope?: string) {
     return scope ? `${scope}/${lang}` : lang;
   }
 }

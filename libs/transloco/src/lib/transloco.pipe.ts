@@ -18,14 +18,14 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
   private lastValue: string = '';
   private lastKey: string | undefined;
   private listenToLangChange: boolean;
-  private path: string;
+  private path: string | undefined;
   private langResolver = new LangResolver();
   private scopeResolver = new ScopeResolver(this.translocoService);
 
   constructor(
     private translocoService: TranslocoService,
-    @Optional() @Inject(TRANSLOCO_SCOPE) private providerScope: MaybeArray<TranslocoScope>,
-    @Optional() @Inject(TRANSLOCO_LANG) private providerLang: string | null,
+    @Optional() @Inject(TRANSLOCO_SCOPE) private providerScope: MaybeArray<TranslocoScope> | undefined,
+    @Optional() @Inject(TRANSLOCO_LANG) private providerLang: string | undefined,
     private cdr: ChangeDetectorRef
   ) {
     this.listenToLangChange = shouldListenToLangChanges(this.translocoService, this.providerLang);
@@ -34,7 +34,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
   // null is for handling strict mode + async pipe types https://github.com/ngneat/transloco/issues/311
   transform(key: string | null, params?: HashMap | undefined, inlineLang?: string | undefined): string {
     if (!key) {
-      return key;
+      return '';
     }
 
     const keyName = params ? `${key}${JSON.stringify(params)}` : key;
@@ -57,8 +57,8 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
 
           return Array.isArray(this.providerScope)
             ? forkJoin(
-                (<TranslocoScope[]>this.providerScope).map(providerScope => this.resolveScope(lang, providerScope))
-              )
+              (<TranslocoScope[]>this.providerScope).map(providerScope => this.resolveScope(lang, providerScope))
+            )
             : this.resolveScope(lang, this.providerScope);
         }),
         listenOrNotOperator(this.listenToLangChange)
@@ -73,7 +73,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
   }
 
   private updateValue(key: string, params?: HashMap | undefined) {
-    const lang = this.langResolver.resolveLangBasedOnScope(this.path);
+    const lang = this.langResolver.resolveLangBasedOnScope(this.path!);
     this.lastValue = this.translocoService.translate(key, params, lang);
     this.cdr.markForCheck();
   }

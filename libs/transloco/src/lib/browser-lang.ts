@@ -5,7 +5,7 @@ import { isBrowser } from './helpers';
  */
 export function getBrowserLang(): string | undefined {
   let browserLang = getBrowserCultureLang();
-  if (isBrowser() === false || !browserLang) {
+  if (!browserLang || !isBrowser()) {
     return undefined;
   }
 
@@ -24,8 +24,8 @@ export function getBrowserLang(): string | undefined {
  * Returns the culture language code name from the browser, e.g. "en-US"
  */
 export function getBrowserCultureLang(): string {
-  if (isBrowser() === false) {
-    return undefined;
+  if (!isBrowser()) {
+    return '';
   }
 
   const navigator = window.navigator as any;

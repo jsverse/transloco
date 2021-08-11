@@ -43,7 +43,7 @@ export function initTranslocoService(
   exports: [TranslocoModule]
 })
 export class TranslocoTestingModule {
-  static forRoot(options: TranslocoTestingOptions) {
+  static forRoot(options: TranslocoTestingOptions): ModuleWithProviders<TranslocoTestingModule> {
     return {
       ngModule: TranslocoTestingModule,
       providers: [

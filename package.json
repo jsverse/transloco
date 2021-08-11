@@ -36,6 +36,7 @@
     "flat": "^5.0.2",
     "fs-extra": "^9.1.0",
     "glob": "^7.1.7",
+    "lodash.kebabcase": "^4.1.1",
     "messageformat": "^2.3.0",
     "replace-in-file": "^6.2.0",
     "rxjs": "~6.6.0",

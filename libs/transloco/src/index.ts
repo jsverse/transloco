@@ -18,7 +18,6 @@ export {
   getFunctionArgs,
   TranslocoTranspilerFunction
 } from './lib/transloco.transpiler';
-export { Translation, FailedEvent, HashMap, LoadedEvent, TranslocoEvents } from './lib/types';
 export { TRANSLOCO_SCOPE } from './lib/transloco-scope';
 export { TRANSLOCO_LOADING_TEMPLATE } from './lib/transloco-loading-template';
 export { TRANSLOCO_LANG } from './lib/transloco-lang';
@@ -36,9 +35,6 @@ export {
   TranslocoMissingHandlerData
 } from './lib/transloco-missing-handler';
 export { getBrowserCultureLang, getBrowserLang } from './lib/browser-lang';
+export { getPipeValue, getLangFromScope, getScopeFromLang } from './lib/shared';
 export * from './lib/types';
 export * from './lib/helpers';
-export { ProviderScope } from './lib/types';
-export { getPipeValue } from './lib/shared';
-export { getLangFromScope } from './lib/shared';
-export { getScopeFromLang } from './lib/shared';

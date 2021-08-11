@@ -1,11 +1,54 @@
 {
   "name": "@ngneat/transloco",
-  "version": "0.0.1",
+  "version": "3.0.0",
+  "description": "The internationalization (i18n) library for Angular",
+  "schematics": "./schematics/collection.json",
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/ngneat/transloco/issues"
+  },
+  "homepage": "https://github.com/ngneat/transloco#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ngneat/transloco"
+  },
+  "keywords": [
+    "angular",
+    "angular 2",
+    "i18n",
+    "translate",
+    "angular translate",
+    "angular i18n",
+    "transloco"
+  ],
+  "author": {
+    "name": "Netanel Basal",
+    "email": "netanel7799@gmail.com",
+    "url": "https://netbasal.com"
+  },
+  "contributors": [
+    {
+      "name": "Shahar Kazaz",
+      "url": "https://github.com/shaharkazaz"
+    },
+    {
+      "name": "Itay Oded",
+      "url": "https://github.com/itayod"
+    }
+  ],
+  "license": "MIT",
   "peerDependencies": {
-    "@angular/common": "^12.1.0",
-    "@angular/core": "^12.1.0"
+    "@angular/core": ">=6.0.0",
+    "rxjs": ">=6.0.0 || ^5.6.0-forward-compat.4"
   },
   "dependencies": {
-    "tslib": "^2.2.0"
+    "tslib": "^2.2.0",
+    "flat": "5.0.2",
+    "@ngneat/transloco-utils": "^1.0.6",
+    "replace-in-file": "^6.2.0",
+    "ora": "^5.4.1",
+    "lodash.kebabcase": "^4.1.1"
   }
 }

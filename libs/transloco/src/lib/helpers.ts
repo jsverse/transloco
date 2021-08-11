@@ -1,12 +1,13 @@
 import { ProviderScope, Translation } from './types';
-import flat from 'flat';
+import {flatten as _flatten, unflatten as _unflatten} from 'flat';
 
-export function getValue(obj: object, path: string) {
+export function getValue<T extends object>(obj: T, path: keyof T) {
   /* For cases where the key is like: 'general.something.thing' */
-  if (obj && obj.hasOwnProperty(path)) {
+  if (obj?.hasOwnProperty(path)) {
     return obj[path];
   }
-  return path.split('.').reduce((p, c) => p && p[c], obj);
+
+  return (path as string).split('.').reduce((p, c) => p?.[c], obj as any);
 }
 
 export function setValue(obj: any, prop: string, val: any) {
@@ -28,7 +29,7 @@ export function setValue(obj: any, prop: string, val: any) {
   return obj;
 }
 
-export function size(collection) {
+export function size(collection: any): number {
   if (!collection) {
     return 0;
   }
@@ -44,7 +45,7 @@ export function size(collection) {
   return !!collection ? collection.length : 0;
 }
 
-export function isEmpty(collection) {
+export function isEmpty(collection: any): boolean {
   return size(collection) === 0;
 }
 
@@ -60,11 +61,11 @@ export function isNumber(val: any): val is number {
   return typeof val === 'number';
 }
 
-export function isObject(item): boolean {
+export function isObject(item: any): boolean {
   return item && typeof item === 'object' && !Array.isArray(item);
 }
 
-export function coerceArray(val) {
+export function coerceArray<T>(val: T): T[] {
   return Array.isArray(val) ? val : [val];
 }
 
@@ -86,7 +87,7 @@ export function isBrowser() {
   return typeof window !== 'undefined';
 }
 
-export function isNil(value: any) {
+export function isNil(value: any): value is null | undefined {
   return value === null || value === undefined;
 }
 
@@ -113,9 +114,9 @@ export function hasInlineLoader(item: any): item is ProviderScope {
 }
 
 export function unflatten(obj: Translation): Translation {
-  return flat.unflatten(obj, { safe: true });
+  return _unflatten(obj);
 }
 
 export function flatten(obj: Translation): Translation {
-  return flat(obj, { safe: true });
+  return _flatten(obj, { safe: true });
 }

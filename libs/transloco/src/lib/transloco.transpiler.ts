@@ -11,6 +11,7 @@ export interface TranslocoTranspiler {
   onLangChanged?(lang: string): void;
 }
 
+@Injectable()
 export class DefaultTranspiler implements TranslocoTranspiler {
   protected interpolationMatcher: RegExp;
 
@@ -88,7 +89,7 @@ export class DefaultTranspiler implements TranslocoTranspiler {
 }
 
 function resolveMatcher(userConfig?: TranslocoConfig): RegExp {
-  const [start, end] = userConfig && userConfig.interpolation ? userConfig.interpolation : defaultConfig.interpolation;
+  const [start, end] = userConfig && userConfig.interpolation ? userConfig.interpolation : defaultConfig.interpolation!;
 
   return new RegExp(`${start}(.*?)${end}`, 'g');
 }

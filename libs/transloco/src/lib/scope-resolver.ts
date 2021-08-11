@@ -11,7 +11,7 @@ export class ScopeResolver {
   constructor(private translocoService: TranslocoService) {}
 
   // inline => provider
-  resolve({ inline, provider }: ScopeResolverParams = { inline: undefined, provider: undefined }): string {
+  resolve({ inline, provider }: ScopeResolverParams = { inline: undefined, provider: undefined }): string | undefined {
     if (inline) {
       return inline;
     }
@@ -20,6 +20,7 @@ export class ScopeResolver {
       if (isScopeObject(provider)) {
         const { scope, alias = toCamelCase(scope) } = provider as ProviderScope;
         this.translocoService._setScopeAlias(scope, alias);
+
         return scope;
       }
 
