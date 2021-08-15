@@ -91,6 +91,10 @@ header.hero .hero__subtitle {
   color: #e6e6e6;
 }
 
+[data-theme=dark] .admonition-content code {
+  color: inherit;
+}
+
 [data-theme='dark'] .main-wrapper {
   background-color: #282c35;
 }
