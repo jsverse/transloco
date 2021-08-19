@@ -2,7 +2,7 @@ import { InjectionToken } from '@angular/core';
 import LOCALE_CURRENCY from './locale-currency';
 import { NumberFormatOptions, TranslocoLocaleConfig, LocaleConfigMapping, LangToLocaleMapping, LocaleToCurrencyMapping } from './transloco-locale.types';
 
-export const defaultConfig: TranslocoLocaleConfig = {
+export const defaultConfig: Required<TranslocoLocaleConfig> = {
   localeConfig: {
     global: {},
     localeBased: {}

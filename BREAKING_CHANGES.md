@@ -51,14 +51,6 @@ We need this information to know whether we're dealing with a `language` or a `s
 - Remove callback param support from `translate()`.
 - Remove messageformat from the library in favor of the external library.
 
-**We created a schematics command that'll do most of the work for you**
-
-```
-ng g @ngneat/transloco:upgrade
-```
-
-See [v2-upgrade.md](https://github.com/ngneat/transloco/tree/master/schematics/src/upgrade/v2-upgrade.md) for more information.
-
 ## Features
 
 - Each translation file is now flatten in runtime. This change brings benefits such as lower memory consumption, and faster value accessor.

@@ -1,13 +1,14 @@
 import { fakeAsync } from '@angular/core/testing';
-import { createService, runLoader } from '../transloco.mocks';
+import { createService, runLoader } from '../mocks';
 import { HashMap, TranslocoService } from '@ngneat/transloco';
 
 describe('selectTranslateObject', () => {
   let service: TranslocoService;
-  let spy;
+  let spy: jasmine.Spy<jasmine.Func>;
+  
   beforeEach(() => {
     service = createService();
-    spy = jasmine.createSpy();
+    spy = jasmine.createSpy('translate subscription').and.callThrough();
   });
 
   describe('The translation value is an object', () => {

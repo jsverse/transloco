@@ -1,7 +1,8 @@
-import { createService } from '../transloco.mocks';
+import { createService } from '../mocks';
+import {TranslocoService} from "@ngneat/transloco";
 
 describe('translate', () => {
-  let service;
+  let service: TranslocoService;
 
   beforeEach(() => (service = createService()));
 

@@ -1,21 +1,30 @@
-import { createComponentFactory, Spectator } from '@ngneat/spectator';
-import { Component } from '@angular/core';
-import { providersMock, runLoader } from '../transloco.mocks';
-import { defaultConfig, TRANSLOCO_LANG, TRANSLOCO_SCOPE, TranslocoModule, TranslocoService } from '@ngneat/transloco';
-import { fakeAsync } from '@angular/core/testing';
-import { provideTranslocoConfig } from '../../transloco.config';
+import {createComponentFactory, Spectator} from '@ngneat/spectator';
+import {Component} from '@angular/core';
+import {providersMock, runLoader} from '../mocks';
+import {
+  defaultConfig,
+  TRANSLOCO_CONFIG,
+  TRANSLOCO_LANG,
+  TRANSLOCO_SCOPE,
+  TranslocoModule,
+  TranslocoService
+} from '@ngneat/transloco';
+import {fakeAsync} from '@angular/core/testing';
 
-export const listenToLangChangesProvider = provideTranslocoConfig({
-  availableLangs: ['en', 'es'],
-  reRenderOnLangChange: true
-});
+export const listenToLangChangesProvider = {
+    provide: TRANSLOCO_CONFIG,
+    useValue: {
+      ...defaultConfig, availableLangs: ['en', 'es'],
+      reRenderOnLangChange: true
+    }
+};
 
 @Component({
   template: `
     <p>{{ 'home' | transloco }}</p>
     <h1>{{ 'nested.title' | transloco }}</h1>
-    <span>{{ 'alert' | transloco: { value: 'netanel' } }}</span>
-    <h3>{{ 'alert' | transloco: { value: value } }}</h3>
+    <span>{{ 'alert' | transloco: {value: 'netanel'} }}</span>
+    <h3>{{ 'alert' | transloco: {value: value} }}</h3>
     <h5>{{ 'home' | transloco: null:'es' }}</h5>
   `
 })
@@ -59,7 +68,7 @@ describe('Pipe', () => {
         detectChanges: false,
         providers: [listenToLangChangesProvider]
       });
-      const service = spectator.get(TranslocoService);
+      const service = spectator.inject(TranslocoService);
       spectator.detectChanges();
       runLoader();
       spectator.detectChanges();
@@ -98,7 +107,7 @@ describe('Pipe', () => {
       expect(spectator.query('h1')).toHaveText('Title spanish');
       expect(spectator.query('span')).toHaveText('alert netanel spanish');
       // not static should changed
-      spectator.get(TranslocoService).setActiveLang('en');
+      spectator.inject(TranslocoService).setActiveLang('en');
       runLoader();
       spectator.detectChanges();
       expect(spectator.query('p')).toHaveText('home english');
@@ -130,7 +139,7 @@ describe('Pipe', () => {
       expect(spectator.query('h1')).toHaveText('Title spanish');
       expect(spectator.query('span')).toHaveText('alert netanel spanish');
       // static should NOT changed
-      spectator.get(TranslocoService).setActiveLang('en');
+      spectator.inject(TranslocoService).setActiveLang('en');
       runLoader();
       spectator.detectChanges();
       expect(spectator.query('p')).toHaveText('home spanish');
@@ -143,10 +152,11 @@ describe('Pipe', () => {
     template: `
       <p>{{ 'lazyPage.title' | transloco }}</p>
       <h1>{{ 'nested.title' | transloco }}</h1>
-      <span>{{ 'alert' | transloco: { value: 'netanel' } }}</span>
+      <span>{{ 'alert' | transloco: {value: 'netanel'} }}</span>
     `
   })
-  class TestScopePipe {}
+  class TestScopePipe {
+  }
 
   describe('Scope lang', () => {
     let spectator: Spectator<TestScopePipe>;
@@ -171,7 +181,7 @@ describe('Pipe', () => {
       expect(spectator.query('h1')).toHaveText('Title english');
       expect(spectator.query('span')).toHaveText('alert netanel english');
       // not static should changed
-      spectator.get(TranslocoService).setActiveLang('es');
+      spectator.inject(TranslocoService).setActiveLang('es');
       runLoader();
       spectator.detectChanges();
       expect(spectator.query('p')).toHaveText('Admin Lazy spanish');

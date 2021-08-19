@@ -2,20 +2,18 @@ import { fakeAsync } from '@angular/core/testing';
 import { TRANSLOCO_SCOPE, TranslocoDirective, TranslocoModule } from '@ngneat/transloco';
 import { createComponentFactory, Spectator, SpectatorHost } from '@ngneat/spectator';
 import { createFactory } from './shared';
-import { providersMock, runLoader } from '../transloco.mocks';
+import { providersMock, runLoader } from '../mocks';
 import { Component } from '@angular/core';
 
 describe('Scope alias', () => {
   let spectator: SpectatorHost<TranslocoDirective>;
-  const createHost = createFactory([
-    {
+  const createHost = createFactory([{
       provide: TRANSLOCO_SCOPE,
       useValue: {
         scope: 'lazy-page',
         alias: 'lazy'
       }
-    }
-  ]);
+    }]);
 
   it('should support scope alias', fakeAsync(() => {
     spectator = createHost(`<section *transloco="let t;"><div>{{t('lazy.title')}}</div></section>`);

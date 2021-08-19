@@ -25,7 +25,7 @@ describe('LazyMultipleScopesComponent', () => {
     spectator.fixture.detectChanges();
     expect(spectator.query('.admin-page-title')).toHaveText('Admin spanish');
     expect(spectator.query('.lazy-page-title')).toHaveText('Admin Lazy spanish');
-    const service = spectator.get(TranslocoService);
+    const service = spectator.inject(TranslocoService);
     service.setActiveLang('en');
     spectator.detectChanges();
     expect(spectator.query('.admin-page-title')).toHaveText('Admin english');

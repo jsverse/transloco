@@ -20,8 +20,7 @@ import { getProject, getProjectPath } from '../utils/projects';
 import { createTranslateFilesFromOptions } from '../utils/translations';
 import { getConfig } from '../utils/transloco';
 import { SchemaOptions } from './schema';
-
-const p = require('path');
+import * as p from 'path';
 
 function getProviderValue(options: SchemaOptions) {
   const name = dasherize(options.name);

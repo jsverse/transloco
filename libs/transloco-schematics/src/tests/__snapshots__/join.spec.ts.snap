@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Join scope map strategy should use multi projects scopes 1`] = `
+"{
+  \\"hello\\": \\"hola\\"
+}"
+`;
+
+exports[`Join scope map strategy should use multi projects scopes 2`] = `""`;
+
+exports[`Join scope map strategy should use scope map strategy 1`] = `
+"{
+  \\"hello\\": \\"hola\\"
+}"
+`;
+
+exports[`Join scope map strategy should use scope map strategy 2`] = `""`;
+
+exports[`Join scope map strategy should use scope map strategy multi scopes 1`] = `
+"{
+  \\"hello\\": \\"hola\\"
+}"
+`;
+
+exports[`Join scope map strategy should use scope map strategy multi scopes 2`] = `""`;

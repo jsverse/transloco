@@ -53,6 +53,7 @@ function parserFactory(format: TranslationFileFormat): Parser {
 
 export default function(options: SchemaOptions): Rule {
   return (host: Tree, context: SchematicContext) => {
+    debugger;
     const root = getTranslationsRoot(host, options);
     const parser = parserFactory(options.format);
 
@@ -60,11 +61,11 @@ export default function(options: SchemaOptions): Rule {
     const translationEntryPaths = getTranslationEntryPaths(host, root);
 
     const newTranslation = {};
-    translatedFiles.forEach(t => {
-      newTranslation[t.lang] = translationEntryPaths.reduce((acc, path) => {
-        return reduceTranslations(host, path.path, t.translation, t.lang, path.scope);
-      }, t.translation);
-    });
+    for (const {lang, translation} of translatedFiles) {
+      newTranslation[lang] = translationEntryPaths.reduce((acc, {scope, path}) => {
+        return reduceTranslations(host, path, translation, lang, scope);
+      }, translation);
+    }
 
     host.getDir(root).subfiles.forEach(fileName => {
       const lang = fileName.split('.')[0];

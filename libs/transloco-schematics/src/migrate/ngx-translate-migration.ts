@@ -1,6 +1,6 @@
-import ora from "ora";
+import * as ora from "ora";
+import * as p from "path";
 import {replaceInFile} from "replace-in-file";
-import p from "path";
 
 // Example: `./src/ng2/**/*.html`;
 export function run(path) {

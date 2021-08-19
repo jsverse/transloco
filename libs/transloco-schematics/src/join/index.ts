@@ -12,7 +12,7 @@ import {
 } from '../utils/transloco';
 import { SchemaOptions } from './schema';
 import { normalize } from '@angular-devkit/core';
-import fs from 'fs-extra';
+import * as fs from 'fs-extra';
 
 type Builder = (tree: Tree, path: string, content: Object) => void;
 
@@ -73,7 +73,7 @@ export default function(options: SchemaOptions): Rule {
     deletePrevFiles(host, options);
     const root = getTranslationsRoot(host, options);
     const defaultLang = getDefaultLang(options);
-    if (!options.includeDefaultLang && !defaultLang) {
+    if (options.includeDefaultLang && !defaultLang) {
       throw new SchematicsException(
         `Please specify the default project's language using --default-Lang or in transloco.config.js file.`
       );

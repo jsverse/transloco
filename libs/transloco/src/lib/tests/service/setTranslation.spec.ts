@@ -1,24 +1,25 @@
-import { flatten } from '@ngneat/transloco';
-import { createService, mockLangs } from '../transloco.mocks';
+import {flatten, Translation, TranslocoService} from '@ngneat/transloco';
+import { createService, mockLangs } from '../mocks';
 import { fakeAsync } from '@angular/core/testing';
 import { loadLang } from './utils';
 
 describe('setTranslation', () => {
-  let service;
-
+  let service: TranslocoService;
+  let setTranslationsSpy: jasmine.Spy;
+  
   beforeEach(() => {
     service = createService();
-    spyOn(service.translations, 'set').and.callThrough();
+    setTranslationsSpy = spyOn((service as any).translations, 'set').and.callThrough();
   });
 
   it('should add translation to the map after passing through the interceptor', () => {
-    spyOn(service.interceptor, 'preSaveTranslation').and.callThrough();
+    const interceptorSpy = spyOn((service as any).interceptor, 'preSaveTranslation').and.callThrough();
     const lang = 'en';
     const translation = flatten(mockLangs[lang]);
     service.setTranslation(translation, lang);
-    expect(service.interceptor.preSaveTranslation).toHaveBeenCalledWith(translation, lang);
-    expect(service.translations.set).toHaveBeenCalledWith(lang, translation);
-    expect(service.translations.set).toHaveBeenCalledTimes(1);
+    expect(interceptorSpy).toHaveBeenCalledWith(translation, lang);
+    expect(setTranslationsSpy).toHaveBeenCalledWith(lang, translation);
+    expect(setTranslationsSpy).toHaveBeenCalledTimes(1);
   });
 
   it('should merge the data by default', fakeAsync(() => {
@@ -54,10 +55,11 @@ describe('setTranslation', () => {
   }));
 
   describe('scopes', () => {
-    let lang, translation;
+    let lang: string;
+    let translation: Translation;
 
     beforeEach(() => {
-      service.translations.set('en', mockLangs.en);
+      (service as any).translations.set('en', mockLangs.en);
       lang = 'lazy-page/en';
       translation = mockLangs[lang];
     });
@@ -68,24 +70,24 @@ describe('setTranslation', () => {
         ...flatten(mockLangs.en),
         ...flatten({ lazyPage: { ...translation } })
       };
-      expect(service.translations.set).toHaveBeenCalledWith('en', merged);
+      expect(setTranslationsSpy).toHaveBeenCalledWith('en', merged);
     });
 
     it("should map the scope's name in the merged translation", () => {
-      service.mergedConfig.scopeMapping = { 'lazy-page': 'kazaz' };
+      (service as any).mergedConfig.scopeMapping = { 'lazy-page': 'kazaz' };
       service.setTranslation(translation, lang);
       const merged = {
         ...flatten(mockLangs.en),
         ...flatten({ kazaz: { ...translation } })
       };
-      expect(service.translations.set).toHaveBeenCalledWith('en', merged);
+      expect(setTranslationsSpy).toHaveBeenCalledWith('en', merged);
     });
 
     it("should change scope's name based on alias", () => {
       service._setScopeAlias('lazy-page', 'myScopeAlias');
       service.setTranslation(translation, lang);
       const merged = { ...flatten(mockLangs.en), ...flatten({ myScopeAlias: { ...translation } }) };
-      expect(service.translations.set).toHaveBeenCalledWith('en', merged);
+      expect(setTranslationsSpy).toHaveBeenCalledWith('en', merged);
     });
   });
 });

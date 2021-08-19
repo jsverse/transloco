@@ -1,16 +1,17 @@
 import { TranslocoDatePipe } from '../../pipes/transloco-date.pipe';
-import { createFakeService, createFakeCDR, LOCALE_CONFIG_MOCK } from '../mocks';
+import { mockLocaleService, mockCDR, LOCALE_CONFIG_MOCK } from '../mocks';
 import { defaultConfig } from '../../transloco-locale.config';
-import { DateFormatOptions } from '../../transloco-locale.types';
+import {ChangeDetectorRef} from "@angular/core";
+import {TranslocoLocaleService} from '../../transloco-locale.service';
 
 describe('TranslocoDatePipe', () => {
-  let service;
-  let date;
-  let cdr;
+  let service: TranslocoLocaleService;
+  let date: Date;
+  let cdr: ChangeDetectorRef;
 
   beforeEach(() => {
-    service = createFakeService();
-    cdr = createFakeCDR();
+    service = mockLocaleService();
+    cdr = mockCDR();
     date = new Date(2019, 9, 7, 12, 0, 0);
   });
 
@@ -41,7 +42,7 @@ describe('TranslocoDatePipe', () => {
 
   it('should consider a locale config over global', () => {
     spyOn(Intl, 'DateTimeFormat').and.callThrough();
-    service = createFakeService('es-ES');
+    service = mockLocaleService('es-ES');
     const pipe = new TranslocoDatePipe(service, cdr, LOCALE_CONFIG_MOCK);
     pipe.transform(date);
 
@@ -64,8 +65,8 @@ describe('TranslocoDatePipe', () => {
 
   it('should handle none date values', () => {
     const pipe = new TranslocoDatePipe(service, cdr, LOCALE_CONFIG_MOCK);
-    expect(pipe.transform(null)).toEqual('');
-    expect(pipe.transform(<any>{})).toEqual('');
+    expect(pipe.transform(null as any)).toEqual('');
+    expect(pipe.transform({} as any)).toEqual('');
     expect(pipe.transform('none date string')).toEqual('');
   });
 

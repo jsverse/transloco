@@ -8,7 +8,7 @@ import {
 } from '@ngneat/transloco';
 import { createFactory } from './directive/shared';
 import { fakeAsync } from '@angular/core/testing';
-import { providersMock, runLoader, setlistenToLangChange, inlineScope } from './transloco.mocks';
+import { providersMock, runLoader, setlistenToLangChange, inlineScope } from './mocks';
 import { Component } from '@angular/core';
 import { listenToLangChangesProvider } from './pipe/pipe-integration.spec';
 
@@ -17,7 +17,7 @@ const inlineLoaders = {
   useValue: inlineScope
 };
 
-function updateView(spectator, service) {
+function updateView(spectator: Spectator<any>, service: TranslocoService) {
   runLoader();
   spectator.detectChanges();
   expect(spectator.query('span')).toHaveText('Todos Title English');
@@ -46,7 +46,7 @@ describe('Inline loaders: directive', () => {
       { detectChanges: false }
     );
 
-    const service = spectator.get(TranslocoService);
+    const service = spectator.inject(TranslocoService);
     setlistenToLangChange(service);
     spectator.detectChanges();
     updateView(spectator, service);
@@ -73,7 +73,7 @@ describe('Inline loaders: pipe', () => {
   it('should support inline loaders', fakeAsync(() => {
     spectator = createComponent({ detectChanges: false });
 
-    const service = spectator.get(TranslocoService);
+    const service = spectator.inject(TranslocoService);
     spectator.detectChanges();
 
     updateView(spectator, service);

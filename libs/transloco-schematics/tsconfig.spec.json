@@ -7,9 +7,6 @@
   },
   "include": [
     "**/*.spec.ts",
-    "**/*.spec.tsx",
-    "**/*.spec.js",
-    "**/*.spec.jsx",
     "**/*.d.ts"
   ]
 }

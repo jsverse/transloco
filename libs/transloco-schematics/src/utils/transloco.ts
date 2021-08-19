@@ -5,7 +5,7 @@ import { SchemaOptions } from '../join/schema';
 import { CONFIG_FILE } from '../schematics.consts';
 import { stringifyList } from './array';
 import { getProject } from './projects';
-import p from 'path';
+import * as p from 'path';
 
 let config: TranslocoGlobalConfig;
 

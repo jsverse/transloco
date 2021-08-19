@@ -1,9 +1,9 @@
 import { fakeAsync } from '@angular/core/testing';
-import { TRANSLOCO_SCOPE, ProviderScope } from '@ngneat/transloco';
-import { createService, runLoader, inlineScope } from '../transloco.mocks';
+import { createService, runLoader, inlineScope } from '../mocks';
+import {TranslocoService} from "@ngneat/transloco";
 
 describe('selectTranslate', () => {
-  let service;
+  let service: TranslocoService;
 
   beforeEach(() => (service = createService()));
 
@@ -44,21 +44,21 @@ describe('selectTranslate', () => {
 
   it('should support scope', fakeAsync(() => {
     const spy = jasmine.createSpy();
-    service.selectTranslate('title', null, 'lazy-page').subscribe(spy);
+    service.selectTranslate('title', {}, 'lazy-page').subscribe(spy);
     runLoader();
     expect(spy).toHaveBeenCalledWith('Admin Lazy english');
   }));
 
   it('should support scope with lang', fakeAsync(() => {
     const spy = jasmine.createSpy();
-    service.selectTranslate('title', null, 'lazy-page/es').subscribe(spy);
+    service.selectTranslate('title', {}, 'lazy-page/es').subscribe(spy);
     runLoader();
     expect(spy).toHaveBeenCalledWith('Admin Lazy spanish');
   }));
 
   it('should listen to lang change when passing just the scope', fakeAsync(() => {
     const spy = jasmine.createSpy();
-    service.selectTranslate('title', null, 'lazy-page').subscribe(spy);
+    service.selectTranslate('title', {}, 'lazy-page').subscribe(spy);
     runLoader();
     service.setActiveLang('en');
     runLoader();
@@ -67,7 +67,7 @@ describe('selectTranslate', () => {
 
   it('should not listen to lang change when passing scope with lang', fakeAsync(() => {
     const spy = jasmine.createSpy();
-    service.selectTranslate('title', null, 'lazy-page/es').subscribe(spy);
+    service.selectTranslate('title', {}, 'lazy-page/es').subscribe(spy);
     runLoader();
     service.setActiveLang('en');
     runLoader();

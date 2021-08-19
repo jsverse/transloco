@@ -1,8 +1,8 @@
 import { fakeAsync } from '@angular/core/testing';
 import { TranslocoDirective, TranslocoService } from '@ngneat/transloco';
-import { runLoader, setlistenToLangChange } from '../transloco.mocks';
+import { runLoader, setlistenToLangChange } from '../mocks';
 import { createFactory, testMergedScopedTranslation, testScopedTranslation, testTranslationWithRead } from './shared';
-import { SpectatorHost } from '@ngneat/spectator';
+import {SpectatorHost, SpyObject} from '@ngneat/spectator';
 
 describe('Structural directive', () => {
   let spectator: SpectatorHost<TranslocoDirective>;
@@ -38,7 +38,7 @@ describe('Structural directive', () => {
      `,
       { detectChanges: false }
     );
-    const service = spectator.get(TranslocoService) as any;
+    const service = spectator.inject(TranslocoService);
     setlistenToLangChange(service);
     spectator.detectChanges();
     runLoader();
@@ -62,7 +62,7 @@ describe('Structural directive', () => {
     spectator = createHost(`<section *transloco="let t"></section>`, {
       detectChanges: false
     });
-    const service = spectator.get<TranslocoService>(TranslocoService);
+    const service = spectator.inject(TranslocoService);
 
     setlistenToLangChange(service);
     spectator.detectChanges();
@@ -76,7 +76,7 @@ describe('Structural directive', () => {
     spectator = createHost(`<div transloco="home"></div>`);
     runLoader();
     expect(spectator.queryHost('[transloco]')).toHaveText('home english');
-    spectator.get(TranslocoService).setActiveLang('es');
+    spectator.inject(TranslocoService).setActiveLang('es');
     spectator.detectChanges();
     runLoader();
     expect(spectator.queryHost('[transloco]')).toHaveText('home english');
@@ -132,8 +132,6 @@ describe('Structural directive', () => {
   });
 
   describe('CurrentLang', () => {
-    let service;
-
     beforeEach(fakeAsync(() => {
       spectator = createHost(
         `
@@ -143,7 +141,7 @@ describe('Structural directive', () => {
      `,
         { detectChanges: false }
       );
-      service = spectator.get(TranslocoService) as any;
+      const service = spectator.inject(TranslocoService);
       setlistenToLangChange(service);
       spectator.detectChanges();
       runLoader();
@@ -155,7 +153,7 @@ describe('Structural directive', () => {
     }));
 
     it('should change on langChanges', fakeAsync(() => {
-      (service as TranslocoService).setActiveLang('es');
+      spectator.inject(TranslocoService).setActiveLang('es');
       runLoader();
       spectator.detectChanges();
       expect(spectator.queryHost('div')).toHaveText('es');

@@ -5,15 +5,17 @@ import { DefaultDateTransformer, DefaultNumberTransformer } from '../transloco-l
 import { TranslocoLocaleService } from '../transloco-locale.service';
 import { Locale } from '../transloco-locale.types';
 import { LocaleConfig } from '../../lib/transloco-locale.types';
+import {ChangeDetectorRef} from "@angular/core";
+import {Mock} from "ts-mocks";
 
-export function createFakeService(locale: Locale = 'en-US') {
+export function mockLocaleService(locale: Locale = 'en-US') {
   return mockService(mockTranslocoService(locale), locale);
 }
 
-export function createFakeCDR() {
-  return {
-    markForCheck: jest.fn()
-  };
+export function mockCDR() {
+  return new Mock<ChangeDetectorRef>({
+    markForCheck: () => {}
+  }).Object;
 }
 
 export const LOCALE_CURRENCY_MOCK = LOCALE_CURRENCY;

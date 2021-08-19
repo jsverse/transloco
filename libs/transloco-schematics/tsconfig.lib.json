@@ -4,9 +4,8 @@
     "outDir": "../../dist/out-tsc",
     "declaration": true,
     "types": ["node"],
-    "module": "CommonJS",
-    "allowSyntheticDefaultImports": true
+    "module": "commonjs",
   },
   "include": ["**/*.ts"],
-  "exclude": ["**/*.spec.ts"]
+  "exclude": ["src/tests/**/*.ts"]
 }

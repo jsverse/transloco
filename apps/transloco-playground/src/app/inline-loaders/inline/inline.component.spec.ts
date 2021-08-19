@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { InlineComponent } from './inline.component';
 import { getTranslocoModule } from '../../transloco-testing.module';
@@ -8,7 +8,7 @@ describe('InlineComponent', () => {
   let component: InlineComponent;
   let fixture: ComponentFixture<InlineComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [getTranslocoModule()],
       declarations: [InlineComponent],

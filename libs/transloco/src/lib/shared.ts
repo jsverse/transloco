@@ -13,8 +13,10 @@ export function getScopeFromLang(lang: string): string {
   if (!lang) {
     return '';
   }
+  
   const split = lang.split('/');
   split.pop();
+  
   return split.join('/');
 }
 

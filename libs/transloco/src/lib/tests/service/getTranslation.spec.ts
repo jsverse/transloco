@@ -1,10 +1,10 @@
 import { fakeAsync } from '@angular/core/testing';
-import { flatten } from '@ngneat/transloco';
-import { createService, mockLangs } from '../transloco.mocks';
+import {flatten, TranslocoService} from '@ngneat/transloco';
+import { createService, mockLangs } from '../mocks';
 import { loadLang } from './utils';
 
 describe('getTranslation', () => {
-  let service;
+  let service: TranslocoService;
 
   beforeEach(() => (service = createService()));
 

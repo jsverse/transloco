@@ -21,7 +21,7 @@ describe('OnPushComponent', () => {
     expect(spectator.query('.structural [data-cy=current-lang]')).toHaveText('Current Lang: es');
     expect(spectator.query('.pipe [data-cy=p-regular]')).toHaveText('Regular: home spanish');
     expect(spectator.query('.pipe [data-cy=p-regular]')).toHaveText('Regular: home spanish');
-    const service = spectator.get(TranslocoService);
+    const service = spectator.inject(TranslocoService);
     service.setActiveLang('en');
     spectator.detectChanges();
     expect(spectator.query('.structural [data-cy=regular]')).toHaveText('Regular: home english');

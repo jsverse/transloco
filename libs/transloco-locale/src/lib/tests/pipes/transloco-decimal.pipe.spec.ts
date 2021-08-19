@@ -1,15 +1,18 @@
-import { defaultConfig, LocaleConfig } from './../../transloco-locale.config';
-import { createFakeService, createFakeCDR } from '../mocks';
+import { defaultConfig } from './../../transloco-locale.config';
+import { mockLocaleService, mockCDR } from '../mocks';
 import { TranslocoDecimalPipe } from './../../pipes/transloco-decimal.pipe';
+import {ChangeDetectorRef} from "@angular/core";
+import {TranslocoLocaleService} from '../../transloco-locale.service';
+import {LocaleConfig} from '../../transloco-locale.types';
 
 describe('TranslocoDecimalPipe', () => {
-  let service;
-  let cdr;
+  let service: TranslocoLocaleService;
+  let cdr: ChangeDetectorRef;
   let pipe: TranslocoDecimalPipe;
 
   beforeEach(() => {
-    service = createFakeService();
-    cdr = createFakeCDR();
+    service = mockLocaleService();
+    cdr = mockCDR();
     pipe = new TranslocoDecimalPipe(service, cdr, defaultConfig.localeConfig);
   });
 
@@ -22,7 +25,7 @@ describe('TranslocoDecimalPipe', () => {
   });
 
   it('should take the format from the locale', () => {
-    service = createFakeService('es-ES');
+    service = mockLocaleService('es-ES');
     pipe = new TranslocoDecimalPipe(service, cdr, defaultConfig.localeConfig);
     expect(pipe.transform(123456)).toEqual('123.456');
   });
@@ -54,8 +57,8 @@ describe('TranslocoDecimalPipe', () => {
   });
 
   it('should handle none transformable values', () => {
-    expect(pipe.transform(null)).toEqual('');
-    expect(pipe.transform(<any>{})).toEqual('');
+    expect(pipe.transform(null as any)).toEqual('');
+    expect(pipe.transform({} as any)).toEqual('');
     expect(pipe.transform('none number string')).toEqual('');
   });
 });

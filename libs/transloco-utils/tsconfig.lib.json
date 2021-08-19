@@ -4,9 +4,7 @@
     "outDir": "../../dist/out-tsc",
     "sourceMap": false,
     "declaration": false,
-    "lib": ["ESNext"],
-    "module": "commonjs",
-    "allowSyntheticDefaultImports": true
+    "module": "commonjs"
   },
   "include": ["**/*.ts"],
   "exclude": ["**/*.spec.ts"]

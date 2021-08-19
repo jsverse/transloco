@@ -1,6 +1,6 @@
 import { fakeAsync } from '@angular/core/testing';
 import { loadLang } from './utils';
-import { createService } from '../transloco.mocks';
+import { createService } from '../mocks';
 import { HashMap, TranslocoService } from '@ngneat/transloco';
 
 describe('translateObject', () => {

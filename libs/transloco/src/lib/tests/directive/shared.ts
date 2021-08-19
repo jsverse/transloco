@@ -1,16 +1,16 @@
-import { createHostFactory, HostComponent, SpectatorHost } from '@ngneat/spectator';
-import { providersMock, runLoader, setlistenToLangChange } from '../transloco.mocks';
-import { TranslocoDirective } from '../../transloco.directive';
-import { TranslocoService } from '../../transloco.service';
+import {createHostFactory, SpectatorHost} from '@ngneat/spectator';
+import {providersMock, runLoader, setlistenToLangChange} from '../mocks';
+import {TranslocoDirective} from '../../transloco.directive';
+import {TranslocoService} from '../../transloco.service';
 
-export function createFactory(providers = []) {
+export function createFactory(providers: any[] = []) {
   return createHostFactory({
     component: TranslocoDirective,
     providers: [providersMock, providers]
   });
 }
 
-function initScopeTest(host: SpectatorHost<TranslocoDirective, HostComponent>, service) {
+function initScopeTest(host: SpectatorHost<TranslocoDirective>, service: TranslocoService) {
   setlistenToLangChange(service);
   host.detectChanges();
   runLoader();
@@ -19,7 +19,7 @@ function initScopeTest(host: SpectatorHost<TranslocoDirective, HostComponent>, s
 }
 
 export function testMergedScopedTranslation(spectator: SpectatorHost<TranslocoDirective>, preload?: boolean) {
-  const service = spectator.get(TranslocoService);
+  const service = spectator.inject(TranslocoService);
   if (preload) {
     preloadTranslations(spectator);
   }
@@ -38,7 +38,7 @@ export function testMergedScopedTranslation(spectator: SpectatorHost<TranslocoDi
 }
 
 export function testScopedTranslation(spectator: SpectatorHost<TranslocoDirective>) {
-  const service = spectator.get(TranslocoService);
+  const service = spectator.inject(TranslocoService);
   initScopeTest(spectator, service);
   expect(spectator.queryHost('div')).toHaveText('Admin Lazy english');
   service.setActiveLang('es');
@@ -48,7 +48,7 @@ export function testScopedTranslation(spectator: SpectatorHost<TranslocoDirectiv
 }
 
 export function testTranslationWithRead(spectator: SpectatorHost<TranslocoDirective>) {
-  const service = spectator.get(TranslocoService);
+  const service = spectator.inject(TranslocoService);
   initScopeTest(spectator, service);
   expect(spectator.queryHost('div')).toHaveText('Title english');
   service.setActiveLang('es');
@@ -58,7 +58,7 @@ export function testTranslationWithRead(spectator: SpectatorHost<TranslocoDirect
 }
 
 export function preloadTranslations(spectator: SpectatorHost<TranslocoDirective>, lang = 'en') {
-  const service = spectator.get(TranslocoService);
+  const service = spectator.inject(TranslocoService);
   service.load(lang).subscribe();
   runLoader();
 }

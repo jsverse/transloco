@@ -1,19 +1,20 @@
 import { of, timer } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { mockLangs, runLoader } from '../transloco.mocks';
+import { mockLangs, runLoader } from '../mocks';
 import { fakeAsync } from '@angular/core/testing';
 import {
   DefaultFallbackStrategy,
   DefaultTranspiler,
-  TranslocoFallbackStrategy,
+  TranslocoFallbackStrategy, TranslocoLoader,
   TranslocoService
 } from '@ngneat/transloco';
 import { DefaultHandler } from '../../transloco-missing-handler';
 import { DefaultInterceptor } from '../../transloco.interceptor';
 
 describe('Multiple fallbacks', () => {
+  
   describe('DefaultFallbackStrategy', () => {
-    let loader;
+    let loader: TranslocoLoader;
 
     beforeEach(() => {
       loader = {
@@ -21,9 +22,10 @@ describe('Multiple fallbacks', () => {
           return timer(1000).pipe(
             map(() => mockLangs[lang]),
             map(translation => {
-              if (lang === 'notExists' || lang === 'fallbackNotExists' || lang === 'notExists2') {
+              if (['notExists', 'notExists2', 'fallbackNotExists'].includes(lang)) {
                 throw new Error('error');
               }
+              
               return translation;
             })
           );
@@ -139,7 +141,7 @@ describe('Multiple fallbacks', () => {
       }
     }
 
-    let loader;
+    let loader: TranslocoLoader;
 
     beforeEach(() => {
       loader = {
@@ -147,9 +149,10 @@ describe('Multiple fallbacks', () => {
           return timer(1000).pipe(
             map(() => mockLangs[lang]),
             map(translation => {
-              if (lang === 'it' || lang === 'gp' || lang === 'notExists') {
+              if (['it', 'gp', 'notExists'].includes(lang)) {
                 throw new Error('error');
               }
+
               return translation;
             })
           );

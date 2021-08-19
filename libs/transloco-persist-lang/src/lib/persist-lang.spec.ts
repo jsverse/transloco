@@ -9,7 +9,7 @@ interface FakeStorage extends PersistStorage {
 const fakeStorage: FakeStorage = {
   storage: {},
   getItem(key) {
-    return this.storage[key];
+    return this.storage[key] || null;
   },
   setItem(key, value) {
     this.storage[key] = value;
@@ -61,7 +61,7 @@ describe('PersistLang - auto', () => {
 
   it('should clear the lang from storage', () => {
     service.clear();
-    expect(service.getCachedLang()).toEqual(undefined);
+    expect(service.getCachedLang()).toEqual(null);
   });
 });
 

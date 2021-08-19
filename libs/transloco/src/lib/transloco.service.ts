@@ -41,7 +41,7 @@ export class TranslocoService implements OnDestroy {
   private subscription: Subscription;
   private translations = new Map<string, Translation>();
   private cache = new Map<string, Observable<Translation>>();
-  private firstFallbackLang: string | null = null;
+  private firstFallbackLang: string | undefined;
   private defaultLang: string = '';
   private mergedConfig: TranslocoConfig;
   private availableLangs: AvailableLangs = [];
@@ -106,7 +106,8 @@ export class TranslocoService implements OnDestroy {
 
   setActiveLang(lang: string) {
     this.lang.next(lang);
-    this.parser.onLangChanged && this.parser.onLangChanged(lang);
+    this.parser.onLangChanged?.(lang);
+    
     return this;
   }
 
@@ -132,12 +133,16 @@ export class TranslocoService implements OnDestroy {
 
     let loadTranslation: Observable<Translation | { translation: Translation; lang: string }[]>;
     const isScope = this._isLangScoped(path);
-    const scope = isScope ? getScopeFromLang(path) : null;
+    let scope: string;
+    if (isScope) {
+      scope = getScopeFromLang(path);
+    }
+    
     const loadersOptions = {path, mainLoader: this.loader, inlineLoader: options.inlineLoader, data: isScope ? {scope: scope!} : undefined};
 
     if (this.useFallbackTranslation(path)) {
       // if the path is scope the fallback should be `scope/fallbackLang`;
-      const fallback = isScope ? `${scope}/${this.firstFallbackLang}` : this.firstFallbackLang;
+      const fallback = isScope ? `${scope!}/${this.firstFallbackLang}` : this.firstFallbackLang;
 
       const loaders = getFallbacksLoaders({...loadersOptions, fallbackPath: fallback! });
       loadTranslation = forkJoin(loaders);
@@ -294,11 +299,7 @@ export class TranslocoService implements OnDestroy {
   selectTranslateObject<T = any>(key: string, params?: HashMap, lang?: string): Observable<T>;
   selectTranslateObject<T = any>(key: string[], params?: HashMap, lang?: string): Observable<T[]>;
   selectTranslateObject<T = any>(key: HashMap | Map<string, HashMap>, params?: null, lang?: string): Observable<T[]>;
-  selectTranslateObject<T = any>(
-    key: TranslateObjectParams,
-    params: HashMap | null = {},
-    lang: string = this.getActiveLang()
-  ): Observable<T> | Observable<T[]> {
+  selectTranslateObject<T = any>(key: TranslateObjectParams, params?: HashMap | null, lang?: string): Observable<T> | Observable<T[]> {
     if (isString(key) || Array.isArray(key)) {
       return this.selectTranslate<T>(key, params!, lang, true);
     }
@@ -454,7 +455,7 @@ export class TranslocoService implements OnDestroy {
       return '';
     }
 
-    if (this.useFallbackTranslation() && !this.isResolvedMissingOnce) {
+    if (!this.isResolvedMissingOnce && this.useFallbackTranslation()) {
       // We need to set it to true to prevent a loop
       this.isResolvedMissingOnce = true;
       const fallbackValue = this.translate(key, params, this.firstFallbackLang!);
@@ -550,7 +551,7 @@ export class TranslocoService implements OnDestroy {
    * This is unrelated to the fallback language (which changes the active language)
    */
   private useFallbackTranslation(lang?: string) {
-    return this.config.missingHandler!.useFallbackTranslation && this.firstFallbackLang && lang !== this.firstFallbackLang;
+    return this.config.missingHandler!.useFallbackTranslation && lang !== this.firstFallbackLang;
   }
 
   private handleSuccess(lang: string, translation: Translation) {

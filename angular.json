@@ -24,11 +24,11 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/transloco"],
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "jestConfig": "libs/transloco/jest.config.js",
-            "passWithNoTests": true
+            "main": "libs/transloco/src/test-setup.ts",
+            "tsConfig": "libs/transloco/tsconfig.spec.json",
+            "karmaConfig": "libs/transloco/karma.conf.js"
           }
         },
         "lint": {
@@ -65,11 +65,11 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/transloco-locale"],
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "jestConfig": "libs/transloco-locale/jest.config.js",
-            "passWithNoTests": true
+            "main": "libs/transloco-locale/src/test-setup.ts",
+            "tsConfig": "libs/transloco-locale/tsconfig.spec.json",
+            "karmaConfig": "libs/transloco-locale/karma.conf.js"
           }
         },
         "lint": {
@@ -106,11 +106,11 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/transloco-messageformat"],
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "jestConfig": "libs/transloco-messageformat/jest.config.js",
-            "passWithNoTests": true
+            "main": "libs/transloco-messageformat/src/test-setup.ts",
+            "tsConfig": "libs/transloco-messageformat/tsconfig.spec.json",
+            "karmaConfig": "libs/transloco-messageformat/karma.conf.js"
           }
         },
         "lint": {
@@ -146,11 +146,11 @@
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/transloco-optimize"],
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "jestConfig": "libs/transloco-optimize/jest.config.js",
-            "passWithNoTests": true
+            "main": "libs/transloco-optimize/src/test-setup.ts",
+            "tsConfig": "libs/transloco-optimize/tsconfig.spec.json",
+            "karmaConfig": "libs/transloco-optimize/karma.conf.js"
           }
         }
       }
@@ -178,11 +178,11 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/transloco-persist-lang"],
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "jestConfig": "libs/transloco-persist-lang/jest.config.js",
-            "passWithNoTests": true
+            "main": "libs/transloco-persist-lang/src/test-setup.ts",
+            "tsConfig": "libs/transloco-persist-lang/tsconfig.spec.json",
+            "karmaConfig": "libs/transloco-persist-lang/karma.conf.js"
           }
         },
         "lint": {
@@ -219,11 +219,11 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/transloco-persist-translations"],
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "jestConfig": "libs/transloco-persist-translations/jest.config.js",
-            "passWithNoTests": true
+            "main": "libs/transloco-persist-translations/src/test-setup.ts",
+            "tsConfig": "libs/transloco-persist-translations/tsconfig.spec.json",
+            "karmaConfig": "libs/transloco-persist-translations/karma.conf.js"
           }
         },
         "lint": {
@@ -257,8 +257,8 @@
               "apps/transloco-playground/src/favicon.ico",
               "apps/transloco-playground/src/assets"
             ],
-            "styles": ["apps/transloco-playground/src/styles.scss"],
-            "scripts": []
+            "styles": ["apps/transloco-playground/src/styles.scss", "node_modules/bootstrap/dist/css/bootstrap.min.css"],
+            "scripts": ["node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"]
           },
           "configurations": {
             "production": {
@@ -321,11 +321,11 @@
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/apps/transloco-playground"],
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "jestConfig": "apps/transloco-playground/jest.config.js",
-            "passWithNoTests": true
+            "main": "apps/transloco-playground/src/test-setup.ts",
+            "tsConfig": "apps/transloco-playground/tsconfig.spec.json",
+            "karmaConfig": "apps/transloco-playground/karma.conf.js"
           }
         }
       }
@@ -379,11 +379,11 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/transloco-preload-langs"],
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "jestConfig": "libs/transloco-preload-langs/jest.config.js",
-            "passWithNoTests": true
+            "main": "libs/transloco-preload-langs/src/test-setup.ts",
+            "tsConfig": "libs/transloco-preload-langs/tsconfig.spec.json",
+            "karmaConfig": "libs/transloco-preload-langs/karma.conf.js"
           }
         },
         "lint": {
@@ -407,9 +407,11 @@
           "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/libs/transloco-schematics",
-            "main": "libs/transloco-schematics/src/index.ts",
+            "main": "",
             "tsConfig": "libs/transloco-schematics/tsconfig.lib.json",
-            "assets": ["libs/transloco-schematics/*.md"]
+            "assets": [
+              {"glob": "**/*.json", "input": "libs/schematics/src", "output": "."}
+            ]
           }
         },
         "lint": {
@@ -450,11 +452,11 @@
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/transloco-scoped-libs"],
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "jestConfig": "libs/transloco-scoped-libs/jest.config.js",
-            "passWithNoTests": true
+            "main": "libs/transloco-scoped-libs/src/test-setup.ts",
+            "tsConfig": "libs/transloco-scoped-libs/tsconfig.spec.json",
+            "karmaConfig": "libs/transloco-scoped-libs/karma.conf.js"
           }
         }
       }
@@ -481,11 +483,11 @@
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/transloco-utils"],
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "jestConfig": "libs/transloco-utils/jest.config.js",
-            "passWithNoTests": true
+            "main": "libs/transloco-utils/src/test-setup.ts",
+            "tsConfig": "libs/transloco-utils/tsconfig.spec.json",
+            "karmaConfig": "libs/transloco-utils/karma.conf.js"
           }
         }
       }
@@ -512,11 +514,11 @@
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/transloco-validator"],
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "jestConfig": "libs/transloco-validator/jest.config.js",
-            "passWithNoTests": true
+            "main": "libs/transloco-validator/src/test-setup.ts",
+            "tsConfig": "libs/transloco-validator/tsconfig.spec.json",
+            "karmaConfig": "libs/transloco-validator/karma.conf.js"
           }
         }
       }

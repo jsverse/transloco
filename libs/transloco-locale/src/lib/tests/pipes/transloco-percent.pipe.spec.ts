@@ -1,15 +1,18 @@
 import { TranslocoPercentPipe } from '../../pipes/transloco-percent.pipe';
-import { createFakeService, createFakeCDR } from '../mocks';
-import { defaultConfig, LocaleConfig } from './../../transloco-locale.config';
+import { mockLocaleService, mockCDR } from '../mocks';
+import { defaultConfig} from './../../transloco-locale.config';
+import {ChangeDetectorRef} from "@angular/core";
+import {TranslocoLocaleService} from '../../transloco-locale.service';
+import {LocaleConfig} from '../../transloco-locale.types';
 
 describe('TranslocoPercentPipe', () => {
-  let service;
-  let cdr;
+  let service: TranslocoLocaleService;
+  let cdr: ChangeDetectorRef;
   let pipe: TranslocoPercentPipe;
 
   beforeEach(() => {
-    service = createFakeService();
-    cdr = createFakeCDR();
+    service = mockLocaleService();
+    cdr = mockCDR();
     pipe = new TranslocoPercentPipe(service, cdr, defaultConfig.localeConfig);
   });
 
@@ -22,8 +25,8 @@ describe('TranslocoPercentPipe', () => {
   });
 
   it('should handle none transformable values', () => {
-    expect(pipe.transform(null)).toEqual('');
-    expect(pipe.transform(<any>{})).toEqual('');
+    expect(pipe.transform(null as any)).toEqual('');
+    expect(pipe.transform({} as any)).toEqual('');
     expect(pipe.transform('none number string')).toEqual('');
   });
 

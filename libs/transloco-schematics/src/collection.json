@@ -42,10 +42,10 @@
       "aliases": ["build"],
       "factory": "./join/",
       "schema": "./join/schema.json",
-      "description": "Merge the translation files into one."
+      "description": "Join the translation files into one."
     },
     "split": {
-      "aliases": ["spill"],
+      "aliases": ["sp"],
       "factory": "./split/",
       "schema": "./split/schema.json",
       "description": "split the translated files over the project's translation files."

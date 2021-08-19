@@ -1,6 +1,6 @@
 import { fakeAsync } from '@angular/core/testing';
 import { TranslocoDirective, TranslocoService } from '@ngneat/transloco';
-import { runLoader, setlistenToLangChange } from '../transloco.mocks';
+import { runLoader, setlistenToLangChange } from '../mocks';
 import { SpectatorHost } from '@ngneat/spectator';
 import { createFactory } from './shared';
 
@@ -22,7 +22,7 @@ describe('Multi Langs', () => {
         detectChanges: false
       }
     );
-    const service = spectator.get<TranslocoService>(TranslocoService);
+    const service = spectator.inject<TranslocoService>(TranslocoService);
     setlistenToLangChange(service);
     spectator.detectChanges();
     runLoader();
@@ -52,7 +52,7 @@ describe('Multi Langs', () => {
         detectChanges: false
       }
     );
-    const service = spectator.get(TranslocoService);
+    const service = spectator.inject(TranslocoService);
     setlistenToLangChange(service);
     spectator.detectChanges();
     runLoader();
@@ -87,7 +87,7 @@ describe('Multi Langs', () => {
         detectChanges: false
       }
     );
-    const service = spectator.get(TranslocoService);
+    const service = spectator.inject(TranslocoService);
     setlistenToLangChange(service);
     spectator.detectChanges();
     runLoader();

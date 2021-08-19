@@ -1,5 +1,6 @@
-import { createService, runLoader } from '../transloco.mocks';
+import { createService, runLoader } from '../mocks';
 import { fakeAsync } from '@angular/core/testing';
+import {TranslocoService} from "@ngneat/transloco";
 
 describe('missingHandler', () => {
   describe('missingHandler.allowEmpty', () => {
@@ -22,7 +23,7 @@ describe('missingHandler', () => {
   });
 
   describe('missingHandler.useFallbackTranslation', () => {
-    let service;
+    let service: TranslocoService;
     beforeEach(() => {
       service = createService({
         fallbackLang: 'es',
@@ -33,32 +34,33 @@ describe('missingHandler', () => {
     });
 
     it('should load the active and the fallback lang', fakeAsync(() => {
-      spyOn(service.loader, 'getTranslation').and.callThrough();
+      const loaderSpy = spyOn((service as any).loader, 'getTranslation').and.callThrough();
       service.load('en').subscribe();
       runLoader();
-      expect(service.loader.getTranslation).toHaveBeenCalledTimes(2);
-      expect(service.loader.getTranslation.calls.allArgs()).toEqual([['en', { scope: null }], ['es', { scope: null }]]);
+      expect(loaderSpy).toHaveBeenCalledTimes(2);
+      expect(loaderSpy.calls.allArgs()).toEqual([['en', undefined], ['es', undefined]]);
     }));
 
     it('should get the translation from the fallback when there is no key', fakeAsync(() => {
-      spyOn(service.loader, 'getTranslation').and.callThrough();
+      spyOn((service as any).loader, 'getTranslation').and.callThrough();
       service.load('en').subscribe();
       runLoader(2000);
-      expect(service.translate('fallback')).toEqual("I'm a spanish fallback");
+      const result = service.translate('fallback'); 
+      expect(result).toEqual("I'm a spanish fallback");
     }));
 
     it('should get the translation from the fallback when the value is empty', fakeAsync(() => {
-      spyOn(service.loader, 'getTranslation').and.callThrough();
+      spyOn((service as any).loader, 'getTranslation').and.callThrough();
       service.load('en').subscribe();
       runLoader(2000);
       expect(service.translate('empty', { value: 'hello' })).toEqual("I'm a spanish empty fallback hello");
     }));
 
     it('should load the scope fallback when working with scopes', fakeAsync(() => {
-      spyOn(service.loader, 'getTranslation').and.callThrough();
+      const loaderSpy = spyOn((service as any).loader, 'getTranslation').and.callThrough();
       service.load('lazy-page/en').subscribe();
       runLoader(2000);
-      expect(service.loader.getTranslation.calls.allArgs()).toEqual([
+      expect(loaderSpy.calls.allArgs()).toEqual([
         ['lazy-page/en', { scope: 'lazy-page' }],
         ['lazy-page/es', { scope: 'lazy-page' }]
       ]);
@@ -66,8 +68,8 @@ describe('missingHandler', () => {
     }));
 
     it('should respect allow empty', fakeAsync(() => {
-      service.mergedConfig.missingHandler.allowEmpty = true;
-      spyOn(service.loader, 'getTranslation').and.callThrough();
+      (service as any).mergedConfig.missingHandler.allowEmpty = true;
+      spyOn((service as any).loader, 'getTranslation').and.callThrough();
       service.load('en').subscribe();
       runLoader(2000);
       expect(service.translate('empty', { value: 'hello' })).toEqual('');

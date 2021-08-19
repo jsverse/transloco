@@ -1,6 +1,6 @@
 import { fakeAsync } from '@angular/core/testing';
 import { TemplateHandler, TranslocoDirective } from '@ngneat/transloco';
-import { loadingTemplateMock, providersMock, runLoader } from '../transloco.mocks';
+import { loadingTemplateMock, providersMock, runLoader } from '../mocks';
 import { createHostFactory, SpectatorHost } from '@ngneat/spectator';
 import { createFactory, preloadTranslations } from './shared';
 import { TranslocoLoaderComponent } from '../../loader-component.component';

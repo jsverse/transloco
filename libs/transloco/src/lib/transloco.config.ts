@@ -19,7 +19,7 @@ export interface TranslocoConfig {
     allowEmpty?: boolean;
   };
   interpolation?: [string, string];
-};
+}
 
 export const TRANSLOCO_CONFIG = new InjectionToken<TranslocoConfig>('TRANSLOCO_CONFIG', {
   providedIn: 'root',
@@ -28,7 +28,7 @@ export const TRANSLOCO_CONFIG = new InjectionToken<TranslocoConfig>('TRANSLOCO_C
   }
 });
 
-export const defaultConfig: TranslocoConfig = {
+export const defaultConfig: Omit<Required<TranslocoConfig>, 'scopeMapping' | 'fallbackLang'> = {
   defaultLang: 'en',
   reRenderOnLangChange: false,
   prodMode: false,

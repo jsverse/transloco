@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "SchematicsTranslocoUpgrade",
+  "title": "Run an upgrade script.",
+  "type": "object",
+  "properties": {
+    "path": {
+      "description": "The entry path of the upgrade script.",
+      "x-prompt": "✍ Which folder should be the entry path for the script?",
+      "type": "string",
+      "default": "./src/app",
+      "alias": "p"
+    }
+  },
+  "required": []
+}

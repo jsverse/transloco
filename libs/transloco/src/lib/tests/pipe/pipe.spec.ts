@@ -1,98 +1,98 @@
 import { TranslocoPipe, TranslocoService } from '@ngneat/transloco';
 import { Mock } from 'ts-mocks';
 import { ChangeDetectorRef } from '@angular/core';
-import { createService, runLoader } from '../transloco.mocks';
+import { createService, runLoader } from '../mocks';
 import { fakeAsync } from '@angular/core/testing';
 import { of } from 'rxjs';
 
 describe('TranslocoPipe', () => {
-  let translateServiceMock;
-  let cdrMock;
-  let pipe;
-
+  let serviceMock: TranslocoService;
+  let cdrMock: ChangeDetectorRef;
+  let pipe: TranslocoPipe;
+  
   beforeEach(() => {
-    translateServiceMock = new Mock<TranslocoService>(createService()).Object;
+    serviceMock = new Mock<TranslocoService>(createService()).Object;
 
     cdrMock = new Mock<ChangeDetectorRef>({
       markForCheck: () => {}
     }).Object;
 
-    pipe = new TranslocoPipe(translateServiceMock, null, null, cdrMock);
+    pipe = new TranslocoPipe(serviceMock, undefined, undefined, cdrMock);
     spyOn(pipe as any, 'updateValue').and.callThrough();
   });
 
   it('should return empty string as default', () => {
-    pipe = new TranslocoPipe(translateServiceMock, null, 'es', cdrMock);
+    pipe = new TranslocoPipe(serviceMock, undefined, 'es', cdrMock);
     expect(pipe.transform('title', {})).toBe('');
   });
 
   it('should use provided language', fakeAsync(() => {
-    spyOn(translateServiceMock, 'translate').and.callThrough();
-    pipe = new TranslocoPipe(translateServiceMock, null, 'es', cdrMock);
+    spyOn(serviceMock, 'translate').and.callThrough();
+    pipe = new TranslocoPipe(serviceMock, undefined, 'es', cdrMock);
     pipe.transform('title', {});
     runLoader();
-    expect(translateServiceMock.translate).toHaveBeenCalledWith('title', {}, 'es');
+    expect(serviceMock.translate).toHaveBeenCalledWith('title', {}, 'es');
   }));
 
   it('should load scoped translation', fakeAsync(() => {
-    spyOn(translateServiceMock, 'translate').and.callThrough();
-    pipe = new TranslocoPipe(translateServiceMock, 'lazy-page', null, cdrMock);
+    spyOn(serviceMock, 'translate').and.callThrough();
+    pipe = new TranslocoPipe(serviceMock, 'lazy-page', undefined, cdrMock);
     (pipe as any).listenToLangChange = true;
     pipe.transform('title', {});
     runLoader();
-    expect(translateServiceMock.translate).toHaveBeenCalledWith('title', {}, 'en');
-    translateServiceMock.setActiveLang('es');
+    expect(serviceMock.translate).toHaveBeenCalledWith('title', {}, 'en');
+    serviceMock.setActiveLang('es');
     runLoader();
-    expect(translateServiceMock.translate).toHaveBeenCalledWith('title', {}, 'es');
+    expect(serviceMock.translate).toHaveBeenCalledWith('title', {}, 'es');
   }));
 
   it('should load scoped translation with scope alias', fakeAsync(() => {
-    spyOn(translateServiceMock, 'translate').and.callThrough();
-    pipe = new TranslocoPipe(translateServiceMock, { scope: 'lazy-scope-alias', alias: 'myScopeAlias' }, null, cdrMock);
+    spyOn(serviceMock, 'translate').and.callThrough();
+    pipe = new TranslocoPipe(serviceMock, { scope: 'lazy-scope-alias', alias: 'myScopeAlias' }, undefined, cdrMock);
     (pipe as any).listenToLangChange = true;
     pipe.transform('title', {});
     runLoader();
-    expect(translateServiceMock.translate).toHaveBeenCalledWith('title', {}, 'en');
-    translateServiceMock.setActiveLang('es');
+    expect(serviceMock.translate).toHaveBeenCalledWith('title', {}, 'en');
+    serviceMock.setActiveLang('es');
     runLoader();
-    expect(translateServiceMock.translate).toHaveBeenCalledWith('title', {}, 'es');
+    expect(serviceMock.translate).toHaveBeenCalledWith('title', {}, 'es');
   }));
 
   it('should load scope translation with multiple provided scopes', fakeAsync(() => {
-    spyOn(translateServiceMock, 'translate').and.callThrough();
+    spyOn(serviceMock, 'translate').and.callThrough();
     pipe = new TranslocoPipe(
-      translateServiceMock,
+      serviceMock,
       [{ scope: 'lazy-page', alias: 'lazyPageAlias' }, { scope: 'admin-page', alias: 'adminPageAlias' }],
-      null,
+      undefined,
       cdrMock
     );
     (pipe as any).listenToLangChange = true;
     pipe.transform('lazyPageAlias.title', {});
     runLoader();
-    expect(translateServiceMock.translate).toHaveBeenCalledWith('lazyPageAlias.title', {}, 'en');
+    expect(serviceMock.translate).toHaveBeenCalledWith('lazyPageAlias.title', {}, 'en');
 
     pipe.transform('adminPageAlias.title', {});
     runLoader();
-    expect(translateServiceMock.translate).toHaveBeenCalledWith('adminPageAlias.title', {}, 'en');
+    expect(serviceMock.translate).toHaveBeenCalledWith('adminPageAlias.title', {}, 'en');
 
-    translateServiceMock.setActiveLang('es');
+    serviceMock.setActiveLang('es');
     pipe.transform('lazyPageAlias.title', {});
     runLoader();
-    expect(translateServiceMock.translate).toHaveBeenCalledWith('lazyPageAlias.title', {}, 'es');
+    expect(serviceMock.translate).toHaveBeenCalledWith('lazyPageAlias.title', {}, 'es');
 
     pipe.transform('adminPageAlias.title', {});
     runLoader();
-    expect(translateServiceMock.translate).toHaveBeenCalledWith('adminPageAlias.title', {}, 'es');
+    expect(serviceMock.translate).toHaveBeenCalledWith('adminPageAlias.title', {}, 'es');
   }));
 
   describe('updateValue', () => {
     it('should update the value, set the cache and mark for check', fakeAsync(() => {
       const key = 'home';
       pipe.transform(key);
-      expect(pipe.lastKey).toBe(key);
+      expect((pipe as any).lastKey).toBe(key);
       runLoader();
       expect((pipe as any).updateValue).toHaveBeenCalledWith(key, undefined);
-      expect(pipe.lastValue).toBe('home english');
+      expect((pipe as any).lastValue).toBe('home english');
       expect(cdrMock.markForCheck).toHaveBeenCalled();
     }));
 
@@ -100,7 +100,7 @@ describe('TranslocoPipe', () => {
       const key = 'kazaz';
       pipe.transform(key);
       runLoader();
-      expect(pipe.lastValue).toBe(key);
+      expect((pipe as any).lastValue).toBe(key);
       expect(cdrMock.markForCheck).toHaveBeenCalled();
     }));
   });
@@ -109,25 +109,25 @@ describe('TranslocoPipe', () => {
     it('should unsubscribe after one emit when not in reRenderOnLangChange mode', fakeAsync(() => {
       pipe.transform('home');
       runLoader();
-      expect(pipe.subscription.closed).toBe(true);
+      expect((pipe as any).subscription.closed).toBe(true);
     }));
 
     it('should return the key when the key is falsy', () => {
       expect(pipe.transform('')).toBe('');
-      expect(pipe.transform(null)).toBe(null);
-      expect(pipe.transform(undefined)).toBe(undefined);
+      expect(pipe.transform(null)).toBeNull();
+      expect(pipe.transform(undefined as any)).toBeUndefined();
     });
 
     it('should perform translate', fakeAsync(() => {
       pipe.transform('home');
       runLoader();
-      expect(pipe.lastValue).toBe('home english');
+      expect((pipe as any).lastValue).toBe('home english');
     }));
 
     it('should perform translate with params', fakeAsync(() => {
       pipe.transform('alert', { value: 'value' });
       runLoader();
-      expect(pipe.lastValue).toBe('alert value english');
+      expect((pipe as any).lastValue).toBe('alert value english');
     }));
 
     it('should return the value from the cache', fakeAsync(() => {
@@ -152,9 +152,9 @@ describe('TranslocoPipe', () => {
   });
 
   it('should unsubscribe on destroy', () => {
-    pipe.subscription = of().subscribe();
-    spyOn(pipe.subscription, 'unsubscribe');
+    (pipe as any).subscription = of().subscribe();
+    spyOn((pipe as any).subscription, 'unsubscribe');
     pipe.ngOnDestroy();
-    expect(pipe.subscription.unsubscribe).toHaveBeenCalled();
+    expect((pipe as any).subscription.unsubscribe).toHaveBeenCalled();
   });
 });

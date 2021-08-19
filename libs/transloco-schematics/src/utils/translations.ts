@@ -5,8 +5,8 @@ import {
   Tree
 } from '@angular-devkit/schematics';
 import { TranslationFileTypes } from '../ng-add/schema';
-import p from 'path';
-import fs from 'fs';
+import * as p from 'path';
+import * as fs from 'fs';
 
 export function jsonTranslationFileCreator(source, lang, path) {
   return source.create(

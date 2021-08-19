@@ -2,7 +2,7 @@ import { ScopeResolver } from '../scope-resolver';
 
 describe('ScopeResolver', () => {
   let resolver: ScopeResolver;
-  let spy;
+  let spy: jasmine.Spy<jasmine.Func>;
 
   beforeEach(() => {
     spy = jasmine.createSpy('setScopeAlias');

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "id": "SchematicsTranslocoNgMigrate",
+  "$id": "SchematicsTranslocoNgMigrate",
   "title": "Migration Script from Angular",
   "type": "object",
   "properties": {

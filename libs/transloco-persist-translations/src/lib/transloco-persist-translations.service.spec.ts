@@ -3,7 +3,7 @@ import { TranslocoLoader } from '@ngneat/transloco';
 import { of, timer } from 'rxjs';
 import { mapTo } from 'rxjs/operators';
 import { Mock } from 'ts-mocks';
-import {defaultConfig, TranslocoPersistTranslationsConfig} from './transloco-persist-translations.config';
+import {defaultConfig} from './transloco-persist-translations.config';
 import { TranslocoPersistTranslations } from './transloco-persist-translations.service';
 import { MaybeAsyncStorage } from './transloco.storage';
 
@@ -12,10 +12,6 @@ describe('TranslocoPersistTranslations', () => {
   let loader: TranslocoLoader;
   const translationsMock = { title: 'title' };
 
-  function asConfig(config: any) {
-    return config as TranslocoPersistTranslationsConfig
-  }
-  
   describe('Sync Storage', () => {
     let storageMock: MaybeAsyncStorage;
 
@@ -45,7 +41,7 @@ describe('TranslocoPersistTranslations', () => {
     function setup(config = defaultConfig, translations = translationsMock) {
       storageMock = createStorageMock();
       loader = createLoaderMock(translations);
-      service = new TranslocoPersistTranslations(loader, storageMock, asConfig(config));
+      service = new TranslocoPersistTranslations(loader, storageMock, config);
     }
 
     it('should save the translations object in the storage', () => {
@@ -90,10 +86,10 @@ describe('TranslocoPersistTranslations', () => {
       loader = createLoaderMock(translationsMock);
       spyOn(storageMock, 'removeItem').and.callThrough();
 
-      service = new TranslocoPersistTranslations(loader, storageMock, asConfig({ ...defaultConfig, ttl: 10 }));
+      service = new TranslocoPersistTranslations(loader, storageMock, { ...defaultConfig, ttl: 10 });
       service.getTranslation('en').subscribe();
       tick(10);
-      service = new TranslocoPersistTranslations(loader, storageMock, asConfig({ ...defaultConfig, ttl: 10 }));
+      service = new TranslocoPersistTranslations(loader, storageMock, { ...defaultConfig, ttl: 10 });
 
       expect(storageMock.removeItem).toHaveBeenCalledWith(defaultConfig.storageKey);
     }));
@@ -141,7 +137,7 @@ describe('TranslocoPersistTranslations', () => {
     function setup(config = defaultConfig, translations = translationsMock) {
       storageMock = createStorageMock();
       loader = createLoaderMock(translations);
-      service = new TranslocoPersistTranslations(loader, storageMock, asConfig(config));
+      service = new TranslocoPersistTranslations(loader, storageMock, config);
     }
 
     it('should save the translations asynchronously in the storage', fakeAsync(() => {

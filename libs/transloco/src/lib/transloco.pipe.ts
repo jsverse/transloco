@@ -14,7 +14,7 @@ import { ScopeResolver } from './scope-resolver';
   pure: false
 })
 export class TranslocoPipe implements PipeTransform, OnDestroy {
-  private subscription: Subscription | null = null;
+  private subscription: Subscription | undefined;
   private lastValue: string = '';
   private lastKey: string | undefined;
   private listenToLangChange: boolean;
@@ -34,7 +34,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
   // null is for handling strict mode + async pipe types https://github.com/ngneat/transloco/issues/311
   transform(key: string | null, params?: HashMap | undefined, inlineLang?: string | undefined): string {
     if (!key) {
-      return '';
+      return key as any;
     }
 
     const keyName = params ? `${key}${JSON.stringify(params)}` : key;
@@ -44,7 +44,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
     }
 
     this.lastKey = keyName;
-    this.subscription && this.subscription.unsubscribe();
+    this.subscription?.unsubscribe();
 
     this.subscription = this.translocoService.langChanges$
       .pipe(
@@ -69,7 +69,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription && this.subscription.unsubscribe();
+    this.subscription?.unsubscribe();
   }
 
   private updateValue(key: string, params?: HashMap | undefined) {

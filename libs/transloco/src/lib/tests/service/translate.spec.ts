@@ -1,16 +1,17 @@
-import { createService, mockLangs } from '../transloco.mocks';
+import { createService, mockLangs } from '../mocks';
 import { fakeAsync } from '@angular/core/testing';
 import { loadLang } from './utils';
+import {TranslocoService} from "@ngneat/transloco";
 
 describe('translate', () => {
-  let service;
+  let service: TranslocoService;
 
   beforeEach(() => (service = createService()));
 
   it('should return the key when it is falsy', () => {
     expect(service.translate('')).toEqual('');
-    expect(service.translate(null)).toEqual(null);
-    expect(service.translate(undefined)).toEqual(undefined);
+    expect(service.translate(null as any)).toEqual(null);
+    expect(service.translate(undefined as any)).toEqual(undefined);
   });
 
   it('should return the value or the key based on the translation existing', fakeAsync(() => {
