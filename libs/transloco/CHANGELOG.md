@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.23.2](https://github.com/ngneat/transloco/compare/v2.23.1...v2.23.2) (2021-09-13)
+
+### Bug Fixes
+
+- 🐛 load error not reported ([cd92b46](https://github.com/ngneat/transloco/commit/cd92b46)), closes [#290](https://github.com/ngneat/transloco/issues/290)
+- 🐛 static lang is ignored in pipe ([28833b8](https://github.com/ngneat/transloco/commit/28833b8)), closes [#463](https://github.com/ngneat/transloco/issues/463)
+- 🐛 support optional chaining ([e8e92ba](https://github.com/ngneat/transloco/commit/e8e92ba)), closes [#488](https://github.com/ngneat/transloco/issues/488)
+
+### [2.23.1](https://github.com/ngneat/transloco/compare/v2.23.0...v2.23.1) (2021-09-11)
+
+### Bug Fixes
+
+- 🐛 ng-add wrong environment path ([75d4bd0](https://github.com/ngneat/transloco/commit/75d4bd0)), closes [#332](https://github.com/ngneat/transloco/issues/332)
+
 ## [2.23.0](https://github.com/ngneat/transloco/compare/v2.22.0...v2.23.0) (2021-09-07)
 
 ### Bug Fixes

@@ -28,7 +28,6 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
   private subscription: Subscription | undefined;
   private lastValue = '';
   private lastKey: string | undefined;
-  private listenToLangChange: boolean;
   private path: string | undefined;
   private langResolver = new LangResolver();
   private scopeResolver = new ScopeResolver(this.translocoService);
@@ -42,15 +41,15 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
     @Inject(TRANSLOCO_LANG)
     private providerLang: string | undefined,
     private cdr: ChangeDetectorRef
-  ) {
-    this.listenToLangChange = shouldListenToLangChanges(
-      this.translocoService,
-      this.providerLang
-    );
-  }
+  ) {}
 
   // null is for handling strict mode + async pipe types https://github.com/ngneat/transloco/issues/311
-  transform(key: string | null, params?: HashMap, inlineLang?: string): string {
+  // null is for handling strict mode + optional chaining types https://github.com/ngneat/transloco/issues/488
+  transform(
+    key?: string | null,
+    params?: HashMap,
+    inlineLang?: string
+  ): string {
     if (!key) {
       return key as any;
     }
@@ -63,6 +62,11 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
 
     this.lastKey = keyName;
     this.subscription?.unsubscribe();
+
+    const listenToLangChange = shouldListenToLangChanges(
+      this.translocoService,
+      this.providerLang || inlineLang
+    );
 
     this.subscription = this.translocoService.langChanges$
       .pipe(
@@ -81,7 +85,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
               )
             : this.resolveScope(lang, this.providerScope);
         }),
-        listenOrNotOperator(this.listenToLangChange)
+        listenOrNotOperator(listenToLangChange)
       )
       .subscribe(() => this.updateValue(key, params));
 

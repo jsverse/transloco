@@ -25,6 +25,7 @@ import { getProject, setEnvironments } from '../utils/projects';
 import { checkIfTranslationFilesExist } from '../utils/translations';
 import { createConfig } from '../utils/transloco';
 import { SchemaOptions, Loaders } from './schema';
+import * as path from 'path';
 
 function jsonTranslationFileCreator(source, lang) {
   return source.create(
@@ -110,12 +111,19 @@ export function addImportsToModuleDeclaration(
   };
 }
 
-function createTranslocoModule(
-  isLib: boolean,
-  ssr: boolean,
-  langs: string[],
-  path
-): Source {
+function createTranslocoModule({
+  isLib,
+  ssr,
+  langs,
+  modulePath,
+  sourceRoot,
+}: {
+  isLib: boolean;
+  ssr: boolean;
+  langs: string[];
+  modulePath: string;
+  sourceRoot: string;
+}): Source {
   return apply(url(`./files/transloco-module`), [
     template({
       ts: 'ts',
@@ -123,10 +131,14 @@ function createTranslocoModule(
       isLib: isLib,
       langs: langs,
       importEnv: ssr || !isLib,
+      envPath: path.relative(
+        modulePath,
+        `${sourceRoot}/environments/environment`
+      ),
       loaderPrefix: ssr ? '${environment.baseUrl}' : '',
       prodMode: isLib ? 'false' : 'environment.production',
     }),
-    move('/', path),
+    move('/', modulePath),
   ]);
 }
 
@@ -161,9 +173,10 @@ export default function (options: SchemaOptions): Rule {
     );
 
     options.module = findRootModule(host, options.module, sourceRoot) as string;
-    const modulePath =
-      options.module.substring(0, options.module.lastIndexOf('/') + 1) +
-      'transloco/';
+    const modulePath = options.module.substring(
+      0,
+      options.module.lastIndexOf('/') + 1
+    );
 
     if (options.ssr) {
       updateEnvironmentBaseUrl(host, sourceRoot, 'http://localhost:4200');
@@ -185,11 +198,19 @@ export default function (options: SchemaOptions): Rule {
       checkIfTranslationFilesExist(assetsPath, langs, '.json', true)
         ? noop()
         : mergeWith(translateFiles),
-      mergeWith(createTranslocoModule(isLib, options.ssr, langs, modulePath)),
+      mergeWith(
+        createTranslocoModule({
+          sourceRoot,
+          isLib,
+          ssr: options.ssr,
+          langs,
+          modulePath,
+        })
+      ),
       addImportsToModuleFile(
         options,
         ['TranslocoRootModule'],
-        './transloco/transloco-root.module'
+        './transloco-root.module'
       ),
       addImportsToModuleDeclaration(options, ['TranslocoRootModule']),
     ])(host, context);
