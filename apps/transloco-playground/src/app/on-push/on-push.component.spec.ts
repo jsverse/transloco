@@ -5,7 +5,7 @@ import { TranslocoService } from '@ngneat/transloco';
 
 describe('OnPushComponent', () => {
   let spectator: Spectator<OnPushComponent>;
-  let createComponent = createComponentFactory({
+  const createComponent = createComponentFactory({
     component: OnPushComponent,
     imports: [
       getTranslocoModule({

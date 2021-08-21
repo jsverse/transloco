@@ -55,6 +55,6 @@ export function coerceArray<T>(val: T): T[] {
   return Array.isArray(val) ? val : [val];
 }
 
-export function isString(val: any): val is string {
+export function isString(val: unknown): val is string {
   return typeof val === 'string';
 }

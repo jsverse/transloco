@@ -42,18 +42,17 @@ function parserFactory(format: TranslationFileFormat): Parser {
       return JSON.parse;
     case TranslationFileFormat.PO:
     // TODO:
-    // return jsonBuilder;
+    return JSON.parse;
     case TranslationFileFormat.XLIFF:
     // TODO:
-    // return jsonBuilder;
+    return JSON.parse;
     default:
       return JSON.parse;
   }
 }
 
 export default function(options: SchemaOptions): Rule {
-  return (host: Tree, context: SchematicContext) => {
-    debugger;
+  return (host: Tree) => {
     const root = getTranslationsRoot(host, options);
     const parser = parserFactory(options.format);
 

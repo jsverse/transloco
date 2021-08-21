@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { TRANSLOCO_LANG } from '@ngneat/transloco';
+import {Component} from '@angular/core';
+import {TRANSLOCO_LANG} from '@ngneat/transloco';
 
 @Component({
   selector: 'provider-lang',
@@ -9,12 +9,4 @@ import { TRANSLOCO_LANG } from '@ngneat/transloco';
     useValue: 'es'
   }],
 })
-export class ProviderLangComponent implements OnInit {
-
-  constructor() {
-  }
-
-  ngOnInit() {
-  }
-
-}
+export class ProviderLangComponent {}

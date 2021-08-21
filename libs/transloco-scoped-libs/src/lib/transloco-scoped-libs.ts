@@ -44,7 +44,7 @@ export default function run({ watch, skipGitIgnoreUpdate, rootTranslationsPath, 
   const startMsg = watch ? 'Running Transloco Scoped Libs in watch mode' : 'Starting Transloco Scoped Libs...';
   console.log(chalk.magenta(startMsg));
 
-  for (let lib of scopedLibsArr) {
+  for (const lib of scopedLibsArr) {
     if (!lib.src) {
       console.log(chalk.red(`Please specify the library's src.`, libSrcExample));
 
@@ -71,13 +71,13 @@ export default function run({ watch, skipGitIgnoreUpdate, rootTranslationsPath, 
 
     const outputs = lib.dist.map(o => path.resolve(o));
     const input = path.dirname(pkg.path);
-    for (let scopeConfig of pkg.content.i18n) {
+    for (const scopeConfig of pkg.content.i18n) {
       const {scope, strategy} = scopeConfig;
 
       glob(`${path.join(input, scopeConfig.path)}/**/*.json`, {}, function(err, files) {
         if (err) console.log(chalk.red(err));
 
-        for (let output of outputs) {
+        for (const output of outputs) {
           copyScopes({outputDir: output, strategy, files, skipGitIgnoreUpdate, scope});
         }
 

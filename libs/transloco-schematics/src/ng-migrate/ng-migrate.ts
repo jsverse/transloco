@@ -53,7 +53,7 @@ function getTranslation(template) {
   const translation = {};
 
   while (result) {
-    let { attrValue, innerText, propName, propValue } = result.groups;
+    const { attrValue, innerText, propValue } = result.groups;
     let context;
     let comment;
     let keyValue = propValue ? propValue : innerText;
@@ -103,7 +103,7 @@ function getNewTemplate(template) {
     let replace = ' i18n';
     const key = resolveKey(attrValue, propValue || innerText);
     let value = innerText;
-    let newValue = `{{ '${key}' | transloco }}`;
+    const newValue = `{{ '${key}' | transloco }}`;
 
     if (attrValue) {
       replace = ` i18n=${mark}${attrValue}${mark}`;

@@ -6,10 +6,8 @@ import { TranslocoService } from '@ngneat/transloco';
   templateUrl: './dynamic-translation.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DynamicTranslationComponent implements OnInit {
+export class DynamicTranslationComponent {
   constructor(private translate: TranslocoService) {}
-
-  ngOnInit() {}
 
   updateTitle() {
     this.translate.setTranslationKey('home', 'New title');

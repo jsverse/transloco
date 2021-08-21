@@ -71,7 +71,7 @@ export class TranslocoPersistTranslations implements TranslocoLoader, OnDestroy 
     this.cache = translations;
   }
 
-  private encode(value: any): string {
+  private encode(value: unknown): string {
     return JSON.stringify(value);
   }
 
@@ -105,8 +105,9 @@ export class TranslocoPersistTranslations implements TranslocoLoader, OnDestroy 
     this.storage.removeItem(this.merged.storageKey);
   }
 
-  private clearCurrentStorage(): Observable<any> {
+  private clearCurrentStorage(): Observable<number> {
     const storageKey = this.merged.storageKey;
+    
     return this.getTimestamp(storageKey)
       .pipe(
         filter(time => !!time),

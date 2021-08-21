@@ -14,6 +14,6 @@ export function cookiesStorage(cookieExpiry = 720) {
       date.setTime(date.getTime() + cookieExpiry * 3600000);
       document.cookie = `${name}=${encodeURIComponent(value)};expires=${date.toUTCString()}`;
     },
-    removeItem(key: string): void {}
+    removeItem(): void {} // eslint-disable-line no-alert
   };
 }

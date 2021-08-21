@@ -6,7 +6,7 @@ import { createComponentFactory, Spectator } from '@ngneat/spectator';
 describe('LazyMultipleScopesComponent', () => {
   let spectator: Spectator<LazyMultipleScopesComponent>;
 
-  let createComponent = createComponentFactory({
+  const createComponent = createComponentFactory({
     providers: [
       { provide: TRANSLOCO_SCOPE, useValue: { scope: 'admin-page', alias: 'AdminPageAlias' }, multi: true },
       { provide: TRANSLOCO_SCOPE, useValue: { scope: 'lazy-page', alias: 'LazyPageAlias' }, multi: true }

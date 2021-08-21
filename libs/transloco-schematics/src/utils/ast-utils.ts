@@ -7,6 +7,7 @@
  */
 import * as ts from 'typescript';
 import { Change, InsertChange, NoopChange } from './change';
+import {NamedImports} from "typescript";
 
 /**
  * Add Import `import { symbolName } from fileName` if the import doesn't exit
@@ -30,7 +31,7 @@ export function insertImport(
   allImports.forEach(node => {
     node.getChildren().forEach(child => {
       if (child.kind === ts.SyntaxKind.ImportClause) {
-        child.getChildren().forEach((c: any) => {
+        child.getChildren().forEach((c: NamedImports) => {
           if (!c.elements) return;
           c.elements.forEach(elem => {
             symbolName = symbolName

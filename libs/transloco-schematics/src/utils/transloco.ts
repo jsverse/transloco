@@ -69,7 +69,7 @@ export function getTranslationsRoot(host: Tree, options: { project?: string; tra
   }
 }
 
-export function getTranslationFiles(host: Tree, root: string, parser?): { lang: string; translation: Object }[] {
+export function getTranslationFiles(host: Tree, root: string, parser?): { lang: string; translation: object }[] {
   const rootDir = host.getDir(root);
   return rootDir.subfiles.map(fileName => ({
     lang: fileName.split('.')[0],

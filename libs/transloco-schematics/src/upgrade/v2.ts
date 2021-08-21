@@ -20,7 +20,7 @@ export function run(path) {
       let containerSearch = rgx.exec(str);
       while (containerSearch) {
         const [matchedStr] = containerSearch;
-        let { varName } = index === 0 ? containerSearch.groups : matchedStr.match(/let-(?<varName>\w*)/).groups;
+        const { varName } = index === 0 ? containerSearch.groups : matchedStr.match(/let-(?<varName>\w*)/).groups;
         let newStructuralStr = matchedStr;
         let hasMatches;
         [templateKey(varName), bindingKey(varName)].forEach(keyRegex => {

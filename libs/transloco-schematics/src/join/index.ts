@@ -14,7 +14,7 @@ import { SchemaOptions } from './schema';
 import { normalize } from '@angular-devkit/core';
 import * as fs from 'fs-extra';
 
-type Builder = (tree: Tree, path: string, content: Object) => void;
+type Builder = (tree: Tree, path: string, content: object) => void;
 
 function reduceTranslations(host: Tree, dirPath: string, translationJson, lang: string, key = '') {
   const dir = host.getDir(dirPath);
@@ -49,9 +49,9 @@ function deletePrevFiles(host: Tree, options: SchemaOptions) {
   }
 }
 
-const jsonBuilder: Builder = (tree: Tree, path: string, content: Object) => {
+function jsonBuilder(tree: Tree, path: string, content: object) {
   tree.create(`${path}.json`, JSON.stringify(content, null, 2));
-};
+}
 
 function builderFactory(format: TranslationFileFormat): Builder {
   switch (format) {
@@ -69,7 +69,7 @@ function builderFactory(format: TranslationFileFormat): Builder {
 }
 
 export default function(options: SchemaOptions): Rule {
-  return (host: Tree, context: SchematicContext) => {
+  return (host: Tree) => {
     deletePrevFiles(host, options);
     const root = getTranslationsRoot(host, options);
     const defaultLang = getDefaultLang(options);

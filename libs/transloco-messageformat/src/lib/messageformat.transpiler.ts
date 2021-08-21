@@ -20,7 +20,7 @@ function mfFactory(locales?: MFLocale, messageConfig?: MessageFormat.Options): M
 @Injectable()
 export class MessageFormatTranspiler extends DefaultTranspiler {
   private messageFormat: MessageFormat;
-  private messageConfig: MessageFormat.Options;
+  private readonly messageConfig: MessageFormat.Options;
 
   constructor(
     @Optional() @Inject(TRANSLOCO_MESSAGE_FORMAT_CONFIG) config: MessageformatConfig,
@@ -32,7 +32,7 @@ export class MessageFormatTranspiler extends DefaultTranspiler {
     this.messageFormat = mfFactory(locales, messageConfig);
   }
 
-  transpile(value: any, params: HashMap<any> = {}, translation: Translation): any {
+  transpile(value: any, params: HashMap = {}, translation: Translation): any {
     if (!value) {
       return value;
     }

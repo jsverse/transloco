@@ -59,7 +59,7 @@ export class TranslocoPersistLangService implements OnDestroy {
     let activeLang = cachedLang || defaultLang;
 
     if (isFunction(this.config.getLangFn)) {
-      const browserLang = getBrowserLang()!;
+      const browserLang = getBrowserLang();
       const cultureLang = getBrowserCultureLang();
       activeLang = this.config.getLangFn({
         browserLang,

@@ -105,8 +105,8 @@ function createTranslocoModule(isLib: boolean, ssr: boolean, langs: string[], pa
   ]);
 }
 
-function updateEnvironmentBaseUrl(host: Tree, sourceRoot: string, defaultValue: any) {
-  const template = `\$1{
+function updateEnvironmentBaseUrl(host: Tree, sourceRoot: string, defaultValue: string) {
+  const template = `$1{
   baseUrl: '${defaultValue}',`;
 
   setEnvironments(host, sourceRoot, (env: string) =>

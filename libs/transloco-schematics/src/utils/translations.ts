@@ -31,7 +31,7 @@ export function typescriptTranslationFileCreator(source, lang, path) {
 }
 
 export function checkIfTranslationFilesExist(path: string, langs: string[], extension: string, skipThrow?: boolean) {
-  for (let lang of langs) {
+  for (const lang of langs) {
     const filePath = p.resolve(`${path}/${lang}${extension}`);
     if (fs.existsSync(filePath)) {
       if (skipThrow) {

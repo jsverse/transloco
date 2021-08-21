@@ -61,10 +61,10 @@ export function toDate(value: any): Date {
 
 export function isoStringToDate(match: RegExpMatchArray): Date {
   const date: Date = new Date(0);
-  let tzHour: number = 0;
-  let tzMin: number = 0;
-  const dateSetter: Function = match[8] ? date.setUTCFullYear : date.setFullYear;
-  const timeSetter: Function = match[8] ? date.setUTCHours : date.setHours;
+  let tzHour = 0;
+  let tzMin = 0;
+  const dateSetter = match[8] ? date.setUTCFullYear : date.setFullYear;
+  const timeSetter = match[8] ? date.setUTCHours : date.setHours;
   if (match[9]) {
     tzHour = +(match[9] + match[10]);
     tzMin = +(match[9] + match[11]);

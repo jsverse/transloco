@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { TRANSLOCO_SCOPE } from '@ngneat/transloco';
+import {Component} from '@angular/core';
+import {TRANSLOCO_SCOPE} from '@ngneat/transloco';
 
 @Component({
   selector: 'app-lazy-multiple-scopes',
@@ -9,11 +9,4 @@ import { TRANSLOCO_SCOPE } from '@ngneat/transloco';
     { provide: TRANSLOCO_SCOPE, useValue: { scope: 'lazy-page', alias: 'LazyPageAlias' }, multi: true}
   ]
 })
-export class LazyMultipleScopesComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
-}
+export class LazyMultipleScopesComponent {}

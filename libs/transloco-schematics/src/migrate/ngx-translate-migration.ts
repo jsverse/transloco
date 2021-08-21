@@ -151,11 +151,11 @@ export function run(path) {
     console.log(`\nMigrating ${filesType} files 📜`);
     let spinner;
     for (let i = 0; i < matchersArr.length; i++) {
-      let { step, matchers } = matchersArr[i];
+      const { step, matchers } = matchersArr[i];
       const msg = `Step ${i + 1}/${matchersArr.length}: Migrating ${step}`;
       spinner = ora().start(msg);
       const noFilesFound = [];
-      for (let matcher of matchers) {
+      for (const matcher of matchers) {
         try {
           await replaceInFile(matcher);
         } catch (e) {

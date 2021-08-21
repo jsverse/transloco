@@ -39,7 +39,7 @@ export function findRootModule(host: Tree, module: string, rootPath = '', skipIm
  * Find the module referred by a set of options passed to the schematics.
  */
 export function findModuleFromOptions(host: Tree, options, projectPath): Path | undefined {
-  if (options.hasOwnProperty('skipImport') && options.skipImport) {
+  if (Object.prototype.hasOwnProperty.call(options, 'skipImport') && options.skipImport) {
     return undefined;
   }
 
