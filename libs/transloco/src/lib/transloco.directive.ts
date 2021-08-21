@@ -26,12 +26,19 @@ import { listenOrNotOperator, resolveInlineLoader, shouldListenToLangChanges } f
 import { LangResolver } from './lang-resolver';
 import { ScopeResolver } from './scope-resolver';
 
+type TranslateFn = (key: string, params?: HashMap) => any;
+interface ViewContext {
+  $implicit: TranslateFn;
+  currentLang: string;
+}
+
+
 @Directive({
   selector: '[transloco]'
 })
 export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   subscription: Subscription | undefined;
-  view: EmbeddedViewRef<any> | undefined;
+  view: EmbeddedViewRef<ViewContext> | undefined;
 
   private translationMemo: Record<string, { value: any; params?: HashMap }> = {};
 
@@ -40,7 +47,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   @Input('translocoScope') inlineScope: string | undefined;
   @Input('translocoRead') inlineRead: string | undefined;
   @Input('translocoLang') inlineLang: string | undefined;
-  @Input('translocoLoadingTpl') inlineTpl: TemplateRef<any> | undefined;
+  @Input('translocoLoadingTpl') inlineTpl: TemplateRef<unknown> | undefined;
 
   private currentLang: string | undefined;
   private loaderTplHandler: TemplateHandler | undefined;
@@ -52,10 +59,10 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
 
   constructor(
     private translocoService: TranslocoService,
-    @Optional() private tpl: TemplateRef<{ $implicit: (key: string, params?: HashMap) => any; currentLang: string }>,
+    @Optional() private tpl: TemplateRef<ViewContext>,
     @Optional() @Inject(TRANSLOCO_SCOPE) private providerScope: MaybeArray<TranslocoScope>,
     @Optional() @Inject(TRANSLOCO_LANG) private providerLang: string | undefined,
-    @Optional() @Inject(TRANSLOCO_LOADING_TEMPLATE) private providedLoadingTpl: Type<any> | string,
+    @Optional() @Inject(TRANSLOCO_LOADING_TEMPLATE) private providedLoadingTpl: Type<unknown> | string,
     private vcr: ViewContainerRef,
     private cdr: ChangeDetectorRef,
     private host: ElementRef
@@ -98,7 +105,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     // We need to support dynamic keys/params, so if this is not the first change CD cycle
     // we need to run the function again in order to update the value
-    const notInit = Object.keys(changes).some(v => changes[v].firstChange === false);
+    const notInit = Object.keys(changes).some(v => !changes[v].firstChange);
     notInit && this.simpleStrategy();
   }
 
@@ -107,28 +114,28 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     this.host.nativeElement.innerText = this.translocoService.translate(this.key!, this.params, this.currentLang);
   }
 
-  private structuralStrategy(lang: string, read: string | undefined) {
+  private structuralStrategy(lang: string, read?: string) {
     this.translationMemo = {};
 
     if (this.view) {
       // when the lang changes we need to change the reference so Angular will update the view
       this.view.context['$implicit'] = this.getTranslateFn(lang, read);
-      this.view.context['currentLang'] = this.currentLang;
+      this.view.context['currentLang'] = this.currentLang!;
     } else {
       this.detachLoader();
       this.view = this.vcr.createEmbeddedView(this.tpl, {
         $implicit: this.getTranslateFn(lang, read),
-        currentLang: this.currentLang
+        currentLang: this.currentLang!
       });
     }
   }
 
-  private getTranslateFn(lang: string, read: string | undefined): (key: string, params?: HashMap) => any {
+  private getTranslateFn(lang: string, read: string | undefined): TranslateFn {
     return (key: string, params?: HashMap) => {
       const withRead = read ? `${read}.${key}` : key;
       const withParams = params ? `${withRead}${JSON.stringify(params)}` : withRead;
 
-      if (this.translationMemo.hasOwnProperty(withParams)) {
+      if (Object.prototype.hasOwnProperty.call(this.translationMemo, withParams)) {
         return this.translationMemo[withParams].value;
       }
 
@@ -154,7 +161,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   }
 
   private resolveScope(lang: string, providerScope: TranslocoScope): Observable<Translation | Translation[]> {
-    let resolvedScope = this.scopeResolver.resolve({ inline: this.inlineScope, provider: providerScope });
+    const resolvedScope = this.scopeResolver.resolve({ inline: this.inlineScope, provider: providerScope });
     this.path = this.langResolver.resolveLangPath(lang, resolvedScope);
     const inlineLoader = resolveInlineLoader(providerScope, resolvedScope);
 

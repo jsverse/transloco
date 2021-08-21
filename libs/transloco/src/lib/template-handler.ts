@@ -2,7 +2,7 @@ import { ComponentRef, TemplateRef, ViewContainerRef, ComponentFactoryResolver, 
 import { isString } from './helpers';
 import { TranslocoLoaderComponent } from './loader-component.component';
 
-export type View = string | TemplateRef<any> | Type<any>;
+export type View = string | TemplateRef<unknown> | Type<unknown>;
 
 export class TemplateHandler {
   private injector: Injector;
@@ -27,7 +27,7 @@ export class TemplateHandler {
     this.vcr.clear();
   }
 
-  private createComponent<T>(cmp: Type<any>): ComponentRef<T> {
+  private createComponent<T>(cmp: Type<T>): ComponentRef<T> {
     const cfr = this.injector.get(ComponentFactoryResolver);
     const factory = cfr.resolveComponentFactory(cmp);
 

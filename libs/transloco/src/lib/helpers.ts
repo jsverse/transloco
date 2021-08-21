@@ -1,9 +1,13 @@
 import { ProviderScope, Translation } from './types';
 import {flatten as _flatten, unflatten as _unflatten} from 'flat';
 
-export function getValue<T extends object>(obj: T, path: keyof T) {
+export function getValue<T>(obj: T, path: keyof T) {
+  if (!obj) {
+    return obj;
+  }
+  
   /* For cases where the key is like: 'general.something.thing' */
-  if (obj?.hasOwnProperty(path)) {
+  if (Object.prototype.hasOwnProperty.call(obj, path)) {
     return obj[path];
   }
 
@@ -42,27 +46,27 @@ export function size(collection: any): number {
     return Object.keys(collection).length;
   }
 
-  return !!collection ? collection.length : 0;
+  return collection ? collection.length : 0;
 }
 
 export function isEmpty(collection: any): boolean {
   return size(collection) === 0;
 }
 
-export function isFunction(val: any): val is Function {
+export function isFunction(val: unknown): val is CallableFunction {
   return typeof val === 'function';
 }
 
-export function isString(val: any): val is string {
+export function isString(val: unknown): val is string {
   return typeof val === 'string';
 }
 
-export function isNumber(val: any): val is number {
+export function isNumber(val: unknown): val is number {
   return typeof val === 'number';
 }
 
-export function isObject(item: any): boolean {
-  return item && typeof item === 'object' && !Array.isArray(item);
+export function isObject(item: unknown): boolean {
+  return !!item && typeof item === 'object' && !Array.isArray(item);
 }
 
 export function coerceArray<T>(val: T): T[] {
@@ -87,11 +91,11 @@ export function isBrowser() {
   return typeof window !== 'undefined';
 }
 
-export function isNil(value: any): value is null | undefined {
+export function isNil(value: unknown): value is null | undefined {
   return value === null || value === undefined;
 }
 
-export function isDefined(value: any) {
+export function isDefined(value: unknown) {
   return isNil(value) === false;
 }
 

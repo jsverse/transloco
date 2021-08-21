@@ -32,7 +32,7 @@ import { resolveLoader } from './resolve-loader';
 
 let service: TranslocoService;
 
-export function translate<T = any>(key: TranslateParams, params: HashMap = {}, lang?: string): T {
+export function translate<T>(key: TranslateParams, params: HashMap = {}, lang?: string): T {
   return service.translate(key, params, lang);
 }
 
@@ -42,7 +42,7 @@ export class TranslocoService implements OnDestroy {
   private translations = new Map<string, Translation>();
   private cache = new Map<string, Observable<Translation>>();
   private firstFallbackLang: string | undefined;
-  private defaultLang: string = '';
+  private defaultLang = '';
   private mergedConfig: TranslocoConfig;
   private availableLangs: AvailableLangs = [];
   private isResolvedMissingOnce = false;
@@ -127,8 +127,9 @@ export class TranslocoService implements OnDestroy {
   }
 
   load(path: string, options: LoadOptions = {}): Observable<Translation> {
-    if (this.cache.has(path)) {
-      return this.cache.get(path)!;
+    const cached = this.cache.get(path); 
+    if (cached) {
+      return cached;
     }
 
     let loadTranslation: Observable<Translation | { translation: Translation; lang: string }[]>;
@@ -186,7 +187,7 @@ export class TranslocoService implements OnDestroy {
    * translate('hello', { }, 'en')
    * translate('scope.someKey', { }, 'en')
    */
-  translate<T = any>(key: TranslateParams, params: HashMap = {}, lang = this.getActiveLang()): T {
+  translate<T = string>(key: TranslateParams, params: HashMap = {}, lang = this.getActiveLang()): T {
     if (!key) return key as any;
 
     const { scope, resolveLang } = this.resolveLangAndScope(lang);

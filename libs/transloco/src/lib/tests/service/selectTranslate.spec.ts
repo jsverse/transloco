@@ -1,6 +1,6 @@
 import { fakeAsync } from '@angular/core/testing';
 import { createService, runLoader, inlineScope } from '../mocks';
-import {TranslocoService} from "@ngneat/transloco";
+import {TranslocoService} from "../../transloco.service";
 
 describe('selectTranslate', () => {
   let service: TranslocoService;

@@ -3,7 +3,7 @@ import { defaultConfig, TranslocoConfig } from '../transloco.config';
 
 describe('TranslocoMissingHandler', () => {
   const parser = new DefaultHandler();
-  let _defaultConfig: TranslocoConfig = {
+  const _defaultConfig: TranslocoConfig = {
     ...defaultConfig,
     reRenderOnLangChange: true
   };

@@ -1,5 +1,7 @@
 import { fakeAsync } from '@angular/core/testing';
-import {isString, Translation, TranslocoService} from '@ngneat/transloco';
+import { TranslocoService } from '../../transloco.service';
+import { Translation } from '../../types';
+import {isString} from "../../helpers";
 import { createService, runLoader } from '../mocks';
 import { loadLang } from './utils';
 
@@ -10,7 +12,7 @@ describe('Custom Interceptor', () => {
 
   it('should support', fakeAsync(() => {
     (service as any).interceptor = {
-      preSaveTranslation(translation: Translation, lang: string) {
+      preSaveTranslation(translation: Translation) {
         return Object.keys(translation).reduce((acc, key) => {
           acc[key] =
             isString(translation[key]) && translation[key].includes('preSaveTranslationKey')

@@ -2,14 +2,12 @@ import { of, timer } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { mockLangs, runLoader } from '../mocks';
 import { fakeAsync } from '@angular/core/testing';
-import {
-  DefaultFallbackStrategy,
-  DefaultTranspiler,
-  TranslocoFallbackStrategy, TranslocoLoader,
-  TranslocoService
-} from '@ngneat/transloco';
 import { DefaultHandler } from '../../transloco-missing-handler';
 import { DefaultInterceptor } from '../../transloco.interceptor';
+import { TranslocoLoader } from '../../transloco.loader';
+import { TranslocoService } from '../../transloco.service';
+import { DefaultTranspiler } from '../../transloco.transpiler';
+import {DefaultFallbackStrategy, TranslocoFallbackStrategy} from "../../transloco-fallback-strategy";
 
 describe('Multiple fallbacks', () => {
   

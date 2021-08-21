@@ -19,7 +19,8 @@ import { TranslocoService } from '../transloco.service';
 import { TRANSLOCO_LOADING_TEMPLATE } from '../transloco-loading-template';
 import { DefaultInterceptor, TRANSLOCO_INTERCEPTOR } from '../transloco.interceptor';
 import { DefaultFallbackStrategy, TRANSLOCO_FALLBACK_STRATEGY } from '../transloco-fallback-strategy';
-import {TRANSLOCO_SCOPE, ProviderScope, Translation} from '@ngneat/transloco';
+import {ProviderScope, Translation } from '../types';
+import { TRANSLOCO_SCOPE } from '../transloco-scope';
 
 export const mockLangs: Record<string, Translation> = {
   en,

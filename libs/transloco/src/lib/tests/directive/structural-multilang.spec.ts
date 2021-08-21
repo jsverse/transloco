@@ -1,8 +1,9 @@
 import { fakeAsync } from '@angular/core/testing';
-import { TranslocoDirective, TranslocoService } from '@ngneat/transloco';
 import { runLoader, setlistenToLangChange } from '../mocks';
 import { SpectatorHost } from '@ngneat/spectator';
 import { createFactory } from './shared';
+import { TranslocoDirective } from '../../transloco.directive';
+import { TranslocoService } from '../../transloco.service';
 
 describe('Multi Langs', () => {
   let spectator: SpectatorHost<TranslocoDirective>;

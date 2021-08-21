@@ -1,7 +1,7 @@
 import { DefaultTranspiler, FunctionalTranspiler, getFunctionArgs, TranslocoTranspiler } from '../transloco.transpiler';
 import { flatten } from '../helpers';
 import { transpilerFunctions } from './mocks';
-import { defaultConfig, translocoConfig } from '@ngneat/transloco';
+import { defaultConfig, translocoConfig } from '../transloco.config';
 import {Injector} from "@angular/core";
 
 describe('TranslocoTranspiler', () => {

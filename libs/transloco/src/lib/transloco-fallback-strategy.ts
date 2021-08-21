@@ -10,7 +10,7 @@ export interface TranslocoFallbackStrategy {
 export class DefaultFallbackStrategy implements TranslocoFallbackStrategy {
   constructor(@Inject(TRANSLOCO_CONFIG) private userConfig: TranslocoConfig) {}
 
-  getNextLangs(failedLang: string) {
+  getNextLangs() {
     const fallbackLang = this.userConfig.fallbackLang;
     if (!fallbackLang) {
       throw new Error('When using the default fallback, a fallback language must be provided in the config!');

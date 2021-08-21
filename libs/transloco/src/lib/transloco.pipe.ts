@@ -15,7 +15,7 @@ import { ScopeResolver } from './scope-resolver';
 })
 export class TranslocoPipe implements PipeTransform, OnDestroy {
   private subscription: Subscription | undefined;
-  private lastValue: string = '';
+  private lastValue = '';
   private lastKey: string | undefined;
   private listenToLangChange: boolean;
   private path: string | undefined;
@@ -32,7 +32,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
   }
 
   // null is for handling strict mode + async pipe types https://github.com/ngneat/transloco/issues/311
-  transform(key: string | null, params?: HashMap | undefined, inlineLang?: string | undefined): string {
+  transform(key: string | null, params?: HashMap, inlineLang?: string): string {
     if (!key) {
       return key as any;
     }
@@ -79,7 +79,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
   }
 
   private resolveScope(lang: string, providerScope: TranslocoScope): Observable<Translation | Translation[]> {
-    let resolvedScope = this.scopeResolver.resolve({ inline: undefined, provider: providerScope });
+    const resolvedScope = this.scopeResolver.resolve({ inline: undefined, provider: providerScope });
     this.path = this.langResolver.resolveLangPath(lang, resolvedScope);
     const inlineLoader = resolveInlineLoader(providerScope, resolvedScope);
     return this.translocoService._loadDependencies(this.path, inlineLoader);

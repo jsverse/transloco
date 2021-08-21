@@ -1,4 +1,6 @@
-import {flatten, Translation, TranslocoService} from '@ngneat/transloco';
+import { flatten} from '../../helpers';
+import { Translation} from '../../types';
+import {TranslocoService} from '../../transloco.service';
 import { createService, mockLangs } from '../mocks';
 import { fakeAsync } from '@angular/core/testing';
 import { loadLang } from './utils';

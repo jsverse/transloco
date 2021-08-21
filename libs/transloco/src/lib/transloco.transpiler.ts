@@ -6,7 +6,7 @@ import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.co
 export const TRANSLOCO_TRANSPILER = new InjectionToken('TRANSLOCO_TRANSPILER');
 
 export interface TranslocoTranspiler {
-  transpile(value: any, params: HashMap, translation: HashMap): any;
+  transpile(value: any, params: HashMap, translation: Translation): any;
 
   onLangChanged?(lang: string): void;
 }

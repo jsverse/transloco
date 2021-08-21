@@ -1,7 +1,7 @@
 import { createService, mockLangs } from '../mocks';
 import { fakeAsync } from '@angular/core/testing';
 import { loadLang } from './utils';
-import {TranslocoService} from "@ngneat/transloco";
+import {TranslocoService} from "../../transloco.service";
 
 describe('translate', () => {
   let service: TranslocoService;

@@ -1,8 +1,9 @@
-import { fakeAsync } from '@angular/core/testing';
-import { TranslocoDirective, TranslocoService } from '@ngneat/transloco';
-import { runLoader, setlistenToLangChange } from '../mocks';
-import { createFactory, testMergedScopedTranslation, testScopedTranslation, testTranslationWithRead } from './shared';
-import {SpectatorHost, SpyObject} from '@ngneat/spectator';
+import {fakeAsync} from '@angular/core/testing';
+import {runLoader, setlistenToLangChange} from '../mocks';
+import {createFactory, testMergedScopedTranslation, testScopedTranslation, testTranslationWithRead} from './shared';
+import {SpectatorHost} from '@ngneat/spectator';
+import { TranslocoDirective } from '../../transloco.directive';
+import { TranslocoService } from '../../transloco.service';
 
 describe('Structural directive', () => {
   let spectator: SpectatorHost<TranslocoDirective>;

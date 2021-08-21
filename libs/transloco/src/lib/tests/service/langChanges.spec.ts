@@ -1,5 +1,5 @@
 import { createService } from '../mocks';
-import {TranslocoService} from "@ngneat/transloco";
+import {TranslocoService} from "../../transloco.service";
 
 describe('translate', () => {
   let service: TranslocoService;

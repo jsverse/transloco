@@ -1,9 +1,11 @@
 import { fakeAsync } from '@angular/core/testing';
-import { TRANSLOCO_SCOPE, TranslocoDirective, TranslocoModule } from '@ngneat/transloco';
 import { createComponentFactory, Spectator, SpectatorHost } from '@ngneat/spectator';
 import { createFactory } from './shared';
 import { providersMock, runLoader } from '../mocks';
 import { Component } from '@angular/core';
+import { TranslocoDirective } from '../../transloco.directive';
+import { TRANSLOCO_SCOPE } from '../../transloco-scope';
+import { TranslocoModule } from '../../transloco.module';
 
 describe('Scope alias', () => {
   let spectator: SpectatorHost<TranslocoDirective>;

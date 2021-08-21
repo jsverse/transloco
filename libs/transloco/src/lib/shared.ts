@@ -2,6 +2,7 @@ import { TranslocoService } from './transloco.service';
 import { hasInlineLoader, isString } from './helpers';
 import { take } from 'rxjs/operators';
 import { InlineLoader, TranslocoScope } from './types';
+import {Observable, OperatorFunction} from "rxjs";
 
 /*
  * @example
@@ -63,8 +64,8 @@ export function shouldListenToLangChanges(service: TranslocoService, lang?: stri
   return false;
 }
 
-export function listenOrNotOperator(listenToLangChange?: boolean) {
-  return listenToLangChange ? (source: any) => source : take(1);
+export function listenOrNotOperator<T>(listenToLangChange?: boolean): OperatorFunction<T, T> {
+  return listenToLangChange ? (source: Observable<T>) => source : take<T>(1);
 }
 
 function prependScope(inlineLoader: InlineLoader, scope: string) {

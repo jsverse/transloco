@@ -11,11 +11,11 @@ export interface TranslocoInterceptor {
 
 @Injectable()
 export class DefaultInterceptor implements TranslocoInterceptor {
-  preSaveTranslation(translation: Translation, lang: string): Translation {
+  preSaveTranslation(translation: Translation): Translation {
     return translation;
   }
 
-  preSaveTranslationKey(key: string, value: string, lang: string): string {
+  preSaveTranslationKey(_: string, value: string): string {
     return value;
   }
 }

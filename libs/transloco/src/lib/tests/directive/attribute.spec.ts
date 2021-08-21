@@ -1,7 +1,7 @@
 import { fakeAsync } from '@angular/core/testing';
 import { runLoader } from '../mocks';
 import { SpectatorHost } from '@ngneat/spectator';
-import { TranslocoDirective } from '@ngneat/transloco';
+import { TranslocoDirective } from '../../transloco.directive';
 import { createFactory, testMergedScopedTranslation, testScopedTranslation } from './shared';
 
 describe('Attribute directive', () => {

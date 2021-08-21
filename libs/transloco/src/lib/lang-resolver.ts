@@ -4,7 +4,7 @@ interface LangResolverParams {
   inline?: string;
   provider?: string;
   active: string;
-};
+}
 
 export class LangResolver {
   initialized = false;
@@ -23,12 +23,12 @@ export class LangResolver {
     }
 
     if (provider) {
-      const [_, extracted] = getPipeValue(provider, 'static');
+      const [, extracted] = getPipeValue(provider, 'static');
       lang = extracted;
     }
 
     if (inline) {
-      const [_, extracted] = getPipeValue(inline, 'static');
+      const [, extracted] = getPipeValue(inline, 'static');
       lang = extracted;
     }
 
