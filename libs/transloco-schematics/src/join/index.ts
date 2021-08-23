@@ -18,9 +18,9 @@ type Builder = (tree: Tree, path: string, content: object) => void;
 
 function reduceTranslations(host: Tree, dirPath: string, translationJson, lang: string, key = '') {
   const dir = host.getDir(dirPath);
-  if (!fs.existsSync(dirPath)) {
-    throw new SchematicsException(`Could not resolve path to dir: ${dirPath}`);
-  }
+  // if (!fs.existsSync(dirPath)) {
+  //   throw new SchematicsException(`Could not resolve path to dir: ${dirPath}`);
+  // }
   if (!hasFiles(dir) && !hasSubdirs(dir)) return translationJson;
   dir.subfiles
     .filter(fileName => fileName.includes(`${lang}.json`))

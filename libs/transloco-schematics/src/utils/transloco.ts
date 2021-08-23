@@ -12,6 +12,7 @@ let config: TranslocoGlobalConfig;
 export function getConfig(): TranslocoGlobalConfig {
   if (config) return config;
   config = getGlobalConfig();
+  console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', config);
   return config;
 }
 
