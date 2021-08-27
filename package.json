@@ -18,7 +18,8 @@
     "lint": "nx workspace-lint && ng lint",
     "e2e": "ng e2e",
     "update": "nx migrate latest",
-    "dep-graph": "nx dep-graph"
+    "dep-graph": "nx dep-graph",
+    "pre-commit": "node scripts/pre-commit.js && lint-staged"
   },
   "dependencies": {
     "@angular/animations": "12.2.3",
@@ -77,6 +78,7 @@
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-cypress": "2.11.3",
     "git-cz": "^3.2.1",
+    "husky": "7.0.2",
     "jasmine-core": "3.9.0",
     "jasmine-spec-reporter": "7.0.0",
     "jest": "27.1.0",
@@ -86,6 +88,7 @@
     "karma-coverage-istanbul-reporter": "3.0.3",
     "karma-jasmine": "4.0.1",
     "karma-jasmine-html-reporter": "1.7.0",
+    "lint-staged": "11.1.2",
     "ng-packagr": "12.2.1",
     "prettier": "2.3.2",
     "ts-jest": "27.0.5",
@@ -94,4 +97,3 @@
     "typescript": "4.3.5"
   }
 }
-
