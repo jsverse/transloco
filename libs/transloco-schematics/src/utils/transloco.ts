@@ -1,20 +1,12 @@
-import { PathFragment } from '@angular-devkit/core';
-import { DirEntry, Tree } from '@angular-devkit/schematics';
-import { TranslocoGlobalConfig, getGlobalConfig } from '@ngneat/transloco-utils';
-import { SchemaOptions } from '../join/schema';
-import { CONFIG_FILE } from '../schematics.consts';
-import { stringifyList } from './array';
-import { getProject } from './projects';
+import {PathFragment} from '@angular-devkit/core';
+import {DirEntry, Tree} from '@angular-devkit/schematics';
+import {TranslocoGlobalConfig} from '@ngneat/transloco-utils';
+import {SchemaOptions} from '../join/schema';
+import {CONFIG_FILE} from '../schematics.consts';
+import {stringifyList} from './array';
+import {getProject} from './projects';
 import * as p from 'path';
-
-let config: TranslocoGlobalConfig;
-
-export function getConfig(): TranslocoGlobalConfig {
-  if (config) return config;
-  config = getGlobalConfig();
-  console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', config);
-  return config;
-}
+import {getConfig} from "./config";
 
 export function createConfig(host: Tree, langs: string[], rootTranslationsPath = 'src/assets/i18n/') {
   if (!host.get(CONFIG_FILE)) {
@@ -70,7 +62,7 @@ export function getTranslationsRoot(host: Tree, options: { project?: string; tra
   }
 }
 
-export function getTranslationFiles(host: Tree, root: string, parser?): { lang: string; translation: object }[] {
+export function getTranslationFiles(host: Tree, root: string, parser?): { lang: string; translation: Record<string, unknown> }[] {
   const rootDir = host.getDir(root);
   return rootDir.subfiles.map(fileName => ({
     lang: fileName.split('.')[0],

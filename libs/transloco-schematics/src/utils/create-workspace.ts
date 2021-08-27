@@ -22,13 +22,6 @@ const defaultLibOptions = {
   name: 'baz'
 };
 
-export function getTestProjectPath(
-  workspaceOptions: any = defaultWorkspaceOptions,
-  appOptions: any = defaultAppOptions
-) {
-  return `/${workspaceOptions.newProjectRoot}/${appOptions.name}`;
-}
-
 export async function createWorkspace(
   schematicRunner: SchematicTestRunner,
   appTree: UnitTestTree,

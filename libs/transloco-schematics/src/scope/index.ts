@@ -13,14 +13,15 @@ import { tap } from 'rxjs/operators';
 import { ScriptTarget, createSourceFile } from 'typescript';
 import { applyChanges } from '../ng-add';
 import { LIB_NAME } from '../schematics.consts';
-import { stringifyList } from '../utils/array';
+import {coerceArray, stringifyList } from '../utils/array';
 import { addProviderToModule, insertImport, addImportToModule } from '../utils/ast-utils';
 import { findModuleFromOptions } from '../utils/find-module';
 import { getProject, getProjectPath } from '../utils/projects';
 import { createTranslateFilesFromOptions } from '../utils/translations';
-import { getConfig } from '../utils/transloco';
 import { SchemaOptions } from './schema';
 import * as p from 'path';
+import {getConfig} from "../utils/config";
+import {Change, InsertChange} from "../utils/change";
 
 function getProviderValue(options: SchemaOptions) {
   const name = dasherize(options.name);
@@ -33,7 +34,7 @@ function addScopeToModule(tree: Tree, modulePath: string, options: SchemaOptions
 
   const moduleSource = createSourceFile(modulePath, module.toString('utf-8'), ScriptTarget.Latest, true);
   const provider = `{ provide: TRANSLOCO_SCOPE, useValue: ${getProviderValue(options)} }`;
-  const changes = [];
+  const changes: Change[] = [];
   changes.push(addProviderToModule(moduleSource, modulePath, provider, LIB_NAME)[0]);
   changes.push(addImportToModule(moduleSource, modulePath, 'TranslocoModule', LIB_NAME)[0]);
   changes.push(insertImport(moduleSource, modulePath, 'TRANSLOCO_SCOPE, TranslocoModule', LIB_NAME));
@@ -41,7 +42,7 @@ function addScopeToModule(tree: Tree, modulePath: string, options: SchemaOptions
     changes.push(insertImport(moduleSource, modulePath, 'loader', './transloco.loader'));
   }
 
-  applyChanges(tree, modulePath, changes as any);
+  applyChanges(tree, modulePath, changes as InsertChange[]);
 }
 
 function getTranslationFilesFromAssets(host, translationsPath) {
@@ -53,8 +54,8 @@ function getTranslationFiles(options, host, translationsPath): string[] {
   return options.langs || getConfig().langs || getTranslationFilesFromAssets(host, translationsPath);
 }
 
-function addInlineLoader(tree: Tree, modulePath: any, name: string, langs) {
-  const loader = `export const loader = [${stringifyList(langs)}].reduce((acc: any, lang: string) => {
+function addInlineLoader(tree: Tree, modulePath: string, name: string, langs: string | string[]) {
+  const loader = `export const loader = [${stringifyList(coerceArray(langs))}].reduce((acc: any, lang: string) => {
   acc[lang] = () => import(\`./i18n/\${lang}.json\`);
   return acc;
 }, {});

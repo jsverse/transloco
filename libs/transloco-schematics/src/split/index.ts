@@ -1,15 +1,15 @@
-import { Rule, Tree, SchematicContext } from '@angular-devkit/schematics';
-import { TranslationFileFormat } from '../types';
+import {Rule, Tree} from '@angular-devkit/schematics';
+import {TranslationFileFormat} from '../types';
 import {
-  getTranslationsRoot,
   getTranslationEntryPaths,
   getTranslationFiles,
+  getTranslationKey,
+  getTranslationsRoot,
   hasFiles,
-  setFileContent,
   hasSubdirs,
-  getTranslationKey
+  setFileContent
 } from '../utils/transloco';
-import { SchemaOptions } from './schema';
+import {SchemaOptions} from './schema';
 
 type Parser = (content: string) => any;
 

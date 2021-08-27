@@ -1,12 +1,13 @@
-import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/testing';
-jest.mock('@ngneat/transloco-utils');
-import {getGlobalConfig, TranslocoGlobalConfig} from '@ngneat/transloco-utils';
+import {SchematicTestRunner, UnitTestTree} from '@angular-devkit/schematics/testing';
+import {TranslocoGlobalConfig} from '@ngneat/transloco-utils';
 import * as path from 'path';
-import { createWorkspace } from '../utils/create-workspace';
+import {createWorkspace} from '../utils/create-workspace';
 import en from './mocks/en';
 import es from './mocks/es';
 import scopeEn from './mocks/scope-en';
 import scopeEs from './mocks/scope-es';
+jest.mock("../utils/config");
+import {getConfig} from "../utils/config";
 
 const collectionPath = path.join(__dirname, '../collection.json');
 
@@ -14,7 +15,7 @@ describe('Join', () => {
   const schematicRunner = new SchematicTestRunner('schematics', collectionPath);
 
   let appTree: UnitTestTree;
-  const defaultLang = 'en'
+  const globalConfig: Partial<TranslocoGlobalConfig> = { defaultLang: 'en' };
   const options = {
     translationPath: './src/assets/i18n',
     outDir: 'dist-i18n'
@@ -24,8 +25,7 @@ describe('Join', () => {
     appTree = await createWorkspace(schematicRunner, appTree);
     appTree.create('src/assets/i18n/es.json', JSON.stringify(es));
     appTree.create('src/assets/i18n/en.json', JSON.stringify(en));
-    const config: Partial<TranslocoGlobalConfig> = { defaultLang };
-    (getGlobalConfig as jest.Mock).mockReturnValue(config);
+    (getConfig as jest.Mock).mockReturnValue(globalConfig);
   });
 
   describe('default strategy', () => {
@@ -76,16 +76,14 @@ describe('Join', () => {
     });
   });
 
-  describe.only('scope map strategy', () => {
+  describe('scope map strategy', () => {
     function setup(scopePathMap: any = { scope: 'src/app/assets/i18n' }) {
       Object.values(scopePathMap).forEach(path => {
         appTree.create(`${path}/en.json`, JSON.stringify(scopeEn));
         appTree.create(`${path}/es.json`, JSON.stringify(scopeEs));
       });
 
-      (getGlobalConfig as jest.Mock).mockImplementationOnce(() => {
-        return { scopePathMap }
-      });
+      (getConfig as jest.Mock).mockReturnValue({ ...globalConfig, scopePathMap });
     }
 
 
@@ -106,7 +104,7 @@ describe('Join', () => {
       expect(tree.readContent('/dist-i18n/es.json')).toMatchSnapshot();
     });
 
-    it.skip('should use multi projects scopes', async () => {
+    it('should use multi projects scopes', async () => {
       const scopePathMap = {
         libA: 'projects/bar/src/assets/i18n',
         libB: 'projects/baz/src/assets/i18n'

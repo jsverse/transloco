@@ -69,8 +69,10 @@ export function isObject(item: unknown): boolean {
   return !!item && typeof item === 'object' && !Array.isArray(item);
 }
 
-export function coerceArray<T>(val: T): T[] {
-  return Array.isArray(val) ? val : [val];
+export function coerceArray<T>(value: T | T[]): T[];
+export function coerceArray<T>(value: T | readonly T[]): readonly T[];
+export function coerceArray<T>(value: T | T[]): T[] {
+  return Array.isArray(value) ? value : [value];
 }
 
 /*

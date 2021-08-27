@@ -1,12 +1,12 @@
-const glob = require('glob');
-const p = require('path');
-const fs = require('fs');
+import {sync as globSync} from 'glob';
+import * as p from 'path';
+import * as fs from 'fs';
 
 export function run(path) {
   console.log('\x1b[4m%s\x1b[0m', '⬆️ Starting v2 upgrade script ⬆️');
   const dir = p.resolve(process.cwd());
   path = p.join(dir, path, '/**/*');
-  const htmlFiles = glob.sync(`${path}.html`);
+  const htmlFiles = globSync(`${path}.html`);
   const templateRegex = /<ng-template[^>]*transloco[^>]*>[^]+?<\/ng-template>/g;
   const structuralRegex = /<([a-zA-Z-]*)[^*>]*\*transloco=('|")\s*let\s+(?<varName>\w*)[^>]*\2>[^]+?<\/\1\s*>/g;
   const coreKeyRegex = varName =>
@@ -29,6 +29,7 @@ export function run(path) {
           while (keySearch) {
             const { rawKey, param } = keySearch.groups;
             /** The raw key may contain square braces we need to align it to '.' */
+            // eslint-disable-next-line prefer-const
             let [key, ...inner] = rawKey
               .trim()
               .replace(/\[/g, '.')
@@ -64,7 +65,7 @@ export function run(path) {
     });
     fs.writeFileSync(file, str, { encoding: 'utf8' });
   }
-  const modules = glob.sync(`${path}.module.ts`);
+  const modules = globSync(`${path}.module.ts`);
   for (const file of modules) {
     let str = fs.readFileSync(file).toString('utf8');
     if (!str.includes('@ngneat/transloco')) continue;

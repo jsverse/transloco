@@ -1,26 +1,23 @@
-import { Rule, Tree, SchematicContext, SchematicsException, EmptyTree } from '@angular-devkit/schematics';
-import { TranslationFileFormat } from '../types';
+import {EmptyTree, Rule, SchematicsException, Tree} from '@angular-devkit/schematics';
+import {TranslationFileFormat} from '../types';
 import {
-  getTranslationsRoot,
-  getTranslationFiles,
-  getTranslationEntryPaths,
-  hasFiles,
+  getDefaultLang,
   getJsonFileContent,
-  hasSubdirs,
+  getTranslationEntryPaths,
+  getTranslationFiles,
   getTranslationKey,
-  getDefaultLang
+  getTranslationsRoot,
+  hasFiles,
+  hasSubdirs
 } from '../utils/transloco';
-import { SchemaOptions } from './schema';
-import { normalize } from '@angular-devkit/core';
+import {SchemaOptions} from './schema';
+import {normalize} from '@angular-devkit/core';
 import * as fs from 'fs-extra';
 
-type Builder = (tree: Tree, path: string, content: object) => void;
+type Builder = (tree: Tree, path: string, content: Record<string, unknown>) => void;
 
 function reduceTranslations(host: Tree, dirPath: string, translationJson, lang: string, key = '') {
   const dir = host.getDir(dirPath);
-  // if (!fs.existsSync(dirPath)) {
-  //   throw new SchematicsException(`Could not resolve path to dir: ${dirPath}`);
-  // }
   if (!hasFiles(dir) && !hasSubdirs(dir)) return translationJson;
   dir.subfiles
     .filter(fileName => fileName.includes(`${lang}.json`))
@@ -49,7 +46,7 @@ function deletePrevFiles(host: Tree, options: SchemaOptions) {
   }
 }
 
-function jsonBuilder(tree: Tree, path: string, content: object) {
+function jsonBuilder(tree: Tree, path: string, content: Record<string, unknown>) {
   tree.create(`${path}.json`, JSON.stringify(content, null, 2));
 }
 

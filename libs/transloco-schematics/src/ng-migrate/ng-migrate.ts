@@ -1,11 +1,11 @@
-const kebabCase = require('lodash.kebabcase');
-const glob = require('glob');
-const fs = require('fs-extra');
+import kebabCase from 'lodash.kebabcase';
+import {sync as globSync} from 'glob';
+import * as fs from 'fs-extra';
 
 const regex = /<([\w-]*)\s*(?=[^>]*i18n)[^>]*i18n(?:(?:=("|')(?<attrValue>[^>]*?)\2)|(?:-(?<propName>[\w-]*)[^>]*\4=("|')(?<propValue>[^>]*?)\5))?[^>]*(?:>(?<innerText>[^]*?)<\/\1)?/g;
 
 export function run({ input, output, langs }) {
-  const files = glob.sync(`${process.cwd()}/${input}/**/*.html`);
+  const files = globSync(`${process.cwd()}/${input}/**/*.html`);
   let translation = {};
   for (const filePath of files) {
     const tpl = fs.readFileSync(filePath, { encoding: 'utf-8' });

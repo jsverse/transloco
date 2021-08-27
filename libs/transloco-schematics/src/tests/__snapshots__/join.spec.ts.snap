@@ -9,18 +9,6 @@ exports[`Join default strategy should merge scopes correctly 1`] = `
 }"
 `;
 
-exports[`Join scope map strategy aaaaa should use scope map strategy multi scopes 1`] = `
-"{
-  \\"hello\\": \\"hola\\",
-  \\"scope.scope1\\": {
-    \\"hello\\": \\"hola scope\\"
-  },
-  \\"scope.scope2\\": {
-    \\"hello\\": \\"hola scope\\"
-  }
-}"
-`;
-
 exports[`Join scope map strategy should use multi projects scopes 1`] = `
 "{
   \\"hello\\": \\"hola\\",
@@ -38,15 +26,6 @@ exports[`Join scope map strategy should use scope map strategy 1`] = `
   \\"hello\\": \\"hola\\",
   \\"scope\\": {
     \\"hello\\": \\"hola scope\\"
-  }
-}"
-`;
-
-exports[`Join scope map strategy should use scope map strategy 2`] = `
-"{
-  \\"hello\\": \\"hello\\",
-  \\"scope\\": {
-    \\"hello\\": \\"hello scope\\"
   }
 }"
 `;

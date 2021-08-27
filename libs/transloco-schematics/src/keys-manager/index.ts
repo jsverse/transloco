@@ -4,10 +4,11 @@ import { TranslocoGlobalConfig } from '@ngneat/transloco-utils';
 import { execSync } from 'child_process';
 import { addScriptToPackageJson } from '../utils/package';
 import { getWorkspace, setWorkspace } from '../utils/projects';
-import { getConfig, updateConfig } from '../utils/transloco';
+import { updateConfig } from '../utils/transloco';
 import { SchemaOptions } from './schema';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
+import {getConfig} from "../utils/config";
 
 async function installKeysManager() {
   const packageManager = await getConfiguredPackageManager();
@@ -23,7 +24,9 @@ export function updateAngularJson(host: Tree, options) {
   const angularJson = getWorkspace(host);
   if (angularJson) {
     const project = angularJson.projects[options.project || angularJson.defaultProject];
-    project.architect.serve.builder = 'ngx-build-plus:dev-server' as any;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore - This is a custom builder type added after installing ngx-build-plus
+    project.architect.serve.builder = 'ngx-build-plus:dev-server';
   }
 
   setWorkspace(host, angularJson);
