@@ -1,1 +1,1 @@
-export {TranslocoPreloadLangsModule} from './lib/transloco-preload-langs.module';
+export {TranslocoPreloadLangsModule} from './lib/preload-langs.module';
