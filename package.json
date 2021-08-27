@@ -29,7 +29,7 @@
     "@angular/platform-browser": "^12.1.0",
     "@angular/platform-browser-dynamic": "^12.1.0",
     "@angular/router": "^12.1.0",
-    "@nrwl/angular": "12.6.6",
+    "@nrwl/angular": "12.8.0",
     "bootstrap": "^5.1.0",
     "chalk": "^4.1.2",
     "chokidar": "^3.5.2",
@@ -55,13 +55,13 @@
     "@angular/compiler-cli": "^12.1.0",
     "@angular/language-service": "^12.1.0",
     "@ngneat/spectator": "^8.0.3",
-    "@nrwl/cli": "12.6.6",
-    "@nrwl/cypress": "12.6.6",
-    "@nrwl/eslint-plugin-nx": "12.6.6",
-    "@nrwl/jest": "12.6.6",
-    "@nrwl/linter": "12.6.6",
-    "@nrwl/tao": "12.6.6",
-    "@nrwl/workspace": "12.6.6",
+    "@nrwl/cli": "12.8.0",
+    "@nrwl/cypress": "12.8.0",
+    "@nrwl/eslint-plugin-nx": "12.8.0",
+    "@nrwl/jest": "12.8.0",
+    "@nrwl/linter": "12.8.0",
+    "@nrwl/tao": "12.8.0",
+    "@nrwl/workspace": "12.8.0",
     "@types/command-line-args": "^5.2.0",
     "@types/find-duplicated-property-keys": "^1.1.0",
     "@types/flat": "^5.0.2",
@@ -72,7 +72,7 @@
     "@typescript-eslint/eslint-plugin": "~4.28.3",
     "@typescript-eslint/parser": "~4.28.3",
     "cypress": "^7.3.0",
-    "dotenv": "~10.0.0",
+    "dotenv": "10.0.0",
     "eslint": "7.22.0",
     "eslint-config-prettier": "8.1.0",
     "eslint-plugin-cypress": "^2.10.3",
@@ -94,3 +94,4 @@
     "typescript": "~4.3.5"
   }
 }
+

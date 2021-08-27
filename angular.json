@@ -34,10 +34,7 @@
         "lint": {
           "builder": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": [
-              "libs/transloco/src/**/*.ts",
-              "libs/transloco/src/**/*.html"
-            ]
+            "lintFilePatterns": ["libs/transloco/src/**/*.ts", "libs/transloco/src/**/*.html"]
           }
         }
       }
@@ -75,10 +72,7 @@
         "lint": {
           "builder": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": [
-              "libs/transloco-locale/src/**/*.ts",
-              "libs/transloco-locale/src/**/*.html"
-            ]
+            "lintFilePatterns": ["libs/transloco-locale/src/**/*.ts", "libs/transloco-locale/src/**/*.html"]
           }
         }
       }
@@ -188,10 +182,7 @@
         "lint": {
           "builder": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": [
-              "libs/transloco-persist-lang/src/**/*.ts",
-              "libs/transloco-persist-lang/src/**/*.html"
-            ]
+            "lintFilePatterns": ["libs/transloco-persist-lang/src/**/*.ts", "libs/transloco-persist-lang/src/**/*.html"]
           }
         }
       }
@@ -253,11 +244,11 @@
             "polyfills": "apps/transloco-playground/src/polyfills.ts",
             "tsConfig": "apps/transloco-playground/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              "apps/transloco-playground/src/favicon.ico",
-              "apps/transloco-playground/src/assets"
+            "assets": ["apps/transloco-playground/src/favicon.ico", "apps/transloco-playground/src/assets"],
+            "styles": [
+              "apps/transloco-playground/src/styles.scss",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css"
             ],
-            "styles": ["apps/transloco-playground/src/styles.scss", "node_modules/bootstrap/dist/css/bootstrap.min.css"],
             "scripts": ["node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"]
           },
           "configurations": {
@@ -314,10 +305,7 @@
         "lint": {
           "builder": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": [
-              "apps/transloco-playground/src/**/*.ts",
-              "apps/transloco-playground/src/**/*.html"
-            ]
+            "lintFilePatterns": ["apps/transloco-playground/src/**/*.ts", "apps/transloco-playground/src/**/*.html"]
           }
         },
         "test": {
@@ -410,7 +398,11 @@
             "main": "",
             "tsConfig": "libs/transloco-schematics/tsconfig.lib.json",
             "assets": [
-              {"glob": "**/*.json", "input": "libs/schematics/src", "output": "."}
+              {
+                "glob": "**/*.json",
+                "input": "libs/schematics/src",
+                "output": "."
+              }
             ]
           }
         },

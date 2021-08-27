@@ -1,0 +1,12 @@
+{
+  "migrations": [
+    {
+      "cli": "nx",
+      "version": "12.8.0-beta.0",
+      "description": "Remove Typescript Preprocessor Plugin",
+      "factory": "./src/migrations/update-12-8-0/remove-typescript-plugin",
+      "package": "@nrwl/cypress",
+      "name": "remove-typescript-plugin"
+    }
+  ]
+}
