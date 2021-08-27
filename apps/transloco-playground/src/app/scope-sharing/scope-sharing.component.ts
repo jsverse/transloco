@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 
 @Component({
-  selector: 'scope-sharing',
+  selector: 'app-scope-sharing',
   templateUrl: './scope-sharing.component.html',
   styleUrls: []
 })

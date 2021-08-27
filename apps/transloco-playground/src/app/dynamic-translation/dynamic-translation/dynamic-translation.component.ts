@@ -1,5 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { TranslocoService } from '@ngneat/transloco';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {TranslocoService} from '@ngneat/transloco';
 
 @Component({
   selector: 'app-dynamic-translation',

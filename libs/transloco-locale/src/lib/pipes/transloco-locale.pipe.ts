@@ -12,7 +12,8 @@ export class TranslocoLocalePipe {
     });
   }
 
-  protected getLocale(locale: Locale | undefined): Locale {
+  protected getLocale(locale?: Locale): Locale {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return locale || this.translocoLocaleService.getLocale()!;
   }
 
