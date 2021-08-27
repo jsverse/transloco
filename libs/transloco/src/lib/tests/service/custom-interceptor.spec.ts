@@ -1,7 +1,7 @@
 import { fakeAsync } from '@angular/core/testing';
 import { TranslocoService } from '../../transloco.service';
 import { Translation } from '../../types';
-import {isString} from "../../helpers";
+import { isString } from '../../helpers';
 import { createService, runLoader } from '../mocks';
 import { loadLang } from './utils';
 
@@ -15,7 +15,8 @@ describe('Custom Interceptor', () => {
       preSaveTranslation(translation: Translation) {
         return Object.keys(translation).reduce((acc, key) => {
           acc[key] =
-            isString(translation[key]) && translation[key].includes('preSaveTranslationKey')
+            isString(translation[key]) &&
+            translation[key].includes('preSaveTranslationKey')
               ? translation[key]
               : `Intercepted ${key}`;
           return acc;
@@ -23,12 +24,12 @@ describe('Custom Interceptor', () => {
       },
       preSaveTranslationKey(key: string) {
         return `preSaveTranslationKey ${key}`;
-      }
+      },
     };
     loadLang(service);
     runLoader();
     const translation = service.getTranslation('en');
-    Object.keys(translation).forEach(key => {
+    Object.keys(translation).forEach((key) => {
       expect(translation[key]).toEqual(`Intercepted ${key}`);
     });
     service.setTranslationKey('home', 'test');

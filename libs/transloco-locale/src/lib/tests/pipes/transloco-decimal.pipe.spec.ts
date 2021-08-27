@@ -1,9 +1,9 @@
 import { defaultConfig } from './../../transloco-locale.config';
 import { mockLocaleService, mockCDR } from '../mocks';
 import { TranslocoDecimalPipe } from './../../pipes/transloco-decimal.pipe';
-import {ChangeDetectorRef} from "@angular/core";
-import {TranslocoLocaleService} from '../../transloco-locale.service';
-import {LocaleConfig} from '../../transloco-locale.types';
+import { ChangeDetectorRef } from '@angular/core';
+import { TranslocoLocaleService } from '../../transloco-locale.service';
+import { LocaleConfig } from '../../transloco-locale.types';
 
 describe('TranslocoDecimalPipe', () => {
   let service: TranslocoLocaleService;
@@ -38,7 +38,7 @@ describe('TranslocoDecimalPipe', () => {
     spyOn(Intl, 'NumberFormat').and.callThrough();
     const config: LocaleConfig = {
       global: { decimal: { useGrouping: true, maximumFractionDigits: 2 } },
-      localeBased: {}
+      localeBased: {},
     };
     const pipe = new TranslocoDecimalPipe(service, cdr, config);
     pipe.transform('123');

@@ -1,11 +1,11 @@
 export enum Loaders {
   Http = 'Http',
-  Webpack = 'Webpack'
+  Webpack = 'Webpack',
 }
 
 export enum TranslationFileTypes {
   Typescript = 'Typescript',
-  JSON = 'JSON'
+  JSON = 'JSON',
 }
 
 export interface SchemaOptions {

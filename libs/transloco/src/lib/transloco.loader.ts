@@ -3,7 +3,10 @@ import { Observable, of } from 'rxjs';
 import { Translation } from './types';
 
 export interface TranslocoLoader {
-  getTranslation(lang: string, data?: TranslocoLoaderData): Observable<Translation> | Promise<Translation>;
+  getTranslation(
+    lang: string,
+    data?: TranslocoLoaderData
+  ): Observable<Translation> | Promise<Translation>;
 }
 
 export type TranslocoLoaderData = {
@@ -18,4 +21,6 @@ export class DefaultLoader implements TranslocoLoader {
   }
 }
 
-export const TRANSLOCO_LOADER = new InjectionToken<Translation>('TRANSLOCO_LOADER');
+export const TRANSLOCO_LOADER = new InjectionToken<Translation>(
+  'TRANSLOCO_LOADER'
+);

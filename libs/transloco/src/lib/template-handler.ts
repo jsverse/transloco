@@ -1,4 +1,11 @@
-import { ComponentRef, TemplateRef, ViewContainerRef, ComponentFactoryResolver, Injector, Type } from '@angular/core';
+import {
+  ComponentRef,
+  TemplateRef,
+  ViewContainerRef,
+  ComponentFactoryResolver,
+  Injector,
+  Type,
+} from '@angular/core';
 import { isString } from './helpers';
 import { TranslocoLoaderComponent } from './loader-component.component';
 
@@ -15,7 +22,9 @@ export class TemplateHandler {
     if (this.view instanceof TemplateRef) {
       this.vcr.createEmbeddedView(this.view);
     } else if (isString(this.view)) {
-      const componentRef = this.createComponent<TranslocoLoaderComponent>(TranslocoLoaderComponent);
+      const componentRef = this.createComponent<TranslocoLoaderComponent>(
+        TranslocoLoaderComponent
+      );
       componentRef.instance.html = this.view;
       componentRef.hostView.detectChanges();
     } else {

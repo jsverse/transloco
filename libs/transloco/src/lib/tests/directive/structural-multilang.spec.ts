@@ -20,7 +20,7 @@ describe('Multi Langs', () => {
       </section>
       `,
       {
-        detectChanges: false
+        detectChanges: false,
       }
     );
     const service = spectator.inject<TranslocoService>(TranslocoService);
@@ -50,7 +50,7 @@ describe('Multi Langs', () => {
       </section>
       `,
       {
-        detectChanges: false
+        detectChanges: false,
       }
     );
     const service = spectator.inject(TranslocoService);
@@ -85,7 +85,7 @@ describe('Multi Langs', () => {
       </section>
       `,
       {
-        detectChanges: false
+        detectChanges: false,
       }
     );
     const service = spectator.inject(TranslocoService);

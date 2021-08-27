@@ -1,6 +1,6 @@
 import { cosmiconfigSync } from 'cosmiconfig';
 import * as path from 'path';
-import {TranslocoGlobalConfig} from "./transloco-utils.types";
+import { TranslocoGlobalConfig } from './transloco-utils.types';
 
 /**
  * @deprecated use getGlobalConfig instead.

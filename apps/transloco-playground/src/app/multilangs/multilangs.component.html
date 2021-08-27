@@ -4,7 +4,9 @@
 </ng-container>
 
 <h4>Spanish: (inline lang, scope: lazy-page)</h4>
-<ng-container *transloco="let t; lang: 'es'; loadingTpl: loading; scope: 'lazy-page'">
+<ng-container
+  *transloco="let t; lang: 'es'; loadingTpl: loading; scope: 'lazy-page'"
+>
   <p data-cy="with-scope">{{ t('lazyPage.title') }}</p>
 </ng-container>
 
@@ -16,7 +18,9 @@
 </ng-container>
 
 <h4>Static Lang with scope <code>lazy-page/es</code></h4>
-<ng-container *transloco="let t; lang: 'es|static'; loadingTpl: loading; scope: 'lazy-page'">
+<ng-container
+  *transloco="let t; lang: 'es|static'; loadingTpl: loading; scope: 'lazy-page'"
+>
   <p>{{ t('lazyPage.title') }}</p>
 </ng-container>
 

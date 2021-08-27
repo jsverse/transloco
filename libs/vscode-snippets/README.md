@@ -5,17 +5,13 @@
 ##### trc
 
 ```html
-<ng-container *transloco="let t">
-  {{ t("title") }}
-</ng-container>
+<ng-container *transloco="let t"> {{ t("title") }} </ng-container>
 ```
 
 ##### trd
 
 ```html
-<ng-template transloco let-t>
-  {{ t("title") }}
-</ng-template>
+<ng-template transloco let-t> {{ t("title") }} </ng-template>
 ```
 
 ##### trdd

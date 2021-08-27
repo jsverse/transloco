@@ -11,7 +11,12 @@ export class ScopeResolver {
   constructor(private translocoService: TranslocoService) {}
 
   // inline => provider
-  resolve({ inline, provider }: ScopeResolverParams = { inline: undefined, provider: undefined }): string | undefined {
+  resolve(
+    { inline, provider }: ScopeResolverParams = {
+      inline: undefined,
+      provider: undefined,
+    }
+  ): string | undefined {
     if (inline) {
       return inline;
     }

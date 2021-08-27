@@ -9,7 +9,12 @@ import { TranslocoRootModule } from './transloco-root.module';
 
 @NgModule({
   declarations: [AppComponent, HomeComponent, OnPushComponent],
-  imports: [BrowserModule, AppRoutingModule, TranslocoRootModule, HttpClientModule],
-  bootstrap: [AppComponent]
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    TranslocoRootModule,
+    HttpClientModule,
+  ],
+  bootstrap: [AppComponent],
 })
 export class AppModule {}

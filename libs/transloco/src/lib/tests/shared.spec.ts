@@ -1,11 +1,19 @@
-import { getLangFromScope, getPipeValue, getScopeFromLang, shouldListenToLangChanges } from '../shared';
+import {
+  getLangFromScope,
+  getPipeValue,
+  getScopeFromLang,
+  shouldListenToLangChanges,
+} from '../shared';
 
 describe('getPipeValue', () => {
   it('should work', () => {
     expect(getPipeValue(undefined, 'static')).toEqual([false, '']);
     expect(getPipeValue('en', 'static')).toEqual([false, 'en']);
     expect(getPipeValue('en|static', 'static')).toEqual([true, 'en']);
-    expect(getPipeValue('todos-page|static', 'static')).toEqual([true, 'todos-page']);
+    expect(getPipeValue('todos-page|static', 'static')).toEqual([
+      true,
+      'todos-page',
+    ]);
   });
 });
 
@@ -33,8 +41,8 @@ describe('shouldListenToLangChanges', () => {
       shouldListenToLangChanges(
         {
           config: {
-            reRenderOnLangChange: true
-          }
+            reRenderOnLangChange: true,
+          },
         } as any,
         'es|static'
       )
@@ -46,8 +54,8 @@ describe('shouldListenToLangChanges', () => {
       shouldListenToLangChanges(
         {
           config: {
-            reRenderOnLangChange: true
-          }
+            reRenderOnLangChange: true,
+          },
         } as any,
         'es'
       )
@@ -59,8 +67,8 @@ describe('shouldListenToLangChanges', () => {
       shouldListenToLangChanges(
         {
           config: {
-            reRenderOnLangChange: false
-          }
+            reRenderOnLangChange: false,
+          },
         } as any,
         'es'
       )

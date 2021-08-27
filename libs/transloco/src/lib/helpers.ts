@@ -1,11 +1,11 @@
 import { ProviderScope, Translation } from './types';
-import {flatten as _flatten, unflatten as _unflatten} from 'flat';
+import { flatten as _flatten, unflatten as _unflatten } from 'flat';
 
 export function getValue<T>(obj: T, path: keyof T) {
   if (!obj) {
     return obj;
   }
-  
+
   /* For cases where the key is like: 'general.something.thing' */
   if (Object.prototype.hasOwnProperty.call(obj, path)) {
     return obj[path];
@@ -24,7 +24,9 @@ export function setValue(obj: any, prop: string, val: any) {
     if (index === lastIndex) {
       acc[part] = val;
     } else {
-      acc[part] = Array.isArray(acc[part]) ? acc[part].slice() : { ...acc[part] };
+      acc[part] = Array.isArray(acc[part])
+        ? acc[part].slice()
+        : { ...acc[part] };
     }
 
     return acc && acc[part];
@@ -85,7 +87,9 @@ export function coerceArray<T>(value: T | T[]): T[] {
  */
 export function toCamelCase(str: string): string {
   return str
-    .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => (index == 0 ? word.toLowerCase() : word.toUpperCase()))
+    .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) =>
+      index == 0 ? word.toLowerCase() : word.toUpperCase()
+    )
     .replace(/\s+|_|-|\//g, '');
 }
 

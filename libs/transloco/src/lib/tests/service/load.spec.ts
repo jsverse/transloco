@@ -2,7 +2,7 @@ import { fakeAsync } from '@angular/core/testing';
 import { filter, pluck } from 'rxjs/operators';
 import { createService, runLoader } from '../mocks';
 import { loadLang } from './utils';
-import {TranslocoService} from "../../transloco.service";
+import { TranslocoService } from '../../transloco.service';
 
 describe('load', () => {
   let service: TranslocoService;
@@ -18,7 +18,11 @@ describe('load', () => {
       )
       .subscribe(spy);
     loadLang(service);
-    expect(spy).toHaveBeenCalledWith({ lang: 'en', langName: 'en', scope: null });
+    expect(spy).toHaveBeenCalledWith({
+      lang: 'en',
+      langName: 'en',
+      scope: null,
+    });
   }));
 
   it('should trigger loaded event once loaded - scope', fakeAsync(() => {
@@ -30,11 +34,18 @@ describe('load', () => {
       )
       .subscribe(spy);
     loadLang(service, 'admin-page/en');
-    expect(spy).toHaveBeenCalledWith({ lang: 'admin-page/en', langName: 'en', scope: 'admin-page' });
+    expect(spy).toHaveBeenCalledWith({
+      lang: 'admin-page/en',
+      langName: 'en',
+      scope: 'admin-page',
+    });
   }));
 
   it('should load the translation using the loader', fakeAsync(() => {
-    const loaderSpy = spyOn((service as any).loader, 'getTranslation').and.callThrough();
+    const loaderSpy = spyOn(
+      (service as any).loader,
+      'getTranslation'
+    ).and.callThrough();
     service.load('en').subscribe();
     runLoader();
     expect(loaderSpy).toHaveBeenCalledWith('en', undefined);

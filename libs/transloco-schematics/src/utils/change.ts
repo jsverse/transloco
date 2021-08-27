@@ -60,7 +60,7 @@ export class InsertChange implements Change {
    * This method does not insert spaces if there is none in the original string.
    */
   apply(host: Host) {
-    return host.read(this.path).then(content => {
+    return host.read(this.path).then((content) => {
       const prefix = content.substring(0, this.pos);
       const suffix = content.substring(this.pos);
 
@@ -85,7 +85,7 @@ export class RemoveChange implements Change {
   }
 
   apply(host: Host): Promise<void> {
-    return host.read(this.path).then(content => {
+    return host.read(this.path).then((content) => {
       const prefix = content.substring(0, this.pos);
       const suffix = content.substring(this.end);
 
@@ -102,7 +102,12 @@ export class ReplaceChange implements Change {
   order: number;
   description: string;
 
-  constructor(public path: string, public pos: number, public oldText: string, public newText: string) {
+  constructor(
+    public path: string,
+    public pos: number,
+    public oldText: string,
+    public newText: string
+  ) {
     if (pos < 0) {
       throw new Error('Negative positions are invalid');
     }
@@ -111,13 +116,15 @@ export class ReplaceChange implements Change {
   }
 
   apply(host: Host): Promise<void> {
-    return host.read(this.path).then(content => {
+    return host.read(this.path).then((content) => {
       const prefix = content.substring(0, this.pos);
       const suffix = content.substring(this.pos + this.oldText.length);
       const text = content.substring(this.pos, this.pos + this.oldText.length);
 
       if (text !== this.oldText) {
-        return Promise.reject(new Error(`Invalid replace: "${text}" != "${this.oldText}".`));
+        return Promise.reject(
+          new Error(`Invalid replace: "${text}" != "${this.oldText}".`)
+        );
       }
 
       // TODO: throw error if oldText doesn't match removed string.
@@ -132,10 +139,19 @@ export function createReplaceChange(
   oldText: string,
   newText: string
 ): ReplaceChange {
-  return new ReplaceChange(sourceFile.fileName, node.getStart(sourceFile), oldText, newText);
+  return new ReplaceChange(
+    sourceFile.fileName,
+    node.getStart(sourceFile),
+    oldText,
+    newText
+  );
 }
 
-export function createChangeRecorder(tree: Tree, path: string, changes: Change[]): UpdateRecorder {
+export function createChangeRecorder(
+  tree: Tree,
+  path: string,
+  changes: Change[]
+): UpdateRecorder {
   const recorder = tree.beginUpdate(path);
   for (const change of changes) {
     if (change instanceof InsertChange) {

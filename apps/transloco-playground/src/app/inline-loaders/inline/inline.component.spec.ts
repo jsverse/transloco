@@ -8,18 +8,20 @@ describe('InlineComponent', () => {
   let component: InlineComponent;
   let fixture: ComponentFixture<InlineComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [getTranslocoModule()],
-      declarations: [InlineComponent],
-      providers: [
-        {
-          provide: TRANSLOCO_SCOPE,
-          useValue: { scope: 'inline' }
-        }
-      ]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [getTranslocoModule()],
+        declarations: [InlineComponent],
+        providers: [
+          {
+            provide: TRANSLOCO_SCOPE,
+            useValue: { scope: 'inline' },
+          },
+        ],
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(InlineComponent);

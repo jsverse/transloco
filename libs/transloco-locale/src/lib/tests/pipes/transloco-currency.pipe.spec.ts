@@ -1,9 +1,9 @@
 import { TranslocoCurrencyPipe } from '../../pipes/transloco-currency.pipe';
 import { defaultConfig } from '../../transloco-locale.config';
 import { mockLocaleService, mockCDR, LOCALE_CONFIG_MOCK } from '../mocks';
-import {ChangeDetectorRef} from "@angular/core";
-import {TranslocoLocaleService} from '../../transloco-locale.service';
-import {LocaleConfig} from '../../transloco-locale.types';
+import { ChangeDetectorRef } from '@angular/core';
+import { TranslocoLocaleService } from '../../transloco-locale.service';
+import { LocaleConfig } from '../../transloco-locale.types';
 
 describe('TranslocoCurrencyPipe', () => {
   let service: TranslocoLocaleService;
@@ -52,7 +52,7 @@ describe('TranslocoCurrencyPipe', () => {
     it('should use default config options', () => {
       const config: LocaleConfig = {
         global: { currency: { useGrouping: true, maximumFractionDigits: 2 } },
-        localeBased: {}
+        localeBased: {},
       };
       const pipe = new TranslocoCurrencyPipe(service, cdr, config);
       pipe.transform('123');

@@ -64,17 +64,29 @@ describe('MessageFormatTranspiler', () => {
   });
 
   it('should translate simple string from params', () => {
-    const parsed = parser.transpile('Hello {{ value }}', { value: 'World' }, {});
+    const parsed = parser.transpile(
+      'Hello {{ value }}',
+      { value: 'World' },
+      {}
+    );
     expect(parsed).toEqual('Hello World');
   });
 
   it('should translate simple string with multiple params', () => {
-    const parsed = parser.transpile('Hello {{ from }} {{ name }}', { name: 'Transloco', from: 'from' }, {});
+    const parsed = parser.transpile(
+      'Hello {{ from }} {{ name }}',
+      { name: 'Transloco', from: 'from' },
+      {}
+    );
     expect(parsed).toEqual('Hello from Transloco');
   });
 
   it('should translate simple string with a key from lang', () => {
-    const parsed = parser.transpile('Hello {{ world }}', {}, { world: 'World' });
+    const parsed = parser.transpile(
+      'Hello {{ world }}',
+      {},
+      { world: 'World' }
+    );
     expect(parsed).toEqual('Hello World');
   });
 
@@ -83,14 +95,24 @@ describe('MessageFormatTranspiler', () => {
       withKeys: 'with keys',
       from: 'from',
       lang: 'lang',
-      nes: { ted: 'supporting nested values!' }
+      nes: { ted: 'supporting nested values!' },
     });
-    const parsed = parser.transpile('Hello {{ withKeys }} {{ from }} {{ lang }} {{nes.ted}}', {}, lang);
-    expect(parsed).toEqual('Hello with keys from lang supporting nested values!');
+    const parsed = parser.transpile(
+      'Hello {{ withKeys }} {{ from }} {{ lang }} {{nes.ted}}',
+      {},
+      lang
+    );
+    expect(parsed).toEqual(
+      'Hello with keys from lang supporting nested values!'
+    );
   });
 
   it('should translate simple string with params and from lang', () => {
-    const parsed = parser.transpile('Hello {{ from }} {{ name }}', { name: 'Transloco' }, { from: 'from' });
+    const parsed = parser.transpile(
+      'Hello {{ from }} {{ name }}',
+      { name: 'Transloco' },
+      { from: 'from' }
+    );
     expect(parsed).toEqual('Hello from Transloco');
   });
 
@@ -107,9 +129,9 @@ describe('MessageFormatTranspiler', () => {
           'Can replace {{value}} and also give parse messageformat: The {gender, select, male {boy won his} female {girl won her} other {person won their}} race - english',
         people: '{count, plural, =1 {person} other {people}}',
         moreNesting: {
-          projects: '{count, plural, =1 {project} other {projects}}'
-        }
-      }
+          projects: '{count, plural, =1 {project} other {projects}}',
+        },
+      },
     };
 
     expect(
@@ -118,23 +140,25 @@ describe('MessageFormatTranspiler', () => {
         {
           messageFormatWithParams: { value: 'Hey', gender: 'female' },
           people: { count: '1' },
-          'moreNesting.projects': { count: '1' }
+          'moreNesting.projects': { count: '1' },
         },
         {}
       )
     ).toEqual({
-      messageFormatWithParams: 'Can replace Hey and also give parse messageformat: The girl won her race - english',
+      messageFormatWithParams:
+        'Can replace Hey and also give parse messageformat: The girl won her race - english',
       people: 'person',
       moreNesting: {
-        projects: 'project'
-      }
+        projects: 'project',
+      },
     });
   });
 
   it('should work with locales', () => {
     const config = { locales: 'en-GB' };
     const parser = new MessageFormatTranspiler(config);
-    const message = '{count, plural, =0{No} one{A} other{Several}} {count, plural, one{word} other{words}}';
+    const message =
+      '{count, plural, =0{No} one{A} other{Several}} {count, plural, one{word} other{words}}';
 
     const result = parser.transpile(message, { count: 1 }, {});
     expect(result).toBe('A word');
@@ -143,24 +167,29 @@ describe('MessageFormatTranspiler', () => {
   it('should use passed-in formatters', () => {
     const formatters = {
       prop: (v: { [key: string]: string }, lc: any, p: any) => v[p],
-      upcase: (v: string) => v.toUpperCase()
+      upcase: (v: string) => v.toUpperCase(),
     };
     const messages = {
       answer: 'Answer: {obj, prop, a}',
-      describe: 'This is {upper, upcase}.'
+      describe: 'This is {upper, upcase}.',
     };
 
-    const parser = new MessageFormatTranspiler({ customFormatters: formatters });
+    const parser = new MessageFormatTranspiler({
+      customFormatters: formatters,
+    });
     const upper = parser.transpile(messages.describe, { upper: 'big' }, {});
     expect(upper).toEqual('This is BIG.');
 
-    expect(parser.transpile(messages.answer, { obj: { q: 3, a: 42 } }, {})).toBe('Answer: 42');
+    expect(
+      parser.transpile(messages.answer, { obj: { q: 3, a: 42 } }, {})
+    ).toBe('Answer: 42');
   });
 
   it('should switch locale in runtime', () => {
     const config = { locales: 'en' };
     const parser = new MessageFormatTranspiler(config);
-    const polishKey = '{count, plural, =0 {none} one {# thing} few {# things} many {# things} other {# things}}';
+    const polishKey =
+      '{count, plural, =0 {none} one {# thing} few {# things} many {# things} other {# things}}';
     const params = { count: 2 };
 
     expect(() => parser.transpile(polishKey, params, {})).toThrowError();

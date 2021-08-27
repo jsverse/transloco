@@ -39,7 +39,7 @@ import { TranslocoLocaleModule } from '@ngneat/transloco-locale';
 
 @NgModule({
   imports: [TranslocoModule, TranslocoLocaleModule.init()],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {}
 ```
@@ -67,13 +67,9 @@ The date expression could be: a `Date` object, a number
   {{ date | translocoDate: { timeZone: 'UTC', timeStyle: 'full' } }}
 </span>
 <!-- Jan 1, 1970-->
-<span>
-  {{ 1 | translocoDate: { dateStyle: 'medium' } }}
-</span>
+<span> {{ 1 | translocoDate: { dateStyle: 'medium' } }} </span>
 <!-- Feb 8, 2019-->
-<span>
-  {{ '2019-02-08' | translocoDate: { dateStyle: 'medium' } }}
-</span>
+<span> {{ '2019-02-08' | translocoDate: { dateStyle: 'medium' } }} </span>
 ```
 
 #### Currency Pipe
@@ -87,9 +83,7 @@ The currency mapping could be customise if needed through the [config](#configur
 <!--$1,000,000.00-->
 <span> {{ 1000000 | translocoCurrency }} </span>
 <!--1,000,000.00 US dollars-->
-<span>
-  {{ 1000000 | translocoCurrency: 'name' }}
-</span>
+<span> {{ 1000000 | translocoCurrency: 'name' }} </span>
 <!--$1,000,000-->
 <span>
   {{ 1000000 | translocoCurrency: 'symbol' : { minimumFractionDigits: 0 } }}
@@ -102,13 +96,9 @@ Transform a given number into current locale's decimal number format.
 
 ```html
 <!--1,234,567,890-->
-<span>
-  {{ 1234567890 | translocoDecimal }}
-</span>
+<span> {{ 1234567890 | translocoDecimal }} </span>
 <!--1234567890-->
-<span>
-  {{ 1234567890 | translocoDecimal: {useGrouping: false} }}
-</span>
+<span> {{ 1234567890 | translocoDecimal: {useGrouping: false} }} </span>
 ```
 
 #### Percent Pipe
@@ -152,11 +142,11 @@ could provide a language to locale mapping object using the [config's](#configur
     TranslocoLocaleModule.init({
       langToLocaleMapping: {
         en: 'en-US',
-        es: 'es-ES'
-      }
-    })
+        es: 'es-ES',
+      },
+    }),
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {}
 ```
@@ -199,17 +189,17 @@ import { TranslocoLocaleModule } from '@ngneat/transloco-locale';
 const globalFormatConfig = {
   date: {
     dateStyle: 'long',
-    timeStyle: 'long'
-  }
+    timeStyle: 'long',
+  },
 };
 
 const esESFormatConfig = {
   date: {
-    timeStyle: 'medium'
+    timeStyle: 'medium',
   },
   currency: {
-    minimumFractionDigits: 0
-  }
+    minimumFractionDigits: 0,
+  },
 };
 
 @NgModule({
@@ -218,11 +208,11 @@ const esESFormatConfig = {
       localeConfig: {
         global: globalFormatConfig,
         localeBased: {
-          'es-ES': esESFormatConfig
-        }
-      }
-    })
-  ]
+          'es-ES': esESFormatConfig,
+        },
+      },
+    }),
+  ],
 })
 export class AppModule {}
 ```
@@ -236,9 +226,9 @@ export class AppModule {}
   providers: [
     {
       provide: LOCALE_CONFIG,
-      useValue: localeConfig
-    }
-  ]
+      useValue: localeConfig,
+    },
+  ],
 })
 export class MyComponent {}
 ```
@@ -250,9 +240,7 @@ export class MyComponent {}
   {{ date | translocoDate: { dateStyle: 'medium', timeStyle: 'medium' } }}
 </span>
 
-<span>
-  {{ number | translocoDecimal: {useGrouping: false} }}
-</span>
+<span> {{ number | translocoDecimal: {useGrouping: false} }} </span>
 ```
 
 Note the format option of the global, locale's format and the one's being passed in the template, will be merged. While the template is the stronger one and then the locale and the global.

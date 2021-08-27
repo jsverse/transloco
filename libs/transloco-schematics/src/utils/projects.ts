@@ -3,7 +3,7 @@ import { SchematicsException, Tree } from '@angular-devkit/schematics';
 
 export function getWorkspacePath(host: Tree): string {
   const possibleFiles = ['/angular.json', '/.angular.json'];
-  const [path] = possibleFiles.filter(path => host.exists(path));
+  const [path] = possibleFiles.filter((path) => host.exists(path));
 
   return path;
 }
@@ -34,10 +34,14 @@ export function getProject(host: Tree, project?: string) {
   throw new SchematicsException('could not find a workspace project');
 }
 
-export function setEnvironments(host: Tree, sourceRoot: string, transformer: (env: string) => string) {
+export function setEnvironments(
+  host: Tree,
+  sourceRoot: string,
+  transformer: (env: string) => string
+) {
   const path = sourceRoot + '/environments';
   const environments = host.getDir(path);
-  return environments.subfiles.forEach(file => {
+  return environments.subfiles.forEach((file) => {
     const filePath = `${path}/${file}`;
     const configBuffer = host.read(filePath);
     const source = configBuffer.toString('utf-8');
@@ -56,7 +60,8 @@ export function getProjectPath(host: Tree, project, options) {
   }
 
   if (options.path === undefined) {
-    const projectDirName = project.projectType === 'application' ? 'app' : 'lib';
+    const projectDirName =
+      project.projectType === 'application' ? 'app' : 'lib';
 
     return `${project.root ? `/${project.root}` : ''}/src/${projectDirName}`;
   }
@@ -64,7 +69,10 @@ export function getProjectPath(host: Tree, project, options) {
   return options.path;
 }
 
-export function isLib(host: Tree, options: { project?: string | undefined; path?: string | undefined }) {
+export function isLib(
+  host: Tree,
+  options: { project?: string | undefined; path?: string | undefined }
+) {
   const project = getProject(host, options.project);
 
   return project.projectType === 'library';

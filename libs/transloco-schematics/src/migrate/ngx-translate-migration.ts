@@ -1,6 +1,6 @@
-import * as ora from "ora";
-import * as p from "path";
-import {replaceInFile} from "replace-in-file";
+import * as ora from 'ora';
+import * as p from 'path';
+import { replaceInFile } from 'replace-in-file';
 
 // Example: `./src/ng2/**/*.html`;
 export function run(path) {
@@ -14,62 +14,63 @@ export function run(path) {
   const [directive, pipe, pipeInBinding] = [
     /(translate|\[translate(?:Params)?\])=("|')[^"']*\2/gm,
     new RegExp(`{{${pipeContent}}}`, 'gm'),
-    new RegExp(`\\]=('|")${pipeContent}\\1`, 'gm')
-  ].map(regex => ({
+    new RegExp(`\\]=('|")${pipeContent}\\1`, 'gm'),
+  ].map((regex) => ({
     files: `${path}.html`,
     from: regex,
-    to: match => match.replace('translate', 'transloco')
+    to: (match) => match.replace('translate', 'transloco'),
   }));
 
   const moduleMultiImport = {
     files: `${path}.ts`,
     from: /import\s*{((([^,}]*,)+\s*(TranslateModule)\s*(,[^}]*)*)|(([^,{}]*,)*\s*(TranslateModule)\s*,\s*[a-zA-Z0-9]+(,[^}]*)*))\s*}\s*from\s*('|").?ngx-translate(\/[^'"]+)?('|");?/g,
-    to: match =>
+    to: (match) =>
       match
         .replace('TranslateModule', '')
         .replace(/,\s*,/, ',')
         .replace(/{\s*,/, '{')
         .replace(/,\s*}/, '}')
-        .concat(`\nimport { TranslocoModule } from '@ngneat/transloco';`)
+        .concat(`\nimport { TranslocoModule } from '@ngneat/transloco';`),
   };
 
   const moduleSingleImport = {
     files: `${path}.ts`,
     from: /import\s*{\s*(TranslateModule),?\s*}\s*from\s*('|").?ngx-translate(\/[^'"]+)?('|");?/g,
-    to: `import { TranslocoModule } from '@ngneat/transloco';`
+    to: `import { TranslocoModule } from '@ngneat/transloco';`,
   };
 
   const modules = {
     files: `${path}.ts`,
     from: /(?<![a-zA-Z])TranslateModule(?![^]*from)(\.(forRoot|forChild)\(({[^}]*})*[^)]*\))?/g,
-    to: 'TranslocoModule'
+    to: 'TranslocoModule',
   };
 
   const serviceMultiImport = {
     files: `${path}.ts`,
     from: /import\s*{((([^,}]*,)+\s*(TranslateService)\s*(,[^}]*)*)|(([^,{}]*,)*\s*(TranslateService)\s*,\s*[a-zA-Z0-9]+(,[^}]*)*))\s*}\s*from\s*('|").?ngx-translate(\/[^'"]+)?('|");?/g,
-    to: match =>
+    to: (match) =>
       match
         .replace('TranslateService', '')
         .replace(/,\s*,/, ',')
         .replace(/{\s*,/, '{')
         .replace(/,\s*}/, '}')
-        .concat(`\nimport { TranslocoService } from '@ngneat/transloco';`)
+        .concat(`\nimport { TranslocoService } from '@ngneat/transloco';`),
   };
 
   const [serviceSingleImport, pipeImport] = [
     /import\s*{\s*(TranslateService),?\s*}\s*from\s*('|").?ngx-translate(\/[^'"]+)?('|");?/g,
-    /import\s*{\s*(TranslatePipe),?\s*}\s*from\s*('|")[^'"]+('|");?/g
-  ].map(regex => ({
+    /import\s*{\s*(TranslatePipe),?\s*}\s*from\s*('|")[^'"]+('|");?/g,
+  ].map((regex) => ({
     ...noSpecFiles,
     from: regex,
-    to: `import { TranslocoService } from '@ngneat/transloco';`
+    to: `import { TranslocoService } from '@ngneat/transloco';`,
   }));
 
   const constructorInjection = {
     ...noSpecFiles,
     from: /(?:private|protected|public)\s+(.*?)\s*:\s*(?:TranslateService|TranslatePipe\s*(?:,|\)))/g,
-    to: match => match.replace(/TranslateService|TranslatePipe/g, 'TranslocoService')
+    to: (match) =>
+      match.replace(/TranslateService|TranslatePipe/g, 'TranslocoService'),
   };
 
   const serviceUsage = {
@@ -78,7 +79,7 @@ export function run(path) {
     to: (match, _, serviceName) => {
       const sanitizedName = serviceName
         .split('')
-        .map(char => (['$', '^'].includes(char) ? `\\${char}` : char))
+        .map((char) => (['$', '^'].includes(char) ? `\\${char}` : char))
         .join('');
       const functionsMap = {
         instant: 'translate',
@@ -86,11 +87,11 @@ export function run(path) {
         get: 'selectTranslate',
         stream: 'selectTranslate',
         use: 'setActiveLang',
-        set: 'setTranslation'
+        set: 'setTranslation',
       };
       const propsMap = {
         currentLang: 'getActiveLang()',
-        onLangChange: 'langChanges$'
+        onLangChange: 'langChanges$',
       };
       const serviceCallRgx = ({ map, func }) =>
         new RegExp(
@@ -99,52 +100,55 @@ export function run(path) {
           )})[\\r\\t\\n\\s]*${func ? '\\(' : '(?!\\()'}`,
           'g'
         );
-      const getTarget = t => Object.keys(t).join('|');
-      return [{ func: true, map: functionsMap }, { func: false, map: propsMap }].reduce((acc, curr) => {
-        return acc.replace(serviceCallRgx(curr), str =>
-          str.replace(new RegExp(getTarget(curr.map)), func => curr.map[func])
+      const getTarget = (t) => Object.keys(t).join('|');
+      return [
+        { func: true, map: functionsMap },
+        { func: false, map: propsMap },
+      ].reduce((acc, curr) => {
+        return acc.replace(serviceCallRgx(curr), (str) =>
+          str.replace(new RegExp(getTarget(curr.map)), (func) => curr.map[func])
         );
       }, match);
-    }
+    },
   };
 
   const specs = {
     files: `${path}spec.ts`,
     from: /TranslateService|TranslatePipe/g,
-    to: 'TranslocoService'
+    to: 'TranslocoService',
   };
 
   const htmlReplacements = [
     {
       matchers: [directive],
-      step: 'directives'
+      step: 'directives',
     },
     {
       matchers: [pipe, pipeInBinding],
-      step: 'pipes'
-    }
+      step: 'pipes',
+    },
   ];
   const tsReplacements = [
     {
       matchers: [modules, moduleMultiImport, moduleSingleImport],
-      step: 'modules'
+      step: 'modules',
     },
     {
       matchers: [serviceMultiImport, serviceSingleImport, pipeImport],
-      step: 'service imports'
+      step: 'service imports',
     },
     {
       matchers: [constructorInjection],
-      step: 'constructor injections'
+      step: 'constructor injections',
     },
     {
       matchers: [serviceUsage],
-      step: 'service usage'
+      step: 'service usage',
     },
     {
       matchers: [specs],
-      step: 'specs'
-    }
+      step: 'specs',
+    },
   ];
 
   async function migrate(matchersArr, filesType) {
@@ -167,7 +171,9 @@ export function run(path) {
         }
       }
       spinner.succeed(msg);
-      noFilesFound.forEach(pattern => console.log('\x1b[33m%s\x1b[0m', `⚠️ ${pattern}`));
+      noFilesFound.forEach((pattern) =>
+        console.log('\x1b[33m%s\x1b[0m', `⚠️ ${pattern}`)
+      );
     }
   }
 

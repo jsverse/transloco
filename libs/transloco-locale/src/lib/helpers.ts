@@ -2,7 +2,8 @@ import NumberFormatOptions = Intl.NumberFormatOptions;
 import { toNumber } from '@ngneat/transloco';
 import { Locale, DateFormatOptions } from './transloco-locale.types';
 
-export const ISO8601_DATE_REGEX = /^(\d{4})-?(\d\d)-?(\d\d)(?:T(\d\d)(?::?(\d\d)(?::?(\d\d)(?:\.(\d+))?)?)?(Z|([+-])(\d\d):?(\d\d))?)?$/;
+export const ISO8601_DATE_REGEX =
+  /^(\d{4})-?(\d\d)-?(\d\d)(?:T(\d\d)(?::?(\d\d)(?::?(\d\d)(?:\.(\d+))?)?)?(Z|([+-])(\d\d):?(\d\d))?)?$/;
 /**
  * check if a given value is in BCP 47 language tag.
  *
@@ -13,15 +14,28 @@ export const ISO8601_DATE_REGEX = /^(\d{4})-?(\d\d)-?(\d\d)(?:T(\d\d)(?::?(\d\d)
 export function isLocaleFormat(val: any): val is Locale {
   const irregulars = `en-GB-oed|i-ami|i-bnn|i-default|i-enochian|i-hak|i-klingon|i-lux|i-mingo|i-navajo|i-pwn|i-tao|i-tay|i-tsu|sgn-BE-FR|sgn-BE-NL|sgn-CH-DE|art-lojban|cel-gaulish|no-bok|no-nyn|zh-guoyu|zh-hakka|zh-min|zh-min-nan|zh-xiang|zh-Hans|zh-hant`;
   const BCPFormat = `[a-z]{2}-[A-Z]{2}`;
-  return typeof val === 'string' && !!val.match(RegExp(`(${irregulars})|(${BCPFormat})`));
+  return (
+    typeof val === 'string' &&
+    !!val.match(RegExp(`(${irregulars})|(${BCPFormat})`))
+  );
 }
 
-export function localizeNumber(value: number | string, locale: Locale, options: NumberFormatOptions): string {
+export function localizeNumber(
+  value: number | string,
+  locale: Locale,
+  options: NumberFormatOptions
+): string {
   const number = toNumber(value);
-  return number !== null ? new Intl.NumberFormat(locale, options).format(number) : '';
+  return number !== null
+    ? new Intl.NumberFormat(locale, options).format(number)
+    : '';
 }
 
-export function localizeDate(date: Date, locale: Locale, options: DateFormatOptions): string {
+export function localizeDate(
+  date: Date,
+  locale: Locale,
+  options: DateFormatOptions
+): string {
   if (isDate(date)) {
     return new Intl.DateTimeFormat(locale, options as any).format(date);
   }

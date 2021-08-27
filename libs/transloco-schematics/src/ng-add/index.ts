@@ -13,7 +13,7 @@ import {
   Source,
   template,
   Tree,
-  url
+  url,
 } from '@angular-devkit/schematics';
 import { createSourceFile, ScriptTarget, SourceFile } from 'typescript';
 import { LIB_NAME } from '../schematics.consts';
@@ -36,7 +36,7 @@ function jsonTranslationFileCreator(source, lang) {
 
 function createTranslateFiles(langs: string[], creator): HostTree {
   const treeSource = new EmptyTree();
-  langs.forEach(lang => {
+  langs.forEach((lang) => {
     creator(treeSource, lang);
   });
 
@@ -59,7 +59,11 @@ export function getModuleFile(host: Tree, options: SchemaOptions): SourceFile {
   return createSourceFile(modulePath, sourceText, ScriptTarget.Latest, true);
 }
 
-export function applyChanges(host: Tree, path: string, changes: InsertChange[]): Tree {
+export function applyChanges(
+  host: Tree,
+  path: string,
+  changes: InsertChange[]
+): Tree {
   const recorder = host.beginUpdate(path);
 
   for (const change of changes) {
@@ -72,25 +76,46 @@ export function applyChanges(host: Tree, path: string, changes: InsertChange[]):
   return host;
 }
 
-export function addImportsToModuleFile(options: SchemaOptions, imports: string[], file = LIB_NAME): Rule {
-  return host => {
+export function addImportsToModuleFile(
+  options: SchemaOptions,
+  imports: string[],
+  file = LIB_NAME
+): Rule {
+  return (host) => {
     const module = getModuleFile(host, options);
-    const importChanges = insertImport(module, options.module, imports.join(', '), file);
+    const importChanges = insertImport(
+      module,
+      options.module,
+      imports.join(', '),
+      file
+    );
 
-    return applyChanges(host, options.module, [importChanges] as InsertChange[]);
+    return applyChanges(host, options.module, [
+      importChanges,
+    ] as InsertChange[]);
   };
 }
 
-export function addImportsToModuleDeclaration(options: SchemaOptions, imports: string[]): Rule {
-  return host => {
+export function addImportsToModuleDeclaration(
+  options: SchemaOptions,
+  imports: string[]
+): Rule {
+  return (host) => {
     const module = getModuleFile(host, options);
 
-    const importChanges = imports.map(imp => addImportToModule(module, options.module, imp, LIB_NAME)[0]);
+    const importChanges = imports.map(
+      (imp) => addImportToModule(module, options.module, imp, LIB_NAME)[0]
+    );
     return applyChanges(host, options.module, importChanges as InsertChange[]);
   };
 }
 
-function createTranslocoModule(isLib: boolean, ssr: boolean, langs: string[], path): Source {
+function createTranslocoModule(
+  isLib: boolean,
+  ssr: boolean,
+  langs: string[],
+  path
+): Source {
   return apply(url(`./files/transloco-module`), [
     template({
       ts: 'ts',
@@ -99,24 +124,30 @@ function createTranslocoModule(isLib: boolean, ssr: boolean, langs: string[], pa
       langs: langs,
       importEnv: ssr || !isLib,
       loaderPrefix: ssr ? '${environment.baseUrl}' : '',
-      prodMode: isLib ? 'false' : 'environment.production'
+      prodMode: isLib ? 'false' : 'environment.production',
     }),
-    move('/', path)
+    move('/', path),
   ]);
 }
 
-function updateEnvironmentBaseUrl(host: Tree, sourceRoot: string, defaultValue: string) {
+function updateEnvironmentBaseUrl(
+  host: Tree,
+  sourceRoot: string,
+  defaultValue: string
+) {
   const template = `$1{
   baseUrl: '${defaultValue}',`;
 
   setEnvironments(host, sourceRoot, (env: string) =>
-    env.indexOf('baseUrl') === -1 ? env.replace(/(environment.*=*)\{/, template) : env
+    env.indexOf('baseUrl') === -1
+      ? env.replace(/(environment.*=*)\{/, template)
+      : env
   );
 }
 
-export default function(options: SchemaOptions): Rule {
+export default function (options: SchemaOptions): Rule {
   return (host: Tree, context: SchematicContext) => {
-    const langs = options.langs.split(',').map(l => l.trim());
+    const langs = options.langs.split(',').map((l) => l.trim());
     const project = getProject(host, options.project);
     const sourceRoot = (project && project.sourceRoot) || 'src';
     const isLib = project.projectType === 'library';
@@ -124,10 +155,15 @@ export default function(options: SchemaOptions): Rule {
 
     const translationCreator = jsonTranslationFileCreator;
 
-    const translateFiles = apply(source(createTranslateFiles(langs, translationCreator)), [move('/', assetsPath)]);
+    const translateFiles = apply(
+      source(createTranslateFiles(langs, translationCreator)),
+      [move('/', assetsPath)]
+    );
 
     options.module = findRootModule(host, options.module, sourceRoot) as string;
-    const modulePath = options.module.substring(0, options.module.lastIndexOf('/') + 1) + 'transloco/';
+    const modulePath =
+      options.module.substring(0, options.module.lastIndexOf('/') + 1) +
+      'transloco/';
 
     if (options.ssr) {
       updateEnvironmentBaseUrl(host, sourceRoot, 'http://localhost:4200');
@@ -138,14 +174,24 @@ export default function(options: SchemaOptions): Rule {
     return chain([
       options.loader === Loaders.Http
         ? chain([
-            addImportsToModuleFile(options, ['HttpClientModule'], '@angular/common/http'),
-            addImportsToModuleDeclaration(options, ['HttpClientModule'])
+            addImportsToModuleFile(
+              options,
+              ['HttpClientModule'],
+              '@angular/common/http'
+            ),
+            addImportsToModuleDeclaration(options, ['HttpClientModule']),
           ])
         : noop(),
-      checkIfTranslationFilesExist(assetsPath, langs, '.json', true) ? noop() : mergeWith(translateFiles),
+      checkIfTranslationFilesExist(assetsPath, langs, '.json', true)
+        ? noop()
+        : mergeWith(translateFiles),
       mergeWith(createTranslocoModule(isLib, options.ssr, langs, modulePath)),
-      addImportsToModuleFile(options, ['TranslocoRootModule'], './transloco/transloco-root.module'),
-      addImportsToModuleDeclaration(options, ['TranslocoRootModule'])
+      addImportsToModuleFile(
+        options,
+        ['TranslocoRootModule'],
+        './transloco/transloco-root.module'
+      ),
+      addImportsToModuleDeclaration(options, ['TranslocoRootModule']),
     ])(host, context);
   };
 }

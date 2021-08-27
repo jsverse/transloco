@@ -1,6 +1,6 @@
-import { flatten} from '../../helpers';
-import { Translation} from '../../types';
-import {TranslocoService} from '../../transloco.service';
+import { flatten } from '../../helpers';
+import { Translation } from '../../types';
+import { TranslocoService } from '../../transloco.service';
 import { createService, mockLangs } from '../mocks';
 import { fakeAsync } from '@angular/core/testing';
 import { loadLang } from './utils';
@@ -8,14 +8,20 @@ import { loadLang } from './utils';
 describe('setTranslation', () => {
   let service: TranslocoService;
   let setTranslationsSpy: jasmine.Spy;
-  
+
   beforeEach(() => {
     service = createService();
-    setTranslationsSpy = spyOn((service as any).translations, 'set').and.callThrough();
+    setTranslationsSpy = spyOn(
+      (service as any).translations,
+      'set'
+    ).and.callThrough();
   });
 
   it('should add translation to the map after passing through the interceptor', () => {
-    const interceptorSpy = spyOn((service as any).interceptor, 'preSaveTranslation').and.callThrough();
+    const interceptorSpy = spyOn(
+      (service as any).interceptor,
+      'preSaveTranslation'
+    ).and.callThrough();
     const lang = 'en';
     const translation = flatten(mockLangs[lang]);
     service.setTranslation(translation, lang);
@@ -70,7 +76,7 @@ describe('setTranslation', () => {
       service.setTranslation(translation, lang);
       const merged = {
         ...flatten(mockLangs.en),
-        ...flatten({ lazyPage: { ...translation } })
+        ...flatten({ lazyPage: { ...translation } }),
       };
       expect(setTranslationsSpy).toHaveBeenCalledWith('en', merged);
     });
@@ -80,7 +86,7 @@ describe('setTranslation', () => {
       service.setTranslation(translation, lang);
       const merged = {
         ...flatten(mockLangs.en),
-        ...flatten({ kazaz: { ...translation } })
+        ...flatten({ kazaz: { ...translation } }),
       };
       expect(setTranslationsSpy).toHaveBeenCalledWith('en', merged);
     });
@@ -88,7 +94,10 @@ describe('setTranslation', () => {
     it("should change scope's name based on alias", () => {
       service._setScopeAlias('lazy-page', 'myScopeAlias');
       service.setTranslation(translation, lang);
-      const merged = { ...flatten(mockLangs.en), ...flatten({ myScopeAlias: { ...translation } }) };
+      const merged = {
+        ...flatten(mockLangs.en),
+        ...flatten({ myScopeAlias: { ...translation } }),
+      };
       expect(setTranslationsSpy).toHaveBeenCalledWith('en', merged);
     });
   });

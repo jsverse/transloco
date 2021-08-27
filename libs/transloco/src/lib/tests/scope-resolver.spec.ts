@@ -7,7 +7,7 @@ describe('ScopeResolver', () => {
   beforeEach(() => {
     spy = jasmine.createSpy('setScopeAlias');
     resolver = new ScopeResolver({
-      _setScopeAlias: spy
+      _setScopeAlias: spy,
     } as any);
   });
 
@@ -15,7 +15,7 @@ describe('ScopeResolver', () => {
     expect(
       resolver.resolve({
         inline: 'lazy-page',
-        provider: 'admin-page'
+        provider: 'admin-page',
       })
     ).toEqual('lazy-page');
   });
@@ -24,7 +24,7 @@ describe('ScopeResolver', () => {
     expect(
       resolver.resolve({
         inline: undefined,
-        provider: 'admin-page'
+        provider: 'admin-page',
       })
     ).toEqual('admin-page');
   });
@@ -33,7 +33,7 @@ describe('ScopeResolver', () => {
     expect(
       resolver.resolve({
         inline: undefined,
-        provider: undefined
+        provider: undefined,
       })
     ).toEqual(undefined);
   });
@@ -44,8 +44,8 @@ describe('ScopeResolver', () => {
         inline: undefined,
         provider: {
           scope: 'admin-page',
-          alias: 'admin'
-        }
+          alias: 'admin',
+        },
       })
     ).toEqual('admin-page');
     expect(spy).toHaveBeenCalledTimes(1);
@@ -57,8 +57,8 @@ describe('ScopeResolver', () => {
       resolver.resolve({
         inline: undefined,
         provider: {
-          scope: 'admin-page'
-        }
+          scope: 'admin-page',
+        },
       })
     ).toEqual('admin-page');
     // one from before

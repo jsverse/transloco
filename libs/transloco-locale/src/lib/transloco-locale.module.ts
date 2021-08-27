@@ -10,55 +10,65 @@ import {
   defaultConfig,
   LOCALE_DEFAULT_LOCALE,
   LOCALE_CONFIG,
-  LOCALE_DEFAULT_CURRENCY
+  LOCALE_DEFAULT_CURRENCY,
 } from './transloco-locale.config';
 import {
   TRANSLOCO_DATE_TRANSFORMER,
   TRANSLOCO_NUMBER_TRANSFORMER,
   DefaultDateTransformer,
-  DefaultNumberTransformer
+  DefaultNumberTransformer,
 } from './transloco-locale.transformers';
 
-export const pipes = [TranslocoCurrencyPipe, TranslocoDatePipe, TranslocoDecimalPipe, TranslocoPercentPipe];
+export const pipes = [
+  TranslocoCurrencyPipe,
+  TranslocoDatePipe,
+  TranslocoDecimalPipe,
+  TranslocoPercentPipe,
+];
 
 @NgModule({
   declarations: pipes,
-  exports: pipes
+  exports: pipes,
 })
 export class TranslocoLocaleModule {
-  static init(config: TranslocoLocaleConfig = {}): ModuleWithProviders<TranslocoLocaleModule> {
+  static init(
+    config: TranslocoLocaleConfig = {}
+  ): ModuleWithProviders<TranslocoLocaleModule> {
     return {
       ngModule: TranslocoLocaleModule,
       providers: [
         {
           provide: LOCALE_LANG_MAPPING,
-          useValue: config.langToLocaleMapping || defaultConfig.langToLocaleMapping
+          useValue:
+            config.langToLocaleMapping || defaultConfig.langToLocaleMapping,
         },
         {
           provide: LOCALE_CONFIG,
-          useValue: config.localeConfig || defaultConfig.localeConfig
+          useValue: config.localeConfig || defaultConfig.localeConfig,
         },
         {
           provide: LOCALE_CURRENCY_MAPPING,
-          useValue: config.localeToCurrencyMapping || defaultConfig.localeToCurrencyMapping
+          useValue:
+            config.localeToCurrencyMapping ||
+            defaultConfig.localeToCurrencyMapping,
         },
         {
           provide: LOCALE_DEFAULT_LOCALE,
-          useValue: config.defaultLocale || defaultConfig.defaultLocale
+          useValue: config.defaultLocale || defaultConfig.defaultLocale,
         },
         {
           provide: LOCALE_DEFAULT_CURRENCY,
-          useValue: config.defaultCurrency || defaultConfig.defaultCurrency
+          useValue: config.defaultCurrency || defaultConfig.defaultCurrency,
         },
         {
           provide: TRANSLOCO_DATE_TRANSFORMER,
-          useClass: DefaultDateTransformer
+          useClass: DefaultDateTransformer,
         },
         {
           provide: TRANSLOCO_NUMBER_TRANSFORMER,
-          useClass: DefaultNumberTransformer
-        }
-      ]
+          useClass: DefaultNumberTransformer,
+        },
+      ],
     };
   }
 }

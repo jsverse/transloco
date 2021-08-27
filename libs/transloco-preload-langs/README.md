@@ -15,7 +15,7 @@ import { TranslocoPreloadLangsModule } from '@ngneat/transloco-preload-langs';
 
 @NgModule({
   imports: [TranslocoPreloadLangsModule.preload(['es', 'todos-page|scoped'])],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {}
 ```

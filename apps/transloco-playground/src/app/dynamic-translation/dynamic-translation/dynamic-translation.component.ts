@@ -1,10 +1,10 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {TranslocoService} from '@ngneat/transloco';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { TranslocoService } from '@ngneat/transloco';
 
 @Component({
   selector: 'app-dynamic-translation',
   templateUrl: './dynamic-translation.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DynamicTranslationComponent {
   constructor(private translate: TranslocoService) {}
@@ -20,8 +20,8 @@ export class DynamicTranslationComponent {
   addTranslationObj() {
     const newTranslation = {
       newTranslation: {
-        title: 'New translation title'
-      }
+        title: 'New translation title',
+      },
     };
     this.translate.setTranslation(newTranslation, 'en', { merge: true });
   }

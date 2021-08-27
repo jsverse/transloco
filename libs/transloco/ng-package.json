@@ -7,5 +7,11 @@
       "flat": "flat"
     }
   },
-  "allowedNonPeerDependencies": ["flat", "@ngneat/transloco-utils", "replace-in-file", "lodash.kebabcase", "ora"]
+  "allowedNonPeerDependencies": [
+    "flat",
+    "@ngneat/transloco-utils",
+    "replace-in-file",
+    "lodash.kebabcase",
+    "ora"
+  ]
 }

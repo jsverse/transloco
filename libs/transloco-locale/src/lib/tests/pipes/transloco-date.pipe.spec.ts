@@ -1,8 +1,8 @@
 import { TranslocoDatePipe } from '../../pipes/transloco-date.pipe';
 import { mockLocaleService, mockCDR, LOCALE_CONFIG_MOCK } from '../mocks';
 import { defaultConfig } from '../../transloco-locale.config';
-import {ChangeDetectorRef} from "@angular/core";
-import {TranslocoLocaleService} from '../../transloco-locale.service';
+import { ChangeDetectorRef } from '@angular/core';
+import { TranslocoLocaleService } from '../../transloco-locale.service';
 
 describe('TranslocoDatePipe', () => {
   let service: TranslocoLocaleService;
@@ -16,13 +16,21 @@ describe('TranslocoDatePipe', () => {
   });
 
   it('should transform date to locale formatted date', () => {
-    const pipe = new TranslocoDatePipe(service, cdr, defaultConfig.localeConfig);
+    const pipe = new TranslocoDatePipe(
+      service,
+      cdr,
+      defaultConfig.localeConfig
+    );
     expect(pipe.transform(date)).toEqual('10/7/2019');
   });
 
   it('should consider a given format over the current locale', () => {
     spyOn(Intl, 'DateTimeFormat').and.callThrough();
-    const pipe = new TranslocoDatePipe(service, cdr, defaultConfig.localeConfig);
+    const pipe = new TranslocoDatePipe(
+      service,
+      cdr,
+      defaultConfig.localeConfig
+    );
     pipe.transform(date, { dateStyle: 'medium', timeStyle: 'medium' });
     const call = (Intl.DateTimeFormat as any).calls.argsFor(0);
 
@@ -71,17 +79,27 @@ describe('TranslocoDatePipe', () => {
   });
 
   it('should transform number to date', () => {
-    const pipe = new TranslocoDatePipe(service, cdr, defaultConfig.localeConfig);
+    const pipe = new TranslocoDatePipe(
+      service,
+      cdr,
+      defaultConfig.localeConfig
+    );
     expect(pipe.transform(0)).toEqual('1/1/1970');
   });
 
   it('should transform string to date', () => {
-    const pipe = new TranslocoDatePipe(service, cdr, defaultConfig.localeConfig);
+    const pipe = new TranslocoDatePipe(
+      service,
+      cdr,
+      defaultConfig.localeConfig
+    );
     expect(pipe.transform('2019-02-08')).toEqual('2/8/2019');
   });
 
   it('should transform an ISO 8601 string to date', () => {
     const pipe = new TranslocoDatePipe(service, cdr, LOCALE_CONFIG_MOCK);
-    expect(pipe.transform('2019-09-12T19:51:33Z', { timeZone: 'UTC' }, 'en-US')).toEqual('Sep 12, 2019, 7:51:33 PM');
+    expect(
+      pipe.transform('2019-09-12T19:51:33Z', { timeZone: 'UTC' }, 'en-US')
+    ).toEqual('Sep 12, 2019, 7:51:33 PM');
   });
 });

@@ -1,4 +1,7 @@
-import { TranslocoTestingModule, TranslocoTestingOptions } from '@ngneat/transloco';
+import {
+  TranslocoTestingModule,
+  TranslocoTestingOptions,
+} from '@ngneat/transloco';
 import en from '../assets/i18n/en.json';
 import es from '../assets/i18n/es.json';
 import admin from '../assets/i18n/admin-page/en.json';
@@ -16,13 +19,13 @@ export function getTranslocoModule(options: TranslocoTestingOptions = {}) {
       'admin-page/es': adminSpanish,
       'lazy-page/en': lazy,
       'lazy-page/es': lazySpanish,
-      ...langs
+      ...langs,
     },
     translocoConfig: {
       availableLangs: ['es', 'en'],
       defaultLang: 'es',
-      ...translocoConfig
+      ...translocoConfig,
     },
-    ...rest
+    ...rest,
   });
 }

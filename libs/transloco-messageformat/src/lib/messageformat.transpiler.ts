@@ -7,13 +7,20 @@ import {
   setValue,
   Translation,
   TRANSLOCO_CONFIG,
-  TranslocoConfig
+  TranslocoConfig,
 } from '@ngneat/transloco';
 
 import * as MessageFormat from 'messageformat';
-import { MessageformatConfig, MFLocale, TRANSLOCO_MESSAGE_FORMAT_CONFIG } from './messageformat.config';
+import {
+  MessageformatConfig,
+  MFLocale,
+  TRANSLOCO_MESSAGE_FORMAT_CONFIG,
+} from './messageformat.config';
 
-function mfFactory(locales?: MFLocale, messageConfig?: MessageFormat.Options): MessageFormat {
+function mfFactory(
+  locales?: MFLocale,
+  messageConfig?: MessageFormat.Options
+): MessageFormat {
   return new MessageFormat(locales, messageConfig);
 }
 
@@ -23,7 +30,9 @@ export class MessageFormatTranspiler extends DefaultTranspiler {
   private readonly messageConfig: MessageFormat.Options;
 
   constructor(
-    @Optional() @Inject(TRANSLOCO_MESSAGE_FORMAT_CONFIG) config: MessageformatConfig,
+    @Optional()
+    @Inject(TRANSLOCO_MESSAGE_FORMAT_CONFIG)
+    config: MessageformatConfig,
     @Optional() @Inject(TRANSLOCO_CONFIG) userConfig?: TranslocoConfig
   ) {
     super(userConfig);
@@ -38,7 +47,7 @@ export class MessageFormatTranspiler extends DefaultTranspiler {
     }
 
     if (isObject(value) && params) {
-      Object.keys(params).forEach(p => {
+      Object.keys(params).forEach((p) => {
         const v = getValue(value, p);
         const getParams = getValue(params, p);
 

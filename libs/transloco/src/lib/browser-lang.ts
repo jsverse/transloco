@@ -30,7 +30,11 @@ export function getBrowserCultureLang(): string {
 
   const navigator = window.navigator as any;
   let browserCultureLang = navigator.languages ? navigator.languages[0] : null;
-  browserCultureLang = browserCultureLang || navigator.language || navigator.browserLanguage || navigator.userLanguage;
+  browserCultureLang =
+    browserCultureLang ||
+    navigator.language ||
+    navigator.browserLanguage ||
+    navigator.userLanguage;
 
   return browserCultureLang;
 }

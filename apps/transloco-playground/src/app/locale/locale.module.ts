@@ -7,6 +7,6 @@ import { LocaleComponent } from './locale/locale.component';
 
 @NgModule({
   declarations: [LocaleComponent],
-  imports: [CommonModule, LocaleRoutingModule, TranslocoLocaleModule]
+  imports: [CommonModule, LocaleRoutingModule, TranslocoLocaleModule],
 })
 export class LocaleModule {}

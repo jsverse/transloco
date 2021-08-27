@@ -1,5 +1,5 @@
 import { createService } from '../mocks';
-import {TranslocoService} from "../../transloco.service";
+import { TranslocoService } from '../../transloco.service';
 
 describe('translate', () => {
   let service: TranslocoService;

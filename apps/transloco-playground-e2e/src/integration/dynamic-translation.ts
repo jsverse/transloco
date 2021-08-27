@@ -7,5 +7,8 @@ export function testDynamicContent() {
 
   // Set Translation
   cy.get(`[data-cy=add-translation-btn]`).click();
-  cy.get(`[data-cy=translation-object]`).should('contain', 'New translation title');
+  cy.get(`[data-cy=translation-object]`).should(
+    'contain',
+    'New translation title'
+  );
 }

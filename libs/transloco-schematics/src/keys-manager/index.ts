@@ -8,7 +8,7 @@ import { updateConfig } from '../utils/transloco';
 import { SchemaOptions } from './schema';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
-import {getConfig} from "../utils/config";
+import { getConfig } from '../utils/config';
 
 async function installKeysManager() {
   const packageManager = await getConfiguredPackageManager();
@@ -16,14 +16,17 @@ async function installKeysManager() {
   if (packageManager === 'yarn') {
     execSync('yarn add --dev @ngneat/transloco-keys-manager ngx-build-plus');
   } else {
-    execSync('npm install --save-dev @ngneat/transloco-keys-manager ngx-build-plus');
+    execSync(
+      'npm install --save-dev @ngneat/transloco-keys-manager ngx-build-plus'
+    );
   }
 }
 
 export function updateAngularJson(host: Tree, options) {
   const angularJson = getWorkspace(host);
   if (angularJson) {
-    const project = angularJson.projects[options.project || angularJson.defaultProject];
+    const project =
+      angularJson.projects[options.project || angularJson.defaultProject];
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore - This is a custom builder type added after installing ngx-build-plus
     project.architect.serve.builder = 'ngx-build-plus:dev-server';
@@ -44,16 +47,32 @@ module.exports = {
 
 function addKeysDetectiveScript(host: Tree, strategy: string) {
   if (strategy === 'Both') {
-    addScriptToPackageJson(host, 'start', 'ng serve --extra-webpack-config webpack-dev.config.js');
-    addScriptToPackageJson(host, 'i18n:extract', 'transloco-keys-manager extract');
+    addScriptToPackageJson(
+      host,
+      'start',
+      'ng serve --extra-webpack-config webpack-dev.config.js'
+    );
+    addScriptToPackageJson(
+      host,
+      'i18n:extract',
+      'transloco-keys-manager extract'
+    );
   }
 
   if (strategy === 'CLI') {
-    addScriptToPackageJson(host, 'i18n:extract', 'transloco-keys-manager extract');
+    addScriptToPackageJson(
+      host,
+      'i18n:extract',
+      'transloco-keys-manager extract'
+    );
   }
 
   if (strategy === 'Webpack Plugin') {
-    addScriptToPackageJson(host, 'start', 'ng serve --extra-webpack-config webpack-dev.config.js');
+    addScriptToPackageJson(
+      host,
+      'start',
+      'ng serve --extra-webpack-config webpack-dev.config.js'
+    );
   }
 
   addScriptToPackageJson(host, 'i18n:find', 'transloco-keys-manager find');
@@ -64,7 +83,9 @@ function updateTranslocoConfig(host, options) {
   let shouldUpdate = false;
   if (!config.rootTranslationsPath) {
     if (!options.translationPath) {
-      throw new SchematicsException('Please provide the translation root path by using the --translation-path flag');
+      throw new SchematicsException(
+        'Please provide the translation root path by using the --translation-path flag'
+      );
     }
     config.rootTranslationsPath = options.translationPath;
     shouldUpdate = true;
@@ -76,7 +97,7 @@ function updateTranslocoConfig(host, options) {
       );
     }
 
-    config.langs = options.langs.split(',').map(l => l.trim());
+    config.langs = options.langs.split(',').map((l) => l.trim());
     shouldUpdate = true;
   }
   if (!config.keysManager) {

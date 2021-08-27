@@ -1,7 +1,12 @@
-import {fakeAsync} from '@angular/core/testing';
-import {runLoader, setlistenToLangChange} from '../mocks';
-import {createFactory, testMergedScopedTranslation, testScopedTranslation, testTranslationWithRead} from './shared';
-import {SpectatorHost} from '@ngneat/spectator';
+import { fakeAsync } from '@angular/core/testing';
+import { runLoader, setlistenToLangChange } from '../mocks';
+import {
+  createFactory,
+  testMergedScopedTranslation,
+  testScopedTranslation,
+  testTranslationWithRead,
+} from './shared';
+import { SpectatorHost } from '@ngneat/spectator';
 import { TranslocoDirective } from '../../transloco.directive';
 import { TranslocoService } from '../../transloco.service';
 
@@ -59,9 +64,12 @@ describe('Structural directive', () => {
   }));
 
   it('should create embedded view once', fakeAsync(() => {
-    spyOn(TranslocoDirective.prototype as any, 'getLoadingTpl').and.callThrough();
+    spyOn(
+      TranslocoDirective.prototype as any,
+      'getLoadingTpl'
+    ).and.callThrough();
     spectator = createHost(`<section *transloco="let t"></section>`, {
-      detectChanges: false
+      detectChanges: false,
     });
     const service = spectator.inject(TranslocoService);
 
@@ -70,7 +78,9 @@ describe('Structural directive', () => {
     runLoader();
     service.setActiveLang('es');
     runLoader();
-    expect((TranslocoDirective.prototype as any).getLoadingTpl).toHaveBeenCalledTimes(1);
+    expect(
+      (TranslocoDirective.prototype as any).getLoadingTpl
+    ).toHaveBeenCalledTimes(1);
   }));
 
   it('should unsubscribe after one emit when not in reRenderOnLangChange mode', fakeAsync(() => {
@@ -88,7 +98,7 @@ describe('Structural directive', () => {
       spectator = createHost(
         `<section *transloco="let t; scope: 'lazy-page'"><div>{{t('lazyPage.title')}}</div></section>`,
         {
-          detectChanges: false
+          detectChanges: false,
         }
       );
       testScopedTranslation(spectator);
@@ -102,7 +112,7 @@ describe('Structural directive', () => {
         <div class="global">{{t('home')}}</div>
         </section>`,
         {
-          detectChanges: false
+          detectChanges: false,
         }
       );
       testMergedScopedTranslation(spectator);
@@ -116,7 +126,7 @@ describe('Structural directive', () => {
         <div class="global">{{t('home')}}</div>
         </section>`,
         {
-          detectChanges: false
+          detectChanges: false,
         }
       );
       testMergedScopedTranslation(spectator, true);
@@ -125,9 +135,12 @@ describe('Structural directive', () => {
 
   describe('Read', () => {
     it('should get translation of a nested property using read', fakeAsync(() => {
-      spectator = createHost(`<section *transloco="let t; read: 'nested'"><div>{{t('title')}}</div></section>`, {
-        detectChanges: false
-      });
+      spectator = createHost(
+        `<section *transloco="let t; read: 'nested'"><div>{{t('title')}}</div></section>`,
+        {
+          detectChanges: false,
+        }
+      );
       testTranslationWithRead(spectator);
     }));
   });

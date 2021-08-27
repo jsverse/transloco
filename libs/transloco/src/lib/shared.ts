@@ -2,7 +2,7 @@ import { TranslocoService } from './transloco.service';
 import { hasInlineLoader, isString } from './helpers';
 import { take } from 'rxjs/operators';
 import { InlineLoader, TranslocoScope } from './types';
-import {Observable, OperatorFunction} from "rxjs";
+import { Observable, OperatorFunction } from 'rxjs';
 
 /*
  * @example
@@ -14,10 +14,10 @@ export function getScopeFromLang(lang: string): string {
   if (!lang) {
     return '';
   }
-  
+
   const split = lang.split('/');
   split.pop();
-  
+
   return split.join('/');
 }
 
@@ -42,7 +42,11 @@ export function getLangFromScope(lang: string): string {
  * getPipeValue('en|static', 'static') [true, 'en']
  * getPipeValue('en', 'static') [false, 'en']
  */
-export function getPipeValue(str: string | undefined, value: string, char = '|'): [boolean, string] {
+export function getPipeValue(
+  str: string | undefined,
+  value: string,
+  char = '|'
+): [boolean, string] {
   if (isString(str)) {
     const splitted = str.split(char);
     const lastItem = splitted.pop()!;
@@ -53,7 +57,10 @@ export function getPipeValue(str: string | undefined, value: string, char = '|')
   return [false, ''];
 }
 
-export function shouldListenToLangChanges(service: TranslocoService, lang?: string) {
+export function shouldListenToLangChanges(
+  service: TranslocoService,
+  lang?: string
+) {
   const [hasStatic] = getPipeValue(lang, 'static');
   if (hasStatic === false) {
     // If we didn't get 'lang|static' check if it's set in the global level
@@ -64,7 +71,9 @@ export function shouldListenToLangChanges(service: TranslocoService, lang?: stri
   return false;
 }
 
-export function listenOrNotOperator<T>(listenToLangChange?: boolean): OperatorFunction<T, T> {
+export function listenOrNotOperator<T>(
+  listenToLangChange?: boolean
+): OperatorFunction<T, T> {
   return listenToLangChange ? (source: Observable<T>) => source : take<T>(1);
 }
 
@@ -76,14 +85,19 @@ function prependScope(inlineLoader: InlineLoader, scope: string) {
   }, {} as Record<string, InlineLoader[keyof InlineLoader]>);
 }
 
-export function resolveInlineLoader(providerScope: TranslocoScope | null, scope?: string): InlineLoader | undefined {
-  return hasInlineLoader(providerScope) ? prependScope(providerScope.loader!, scope!) : undefined;
+export function resolveInlineLoader(
+  providerScope: TranslocoScope | null,
+  scope?: string
+): InlineLoader | undefined {
+  return hasInlineLoader(providerScope)
+    ? prependScope(providerScope.loader!, scope!)
+    : undefined;
 }
 
 export function getEventPayload(lang: string) {
   return {
     scope: getScopeFromLang(lang) || null,
     langName: getLangFromScope(lang),
-    lang
+    lang,
   };
 }

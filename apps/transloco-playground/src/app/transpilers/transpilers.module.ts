@@ -7,8 +7,8 @@ import { TRANSLOCO_SCOPE, TranslocoModule } from '@ngneat/transloco';
 const routes: Routes = [
   {
     path: '',
-    component: TranspilersComponent
-  }
+    component: TranspilersComponent,
+  },
 ];
 
 @NgModule({
@@ -19,9 +19,9 @@ const routes: Routes = [
       provide: TRANSLOCO_SCOPE,
       useValue: {
         scope: 'transpilers/messageformat',
-        alias: 'mf'
-      }
-    }
-  ]
+        alias: 'mf',
+      },
+    },
+  ],
 })
 export class TranspilersModule {}

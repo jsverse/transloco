@@ -6,10 +6,15 @@ import { TranslocoLocaleService } from '../transloco-locale.service';
 export class TranslocoLocalePipe {
   private subscription: Subscription;
 
-  constructor(protected translocoLocaleService: TranslocoLocaleService, protected cdr: ChangeDetectorRef) {
-    this.subscription = this.translocoLocaleService.localeChanges$.subscribe(() => {
-      this.cdr.markForCheck();
-    });
+  constructor(
+    protected translocoLocaleService: TranslocoLocaleService,
+    protected cdr: ChangeDetectorRef
+  ) {
+    this.subscription = this.translocoLocaleService.localeChanges$.subscribe(
+      () => {
+        this.cdr.markForCheck();
+      }
+    );
   }
 
   protected getLocale(locale?: Locale): Locale {

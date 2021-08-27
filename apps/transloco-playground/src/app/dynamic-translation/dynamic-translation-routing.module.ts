@@ -5,12 +5,12 @@ import { DynamicTranslationComponent } from './dynamic-translation/dynamic-trans
 const routes: Routes = [
   {
     path: '',
-    component: DynamicTranslationComponent
-  }
+    component: DynamicTranslationComponent,
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class DynamicTranslationRoutingModule {}

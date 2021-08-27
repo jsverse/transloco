@@ -8,15 +8,23 @@ describe('LazyMultipleScopesComponent', () => {
 
   const createComponent = createComponentFactory({
     providers: [
-      { provide: TRANSLOCO_SCOPE, useValue: { scope: 'admin-page', alias: 'AdminPageAlias' }, multi: true },
-      { provide: TRANSLOCO_SCOPE, useValue: { scope: 'lazy-page', alias: 'LazyPageAlias' }, multi: true }
+      {
+        provide: TRANSLOCO_SCOPE,
+        useValue: { scope: 'admin-page', alias: 'AdminPageAlias' },
+        multi: true,
+      },
+      {
+        provide: TRANSLOCO_SCOPE,
+        useValue: { scope: 'lazy-page', alias: 'LazyPageAlias' },
+        multi: true,
+      },
     ],
     imports: [
       getTranslocoModule({
-        translocoConfig: { reRenderOnLangChange: true }
-      })
+        translocoConfig: { reRenderOnLangChange: true },
+      }),
     ],
-    component: LazyMultipleScopesComponent
+    component: LazyMultipleScopesComponent,
   });
 
   beforeEach(() => (spectator = createComponent()));
@@ -24,11 +32,15 @@ describe('LazyMultipleScopesComponent', () => {
   it('should read two scopes on the same component', () => {
     spectator.fixture.detectChanges();
     expect(spectator.query('.admin-page-title')).toHaveText('Admin spanish');
-    expect(spectator.query('.lazy-page-title')).toHaveText('Admin Lazy spanish');
+    expect(spectator.query('.lazy-page-title')).toHaveText(
+      'Admin Lazy spanish'
+    );
     const service = spectator.inject(TranslocoService);
     service.setActiveLang('en');
     spectator.detectChanges();
     expect(spectator.query('.admin-page-title')).toHaveText('Admin english');
-    expect(spectator.query('.lazy-page-title')).toHaveText('Admin Lazy english');
+    expect(spectator.query('.lazy-page-title')).toHaveText(
+      'Admin Lazy english'
+    );
   });
 });

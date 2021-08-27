@@ -1,11 +1,16 @@
-import { provideTranslocoConfig, defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from '../transloco.config';
+import {
+  provideTranslocoConfig,
+  defaultConfig,
+  TRANSLOCO_CONFIG,
+  TranslocoConfig,
+} from '../transloco.config';
 
 describe('provideTranslocoConfig', () => {
   it('should return the expected provider with default config given no input', () => {
     // arrange
     const expected = {
       provide: TRANSLOCO_CONFIG,
-      useValue: defaultConfig
+      useValue: defaultConfig,
     };
 
     // act
@@ -19,12 +24,12 @@ describe('provideTranslocoConfig', () => {
     // arrange
     const inputConfig: TranslocoConfig = {
       ...defaultConfig,
-      defaultLang: 'es'
+      defaultLang: 'es',
     };
 
     const expected = {
       provide: TRANSLOCO_CONFIG,
-      useValue: inputConfig
+      useValue: inputConfig,
     };
 
     // act

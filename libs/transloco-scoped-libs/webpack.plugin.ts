@@ -3,7 +3,7 @@ class TranslocoScopedLibsWebpackPlugin {
     const spawn = require('child_process').spawn;
     spawn('transloco-scoped-libs', ['--watch'], {
       stdio: 'inherit',
-      detached: true
+      detached: true,
     });
   }
 }

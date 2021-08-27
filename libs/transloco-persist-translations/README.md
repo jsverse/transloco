@@ -15,7 +15,7 @@ Import the `TranslocoPersistTranslationsModule` module into the `AppModule`, and
 ```ts
 import {
   TranslocoPersistTranslationsModule,
-  PERSIST_TRANSLATIONS_STORAGE
+  PERSIST_TRANSLATIONS_STORAGE,
 } from '@ngneat/transloco-persist-translations';
 import { HttpLoader } from './transloco.loader';
 
@@ -26,10 +26,10 @@ import { HttpLoader } from './transloco.loader';
       loader: HttpLoader,
       storage: {
         provide: PERSIST_TRANSLATIONS_STORAGE,
-        useValue: localStorage
-      }
-    })
-  ]
+        useValue: localStorage,
+      },
+    }),
+  ],
 })
 export class AppModule {}
 ```
@@ -41,7 +41,7 @@ You can also use an async storage. For example, let's install [localForage](http
 ```ts
 import {
   TranslocoPersistTranslationsModule,
-  PERSIST_TRANSLATIONS_STORAGE
+  PERSIST_TRANSLATIONS_STORAGE,
 } from '@ngneat/transloco-persist-translations';
 import { HttpLoader } from './transloco.loader';
 import * as localForage from 'localforage';
@@ -49,7 +49,7 @@ import * as localForage from 'localforage';
 localForage.config({
   driver: localForage.INDEXEDDB,
   name: 'Transloco',
-  storeName: 'translations'
+  storeName: 'translations',
 });
 
 @NgModule({
@@ -59,10 +59,10 @@ localForage.config({
       loader: HttpLoader,
       storage: {
         provide: PERSIST_TRANSLATIONS_STORAGE,
-        useValue: localForage
-      }
-    })
-  ]
+        useValue: localForage,
+      },
+    }),
+  ],
 })
 export class AppModule {}
 ```

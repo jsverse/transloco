@@ -1,8 +1,9 @@
 import kebabCase from 'lodash.kebabcase';
-import {sync as globSync} from 'glob';
+import { sync as globSync } from 'glob';
 import * as fs from 'fs-extra';
 
-const regex = /<([\w-]*)\s*(?=[^>]*i18n)[^>]*i18n(?:(?:=("|')(?<attrValue>[^>]*?)\2)|(?:-(?<propName>[\w-]*)[^>]*\4=("|')(?<propValue>[^>]*?)\5))?[^>]*(?:>(?<innerText>[^]*?)<\/\1)?/g;
+const regex =
+  /<([\w-]*)\s*(?=[^>]*i18n)[^>]*i18n(?:(?:=("|')(?<attrValue>[^>]*?)\2)|(?:-(?<propName>[\w-]*)[^>]*\4=("|')(?<propValue>[^>]*?)\5))?[^>]*(?:>(?<innerText>[^]*?)<\/\1)?/g;
 
 export function run({ input, output, langs }) {
   const files = globSync(`${process.cwd()}/${input}/**/*.html`);
@@ -22,7 +23,9 @@ export function run({ input, output, langs }) {
         acc[key] = translation[key];
         return acc;
       }, {});
-    fs.outputJsonSync(`${process.cwd()}/${output}/${lang}.json`, sorted, { spaces: 2 });
+    fs.outputJsonSync(`${process.cwd()}/${output}/${lang}.json`, sorted, {
+      spaces: 2,
+    });
   }
 
   console.log('\n              🌵 Done! 🌵');
@@ -99,21 +102,33 @@ function getTranslation(template) {
 }
 
 function getNewTemplate(template) {
-  return template.replace(regex, function(match, tag, mark, attrValue, propName, propMark, propValue, innerText) {
-    let replace = ' i18n';
-    const key = resolveKey(attrValue, propValue || innerText);
-    let value = innerText;
-    const newValue = `{{ '${key}' | transloco }}`;
+  return template.replace(
+    regex,
+    function (
+      match,
+      tag,
+      mark,
+      attrValue,
+      propName,
+      propMark,
+      propValue,
+      innerText
+    ) {
+      let replace = ' i18n';
+      const key = resolveKey(attrValue, propValue || innerText);
+      let value = innerText;
+      const newValue = `{{ '${key}' | transloco }}`;
 
-    if (attrValue) {
-      replace = ` i18n=${mark}${attrValue}${mark}`;
+      if (attrValue) {
+        replace = ` i18n=${mark}${attrValue}${mark}`;
+      }
+
+      if (propName) {
+        replace = ` i18n-${propName}`;
+        value = propValue;
+      }
+
+      return match.replace(replace, '').replace(value, newValue);
     }
-
-    if (propName) {
-      replace = ` i18n-${propName}`;
-      value = propValue;
-    }
-
-    return match.replace(replace, '').replace(value, newValue);
-  });
+  );
 }

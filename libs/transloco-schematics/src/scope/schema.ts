@@ -2,7 +2,7 @@ import { Schema } from '@schematics/angular/module/schema';
 
 export enum TranslationFileTypes {
   Typescript = 'Typescript',
-  JSON = 'JSON'
+  JSON = 'JSON',
 }
 
 export interface SchemaOptions extends Schema {

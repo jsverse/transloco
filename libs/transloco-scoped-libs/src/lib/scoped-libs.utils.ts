@@ -37,7 +37,7 @@ export function insertPathToGitIgnore(route) {
 
 export function readJson(path: string) {
   try {
-    return fsExtra.readJSONSync(path, {encoding: 'utf8'});
+    return fsExtra.readJSONSync(path, { encoding: 'utf8' });
   } catch (e) {
     console.log(chalk.red(e));
 
@@ -46,7 +46,7 @@ export function readJson(path: string) {
 }
 
 export function writeJson(path: string, content: string) {
-  fsExtra.writeJSONSync(path, content, {spaces: 2, encoding: 'utf8'});
+  fsExtra.writeJSONSync(path, content, { spaces: 2, encoding: 'utf8' });
 }
 
 export function coerceArray<T>(val: T): T[] {

@@ -5,9 +5,9 @@ import {
   TranslocoLoader,
   TRANSLOCO_CONFIG,
   translocoConfig,
-  TranslocoModule
+  TranslocoModule,
 } from '@ngneat/transloco';
-import {TranslocoMessageFormatModule} from '@ngneat/transloco-messageformat';
+import { TranslocoMessageFormatModule } from '@ngneat/transloco-messageformat';
 import { Injectable, NgModule } from '@angular/core';
 import { environment } from '../environments/environment';
 import { TranslocoLocaleModule } from '@ngneat/transloco-locale';
@@ -22,29 +22,35 @@ export class TranslocoHttpLoader implements TranslocoLoader {
 }
 
 @NgModule({
-  imports: [TranslocoMessageFormatModule.init(), TranslocoLocaleModule.init({
-    langToLocaleMapping: {
-      en: 'en-US',
-      es: 'es-ES'
-    }
-  })],
-  exports: [ TranslocoModule ],
+  imports: [
+    TranslocoMessageFormatModule.init(),
+    TranslocoLocaleModule.init({
+      langToLocaleMapping: {
+        en: 'en-US',
+        es: 'es-ES',
+      },
+    }),
+  ],
+  exports: [TranslocoModule],
   providers: [
     {
       provide: TRANSLOCO_CONFIG,
       useValue: translocoConfig({
         prodMode: environment.production,
-        availableLangs: [{ id: 'en', label: 'English' }, { id: 'es', label: 'Spanish' }],
+        availableLangs: [
+          { id: 'en', label: 'English' },
+          { id: 'es', label: 'Spanish' },
+        ],
         reRenderOnLangChange: true,
         fallbackLang: 'es',
         defaultLang: 'en',
         missingHandler: {
-          useFallbackTranslation: false
-        }
+          useFallbackTranslation: false,
+        },
         // interpolation: ['<<<', '>>>']
-      })
+      }),
     },
-    { provide: TRANSLOCO_LOADER, useClass: TranslocoHttpLoader }
-  ]
+    { provide: TRANSLOCO_LOADER, useClass: TranslocoHttpLoader },
+  ],
 })
 export class TranslocoRootModule {}

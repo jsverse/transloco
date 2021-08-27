@@ -11,8 +11,14 @@ describe('Loading Template', () => {
   const createHost = createFactory();
 
   it('should attach and detach view with inline loader template', fakeAsync(() => {
-    spyOn<TemplateHandler>(TemplateHandler.prototype, 'attachView').and.callThrough();
-    spyOn<TemplateHandler>(TemplateHandler.prototype, 'detachView').and.callThrough();
+    spyOn<TemplateHandler>(
+      TemplateHandler.prototype,
+      'attachView'
+    ).and.callThrough();
+    spyOn<TemplateHandler>(
+      TemplateHandler.prototype,
+      'detachView'
+    ).and.callThrough();
     spectator = createHost(`
         <section *transloco="let t; scope: 'lazy-page'; loadingTpl: loading">
           <h1 data-cy="lazy-page">{{ t('title') }}</h1>
@@ -23,27 +29,39 @@ describe('Loading Template', () => {
         </ng-template>
       `);
 
-    expect((TemplateHandler.prototype as any).attachView).toHaveBeenCalledTimes(1);
+    expect((TemplateHandler.prototype as any).attachView).toHaveBeenCalledTimes(
+      1
+    );
     expect(spectator.queryHost('#lazy-page-loading')).toHaveText('Loading...');
     spectator.detectChanges();
     runLoader();
     expect(spectator.queryHost('#lazy-page-loading')).toBeNull();
-    expect((TemplateHandler.prototype as any).detachView).toHaveBeenCalledTimes(1);
+    expect((TemplateHandler.prototype as any).detachView).toHaveBeenCalledTimes(
+      1
+    );
   }));
 
   it('should not attachView if no inline loader template has provided', () => {
-    spyOn<TemplateHandler>(TemplateHandler.prototype, 'attachView').and.callThrough();
+    spyOn<TemplateHandler>(
+      TemplateHandler.prototype,
+      'attachView'
+    ).and.callThrough();
     spectator = createHost(`
         <section *transloco="let t; scope: 'lazy-page';">
           <h1 data-cy="lazy-page">{{ t('title') }}</h1>
         </section>
       `);
 
-    expect((TemplateHandler.prototype as any).attachView).not.toHaveBeenCalled();
+    expect(
+      (TemplateHandler.prototype as any).attachView
+    ).not.toHaveBeenCalled();
   });
 
   it('should not attachView if the translation have already loaded', fakeAsync(() => {
-    spyOn<TemplateHandler>(TemplateHandler.prototype, 'attachView').and.callThrough();
+    spyOn<TemplateHandler>(
+      TemplateHandler.prototype,
+      'attachView'
+    ).and.callThrough();
     spectator = createHost(
       `
         <section *transloco="let t; scope: 'lazy-page'; loadingTpl: loading">
@@ -58,7 +76,9 @@ describe('Loading Template', () => {
     );
     preloadTranslations(spectator);
 
-    expect((TemplateHandler.prototype as any).attachView).not.toHaveBeenCalled();
+    expect(
+      (TemplateHandler.prototype as any).attachView
+    ).not.toHaveBeenCalled();
   }));
 });
 
@@ -69,12 +89,18 @@ describe('Custom loading template', () => {
     component: TranslocoDirective,
     declarations: [TranslocoLoaderComponent],
     entryComponents: [TranslocoLoaderComponent],
-    providers: [...providersMock, loadingTemplateMock]
+    providers: [...providersMock, loadingTemplateMock],
   });
 
   it('should call attach view with provided template', fakeAsync(() => {
-    spyOn<TemplateHandler>(TemplateHandler.prototype, 'attachView').and.callThrough();
-    spyOn<TemplateHandler>(TemplateHandler.prototype, 'detachView').and.callThrough();
+    spyOn<TemplateHandler>(
+      TemplateHandler.prototype,
+      'attachView'
+    ).and.callThrough();
+    spyOn<TemplateHandler>(
+      TemplateHandler.prototype,
+      'detachView'
+    ).and.callThrough();
 
     spectator = createHost(`
         <section *transloco="let t; scope: 'lazy-page';">
@@ -83,7 +109,9 @@ describe('Custom loading template', () => {
       `);
 
     expect((TemplateHandler.prototype as any).attachView).toHaveBeenCalled();
-    expect(spectator.queryHost('.transloco-loader-template')).toHaveText('loading template...');
+    expect(spectator.queryHost('.transloco-loader-template')).toHaveText(
+      'loading template...'
+    );
     spectator.detectChanges();
     runLoader();
     expect(spectator.queryHost('.transloco-loader-template')).toBeNull();

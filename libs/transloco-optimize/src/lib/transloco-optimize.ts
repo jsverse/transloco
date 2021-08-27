@@ -25,7 +25,7 @@ export function getTranslationFiles(dist: string) {
   const filesMatcher = path.resolve(getTranslationsFolder(dist), '/**/*.json');
 
   return new Promise<string[]>((resolve, reject) => {
-    glob(filesMatcher, {}, function(err, translationFilesPaths) {
+    glob(filesMatcher, {}, function (err, translationFilesPaths) {
       if (err) {
         reject(err);
       } else {
@@ -33,7 +33,6 @@ export function getTranslationFiles(dist: string) {
       }
     });
   });
-
 }
 
 export function optimizeFiles(translationPaths: string[], commentsKey: string) {
@@ -42,12 +41,14 @@ export function optimizeFiles(translationPaths: string[], commentsKey: string) {
 
     for (const path of translationPaths) {
       try {
-        const translation = fs.readFileSync(path, {encoding: 'utf8'});
+        const translation = fs.readFileSync(path, { encoding: 'utf8' });
         const asObject = JSON.parse(translation);
         const flatObject = flatten(asObject, { safe: true }) as Translation;
-        const optimized = JSON.stringify(removeComments(flatObject, commentsKey));
-        fs.writeFileSync(path, optimized, {encoding: 'utf8'});
-      } catch(err) {
+        const optimized = JSON.stringify(
+          removeComments(flatObject, commentsKey)
+        );
+        fs.writeFileSync(path, optimized, { encoding: 'utf8' });
+      } catch (err) {
         error = err;
         break;
       }

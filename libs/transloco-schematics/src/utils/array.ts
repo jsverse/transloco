@@ -1,5 +1,5 @@
 export function stringifyList<T>(list: T[], separator = ', '): string {
-  return list.map(item => `'${item}'`).join(separator);
+  return list.map((item) => `'${item}'`).join(separator);
 }
 
 export function coerceArray<T>(value: T | T[]): T[];

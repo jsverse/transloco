@@ -5,12 +5,12 @@ import { InlineComponent } from './inline/inline.component';
 const routes: Routes = [
   {
     path: '',
-    component: InlineComponent
-  }
+    component: InlineComponent,
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class InlineLoadersRoutingModule {}

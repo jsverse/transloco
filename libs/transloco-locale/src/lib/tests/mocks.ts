@@ -1,12 +1,15 @@
 import { of } from 'rxjs';
 import { TranslocoService } from '@ngneat/transloco';
 import LOCALE_CURRENCY from '../locale-currency';
-import { DefaultDateTransformer, DefaultNumberTransformer } from '../transloco-locale.transformers';
+import {
+  DefaultDateTransformer,
+  DefaultNumberTransformer,
+} from '../transloco-locale.transformers';
 import { TranslocoLocaleService } from '../transloco-locale.service';
 import { Locale } from '../transloco-locale.types';
 import { LocaleConfig } from '../../lib/transloco-locale.types';
-import {ChangeDetectorRef} from "@angular/core";
-import {Mock} from "ts-mocks";
+import { ChangeDetectorRef } from '@angular/core';
+import { Mock } from 'ts-mocks';
 
 export function mockLocaleService(locale: Locale = 'en-US') {
   return mockService(mockTranslocoService(locale), locale);
@@ -14,7 +17,7 @@ export function mockLocaleService(locale: Locale = 'en-US') {
 
 export function mockCDR() {
   return new Mock<ChangeDetectorRef>({
-    markForCheck: () => {}
+    markForCheck: () => {},
   }).Object;
 }
 
@@ -26,46 +29,46 @@ export const LOCALE_CONFIG_MOCK: LocaleConfig = {
   global: {
     decimal: {
       useGrouping: false,
-      maximumFractionDigits: 2
+      maximumFractionDigits: 2,
     },
     percent: {
       useGrouping: false,
-      maximumFractionDigits: 2
+      maximumFractionDigits: 2,
     },
     currency: {
       useGrouping: false,
-      maximumFractionDigits: 2
+      maximumFractionDigits: 2,
     },
     date: {
       dateStyle: 'medium',
-      timeStyle: 'medium'
-    }
+      timeStyle: 'medium',
+    },
   },
   localeBased: {
     'es-ES': {
       decimal: {
         useGrouping: true,
-        maximumFractionDigits: 3
+        maximumFractionDigits: 3,
       },
       percent: {
         useGrouping: true,
-        maximumFractionDigits: 3
+        maximumFractionDigits: 3,
       },
       currency: {
         useGrouping: true,
-        maximumFractionDigits: 3
+        maximumFractionDigits: 3,
       },
       date: {
         dateStyle: 'long',
-        timeStyle: 'long'
-      }
-    }
-  }
+        timeStyle: 'long',
+      },
+    },
+  },
 };
 
 export const mockTranslocoService = (locale?: Locale): TranslocoService =>
   ({
-    langChanges$: locale ? of(locale) : of()
+    langChanges$: locale ? of(locale) : of(),
   } as any);
 export const mockService = (
   translocoService = mockTranslocoService(),

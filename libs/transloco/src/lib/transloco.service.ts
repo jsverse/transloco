@@ -1,8 +1,32 @@
 import { Inject, Injectable, OnDestroy, Optional } from '@angular/core';
-import { BehaviorSubject, combineLatest, EMPTY, forkJoin, from, Observable, of, Subject, Subscription } from 'rxjs';
-import { catchError, map, retry, shareReplay, switchMap, tap } from 'rxjs/operators';
-import { DefaultLoader, TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
-import { TRANSLOCO_TRANSPILER, TranslocoTranspiler } from './transloco.transpiler';
+import {
+  BehaviorSubject,
+  combineLatest,
+  EMPTY,
+  forkJoin,
+  from,
+  Observable,
+  of,
+  Subject,
+  Subscription,
+} from 'rxjs';
+import {
+  catchError,
+  map,
+  retry,
+  shareReplay,
+  switchMap,
+  tap,
+} from 'rxjs/operators';
+import {
+  DefaultLoader,
+  TRANSLOCO_LOADER,
+  TranslocoLoader,
+} from './transloco.loader';
+import {
+  TRANSLOCO_TRANSPILER,
+  TranslocoTranspiler,
+} from './transloco.transpiler';
 import {
   AvailableLangs,
   HashMap,
@@ -14,25 +38,53 @@ import {
   TranslateParams,
   Translation,
   TranslocoEvents,
-  TranslocoScope
+  TranslocoScope,
 } from './types';
-import { flatten, isEmpty, isNil, isScopeObject, isString, size, toCamelCase, unflatten } from './helpers';
-import { defaultConfig, TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
+import {
+  flatten,
+  isEmpty,
+  isNil,
+  isScopeObject,
+  isString,
+  size,
+  toCamelCase,
+  unflatten,
+} from './helpers';
+import {
+  defaultConfig,
+  TRANSLOCO_CONFIG,
+  TranslocoConfig,
+} from './transloco.config';
 import {
   TRANSLOCO_MISSING_HANDLER,
   TranslocoMissingHandler,
-  TranslocoMissingHandlerData
+  TranslocoMissingHandlerData,
 } from './transloco-missing-handler';
-import { TRANSLOCO_INTERCEPTOR, TranslocoInterceptor } from './transloco.interceptor';
-import { TRANSLOCO_FALLBACK_STRATEGY, TranslocoFallbackStrategy } from './transloco-fallback-strategy';
+import {
+  TRANSLOCO_INTERCEPTOR,
+  TranslocoInterceptor,
+} from './transloco.interceptor';
+import {
+  TRANSLOCO_FALLBACK_STRATEGY,
+  TranslocoFallbackStrategy,
+} from './transloco-fallback-strategy';
 import { mergeConfig } from './merge-config';
-import { getEventPayload, getLangFromScope, getScopeFromLang, resolveInlineLoader } from './shared';
+import {
+  getEventPayload,
+  getLangFromScope,
+  getScopeFromLang,
+  resolveInlineLoader,
+} from './shared';
 import { getFallbacksLoaders } from './get-fallbacks-loaders';
 import { resolveLoader } from './resolve-loader';
 
 let service: TranslocoService;
 
-export function translate<T>(key: TranslateParams, params: HashMap = {}, lang?: string): T {
+export function translate<T>(
+  key: TranslateParams,
+  params: HashMap = {},
+  lang?: string
+): T {
   return service.translate(key, params, lang);
 }
 
@@ -57,10 +109,12 @@ export class TranslocoService implements OnDestroy {
   constructor(
     @Optional() @Inject(TRANSLOCO_LOADER) private loader: TranslocoLoader,
     @Inject(TRANSLOCO_TRANSPILER) private parser: TranslocoTranspiler,
-    @Inject(TRANSLOCO_MISSING_HANDLER) private missingHandler: TranslocoMissingHandler,
+    @Inject(TRANSLOCO_MISSING_HANDLER)
+    private missingHandler: TranslocoMissingHandler,
     @Inject(TRANSLOCO_INTERCEPTOR) private interceptor: TranslocoInterceptor,
     @Inject(TRANSLOCO_CONFIG) private userConfig: TranslocoConfig,
-    @Inject(TRANSLOCO_FALLBACK_STRATEGY) private fallbackStrategy: TranslocoFallbackStrategy
+    @Inject(TRANSLOCO_FALLBACK_STRATEGY)
+    private fallbackStrategy: TranslocoFallbackStrategy
   ) {
     if (!this.loader) {
       this.loader = new DefaultLoader(this.translations);
@@ -79,7 +133,7 @@ export class TranslocoService implements OnDestroy {
     /**
      * When we have a failure, we want to define the next language that succeeded as the active
      */
-    this.subscription = this.events$.subscribe(e => {
+    this.subscription = this.events$.subscribe((e) => {
       if (e.type === 'translationLoadSuccess' && e.wasFailure) {
         // Handle scoped lang
         const lang = getLangFromScope(e.payload.lang);
@@ -107,7 +161,7 @@ export class TranslocoService implements OnDestroy {
   setActiveLang(lang: string) {
     this.lang.next(lang);
     this.parser.onLangChanged?.(lang);
-    
+
     return this;
   }
 
@@ -127,25 +181,37 @@ export class TranslocoService implements OnDestroy {
   }
 
   load(path: string, options: LoadOptions = {}): Observable<Translation> {
-    const cached = this.cache.get(path); 
+    const cached = this.cache.get(path);
     if (cached) {
       return cached;
     }
 
-    let loadTranslation: Observable<Translation | { translation: Translation; lang: string }[]>;
+    let loadTranslation: Observable<
+      Translation | { translation: Translation; lang: string }[]
+    >;
     const isScope = this._isLangScoped(path);
     let scope: string;
     if (isScope) {
       scope = getScopeFromLang(path);
     }
-    
-    const loadersOptions = {path, mainLoader: this.loader, inlineLoader: options.inlineLoader, data: isScope ? {scope: scope!} : undefined};
+
+    const loadersOptions = {
+      path,
+      mainLoader: this.loader,
+      inlineLoader: options.inlineLoader,
+      data: isScope ? { scope: scope! } : undefined,
+    };
 
     if (this.useFallbackTranslation(path)) {
       // if the path is scope the fallback should be `scope/fallbackLang`;
-      const fallback = isScope ? `${scope!}/${this.firstFallbackLang}` : this.firstFallbackLang;
+      const fallback = isScope
+        ? `${scope!}/${this.firstFallbackLang}`
+        : this.firstFallbackLang;
 
-      const loaders = getFallbacksLoaders({...loadersOptions, fallbackPath: fallback! });
+      const loaders = getFallbacksLoaders({
+        ...loadersOptions,
+        fallbackPath: fallback!,
+      });
       loadTranslation = forkJoin(loaders);
     } else {
       const loader = resolveLoader(loadersOptions);
@@ -154,9 +220,9 @@ export class TranslocoService implements OnDestroy {
 
     const load$ = loadTranslation.pipe(
       retry(this.config.failedRetries),
-      tap(translation => {
+      tap((translation) => {
         if (Array.isArray(translation)) {
-          translation.forEach(t => {
+          translation.forEach((t) => {
             this.handleSuccess(t.lang, t.translation);
             // Save the fallback in cache so we'll not create a redundant request
             if (t.lang !== path) {
@@ -187,13 +253,19 @@ export class TranslocoService implements OnDestroy {
    * translate('hello', { }, 'en')
    * translate('scope.someKey', { }, 'en')
    */
-  translate<T = string>(key: TranslateParams, params: HashMap = {}, lang = this.getActiveLang()): T {
+  translate<T = string>(
+    key: TranslateParams,
+    params: HashMap = {},
+    lang = this.getActiveLang()
+  ): T {
     if (!key) return key as any;
 
     const { scope, resolveLang } = this.resolveLangAndScope(lang);
 
     if (Array.isArray(key)) {
-      return key.map(k => this.translate(scope ? `${scope}.${k}` : k, params, resolveLang)) as any;
+      return key.map((k) =>
+        this.translate(scope ? `${scope}.${k}` : k, params, resolveLang)
+      ) as any;
     }
 
     key = scope ? `${scope}.${key}` : key;
@@ -228,10 +300,14 @@ export class TranslocoService implements OnDestroy {
     let inlineLoader: InlineLoader | undefined;
     const load = (lang: string, options?: LoadOptions) =>
       this.load(lang, options).pipe(
-        map(() => (_isObject ? this.translateObject(key, params, lang) : this.translate(key, params, lang)))
+        map(() =>
+          _isObject
+            ? this.translateObject(key, params, lang)
+            : this.translate(key, params, lang)
+        )
       );
     if (isNil(lang)) {
-      return this.langChanges$.pipe(switchMap(lang => load(lang)));
+      return this.langChanges$.pipe(switchMap((lang) => load(lang)));
     }
 
     if (isScopeObject(lang)) {
@@ -247,7 +323,9 @@ export class TranslocoService implements OnDestroy {
     }
     // it's a scope
     const scope = lang;
-    return this.langChanges$.pipe(switchMap(lang => load(`${scope}/${lang}`, { inlineLoader })));
+    return this.langChanges$.pipe(
+      switchMap((lang) => load(`${scope}/${lang}`, { inlineLoader }))
+    );
   }
 
   /**
@@ -272,12 +350,30 @@ export class TranslocoService implements OnDestroy {
    */
   translateObject<T = any>(key: string, params?: HashMap, lang?: string): T;
   translateObject<T = any>(key: string[], params?: HashMap, lang?: string): T[];
-  translateObject<T = any>(key: TranslateParams, params?: HashMap, lang?: string): T | T[];
-  translateObject<T = any>(key: HashMap | Map<string, HashMap>, params?: null, lang?: string): T[];
-  translateObject<T = any>(key: TranslateObjectParams, params: HashMap | null = {}, lang = this.getActiveLang()): T | T[] {
+  translateObject<T = any>(
+    key: TranslateParams,
+    params?: HashMap,
+    lang?: string
+  ): T | T[];
+  translateObject<T = any>(
+    key: HashMap | Map<string, HashMap>,
+    params?: null,
+    lang?: string
+  ): T[];
+  translateObject<T = any>(
+    key: TranslateObjectParams,
+    params: HashMap | null = {},
+    lang = this.getActiveLang()
+  ): T | T[] {
     if (isString(key) || Array.isArray(key)) {
       if (Array.isArray(key)) {
-        return key.map(k => this.translateObject(scope ? `${scope}.${k}` : k, params!, resolveLang)) as any;
+        return key.map((k) =>
+          this.translateObject(
+            scope ? `${scope}.${k}` : k,
+            params!,
+            resolveLang
+          )
+        ) as any;
       }
       const { resolveLang, scope } = this.resolveLangAndScope(lang);
 
@@ -286,7 +382,9 @@ export class TranslocoService implements OnDestroy {
 
       const value = unflatten(this.getObjectByKey(translation, key));
       /* If an empty object was returned we want to try and translate the key as a string and not an object */
-      return isEmpty(value) ? this.translate(key, params!, lang) : this.parser.transpile(value, params!, translation);
+      return isEmpty(value)
+        ? this.translate(key, params!, lang)
+        : this.parser.transpile(value, params!, translation);
     }
 
     const translations: T[] = [];
@@ -297,10 +395,26 @@ export class TranslocoService implements OnDestroy {
     return translations;
   }
 
-  selectTranslateObject<T = any>(key: string, params?: HashMap, lang?: string): Observable<T>;
-  selectTranslateObject<T = any>(key: string[], params?: HashMap, lang?: string): Observable<T[]>;
-  selectTranslateObject<T = any>(key: HashMap | Map<string, HashMap>, params?: null, lang?: string): Observable<T[]>;
-  selectTranslateObject<T = any>(key: TranslateObjectParams, params?: HashMap | null, lang?: string): Observable<T> | Observable<T[]> {
+  selectTranslateObject<T = any>(
+    key: string,
+    params?: HashMap,
+    lang?: string
+  ): Observable<T>;
+  selectTranslateObject<T = any>(
+    key: string[],
+    params?: HashMap,
+    lang?: string
+  ): Observable<T[]>;
+  selectTranslateObject<T = any>(
+    key: HashMap | Map<string, HashMap>,
+    params?: null,
+    lang?: string
+  ): Observable<T[]>;
+  selectTranslateObject<T = any>(
+    key: TranslateObjectParams,
+    params?: HashMap | null,
+    lang?: string
+  ): Observable<T> | Observable<T[]> {
     if (isString(key) || Array.isArray(key)) {
       return this.selectTranslate<T>(key, params!, lang, true);
     }
@@ -310,7 +424,7 @@ export class TranslocoService implements OnDestroy {
     /* In order to avoid subscribing multiple times to the load language event by calling selectTranslateObject for each pair,
      * we listen to when the first key has been translated (the language is loaded) and translate the rest synchronously */
     return this.selectTranslateObject<T>(firstKey, firstParams, lang).pipe(
-      map(value => {
+      map((value) => {
         const translations = [value];
         for (const [_key, _params] of rest) {
           translations.push(this.translateObject<T>(_key, _params, lang));
@@ -365,11 +479,17 @@ export class TranslocoService implements OnDestroy {
       if (this.isLang(lang) || scopeLangSpecified) {
         language$ = of(lang);
       } else {
-        language$ = this.langChanges$.pipe(map(currentLang => `${lang}/${currentLang}`));
+        language$ = this.langChanges$.pipe(
+          map((currentLang) => `${lang}/${currentLang}`)
+        );
       }
     }
 
-    return language$.pipe(switchMap(language => this.load(language).pipe(map(() => this.getTranslation(language)))));
+    return language$.pipe(
+      switchMap((language) =>
+        this.load(language).pipe(map(() => this.getTranslation(language)))
+      )
+    );
   }
 
   /**
@@ -382,7 +502,11 @@ export class TranslocoService implements OnDestroy {
    * setTranslation({ ... }, 'es', { merge: false } )
    * setTranslation({ ... }, 'todos/en', { merge: false } )
    */
-  setTranslation(translation: Translation, lang = this.getActiveLang(), options: SetTranslationOptions = {}) {
+  setTranslation(
+    translation: Translation,
+    lang = this.getActiveLang(),
+    options: SetTranslationOptions = {}
+  ) {
     const defaults = { merge: true, emitChange: true };
     const mergedOptions = { ...defaults, ...options };
     const scope = getScopeFromLang(lang);
@@ -403,11 +527,16 @@ export class TranslocoService implements OnDestroy {
 
     const mergedTranslation = {
       ...(mergedOptions.merge && this.getTranslation(currentLang)),
-      ...flattenScopeOrTranslation
+      ...flattenScopeOrTranslation,
     };
 
-    const flattenTranslation = this.mergedConfig.flatten!.aot ? mergedTranslation : flatten(mergedTranslation);
-    const withHook = this.interceptor.preSaveTranslation(flattenTranslation, currentLang);
+    const flattenTranslation = this.mergedConfig.flatten!.aot
+      ? mergedTranslation
+      : flatten(mergedTranslation);
+    const withHook = this.interceptor.preSaveTranslation(
+      flattenTranslation,
+      currentLang
+    );
     this.translations.set(currentLang, withHook);
     mergedOptions.emitChange && this.setActiveLang(this.getActiveLang());
   }
@@ -431,7 +560,7 @@ export class TranslocoService implements OnDestroy {
   ) {
     const withHook = this.interceptor.preSaveTranslationKey(key, value, lang);
     const newValue = {
-      [key]: withHook
+      [key]: withHook,
     };
 
     this.setTranslation(newValue, lang, { ...options, merge: true });
@@ -441,7 +570,9 @@ export class TranslocoService implements OnDestroy {
    * Sets the fallback lang for the currently active language
    * @param fallbackLang
    */
-  setFallbackLangForMissingTranslation({ fallbackLang }: Pick<TranslocoConfig, 'fallbackLang'>) {
+  setFallbackLangForMissingTranslation({
+    fallbackLang,
+  }: Pick<TranslocoConfig, 'fallbackLang'>) {
     const lang = Array.isArray(fallbackLang) ? fallbackLang[0] : fallbackLang;
     if (fallbackLang && this.useFallbackTranslation(lang)) {
       this.firstFallbackLang = lang!;
@@ -459,13 +590,21 @@ export class TranslocoService implements OnDestroy {
     if (!this.isResolvedMissingOnce && this.useFallbackTranslation()) {
       // We need to set it to true to prevent a loop
       this.isResolvedMissingOnce = true;
-      const fallbackValue = this.translate(key, params, this.firstFallbackLang!);
+      const fallbackValue = this.translate(
+        key,
+        params,
+        this.firstFallbackLang!
+      );
       this.isResolvedMissingOnce = false;
 
       return fallbackValue;
     }
 
-    return this.missingHandler.handle(key, this.getMissingHandlerData(), params);
+    return this.missingHandler.handle(
+      key,
+      this.getMissingHandlerData(),
+      params
+    );
   }
 
   /**
@@ -491,11 +630,17 @@ export class TranslocoService implements OnDestroy {
    * We always want to make sure the global lang is loaded
    * before loading the scope since you can access both via the pipe/directive.
    */
-  _loadDependencies(path: string, inlineLoader?: InlineLoader): Observable<Translation | Translation[]> {
+  _loadDependencies(
+    path: string,
+    inlineLoader?: InlineLoader
+  ): Observable<Translation | Translation[]> {
     const mainLang = getLangFromScope(path);
 
     if (this._isLangScoped(path) && !this.isLoadedTranslation(mainLang)) {
-      return combineLatest(this.load(mainLang), this.load(path, { inlineLoader }));
+      return combineLatest(
+        this.load(mainLang),
+        this.load(path, { inlineLoader })
+      );
     }
     return this.load(path, { inlineLoader });
   }
@@ -504,7 +649,10 @@ export class TranslocoService implements OnDestroy {
    * @internal
    */
   _completeScopeWithLang(langOrScope: string) {
-    if (this._isLangScoped(langOrScope) && !this.isLang(getLangFromScope(langOrScope))) {
+    if (
+      this._isLangScoped(langOrScope) &&
+      !this.isLang(getLangFromScope(langOrScope))
+    ) {
       return `${langOrScope}/${this.getActiveLang()}`;
     }
     return langOrScope;
@@ -535,7 +683,7 @@ export class TranslocoService implements OnDestroy {
       return this.getAvailableLangs() as string[];
     }
 
-    return (this.getAvailableLangs() as { id: string }[]).map(l => l.id);
+    return (this.getAvailableLangs() as { id: string }[]).map((l) => l.id);
   }
 
   private getMissingHandlerData(): TranslocoMissingHandlerData {
@@ -543,7 +691,7 @@ export class TranslocoService implements OnDestroy {
       ...this.config,
       activeLang: this.getActiveLang(),
       availableLangs: this.availableLangs,
-      defaultLang: this.defaultLang
+      defaultLang: this.defaultLang,
     };
   }
 
@@ -552,7 +700,10 @@ export class TranslocoService implements OnDestroy {
    * This is unrelated to the fallback language (which changes the active language)
    */
   private useFallbackTranslation(lang?: string) {
-    return this.config.missingHandler!.useFallbackTranslation && lang !== this.firstFallbackLang;
+    return (
+      this.config.missingHandler!.useFallbackTranslation &&
+      lang !== this.firstFallbackLang
+    );
   }
 
   private handleSuccess(lang: string, translation: Translation) {
@@ -560,9 +711,9 @@ export class TranslocoService implements OnDestroy {
     this.events.next({
       wasFailure: !!this.failedLangs.size,
       type: 'translationLoadSuccess',
-      payload: getEventPayload(lang)
+      payload: getEventPayload(lang),
     });
-    this.failedLangs.forEach(l => this.cache.delete(l));
+    this.failedLangs.forEach((l) => this.cache.delete(l));
     this.failedLangs.clear();
   }
 
@@ -611,7 +762,7 @@ export class TranslocoService implements OnDestroy {
     loadOptions.failedCounter!++;
     this.events.next({
       type: 'translationLoadFailure',
-      payload: getEventPayload(lang)
+      payload: getEventPayload(lang),
     });
 
     return this.load(resolveLang, loadOptions);

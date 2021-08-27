@@ -1,6 +1,6 @@
 import { fakeAsync } from '@angular/core/testing';
 import { createService, runLoader, inlineScope } from '../mocks';
-import {TranslocoService} from "../../transloco.service";
+import { TranslocoService } from '../../transloco.service';
 
 describe('selectTranslate', () => {
   let service: TranslocoService;
@@ -77,28 +77,44 @@ describe('selectTranslate', () => {
 
   it('should support scope with param', fakeAsync(() => {
     const spy = jasmine.createSpy();
-    service.selectTranslate('withParam', { param: 'Transloco' }, 'lazy-page').subscribe(spy);
+    service
+      .selectTranslate('withParam', { param: 'Transloco' }, 'lazy-page')
+      .subscribe(spy);
     runLoader();
     expect(spy).toHaveBeenCalledWith('Admin Lazy english Transloco');
   }));
 
   it('should support scope with lang and params', fakeAsync(() => {
     const spy = jasmine.createSpy();
-    service.selectTranslate('withParam', { param: 'Transloco' }, 'lazy-page/es').subscribe(spy);
+    service
+      .selectTranslate('withParam', { param: 'Transloco' }, 'lazy-page/es')
+      .subscribe(spy);
     runLoader();
     expect(spy).toHaveBeenCalledWith('Admin Lazy spanish Transloco');
   }));
 
   it('should support nested scope with params', fakeAsync(() => {
     const spy = jasmine.createSpy();
-    service.selectTranslate('params', { value: 'Transloco' }, 'transpilers/messageformat').subscribe(spy);
+    service
+      .selectTranslate(
+        'params',
+        { value: 'Transloco' },
+        'transpilers/messageformat'
+      )
+      .subscribe(spy);
     runLoader();
     expect(spy).toHaveBeenCalledWith('Replaces standard Transloco - english');
   }));
 
   it('should support nested scope with lang and params', fakeAsync(() => {
     const spy = jasmine.createSpy();
-    service.selectTranslate('params', { value: 'Transloco' }, 'transpilers/messageformat/es').subscribe(spy);
+    service
+      .selectTranslate(
+        'params',
+        { value: 'Transloco' },
+        'transpilers/messageformat/es'
+      )
+      .subscribe(spy);
     runLoader();
     expect(spy).toHaveBeenCalledWith('Replaces standard Transloco - spanish');
   }));
@@ -112,7 +128,13 @@ describe('selectTranslate', () => {
     }));
     it('should support scope with lang and params', fakeAsync(() => {
       const spy = jasmine.createSpy();
-      service.selectTranslate('withParam', { param: 'Transloco' }, { scope: 'lazy-page' }).subscribe(spy);
+      service
+        .selectTranslate(
+          'withParam',
+          { param: 'Transloco' },
+          { scope: 'lazy-page' }
+        )
+        .subscribe(spy);
       runLoader();
       expect(spy).toHaveBeenCalledWith('Admin Lazy english Transloco');
     }));

@@ -1,9 +1,9 @@
 import { TranslocoPercentPipe } from '../../pipes/transloco-percent.pipe';
 import { mockLocaleService, mockCDR } from '../mocks';
-import { defaultConfig} from './../../transloco-locale.config';
-import {ChangeDetectorRef} from "@angular/core";
-import {TranslocoLocaleService} from '../../transloco-locale.service';
-import {LocaleConfig} from '../../transloco-locale.types';
+import { defaultConfig } from './../../transloco-locale.config';
+import { ChangeDetectorRef } from '@angular/core';
+import { TranslocoLocaleService } from '../../transloco-locale.service';
+import { LocaleConfig } from '../../transloco-locale.types';
 
 describe('TranslocoPercentPipe', () => {
   let service: TranslocoLocaleService;
@@ -34,7 +34,7 @@ describe('TranslocoPercentPipe', () => {
     spyOn(Intl, 'NumberFormat').and.callThrough();
     const config: LocaleConfig = {
       global: { percent: { useGrouping: true, maximumFractionDigits: 2 } },
-      localeBased: {}
+      localeBased: {},
     };
     const pipe = new TranslocoPercentPipe(service, cdr, config);
     pipe.transform('123');

@@ -1,5 +1,9 @@
 import { fakeAsync } from '@angular/core/testing';
-import { createComponentFactory, Spectator, SpectatorHost } from '@ngneat/spectator';
+import {
+  createComponentFactory,
+  Spectator,
+  SpectatorHost,
+} from '@ngneat/spectator';
 import { createFactory } from './shared';
 import { providersMock, runLoader } from '../mocks';
 import { Component } from '@angular/core';
@@ -15,18 +19,18 @@ describe('Scope alias', () => {
       provide: TRANSLOCO_SCOPE,
       useValue: {
         scope: 'admin-page',
-        alias: 'adminPageAlias'
+        alias: 'adminPageAlias',
       },
-      multi: true
+      multi: true,
     },
     {
       provide: TRANSLOCO_SCOPE,
       useValue: {
         scope: 'lazy-page',
-        alias: 'lazyPage'
+        alias: 'lazyPage',
       },
-      multi: true
-    }
+      multi: true,
+    },
   ]);
 
   it('should support multiple scopes with aliases', fakeAsync(() => {
@@ -51,10 +55,9 @@ describe('Scope alias', () => {
     <p>{{ 'lazy.title' | transloco }}</p>
     <span>{{ 'admin.title' | transloco }}</span>
     <h1>{{ 'nested.title' | transloco }}</h1>
-  `
+  `,
 })
-class TestPipe {
-}
+class TestPipe {}
 
 describe('Scope alias pipe', () => {
   let spectator: Spectator<TestPipe>;
@@ -67,19 +70,19 @@ describe('Scope alias pipe', () => {
         provide: TRANSLOCO_SCOPE,
         useValue: {
           scope: 'lazy-page',
-          alias: 'lazy'
+          alias: 'lazy',
         },
-        multi: true
+        multi: true,
       },
       {
         provide: TRANSLOCO_SCOPE,
         useValue: {
           scope: 'admin-page',
-          alias: 'admin'
+          alias: 'admin',
         },
-        multi: true
-      }
-    ]
+        multi: true,
+      },
+    ],
   });
 
   it('should support multiple scope aliasses', fakeAsync(() => {

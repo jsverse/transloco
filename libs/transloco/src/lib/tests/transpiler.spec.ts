@@ -1,8 +1,13 @@
-import { DefaultTranspiler, FunctionalTranspiler, getFunctionArgs, TranslocoTranspiler } from '../transloco.transpiler';
+import {
+  DefaultTranspiler,
+  FunctionalTranspiler,
+  getFunctionArgs,
+  TranslocoTranspiler,
+} from '../transloco.transpiler';
 import { flatten } from '../helpers';
 import { transpilerFunctions } from './mocks';
 import { defaultConfig, translocoConfig } from '../transloco.config';
-import {Injector} from "@angular/core";
+import { Injector } from '@angular/core';
 
 describe('TranslocoTranspiler', () => {
   describe('DefaultTranspiler', () => {
@@ -10,11 +15,16 @@ describe('TranslocoTranspiler', () => {
   });
 
   describe('DefaultTranspiler with custom interpolation', () => {
-    testDefaultBehaviour(new DefaultTranspiler(translocoConfig({ interpolation: ['<<', '>>'] })), ['<<', '>>']);
+    testDefaultBehaviour(
+      new DefaultTranspiler(translocoConfig({ interpolation: ['<<', '>>'] })),
+      ['<<', '>>']
+    );
   });
 
   describe('FunctionalTranspiler', () => {
-    const injectorMock = { get: (key: keyof typeof transpilerFunctions) => transpilerFunctions[key] } as Injector;
+    const injectorMock = {
+      get: (key: keyof typeof transpilerFunctions) => transpilerFunctions[key],
+    } as Injector;
     const parser = new FunctionalTranspiler(injectorMock);
     testDefaultBehaviour(parser);
 
@@ -28,8 +38,16 @@ describe('TranslocoTranspiler', () => {
       parser.transpile('[[ upperCase(lowercase) ]]', {}, {});
       expect(spy).toHaveBeenCalledWith('lowercase');
       spy.calls.reset();
-      parser.transpile('[[ upperCase(lowercase, another one, many more) ]]', {}, {});
-      expect(spy as any).toHaveBeenCalledWith('lowercase', 'another one', 'many more');
+      parser.transpile(
+        '[[ upperCase(lowercase, another one, many more) ]]',
+        {},
+        {}
+      );
+      expect(spy as any).toHaveBeenCalledWith(
+        'lowercase',
+        'another one',
+        'many more'
+      );
     });
 
     it('should work with interpolation params', () => {
@@ -42,12 +60,20 @@ describe('TranslocoTranspiler', () => {
     });
 
     it('should work with keys reference', () => {
-      const parsed = parser.transpile('[[ testKeyReference() ]]', {}, { fromList: 'Hello' });
+      const parsed = parser.transpile(
+        '[[ testKeyReference() ]]',
+        {},
+        { fromList: 'Hello' }
+      );
       expect(parsed).toEqual('Hello');
     });
 
     it('should handle a param that includes a comma', () => {
-      const parsed = parser.transpile('[[ returnSecondParam(noop, one\\, two, noop) ]]', {}, {});
+      const parsed = parser.transpile(
+        '[[ returnSecondParam(noop, one\\, two, noop) ]]',
+        {},
+        {}
+      );
       expect(parsed).toEqual('one, two');
     });
 
@@ -59,12 +85,22 @@ describe('TranslocoTranspiler', () => {
 
       it('should split the string by a comma and remove extra spaces', () => {
         const rawArgs = ',one,    two, three, ,four and five';
-        expect(getFunctionArgs(rawArgs)).toEqual(['', 'one', 'two', 'three', '', 'four and five']);
+        expect(getFunctionArgs(rawArgs)).toEqual([
+          '',
+          'one',
+          'two',
+          'three',
+          '',
+          'four and five',
+        ]);
       });
 
       it('should handle an escaped comma', () => {
         const rawArgs = `Hi there\\, how are you?,   I'm ok`;
-        expect(getFunctionArgs(rawArgs)).toEqual(['Hi there, how are you?', `I'm ok`]);
+        expect(getFunctionArgs(rawArgs)).toEqual([
+          'Hi there, how are you?',
+          `I'm ok`,
+        ]);
       });
     });
   });
@@ -78,7 +114,11 @@ describe('TranslocoTranspiler', () => {
     }
 
     it('should translate simple string from params', () => {
-      const parsed = parser.transpile(`Hello ${wrapParam('value')}`, { value: 'World' }, {});
+      const parsed = parser.transpile(
+        `Hello ${wrapParam('value')}`,
+        { value: 'World' },
+        {}
+      );
       expect(parsed).toEqual('Hello World');
     });
 
@@ -92,7 +132,11 @@ describe('TranslocoTranspiler', () => {
     });
 
     it('should translate simple string with a key from lang', () => {
-      const parsed = parser.transpile(`Hello ${wrapParam('world')}`, {}, flatten({ world: 'World' }));
+      const parsed = parser.transpile(
+        `Hello ${wrapParam('world')}`,
+        {},
+        flatten({ world: 'World' })
+      );
       expect(parsed).toEqual('Hello World');
     });
 
@@ -101,22 +145,30 @@ describe('TranslocoTranspiler', () => {
         withKeys: 'with keys',
         from: 'from',
         lang: 'lang',
-        nes: { ted: 'supporting nested values!' }
+        nes: { ted: 'supporting nested values!' },
       });
       const parsed = parser.transpile(
-        `Hello ${wrapParam('withKeys')} ${wrapParam('from')} ${wrapParam('lang')} ${wrapParam('nes.ted')}`,
+        `Hello ${wrapParam('withKeys')} ${wrapParam('from')} ${wrapParam(
+          'lang'
+        )} ${wrapParam('nes.ted')}`,
         {},
         lang
       );
-      expect(parsed).toEqual('Hello with keys from lang supporting nested values!');
+      expect(parsed).toEqual(
+        'Hello with keys from lang supporting nested values!'
+      );
     });
 
     it('should translate simple string with from lang with nested params', () => {
       const lang = flatten({
         dear: `dear ${wrapParam('name')}`,
-        hello: `Hello ${wrapParam('dear')}`
+        hello: `Hello ${wrapParam('dear')}`,
       });
-      const parsed = parser.transpile(`${wrapParam('hello')}`, { name: 'world' }, lang);
+      const parsed = parser.transpile(
+        `${wrapParam('hello')}`,
+        { name: 'world' },
+        lang
+      );
       expect(parsed).toEqual('Hello dear world');
     });
 
@@ -131,7 +183,7 @@ describe('TranslocoTranspiler', () => {
 
     it('should translate simple string with params and from lang with params', () => {
       const lang = flatten({
-        hello: `Hello ${wrapParam('name')}`
+        hello: `Hello ${wrapParam('name')}`,
       });
       const parsed = parser.transpile(
         `${wrapParam('hello')}, good ${wrapParam('timeOfDay')}`,
@@ -154,19 +206,21 @@ describe('TranslocoTranspiler', () => {
           flat: `Flat ${wrapParam('dynamic')}`,
           c: {
             otherKey: 'otherKey',
-            d: `Hello ${wrapParam('value')}`
+            d: `Hello ${wrapParam('value')}`,
           },
           g: {
-            h: `Name ${wrapParam('name')}`
-          }
+            h: `Name ${wrapParam('name')}`,
+          },
         },
         i: {
-          j: `Hey ${wrapParam('value')}`
-        }
+          j: `Hey ${wrapParam('value')}`,
+        },
       };
 
       it('should support objects', () => {
-        expect(parser.transpile(translations.b, {}, {})).toEqual(translations.b);
+        expect(parser.transpile(translations.b, {}, {})).toEqual(
+          translations.b
+        );
       });
 
       it('should support params', () => {
@@ -176,7 +230,7 @@ describe('TranslocoTranspiler', () => {
             {
               'c.d': { value: 'World' },
               'g.h': { name: 'Transloco' },
-              flat: { dynamic: 'HOLA' }
+              flat: { dynamic: 'HOLA' },
             },
             {}
           )
@@ -184,36 +238,36 @@ describe('TranslocoTranspiler', () => {
           flat: 'Flat HOLA',
           c: {
             otherKey: 'otherKey',
-            d: 'Hello World'
+            d: 'Hello World',
           },
           g: {
-            h: 'Name Transloco'
-          }
+            h: 'Name Transloco',
+          },
         });
 
         expect(
           parser.transpile(
             translations.i,
             {
-              j: { value: 'Transloco' }
+              j: { value: 'Transloco' },
             },
             {}
           )
         ).toEqual({
-          j: 'Hey Transloco'
+          j: 'Hey Transloco',
         });
 
         expect(
           parser.transpile(
             translations.b.c,
             {
-              d: { value: 'Transloco' }
+              d: { value: 'Transloco' },
             },
             {}
           )
         ).toEqual({
           otherKey: 'otherKey',
-          d: 'Hello Transloco'
+          d: 'Hello Transloco',
         });
       });
     });
@@ -221,33 +275,53 @@ describe('TranslocoTranspiler', () => {
     describe('Arrays', () => {
       const translations = {
         a: ['Hello person', 'Hello world'],
-        b: [`Hello ${wrapParam('name')}`, 'Hello world', `Hello there ${wrapParam('name')}`],
-        c: [`Hello ${wrapParam('one')} ${wrapParam('two')}`, wrapParam('three'), `Hello there ${wrapParam('one')}`],
+        b: [
+          `Hello ${wrapParam('name')}`,
+          'Hello world',
+          `Hello there ${wrapParam('name')}`,
+        ],
+        c: [
+          `Hello ${wrapParam('one')} ${wrapParam('two')}`,
+          wrapParam('three'),
+          `Hello there ${wrapParam('one')}`,
+        ],
         d: [wrapParam('ref'), 'Hello'],
-        e: [wrapParam('refWithParam'), wrapParam('ref'), `transloco ${wrapParam('refWithParam')}`]
+        e: [
+          wrapParam('refWithParam'),
+          wrapParam('ref'),
+          `transloco ${wrapParam('refWithParam')}`,
+        ],
       };
 
       it('should work with arrays', () => {
-        expect(parser.transpile(translations.a, {}, {})).toEqual(translations.a);
+        expect(parser.transpile(translations.a, {}, {})).toEqual(
+          translations.a
+        );
       });
 
       it('should support keys referencing', () => {
-        const translation = { ref: 'Hello world', refWithParam: `Hello ${wrapParam('name')}` };
-        expect(parser.transpile(translations.d, {}, translation)).toEqual(['Hello world', 'Hello']);
+        const translation = {
+          ref: 'Hello world',
+          refWithParam: `Hello ${wrapParam('name')}`,
+        };
+        expect(parser.transpile(translations.d, {}, translation)).toEqual([
+          'Hello world',
+          'Hello',
+        ]);
 
-        expect(parser.transpile(translations.e, { name: 'Transloco' }, translation)).toEqual([
+        expect(
+          parser.transpile(translations.e, { name: 'Transloco' }, translation)
+        ).toEqual([
           'Hello Transloco',
           'Hello world',
-          'transloco Hello Transloco'
+          'transloco Hello Transloco',
         ]);
       });
 
       it('should support params', () => {
-        expect(parser.transpile(translations.b, { name: 'Transloco' }, {})).toEqual([
-          'Hello Transloco',
-          'Hello world',
-          'Hello there Transloco'
-        ]);
+        expect(
+          parser.transpile(translations.b, { name: 'Transloco' }, {})
+        ).toEqual(['Hello Transloco', 'Hello world', 'Hello there Transloco']);
 
         expect(
           parser.transpile(
@@ -255,11 +329,15 @@ describe('TranslocoTranspiler', () => {
             {
               one: 'Transloco1',
               two: 'Transloco2',
-              three: 'Transloco3'
+              three: 'Transloco3',
             },
             {}
           )
-        ).toEqual(['Hello Transloco1 Transloco2', 'Transloco3', 'Hello there Transloco1']);
+        ).toEqual([
+          'Hello Transloco1 Transloco2',
+          'Transloco3',
+          'Hello there Transloco1',
+        ]);
       });
     });
   }

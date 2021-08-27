@@ -1,11 +1,14 @@
-import { UnitTestTree, SchematicTestRunner } from '@angular-devkit/schematics/testing';
+import {
+  UnitTestTree,
+  SchematicTestRunner,
+} from '@angular-devkit/schematics/testing';
 import { switchMap } from 'rxjs/operators';
 
 export const defaultWorkspaceOptions = {
   name: 'workspace',
   newProjectRoot: 'projects',
   version: '12.1.3',
-  minimal: true
+  minimal: true,
 };
 
 export const defaultAppOptions = {
@@ -15,11 +18,11 @@ export const defaultAppOptions = {
   viewEncapsulation: 'Emulated',
   routing: false,
   style: 'css',
-  skipTests: false
+  skipTests: false,
 };
 
 const defaultLibOptions = {
-  name: 'baz'
+  name: 'baz',
 };
 
 export async function createWorkspace(
@@ -33,8 +36,22 @@ export async function createWorkspace(
   return schematicRunner
     .runExternalSchematicAsync(angularSchematic, 'workspace', workspaceOptions)
     .pipe(
-      switchMap(tree => schematicRunner.runExternalSchematicAsync(angularSchematic, 'application', appOptions, tree)),
-      switchMap(tree => schematicRunner.runExternalSchematicAsync(angularSchematic, 'library', libOptions, tree))
+      switchMap((tree) =>
+        schematicRunner.runExternalSchematicAsync(
+          angularSchematic,
+          'application',
+          appOptions,
+          tree
+        )
+      ),
+      switchMap((tree) =>
+        schematicRunner.runExternalSchematicAsync(
+          angularSchematic,
+          'library',
+          libOptions,
+          tree
+        )
+      )
     )
     .toPromise();
 }

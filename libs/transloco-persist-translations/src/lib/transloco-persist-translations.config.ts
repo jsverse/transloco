@@ -6,7 +6,8 @@ export interface StorageConfig {
   storageKey: string;
 }
 
-export interface TranslocoPersistTranslationsConfig extends Partial<StorageConfig> {
+export interface TranslocoPersistTranslationsConfig
+  extends Partial<StorageConfig> {
   loader: Type<TranslocoLoader>;
   storage: Provider;
 }
@@ -14,9 +15,15 @@ export interface TranslocoPersistTranslationsConfig extends Partial<StorageConfi
 const oneDay = 86400;
 export const defaultConfig: Required<StorageConfig> = {
   ttl: oneDay,
-  storageKey: '@transloco/translations'
+  storageKey: '@transloco/translations',
 };
 
-export const PERSIST_TRANSLATIONS_LOADER = new InjectionToken<Type<TranslocoLoader>>('PERSIST_TRANSLATIONS_LOADER');
-export const PERSIST_TRANSLATIONS_STORAGE = new InjectionToken<Provider>('The storage to use for the persistance behavior');
-export const PERSIST_TRANSLATIONS_STORAGE_CONFIG = new InjectionToken<Provider>('Configuration for the storage behavior');
+export const PERSIST_TRANSLATIONS_LOADER = new InjectionToken<
+  Type<TranslocoLoader>
+>('PERSIST_TRANSLATIONS_LOADER');
+export const PERSIST_TRANSLATIONS_STORAGE = new InjectionToken<Provider>(
+  'The storage to use for the persistance behavior'
+);
+export const PERSIST_TRANSLATIONS_STORAGE_CONFIG = new InjectionToken<Provider>(
+  'Configuration for the storage behavior'
+);

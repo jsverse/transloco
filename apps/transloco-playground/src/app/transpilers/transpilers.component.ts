@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-transpilers',
   templateUrl: './transpilers.component.html',
-  styleUrls: ['./transpilers.component.scss']
+  styleUrls: ['./transpilers.component.scss'],
 })
 export class TranspilersComponent {
   dynamic = '🦄';

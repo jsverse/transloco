@@ -3,7 +3,7 @@ import { TranslocoLoader } from '@ngneat/transloco';
 import { of, timer } from 'rxjs';
 import { mapTo } from 'rxjs/operators';
 import { Mock } from 'ts-mocks';
-import {defaultConfig} from './transloco-persist-translations.config';
+import { defaultConfig } from './transloco-persist-translations.config';
 import { TranslocoPersistTranslations } from './transloco-persist-translations.service';
 import { MaybeAsyncStorage } from './transloco.storage';
 
@@ -34,7 +34,7 @@ describe('TranslocoPersistTranslations', () => {
 
     function createLoaderMock(translations = translationsMock) {
       return new Mock<TranslocoLoader>({
-        getTranslation: () => of(translations)
+        getTranslation: () => of(translations),
       }).Object;
     }
 
@@ -77,7 +77,10 @@ describe('TranslocoPersistTranslations', () => {
       setup();
       service.getTranslation('en').subscribe();
       service.getTranslation('es').subscribe();
-      const expected = JSON.stringify({ en: translationsMock, es: translationsMock });
+      const expected = JSON.stringify({
+        en: translationsMock,
+        es: translationsMock,
+      });
       expect(storageMock.getItem(defaultConfig.storageKey)).toEqual(expected);
     });
 
@@ -86,19 +89,29 @@ describe('TranslocoPersistTranslations', () => {
       loader = createLoaderMock(translationsMock);
       spyOn(storageMock, 'removeItem').and.callThrough();
 
-      service = new TranslocoPersistTranslations(loader, storageMock, { ...defaultConfig, ttl: 10 });
+      service = new TranslocoPersistTranslations(loader, storageMock, {
+        ...defaultConfig,
+        ttl: 10,
+      });
       service.getTranslation('en').subscribe();
       tick(10);
-      service = new TranslocoPersistTranslations(loader, storageMock, { ...defaultConfig, ttl: 10 });
+      service = new TranslocoPersistTranslations(loader, storageMock, {
+        ...defaultConfig,
+        ttl: 10,
+      });
 
-      expect(storageMock.removeItem).toHaveBeenCalledWith(defaultConfig.storageKey);
+      expect(storageMock.removeItem).toHaveBeenCalledWith(
+        defaultConfig.storageKey
+      );
     }));
 
     it('should clear translations', () => {
       setup();
       spyOn(storageMock, 'removeItem').and.callThrough();
       service.clearCache();
-      expect(storageMock.removeItem).toHaveBeenCalledWith(defaultConfig.storageKey);
+      expect(storageMock.removeItem).toHaveBeenCalledWith(
+        defaultConfig.storageKey
+      );
       expect(storageMock.removeItem).toHaveBeenCalledTimes(2);
     });
   });
@@ -130,7 +143,7 @@ describe('TranslocoPersistTranslations', () => {
 
     function createLoaderMock(translations = translationsMock) {
       return new Mock<TranslocoLoader>({
-        getTranslation: () => timer(DELAY).pipe(mapTo(translations))
+        getTranslation: () => timer(DELAY).pipe(mapTo(translations)),
       }).Object;
     }
 
@@ -145,11 +158,14 @@ describe('TranslocoPersistTranslations', () => {
       tick(DELAY);
       spyOn(storageMock, 'setItem').and.callThrough();
       let res;
-      service.getTranslation('en').subscribe(translations => {
+      service.getTranslation('en').subscribe((translations) => {
         res = translations;
       });
       tick(DELAY * 4);
-      expect(storageMock.setItem).toHaveBeenCalledWith(defaultConfig.storageKey, JSON.stringify({ en: res }));
+      expect(storageMock.setItem).toHaveBeenCalledWith(
+        defaultConfig.storageKey,
+        JSON.stringify({ en: res })
+      );
     }));
 
     it('should not call loader after caching translations', fakeAsync(() => {
@@ -187,9 +203,11 @@ describe('TranslocoPersistTranslations', () => {
       service.getTranslation('en').subscribe();
       service.getTranslation('es').subscribe();
       tick(DELAY * 4);
-      storageMock.getItem(defaultConfig.storageKey).subscribe((translations: string) => {
-        expect(Object.keys(JSON.parse(translations))).toEqual(['en', 'es']);
-      });
+      storageMock
+        .getItem(defaultConfig.storageKey)
+        .subscribe((translations: string) => {
+          expect(Object.keys(JSON.parse(translations))).toEqual(['en', 'es']);
+        });
       tick(DELAY);
     }));
 
@@ -199,9 +217,14 @@ describe('TranslocoPersistTranslations', () => {
       service.getTranslation('en/scope').subscribe();
       service.getTranslation('en').subscribe();
       tick(DELAY * 4);
-      storageMock.getItem(defaultConfig.storageKey).subscribe((translations: string) => {
-        expect(Object.keys(JSON.parse(translations))).toEqual(['en/scope', 'en']);
-      });
+      storageMock
+        .getItem(defaultConfig.storageKey)
+        .subscribe((translations: string) => {
+          expect(Object.keys(JSON.parse(translations))).toEqual([
+            'en/scope',
+            'en',
+          ]);
+        });
       tick(DELAY);
     }));
   });

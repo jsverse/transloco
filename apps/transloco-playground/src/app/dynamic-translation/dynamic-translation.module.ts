@@ -9,5 +9,4 @@ import { DynamicTranslationComponent } from './dynamic-translation/dynamic-trans
   declarations: [DynamicTranslationComponent],
   imports: [CommonModule, DynamicTranslationRoutingModule, TranslocoModule],
 })
-export class DynamicTranslationModule {
-}
+export class DynamicTranslationModule {}

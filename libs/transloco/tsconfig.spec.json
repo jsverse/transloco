@@ -4,7 +4,7 @@
     "outDir": "../../dist/out-tsc",
     "types": ["jasmine", "node"],
     "esModuleInterop": true,
-    "resolveJsonModule": true,
+    "resolveJsonModule": true
   },
   "files": ["src/test-setup.ts"],
   "include": ["**/*.spec.ts", "src/lib/tests/mocks.ts", "**/*.d.ts"]

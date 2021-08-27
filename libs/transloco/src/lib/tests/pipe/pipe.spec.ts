@@ -10,12 +10,12 @@ describe('TranslocoPipe', () => {
   let serviceMock: TranslocoService;
   let cdrMock: ChangeDetectorRef;
   let pipe: TranslocoPipe;
-  
+
   beforeEach(() => {
     serviceMock = new Mock<TranslocoService>(createService()).Object;
 
     cdrMock = new Mock<ChangeDetectorRef>({
-      markForCheck: () => {}
+      markForCheck: () => {},
     }).Object;
 
     pipe = new TranslocoPipe(serviceMock, undefined, undefined, cdrMock);
@@ -49,7 +49,12 @@ describe('TranslocoPipe', () => {
 
   it('should load scoped translation with scope alias', fakeAsync(() => {
     spyOn(serviceMock, 'translate').and.callThrough();
-    pipe = new TranslocoPipe(serviceMock, { scope: 'lazy-scope-alias', alias: 'myScopeAlias' }, undefined, cdrMock);
+    pipe = new TranslocoPipe(
+      serviceMock,
+      { scope: 'lazy-scope-alias', alias: 'myScopeAlias' },
+      undefined,
+      cdrMock
+    );
     (pipe as any).listenToLangChange = true;
     pipe.transform('title', {});
     runLoader();
@@ -63,27 +68,46 @@ describe('TranslocoPipe', () => {
     spyOn(serviceMock, 'translate').and.callThrough();
     pipe = new TranslocoPipe(
       serviceMock,
-      [{ scope: 'lazy-page', alias: 'lazyPageAlias' }, { scope: 'admin-page', alias: 'adminPageAlias' }],
+      [
+        { scope: 'lazy-page', alias: 'lazyPageAlias' },
+        { scope: 'admin-page', alias: 'adminPageAlias' },
+      ],
       undefined,
       cdrMock
     );
     (pipe as any).listenToLangChange = true;
     pipe.transform('lazyPageAlias.title', {});
     runLoader();
-    expect(serviceMock.translate).toHaveBeenCalledWith('lazyPageAlias.title', {}, 'en');
+    expect(serviceMock.translate).toHaveBeenCalledWith(
+      'lazyPageAlias.title',
+      {},
+      'en'
+    );
 
     pipe.transform('adminPageAlias.title', {});
     runLoader();
-    expect(serviceMock.translate).toHaveBeenCalledWith('adminPageAlias.title', {}, 'en');
+    expect(serviceMock.translate).toHaveBeenCalledWith(
+      'adminPageAlias.title',
+      {},
+      'en'
+    );
 
     serviceMock.setActiveLang('es');
     pipe.transform('lazyPageAlias.title', {});
     runLoader();
-    expect(serviceMock.translate).toHaveBeenCalledWith('lazyPageAlias.title', {}, 'es');
+    expect(serviceMock.translate).toHaveBeenCalledWith(
+      'lazyPageAlias.title',
+      {},
+      'es'
+    );
 
     pipe.transform('adminPageAlias.title', {});
     runLoader();
-    expect(serviceMock.translate).toHaveBeenCalledWith('adminPageAlias.title', {}, 'es');
+    expect(serviceMock.translate).toHaveBeenCalledWith(
+      'adminPageAlias.title',
+      {},
+      'es'
+    );
   }));
 
   describe('updateValue', () => {

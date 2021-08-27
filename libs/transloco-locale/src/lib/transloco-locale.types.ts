@@ -132,7 +132,6 @@ export type Currency = string;
 
 export type ValidDate = Date | string | number;
 
-
 export interface LocaleFormatOptions {
   date?: DateFormatOptions;
   decimal?: NumberFormatOptions;

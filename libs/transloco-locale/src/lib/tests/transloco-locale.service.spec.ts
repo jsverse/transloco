@@ -10,7 +10,7 @@ describe('TranslocoLocaleService', () => {
   describe('getCurrencySymbol', () => {
     it('should return symbol for locals with prefix notation', () => {
       const translocoService: any = {
-        langChanges$: of('en-US')
+        langChanges$: of('en-US'),
       };
       service = mockService(translocoService);
       expect(service.getCurrencySymbol()).toEqual('$');
@@ -18,7 +18,7 @@ describe('TranslocoLocaleService', () => {
 
     it('should return symbol for locals with postfix notation', () => {
       const translocoService: any = {
-        langChanges$: of('de-DE')
+        langChanges$: of('de-DE'),
       };
       service = mockService(translocoService);
       expect(service.getCurrencySymbol()).toEqual('€');
@@ -28,7 +28,7 @@ describe('TranslocoLocaleService', () => {
   describe('getLocale', () => {
     it('should return the default locale', () => {
       const translocoService: any = {
-        langChanges$: of()
+        langChanges$: of(),
       };
       service = mockService(translocoService);
       expect(service.getLocale()).toEqual('en-US');
@@ -36,7 +36,7 @@ describe('TranslocoLocaleService', () => {
 
     it('should return the current locale', () => {
       const translocoService: any = {
-        langChanges$: of('en-US')
+        langChanges$: of('en-US'),
       };
       service = mockService(translocoService);
       expect(service.getLocale()).toEqual('en-US');
@@ -44,7 +44,7 @@ describe('TranslocoLocaleService', () => {
 
     it('should return the default locale', () => {
       const translocoService: any = {
-        langChanges$: of('en')
+        langChanges$: of('en'),
       };
       service = mockService(translocoService);
       expect(service.getLocale()).toEqual('en-US');
@@ -52,7 +52,7 @@ describe('TranslocoLocaleService', () => {
 
     it('should not update a none locale format', () => {
       const translocoService: any = {
-        langChanges$: of('fr')
+        langChanges$: of('fr'),
       };
       service = mockService(translocoService);
       expect(service.getLocale()).toEqual('en-US');
@@ -62,7 +62,7 @@ describe('TranslocoLocaleService', () => {
   describe('setLocale', () => {
     beforeEach(() => {
       const translocoService: any = {
-        langChanges$: of('en')
+        langChanges$: of('en'),
       };
       service = mockService(translocoService);
     });
@@ -85,7 +85,7 @@ describe('TranslocoLocaleService', () => {
   describe('localeChanges$', () => {
     it('should call subscription on locale change', () => {
       const translocoService: any = {
-        langChanges$: of('en-US')
+        langChanges$: of('en-US'),
       };
       const spy = jasmine.createSpy();
       service = mockService(translocoService);
@@ -96,7 +96,7 @@ describe('TranslocoLocaleService', () => {
 
     it('should call subscription with the default language locale', () => {
       const translocoService: any = {
-        langChanges$: of('en')
+        langChanges$: of('en'),
       };
       const spy = jasmine.createSpy();
       service = mockService(translocoService);
@@ -107,7 +107,7 @@ describe('TranslocoLocaleService', () => {
 
     it('should call subscription after lang change', fakeAsync(() => {
       const translocoService: any = {
-        langChanges$: of('en', 'es').pipe(delay(100))
+        langChanges$: of('en', 'es').pipe(delay(100)),
       };
       const spy = jasmine.createSpy();
       service = mockService(translocoService);
@@ -118,7 +118,7 @@ describe('TranslocoLocaleService', () => {
 
     it('should call subscription after setting locale', () => {
       const translocoService: any = {
-        langChanges$: of()
+        langChanges$: of(),
       };
       const spy = jasmine.createSpy();
       service = mockService(translocoService);

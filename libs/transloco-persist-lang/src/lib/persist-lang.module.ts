@@ -1,13 +1,21 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { TranslocoPersistLangService } from './persist-lang.service';
-import { PersistLangConfig, TRANSLOCO_PERSIST_LANG_CONFIG } from './persist-lang.config';
+import {
+  PersistLangConfig,
+  TRANSLOCO_PERSIST_LANG_CONFIG,
+} from './persist-lang.config';
 
 @NgModule()
 export class TranslocoPersistLangModule {
-  static init(config: PersistLangConfig): ModuleWithProviders<TranslocoPersistLangModule> {
+  static init(
+    config: PersistLangConfig
+  ): ModuleWithProviders<TranslocoPersistLangModule> {
     return {
       ngModule: TranslocoPersistLangModule,
-      providers: [{ provide: TRANSLOCO_PERSIST_LANG_CONFIG, useValue: config }, config.storage]
+      providers: [
+        { provide: TRANSLOCO_PERSIST_LANG_CONFIG, useValue: config },
+        config.storage,
+      ],
     };
   }
 

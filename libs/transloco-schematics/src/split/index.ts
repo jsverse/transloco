@@ -1,5 +1,5 @@
-import {Rule, Tree} from '@angular-devkit/schematics';
-import {TranslationFileFormat} from '../types';
+import { Rule, Tree } from '@angular-devkit/schematics';
+import { TranslationFileFormat } from '../types';
 import {
   getTranslationEntryPaths,
   getTranslationFiles,
@@ -7,18 +7,24 @@ import {
   getTranslationsRoot,
   hasFiles,
   hasSubdirs,
-  setFileContent
+  setFileContent,
 } from '../utils/transloco';
-import {SchemaOptions} from './schema';
+import { SchemaOptions } from './schema';
 
 type Parser = (content: string) => any;
 
-function reduceTranslations(host: Tree, dirPath: string, translationJson, lang: string, key = '') {
+function reduceTranslations(
+  host: Tree,
+  dirPath: string,
+  translationJson,
+  lang: string,
+  key = ''
+) {
   const dir = host.getDir(dirPath);
   if (!hasFiles(dir)) return translationJson;
   dir.subfiles
-    .filter(fileName => fileName.includes(`${lang}.json`))
-    .forEach(fileName => {
+    .filter((fileName) => fileName.includes(`${lang}.json`))
+    .forEach((fileName) => {
       if (!translationJson[key]) {
         return translationJson;
       }
@@ -26,7 +32,7 @@ function reduceTranslations(host: Tree, dirPath: string, translationJson, lang: 
       delete translationJson[key];
     });
   if (hasSubdirs(dir)) {
-    dir.subdirs.forEach(subDirName => {
+    dir.subdirs.forEach((subDirName) => {
       const subDir = dir.dir(subDirName);
       const nestedKey = getTranslationKey(key, subDirName);
       reduceTranslations(host, subDir.path, translationJson, lang, nestedKey);
@@ -41,17 +47,17 @@ function parserFactory(format: TranslationFileFormat): Parser {
     case TranslationFileFormat.JSON:
       return JSON.parse;
     case TranslationFileFormat.PO:
-    // TODO:
-    return JSON.parse;
+      // TODO:
+      return JSON.parse;
     case TranslationFileFormat.XLIFF:
-    // TODO:
-    return JSON.parse;
+      // TODO:
+      return JSON.parse;
     default:
       return JSON.parse;
   }
 }
 
-export default function(options: SchemaOptions): Rule {
+export default function (options: SchemaOptions): Rule {
   return (host: Tree) => {
     const root = getTranslationsRoot(host, options);
     const parser = parserFactory(options.format);
@@ -60,13 +66,16 @@ export default function(options: SchemaOptions): Rule {
     const translationEntryPaths = getTranslationEntryPaths(host, root);
 
     const newTranslation = {};
-    for (const {lang, translation} of translatedFiles) {
-      newTranslation[lang] = translationEntryPaths.reduce((acc, {scope, path}) => {
-        return reduceTranslations(host, path, translation, lang, scope);
-      }, translation);
+    for (const { lang, translation } of translatedFiles) {
+      newTranslation[lang] = translationEntryPaths.reduce(
+        (acc, { scope, path }) => {
+          return reduceTranslations(host, path, translation, lang, scope);
+        },
+        translation
+      );
     }
 
-    host.getDir(root).subfiles.forEach(fileName => {
+    host.getDir(root).subfiles.forEach((fileName) => {
       const lang = fileName.split('.')[0];
       setFileContent(host, root, fileName, newTranslation[lang]);
     });

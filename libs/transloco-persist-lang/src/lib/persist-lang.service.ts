@@ -4,14 +4,14 @@ import {
   isBrowser,
   isFunction,
   PersistStorage,
-  TranslocoService
+  TranslocoService,
 } from '@ngneat/transloco';
 import { Subscription } from 'rxjs';
 import { skip } from 'rxjs/operators';
 import {
   PersistLangConfig,
   TRANSLOCO_PERSIST_LANG_CONFIG,
-  TRANSLOCO_PERSIST_LANG_STORAGE
+  TRANSLOCO_PERSIST_LANG_STORAGE,
 } from './persist-lang.config';
 import { Inject, Injectable, OnDestroy } from '@angular/core';
 
@@ -41,7 +41,7 @@ export class TranslocoPersistLangService implements OnDestroy {
   }
 
   private updateStorageOnLangChange(): Subscription {
-    return this.service.langChanges$.pipe(skip(1)).subscribe(lang => {
+    return this.service.langChanges$.pipe(skip(1)).subscribe((lang) => {
       this.save(lang);
     });
   }
@@ -65,7 +65,7 @@ export class TranslocoPersistLangService implements OnDestroy {
         browserLang,
         defaultLang,
         cultureLang,
-        cachedLang
+        cachedLang,
       });
     }
 
@@ -76,7 +76,10 @@ export class TranslocoPersistLangService implements OnDestroy {
 
   private save(lang: string) {
     if (this.service.config.prodMode === false) {
-      console.log(`%c 🍻 Saving ${lang} to storage`, 'background: #fff; color: #2196F3;');
+      console.log(
+        `%c 🍻 Saving ${lang} to storage`,
+        'background: #fff; color: #2196F3;'
+      );
     }
     this.storage.setItem(this.storageKey, lang);
   }
@@ -84,6 +87,4 @@ export class TranslocoPersistLangService implements OnDestroy {
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
-
 }
-  

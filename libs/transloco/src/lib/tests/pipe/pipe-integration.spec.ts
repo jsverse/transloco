@@ -1,29 +1,30 @@
-import {createComponentFactory, Spectator} from '@ngneat/spectator';
-import {Component} from '@angular/core';
-import {providersMock, runLoader} from '../mocks';
-import {fakeAsync} from '@angular/core/testing';
-import {defaultConfig, TRANSLOCO_CONFIG } from '../../transloco.config';
+import { createComponentFactory, Spectator } from '@ngneat/spectator';
+import { Component } from '@angular/core';
+import { providersMock, runLoader } from '../mocks';
+import { fakeAsync } from '@angular/core/testing';
+import { defaultConfig, TRANSLOCO_CONFIG } from '../../transloco.config';
 import { TranslocoModule } from '../../transloco.module';
 import { TranslocoService } from '../../transloco.service';
 import { TRANSLOCO_LANG } from '../../transloco-lang';
 import { TRANSLOCO_SCOPE } from '../../transloco-scope';
 
 export const listenToLangChangesProvider = {
-    provide: TRANSLOCO_CONFIG,
-    useValue: {
-      ...defaultConfig, availableLangs: ['en', 'es'],
-      reRenderOnLangChange: true
-    }
+  provide: TRANSLOCO_CONFIG,
+  useValue: {
+    ...defaultConfig,
+    availableLangs: ['en', 'es'],
+    reRenderOnLangChange: true,
+  },
 };
 
 @Component({
   template: `
     <p>{{ 'home' | transloco }}</p>
     <h1>{{ 'nested.title' | transloco }}</h1>
-    <span>{{ 'alert' | transloco: {value: 'netanel'} }}</span>
-    <h3>{{ 'alert' | transloco: {value: value} }}</h3>
+    <span>{{ 'alert' | transloco: { value: 'netanel' } }}</span>
+    <h3>{{ 'alert' | transloco: { value: value } }}</h3>
     <h5>{{ 'home' | transloco: null:'es' }}</h5>
-  `
+  `,
 })
 class TestPipe {
   value = 'hey';
@@ -35,7 +36,7 @@ describe('Pipe', () => {
     const createComponent = createComponentFactory({
       component: TestPipe,
       imports: [TranslocoModule],
-      providers: providersMock
+      providers: providersMock,
     });
 
     it('should translate', fakeAsync(() => {
@@ -63,7 +64,7 @@ describe('Pipe', () => {
     it('should translate and listen to lang changes', fakeAsync(() => {
       spectator = createComponent({
         detectChanges: false,
-        providers: [listenToLangChangesProvider]
+        providers: [listenToLangChangesProvider],
       });
       const service = spectator.inject(TranslocoService);
       spectator.detectChanges();
@@ -90,10 +91,10 @@ describe('Pipe', () => {
         providersMock,
         {
           provide: TRANSLOCO_LANG,
-          useValue: 'es'
+          useValue: 'es',
         },
-        listenToLangChangesProvider
-      ]
+        listenToLangChangesProvider,
+      ],
     });
 
     it('should support provider lang', fakeAsync(() => {
@@ -122,10 +123,10 @@ describe('Pipe', () => {
         providersMock,
         {
           provide: TRANSLOCO_LANG,
-          useValue: 'es|static'
+          useValue: 'es|static',
         },
-        listenToLangChangesProvider
-      ]
+        listenToLangChangesProvider,
+      ],
     });
 
     it('should support provider lang static', fakeAsync(() => {
@@ -149,11 +150,10 @@ describe('Pipe', () => {
     template: `
       <p>{{ 'lazyPage.title' | transloco }}</p>
       <h1>{{ 'nested.title' | transloco }}</h1>
-      <span>{{ 'alert' | transloco: {value: 'netanel'} }}</span>
-    `
+      <span>{{ 'alert' | transloco: { value: 'netanel' } }}</span>
+    `,
   })
-  class TestScopePipe {
-  }
+  class TestScopePipe {}
 
   describe('Scope lang', () => {
     let spectator: Spectator<TestScopePipe>;
@@ -164,10 +164,10 @@ describe('Pipe', () => {
         providersMock,
         {
           provide: TRANSLOCO_SCOPE,
-          useValue: 'lazy-page'
+          useValue: 'lazy-page',
         },
-        listenToLangChangesProvider
-      ]
+        listenToLangChangesProvider,
+      ],
     });
 
     it('should support scope', fakeAsync(() => {

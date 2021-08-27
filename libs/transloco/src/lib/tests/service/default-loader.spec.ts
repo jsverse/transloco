@@ -9,7 +9,7 @@ describe('default loader', () => {
   it('should no throw and use the default loader', () => {
     let service: TranslocoService;
 
-    expect(function() {
+    expect(function () {
       service = new TranslocoService(
         null as any,
         new DefaultTranspiler(),
@@ -22,7 +22,7 @@ describe('default loader', () => {
     expect((service! as any).loader instanceof DefaultLoader).toBe(true);
     service!.setTranslation(
       {
-        key: 'Netanel'
+        key: 'Netanel',
       },
       'en'
     );

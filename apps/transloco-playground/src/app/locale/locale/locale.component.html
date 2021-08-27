@@ -1,9 +1,12 @@
 <h2>Localization Support for Transloco</h2>
 
 <p>
-  This library brings a localization support for Transloco lib, by using native Javascript's
-  <a href="https://norbertlindenberg.com/2012/12/ecmascript-internationalization-api/index.html" target="_blank"
-  >Internalization api</a
+  This library brings a localization support for Transloco lib, by using native
+  Javascript's
+  <a
+    href="https://norbertlindenberg.com/2012/12/ecmascript-internationalization-api/index.html"
+    target="_blank"
+    >Internalization api</a
   >.
 </p>
 
@@ -17,37 +20,55 @@
 <h3 class="mtb">Date Format</h3>
 
 <ul class="list-group">
-  <li class="list-group-item" data-cy="date-regular"><b>Regular date: </b>{{ date | translocoDate }}</li>
+  <li class="list-group-item" data-cy="date-regular">
+    <b>Regular date: </b>{{ date | translocoDate }}
+  </li>
   <li class="list-group-item" data-cy="date-long">
-    <b>Long date: </b>{{ date | translocoDate: { dateStyle: 'long', timeStyle: 'long' } }}
+    <b>Long date: </b
+    >{{ date | translocoDate: { dateStyle: 'long', timeStyle: 'long' } }}
   </li>
   <li class="list-group-item" data-cy="date-full">
-    <b>Full date: </b>{{ date | translocoDate: { dateStyle: 'full', timeStyle: 'full' } }}
+    <b>Full date: </b
+    >{{ date | translocoDate: { dateStyle: 'full', timeStyle: 'full' } }}
   </li>
   <li class="list-group-item" data-cy="date-full">
-    <b>Date in timezone UTC: </b>{{ date | translocoDate: { timeZone: 'UTC', timeStyle: 'full' } }}
+    <b>Date in timezone UTC: </b
+    >{{ date | translocoDate: { timeZone: 'UTC', timeStyle: 'full' } }}
   </li>
   <li class="list-group-item" data-cy="date-full">
-    <b>Unix timestamp time date: </b>{{ 1 | translocoDate: { dateStyle: 'medium', timeStyle: 'medium' } }}
+    <b>Unix timestamp time date: </b
+    >{{ 1 | translocoDate: { dateStyle: 'medium', timeStyle: 'medium' } }}
   </li>
   <li class="list-group-item" data-cy="date-full">
-    <b>String format to date: </b>{{ '2019-02-08' | translocoDate: { dateStyle: 'medium', timeStyle: 'medium' } }}
+    <b>String format to date: </b
+    >{{
+      '2019-02-08' | translocoDate: { dateStyle: 'medium', timeStyle: 'medium' }
+    }}
   </li>
 </ul>
 
 <h3 class="mtb">Number Format</h3>
 <ul class="list-group">
-  <li class="list-group-item" data-cy="number-decimal"><b>Decimal number: </b>{{ 1234567890 | translocoDecimal }}</li>
   <li class="list-group-item" data-cy="number-decimal">
-    <b>Decimal without grouping: </b>{{ 1234567890 | translocoDecimal: { useGrouping: false } }}
+    <b>Decimal number: </b>{{ 1234567890 | translocoDecimal }}
   </li>
-  <li class="list-group-item" data-cy="number-percent"><b>Percentage number: </b>{{ 1 | translocoPercent }}</li>
+  <li class="list-group-item" data-cy="number-decimal">
+    <b>Decimal without grouping: </b
+    >{{ 1234567890 | translocoDecimal: { useGrouping: false } }}
+  </li>
+  <li class="list-group-item" data-cy="number-percent">
+    <b>Percentage number: </b>{{ 1 | translocoPercent }}
+  </li>
 </ul>
 
 <h3 class="mtb">Currency Format</h3>
 <ul class="list-group">
-  <li class="list-group-item" data-cy="currency-symbol-only"><b>Symbol: </b>{{ currencySymbol }}</li>
-  <li class="list-group-item" data-cy="currency-symbol"><b>Symbol currency: </b>{{ 1000000 | translocoCurrency }}</li>
+  <li class="list-group-item" data-cy="currency-symbol-only">
+    <b>Symbol: </b>{{ currencySymbol }}
+  </li>
+  <li class="list-group-item" data-cy="currency-symbol">
+    <b>Symbol currency: </b>{{ 1000000 | translocoCurrency }}
+  </li>
   <li class="list-group-item" data-cy="currency-name">
     <b>Name currency: </b>{{ 1000000 | translocoCurrency: 'name' }}
   </li>

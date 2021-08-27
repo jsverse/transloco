@@ -1,3 +1,3 @@
 export default {
-  hello: 'hello scope'
+  hello: 'hello scope',
 };

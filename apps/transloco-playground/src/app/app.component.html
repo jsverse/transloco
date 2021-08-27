@@ -29,7 +29,9 @@
         <a class="nav-link" routerLink="inline-loaders">Inline Loaders</a>
       </li>
       <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" routerLink="dynamic-translation">Dynamic Translation</a>
+        <a class="nav-link" routerLink="dynamic-translation"
+          >Dynamic Translation</a
+        >
       </li>
       <li class="nav-item" routerLinkActive="active">
         <a class="nav-link" routerLink="multilangs">Multi Langs</a>
@@ -49,7 +51,7 @@
         *ngFor="let lang of availableLangs"
         [attr.data-cy]="lang.id"
         class="btn my-2 my-sm-0"
-        style="margin-right: 10px;"
+        style="margin-right: 10px"
         (click)="change(lang.id)"
         [class.btn-primary]="activeLang === lang.id"
         [class.btn-secondary]="activeLang !== lang.id"

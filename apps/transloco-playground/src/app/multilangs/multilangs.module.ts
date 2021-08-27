@@ -8,11 +8,6 @@ import { ProviderLangComponent } from './provider-lang/provider-lang.component';
 
 @NgModule({
   declarations: [MultilangsComponent, ProviderLangComponent],
-  imports: [
-    CommonModule,
-    TranslocoModule,
-    MultilangsRoutingModule
-  ]
+  imports: [CommonModule, TranslocoModule, MultilangsRoutingModule],
 })
-export class MultilangsModule {
-}
+export class MultilangsModule {}

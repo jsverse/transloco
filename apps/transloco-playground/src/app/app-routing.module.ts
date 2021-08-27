@@ -6,53 +6,72 @@ const routes: Routes = [
   {
     path: '',
     redirectTo: 'home',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: 'home',
-    component: HomeComponent
+    component: HomeComponent,
   },
   {
     path: 'lazy',
-    loadChildren: () => import('./lazy/lazy.module').then(m => m.LazyModule)
+    loadChildren: () => import('./lazy/lazy.module').then((m) => m.LazyModule),
   },
   {
     path: 'lazy-scope-alias',
-    loadChildren: () => import('./lazy-scope-alias/lazy-scope-alias.module').then(m => m.LazyScopeAliasModule)
+    loadChildren: () =>
+      import('./lazy-scope-alias/lazy-scope-alias.module').then(
+        (m) => m.LazyScopeAliasModule
+      ),
   },
   {
     path: 'lazy-multiple-scopes',
     loadChildren: () =>
-      import('./lazy-multiple-scopes/lazy-multiple-scopes.module').then(m => m.LazyMultipleScopesModule)
+      import('./lazy-multiple-scopes/lazy-multiple-scopes.module').then(
+        (m) => m.LazyMultipleScopesModule
+      ),
   },
   {
     path: 'scope-sharing',
-    loadChildren: () => import('./scope-sharing/scope-sharing.module').then(m => m.ScopeSharingModule)
+    loadChildren: () =>
+      import('./scope-sharing/scope-sharing.module').then(
+        (m) => m.ScopeSharingModule
+      ),
   },
   {
     path: 'inline-loaders',
-    loadChildren: () => import('./inline-loaders/inline-loaders.module').then(m => m.InlineLoadersModule)
+    loadChildren: () =>
+      import('./inline-loaders/inline-loaders.module').then(
+        (m) => m.InlineLoadersModule
+      ),
   },
   {
     path: 'dynamic-translation',
-    loadChildren: () => import('./dynamic-translation/dynamic-translation.module').then(m => m.DynamicTranslationModule)
+    loadChildren: () =>
+      import('./dynamic-translation/dynamic-translation.module').then(
+        (m) => m.DynamicTranslationModule
+      ),
   },
   {
     path: 'multilangs',
-    loadChildren: () => import('./multilangs/multilangs.module').then(m => m.MultilangsModule)
+    loadChildren: () =>
+      import('./multilangs/multilangs.module').then((m) => m.MultilangsModule),
   },
   {
     path: 'transpilers',
-    loadChildren: () => import('./transpilers/transpilers.module').then(m => m.TranspilersModule)
+    loadChildren: () =>
+      import('./transpilers/transpilers.module').then(
+        (m) => m.TranspilersModule
+      ),
   },
   {
     path: 'locale',
-    loadChildren: () => import('./locale/locale.module').then(m => m.LocaleModule)
-  }
+    loadChildren: () =>
+      import('./locale/locale.module').then((m) => m.LocaleModule),
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class AppRoutingModule {}

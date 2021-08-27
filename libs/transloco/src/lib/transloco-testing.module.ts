@@ -1,9 +1,20 @@
-import { APP_INITIALIZER, Inject, Injectable, InjectionToken, ModuleWithProviders, NgModule } from '@angular/core';
+import {
+  APP_INITIALIZER,
+  Inject,
+  Injectable,
+  InjectionToken,
+  ModuleWithProviders,
+  NgModule,
+} from '@angular/core';
 import { TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { HashMap, Translation } from './types';
 import { Observable, of } from 'rxjs';
 import { defaultProviders, TranslocoModule } from './transloco.module';
-import { TRANSLOCO_CONFIG, TranslocoConfig, translocoConfig } from './transloco.config';
+import {
+  TRANSLOCO_CONFIG,
+  TranslocoConfig,
+  translocoConfig,
+} from './transloco.config';
 import { TranslocoService } from './transloco.service';
 
 export interface TranslocoTestingOptions {
@@ -15,11 +26,15 @@ export interface TranslocoTestingOptions {
 const TRANSLOCO_TEST_LANGS = new InjectionToken<HashMap<Translation>>(
   'TRANSLOCO_TEST_LANGS - Available testing languages'
 );
-const TRANSLOCO_TEST_OPTIONS = new InjectionToken<TranslocoTestingOptions>('TRANSLOCO_TEST_OPTIONS - Testing options');
+const TRANSLOCO_TEST_OPTIONS = new InjectionToken<TranslocoTestingOptions>(
+  'TRANSLOCO_TEST_OPTIONS - Testing options'
+);
 
 @Injectable()
 export class TestingLoader implements TranslocoLoader {
-  constructor(@Inject(TRANSLOCO_TEST_LANGS) private langs: HashMap<Translation>) {}
+  constructor(
+    @Inject(TRANSLOCO_TEST_LANGS) private langs: HashMap<Translation>
+  ) {}
 
   getTranslation(lang: string): Observable<Translation> | Promise<Translation> {
     return of(this.langs[lang]);
@@ -33,37 +48,45 @@ export function initTranslocoService(
 ) {
   const preloadAllLangs = () =>
     options.preloadLangs
-      ? Promise.all(Object.keys(langs).map(lang => service.load(lang).toPromise()))
+      ? Promise.all(
+          Object.keys(langs).map((lang) => service.load(lang).toPromise())
+        )
       : Promise.resolve();
 
   return preloadAllLangs;
 }
 
 @NgModule({
-  exports: [TranslocoModule]
+  exports: [TranslocoModule],
 })
 export class TranslocoTestingModule {
-  static forRoot(options: TranslocoTestingOptions): ModuleWithProviders<TranslocoTestingModule> {
+  static forRoot(
+    options: TranslocoTestingOptions
+  ): ModuleWithProviders<TranslocoTestingModule> {
     return {
       ngModule: TranslocoTestingModule,
       providers: [
         {
           provide: TRANSLOCO_TEST_LANGS,
-          useValue: options.langs
+          useValue: options.langs,
         },
         {
           provide: TRANSLOCO_TEST_OPTIONS,
-          useValue: options
+          useValue: options,
         },
         {
           provide: APP_INITIALIZER,
           useFactory: initTranslocoService,
-          deps: [TranslocoService, TRANSLOCO_TEST_LANGS, TRANSLOCO_TEST_OPTIONS],
-          multi: true
+          deps: [
+            TranslocoService,
+            TRANSLOCO_TEST_LANGS,
+            TRANSLOCO_TEST_OPTIONS,
+          ],
+          multi: true,
         },
         {
           provide: TRANSLOCO_LOADER,
-          useClass: TestingLoader
+          useClass: TestingLoader,
         },
         defaultProviders,
         {
@@ -71,10 +94,10 @@ export class TranslocoTestingModule {
           useValue: translocoConfig({
             prodMode: true,
             missingHandler: { logMissingKey: false },
-            ...options.translocoConfig
-          })
-        }
-      ]
+            ...options.translocoConfig,
+          }),
+        },
+      ],
     };
   }
 
@@ -89,21 +112,25 @@ export class TranslocoTestingModule {
       providers: [
         {
           provide: TRANSLOCO_TEST_LANGS,
-          useValue: langs
+          useValue: langs,
         },
         {
           provide: TRANSLOCO_TEST_OPTIONS,
-          useValue: options
+          useValue: options,
         },
         {
           provide: APP_INITIALIZER,
           useFactory: initTranslocoService,
-          deps: [TranslocoService, TRANSLOCO_TEST_LANGS, TRANSLOCO_TEST_OPTIONS],
-          multi: true
+          deps: [
+            TranslocoService,
+            TRANSLOCO_TEST_LANGS,
+            TRANSLOCO_TEST_OPTIONS,
+          ],
+          multi: true,
         },
         {
           provide: TRANSLOCO_LOADER,
-          useClass: TestingLoader
+          useClass: TestingLoader,
         },
         defaultProviders,
         {
@@ -111,10 +138,10 @@ export class TranslocoTestingModule {
           useValue: translocoConfig({
             prodMode: true,
             missingHandler: { logMissingKey: false },
-            ...config
-          })
-        }
-      ]
+            ...config,
+          }),
+        },
+      ],
     };
   }
 }

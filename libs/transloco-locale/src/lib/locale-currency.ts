@@ -646,5 +646,5 @@ export default {
   'zu-MW': 'TWD',
   'zu-MZ': 'TWD',
   'zu-SZ': 'TWD',
-  'zu-ZA': 'ZAR'
+  'zu-ZA': 'ZAR',
 };

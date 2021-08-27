@@ -1,6 +1,10 @@
 import { testDynamicContent } from './dynamic-translation';
 import { testHomeContent } from './home';
-import { generateLazyContent, generateContentWithoutLoader, generateContentLoader } from './lazy';
+import {
+  generateLazyContent,
+  generateContentWithoutLoader,
+  generateContentLoader,
+} from './lazy';
 import { testLocaleContentUS, testLocaleContentES } from './locale';
 import { testMultiLangContent } from './multi-lang';
 import { testScopeSharingContent } from './scope-sharing';

@@ -1,3 +1,3 @@
 export default {
-  hello: 'hola'
+  hello: 'hola',
 };

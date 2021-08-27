@@ -8,7 +8,7 @@ export {
   TRANSLOCO_CONFIG,
   defaultConfig,
   provideTranslocoConfig,
-  translocoConfig
+  translocoConfig,
 } from './lib/transloco.config';
 export {
   TRANSLOCO_TRANSPILER,
@@ -16,23 +16,30 @@ export {
   TranslocoTranspiler,
   FunctionalTranspiler,
   getFunctionArgs,
-  TranslocoTranspilerFunction
+  TranslocoTranspilerFunction,
 } from './lib/transloco.transpiler';
 export { TRANSLOCO_SCOPE } from './lib/transloco-scope';
 export { TRANSLOCO_LOADING_TEMPLATE } from './lib/transloco-loading-template';
 export { TRANSLOCO_LANG } from './lib/transloco-lang';
-export { TestingLoader, TranslocoTestingModule, TranslocoTestingOptions } from './lib/transloco-testing.module';
+export {
+  TestingLoader,
+  TranslocoTestingModule,
+  TranslocoTestingOptions,
+} from './lib/transloco-testing.module';
 export { TemplateHandler, View } from './lib/template-handler';
-export { TRANSLOCO_INTERCEPTOR, TranslocoInterceptor } from './lib/transloco.interceptor';
+export {
+  TRANSLOCO_INTERCEPTOR,
+  TranslocoInterceptor,
+} from './lib/transloco.interceptor';
 export {
   TRANSLOCO_FALLBACK_STRATEGY,
   TranslocoFallbackStrategy,
-  DefaultFallbackStrategy
+  DefaultFallbackStrategy,
 } from './lib/transloco-fallback-strategy';
 export {
   TRANSLOCO_MISSING_HANDLER,
   TranslocoMissingHandler,
-  TranslocoMissingHandlerData
+  TranslocoMissingHandlerData,
 } from './lib/transloco-missing-handler';
 export { getBrowserCultureLang, getBrowserLang } from './lib/browser-lang';
 export { getPipeValue, getLangFromScope, getScopeFromLang } from './lib/shared';

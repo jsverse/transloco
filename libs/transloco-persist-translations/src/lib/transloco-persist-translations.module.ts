@@ -4,7 +4,7 @@ import { TranslocoPersistTranslations } from './transloco-persist-translations.s
 import {
   PERSIST_TRANSLATIONS_STORAGE_CONFIG,
   PERSIST_TRANSLATIONS_LOADER,
-  TranslocoPersistTranslationsConfig
+  TranslocoPersistTranslationsConfig,
 } from './transloco-persist-translations.config';
 
 @NgModule()
@@ -12,15 +12,14 @@ export class TranslocoPersistTranslationsModule {
   static init(
     config: TranslocoPersistTranslationsConfig
   ): ModuleWithProviders<TranslocoPersistTranslationsModule> {
-
     return {
       ngModule: TranslocoPersistTranslationsModule,
       providers: [
         { provide: PERSIST_TRANSLATIONS_STORAGE_CONFIG, useValue: config },
         { provide: PERSIST_TRANSLATIONS_LOADER, useClass: config.loader },
         { provide: TRANSLOCO_LOADER, useClass: TranslocoPersistTranslations },
-        config.storage
-      ]
+        config.storage,
+      ],
     };
   }
 }

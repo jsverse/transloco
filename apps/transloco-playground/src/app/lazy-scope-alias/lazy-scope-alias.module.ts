@@ -7,8 +7,8 @@ import { TRANSLOCO_LOADING_TEMPLATE, TranslocoModule } from '@ngneat/transloco';
 const routes: Routes = [
   {
     path: '',
-    component: LazyScopeAliasComponent
-  }
+    component: LazyScopeAliasComponent,
+  },
 ];
 
 @NgModule({
@@ -16,9 +16,9 @@ const routes: Routes = [
   providers: [
     {
       provide: TRANSLOCO_LOADING_TEMPLATE,
-      useValue: `<span id="default-loading-template">Loading template...</span>`
-    }
+      useValue: `<span id="default-loading-template">Loading template...</span>`,
+    },
   ],
-  imports: [CommonModule, RouterModule.forChild(routes), TranslocoModule]
+  imports: [CommonModule, RouterModule.forChild(routes), TranslocoModule],
 })
 export class LazyScopeAliasModule {}

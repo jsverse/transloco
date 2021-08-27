@@ -2,7 +2,11 @@ import { NgModule } from '@angular/core';
 
 import { InlineLoadersRoutingModule } from './inline-loaders-routing.module';
 import { InlineComponent } from './inline/inline.component';
-import {Translation, TRANSLOCO_SCOPE, TranslocoModule} from '@ngneat/transloco';
+import {
+  Translation,
+  TRANSLOCO_SCOPE,
+  TranslocoModule,
+} from '@ngneat/transloco';
 
 const loader = ['en', 'es'].reduce((acc, lang: string) => {
   acc[lang] = () => import(`./i18n/${lang}.json`);
@@ -16,10 +20,10 @@ const loader = ['en', 'es'].reduce((acc, lang: string) => {
       provide: TRANSLOCO_SCOPE,
       useValue: {
         scope: 'inline',
-        loader
-      }
-    }
+        loader,
+      },
+    },
   ],
-  imports: [InlineLoadersRoutingModule, TranslocoModule]
+  imports: [InlineLoadersRoutingModule, TranslocoModule],
 })
 export class InlineLoadersModule {}

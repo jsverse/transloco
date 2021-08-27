@@ -1,7 +1,7 @@
 import { createService, mockLangs } from '../mocks';
 import { fakeAsync } from '@angular/core/testing';
 import { loadLang } from './utils';
-import {TranslocoService} from "../../transloco.service";
+import { TranslocoService } from '../../transloco.service';
 
 describe('translate', () => {
   let service: TranslocoService;
@@ -36,7 +36,9 @@ describe('translate', () => {
     loadLang(service);
     const eng = mockLangs['en'];
     expect(service.translate('home')).toEqual(eng.home);
-    expect(service.translate('alert', { value: 'val' })).toEqual('alert val english');
+    expect(service.translate('alert', { value: 'val' })).toEqual(
+      'alert val english'
+    );
     expect(service.translate('a.b.c')).toEqual('a.b.c from list english');
     expect(service.translate('key.is.like.path')).toEqual('key is like path');
     expect(service.translate('array')).toEqual(['hello-1', 'hello-2']);
@@ -50,19 +52,29 @@ describe('translate', () => {
 
   it('should support multi key translation with dynamic values', fakeAsync(() => {
     loadLang(service);
-    const expected = ['home english', 'alert val english', 'a.b.c from list english'];
-    expect(service.translate(['home', 'alert', 'a.b.c'], { value: 'val' })).toEqual(expected);
+    const expected = [
+      'home english',
+      'alert val english',
+      'a.b.c from list english',
+    ];
+    expect(
+      service.translate(['home', 'alert', 'a.b.c'], { value: 'val' })
+    ).toEqual(expected);
   }));
 
   it('should support scoped language', fakeAsync(() => {
     loadLang(service, 'lazy-page/en');
     // should append the active lang by default
-    expect(service.translate('title', {}, 'lazy-page')).toEqual('Admin Lazy english');
+    expect(service.translate('title', {}, 'lazy-page')).toEqual(
+      'Admin Lazy english'
+    );
   }));
 
   it('should support scoped language with different lang', fakeAsync(() => {
     loadLang(service, 'lazy-page/en');
     loadLang(service, 'lazy-page/es');
-    expect(service.translate('title', {}, 'lazy-page/es')).toEqual('Admin Lazy spanish');
+    expect(service.translate('title', {}, 'lazy-page/es')).toEqual(
+      'Admin Lazy spanish'
+    );
   }));
 });

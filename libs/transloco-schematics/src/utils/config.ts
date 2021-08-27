@@ -1,4 +1,7 @@
-import {getGlobalConfig, TranslocoGlobalConfig} from "@ngneat/transloco-utils";
+import {
+  getGlobalConfig,
+  TranslocoGlobalConfig,
+} from '@ngneat/transloco-utils';
 
 let config: TranslocoGlobalConfig;
 

@@ -21,14 +21,20 @@ export interface TranslocoConfig {
   interpolation?: [string, string];
 }
 
-export const TRANSLOCO_CONFIG = new InjectionToken<TranslocoConfig>('TRANSLOCO_CONFIG', {
-  providedIn: 'root',
-  factory: () => {
-    return { defaultLang: 'en' };
+export const TRANSLOCO_CONFIG = new InjectionToken<TranslocoConfig>(
+  'TRANSLOCO_CONFIG',
+  {
+    providedIn: 'root',
+    factory: () => {
+      return { defaultLang: 'en' };
+    },
   }
-});
+);
 
-export const defaultConfig: Omit<Required<TranslocoConfig>, 'scopeMapping' | 'fallbackLang'> = {
+export const defaultConfig: Omit<
+  Required<TranslocoConfig>,
+  'scopeMapping' | 'fallbackLang'
+> = {
   defaultLang: 'en',
   reRenderOnLangChange: false,
   prodMode: false,
@@ -37,21 +43,23 @@ export const defaultConfig: Omit<Required<TranslocoConfig>, 'scopeMapping' | 'fa
   missingHandler: {
     logMissingKey: true,
     useFallbackTranslation: false,
-    allowEmpty: false
+    allowEmpty: false,
   },
   flatten: {
-    aot: false
+    aot: false,
   },
-  interpolation: ['{{', '}}']
+  interpolation: ['{{', '}}'],
 };
 
 /**
  * @deprecated
  */
-export function provideTranslocoConfig(config: Partial<TranslocoConfig> = defaultConfig): Provider {
+export function provideTranslocoConfig(
+  config: Partial<TranslocoConfig> = defaultConfig
+): Provider {
   return {
     provide: TRANSLOCO_CONFIG,
-    useValue: { ...defaultConfig, ...config }
+    useValue: { ...defaultConfig, ...config },
   };
 }
 
@@ -61,6 +69,8 @@ export function provideTranslocoConfig(config: Partial<TranslocoConfig> = defaul
  * @param config The partial config object to load, this is optional,
  * will be spread after defaultConfig.
  */
-export function translocoConfig(config: Partial<TranslocoConfig> = defaultConfig): TranslocoConfig {
+export function translocoConfig(
+  config: Partial<TranslocoConfig> = defaultConfig
+): TranslocoConfig {
   return { ...defaultConfig, ...config };
 }

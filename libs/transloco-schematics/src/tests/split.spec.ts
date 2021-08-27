@@ -1,6 +1,12 @@
-import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/testing';
+import {
+  SchematicTestRunner,
+  UnitTestTree,
+} from '@angular-devkit/schematics/testing';
 jest.mock('@ngneat/transloco-utils');
-import {getGlobalConfig, TranslocoGlobalConfig} from '@ngneat/transloco-utils';
+import {
+  getGlobalConfig,
+  TranslocoGlobalConfig,
+} from '@ngneat/transloco-utils';
 import * as path from 'path';
 import { createWorkspace } from '../utils/create-workspace';
 import scopeEn from './mocks/scope-en';
@@ -14,10 +20,14 @@ describe('Split', () => {
   let appTree: UnitTestTree;
   const options = {
     translationPath: 'src/assets/i18n',
-    source: 'dist-i18n'
+    source: 'dist-i18n',
   };
 
-  function readTranslation(tree: UnitTestTree, fileName: string, prefix = options.translationPath) {
+  function readTranslation(
+    tree: UnitTestTree,
+    fileName: string,
+    prefix = options.translationPath
+  ) {
     return JSON.parse(tree.readContent(`${prefix}/${fileName}.json`));
   }
 
@@ -43,7 +53,9 @@ describe('Split', () => {
       appTree.create(`${options.translationPath}/en.json`, '');
       appTree.create(`${options.translationPath}/es.json`, '');
 
-      const tree = await schematicRunner.runSchematicAsync('split', options, appTree).toPromise();
+      const tree = await schematicRunner
+        .runSchematicAsync('split', options, appTree)
+        .toPromise();
 
       const resES = readTranslation(tree, 'es');
       const resEn = readTranslation(tree, 'en');
@@ -58,7 +70,9 @@ describe('Split', () => {
       appTree.create(`${options.translationPath}/scope/en.json`, '');
       appTree.create(`${options.translationPath}/scope/es.json`, '');
 
-      const tree = await schematicRunner.runSchematicAsync('split', options, appTree).toPromise();
+      const tree = await schematicRunner
+        .runSchematicAsync('split', options, appTree)
+        .toPromise();
 
       const resES = readTranslation(tree, 'scope/es');
       const resEn = readTranslation(tree, 'scope/en');
@@ -74,10 +88,12 @@ describe('Split', () => {
       setupMerged(translatedEn, translatedEs);
       const scope = `${options.translationPath}/scope`;
       const scopePathMap = { scope };
-      mockConfig({scopePathMap});
+      mockConfig({ scopePathMap });
       appTree.create(`${scope}/en.json`, JSON.stringify(scopeEn));
       appTree.create(`${scope}/es.json`, JSON.stringify(scopeEs));
-      const tree = await schematicRunner.runSchematicAsync('split', options, appTree).toPromise();
+      const tree = await schematicRunner
+        .runSchematicAsync('split', options, appTree)
+        .toPromise();
 
       const resES = readTranslation(tree, 'es', scope);
       const resEn = readTranslation(tree, 'en', scope);

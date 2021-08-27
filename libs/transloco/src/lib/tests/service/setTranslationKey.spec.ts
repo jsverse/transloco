@@ -1,7 +1,7 @@
 import { fakeAsync } from '@angular/core/testing';
 import { createService } from '../mocks';
 import { loadLang } from './utils';
-import {TranslocoService} from "../../transloco.service";
+import { TranslocoService } from '../../transloco.service';
 
 describe('setTranslationKey', () => {
   let service: TranslocoService;
@@ -26,7 +26,7 @@ describe('setTranslationKey', () => {
     loadLang(service);
     service.setTranslationKey('a', 'new value', 'es');
     expect((service as any).getTranslation('es')).toEqual({
-      a: 'new value'
+      a: 'new value',
     });
   }));
 

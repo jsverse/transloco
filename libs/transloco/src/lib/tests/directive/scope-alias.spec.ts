@@ -1,5 +1,9 @@
 import { fakeAsync } from '@angular/core/testing';
-import { createComponentFactory, Spectator, SpectatorHost } from '@ngneat/spectator';
+import {
+  createComponentFactory,
+  Spectator,
+  SpectatorHost,
+} from '@ngneat/spectator';
 import { createFactory } from './shared';
 import { providersMock, runLoader } from '../mocks';
 import { Component } from '@angular/core';
@@ -9,16 +13,20 @@ import { TranslocoModule } from '../../transloco.module';
 
 describe('Scope alias', () => {
   let spectator: SpectatorHost<TranslocoDirective>;
-  const createHost = createFactory([{
+  const createHost = createFactory([
+    {
       provide: TRANSLOCO_SCOPE,
       useValue: {
         scope: 'lazy-page',
-        alias: 'lazy'
-      }
-    }]);
+        alias: 'lazy',
+      },
+    },
+  ]);
 
   it('should support scope alias', fakeAsync(() => {
-    spectator = createHost(`<section *transloco="let t;"><div>{{t('lazy.title')}}</div></section>`);
+    spectator = createHost(
+      `<section *transloco="let t;"><div>{{t('lazy.title')}}</div></section>`
+    );
     runLoader();
     runLoader();
     spectator.detectChanges();
@@ -30,7 +38,7 @@ describe('Scope alias', () => {
   template: `
     <p>{{ 'lazy.title' | transloco }}</p>
     <h1>{{ 'nested.title' | transloco }}</h1>
-  `
+  `,
 })
 class TestPipe {}
 
@@ -45,10 +53,10 @@ describe('Scope alias pipe', () => {
         provide: TRANSLOCO_SCOPE,
         useValue: {
           scope: 'lazy-page',
-          alias: 'lazy'
-        }
-      }
-    ]
+          alias: 'lazy',
+        },
+      },
+    ],
   });
 
   it('should support scope alias', fakeAsync(() => {

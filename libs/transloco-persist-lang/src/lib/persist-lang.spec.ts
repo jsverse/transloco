@@ -16,7 +16,7 @@ const fakeStorage: FakeStorage = {
   },
   removeItem(key) {
     delete this.storage[key];
-  }
+  },
 };
 
 describe('PersistLang - auto', () => {
@@ -28,9 +28,16 @@ describe('PersistLang - auto', () => {
       spyOn(fakeStorage, prop as keyof PersistStorage).and.callThrough();
     });
 
-    spyOn<any>(TranslocoPersistLangService.prototype, 'setActiveLang').and.callThrough();
+    spyOn<any>(
+      TranslocoPersistLangService.prototype,
+      'setActiveLang'
+    ).and.callThrough();
 
-    service = new TranslocoPersistLangService(translocoService as any, fakeStorage, {} as any);
+    service = new TranslocoPersistLangService(
+      translocoService as any,
+      fakeStorage,
+      {} as any
+    );
   });
 
   describe('Save lang to storage', () => {
@@ -72,7 +79,7 @@ function createService() {
       this.langChanges$.next(lang);
     },
     config: {
-      defaultLang: 'en'
-    }
+      defaultLang: 'en',
+    },
   };
 }

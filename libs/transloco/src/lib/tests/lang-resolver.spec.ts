@@ -10,7 +10,7 @@ describe('LangResolver', () => {
       resolver.resolve({
         inline: 'es',
         provider: undefined,
-        active: 'en'
+        active: 'en',
       })
     ).toEqual('es');
   });
@@ -20,7 +20,7 @@ describe('LangResolver', () => {
       resolver.resolve({
         inline: undefined,
         provider: 'es',
-        active: 'en'
+        active: 'en',
       })
     ).toEqual('es');
   });
@@ -30,7 +30,7 @@ describe('LangResolver', () => {
       resolver.resolve({
         inline: undefined,
         provider: undefined,
-        active: 'en'
+        active: 'en',
       })
     ).toEqual('en');
   });
@@ -40,7 +40,7 @@ describe('LangResolver', () => {
       resolver.resolve({
         inline: 'es|static',
         provider: undefined,
-        active: 'en'
+        active: 'en',
       })
     ).toEqual('es');
   });
@@ -50,7 +50,7 @@ describe('LangResolver', () => {
       resolver.resolve({
         inline: undefined,
         provider: 'es|static',
-        active: 'en'
+        active: 'en',
       })
     ).toEqual('es');
   });
@@ -60,7 +60,7 @@ describe('LangResolver', () => {
       resolver.resolve({
         inline: undefined,
         provider: 'es',
-        active: 'en'
+        active: 'en',
       })
     ).toEqual('es');
 
@@ -68,7 +68,7 @@ describe('LangResolver', () => {
       resolver.resolve({
         inline: undefined,
         provider: 'es',
-        active: 'en'
+        active: 'en',
       })
     ).toEqual('en');
   });
@@ -78,7 +78,7 @@ describe('LangResolver', () => {
       resolver.resolve({
         inline: 'es',
         provider: 'fr',
-        active: 'en'
+        active: 'en',
       })
     ).toEqual('es');
 
@@ -86,7 +86,7 @@ describe('LangResolver', () => {
       resolver.resolve({
         inline: 'es',
         provider: 'fr',
-        active: 'en'
+        active: 'en',
       })
     ).toEqual('en');
   });
@@ -101,6 +101,8 @@ describe('LangResolver', () => {
   it('should resolve full lang', () => {
     expect(resolver.resolveLangPath('en', undefined)).toEqual('en');
     expect(resolver.resolveLangPath('en', 'todos')).toEqual('todos/en');
-    expect(resolver.resolveLangPath('es', 'todos/nested')).toEqual('todos/nested/es');
+    expect(resolver.resolveLangPath('es', 'todos/nested')).toEqual(
+      'todos/nested/es'
+    );
   });
 });

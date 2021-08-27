@@ -1,7 +1,7 @@
-import {Component} from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-multilangs',
-  templateUrl: './multilangs.component.html'
+  templateUrl: './multilangs.component.html',
 })
 export class MultilangsComponent {}

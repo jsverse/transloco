@@ -1,12 +1,17 @@
 export function testLocaleContentUS() {
   const date = Date.UTC(2019, 7, 14, 0, 0, 0, 0);
   const dateTimeOptions: any = { timeStyle: 'full' };
-  const expectedFullTime = Intl.DateTimeFormat('en-US', dateTimeOptions).format(date);
+  const expectedFullTime = Intl.DateTimeFormat('en-US', dateTimeOptions).format(
+    date
+  );
 
   // Date Pipe
   cy.get(`[data-cy=date-regular]`).should('contain', '8/14/2019');
   cy.get(`[data-cy=date-long]`).should('contain', 'August 14, 2019 at');
-  cy.get(`[data-cy=date-full]`).should('contain', 'Wednesday, August 14, 2019 at');
+  cy.get(`[data-cy=date-full]`).should(
+    'contain',
+    'Wednesday, August 14, 2019 at'
+  );
   cy.get(`[data-cy=date-full]`).should('contain', expectedFullTime);
   cy.get(`[data-cy=date-full]`).should('contain', 'Jan 1, 1970');
   cy.get(`[data-cy=date-full]`).should('contain', 'Feb 8, 2019');
@@ -19,19 +24,27 @@ export function testLocaleContentUS() {
   // Currency Pipe
   cy.get(`[data-cy=currency-symbol-only]`).should('contain', '$');
   cy.get(`[data-cy=currency-symbol]`).should('contain', '$1,000,000.00');
-  cy.get(`[data-cy=currency-name]`).should('contain', '1,000,000.00 US dollars');
+  cy.get(`[data-cy=currency-name]`).should(
+    'contain',
+    '1,000,000.00 US dollars'
+  );
   cy.get(`[data-cy=currency-custom-digit]`).should('contain', '$1,000,000');
 }
 
 export function testLocaleContentES() {
   const date = Date.UTC(2019, 7, 13, 22, 0, 0, 0);
   const dateTimeOptions: any = { timeStyle: 'full' };
-  const expectedFullTime = Intl.DateTimeFormat('es-ES', dateTimeOptions).format(date);
+  const expectedFullTime = Intl.DateTimeFormat('es-ES', dateTimeOptions).format(
+    date
+  );
 
   // Date Pipe
   cy.get(`[data-cy=date-regular]`).should('contain', '14/8/2019');
   cy.get(`[data-cy=date-long]`).should('contain', '14 de agosto de 2019');
-  cy.get(`[data-cy=date-full]`).should('contain', ' miércoles, 14 de agosto de 2019,');
+  cy.get(`[data-cy=date-full]`).should(
+    'contain',
+    ' miércoles, 14 de agosto de 2019,'
+  );
   cy.get(`[data-cy=date-full]`).should('contain', expectedFullTime);
   cy.get(`[data-cy=date-full]`).should('contain', '1 ene. 1970');
   cy.get(`[data-cy=date-full]`).should('contain', ' 8 feb. 2019');

@@ -18,14 +18,24 @@ export interface FailedEvent {
 
 export type TranslocoEvents = LoadedEvent | FailedEvent;
 export type Translation = HashMap;
-export type PersistStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>;
+export type PersistStorage = Pick<
+  Storage,
+  'getItem' | 'setItem' | 'removeItem'
+>;
 export type TranslateParams = string | string[];
-export type TranslateObjectParams = TranslateParams | HashMap | Map<string, HashMap>;
+export type TranslateObjectParams =
+  | TranslateParams
+  | HashMap
+  | Map<string, HashMap>;
 export interface LangDefinition {
-  id: string; label: string
+  id: string;
+  label: string;
 }
 export type AvailableLangs = string[] | LangDefinition[];
-export interface SetTranslationOptions { merge?: boolean; emitChange?: boolean }
+export interface SetTranslationOptions {
+  merge?: boolean;
+  emitChange?: boolean;
+}
 export interface ProviderScope {
   scope: string;
   loader?: InlineLoader;

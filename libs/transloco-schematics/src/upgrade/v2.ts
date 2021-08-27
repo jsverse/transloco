@@ -1,4 +1,4 @@
-import {sync as globSync} from 'glob';
+import { sync as globSync } from 'glob';
 import * as p from 'path';
 import * as fs from 'fs';
 
@@ -8,11 +8,14 @@ export function run(path) {
   path = p.join(dir, path, '/**/*');
   const htmlFiles = globSync(`${path}.html`);
   const templateRegex = /<ng-template[^>]*transloco[^>]*>[^]+?<\/ng-template>/g;
-  const structuralRegex = /<([a-zA-Z-]*)[^*>]*\*transloco=('|")\s*let\s+(?<varName>\w*)[^>]*\2>[^]+?<\/\1\s*>/g;
-  const coreKeyRegex = varName =>
+  const structuralRegex =
+    /<([a-zA-Z-]*)[^*>]*\*transloco=('|")\s*let\s+(?<varName>\w*)[^>]*\2>[^]+?<\/\1\s*>/g;
+  const coreKeyRegex = (varName) =>
     `(?<rawKey>${varName}(?:(?:\\[('|").+\\1\\])|(?:\\.\\w+))+)(?<param>[\\s\\w|:{}'"$&!?%@#^)(]*)`;
-  const bindingKey = varName => new RegExp(`("|')\\s*${coreKeyRegex(varName)}\\1`, 'g');
-  const templateKey = varName => new RegExp(`{{\\s*${coreKeyRegex(varName)}}}`, 'g');
+  const bindingKey = (varName) =>
+    new RegExp(`("|')\\s*${coreKeyRegex(varName)}\\1`, 'g');
+  const templateKey = (varName) =>
+    new RegExp(`{{\\s*${coreKeyRegex(varName)}}}`, 'g');
   for (const file of htmlFiles) {
     let str = fs.readFileSync(file).toString('utf8');
     if (!str.includes('transloco')) continue;
@@ -20,10 +23,13 @@ export function run(path) {
       let containerSearch = rgx.exec(str);
       while (containerSearch) {
         const [matchedStr] = containerSearch;
-        const { varName } = index === 0 ? containerSearch.groups : matchedStr.match(/let-(?<varName>\w*)/).groups;
+        const { varName } =
+          index === 0
+            ? containerSearch.groups
+            : matchedStr.match(/let-(?<varName>\w*)/).groups;
         let newStructuralStr = matchedStr;
         let hasMatches;
-        [templateKey(varName), bindingKey(varName)].forEach(keyRegex => {
+        [templateKey(varName), bindingKey(varName)].forEach((keyRegex) => {
           let keySearch = keyRegex.exec(matchedStr);
           hasMatches = hasMatches || !!keySearch;
           while (keySearch) {
@@ -38,9 +44,14 @@ export function run(path) {
               .split('.');
             let callEnd = ')';
             const pipes = (param && param.split('|')) || [];
-            const [paramsPipe] = pipes.filter(pipe => pipe.includes('translocoParams'));
+            const [paramsPipe] = pipes.filter((pipe) =>
+              pipe.includes('translocoParams')
+            );
             if (paramsPipe) {
-              const paramValue = paramsPipe.substring(paramsPipe.indexOf('{'), paramsPipe.lastIndexOf('}') + 1);
+              const paramValue = paramsPipe.substring(
+                paramsPipe.indexOf('{'),
+                paramsPipe.lastIndexOf('}') + 1
+              );
               if (paramValue) {
                 callEnd = `, ${paramValue})`;
               }
@@ -51,9 +62,14 @@ export function run(path) {
             newStructuralStr = paramsPipe
               ? newStructuralStr.replace(
                   `${rawKey}${param}`,
-                  `${varName}('${key}'${callEnd} ${pipes.filter(pipe => !pipe.includes('translocoParams')).join('|')}`
+                  `${varName}('${key}'${callEnd} ${pipes
+                    .filter((pipe) => !pipe.includes('translocoParams'))
+                    .join('|')}`
                 )
-              : newStructuralStr.replace(rawKey, `${varName}('${key}'${callEnd}`);
+              : newStructuralStr.replace(
+                  rawKey,
+                  `${varName}('${key}'${callEnd}`
+                );
             keySearch = keyRegex.exec(matchedStr);
           }
         });
@@ -75,7 +91,10 @@ export function run(path) {
     str = str.replace(/\s*scopeStrategy:.*?,/, '');
     /** Add availableLangs */
     if (!str.includes('availableLangs')) {
-      str = str.replace(/((\s*)defaultLang:(.*?),)/, (str, g1, g2, g3) => `${g1}${g2}availableLangs: [${g3.trim()}],`);
+      str = str.replace(
+        /((\s*)defaultLang:(.*?),)/,
+        (str, g1, g2, g3) => `${g1}${g2}availableLangs: [${g3.trim()}],`
+      );
     }
     fs.writeFileSync(file, str, { encoding: 'utf8' });
   }
