@@ -515,6 +515,11 @@ export class TranslocoService implements OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+    // Caretaker note: since this is the root provider, it'll be destroyed when the `NgModuleRef.destroy()` is run.
+    // Cached values capture `this`, thus leading to a circular reference and preventing the `TranslocoService` from
+    // being GC'd. This would lead to a memory leak when server-side rendering is used since the service is created
+    // and destroyed per each HTTP request, but any service is not getting GC'd.
+    this.cache.clear();
   }
 
   private isLoadedTranslation(lang: string) {
