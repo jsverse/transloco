@@ -121,7 +121,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  private getTranslateFn(lang: string, read: string | undefined): (key: string, params?: HashMap) => any {
+  protected getTranslateFn(lang: string, read: string | undefined): (key: string, params?: HashMap) => any {
     return (key: string, params: HashMap) => {
       const withRead = read ? `${read}.${key}` : key;
       const withParams = params ? `${withRead}${JSON.stringify(params)}` : withRead;
