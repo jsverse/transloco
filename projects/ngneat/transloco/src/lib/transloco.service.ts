@@ -105,8 +105,8 @@ export class TranslocoService implements OnDestroy {
   }
 
   setActiveLang(lang: string) {
-    this.lang.next(lang);
     this.parser.onLangChanged && this.parser.onLangChanged(lang);
+    this.lang.next(lang);
     return this;
   }
 
