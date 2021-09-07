@@ -6,9 +6,9 @@
       "root": "libs/transloco",
       "sourceRoot": "libs/transloco/src",
       "prefix": "transloco-nx-shell",
-      "targets": {
+      "architect": {
         "build": {
-          "executor": "@nrwl/angular:package",
+          "builder": "@nrwl/angular:package",
           "outputs": ["dist/libs/transloco"],
           "options": {
             "project": "libs/transloco/ng-package.json"
@@ -24,7 +24,7 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "executor": "@angular-devkit/build-angular:karma",
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "main": "libs/transloco/src/test-setup.ts",
             "tsConfig": "libs/transloco/tsconfig.spec.json",
@@ -32,7 +32,7 @@
           }
         },
         "lint": {
-          "executor": "@nrwl/linter:eslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": [
               "libs/transloco/src/**/*.ts",
@@ -50,9 +50,9 @@
       "root": "libs/transloco-locale",
       "sourceRoot": "libs/transloco-locale/src",
       "prefix": "transloco-nx-shell",
-      "targets": {
+      "architect": {
         "build": {
-          "executor": "@nrwl/angular:package",
+          "builder": "@nrwl/angular:package",
           "outputs": ["dist/libs/transloco-locale"],
           "options": {
             "project": "libs/transloco-locale/ng-package.json"
@@ -68,7 +68,7 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "executor": "@angular-devkit/build-angular:karma",
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "main": "libs/transloco-locale/src/test-setup.ts",
             "tsConfig": "libs/transloco-locale/tsconfig.spec.json",
@@ -76,7 +76,7 @@
           }
         },
         "lint": {
-          "executor": "@nrwl/linter:eslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": [
               "libs/transloco-locale/src/**/*.ts",
@@ -85,10 +85,7 @@
           }
         },
         "version": {
-          "executor": "@jscutlery/semver:version",
-          "options": {
-            "syncVersions": false
-          }
+          "builder": "@jscutlery/semver:version"
         }
       }
     },
@@ -97,9 +94,9 @@
       "root": "libs/transloco-messageformat",
       "sourceRoot": "libs/transloco-messageformat/src",
       "prefix": "transloco-nx-shell",
-      "targets": {
+      "architect": {
         "build": {
-          "executor": "@nrwl/angular:package",
+          "builder": "@nrwl/angular:package",
           "outputs": ["dist/libs/transloco-messageformat"],
           "options": {
             "project": "libs/transloco-messageformat/ng-package.json"
@@ -115,7 +112,7 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "executor": "@angular-devkit/build-angular:karma",
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "main": "libs/transloco-messageformat/src/test-setup.ts",
             "tsConfig": "libs/transloco-messageformat/tsconfig.spec.json",
@@ -123,7 +120,7 @@
           }
         },
         "lint": {
-          "executor": "@nrwl/linter:eslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": [
               "libs/transloco-messageformat/src/**/*.ts",
@@ -132,10 +129,7 @@
           }
         },
         "version": {
-          "executor": "@jscutlery/semver:version",
-          "options": {
-            "syncVersions": false
-          }
+          "executor": "@jscutlery/semver:version"
         }
       }
     },
@@ -143,9 +137,9 @@
       "root": "libs/transloco-optimize",
       "sourceRoot": "libs/transloco-optimize/src",
       "projectType": "library",
-      "targets": {
+      "architect": {
         "build": {
-          "executor": "@nrwl/workspace:tsc",
+          "builder": "@nrwl/workspace:tsc",
           "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/libs/transloco-optimize",
@@ -155,13 +149,13 @@
           }
         },
         "lint": {
-          "executor": "@nrwl/linter:eslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/transloco-optimize/**/*.ts"]
           }
         },
         "test": {
-          "executor": "@angular-devkit/build-angular:karma",
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "main": "libs/transloco-optimize/src/test-setup.ts",
             "tsConfig": "libs/transloco-optimize/tsconfig.spec.json",
@@ -169,10 +163,7 @@
           }
         },
         "version": {
-          "executor": "@jscutlery/semver:version",
-          "options": {
-            "syncVersions": false
-          }
+          "executor": "@jscutlery/semver:version"
         }
       }
     },
@@ -181,9 +172,9 @@
       "root": "libs/transloco-persist-lang",
       "sourceRoot": "libs/transloco-persist-lang/src",
       "prefix": "transloco-nx-shell",
-      "targets": {
+      "architect": {
         "build": {
-          "executor": "@nrwl/angular:package",
+          "builder": "@nrwl/angular:package",
           "outputs": ["dist/libs/transloco-persist-lang"],
           "options": {
             "project": "libs/transloco-persist-lang/ng-package.json"
@@ -199,7 +190,7 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "executor": "@angular-devkit/build-angular:karma",
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "main": "libs/transloco-persist-lang/src/test-setup.ts",
             "tsConfig": "libs/transloco-persist-lang/tsconfig.spec.json",
@@ -207,7 +198,7 @@
           }
         },
         "lint": {
-          "executor": "@nrwl/linter:eslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": [
               "libs/transloco-persist-lang/src/**/*.ts",
@@ -216,10 +207,7 @@
           }
         },
         "version": {
-          "executor": "@jscutlery/semver:version",
-          "options": {
-            "syncVersions": false
-          }
+          "builder": "@jscutlery/semver:version"
         }
       }
     },
@@ -228,9 +216,9 @@
       "root": "libs/transloco-persist-translations",
       "sourceRoot": "libs/transloco-persist-translations/src",
       "prefix": "transloco-nx-shell",
-      "targets": {
+      "architect": {
         "build": {
-          "executor": "@nrwl/angular:package",
+          "builder": "@nrwl/angular:package",
           "outputs": ["dist/libs/transloco-persist-translations"],
           "options": {
             "project": "libs/transloco-persist-translations/ng-package.json"
@@ -246,7 +234,7 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "executor": "@angular-devkit/build-angular:karma",
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "main": "libs/transloco-persist-translations/src/test-setup.ts",
             "tsConfig": "libs/transloco-persist-translations/tsconfig.spec.json",
@@ -254,7 +242,7 @@
           }
         },
         "lint": {
-          "executor": "@nrwl/linter:eslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": [
               "libs/transloco-persist-translations/src/**/*.ts",
@@ -263,10 +251,7 @@
           }
         },
         "version": {
-          "executor": "@jscutlery/semver:version",
-          "options": {
-            "syncVersions": false
-          }
+          "executor": "@jscutlery/semver:version"
         }
       }
     },
@@ -399,9 +384,9 @@
       "root": "libs/transloco-preload-langs",
       "sourceRoot": "libs/transloco-preload-langs/src",
       "prefix": "transloco-nx-shell",
-      "targets": {
+      "architect": {
         "build": {
-          "executor": "@nrwl/angular:package",
+          "builder": "@nrwl/angular:package",
           "outputs": ["dist/libs/transloco-preload-langs"],
           "options": {
             "project": "libs/transloco-preload-langs/ng-package.json"
@@ -417,7 +402,7 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "executor": "@angular-devkit/build-angular:karma",
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "main": "libs/transloco-preload-langs/src/test-setup.ts",
             "tsConfig": "libs/transloco-preload-langs/tsconfig.spec.json",
@@ -425,7 +410,7 @@
           }
         },
         "lint": {
-          "executor": "@nrwl/linter:eslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": [
               "libs/transloco-preload-langs/src/**/*.ts",
@@ -434,10 +419,7 @@
           }
         },
         "version": {
-          "executor": "@jscutlery/semver:version",
-          "options": {
-            "syncVersions": false
-          }
+          "executor": "@jscutlery/semver:version"
         }
       }
     },
@@ -445,9 +427,9 @@
       "root": "libs/transloco-schematics",
       "sourceRoot": "libs/transloco-schematics/src",
       "projectType": "library",
-      "targets": {
+      "architect": {
         "build": {
-          "executor": "@nrwl/workspace:tsc",
+          "builder": "@nrwl/workspace:tsc",
           "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/libs/transloco-schematics",
@@ -463,13 +445,13 @@
           }
         },
         "lint": {
-          "executor": "@nrwl/linter:eslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/transloco-schematics/**/*.ts"]
           }
         },
         "test": {
-          "executor": "@nrwl/jest:jest",
+          "builder": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/transloco-schematics"],
           "options": {
             "jestConfig": "libs/transloco-schematics/jest.config.js",
@@ -477,10 +459,7 @@
           }
         },
         "version": {
-          "executor": "@jscutlery/semver:version",
-          "options": {
-            "syncVersions": false
-          }
+          "executor": "@jscutlery/semver:version"
         }
       }
     },
@@ -488,9 +467,9 @@
       "root": "libs/transloco-scoped-libs",
       "sourceRoot": "libs/transloco-scoped-libs/src",
       "projectType": "library",
-      "targets": {
+      "architect": {
         "build": {
-          "executor": "@nrwl/workspace:tsc",
+          "builder": "@nrwl/workspace:tsc",
           "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/libs/transloco-scoped-libs",
@@ -500,13 +479,13 @@
           }
         },
         "lint": {
-          "executor": "@nrwl/linter:eslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/transloco-scoped-libs/**/*.ts"]
           }
         },
         "test": {
-          "executor": "@angular-devkit/build-angular:karma",
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "main": "libs/transloco-scoped-libs/src/test-setup.ts",
             "tsConfig": "libs/transloco-scoped-libs/tsconfig.spec.json",
@@ -514,10 +493,7 @@
           }
         },
         "version": {
-          "executor": "@jscutlery/semver:version",
-          "options": {
-            "syncVersions": false
-          }
+          "executor": "@jscutlery/semver:version"
         }
       }
     },
@@ -525,9 +501,9 @@
       "root": "libs/transloco-utils",
       "sourceRoot": "libs/transloco-utils/src",
       "projectType": "library",
-      "targets": {
+      "architect": {
         "build": {
-          "executor": "@nrwl/workspace:tsc",
+          "builder": "@nrwl/workspace:tsc",
           "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/libs/transloco-utils",
@@ -537,13 +513,13 @@
           }
         },
         "lint": {
-          "executor": "@nrwl/linter:eslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/transloco-utils/**/*.ts"]
           }
         },
         "test": {
-          "executor": "@angular-devkit/build-angular:karma",
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "main": "libs/transloco-utils/src/test-setup.ts",
             "tsConfig": "libs/transloco-utils/tsconfig.spec.json",
@@ -551,10 +527,7 @@
           }
         },
         "version": {
-          "executor": "@jscutlery/semver:version",
-          "options": {
-            "syncVersions": false
-          }
+          "executor": "@jscutlery/semver:version"
         }
       }
     },
@@ -562,9 +535,9 @@
       "root": "libs/transloco-validator",
       "sourceRoot": "libs/transloco-validator/src",
       "projectType": "library",
-      "targets": {
+      "architect": {
         "build": {
-          "executor": "@nrwl/workspace:tsc",
+          "builder": "@nrwl/workspace:tsc",
           "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/libs/transloco-validator",
@@ -574,13 +547,13 @@
           }
         },
         "lint": {
-          "executor": "@nrwl/linter:eslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/transloco-validator/**/*.ts"]
           }
         },
         "test": {
-          "executor": "@angular-devkit/build-angular:karma",
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "main": "libs/transloco-validator/src/test-setup.ts",
             "tsConfig": "libs/transloco-validator/tsconfig.spec.json",
@@ -588,10 +561,7 @@
           }
         },
         "version": {
-          "executor": "@jscutlery/semver:version",
-          "options": {
-            "syncVersions": false
-          }
+          "executor": "@jscutlery/semver:version"
         }
       }
     }
