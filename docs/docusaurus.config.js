@@ -11,14 +11,14 @@ module.exports = {
     algolia: {
       appId: 'BH4D9OD16A',
       apiKey: '0fe261e8a7d089862d9a959da892561f',
-      indexName: 'transloco'
+      indexName: 'transloco',
     },
     navbar: {
       title: 'Transloco',
       logo: {
         alt: 'Transloco',
         src: 'img/logo.png',
-        srcDark: 'img/logo-white.png'
+        srcDark: 'img/logo-white.png',
       },
       items: [
         {
@@ -26,39 +26,39 @@ module.exports = {
           activeBasePath: 'docs',
           label: 'Docs',
           position: 'left',
-          className: 'first-nav-element'
+          className: 'first-nav-element',
         },
         {
           to: 'videoGuides',
           activeBasePath: 'videoGuides',
           label: 'Video Guides',
-          position: 'left'
+          position: 'left',
         },
         {
           to: 'sampleApp',
           activeBasePath: 'sampleApp',
           label: 'Sample App',
-          position: 'left'
+          position: 'left',
         },
         {
           href: 'https://stackblitz.com/edit/ngneat-transloco',
           label: 'Playground',
           position: 'left',
-          className: 'header-playground-link'
+          className: 'header-playground-link',
         },
         {
           href: 'https://gitter.im/ngneat-transloco/lobby',
           label: ' ',
           position: 'right',
-          className: 'header-icon-link header-gitter-link'
+          className: 'header-icon-link header-gitter-link',
         },
         {
           href: 'https://github.com/ngneat/transloco/',
           label: ' ',
           position: 'right',
-          className: 'header-icon-link header-github-link'
-        }
-      ]
+          className: 'header-icon-link header-github-link',
+        },
+      ],
     },
     footer: {
       style: 'dark',
@@ -68,52 +68,51 @@ module.exports = {
           items: [
             {
               label: 'Getting Started',
-              to: 'docs/installation'
+              to: 'docs/installation',
             },
             {
               label: 'Translation',
-              to: 'docs/translation-in-the-template'
-            }
-          ]
+              to: 'docs/translation-in-the-template',
+            },
+          ],
         },
         {
           title: 'Community',
           items: [
             {
               label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/transloco'
+              href: 'https://stackoverflow.com/questions/tagged/transloco',
             },
             {
               label: 'FAQ',
-              to: 'docs/faq'
-            }
-          ]
+              to: 'docs/faq',
+            },
+          ],
         },
         {
           title: 'Social',
           items: [
             {
               label: 'Gitter',
-              href: 'https://gitter.im/ngneat-transloco/lobby?source=orgpage'
+              href: 'https://gitter.im/ngneat-transloco/lobby?source=orgpage',
             },
             {
               label: 'GitHub',
-              href: 'https://github.com/ngneat/transloco/'
+              href: 'https://github.com/ngneat/transloco/',
             },
             {
               label: 'Twitter',
-              href: 'https://twitter.com/NetanelBasal'
-            }
-          ]
-        }
+              href: 'https://twitter.com/NetanelBasal',
+            },
+          ],
+        },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Transloco, Inc. Built with Docusaurus.`
+      copyright: `Copyright © ${new Date().getFullYear()} Transloco, Inc. Built with Docusaurus.`,
     },
     prism: {
       theme: require('prism-react-renderer/themes/nightOwlLight'),
-      darkTheme: require('prism-react-renderer/themes/nightOwl')
+      darkTheme: require('prism-react-renderer/themes/nightOwl'),
     },
-    sidebarCollapsible: true
   },
   presets: [
     [
@@ -121,12 +120,12 @@ module.exports = {
       {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          editUrl: 'https://github.com/ngneat/transloco/edit/master/docs'
+          editUrl: 'https://github.com/ngneat/transloco/edit/master/docs',
         },
         theme: {
-          customCss: require.resolve('./src/css/custom.css')
-        }
-      }
-    ]
-  ]
+          customCss: require.resolve('./src/css/custom.css'),
+        },
+      },
+    ],
+  ],
 };

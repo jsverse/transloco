@@ -64,7 +64,7 @@ module.exports = {
       items: [
         {
           type: 'link',
-          label: 'Keys Manager ↗',
+          label: 'Keys Manager',
           href: 'https://github.com/ngneat/transloco-keys-manager',
         },
         'tools/validator',
