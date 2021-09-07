@@ -153,7 +153,10 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  private getTranslateFn(lang: string, read: string | undefined): TranslateFn {
+  protected getTranslateFn(
+    lang: string,
+    read: string | undefined
+  ): TranslateFn {
     return (key: string, params?: HashMap) => {
       const withRead = read ? `${read}.${key}` : key;
       const withParams = params

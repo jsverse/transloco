@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.23.0](https://github.com/ngneat/transloco/compare/v2.22.0...v2.23.0) (2021-09-07)
+
+### Bug Fixes
+
+- allow `TranslocoService` to be garbage collected ([#473](https://github.com/ngneat/transloco/issues/473)) ([3650240](https://github.com/ngneat/transloco/commit/3650240))
+- parser lang ([#494](https://github.com/ngneat/transloco/issues/494)) ([ffeb05e](https://github.com/ngneat/transloco/commit/ffeb05e))
+
+### Features
+
+- add possibility of override `getTranslateFn` ([#492](https://github.com/ngneat/transloco/issues/492)) ([7b49bbd](https://github.com/ngneat/transloco/commit/7b49bbd))
+
 ## [2.22.0](https://github.com/ngneat/transloco/compare/v2.21.0...v2.22.0) (2021-07-01)
 
 ### Features
