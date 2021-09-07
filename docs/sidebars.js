@@ -3,60 +3,60 @@ module.exports = {
     {
       type: 'category',
       label: 'Getting Started',
-      items: ['installation', 'config-options']
+      items: ['installation', 'config-options'],
     },
     {
       type: 'doc',
-      id: 'translation-in-the-template'
+      id: 'translation-in-the-template',
     },
     {
       type: 'doc',
-      id: 'translation-api'
+      id: 'translation-api',
     },
     {
       type: 'doc',
-      id: 'language-api'
+      id: 'language-api',
     },
     {
       type: 'category',
       label: 'Lazy Load Translation Files',
-      items: ['scope-configuration', 'inline-loaders']
+      items: ['scope-configuration', 'inline-loaders'],
     },
     {
       type: 'doc',
-      id: 'unit-testing'
+      id: 'unit-testing',
     },
     {
       type: 'doc',
-      id: 'ssr-support'
+      id: 'ssr-support',
     },
     {
       type: 'doc',
-      id: 'multi-lang'
+      id: 'multi-lang',
     },
     {
       type: 'doc',
-      id: 'additional-functionality'
+      id: 'additional-functionality',
     },
     {
       type: 'doc',
-      id: 'loading-template'
+      id: 'loading-template',
     },
     {
       type: 'doc',
-      id: 'transpiler'
+      id: 'transpiler',
     },
     {
       type: 'doc',
-      id: 'hack'
+      id: 'hack',
     },
     {
       type: 'doc',
-      id: 'blog-posts'
+      id: 'blog-posts',
     },
     {
       type: 'doc',
-      id: 'faq'
+      id: 'faq',
     },
     {
       type: 'category',
@@ -65,32 +65,43 @@ module.exports = {
         {
           type: 'link',
           label: 'Keys Manager ↗',
-          href: 'https://github.com/ngneat/transloco-keys-manager'
+          href: 'https://github.com/ngneat/transloco-keys-manager',
         },
         'tools/validator',
         'tools/optimize',
         'tools/comments',
-        'tools/scope-lib-extractor'
-      ]
+        'tools/scope-lib-extractor',
+      ],
     },
     {
       type: 'category',
       label: 'Plugins',
-      items: ['plugins/message-format', 'plugins/persist', 'plugins/preload', 'plugins/locale', 'plugins/third-party']
+      items: [
+        'plugins/message-format',
+        'plugins/persist-translations',
+        'plugins/persist-lang',
+        'plugins/preload-langs',
+        'plugins/locale',
+        'plugins/third-party',
+      ],
     },
     {
       type: 'doc',
-      id: 'schematics'
+      id: 'schematics',
     },
     {
       type: 'category',
       label: 'Migration',
-      items: ['migration/ngx', 'migration/angular']
+      items: ['migration/ngx', 'migration/angular'],
     },
     {
       type: 'category',
       label: 'Recipes',
-      items: ['recipes/prefetch', 'recipes/xliff', 'recipes/google-translate-integration']
-    }
-  ]
+      items: [
+        'recipes/prefetch',
+        'recipes/xliff',
+        'recipes/google-translate-integration',
+      ],
+    },
+  ],
 };

@@ -1,18 +1,19 @@
-# Persist Language
+---
+title: Persist Lang
+description: Plugins - Persist Lang | Transloco Angular i18n
+---
 
 This plugin provides the functionality of persisting the active language to the provided storage.
 
-### Installation
-
+## Installation
+```bash
+npm install @ngneat/transloco-persist-lang
 ```
-npm i @ngneat/transloco-persist-lang
-```
 
-### Usage
-
+## Usage
 Import the `TranslocoPersistLangModule` module into the `TranslocoRootModule`, and provide the storage you would like to use:
 
-```ts
+```ts title="transloco-root.module.ts"
 import {
   TRANSLOCO_PERSIST_LANG_STORAGE,
   TranslocoPersistLangModule,
@@ -36,17 +37,17 @@ When the user changes the current language, the plugin will keep it in the provi
 
 By default, the plugin will use the cached language if available otherwise it will use the default language provided in the config. You can always change this behavior by providing a `getLangFn` option:
 
-```ts
+```ts title="transloco-root.module.ts"
 import {
   TRANSLOCO_PERSIST_LANG_STORAGE,
   TranslocoPersistLangModule,
 } from '@ngneat/transloco-persist-lang';
 
 export function getLangFn({
-    cachedLang,
-    browserLang,
-    cultureLang,
-    defaultLang,
+  cachedLang,
+  browserLang,
+  cultureLang,
+  defaultLang,
 }) {
   return yourLogic;
 }
@@ -68,7 +69,7 @@ export class TranslocoRootModule {}
 
 The plugin also provides a `cookiesStorage` function that you can use to save the language in a cookie. (SSR advantage)
 
-```ts
+```ts title="transloco-root.module.ts"
 import {
   TRANSLOCO_PERSIST_LANG_STORAGE,
   TranslocoPersistLangModule,
@@ -88,3 +89,4 @@ import {
 })
 export class TranslocoRootModule {}
 ```
+
