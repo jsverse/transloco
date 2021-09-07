@@ -1,6 +1,6 @@
 {
   "name": "@ngneat/transloco",
-  "version": "3.0.0",
+  "version": "2.20.0",
   "description": "The internationalization (i18n) library for Angular",
   "schematics": "./schematics/collection.json",
   "publishConfig": {
@@ -9,7 +9,7 @@
   "bugs": {
     "url": "https://github.com/ngneat/transloco/issues"
   },
-  "homepage": "https://github.com/ngneat/transloco#readme",
+  "homepage": "https://ngneat.github.io/transloco/",
   "repository": {
     "type": "git",
     "url": "https://github.com/ngneat/transloco"

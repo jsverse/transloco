@@ -1,6 +1,6 @@
 {
   "name": "@ngneat/transloco-validator",
-  "version": "3.0.0",
+  "version": "1.0.1",
   "description": "Transloco translation files validator",
   "main": "src/lib/transloco-validator.js",
   "bin": {
@@ -12,7 +12,7 @@
   "bugs": {
     "url": "https://github.com/ngneat/transloco/issues"
   },
-  "homepage": "https://github.com/ngneat/transloco#readme",
+  "homepage": "https://ngneat.github.io/transloco/docs/tools/validator",
   "repository": {
     "type": "git",
     "url": "https://github.com/ngneat/transloco"

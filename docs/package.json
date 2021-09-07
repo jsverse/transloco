@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "docusaurus start",
-    "build": "docusaurus build && node post-build",
+    "build": "docusaurus build",
+    "postbuild": "node post-build",
     "swizzle": "docusaurus swizzle",
     "deploy": "npm run build && GIT_USER=NetanelBasal USE_SSH=true docusaurus deploy --skip-build"
   },

@@ -1,9 +1,32 @@
 {
   "name": "@ngneat/transloco-locale",
-  "version": "0.0.1",
+  "version": "1.5.0",
+  "description": "The localization (l10n) library plugin for Transloco",
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/ngneat/transloco/issues"
+  },
+  "homepage": "https://ngneat.github.io/transloco/docs/plugins/locale",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ngneat/transloco"
+  },
+  "keywords": [
+    "angular",
+    "angular 2",
+    "i18n",
+    "localization",
+    "l10n",
+    "angular translate",
+    "angular i18n",
+    "transloco"
+  ],
+  "license": "MIT",
   "peerDependencies": {
-    "@angular/common": "^12.1.0",
-    "@angular/core": "^12.1.0"
+    "@angular/core": ">=6.0.0",
+    "rxjs": ">=6.0.0 || ^5.6.0-forward-compat.4"
   },
   "dependencies": {
     "tslib": "^2.2.0"

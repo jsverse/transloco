@@ -1,6 +1,6 @@
 {
   "name": "@ngneat/optimize",
-  "version": "3.0.0",
+  "version": "1.0.2",
   "description": "Transloco optimization process for production environments",
   "main": "src/lib/transloco-optimize.js",
   "bin": {
@@ -12,7 +12,7 @@
   "bugs": {
     "url": "https://github.com/ngneat/transloco/issues"
   },
-  "homepage": "https://github.com/ngneat/transloco#readme",
+  "homepage": "https://ngneat.github.io/transloco/docs/tools/optimize/",
   "repository": {
     "type": "git",
     "url": "https://github.com/ngneat/transloco"
