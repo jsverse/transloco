@@ -3,7 +3,8 @@
 - Structural directive is now a **memoized** function:
 
 ```html
-// before {{ t.a.b }} {{ t.hello }} {{ t.someKey | translocoParams: { value: 'value' } }}
+// before {{ t.a.b }} {{ t.hello }} {{ t.someKey | translocoParams: { value:
+'value' } }}
 ```
 
 After:
@@ -50,6 +51,10 @@ We need this information to know whether we're dealing with a `language` or a `s
 - Change `config.listenToLangChange` to `config.reRenderOnLangChange` to make it more clear.
 - Remove callback param support from `translate()`.
 - Remove messageformat from the library in favor of the external library.
+
+**We created a schematics command that'll do most of the work for you**
+
+For more information see the [schematics upgrade command](https://ngneat.github.io/transloco/docs/schematics/upgrade)
 
 ## Features
 

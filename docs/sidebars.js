@@ -86,8 +86,16 @@ module.exports = {
       ],
     },
     {
-      type: 'doc',
-      id: 'schematics',
+      type: 'category',
+      label: 'Schematics',
+      items: [
+        'schematics/ng-add',
+        'schematics/scope',
+        'schematics/join',
+        'schematics/split',
+        'schematics/upgrade',
+        'schematics/component',
+      ],
     },
     {
       type: 'category',

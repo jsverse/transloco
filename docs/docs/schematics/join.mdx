@@ -1,0 +1,117 @@
+---
+title: Join
+description: Schematics - Join | Transloco Angular i18n
+---
+
+## Join
+
+### Overview
+
+Merge all our translation files into one piece for each language.
+
+### Command
+
+```bash
+ng generate @ngneat/transloco:join
+```
+
+:::info
+If you have more then one entry folder for your translation files, you will have to add a mapping for each folder entry and the scope name. It could be done using scopePathMap property in your `transloco.config.js` file.
+:::
+
+By default the build script will go over the root translation file directory and will refer every sub directory as scope.
+
+Let's say we have the following translations folder:
+
+```
+├─ src/assets/i18n/
+   ├─ en.json
+   ├─ fr.json
+   ├─ es.json
+   ├─ todos/
+      ├─ en.json
+      ├─ fr.json
+      ├─ es.json
+```
+
+The script will run over all the directory files (minus the default language) and will merge the scope files to the main translation files.
+
+Say our project's default language is English,  if we run the script the expected output would be:
+
+```json title="dist-i18n/es.json"
+{
+  "hello": "transloco es",
+  "todos": {
+    "todos-translation": "todos es"
+  }
+}
+```
+
+```json title="dist-i18n/fr.json"
+{
+  "hello": "transloco fr",
+  "todos": {
+    "todos-translation": "todos fr"
+  }
+}
+```
+
+If we have more then one entry folder for a `scope` we can specify a map between the `scope` name and the path to the translations using scopePathMap property in your `transloco.config.js` file:
+
+```js title="transloco.config.js"
+{
+  "scopePathMap": {
+    "my-scope": "src/app/path-to-scope",
+    "my-project-scope": "projects/my-project/i18n"
+  }
+}
+```
+
+:::info
+Once you specify the scopePathMap the script will automatically use it
+:::
+
+### Options
+
+The folder that contains the root translation files.
+
+- `--translation-path`
+
+  `type`: `string`
+
+  `default`: `src/assets/i18n`
+
+  `alias`: `root`
+
+The output directory path
+
+- `--out-dir`
+
+  `type`: `string`
+
+  `default`: `dist-i18n`
+
+  `alias`: `o`
+
+The default language of the project
+
+- `--default-lang`
+
+  `type`: `string`
+
+  `alias`: `o`
+
+Determine rather to join also the default language
+
+- `--include-defaultLang`
+
+  `type`: `boolean`
+
+  `default`: `false`
+
+### Examples
+
+Merge translations files to a specific output directory:
+```bash
+ng g @ngneat/transloco:build --default-lang en
+```
