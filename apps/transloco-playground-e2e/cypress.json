@@ -1,4 +1,5 @@
 {
+  "testFiles": "**/*.spec.ts",
   "fileServerFolder": ".",
   "fixturesFolder": "./src/fixtures",
   "integrationFolder": "./src/integration",
@@ -6,7 +7,8 @@
   "pluginsFile": "./src/plugins/index",
   "supportFile": "./src/support/index.ts",
   "video": false,
-  "videosFolder": "../../dist/cypress/apps/transloco-playground-e2e/videos",
-  "screenshotsFolder": "../../dist/cypress/apps/transloco-playground-e2e/screenshots",
-  "chromeWebSecurity": false
+  "chromeWebSecurity": false,
+  "baseUrl": "http://localhost:4200",
+  "viewportWidth": 1536,
+  "viewportHeight": 960
 }

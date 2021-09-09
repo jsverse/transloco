@@ -31,15 +31,15 @@
     <b>Full date: </b
     >{{ date | translocoDate: { dateStyle: 'full', timeStyle: 'full' } }}
   </li>
-  <li class="list-group-item" data-cy="date-full">
+  <li class="list-group-item" data-cy="date-full-utc">
     <b>Date in timezone UTC: </b
     >{{ date | translocoDate: { timeZone: 'UTC', timeStyle: 'full' } }}
   </li>
-  <li class="list-group-item" data-cy="date-full">
+  <li class="list-group-item" data-cy="date-medium-unix">
     <b>Unix timestamp time date: </b
     >{{ 1 | translocoDate: { dateStyle: 'medium', timeStyle: 'medium' } }}
   </li>
-  <li class="list-group-item" data-cy="date-full">
+  <li class="list-group-item" data-cy="date-medium-string">
     <b>String format to date: </b
     >{{
       '2019-02-08' | translocoDate: { dateStyle: 'medium', timeStyle: 'medium' }
@@ -52,7 +52,7 @@
   <li class="list-group-item" data-cy="number-decimal">
     <b>Decimal number: </b>{{ 1234567890 | translocoDecimal }}
   </li>
-  <li class="list-group-item" data-cy="number-decimal">
+  <li class="list-group-item" data-cy="number-decimal-grouped">
     <b>Decimal without grouping: </b
     >{{ 1234567890 | translocoDecimal: { useGrouping: false } }}
   </li>

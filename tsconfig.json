@@ -15,15 +15,6 @@
     "importHelpers": true,
     "target": "es5",
     "typeRoots": ["node_modules/@types"],
-    "lib": ["es2018", "dom"],
-    "paths": {
-      "@ngneat/transloco": ["./projects/ngneat/transloco/src/public-api.ts"],
-      "@ngneat/transloco-persist-lang": ["./projects/ngneat/transloco-persist-lang/src/public-api.ts"],
-      "@ngneat/transloco-persist-translations": ["./projects/ngneat/transloco-persist-translations/src/public-api.ts"],
-      "@ngneat/transloco-messageformat": ["./projects/ngneat/transloco-messageformat/src/public-api.ts"],
-      "@ngneat/transloco-preload-langs": ["./projects/ngneat/transloco-preload-langs/src/public-api.ts"],
-      "@ngneat/transloco-locale": ["./projects/ngneat/transloco-locale/src/public-api.ts"],
-      "@ngneat/transloco-utils": ["./projects/ngneat/transloco-utils/src/public-api.ts"]
-    }
+    "lib": ["es2018", "dom"]
   }
 }

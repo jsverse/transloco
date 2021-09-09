@@ -38,10 +38,11 @@
               "libs/transloco/src/**/*.ts",
               "libs/transloco/src/**/*.html"
             ]
-          }
+          },
+          "outputs": ["{options.outputFile}"]
         },
         "version": {
-          "executor": "@jscutlery/semver:version"
+          "builder": "@jscutlery/semver:version"
         }
       }
     },
@@ -82,7 +83,8 @@
               "libs/transloco-locale/src/**/*.ts",
               "libs/transloco-locale/src/**/*.html"
             ]
-          }
+          },
+          "outputs": ["{options.outputFile}"]
         },
         "version": {
           "builder": "@jscutlery/semver:version"
@@ -126,10 +128,11 @@
               "libs/transloco-messageformat/src/**/*.ts",
               "libs/transloco-messageformat/src/**/*.html"
             ]
-          }
+          },
+          "outputs": ["{options.outputFile}"]
         },
         "version": {
-          "executor": "@jscutlery/semver:version"
+          "builder": "@jscutlery/semver:version"
         }
       }
     },
@@ -152,7 +155,8 @@
           "builder": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/transloco-optimize/**/*.ts"]
-          }
+          },
+          "outputs": ["{options.outputFile}"]
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
@@ -163,7 +167,7 @@
           }
         },
         "version": {
-          "executor": "@jscutlery/semver:version"
+          "builder": "@jscutlery/semver:version"
         }
       }
     },
@@ -204,7 +208,8 @@
               "libs/transloco-persist-lang/src/**/*.ts",
               "libs/transloco-persist-lang/src/**/*.html"
             ]
-          }
+          },
+          "outputs": ["{options.outputFile}"]
         },
         "version": {
           "builder": "@jscutlery/semver:version"
@@ -248,10 +253,11 @@
               "libs/transloco-persist-translations/src/**/*.ts",
               "libs/transloco-persist-translations/src/**/*.html"
             ]
-          }
+          },
+          "outputs": ["{options.outputFile}"]
         },
         "version": {
-          "executor": "@jscutlery/semver:version"
+          "builder": "@jscutlery/semver:version"
         }
       }
     },
@@ -341,7 +347,8 @@
               "apps/transloco-playground/src/**/*.ts",
               "apps/transloco-playground/src/**/*.html"
             ]
-          }
+          },
+          "outputs": ["{options.outputFile}"]
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
@@ -363,11 +370,14 @@
           "options": {
             "cypressConfig": "apps/transloco-playground-e2e/cypress.json",
             "tsConfig": "apps/transloco-playground-e2e/tsconfig.e2e.json",
-            "devServerTarget": "transloco-playground:serve:development"
+            "devServerTarget": "transloco-playground:serve:development",
+            "watch": true
           },
           "configurations": {
-            "production": {
-              "devServerTarget": "transloco-playground:serve:production"
+            "ci": {
+              "watch": false,
+              "devServerTarget": "transloco-playground:serve:production",
+              "headless": true
             }
           }
         },
@@ -375,7 +385,8 @@
           "builder": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["apps/transloco-playground-e2e/**/*.{js,ts}"]
-          }
+          },
+          "outputs": ["{options.outputFile}"]
         }
       }
     },
@@ -416,10 +427,11 @@
               "libs/transloco-preload-langs/src/**/*.ts",
               "libs/transloco-preload-langs/src/**/*.html"
             ]
-          }
+          },
+          "outputs": ["{options.outputFile}"]
         },
         "version": {
-          "executor": "@jscutlery/semver:version"
+          "builder": "@jscutlery/semver:version"
         }
       }
     },
@@ -448,7 +460,8 @@
           "builder": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/transloco-schematics/**/*.ts"]
-          }
+          },
+          "outputs": ["{options.outputFile}"]
         },
         "test": {
           "builder": "@nrwl/jest:jest",
@@ -459,7 +472,7 @@
           }
         },
         "version": {
-          "executor": "@jscutlery/semver:version"
+          "builder": "@jscutlery/semver:version"
         }
       }
     },
@@ -482,7 +495,8 @@
           "builder": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/transloco-scoped-libs/**/*.ts"]
-          }
+          },
+          "outputs": ["{options.outputFile}"]
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
@@ -493,7 +507,7 @@
           }
         },
         "version": {
-          "executor": "@jscutlery/semver:version"
+          "builder": "@jscutlery/semver:version"
         }
       }
     },
@@ -516,7 +530,8 @@
           "builder": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/transloco-utils/**/*.ts"]
-          }
+          },
+          "outputs": ["{options.outputFile}"]
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
@@ -527,7 +542,7 @@
           }
         },
         "version": {
-          "executor": "@jscutlery/semver:version"
+          "builder": "@jscutlery/semver:version"
         }
       }
     },
@@ -550,7 +565,8 @@
           "builder": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/transloco-validator/**/*.ts"]
-          }
+          },
+          "outputs": ["{options.outputFile}"]
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
@@ -561,7 +577,7 @@
           }
         },
         "version": {
-          "executor": "@jscutlery/semver:version"
+          "builder": "@jscutlery/semver:version"
         }
       }
     }

@@ -27,7 +27,7 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "@angular/core": ">=6.0.0"
+    "@angular/core": ">=12.0.0"
   },
   "dependencies": {
     "messageformat": "^2.3.0",

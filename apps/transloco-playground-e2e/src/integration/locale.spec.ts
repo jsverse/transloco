@@ -1,6 +1,6 @@
 export function testLocaleContentUS() {
-  const date = Date.UTC(2019, 7, 14, 0, 0, 0, 0);
-  const dateTimeOptions: any = { timeStyle: 'full' };
+  const date = new Date(2019, 7, 14, 0, 0, 0, 0);
+  const dateTimeOptions: any = { timeStyle: 'full', timeZone: 'UTC' };
   const expectedFullTime = Intl.DateTimeFormat('en-US', dateTimeOptions).format(
     date
   );
@@ -12,13 +12,13 @@ export function testLocaleContentUS() {
     'contain',
     'Wednesday, August 14, 2019 at'
   );
-  cy.get(`[data-cy=date-full]`).should('contain', expectedFullTime);
-  cy.get(`[data-cy=date-full]`).should('contain', 'Jan 1, 1970');
-  cy.get(`[data-cy=date-full]`).should('contain', 'Feb 8, 2019');
+  cy.get(`[data-cy=date-full-utc]`).should('contain', expectedFullTime);
+  cy.get(`[data-cy=date-medium-unix]`).should('contain', 'Jan 1, 1970');
+  cy.get(`[data-cy=date-medium-string]`).should('contain', 'Feb 8, 2019');
 
   // Numbers Pipe
   cy.get(`[data-cy=number-decimal]`).should('contain', ' 1,234,567,890');
-  cy.get(`[data-cy=number-decimal]`).should('contain', '1234567890');
+  cy.get(`[data-cy=number-decimal-grouped]`).should('contain', '1234567890');
   cy.get(`[data-cy=number-percent]`).should('contain', '100%');
 
   // Currency Pipe
@@ -32,8 +32,8 @@ export function testLocaleContentUS() {
 }
 
 export function testLocaleContentES() {
-  const date = Date.UTC(2019, 7, 13, 22, 0, 0, 0);
-  const dateTimeOptions: any = { timeStyle: 'full' };
+  const date = new Date(2019, 7, 14, 0, 0, 0, 0);
+  const dateTimeOptions: any = { timeStyle: 'full', timeZone: 'UTC' };
   const expectedFullTime = Intl.DateTimeFormat('es-ES', dateTimeOptions).format(
     date
   );
@@ -45,13 +45,13 @@ export function testLocaleContentES() {
     'contain',
     ' miércoles, 14 de agosto de 2019,'
   );
-  cy.get(`[data-cy=date-full]`).should('contain', expectedFullTime);
-  cy.get(`[data-cy=date-full]`).should('contain', '1 ene. 1970');
-  cy.get(`[data-cy=date-full]`).should('contain', ' 8 feb. 2019');
+  cy.get(`[data-cy=date-full-utc]`).should('contain', expectedFullTime);
+  cy.get(`[data-cy=date-medium-unix]`).should('contain', '1 ene 1970');
+  cy.get(`[data-cy=date-medium-string]`).should('contain', ' 8 feb 2019');
 
   // Numbers Pipe
   cy.get(`[data-cy=number-decimal]`).should('contain', ' 1.234.567.890');
-  cy.get(`[data-cy=number-decimal]`).should('contain', '1234567890');
+  cy.get(`[data-cy=number-decimal-grouped]`).should('contain', '1234567890');
   cy.get(`[data-cy=number-percent]`).should('contain', '100');
 
   // Currency Pipe

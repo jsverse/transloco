@@ -5,7 +5,7 @@ import {
   generateContentWithoutLoader,
   generateContentLoader,
 } from './lazy';
-import { testLocaleContentUS, testLocaleContentES } from './locale';
+import { testLocaleContentUS, testLocaleContentES } from './locale.spec';
 import { testMultiLangContent } from './multi-lang';
 import { testScopeSharingContent } from './scope-sharing';
 import { testTranspilersContent } from './transpilers';
