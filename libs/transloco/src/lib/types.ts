@@ -6,8 +6,6 @@ export interface LoadedEvent {
   payload: {
     scope: string | null;
     langName: string;
-    /** @deprecated */
-    lang: string;
   };
 }
 

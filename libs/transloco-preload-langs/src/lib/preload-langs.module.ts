@@ -41,7 +41,7 @@ window.cancelIdleCallback =
 
 @NgModule()
 export class TranslocoPreloadLangsModule {
-  static preload(
+  static forRoot(
     langs: string[]
   ): ModuleWithProviders<TranslocoPreloadLangsModule> {
     return {

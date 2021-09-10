@@ -8,7 +8,7 @@ import {
 
 @NgModule()
 export class TranslocoMessageFormatModule {
-  static init(
+  static forRoot(
     config?: MessageformatConfig
   ): ModuleWithProviders<TranslocoMessageFormatModule> {
     return {

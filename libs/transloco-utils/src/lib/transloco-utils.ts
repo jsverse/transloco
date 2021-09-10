@@ -2,13 +2,6 @@ import { cosmiconfigSync } from 'cosmiconfig';
 import * as path from 'path';
 import { TranslocoGlobalConfig } from './transloco-utils.types';
 
-/**
- * @deprecated use getGlobalConfig instead.
- */
-export function getConfig(searchPath?: string): TranslocoGlobalConfig {
-  return getGlobalConfig(searchPath);
-}
-
 export function getGlobalConfig(searchPath?: string): TranslocoGlobalConfig {
   if (!searchPath) {
     return {};

@@ -7,7 +7,6 @@ export {
   TranslocoConfig,
   TRANSLOCO_CONFIG,
   defaultConfig,
-  provideTranslocoConfig,
   translocoConfig,
 } from './lib/transloco.config';
 export {

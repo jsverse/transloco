@@ -31,7 +31,7 @@ export const pipes = [
   exports: pipes,
 })
 export class TranslocoLocaleModule {
-  static init(
+  static forRoot(
     config: TranslocoLocaleConfig = {}
   ): ModuleWithProviders<TranslocoLocaleModule> {
     return {

@@ -7,8 +7,6 @@ export interface TranslocoConfig {
   prodMode?: boolean;
   fallbackLang?: string | string[];
   failedRetries?: number;
-  /** @deprecated */
-  scopeMapping?: HashMap<string>;
   availableLangs?: AvailableLangs;
   flatten?: {
     aot?: boolean;
@@ -50,18 +48,6 @@ export const defaultConfig: Omit<
   },
   interpolation: ['{{', '}}'],
 };
-
-/**
- * @deprecated
- */
-export function provideTranslocoConfig(
-  config: Partial<TranslocoConfig> = defaultConfig
-): Provider {
-  return {
-    provide: TRANSLOCO_CONFIG,
-    useValue: { ...defaultConfig, ...config },
-  };
-}
 
 /**
  * Sets up TranslocoConfig object.

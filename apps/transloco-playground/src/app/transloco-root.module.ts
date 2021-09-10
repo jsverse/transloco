@@ -23,8 +23,8 @@ export class TranslocoHttpLoader implements TranslocoLoader {
 
 @NgModule({
   imports: [
-    TranslocoMessageFormatModule.init(),
-    TranslocoLocaleModule.init({
+    TranslocoMessageFormatModule.forRoot(),
+    TranslocoLocaleModule.forRoot({
       langToLocaleMapping: {
         en: 'en-US',
         es: 'es-ES',

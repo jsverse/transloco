@@ -1,3 +1,46 @@
+# Transloco V3
+
+V3 was focused on a major infra upgrade to improve Transloco's maintainability and the ability to create new features easily.
+We have removed deprecated code and upgraded dependencies, please take a look at the following:
+
+## Transloco
+
+- `@angular/core` peer dependency is now `>=v12`
+- Removed `scopeMapping` property from the `TranslocoConfig`, define the alias on the scope provider instead.
+- Removed `provideTranslocoConfig` function.
+- LoadedEvent - removed `lang` property.
+- `TranslocoTestingModule` removed `withLangs` method, use `forRoot` instead.
+
+## Transloco Locale
+
+- `@angular/core` peer dependency is now `>=v12`
+- `TranslocoLocaleModule` removed `init` method, use `forRoot` instead.
+
+## Transloco Messageformat
+
+- `@angular/core` peer dependency is now `>=v12`
+- `TranslocoMessageFormatModule` removed `init` method, use `forRoot` instead.
+
+## Transloco Persist Lang
+
+- `@angular/core` peer dependency is now `>=v12`
+- `TranslocoPersistLangModule` removed `init` method, use `forRoot` instead.
+
+## Transloco Persist Translations
+
+- `@angular/core` peer dependency is now `>=v12`
+- `TranslocoPersistTranslationsModule` removed `init` method, use `forRoot` instead.
+
+## Transloco Preload Langs
+
+- `@angular/core` peer dependency is now `>=v12`
+- `TranslocoPreloadLangsModule` removed `preload` method, use `forRoot` instead.
+
+## Transloco utils
+
+- Removed `TranslocoConfig` interface, use `TranslocoGlobalConfig` instead.
+- Removed `getConfig` function, use `getGlobalConfig` instead.
+
 # Transloco V2
 
 - Structural directive is now a **memoized** function:

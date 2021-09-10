@@ -90,21 +90,23 @@ export function translate<T>(
 
 @Injectable({ providedIn: 'root' })
 export class TranslocoService implements OnDestroy {
+  langChanges$: Observable<string>;
+
   private subscription: Subscription;
   private translations = new Map<string, Translation>();
   private cache = new Map<string, Observable<Translation>>();
   private firstFallbackLang: string | undefined;
   private defaultLang = '';
-  private mergedConfig: TranslocoConfig;
   private availableLangs: AvailableLangs = [];
   private isResolvedMissingOnce = false;
   private lang: BehaviorSubject<string>;
-  langChanges$: Observable<string>;
-
-  private events = new Subject<TranslocoEvents>();
-  events$ = this.events.asObservable();
-
   private failedLangs = new Set<string>();
+  private readonly mergedConfig: TranslocoConfig & {
+    scopeMapping?: HashMap<string>;
+  };
+  private events = new Subject<TranslocoEvents>();
+
+  events$ = this.events.asObservable();
 
   constructor(
     @Optional() @Inject(TRANSLOCO_LOADER) private loader: TranslocoLoader,
@@ -135,14 +137,12 @@ export class TranslocoService implements OnDestroy {
      */
     this.subscription = this.events$.subscribe((e) => {
       if (e.type === 'translationLoadSuccess' && e.wasFailure) {
-        // Handle scoped lang
-        const lang = getLangFromScope(e.payload.lang);
-        this.setActiveLang(lang);
+        this.setActiveLang(e.payload.langName);
       }
     });
   }
 
-  get config(): TranslocoConfig {
+  get config() {
     return this.mergedConfig;
   }
 

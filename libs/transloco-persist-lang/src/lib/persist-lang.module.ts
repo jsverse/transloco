@@ -7,7 +7,7 @@ import {
 
 @NgModule()
 export class TranslocoPersistLangModule {
-  static init(
+  static forRoot(
     config: PersistLangConfig
   ): ModuleWithProviders<TranslocoPersistLangModule> {
     return {

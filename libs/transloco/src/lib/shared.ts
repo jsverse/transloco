@@ -1,7 +1,7 @@
 import { TranslocoService } from './transloco.service';
 import { hasInlineLoader, isString } from './helpers';
 import { take } from 'rxjs/operators';
-import { InlineLoader, TranslocoScope } from './types';
+import { InlineLoader, LoadedEvent, TranslocoScope } from './types';
 import { Observable, OperatorFunction } from 'rxjs';
 
 /*
@@ -62,7 +62,7 @@ export function shouldListenToLangChanges(
   lang?: string
 ) {
   const [hasStatic] = getPipeValue(lang, 'static');
-  if (hasStatic === false) {
+  if (!hasStatic) {
     // If we didn't get 'lang|static' check if it's set in the global level
     return !!service.config.reRenderOnLangChange;
   }
@@ -94,10 +94,9 @@ export function resolveInlineLoader(
     : undefined;
 }
 
-export function getEventPayload(lang: string) {
+export function getEventPayload(lang: string): LoadedEvent['payload'] {
   return {
     scope: getScopeFromLang(lang) || null,
     langName: getLangFromScope(lang),
-    lang,
   };
 }

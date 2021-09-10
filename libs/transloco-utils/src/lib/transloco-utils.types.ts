@@ -1,8 +1,3 @@
-/**
- * @deprecated use TranslocoGlobalConfig instead.
- */
-export type TranslocoConfig = TranslocoGlobalConfig;
-
 export interface TranslocoGlobalConfig {
   rootTranslationsPath?: string;
   defaultLang?: string;

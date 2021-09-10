@@ -100,48 +100,4 @@ export class TranslocoTestingModule {
       ],
     };
   }
-
-  /** @deprecated - use forRoot instead */
-  static withLangs(
-    langs: HashMap<Translation>,
-    config: Partial<TranslocoConfig> = {},
-    options: TranslocoTestingOptions = {}
-  ): ModuleWithProviders<TranslocoTestingModule> {
-    return {
-      ngModule: TranslocoTestingModule,
-      providers: [
-        {
-          provide: TRANSLOCO_TEST_LANGS,
-          useValue: langs,
-        },
-        {
-          provide: TRANSLOCO_TEST_OPTIONS,
-          useValue: options,
-        },
-        {
-          provide: APP_INITIALIZER,
-          useFactory: initTranslocoService,
-          deps: [
-            TranslocoService,
-            TRANSLOCO_TEST_LANGS,
-            TRANSLOCO_TEST_OPTIONS,
-          ],
-          multi: true,
-        },
-        {
-          provide: TRANSLOCO_LOADER,
-          useClass: TestingLoader,
-        },
-        defaultProviders,
-        {
-          provide: TRANSLOCO_CONFIG,
-          useValue: translocoConfig({
-            prodMode: true,
-            missingHandler: { logMissingKey: false },
-            ...config,
-          }),
-        },
-      ],
-    };
-  }
 }

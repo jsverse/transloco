@@ -9,7 +9,7 @@ import {
 
 @NgModule()
 export class TranslocoPersistTranslationsModule {
-  static init(
+  static forRoot(
     config: TranslocoPersistTranslationsConfig
   ): ModuleWithProviders<TranslocoPersistTranslationsModule> {
     return {
