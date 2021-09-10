@@ -1,9 +1,65 @@
 import { MessageFormatTranspiler } from './messageformat.transpiler';
 import { flatten, translocoConfig } from '@ngneat/transloco';
 import { CustomFormatter } from '@messageformat/core';
+import { MessageformatConfig } from './messageformat.config';
 
 describe('MessageFormatTranspiler', () => {
-  const config = {};
+  describe('Cache enabled', () => {
+    const config = {};
+    assertParser(config);
+  });
+
+  describe('Cache disabled', () => {
+    const config = { enableCache: false };
+    assertParser(config);
+  });
+
+  it('should work with locales', () => {
+    const config = { locales: 'en-GB' };
+    const parser = new MessageFormatTranspiler(config);
+    const message =
+      '{count, plural, =0{No} one{A} other{Several}} {count, plural, one{word} other{words}}';
+
+    const result = parser.transpile(message, { count: 1 }, {});
+    expect(result).toBe('A word');
+  });
+
+  it('should use passed-in formatters', () => {
+    const formatters: { [key: string]: CustomFormatter } = {
+      prop: <T = Record<string, string>>(v: T, lc: any, p: string | null) =>
+        v[p as keyof T],
+      upcase: (v) => (v as string).toUpperCase(),
+    };
+    const messages = {
+      answer: 'Answer: {obj, prop, a}',
+      describe: 'This is {upper, upcase}.',
+    };
+
+    const parser = new MessageFormatTranspiler({
+      customFormatters: formatters,
+    });
+    const upper = parser.transpile(messages.describe, { upper: 'big' }, {});
+    expect(upper).toEqual('This is BIG.');
+
+    expect(
+      parser.transpile(messages.answer, { obj: { q: 3, a: 42 } }, {})
+    ).toBe('Answer: 42');
+  });
+
+  it('should switch locale in runtime', () => {
+    const config = { locales: 'en' };
+    const parser = new MessageFormatTranspiler(config);
+    const polishKey =
+      '{count, plural, =0 {none} one {# thing} few {# things} many {# things} other {# things}}';
+    const params = { count: 2 };
+
+    expect(() => parser.transpile(polishKey, params, {})).toThrowError();
+    parser.setLocale('pl');
+    expect(parser.transpile(polishKey, params, {})).toBe('2 things');
+  });
+});
+
+function assertParser(config: MessageformatConfig) {
   const parser = new MessageFormatTranspiler(config);
   const parserWithCustomInterpolation = new MessageFormatTranspiler(
     config,
@@ -154,48 +210,4 @@ describe('MessageFormatTranspiler', () => {
       },
     });
   });
-
-  it('should work with locales', () => {
-    const config = { locales: 'en-GB' };
-    const parser = new MessageFormatTranspiler(config);
-    const message =
-      '{count, plural, =0{No} one{A} other{Several}} {count, plural, one{word} other{words}}';
-
-    const result = parser.transpile(message, { count: 1 }, {});
-    expect(result).toBe('A word');
-  });
-
-  it('should use passed-in formatters', () => {
-    const formatters: { [key: string]: CustomFormatter } = {
-      prop: <T = Record<string, string>>(v: T, lc: any, p: string | null) =>
-        v[p as keyof T],
-      upcase: (v) => (v as string).toUpperCase(),
-    };
-    const messages = {
-      answer: 'Answer: {obj, prop, a}',
-      describe: 'This is {upper, upcase}.',
-    };
-
-    const parser = new MessageFormatTranspiler({
-      customFormatters: formatters,
-    });
-    const upper = parser.transpile(messages.describe, { upper: 'big' }, {});
-    expect(upper).toEqual('This is BIG.');
-
-    expect(
-      parser.transpile(messages.answer, { obj: { q: 3, a: 42 } }, {})
-    ).toBe('Answer: 42');
-  });
-
-  it('should switch locale in runtime', () => {
-    const config = { locales: 'en' };
-    const parser = new MessageFormatTranspiler(config);
-    const polishKey =
-      '{count, plural, =0 {none} one {# thing} few {# things} many {# things} other {# things}}';
-    const params = { count: 2 };
-
-    expect(() => parser.transpile(polishKey, params, {})).toThrowError();
-    parser.setLocale('pl');
-    expect(parser.transpile(polishKey, params, {})).toBe('2 things');
-  });
-});
+}

@@ -22,6 +22,10 @@ We have removed deprecated code and upgraded dependencies, please take a look at
 - Upgraded `messageformat` from v2.3.0 to `@messageformat/core` v3.0.0, see [changelog](https://github.com/messageformat/messageformat/blob/master/packages/core/CHANGELOG.md#300-2021-05-13) for more information.
 - `TranslocoMessageFormatModule` removed `init` method, use `forRoot` instead.
 
+### Features
+
+- Messageformat compiled messages are now cached by default see [#358](https://github.com/ngneat/transloco/issues/358) & [messageformat caching](https://ngneat.github.io/transloco/docs/plugins/message-format#caching). Thank goes to [k3nsei](https://github.com/k3nsei).
+
 ## Transloco Persist Lang
 
 - `@angular/core` peer dependency is now `>=v12`

@@ -48,34 +48,45 @@ By default, messageformat initializes _all_ locales. You could also provide the 
 ```ts title="transloco-root.module.ts"
 @NgModule({
   imports: [
-    TranslocoMessageFormatModule.forRoot(
-      {
+    TranslocoMessageFormatModule.forRoot({
         locales: 'en-GB'
-      }
-    )
+    })
   ],
   ...
 })
 export class TranslocoRootModule {}
 ```
 
-The value for `locales` is either a string or an array of strings. The first locale is used as the default locale by messageformat. More info [here](https://messageformat.github.io/messageformat/MessageFormat).
+The value for `locales` is either a string or an array of strings. The first locale is used as the default locale by messageformat. More info [here](https://messageformat.github.io/messageformat/api/core.messageformat._constructor_/).
 
 ## Advanced configuration
-MessageFormat instances provide some methods to influence its behaviour, among them `addFormatters`, `setBiDiSupport`, and `setStrictNumberSign`. Learn about their meaning [here](https://messageformat.github.io/messageformat/MessageFormat)
+MessageFormat instances provides some options to influence its behaviour, among them `customFormatters`, `biDiSupport`, and `strictNumberSign`. Learn about their meaning [here](https://messageformat.github.io/messageformat/api/core.messageformatoptions/)
 
 This is how you would enable bi-directional support and add a custom formatter, for example:
 ```ts title="transloco-root.module.ts"
-@NgModule({
-  imports: [
-    TranslocoMessageFormatModule.forRoot(
-      {
-        biDiSupport: true,
-        customFormatters: { upcase: v => v.toUpperCase() }
-      }
-    )
-  ],
-  ...
-})
-export class TranslocoRootModule {}
+ @NgModule({
+   imports: [
+     TranslocoMessageFormatModule.forRoot({
+         biDiSupport: true,
+         customFormatters: { upcase: v => v.toUpperCase() }
+     })
+   ],
+   ...
+ })
+ export class TranslocoRootModule {}
 ```
+
+## Caching (from v3)
+ By default the messageformat compile output is cached to reduce computing times, you can disable caching by passing the `enableCache` option:
+ 
+ ```ts title="transloco-root.module.ts"
+ @NgModule({
+   imports: [
+     TranslocoMessageFormatModule.forRoot({
+         enableCache: false,
+     })
+   ],
+   ...
+ })
+ export class TranslocoRootModule {}
+ ``` 

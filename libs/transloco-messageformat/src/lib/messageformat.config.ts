@@ -8,4 +8,5 @@ export type MFLocale = ConstructorParameters<typeof MessageFormat>[0];
 
 export interface MessageformatConfig extends MessageFormatOptions<'string'> {
   locales?: MFLocale;
+  enableCache?: boolean;
 }
