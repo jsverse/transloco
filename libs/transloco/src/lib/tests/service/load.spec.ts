@@ -19,7 +19,6 @@ describe('load', () => {
       .subscribe(spy);
     loadLang(service);
     expect(spy).toHaveBeenCalledWith({
-      lang: 'en',
       langName: 'en',
       scope: null,
     });
@@ -35,7 +34,6 @@ describe('load', () => {
       .subscribe(spy);
     loadLang(service, 'admin-page/en');
     expect(spy).toHaveBeenCalledWith({
-      lang: 'admin-page/en',
       langName: 'en',
       scope: 'admin-page',
     });
