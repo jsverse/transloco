@@ -87,7 +87,10 @@
           "outputs": ["{options.outputFile}"]
         },
         "version": {
-          "builder": "@jscutlery/semver:version"
+          "builder": "@jscutlery/semver:version",
+          "options": {
+            "versionTagPrefix": "locale"
+          }
         }
       }
     },
@@ -132,7 +135,10 @@
           "outputs": ["{options.outputFile}"]
         },
         "version": {
-          "builder": "@jscutlery/semver:version"
+          "builder": "@jscutlery/semver:version",
+          "options": {
+            "versionTagPrefix": "messageformat"
+          }
         }
       }
     },
@@ -167,7 +173,10 @@
           }
         },
         "version": {
-          "builder": "@jscutlery/semver:version"
+          "builder": "@jscutlery/semver:version",
+          "options": {
+            "versionTagPrefix": "optimize"
+          }
         }
       }
     },
@@ -212,7 +221,10 @@
           "outputs": ["{options.outputFile}"]
         },
         "version": {
-          "builder": "@jscutlery/semver:version"
+          "builder": "@jscutlery/semver:version",
+          "options": {
+            "versionTagPrefix": "persist-lang"
+          }
         }
       }
     },
@@ -257,7 +269,10 @@
           "outputs": ["{options.outputFile}"]
         },
         "version": {
-          "builder": "@jscutlery/semver:version"
+          "builder": "@jscutlery/semver:version",
+          "options": {
+            "versionTagPrefix": "persist-translations"
+          }
         }
       }
     },
@@ -431,7 +446,10 @@
           "outputs": ["{options.outputFile}"]
         },
         "version": {
-          "builder": "@jscutlery/semver:version"
+          "builder": "@jscutlery/semver:version",
+          "options": {
+            "versionTagPrefix": "preload-langs"
+          }
         }
       }
     },
@@ -470,9 +488,6 @@
             "jestConfig": "libs/transloco-schematics/jest.config.js",
             "passWithNoTests": true
           }
-        },
-        "version": {
-          "builder": "@jscutlery/semver:version"
         }
       }
     },
@@ -507,7 +522,10 @@
           }
         },
         "version": {
-          "builder": "@jscutlery/semver:version"
+          "builder": "@jscutlery/semver:version",
+          "options": {
+            "versionTagPrefix": "scoped-libs"
+          }
         }
       }
     },
@@ -542,7 +560,10 @@
           }
         },
         "version": {
-          "builder": "@jscutlery/semver:version"
+          "builder": "@jscutlery/semver:version",
+          "options": {
+            "versionTagPrefix": "utils"
+          }
         }
       }
     },
@@ -577,7 +598,10 @@
           }
         },
         "version": {
-          "builder": "@jscutlery/semver:version"
+          "builder": "@jscutlery/semver:version",
+          "options": {
+            "versionTagPrefix": "validator"
+          }
         }
       }
     }
