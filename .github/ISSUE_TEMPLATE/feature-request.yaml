@@ -1,0 +1,85 @@
+name: Feature request
+description: Suggest an idea for this project
+title: "Feature(scope):"
+
+body:
+  - type: checkboxes
+    attributes:
+      label: Is there an existing issue for this?
+      description: Please search to see if an issue already exists for the bug you encountered.
+      options:
+        - label: I have searched the existing issues
+          required: true
+
+  - type: dropdown
+    id: affected-packages
+    attributes:
+      label: Which Transloco package(s) will this feature affect?
+      options:
+        - Transloco
+        - Schematics
+        - Locale
+        - MessageFormat
+        - Optimize
+        - Persist Lang
+        - Persist Translations
+        - Preload Langs
+        - Scoped Libs
+        - Validator
+        - Don't know / other
+      multiple: true
+    validations:
+      required: true
+
+  - type: textarea
+    id: feature-behavior
+    attributes:
+      label: Is your feature request related to a problem? Please describe
+      description: A clear and concise description of what the problem is.
+      placeholder: Ex. I'm always frustrated when [...]
+        
+  - type: textarea
+    id: solution
+    attributes:
+      label: Describe the solution you'd like
+      placeholder: A clear and concise description of what you want to happen.
+        
+  - type: textarea
+    id: solution-alternatives
+    attributes:
+      label: Describe alternatives you've considered
+      placeholder: A clear and concise description of any alternative solutions or features you've considered.
+
+  - type: textarea
+    id: current-behavior
+    attributes:
+      label: Describe alternatives you've considered
+      render: markdown
+      placeholder: A clear and concise description of the current behavior. It's best to provide an example, for that you could use our [stackblitz example](https://stackblitz.com/edit/transloco-example)
+    validations:
+      required: true
+      
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Describe alternatives you've considered
+      placeholder: A clear and concise description of the expected behavior. It's best to provide an example.
+    validations:
+        required: true
+
+  - type: textarea
+    id: other
+    attributes:
+      label: Additional context
+      description: |
+      Links? References? Anything that will give us more context about the issue you are encountering!
+
+  - type: dropdown
+    id: contribution
+    attributes:
+      label: I would like to make a pull request for this feature
+      options:
+        - 'Yes 🚀'
+        - 'No'
+    validations:
+      required: true    

@@ -1,0 +1,111 @@
+name: Bug Report
+description: Report a bug in one of the Transloco packages
+title: "Bug(scope):"
+
+body:
+  - type: checkboxes
+    attributes:
+      label: Is there an existing issue for this?
+      description: Please search to see if an issue already exists for the bug you encountered.
+      options:
+        - label: I have searched the existing issues
+          required: true  
+    
+  - type: dropdown
+    id: affected-packages
+    attributes:
+      label: Which Transloco package(s) are the source of the bug?
+      options:
+        - Transloco
+        - Schematics
+        - Locale
+        - MessageFormat
+        - Optimize
+        - Persist Lang
+        - Persist Translations
+        - Preload Langs
+        - Scoped Libs
+        - Validator
+        - Don't know / other
+      multiple: true
+    validations:
+      required: true
+
+  - type: dropdown
+    id: is-regression
+    attributes:
+      label: Is this a regression?
+      options:
+        - 'Yes'
+        - 'No'
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-behavior
+    attributes:
+      label: Current behavior
+    validations:
+      required: true
+      
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: input
+    id: reproduction
+    attributes:
+      label: Please provide a link to a minimal reproduction of the bug
+    validations:
+      required: true
+      
+  - type: textarea
+    id: transloco-config
+    attributes:
+      label: Transloco Config
+      render: markdown
+      placeholder: Provide the Transloco configuration if relevant to the issue
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Please provide the environment you discovered this bug in
+      render: markdown
+      value: |
+        Transloco: 
+        Angular: 
+        Node: 
+        Package Manager: 
+        OS: 
+
+  - type: textarea
+    id: browser
+    attributes:
+      label: Browser
+      render: markdown
+      placeholder: |
+        Chrome (desktop/Android/iOS) version XX
+        Firefox version XX
+        Safari (desktop/iOS) version XX
+        IE version XX
+        Edge version XX
+        
+  - type: textarea
+    id: other
+    attributes:
+      label: Additional context
+      description: |
+      Links? References? Anything that will give us more context about the issue you are encountering!
+      
+  - type: dropdown
+    id: contribution
+    attributes:
+      label: I would like to make a pull request for this bug
+      options:
+        - 'Yes 🚀'
+        - 'No'
+    validations:
+      required: true    
