@@ -9,8 +9,8 @@ import {
   TRANSLOCO_CONFIG,
   TranslocoConfig,
 } from '@ngneat/transloco';
+import MessageFormat, { MessageFormatOptions } from '@messageformat/core';
 
-import * as MessageFormat from 'messageformat';
 import {
   MessageformatConfig,
   MFLocale,
@@ -18,16 +18,16 @@ import {
 } from './messageformat.config';
 
 function mfFactory(
-  locales?: MFLocale,
-  messageConfig?: MessageFormat.Options
+  locales: MFLocale,
+  messageConfig: MessageFormatOptions<'string'>
 ): MessageFormat {
-  return new MessageFormat(locales, messageConfig);
+  return new MessageFormat<'string'>(locales, messageConfig);
 }
 
 @Injectable()
 export class MessageFormatTranspiler extends DefaultTranspiler {
   private messageFormat: MessageFormat;
-  private readonly messageConfig: MessageFormat.Options;
+  private readonly messageConfig: MessageFormatOptions<'string'>;
 
   constructor(
     @Optional()
@@ -36,7 +36,7 @@ export class MessageFormatTranspiler extends DefaultTranspiler {
     @Optional() @Inject(TRANSLOCO_CONFIG) userConfig?: TranslocoConfig
   ) {
     super(userConfig);
-    const { locales, ...messageConfig } = config || { locales: undefined };
+    const { locales, ...messageConfig } = { locales: null, ...config };
     this.messageConfig = messageConfig;
     this.messageFormat = mfFactory(locales, messageConfig);
   }

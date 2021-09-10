@@ -5,8 +5,8 @@
     "entryFile": "src/index.ts",
     "umdModuleIds": {
       "@ngneat/transloco": "transloco",
-      "messageformat": "messageformat"
+      "@messageformat/core": "messageformat"
     }
   },
-  "allowedNonPeerDependencies": ["messageformat"]
+  "allowedNonPeerDependencies": ["@messageformat/core"]
 }

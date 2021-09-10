@@ -19,6 +19,7 @@ We have removed deprecated code and upgraded dependencies, please take a look at
 ## Transloco Messageformat
 
 - `@angular/core` peer dependency is now `>=v12`
+- Upgraded `messageformat` from v2.3.0 to `@messageformat/core` v3.0.0, see [changelog](https://github.com/messageformat/messageformat/blob/master/packages/core/CHANGELOG.md#300-2021-05-13) for more information.
 - `TranslocoMessageFormatModule` removed `init` method, use `forRoot` instead.
 
 ## Transloco Persist Lang
@@ -35,11 +36,6 @@ We have removed deprecated code and upgraded dependencies, please take a look at
 
 - `@angular/core` peer dependency is now `>=v12`
 - `TranslocoPreloadLangsModule` removed `preload` method, use `forRoot` instead.
-
-## Transloco utils
-
-- Removed `TranslocoConfig` interface, use `TranslocoGlobalConfig` instead.
-- Removed `getConfig` function, use `getGlobalConfig` instead.
 
 # Transloco V2
 

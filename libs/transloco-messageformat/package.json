@@ -30,7 +30,7 @@
     "@angular/core": ">=12.0.0"
   },
   "dependencies": {
-    "messageformat": "^2.3.0",
+    "@messageformat/core": "^3.0.0",
     "tslib": "^2.2.0"
   }
 }

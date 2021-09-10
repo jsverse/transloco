@@ -1,5 +1,6 @@
 import { MessageFormatTranspiler } from './messageformat.transpiler';
 import { flatten, translocoConfig } from '@ngneat/transloco';
+import { CustomFormatter } from '@messageformat/core';
 
 describe('MessageFormatTranspiler', () => {
   const config = {};
@@ -165,9 +166,10 @@ describe('MessageFormatTranspiler', () => {
   });
 
   it('should use passed-in formatters', () => {
-    const formatters = {
-      prop: (v: { [key: string]: string }, lc: any, p: any) => v[p],
-      upcase: (v: string) => v.toUpperCase(),
+    const formatters: { [key: string]: CustomFormatter } = {
+      prop: <T = Record<string, string>>(v: T, lc: any, p: string | null) =>
+        v[p as keyof T],
+      upcase: (v) => (v as string).toUpperCase(),
     };
     const messages = {
       answer: 'Answer: {obj, prop, a}',

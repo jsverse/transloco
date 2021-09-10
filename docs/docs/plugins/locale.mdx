@@ -21,7 +21,7 @@ import { TranslocoLocaleModule } from '@ngneat/transloco-locale';
 
 @NgModule({
   imports: [
-    TranslocoLocaleModule.init()
+    TranslocoLocaleModule.forRoot()
   ],
   ...
 })
@@ -129,7 +129,7 @@ import { TranslocoLocaleModule } from '@ngneat/transloco-locale';
 
 @NgModule({
   imports: [
-    TranslocoLocaleModule.init({
+    TranslocoLocaleModule.forRoot({
       langToLocaleMapping: {
         en: 'en-US',
         es: 'es-ES'
@@ -193,7 +193,7 @@ const esESFormatConfig = {
 
 @NgModule({
   imports: [
-    TranslocoLocaleModule.init({
+    TranslocoLocaleModule.forRoot({
       localeConfig: {
         global: globalFormatConfig,
         localeBased: {

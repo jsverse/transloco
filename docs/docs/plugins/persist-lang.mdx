@@ -21,7 +21,7 @@ import {
 
 @NgModule({
   imports: [
-    TranslocoPersistLangModule.init({
+    TranslocoPersistLangModule.forRoot({
       storage: {
         provide: TRANSLOCO_PERSIST_LANG_STORAGE,
         useValue: localStorage,
@@ -54,7 +54,7 @@ export function getLangFn({
 
 @NgModule({
   imports: [
-    TranslocoPersistLangModule.init({
+    TranslocoPersistLangModule.forRoot({
       getLangFn,
       storage: {
         provide: TRANSLOCO_PERSIST_LANG_STORAGE,
@@ -78,7 +78,7 @@ import {
 
 @NgModule({
   imports: [
-    TranslocoPersistLangModule.init({
+    TranslocoPersistLangModule.forRoot({
       storage: {
         provide: TRANSLOCO_PERSIST_LANG_STORAGE,
         useValue: cookiesStorage(),

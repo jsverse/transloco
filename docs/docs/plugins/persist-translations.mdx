@@ -21,7 +21,7 @@ import {
 
 @NgModule({
   imports: [
-      TranslocoPersistTranslationsModule.init({
+      TranslocoPersistTranslationsModule.forRoot({
         loader: TranslocoHttpLoader, ====> Auto generated via ng add
         storage: {
           provide: PERSIST_TRANSLATIONS_STORAGE,
@@ -53,7 +53,7 @@ localForage.config({
 
 @NgModule({
   imports: [
-    TranslocoPersistTranslationsModule.init({
+    TranslocoPersistTranslationsModule.forRoot({
       loader: TranslocoHttpLoader,
       storage: {
         provide: PERSIST_TRANSLATIONS_STORAGE,
