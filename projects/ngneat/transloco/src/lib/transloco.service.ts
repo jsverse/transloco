@@ -156,7 +156,13 @@ export class TranslocoService implements OnDestroy {
           }
           this.handleSuccess(path, translation);
         }),
-        catchError(() => this.handleFailure(path, options)),
+        catchError((error) => {
+          if (!this.mergedConfig.prodMode) {
+            console.error(`Error while trying to load "${path}"`, error);
+          }
+
+          return this.handleFailure(path, options);
+        }),
         shareReplay(1)
       );
 
