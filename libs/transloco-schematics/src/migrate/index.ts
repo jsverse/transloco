@@ -3,7 +3,7 @@ import {
   SchematicsException,
   schematic,
 } from '@angular-devkit/schematics';
-import { fromPromise } from 'rxjs/internal-compatibility';
+import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { run } from './ngx-translate-migration';
 import { SchemaOptions } from './schema';
@@ -19,6 +19,6 @@ export default function (options: SchemaOptions): Rule {
 
     return options.from === 'Angular'
       ? schematic('ng-migrate', options)
-      : fromPromise(run(options.path)).pipe(map(() => tree));
+      : from(run(options.path)).pipe(map(() => tree));
   };
 }
