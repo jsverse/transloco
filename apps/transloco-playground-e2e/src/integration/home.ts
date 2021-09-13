@@ -6,6 +6,7 @@ export function testHomeContent(lang = 'english') {
     'contain',
     `a.b.c from list ${lang}`
   );
+  cy.get(`[data-cy=static-lang-en]`).should('contain', `home english`);
   cy.get(`[data-cy=current-lang]`).should('contain', `en`);
 
   // Directive
@@ -16,6 +17,7 @@ export function testHomeContent(lang = 'english') {
     `a.b.c from list ${lang}`
   );
   cy.get(`[data-cy=d-dynamic-key]`).should('contain', `home ${lang}`);
+  cy.get(`[data-cy=d-static-lang-es]`).should('contain', `home spanish`);
 
   // Dynamic key
   cy.get(`[data-cy=d-dynamic-key]`).click();
@@ -36,6 +38,7 @@ export function testHomeContent(lang = 'english') {
     'contain',
     `a.b.c from list ${lang}`
   );
+  cy.get(`[data-cy=p-static-lang-en]`).should('contain', `home english`);
 
   // Loop
   cy.get(`[data-cy=translation-loop]`).should('contain', `b ${lang}`);

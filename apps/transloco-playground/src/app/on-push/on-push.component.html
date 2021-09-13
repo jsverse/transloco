@@ -1,6 +1,6 @@
 <h3 class="mb">Structural Directive</h3>
-<ng-container *transloco="let t; currentLang as currentLang">
-  <ul class="list-group structural">
+<ul class="list-group structural">
+  <ng-container *transloco="let t; currentLang as currentLang">
     <li class="list-group-item" data-cy="regular">
       <b>Regular: </b>{{ t('home') }}
     </li>
@@ -10,11 +10,16 @@
     <li class="list-group-item" data-cy="with-translation-reuse">
       <b>With translation reuse: </b> {{ t('a.b.c') }}
     </li>
+    <ng-container *transloco="let staticT; lang: 'en|static'">
+      <li class="list-group-item" data-cy="static-lang-en">
+        <b>Static lang 'en': </b> {{ staticT('home') }}
+      </li>
+    </ng-container>
     <li class="list-group-item" data-cy="current-lang">
       <b>Current Lang: </b>{{ currentLang }}
     </li>
-  </ul>
-</ng-container>
+  </ng-container>
+</ul>
 
 <h3 class="mtb">Directive</h3>
 <ul class="list-group">
@@ -31,6 +36,10 @@
   <li class="list-group-item" (click)="changeKey()" data-cy="d-dynamic-key">
     (click) <b>Dynamic key: </b> <span [transloco]="key"></span>
   </li>
+  <li class="list-group-item" data-cy="d-static-lang-es">
+    <b>Static lang 'es': </b
+    ><span transloco="home" translocoLang="es|static"></span>
+  </li>
 </ul>
 
 <h3 class="mtb">Pipe</h3>
@@ -43,6 +52,9 @@
   </li>
   <li class="list-group-item" data-cy="p-with-translation-reuse">
     <b>With translation reuse: </b> {{ 'a.b.c' | transloco }}
+  </li>
+  <li class="list-group-item" data-cy="p-static-lang-en">
+    <b>Static lang 'en': </b>{{ 'home' | transloco: {}:'en|static' }}
   </li>
 </ul>
 
