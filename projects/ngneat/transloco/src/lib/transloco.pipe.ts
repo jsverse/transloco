@@ -29,7 +29,8 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
   ) {}
 
   // null is for handling strict mode + async pipe types https://github.com/ngneat/transloco/issues/311
-  transform(key: string | null, params?: HashMap | undefined, inlineLang?: string | undefined): string {
+  // null is for handling strict mode + optional chaining types https://github.com/ngneat/transloco/issues/488
+  transform(key: string | null | undefined, params?: HashMap | undefined, inlineLang?: string | undefined): string {
     if (!key) {
       return key;
     }
