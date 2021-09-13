@@ -5,6 +5,7 @@ import { fakeAsync } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { TranslocoService } from '../../transloco.service';
 import { TranslocoPipe } from '../../transloco.pipe';
+import { TranslocoScope } from '../../types';
 
 describe('TranslocoPipe', () => {
   let serviceMock: TranslocoService;
@@ -35,34 +36,30 @@ describe('TranslocoPipe', () => {
     expect(serviceMock.translate).toHaveBeenCalledWith('title', {}, 'es');
   }));
 
-  it('should load scoped translation', fakeAsync(() => {
-    spyOn(serviceMock, 'translate').and.callThrough();
-    pipe = new TranslocoPipe(serviceMock, 'lazy-page', undefined, cdrMock);
-    (pipe as any).listenToLangChange = true;
-    pipe.transform('title', {});
-    runLoader();
-    expect(serviceMock.translate).toHaveBeenCalledWith('title', {}, 'en');
-    serviceMock.setActiveLang('es');
-    runLoader();
-    expect(serviceMock.translate).toHaveBeenCalledWith('title', {}, 'es');
-  }));
+  describe('Scoped Translation', () => {
+    function assertScopedTranslation(scope: TranslocoScope) {
+      spyOn(serviceMock, 'translate').and.callThrough();
+      pipe = new TranslocoPipe(serviceMock, scope, undefined, cdrMock);
+      serviceMock.config.reRenderOnLangChange = true;
+      pipe.transform('title', {});
+      runLoader();
+      expect(serviceMock.translate).toHaveBeenCalledWith('title', {}, 'en');
+      serviceMock.setActiveLang('es');
+      runLoader();
+      expect(serviceMock.translate).toHaveBeenCalledWith('title', {}, 'es');
+    }
 
-  it('should load scoped translation with scope alias', fakeAsync(() => {
-    spyOn(serviceMock, 'translate').and.callThrough();
-    pipe = new TranslocoPipe(
-      serviceMock,
-      { scope: 'lazy-scope-alias', alias: 'myScopeAlias' },
-      undefined,
-      cdrMock
-    );
-    (pipe as any).listenToLangChange = true;
-    pipe.transform('title', {});
-    runLoader();
-    expect(serviceMock.translate).toHaveBeenCalledWith('title', {}, 'en');
-    serviceMock.setActiveLang('es');
-    runLoader();
-    expect(serviceMock.translate).toHaveBeenCalledWith('title', {}, 'es');
-  }));
+    it('should load scoped translation', fakeAsync(() => {
+      assertScopedTranslation('lazy-page');
+    }));
+
+    it('should load scoped translation with scope alias', fakeAsync(() => {
+      assertScopedTranslation({
+        scope: 'lazy-scope-alias',
+        alias: 'myScopeAlias',
+      });
+    }));
+  });
 
   it('should load scope translation with multiple provided scopes', fakeAsync(() => {
     spyOn(serviceMock, 'translate').and.callThrough();
