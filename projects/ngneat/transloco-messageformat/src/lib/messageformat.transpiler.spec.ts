@@ -167,4 +167,59 @@ describe('MessageFormatTranspiler', () => {
     parser.setLocale('pl');
     expect(parser.transpile(polishKey, params, {})).toBe('2 things');
   });
+
+  describe('Without lang to locale mapping', () => {
+    it(`Should throw error that locale is not found`, () => {
+      const locales = ['en-US'];
+      const parserWithLangToLocaleMapping = new MessageFormatTranspiler({ locales }, translocoConfig());
+      expect(function() {
+        parserWithLangToLocaleMapping.onLangChanged('other');
+      }).toThrowError('Localisation function not found for locale "other"');
+    });
+  });
+
+  describe('Lang to locale mapping from config', () => {
+    it(`Should use lang to locale mapping without any error`, () => {
+      const key = 'The { gender, select, male {boy won his} female {girl won her} other {person won their}} race';
+      const locales = ['en-US'];
+      const langToLocaleMapping = {
+        en: 'en-US',
+        other: 'en-US'
+      };
+      const parserWithLangToLocaleMapping = new MessageFormatTranspiler(
+        { locales, langToLocaleMapping },
+        translocoConfig()
+      );
+      const enResult = parserWithLangToLocaleMapping.transpile(key, { gender: 'male' }, {});
+      expect(function() {
+        parserWithLangToLocaleMapping.onLangChanged('other');
+      }).not.toThrowError('Localisation function not found for locale "other"');
+      const otherResult = parserWithLangToLocaleMapping.transpile(key, { gender: 'male' }, {});
+      expect(enResult).toEqual(otherResult);
+    });
+  });
+
+  describe('Lang to locale mapping from TranslocoLocale', () => {
+    it(`Should use lang to locale mapping without any error`, () => {
+      const key = 'The { gender, select, male {boy won his} female {girl won her} other {person won their}} race';
+
+      const locales = ['en-US'];
+      const langToLocaleMapping = {
+        en: 'en-US',
+        other: 'en-US'
+      };
+      const parserWithLangToLocaleMapping = new MessageFormatTranspiler(
+        { locales },
+        translocoConfig(),
+        langToLocaleMapping
+      );
+
+      const enResult = parserWithLangToLocaleMapping.transpile(key, { gender: 'male' }, {});
+      expect(function() {
+        parserWithLangToLocaleMapping.onLangChanged('other');
+      }).not.toThrowError('Localisation function not found for locale "other"');
+      const otherResult = parserWithLangToLocaleMapping.transpile(key, { gender: 'male' }, {});
+      expect(enResult).toEqual(otherResult);
+    });
+  });
 });

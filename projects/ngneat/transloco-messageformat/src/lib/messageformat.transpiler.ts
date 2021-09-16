@@ -11,6 +11,7 @@ import {
 } from '@ngneat/transloco';
 
 import * as MessageFormat from 'messageformat';
+import { LOCALE_LANG_MAPPING, Locale } from '@ngneat/transloco-locale';
 import { MessageformatConfig, MFLocale, TRANSLOCO_MESSAGE_FORMAT_CONFIG } from './messageformat.config';
 
 function mfFactory(locales?: MFLocale, messageConfig?: MessageFormat.Options): MessageFormat {
@@ -22,14 +23,17 @@ function mfFactory(locales?: MFLocale, messageConfig?: MessageFormat.Options): M
 export class MessageFormatTranspiler extends DefaultTranspiler {
   private messageFormat: MessageFormat;
   private messageConfig: MessageFormat.Options;
+  private langToLocaleMapping: HashMap<Locale>
 
   constructor(
     @Optional() @Inject(TRANSLOCO_MESSAGE_FORMAT_CONFIG) config: MessageformatConfig,
-    @Optional() @Inject(TRANSLOCO_CONFIG) userConfig?: TranslocoConfig
+    @Optional() @Inject(TRANSLOCO_CONFIG) userConfig?: TranslocoConfig,
+    @Optional() @Inject(LOCALE_LANG_MAPPING) langToLocaleMapping?: HashMap<Locale>
   ) {
     super(userConfig);
     const { locales, ...messageConfig } = config || { locales: undefined };
     this.messageConfig = messageConfig;
+    this.langToLocaleMapping = langToLocaleMapping || messageConfig.langToLocaleMapping;
     this.messageFormat = mfFactory(locales, messageConfig);
   }
 
@@ -58,7 +62,7 @@ export class MessageFormatTranspiler extends DefaultTranspiler {
   }
 
   onLangChanged(lang: string) {
-    this.setLocale(lang);
+    this.setLocale(this.langToLocaleMapping ? this.langToLocaleMapping[lang] : lang);
   }
 
   setLocale(locale: MFLocale) {

@@ -50,7 +50,10 @@ By default, messageformat initializes _all_ locales. You could also provide the 
   imports: [
     TranslocoMessageFormatModule.init(
       {
-        locales: 'en-GB'
+        locales: 'en-GB',
+        langToLocaleMapping: {
+          en: 'en-GB',
+        }
       }
     )
   ],
@@ -60,6 +63,8 @@ export class TranslocoRootModule {}
 ```
 
 The value for `locales` is either a string or an array of strings. The first locale is used as the default locale by messageformat. More info [here](https://messageformat.github.io/messageformat/MessageFormat).
+
+The `langToLocaleMapping` is optional and by default tries to get the value from TranslocoLocale config and can be overridden here. The keys should correspond to the languages used by and provided to Transloco Config 
 
 ## Advanced configuration
 MessageFormat instances provide some methods to influence its behaviour, among them `addFormatters`, `setBiDiSupport`, and `setStrictNumberSign`. Learn about their meaning [here](https://messageformat.github.io/messageformat/MessageFormat)
