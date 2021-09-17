@@ -90,7 +90,7 @@
     "eslint": "7.32.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-cypress": "2.11.3",
-    "git-cz": "3.3.0",
+    "git-cz": "4.7.1",
     "husky": "7.0.2",
     "jasmine-core": "3.9.0",
     "jasmine-spec-reporter": "7.0.0",
