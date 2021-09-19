@@ -29,7 +29,7 @@ import { ScopeResolver } from './scope-resolver';
   selector: '[transloco]'
 })
 export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
-  subscription: Subscription | null;
+  subscription: Subscription | null = null;
   view: EmbeddedViewRef<any>;
   private translationMemo: { [key: string]: { value: any; params: HashMap } } = {};
 
@@ -142,7 +142,12 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnDestroy() {
-    this.subscription && this.subscription.unsubscribe();
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+      // Caretaker note: it's important to clean up references to subscriptions since they save the `next`
+      // callback within its `destination` property, preventing classes from being GC'd.
+      this.subscription = null;
+    }
   }
 
   private detachLoader() {

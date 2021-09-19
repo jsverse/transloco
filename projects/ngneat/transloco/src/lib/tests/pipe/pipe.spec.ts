@@ -1,4 +1,4 @@
-import {TranslocoPipe, TranslocoScope, TranslocoService} from '@ngneat/transloco';
+import { TranslocoPipe, TranslocoScope, TranslocoService } from '@ngneat/transloco';
 import { Mock } from 'ts-mocks';
 import { ChangeDetectorRef } from '@angular/core';
 import { createService, runLoader } from '../transloco.mocks';
@@ -46,17 +46,15 @@ describe('TranslocoPipe', () => {
       runLoader();
       expect(translateServiceMock.translate).toHaveBeenCalledWith('title', {}, 'es');
     }
-    
+
     it('should load scoped translation', fakeAsync(() => {
       assertScopedTranslation('lazy-page');
     }));
 
     it('should load scoped translation with scope alias', fakeAsync(() => {
       assertScopedTranslation({ scope: 'lazy-scope-alias', alias: 'myScopeAlias' });
-    })); 
-  })
-  
-
+    }));
+  });
 
   it('should load scope translation with multiple provided scopes', fakeAsync(() => {
     spyOn(translateServiceMock, 'translate').and.callThrough();
@@ -153,8 +151,9 @@ describe('TranslocoPipe', () => {
 
   it('should unsubscribe on destroy', () => {
     pipe.subscription = of().subscribe();
-    spyOn(pipe.subscription, 'unsubscribe');
+    const spy = spyOn(pipe.subscription, 'unsubscribe');
     pipe.ngOnDestroy();
-    expect(pipe.subscription.unsubscribe).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalled();
+    expect(pipe.subscription).toEqual(null);
   });
 });

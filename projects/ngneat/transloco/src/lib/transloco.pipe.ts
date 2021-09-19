@@ -43,9 +43,9 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
 
     this.lastKey = keyName;
     this.subscription && this.subscription.unsubscribe();
-    
+
     const listenToLangChange = shouldListenToLangChanges(this.translocoService, this.providerLang || inlineLang);
-    
+
     this.subscription = this.translocoService.langChanges$
       .pipe(
         switchMap(activeLang => {
@@ -69,7 +69,12 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription && this.subscription.unsubscribe();
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+      // Caretaker note: it's important to clean up references to subscriptions since they save the `next`
+      // callback within its `destination` property, preventing classes from being GC'd.
+      this.subscription = null;
+    }
   }
 
   private updateValue(key: string, params?: HashMap | undefined) {
