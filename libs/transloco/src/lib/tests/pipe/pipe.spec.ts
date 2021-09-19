@@ -175,8 +175,9 @@ describe('TranslocoPipe', () => {
 
   it('should unsubscribe on destroy', () => {
     (pipe as any).subscription = of().subscribe();
-    spyOn((pipe as any).subscription, 'unsubscribe');
+    const spy = spyOn((pipe as any).subscription, 'unsubscribe');
     pipe.ngOnDestroy();
-    expect((pipe as any).subscription.unsubscribe).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalled();
+    expect((pipe as any).subscription).toEqual(null);
   });
 });

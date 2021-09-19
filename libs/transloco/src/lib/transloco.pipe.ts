@@ -25,7 +25,7 @@ import { ScopeResolver } from './scope-resolver';
   pure: false,
 })
 export class TranslocoPipe implements PipeTransform, OnDestroy {
-  private subscription: Subscription | undefined;
+  private subscription: Subscription | null = null;
   private lastValue = '';
   private lastKey: string | undefined;
   private path: string | undefined;
@@ -93,7 +93,12 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription?.unsubscribe();
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+      // Caretaker note: it's important to clean up references to subscriptions since they save the `next`
+      // callback within its `destination` property, preventing classes from being GC'd.
+      this.subscription = null;
+    }
   }
 
   private updateValue(key: string, params?: HashMap | undefined) {

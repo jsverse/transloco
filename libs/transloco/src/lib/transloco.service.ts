@@ -92,7 +92,7 @@ export function translate<T>(
 export class TranslocoService implements OnDestroy {
   langChanges$: Observable<string>;
 
-  private subscription: Subscription;
+  private subscription: Subscription | null = null;
   private translations = new Map<string, Translation>();
   private cache = new Map<string, Observable<Translation>>();
   private firstFallbackLang: string | undefined;
@@ -675,7 +675,12 @@ export class TranslocoService implements OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+      // Caretaker note: it's important to clean up references to subscriptions since they save the `next`
+      // callback within its `destination` property, preventing classes from being GC'd.
+      this.subscription = null;
+    }
     // Caretaker note: since this is the root provider, it'll be destroyed when the `NgModuleRef.destroy()` is run.
     // Cached values capture `this`, thus leading to a circular reference and preventing the `TranslocoService` from
     // being GC'd. This would lead to a memory leak when server-side rendering is used since the service is created

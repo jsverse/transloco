@@ -40,7 +40,7 @@ interface ViewContext {
   selector: '[transloco]',
 })
 export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
-  subscription: Subscription | undefined;
+  subscription: Subscription | null = null;
   view: EmbeddedViewRef<ViewContext> | undefined;
 
   private translationMemo: Record<string, { value: any; params?: HashMap }> =
@@ -183,7 +183,12 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnDestroy() {
-    this.subscription?.unsubscribe();
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+      // Caretaker note: it's important to clean up references to subscriptions since they save the `next`
+      // callback within its `destination` property, preventing classes from being GC'd.
+      this.subscription = null;
+    }
   }
 
   private detachLoader() {
