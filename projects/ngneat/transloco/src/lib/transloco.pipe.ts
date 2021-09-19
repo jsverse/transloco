@@ -55,11 +55,20 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
             active: activeLang
           });
 
-          return Array.isArray(this.providerScope)
-            ? forkJoin(
-                (<TranslocoScope[]>this.providerScope).map(providerScope => this.resolveScope(lang, providerScope))
-              )
-            : this.resolveScope(lang, this.providerScope);
+          let resolvedScope;
+
+          if (Array.isArray(this.providerScope)) {
+            const keyPrefix = key.split('.')[0];
+            const derivedScope = this.providerScope.find(s =>
+              typeof s === 'string' ? s === keyPrefix : s.alias === keyPrefix || s.scope === keyPrefix
+            );
+
+            resolvedScope = this.resolveScope(lang, derivedScope);
+          } else {
+            resolvedScope = this.resolveScope(lang, this.providerScope);
+          }
+
+          return resolvedScope;
         }),
         listenOrNotOperator(listenToLangChange)
       )
