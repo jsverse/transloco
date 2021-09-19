@@ -18,5 +18,8 @@ export class TranslocoLocalePipe {
 
   onDestroy(): void {
     this.subscription.unsubscribe();
+    // Caretaker note: it's important to clean up references to subscriptions since they save the `next`
+    // callback within its `destination` property, preventing classes from being GC'd.
+    this.subscription = null;
   }
 }
