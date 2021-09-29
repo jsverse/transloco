@@ -42,7 +42,10 @@
           "outputs": ["{options.outputFile}"]
         },
         "version": {
-          "builder": "@jscutlery/semver:version"
+          "builder": "@jscutlery/semver:version",
+          "options": {
+            "versionTagPrefix": "transloco@"
+          }
         }
       }
     },
@@ -89,7 +92,7 @@
         "version": {
           "builder": "@jscutlery/semver:version",
           "options": {
-            "versionTagPrefix": "locale"
+            "versionTagPrefix": "locale@"
           }
         }
       }
@@ -137,7 +140,7 @@
         "version": {
           "builder": "@jscutlery/semver:version",
           "options": {
-            "versionTagPrefix": "messageformat"
+            "versionTagPrefix": "messageformat@"
           }
         }
       }
@@ -175,7 +178,7 @@
         "version": {
           "builder": "@jscutlery/semver:version",
           "options": {
-            "versionTagPrefix": "optimize"
+            "versionTagPrefix": "optimize@"
           }
         }
       }
@@ -223,7 +226,7 @@
         "version": {
           "builder": "@jscutlery/semver:version",
           "options": {
-            "versionTagPrefix": "persist-lang"
+            "versionTagPrefix": "persist-lang@"
           }
         }
       }
@@ -271,7 +274,7 @@
         "version": {
           "builder": "@jscutlery/semver:version",
           "options": {
-            "versionTagPrefix": "persist-translations"
+            "versionTagPrefix": "persist-translations@"
           }
         }
       }
@@ -448,7 +451,7 @@
         "version": {
           "builder": "@jscutlery/semver:version",
           "options": {
-            "versionTagPrefix": "preload-langs"
+            "versionTagPrefix": "preload-langs@"
           }
         }
       }
@@ -524,7 +527,7 @@
         "version": {
           "builder": "@jscutlery/semver:version",
           "options": {
-            "versionTagPrefix": "scoped-libs"
+            "versionTagPrefix": "scoped-libs@"
           }
         }
       }
@@ -562,7 +565,7 @@
         "version": {
           "builder": "@jscutlery/semver:version",
           "options": {
-            "versionTagPrefix": "utils"
+            "versionTagPrefix": "utils@"
           }
         }
       }
@@ -600,7 +603,7 @@
         "version": {
           "builder": "@jscutlery/semver:version",
           "options": {
-            "versionTagPrefix": "validator"
+            "versionTagPrefix": "validator@"
           }
         }
       }
