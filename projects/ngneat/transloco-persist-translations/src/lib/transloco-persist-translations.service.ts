@@ -104,20 +104,21 @@ export class TranslocoPersistTranslations implements TranslocoLoader, OnDestroy 
 
   private clearCurrentStorage(): Observable<any> {
     const storageKey = this.merged.storageKey;
-    return this.getTimestamp(storageKey)
-      .pipe(
-        filter(time => !!time),
-        tap(time => {
-          const isExpired = now() - time >= this.merged.ttl;
-          if (isExpired) {
-            this.storage.removeItem(storageKey);
-          }
-        })
-      )
+    return this.getTimestamp(storageKey).pipe(
+      filter(time => !!time),
+      tap(time => {
+        const isExpired = now() - time >= this.merged.ttl;
+        if (isExpired) {
+          this.storage.removeItem(storageKey);
+        }
+      })
+    );
   }
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+    // Caretaker note: it's important to clean up references to subscriptions since they save the `next`
+    // callback within its `destination` property, preventing classes from being GC'd.
+    this.subscription = null;
   }
-
 }
