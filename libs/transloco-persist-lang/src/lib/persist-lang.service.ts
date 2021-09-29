@@ -17,7 +17,7 @@ import { Inject, Injectable, OnDestroy } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class TranslocoPersistLangService implements OnDestroy {
-  private subscription: Subscription = Subscription.EMPTY;
+  private subscription: Subscription | null = null;
   private storageKey: string;
 
   constructor(
@@ -49,7 +49,7 @@ export class TranslocoPersistLangService implements OnDestroy {
   private init() {
     // We need to first set the cached lang and then listen to changes
     this.setActiveLang();
-    this.subscription.unsubscribe();
+    this.subscription?.unsubscribe();
     this.subscription = this.updateStorageOnLangChange();
   }
 
@@ -85,6 +85,9 @@ export class TranslocoPersistLangService implements OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.subscription?.unsubscribe();
+    // Caretaker note: it's important to clean up references to subscriptions since they save the `next`
+    // callback within its `destination` property, preventing classes from being GC'd.
+    this.subscription = null;
   }
 }

@@ -10,7 +10,7 @@ export const PRELOAD_LANGUAGES = new InjectionToken<string[]>(
 @Injectable()
 export class TranslocoPreloadLangsService implements OnDestroy {
   private readonly idleCallbackId: number | undefined;
-  private subscription: Subscription | undefined;
+  private subscription: Subscription | null = null;
 
   constructor(
     service: TranslocoService,
@@ -42,5 +42,8 @@ export class TranslocoPreloadLangsService implements OnDestroy {
       window.cancelIdleCallback(this.idleCallbackId);
     }
     this.subscription?.unsubscribe();
+    // Caretaker note: it's important to clean up references to subscriptions since they save the `next`
+    // callback within its `destination` property, preventing classes from being GC'd.
+    this.subscription = null;
   }
 }

@@ -23,18 +23,16 @@ const getTimestampKey = (key: string) => `${key}/timestamp`;
 export class TranslocoPersistTranslations
   implements TranslocoLoader, OnDestroy
 {
-  private subscription: Subscription;
-  private merged: StorageConfig;
+  private subscription: Subscription | null =
+    this.clearCurrentStorage().subscribe();
+  private merged: StorageConfig = { ...defaultConfig, ...this.config };
   private cache: Translation | null = null;
 
   constructor(
     @Inject(PERSIST_TRANSLATIONS_LOADER) private loader: TranslocoLoader,
     @Inject(PERSIST_TRANSLATIONS_STORAGE) private storage: MaybeAsyncStorage,
     @Inject(PERSIST_TRANSLATIONS_STORAGE_CONFIG) private config: StorageConfig
-  ) {
-    this.merged = { ...defaultConfig, ...this.config };
-    this.subscription = this.clearCurrentStorage().subscribe();
-  }
+  ) {}
 
   getTranslation(lang: string): Observable<Translation> {
     const storageKey = this.merged.storageKey;
@@ -131,6 +129,10 @@ export class TranslocoPersistTranslations
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    this.subscription!.unsubscribe();
+    // Caretaker note: it's important to clean up references to subscriptions since they save the `next`
+    // callback within its `destination` property, preventing classes from being GC'd.
+    this.subscription = null;
   }
 }

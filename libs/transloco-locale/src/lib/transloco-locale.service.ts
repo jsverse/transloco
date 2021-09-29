@@ -33,9 +33,17 @@ import {
 })
 export class TranslocoLocaleService implements OnDestroy {
   localeChanges$: Observable<Locale>;
-  private locale: BehaviorSubject<Locale>;
-  private _locale: Locale;
-  private subscription: Subscription;
+  private _locale =
+    this.defaultLocale || this.toLocale(this.translocoService.getActiveLang());
+  private locale: BehaviorSubject<Locale> = new BehaviorSubject(this._locale);
+  private subscription: Subscription | null = this.translocoService.langChanges$
+    .pipe(
+      map(this.toLocale.bind(this)),
+      filter((locale) => !!locale)
+    )
+    .subscribe({
+      next: (locale: Locale) => this.setLocale(locale),
+    });
 
   constructor(
     private translocoService: TranslocoService,
@@ -50,22 +58,9 @@ export class TranslocoLocaleService implements OnDestroy {
     @Inject(TRANSLOCO_DATE_TRANSFORMER)
     private dateTransformer: TranslocoDateTransformer
   ) {
-    this._locale =
-      this.defaultLocale ||
-      this.toLocale(this.translocoService.getActiveLang());
-    this.locale = new BehaviorSubject(this._locale);
     this.localeChanges$ = this.locale
       .asObservable()
       .pipe(distinctUntilChanged());
-
-    this.subscription = translocoService.langChanges$
-      .pipe(
-        map(this.toLocale.bind(this)),
-        filter((locale) => !!locale)
-      )
-      .subscribe({
-        next: (locale: Locale) => this.setLocale(locale),
-      });
   }
 
   getLocale() {
@@ -164,7 +159,11 @@ export class TranslocoLocaleService implements OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    this.subscription!.unsubscribe();
+    // Caretaker note: it's important to clean up references to subscriptions since they save the `next`
+    // callback within its `destination` property, preventing classes from being GC'd.
+    this.subscription = null;
   }
 
   private toLocale(val: string | Locale): Locale {
