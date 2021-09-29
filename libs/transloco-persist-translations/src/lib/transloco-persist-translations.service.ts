@@ -23,9 +23,9 @@ const getTimestampKey = (key: string) => `${key}/timestamp`;
 export class TranslocoPersistTranslations
   implements TranslocoLoader, OnDestroy
 {
+  private merged: StorageConfig = { ...defaultConfig, ...this.config };
   private subscription: Subscription | null =
     this.clearCurrentStorage().subscribe();
-  private merged: StorageConfig = { ...defaultConfig, ...this.config };
   private cache: Translation | null = null;
 
   constructor(
