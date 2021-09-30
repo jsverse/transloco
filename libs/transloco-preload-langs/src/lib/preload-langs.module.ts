@@ -9,17 +9,8 @@ interface IdleDeadline {
   timeRemaining: () => number;
 }
 
-type IdleCallback = (deadLine: IdleDeadline) => void;
-
-declare global {
-  interface Window {
-    requestIdleCallback: (cb: IdleCallback) => number;
-    cancelIdleCallback: (id: number) => void;
-  }
-}
-
-window.requestIdleCallback =
-  window.requestIdleCallback ||
+(window as any).requestIdleCallback =
+  (window as any).requestIdleCallback ||
   function (cb: (deadLine: IdleDeadline) => void) {
     const start = Date.now();
 
@@ -33,8 +24,8 @@ window.requestIdleCallback =
     }, 1);
   };
 
-window.cancelIdleCallback =
-  window.cancelIdleCallback ||
+(window as any).cancelIdleCallback =
+  (window as any).cancelIdleCallback ||
   function (id: number) {
     clearTimeout(id);
   };
