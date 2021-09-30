@@ -18,7 +18,7 @@ export class TranslocoPreloadLangsService implements OnDestroy {
   ) {
     if (!langs) return;
 
-    this.idleCallbackId = window.requestIdleCallback(() => {
+    this.idleCallbackId = (window as any).requestIdleCallback(() => {
       const preloads = langs.map((currentLangOrScope) => {
         const lang = service._completeScopeWithLang(currentLangOrScope);
 
@@ -39,7 +39,7 @@ export class TranslocoPreloadLangsService implements OnDestroy {
 
   ngOnDestroy() {
     if (this.idleCallbackId !== undefined) {
-      window.cancelIdleCallback(this.idleCallbackId);
+      (window as any).cancelIdleCallback(this.idleCallbackId);
     }
     this.subscription?.unsubscribe();
     // Caretaker note: it's important to clean up references to subscriptions since they save the `next`
