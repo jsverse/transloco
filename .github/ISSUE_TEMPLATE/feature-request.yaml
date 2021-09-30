@@ -71,8 +71,7 @@ body:
     id: other
     attributes:
       label: Additional context
-      description: |
-      Links? References? Anything that will give us more context about the issue you are encountering!
+      description: Links? References? Anything that will give us more context about the issue you are encountering!
 
   - type: dropdown
     id: contribution
