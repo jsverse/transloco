@@ -42,10 +42,7 @@
           "outputs": ["{options.outputFile}"]
         },
         "version": {
-          "builder": "@jscutlery/semver:version",
-          "options": {
-            "versionTagPrefix": "transloco@"
-          }
+          "builder": "@jscutlery/semver:version"
         }
       }
     },
@@ -90,10 +87,7 @@
           "outputs": ["{options.outputFile}"]
         },
         "version": {
-          "builder": "@jscutlery/semver:version",
-          "options": {
-            "versionTagPrefix": "locale@"
-          }
+          "builder": "@jscutlery/semver:version"
         }
       }
     },
@@ -138,10 +132,7 @@
           "outputs": ["{options.outputFile}"]
         },
         "version": {
-          "builder": "@jscutlery/semver:version",
-          "options": {
-            "versionTagPrefix": "messageformat@"
-          }
+          "builder": "@jscutlery/semver:version"
         }
       }
     },
@@ -176,10 +167,7 @@
           }
         },
         "version": {
-          "builder": "@jscutlery/semver:version",
-          "options": {
-            "versionTagPrefix": "optimize@"
-          }
+          "builder": "@jscutlery/semver:version"
         }
       }
     },
@@ -224,10 +212,7 @@
           "outputs": ["{options.outputFile}"]
         },
         "version": {
-          "builder": "@jscutlery/semver:version",
-          "options": {
-            "versionTagPrefix": "persist-lang@"
-          }
+          "builder": "@jscutlery/semver:version"
         }
       }
     },
@@ -272,10 +257,7 @@
           "outputs": ["{options.outputFile}"]
         },
         "version": {
-          "builder": "@jscutlery/semver:version",
-          "options": {
-            "versionTagPrefix": "persist-translations@"
-          }
+          "builder": "@jscutlery/semver:version"
         }
       }
     },
@@ -449,10 +431,7 @@
           "outputs": ["{options.outputFile}"]
         },
         "version": {
-          "builder": "@jscutlery/semver:version",
-          "options": {
-            "versionTagPrefix": "preload-langs@"
-          }
+          "builder": "@jscutlery/semver:version"
         }
       }
     },
@@ -525,10 +504,7 @@
           }
         },
         "version": {
-          "builder": "@jscutlery/semver:version",
-          "options": {
-            "versionTagPrefix": "scoped-libs@"
-          }
+          "builder": "@jscutlery/semver:version"
         }
       }
     },
@@ -563,10 +539,7 @@
           }
         },
         "version": {
-          "builder": "@jscutlery/semver:version",
-          "options": {
-            "versionTagPrefix": "utils@"
-          }
+          "builder": "@jscutlery/semver:version"
         }
       }
     },
@@ -601,10 +574,7 @@
           }
         },
         "version": {
-          "builder": "@jscutlery/semver:version",
-          "options": {
-            "versionTagPrefix": "validator@"
-          }
+          "builder": "@jscutlery/semver:version"
         }
       }
     }
