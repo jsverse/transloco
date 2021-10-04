@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.23.4](https://github.com/ngneat/transloco/compare/v2.23.3...v2.23.4) (2021-10-04)
+
+
+### Bug Fixes
+
+* allow classes to be GCd ([#506](https://github.com/ngneat/transloco/issues/506)) ([7beb8a0](https://github.com/ngneat/transloco/commit/7beb8a0))
+* resolve ansi-regex vulnerability ([#509](https://github.com/ngneat/transloco/issues/509)) ([c118eec](https://github.com/ngneat/transloco/commit/c118eec))
+
+
+
 ### [2.23.3](https://github.com/ngneat/transloco/compare/v2.23.2...v2.23.3) (2021-09-19)
 
 
