@@ -184,6 +184,7 @@
           "builder": "@nrwl/angular:package",
           "outputs": ["dist/libs/transloco-persist-lang"],
           "options": {
+            "updateBuildableProjectDepsInPackageJson": false,
             "project": "libs/transloco-persist-lang/ng-package.json"
           },
           "configurations": {
