@@ -405,6 +405,7 @@
           "builder": "@nrwl/angular:package",
           "outputs": ["dist/libs/transloco-preload-langs"],
           "options": {
+            "updateBuildableProjectDepsInPackageJson": false,
             "project": "libs/transloco-preload-langs/ng-package.json"
           },
           "configurations": {
