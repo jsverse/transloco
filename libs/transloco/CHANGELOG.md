@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.0.2](https://github.com/ngneat/transloco/compare/transloco-3.0.1...transloco-3.0.2) (2021-10-07)
+
+### Bug Fixes
+
+- **transloco:** 🐛 unexpected peerDependencies ([672e529](https://github.com/ngneat/transloco/commit/672e5294fd25e456229c800fd1ebf49e39fc88e4)), closes [#513](https://github.com/ngneat/transloco/issues/513)
+
 ## [3.0.1](https://github.com/ngneat/transloco/compare/transloco-3.0.0...transloco-3.0.1) (2021-10-02)
 
 ### [3.0.0](https://github.com/ngneat/transloco/compare/v2.23.3...transloco-3.0.0) (2021-09-30)
