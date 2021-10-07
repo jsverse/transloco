@@ -103,6 +103,7 @@
           "builder": "@nrwl/angular:package",
           "outputs": ["dist/libs/transloco-messageformat"],
           "options": {
+            "updateBuildableProjectDepsInPackageJson": false,
             "project": "libs/transloco-messageformat/ng-package.json"
           },
           "configurations": {
