@@ -67,7 +67,7 @@
     "@angular/language-service": "12.2.5",
     "@commitlint/cli": "^12.1.4",
     "@commitlint/config-conventional": "^12.1.4",
-    "@jscutlery/semver": "2.8.0",
+    "@jscutlery/semver": "2.10.0",
     "@ngneat/spectator": "8.0.3",
     "@nrwl/cli": "12.9.0",
     "@nrwl/cypress": "12.9.0",
