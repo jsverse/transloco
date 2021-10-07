@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.23.5](https://github.com/ngneat/transloco/compare/v2.23.4...v2.23.5) (2021-10-07)
+
+
+### Bug Fixes
+
+* 🐛 update vulnerable deps ([c4e7781](https://github.com/ngneat/transloco/commit/c4e7781)), closes [#509](https://github.com/ngneat/transloco/issues/509)
+
+
+
 ### [2.23.4](https://github.com/ngneat/transloco/compare/v2.23.3...v2.23.4) (2021-10-04)
 
 
