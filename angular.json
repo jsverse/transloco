@@ -230,6 +230,7 @@
           "builder": "@nrwl/angular:package",
           "outputs": ["dist/libs/transloco-persist-translations"],
           "options": {
+            "updateBuildableProjectDepsInPackageJson": false,
             "project": "libs/transloco-persist-translations/ng-package.json"
           },
           "configurations": {
