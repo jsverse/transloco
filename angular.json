@@ -11,6 +11,7 @@
           "builder": "@nrwl/angular:package",
           "outputs": ["dist/libs/transloco"],
           "options": {
+            "updateBuildableProjectDepsInPackageJson": false,
             "project": "libs/transloco/ng-package.json"
           },
           "configurations": {
