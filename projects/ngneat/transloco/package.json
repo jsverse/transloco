@@ -40,9 +40,9 @@
   ],
   "dependencies": {
     "@ngneat/transloco-utils": "^1.0.6",
-    "replace-in-file": "^4.1.2",
-    "ora": "^3.4.0",
-    "flat": "5.0.2",
+    "replace-in-file": "^5.0.2",
+    "ora": "^5.4.1",
+    "flat": "^5.0.2",
     "lodash.kebabcase": "^4.1.1"
   },
   "peerDependencies": {
