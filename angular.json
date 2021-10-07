@@ -57,6 +57,7 @@
           "builder": "@nrwl/angular:package",
           "outputs": ["dist/libs/transloco-locale"],
           "options": {
+            "updateBuildableProjectDepsInPackageJson": false,
             "project": "libs/transloco-locale/ng-package.json"
           },
           "configurations": {
