@@ -458,6 +458,11 @@
                 "glob": "**/*.json",
                 "input": "libs/transloco-schematics/src",
                 "output": "./src"
+              },
+              {
+                "glob": "**/*.__ts__",
+                "input": "libs/transloco-schematics/src",
+                "output": "./src"
               }
             ]
           }
