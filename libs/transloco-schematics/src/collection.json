@@ -1,6 +1,6 @@
 {
   "extends": ["@schematics/angular"],
-  "$schema": "../../../@angular-devkit/schematics/collection-schema.json",
+  "$schema": "../../../../@angular-devkit/schematics/collection-schema.json",
   "schematics": {
     "ng-add": {
       "aliases": ["init"],
@@ -11,7 +11,7 @@
     "component": {
       "aliases": ["c"],
       "factory": "./component/",
-      "schema": "../../../@schematics/angular/component/schema.json",
+      "schema": "../../../../@schematics/angular/component/schema.json",
       "description": "Add component with translation."
     },
     "migrate": {

@@ -450,14 +450,14 @@
           "builder": "@nrwl/workspace:tsc",
           "outputs": ["{options.outputPath}"],
           "options": {
-            "outputPath": "dist/libs/transloco-schematics",
+            "outputPath": "dist/libs/transloco/schematics",
             "main": "",
             "tsConfig": "libs/transloco-schematics/tsconfig.lib.json",
             "assets": [
               {
                 "glob": "**/*.json",
-                "input": "libs/schematics/src",
-                "output": "."
+                "input": "libs/transloco-schematics/src",
+                "output": "./src"
               }
             ]
           }
