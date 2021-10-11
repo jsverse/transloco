@@ -1,4 +1,4 @@
-import { Inject, InjectionToken } from '@angular/core';
+import { Inject, Injectable, InjectionToken } from '@angular/core';
 import { TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 
 export const TRANSLOCO_FALLBACK_STRATEGY =
@@ -8,6 +8,7 @@ export interface TranslocoFallbackStrategy {
   getNextLangs(failedLang: string): string[];
 }
 
+@Injectable()
 export class DefaultFallbackStrategy implements TranslocoFallbackStrategy {
   constructor(@Inject(TRANSLOCO_CONFIG) private userConfig: TranslocoConfig) {}
 
