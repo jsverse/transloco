@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.0.5](https://github.com/ngneat/transloco/compare/transloco-3.0.4...transloco-3.0.5) (2021-10-12)
+
+### Bug Fixes
+
+- transloco fallback strategy class is not decorated ([#517](https://github.com/ngneat/transloco/issues/517)) ([e922982](https://github.com/ngneat/transloco/commit/e92298226995df953d7f91a3d1ee2cc0bf7b520f))
+
 ## [3.0.4](https://github.com/ngneat/transloco/compare/transloco-3.0.3...transloco-3.0.4) (2021-10-12)
 
 ## [3.0.3](https://github.com/ngneat/transloco/compare/transloco-3.0.2...transloco-3.0.3) (2021-10-10)
