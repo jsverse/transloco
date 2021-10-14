@@ -134,7 +134,7 @@ function createTranslocoModule({
       envPath: path.relative(
         modulePath,
         `${sourceRoot}/environments/environment`
-      ),
+      ).split(path.sep).join('/'),
       loaderPrefix: ssr ? '${environment.baseUrl}' : '',
       prodMode: isLib ? 'false' : 'environment.production',
     }),
