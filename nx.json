@@ -26,46 +26,35 @@
       }
     ]
   },
-  "projects": {
-    "transloco": {
-      "tags": []
+  "cli": {
+    "defaultCollection": "@nrwl/angular"
+  },
+  "defaultProject": "transloco-playground",
+  "generators": {
+    "@nrwl/angular": {
+      "application": {
+        "linter": "eslint"
+      },
+      "library": {
+        "linter": "eslint"
+      },
+      "storybook-configuration": {
+        "linter": "eslint"
+      }
     },
-    "transloco-locale": {
-      "tags": []
+    "@nrwl/angular:application": {
+      "style": "scss",
+      "linter": "eslint",
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
     },
-    "transloco-messageformat": {
-      "tags": []
+    "@nrwl/angular:library": {
+      "style": "scss",
+      "linter": "eslint",
+      "unitTestRunner": "jest"
     },
-    "transloco-optimize": {
-      "tags": []
-    },
-    "transloco-persist-lang": {
-      "tags": []
-    },
-    "transloco-persist-translations": {
-      "tags": []
-    },
-    "transloco-playground": {
-      "tags": []
-    },
-    "transloco-playground-e2e": {
-      "tags": [],
-      "implicitDependencies": ["transloco-playground"]
-    },
-    "transloco-preload-langs": {
-      "tags": []
-    },
-    "transloco-schematics": {
-      "tags": []
-    },
-    "transloco-scoped-libs": {
-      "tags": []
-    },
-    "transloco-utils": {
-      "tags": []
-    },
-    "transloco-validator": {
-      "tags": []
+    "@nrwl/angular:component": {
+      "style": "scss"
     }
   }
 }

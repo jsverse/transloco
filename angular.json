@@ -45,7 +45,8 @@
         "version": {
           "builder": "@jscutlery/semver:version"
         }
-      }
+      },
+      "tags": []
     },
     "transloco-locale": {
       "projectType": "library",
@@ -91,7 +92,8 @@
         "version": {
           "builder": "@jscutlery/semver:version"
         }
-      }
+      },
+      "tags": []
     },
     "transloco-messageformat": {
       "projectType": "library",
@@ -137,7 +139,8 @@
         "version": {
           "builder": "@jscutlery/semver:version"
         }
-      }
+      },
+      "tags": []
     },
     "transloco-optimize": {
       "root": "libs/transloco-optimize",
@@ -172,7 +175,8 @@
         "version": {
           "builder": "@jscutlery/semver:version"
         }
-      }
+      },
+      "tags": []
     },
     "transloco-persist-lang": {
       "projectType": "library",
@@ -218,7 +222,8 @@
         "version": {
           "builder": "@jscutlery/semver:version"
         }
-      }
+      },
+      "tags": []
     },
     "transloco-persist-translations": {
       "projectType": "library",
@@ -264,7 +269,8 @@
         "version": {
           "builder": "@jscutlery/semver:version"
         }
-      }
+      },
+      "tags": []
     },
     "transloco-playground": {
       "projectType": "application",
@@ -363,7 +369,8 @@
             "karmaConfig": "apps/transloco-playground/karma.conf.js"
           }
         }
-      }
+      },
+      "tags": []
     },
     "transloco-playground-e2e": {
       "root": "apps/transloco-playground-e2e",
@@ -393,7 +400,9 @@
           },
           "outputs": ["{options.outputFile}"]
         }
-      }
+      },
+      "tags": [],
+      "implicitDependencies": ["transloco-playground"]
     },
     "transloco-preload-langs": {
       "projectType": "library",
@@ -439,7 +448,8 @@
         "version": {
           "builder": "@jscutlery/semver:version"
         }
-      }
+      },
+      "tags": []
     },
     "transloco-schematics": {
       "root": "libs/transloco-schematics",
@@ -482,7 +492,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "transloco-scoped-libs": {
       "root": "libs/transloco-scoped-libs",
@@ -517,7 +528,8 @@
         "version": {
           "builder": "@jscutlery/semver:version"
         }
-      }
+      },
+      "tags": []
     },
     "transloco-utils": {
       "root": "libs/transloco-utils",
@@ -552,7 +564,8 @@
         "version": {
           "builder": "@jscutlery/semver:version"
         }
-      }
+      },
+      "tags": []
     },
     "transloco-validator": {
       "root": "libs/transloco-validator",
@@ -587,38 +600,8 @@
         "version": {
           "builder": "@jscutlery/semver:version"
         }
-      }
-    }
-  },
-  "cli": {
-    "defaultCollection": "@nrwl/angular"
-  },
-  "schematics": {
-    "@nrwl/angular": {
-      "application": {
-        "linter": "eslint"
       },
-      "library": {
-        "linter": "eslint"
-      },
-      "storybook-configuration": {
-        "linter": "eslint"
-      }
-    },
-    "@nrwl/angular:application": {
-      "style": "scss",
-      "linter": "eslint",
-      "unitTestRunner": "jest",
-      "e2eTestRunner": "cypress"
-    },
-    "@nrwl/angular:library": {
-      "style": "scss",
-      "linter": "eslint",
-      "unitTestRunner": "jest"
-    },
-    "@nrwl/angular:component": {
-      "style": "scss"
+      "tags": []
     }
-  },
-  "defaultProject": "transloco-playground"
+  }
 }
