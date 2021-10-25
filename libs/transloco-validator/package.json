@@ -1,6 +1,6 @@
 {
   "name": "@ngneat/transloco-validator",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Transloco translation files validator",
   "main": "src/lib/transloco-validator.js",
   "bin": {
