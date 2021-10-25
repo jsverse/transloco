@@ -1,6 +1,6 @@
 {
   "name": "@ngneat/transloco-optimize",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Transloco optimization process for production environments",
   "main": "src/lib/transloco-optimize.js",
   "bin": {
