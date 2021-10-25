@@ -1,6 +1,7 @@
 import fs from 'fs';
 import glob from 'glob';
 import path from 'path';
+import { promisify } from 'util';
 import { flatten } from 'flat';
 
 type Translation = Record<string, any>;
@@ -22,17 +23,9 @@ export function getTranslationsFolder(dist: string) {
 }
 
 export function getTranslationFiles(dist: string) {
-  const filesMatcher = path.resolve(getTranslationsFolder(dist), '/**/*.json');
+  const filesMatcher = path.resolve(getTranslationsFolder(dist), '**/*.json');
 
-  return new Promise<string[]>((resolve, reject) => {
-    glob(filesMatcher, {}, function (err, translationFilesPaths) {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(translationFilesPaths);
-      }
-    });
-  });
+  return promisify(glob)(filesMatcher, {});
 }
 
 export function optimizeFiles(translationPaths: string[], commentsKey: string) {
