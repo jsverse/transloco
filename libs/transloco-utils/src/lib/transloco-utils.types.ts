@@ -1,7 +1,7 @@
 export interface TranslocoGlobalConfig {
   rootTranslationsPath?: string;
   defaultLang?: string;
-  scopedLibs?: string[];
+  scopedLibs?: string[] | Array<{ src: string; dist: string[] }>;
   scopePathMap?: Record<string, string>;
   langs?: string[];
   keysManager?: {
