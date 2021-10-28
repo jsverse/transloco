@@ -42,7 +42,7 @@
     }
   ],
   "dependencies": {
-    "@ngneat/transloco-utils": "3.0.0",
+    "@ngneat/transloco-utils": "^3.0.1",
     "chalk": "^4.1.2",
     "chokidar": "^3.5.2",
     "command-line-args": "^5.1.1",
