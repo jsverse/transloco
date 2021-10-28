@@ -46,7 +46,7 @@
   "dependencies": {
     "tslib": "^2.2.0",
     "flat": "5.0.2",
-    "@ngneat/transloco-utils": "3.0.0",
+    "@ngneat/transloco-utils": "^3.0.1",
     "replace-in-file": "^6.2.0",
     "ora": "^5.4.1",
     "lodash.kebabcase": "^4.1.1"
