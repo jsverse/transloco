@@ -23,5 +23,5 @@ export interface SetTranslationOptions
 }
 
 export interface CopyScopeTranslationsOptions extends CopyScopeOptions {
-  fileExtention: `${string}json`;
+  fileExtension: `${string}json`;
 }

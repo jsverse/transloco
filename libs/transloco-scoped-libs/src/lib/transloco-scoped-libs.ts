@@ -4,9 +4,11 @@ import glob from 'glob';
 import chokidar from 'chokidar';
 import fsExtra from 'fs-extra';
 import {
+  coerceArray,
   cutPath,
   getPackageJson,
   insertPathToGitIgnore,
+  isString,
   readJson,
   writeJson,
 } from './scoped-libs.utils';
@@ -16,6 +18,7 @@ import {
   ScopedLibsOptions,
   SetTranslationOptions,
 } from './scoped-libs.types';
+import { TranslocoGlobalConfig } from '@ngneat/transloco-utils';
 
 const libSrcExample = `
   e.g:
@@ -129,8 +132,11 @@ export default function run({
   }
 }
 
-function coerceScopedLibs(scopedLibs: string[], defaultPath: string) {
-  if (!scopedLibs || scopedLibs.length === 0) {
+function coerceScopedLibs(
+  scopedLibs: TranslocoGlobalConfig['scopedLibs'],
+  defaultPath: TranslocoGlobalConfig['rootTranslationsPath']
+) {
+  if (!scopedLibs?.length) {
     console.log(
       chalk.red(
         'Please add "scopedLibs" configuration in transloco.config.js file.',
@@ -141,17 +147,21 @@ function coerceScopedLibs(scopedLibs: string[], defaultPath: string) {
     return [];
   }
 
-  return scopedLibs.map((lib) => ({ src: lib, dist: [defaultPath] }));
+  return scopedLibs.map((lib) => {
+    return isString(lib)
+      ? { src: lib, dist: [defaultPath] }
+      : { ...lib, dist: coerceArray(lib.dist) };
+  });
 }
 
 function copyScopes(options: CopyScopeOptions) {
   const resolvedOptions: CopyScopeTranslationsOptions = {
     ...options,
-    fileExtention: 'json',
+    fileExtension: 'json',
   };
 
   if (resolvedOptions.strategy === 'join') {
-    resolvedOptions.fileExtention = 'vendor.json';
+    resolvedOptions.fileExtension = 'vendor.json';
   } else {
     resolvedOptions.outputDir = path.join(
       resolvedOptions.outputDir,
@@ -166,7 +176,7 @@ function copyScopes(options: CopyScopeOptions) {
 function copyScopeTranslationFiles(options: CopyScopeTranslationsOptions) {
   const {
     files,
-    fileExtention,
+    fileExtension,
     outputDir,
     skipGitIgnoreUpdate,
     strategy,
@@ -177,7 +187,7 @@ function copyScopeTranslationFiles(options: CopyScopeTranslationsOptions) {
     translationFilePath = path.normalize(translationFilePath);
     const [lang] = path.basename(translationFilePath).split('.');
 
-    const fileName = `${lang}.${fileExtention}`;
+    const fileName = `${lang}.${fileExtension}`;
     const outputFilePath = path.join(outputDir, fileName);
 
     console.log(
