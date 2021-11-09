@@ -61,6 +61,13 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   private langResolver = new LangResolver();
   private scopeResolver = new ScopeResolver(this.translocoService);
 
+  static ngTemplateContextGuard(
+    dir: TranslocoDirective,
+    ctx: unknown
+  ): ctx is ViewContext {
+    return true;
+  }
+
   constructor(
     private translocoService: TranslocoService,
     @Optional() private tpl: TemplateRef<ViewContext>,
