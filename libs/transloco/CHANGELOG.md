@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [3.1.0](https://github.com/ngneat/transloco/compare/transloco-3.0.7...transloco-3.1.0) (2021-11-09)
+
+### Features
+
+- **transloco:** 🎸 add a template context guard to directive ([#526](https://github.com/ngneat/transloco/issues/526)) ([48f924d](https://github.com/ngneat/transloco/commit/48f924d95b1761bab1cfe00686d96c787c7cf667))
+
 ## [3.0.7](https://github.com/ngneat/transloco/compare/transloco-3.0.6...transloco-3.0.7) (2021-10-28)
 
 ## [3.0.6](https://github.com/ngneat/transloco/compare/transloco-3.0.5...transloco-3.0.6) (2021-10-14)
