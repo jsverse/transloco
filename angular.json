@@ -388,8 +388,7 @@
           "configurations": {
             "ci": {
               "watch": false,
-              "devServerTarget": "transloco-playground:serve:production",
-              "headless": true
+              "devServerTarget": "transloco-playground:serve:production"
             }
           }
         },
