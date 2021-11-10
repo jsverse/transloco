@@ -1,0 +1,47 @@
+{
+  "projectType": "library",
+  "root": "libs/transloco-messageformat",
+  "sourceRoot": "libs/transloco-messageformat/src",
+  "prefix": "transloco-nx-shell",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/angular:package",
+      "outputs": ["dist/libs/transloco-messageformat"],
+      "options": {
+        "updateBuildableProjectDepsInPackageJson": false,
+        "project": "libs/transloco-messageformat/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/transloco-messageformat/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "libs/transloco-messageformat/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "main": "libs/transloco-messageformat/src/test-setup.ts",
+        "tsConfig": "libs/transloco-messageformat/tsconfig.spec.json",
+        "karmaConfig": "libs/transloco-messageformat/karma.conf.js"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/transloco-messageformat/src/**/*.ts",
+          "libs/transloco-messageformat/src/**/*.html"
+        ]
+      },
+      "outputs": ["{options.outputFile}"]
+    },
+    "version": {
+      "executor": "@jscutlery/semver:version"
+    }
+  },
+  "tags": []
+}

@@ -1,0 +1,31 @@
+{
+  "root": "apps/transloco-playground-e2e",
+  "sourceRoot": "apps/transloco-playground-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/transloco-playground-e2e/cypress.json",
+        "tsConfig": "apps/transloco-playground-e2e/tsconfig.e2e.json",
+        "devServerTarget": "transloco-playground:serve:development",
+        "watch": true
+      },
+      "configurations": {
+        "ci": {
+          "watch": false,
+          "devServerTarget": "transloco-playground:serve:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/transloco-playground-e2e/**/*.{js,ts}"]
+      },
+      "outputs": ["{options.outputFile}"]
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["transloco-playground"]
+}

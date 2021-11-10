@@ -1,0 +1,36 @@
+{
+  "root": "libs/transloco-scoped-libs",
+  "sourceRoot": "libs/transloco-scoped-libs/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/workspace:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/transloco-scoped-libs",
+        "main": "libs/transloco-scoped-libs/src/index.ts",
+        "tsConfig": "libs/transloco-scoped-libs/tsconfig.lib.json",
+        "assets": ["libs/transloco-scoped-libs/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/transloco-scoped-libs/**/*.ts"]
+      },
+      "outputs": ["{options.outputFile}"]
+    },
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "main": "libs/transloco-scoped-libs/src/test-setup.ts",
+        "tsConfig": "libs/transloco-scoped-libs/tsconfig.spec.json",
+        "karmaConfig": "libs/transloco-scoped-libs/karma.conf.js"
+      }
+    },
+    "version": {
+      "executor": "@jscutlery/semver:version"
+    }
+  },
+  "tags": []
+}

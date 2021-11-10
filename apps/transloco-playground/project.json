@@ -1,0 +1,98 @@
+{
+  "projectType": "application",
+  "root": "apps/transloco-playground",
+  "sourceRoot": "apps/transloco-playground/src",
+  "prefix": "transloco-nx-shell",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:browser",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/transloco-playground",
+        "index": "apps/transloco-playground/src/index.html",
+        "main": "apps/transloco-playground/src/main.ts",
+        "polyfills": "apps/transloco-playground/src/polyfills.ts",
+        "tsConfig": "apps/transloco-playground/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          "apps/transloco-playground/src/favicon.ico",
+          "apps/transloco-playground/src/assets"
+        ],
+        "styles": [
+          "apps/transloco-playground/src/styles.scss",
+          "node_modules/bootstrap/dist/css/bootstrap.min.css"
+        ],
+        "scripts": ["node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"]
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "2kb",
+              "maximumError": "4kb"
+            }
+          ],
+          "fileReplacements": [
+            {
+              "replace": "apps/transloco-playground/src/environments/environment.ts",
+              "with": "apps/transloco-playground/src/environments/environment.prod.ts"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "configurations": {
+        "production": {
+          "browserTarget": "transloco-playground:build:production"
+        },
+        "development": {
+          "browserTarget": "transloco-playground:build:development"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "transloco-playground:build"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "apps/transloco-playground/src/**/*.ts",
+          "apps/transloco-playground/src/**/*.html"
+        ]
+      },
+      "outputs": ["{options.outputFile}"]
+    },
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "main": "apps/transloco-playground/src/test-setup.ts",
+        "tsConfig": "apps/transloco-playground/tsconfig.spec.json",
+        "karmaConfig": "apps/transloco-playground/karma.conf.js"
+      }
+    }
+  },
+  "tags": []
+}

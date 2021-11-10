@@ -1,0 +1,47 @@
+{
+  "projectType": "library",
+  "root": "libs/transloco-persist-lang",
+  "sourceRoot": "libs/transloco-persist-lang/src",
+  "prefix": "transloco-nx-shell",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/angular:package",
+      "outputs": ["dist/libs/transloco-persist-lang"],
+      "options": {
+        "updateBuildableProjectDepsInPackageJson": false,
+        "project": "libs/transloco-persist-lang/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/transloco-persist-lang/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "libs/transloco-persist-lang/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "main": "libs/transloco-persist-lang/src/test-setup.ts",
+        "tsConfig": "libs/transloco-persist-lang/tsconfig.spec.json",
+        "karmaConfig": "libs/transloco-persist-lang/karma.conf.js"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/transloco-persist-lang/src/**/*.ts",
+          "libs/transloco-persist-lang/src/**/*.html"
+        ]
+      },
+      "outputs": ["{options.outputFile}"]
+    },
+    "version": {
+      "executor": "@jscutlery/semver:version"
+    }
+  },
+  "tags": []
+}

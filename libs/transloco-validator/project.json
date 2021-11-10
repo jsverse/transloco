@@ -1,0 +1,36 @@
+{
+  "root": "libs/transloco-validator",
+  "sourceRoot": "libs/transloco-validator/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/workspace:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/transloco-validator",
+        "main": "libs/transloco-validator/src/index.ts",
+        "tsConfig": "libs/transloco-validator/tsconfig.lib.json",
+        "assets": ["libs/transloco-validator/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/transloco-validator/**/*.ts"]
+      },
+      "outputs": ["{options.outputFile}"]
+    },
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "main": "libs/transloco-validator/src/test-setup.ts",
+        "tsConfig": "libs/transloco-validator/tsconfig.spec.json",
+        "karmaConfig": "libs/transloco-validator/karma.conf.js"
+      }
+    },
+    "version": {
+      "executor": "@jscutlery/semver:version"
+    }
+  },
+  "tags": []
+}

@@ -1,0 +1,47 @@
+{
+  "projectType": "library",
+  "root": "libs/transloco",
+  "sourceRoot": "libs/transloco/src",
+  "prefix": "transloco-nx-shell",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/angular:package",
+      "outputs": ["dist/libs/transloco"],
+      "options": {
+        "updateBuildableProjectDepsInPackageJson": false,
+        "project": "libs/transloco/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/transloco/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "libs/transloco/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "main": "libs/transloco/src/test-setup.ts",
+        "tsConfig": "libs/transloco/tsconfig.spec.json",
+        "karmaConfig": "libs/transloco/karma.conf.js"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/transloco/src/**/*.ts",
+          "libs/transloco/src/**/*.html"
+        ]
+      },
+      "outputs": ["{options.outputFile}"]
+    },
+    "version": {
+      "executor": "@jscutlery/semver:version"
+    }
+  },
+  "tags": []
+}

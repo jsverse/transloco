@@ -1,0 +1,47 @@
+{
+  "projectType": "library",
+  "root": "libs/transloco-preload-langs",
+  "sourceRoot": "libs/transloco-preload-langs/src",
+  "prefix": "transloco-nx-shell",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/angular:package",
+      "outputs": ["dist/libs/transloco-preload-langs"],
+      "options": {
+        "updateBuildableProjectDepsInPackageJson": false,
+        "project": "libs/transloco-preload-langs/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/transloco-preload-langs/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "libs/transloco-preload-langs/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "main": "libs/transloco-preload-langs/src/test-setup.ts",
+        "tsConfig": "libs/transloco-preload-langs/tsconfig.spec.json",
+        "karmaConfig": "libs/transloco-preload-langs/karma.conf.js"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/transloco-preload-langs/src/**/*.ts",
+          "libs/transloco-preload-langs/src/**/*.html"
+        ]
+      },
+      "outputs": ["{options.outputFile}"]
+    },
+    "version": {
+      "executor": "@jscutlery/semver:version"
+    }
+  },
+  "tags": []
+}
