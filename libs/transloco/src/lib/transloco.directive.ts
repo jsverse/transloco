@@ -9,6 +9,7 @@ import {
   OnDestroy,
   OnInit,
   Optional,
+  Renderer2,
   SimpleChanges,
   TemplateRef,
   Type,
@@ -82,7 +83,8 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     private providedLoadingTpl: Type<unknown> | string,
     private vcr: ViewContainerRef,
     private cdr: ChangeDetectorRef,
-    private host: ElementRef
+    private host: ElementRef,
+    private renderer: Renderer2
   ) {}
 
   ngOnInit() {
@@ -137,10 +139,10 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
 
   private simpleStrategy() {
     this.detachLoader();
-    this.host.nativeElement.innerText = this.translocoService.translate(
-      this.key!,
-      this.params,
-      this.currentLang
+    this.renderer.setProperty(
+      this.host.nativeElement,
+      'innerText',
+      this.translocoService.translate(this.key!, this.params, this.currentLang)
     );
   }
 
