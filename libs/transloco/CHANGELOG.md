@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.1.1](https://github.com/ngneat/transloco/compare/transloco-3.1.0...transloco-3.1.1) (2021-11-19)
+
+### Bug Fixes
+
+- **transloco:** 🐛 regular directive with ssr ([28f14af](https://github.com/ngneat/transloco/commit/28f14affbca431a1017f6f95da9ee2a5d4cdfdb5))
+
 # [3.1.0](https://github.com/ngneat/transloco/compare/transloco-3.0.7...transloco-3.1.0) (2021-11-09)
 
 ### Features
