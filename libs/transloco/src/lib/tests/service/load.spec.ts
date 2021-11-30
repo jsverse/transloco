@@ -39,6 +39,18 @@ describe('load', () => {
     });
   }));
 
+  it('should trigger lang changed once loaded', fakeAsync(() => {
+    const spy = jasmine.createSpy();
+    service.events$
+      .pipe(
+        filter((e: any) => e.type === 'langChanged'),
+      )
+      .subscribe(event => {
+        expect(event.type).toEqual('langChanged');
+      });
+    loadLang(service, 'admin-page/en');
+  }));
+
   it('should load the translation using the loader', fakeAsync(() => {
     const loaderSpy = spyOn(
       (service as any).loader,
