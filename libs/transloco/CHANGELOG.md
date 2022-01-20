@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.1.2](https://github.com/ngneat/transloco/compare/transloco-3.1.1...transloco-3.1.2) (2022-01-20)
+
+
+### Bug Fixes
+
+* **transloco:** 🐛 structural directive redundant calls ([32230d6](https://github.com/ngneat/transloco/commit/32230d640c36c16e71f331451315de78527ceb0c))
+
+
+
 ## [3.1.1](https://github.com/ngneat/transloco/compare/transloco-3.1.0...transloco-3.1.1) (2021-11-19)
 
 ### Bug Fixes
