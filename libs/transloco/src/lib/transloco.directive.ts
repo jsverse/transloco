@@ -61,6 +61,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   private path: string | undefined;
   private langResolver = new LangResolver();
   private scopeResolver = new ScopeResolver(this.translocoService);
+  private readonly strategy: 'structural' | 'attribute';
 
   static ngTemplateContextGuard(
     dir: TranslocoDirective,
@@ -85,7 +86,9 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     private cdr: ChangeDetectorRef,
     private host: ElementRef,
     private renderer: Renderer2
-  ) {}
+  ) {
+    this.strategy = this.tpl === null ? 'attribute' : 'structural';
+  }
 
   ngOnInit() {
     const listenToLangChange = shouldListenToLangChanges(
@@ -116,8 +119,8 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
         this.currentLang = this.langResolver.resolveLangBasedOnScope(
           this.path!
         );
-        this.tpl === null
-          ? this.simpleStrategy()
+        this.strategy === 'attribute'
+          ? this.attributeStrategy()
           : this.structuralStrategy(this.currentLang, this.inlineRead);
         this.cdr.markForCheck();
         this.initialized = true;
@@ -133,11 +136,13 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     // We need to support dynamic keys/params, so if this is not the first change CD cycle
     // we need to run the function again in order to update the value
-    const notInit = Object.keys(changes).some((v) => !changes[v].firstChange);
-    notInit && this.simpleStrategy();
+    if (this.strategy === 'attribute') {
+      const notInit = Object.keys(changes).some((v) => !changes[v].firstChange);
+      notInit && this.attributeStrategy();
+    }
   }
 
-  private simpleStrategy() {
+  private attributeStrategy() {
     this.detachLoader();
     this.renderer.setProperty(
       this.host.nativeElement,
