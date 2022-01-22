@@ -11,7 +11,7 @@ import { getConfig } from './config';
 export function createConfig(
   host: Tree,
   langs: string[],
-  rootTranslationsPath = 'src/assets/i18n/'
+  rootTranslationsPath = 'assets/i18n/'
 ) {
   if (!host.get(CONFIG_FILE)) {
     const config = `module.exports = {
