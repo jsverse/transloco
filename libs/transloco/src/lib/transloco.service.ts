@@ -80,12 +80,12 @@ import { resolveLoader } from './resolve-loader';
 
 let service: TranslocoService;
 
-export function translate<T>(
+export function translate<T = string>(
   key: TranslateParams,
   params: HashMap = {},
   lang?: string
 ): T {
-  return service.translate(key, params, lang);
+  return service.translate<T>(key, params, lang);
 }
 
 @Injectable({ providedIn: 'root' })
