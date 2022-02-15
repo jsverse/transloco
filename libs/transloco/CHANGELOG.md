@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.1.4](https://github.com/ngneat/transloco/compare/transloco-3.1.3...transloco-3.1.4) (2022-02-15)
+
+
+### Bug Fixes
+
+* **transloco:** 🐛 Add generic type default to Translate<T>() ([#545](https://github.com/ngneat/transloco/issues/545)) ([1a71d90](https://github.com/ngneat/transloco/commit/1a71d90b816a1297b1034dec48650a886a5caec2))
+
+
+
 ## [3.1.3](https://github.com/ngneat/transloco/compare/transloco-3.1.2...transloco-3.1.3) (2022-01-22)
 
 
