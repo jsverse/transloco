@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [3.2.0](https://github.com/ngneat/transloco/compare/transloco-3.1.4...transloco-3.2.0) (2022-03-19)
+
+
+### Features
+
+* **transloco:** 🎸 add langChanged event ([50e374f](https://github.com/ngneat/transloco/commit/50e374f762665ba5d532cd3bd6e1653fe07420f6))
+
+
+
 ## [3.1.4](https://github.com/ngneat/transloco/compare/transloco-3.1.3...transloco-3.1.4) (2022-02-15)
 
 
