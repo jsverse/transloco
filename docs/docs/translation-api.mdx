@@ -293,6 +293,11 @@ export class AppComponent {
       filter(e => e.type === 'translationLoadFailure'),
       pluck('payload')
     ).subscribe(({ langName, scope }) => ...);
+    
+    this.translocoService.events$.pipe(
+      filter(e => e.type === 'langChanged'),
+      pluck('payload')
+    ).subscribe(({ langName, scope }) => ...);
 }
 ```
 

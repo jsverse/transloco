@@ -14,7 +14,12 @@ export interface FailedEvent {
   payload: LoadedEvent['payload'];
 }
 
-export type TranslocoEvents = LoadedEvent | FailedEvent;
+export interface LangChangedEvent {
+  type: 'langChanged';
+  payload: LoadedEvent['payload'];
+}
+
+export type TranslocoEvents = LoadedEvent | FailedEvent | LangChangedEvent;
 export type Translation = HashMap;
 export type PersistStorage = Pick<
   Storage,
