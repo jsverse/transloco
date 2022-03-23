@@ -9,6 +9,7 @@ import { run } from './ngx-translate-migration';
 import { SchemaOptions } from './schema';
 
 export default function (options: SchemaOptions): Rule {
+  // @ts-ignore
   return (tree) => {
     if (!options.path) {
       throw new SchematicsException(`

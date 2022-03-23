@@ -111,6 +111,7 @@ function updateTranslocoConfig(host, options) {
 }
 
 export default function (options: SchemaOptions): Rule {
+  // @ts-ignore
   return (host: Tree) => {
     // First install dependencies via command line to get the latest versions.
     return from(installKeysManager()).pipe(

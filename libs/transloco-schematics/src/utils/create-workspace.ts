@@ -25,7 +25,7 @@ const defaultLibOptions = {
   name: 'baz',
 };
 
-export async function createWorkspace(
+export function createWorkspace(
   schematicRunner: SchematicTestRunner,
   appTree: UnitTestTree,
   workspaceOptions = defaultWorkspaceOptions,
@@ -33,25 +33,26 @@ export async function createWorkspace(
   libOptions = defaultLibOptions
 ) {
   const angularSchematic = '@schematics/angular';
+  
   return schematicRunner
     .runExternalSchematicAsync(angularSchematic, 'workspace', workspaceOptions)
     .pipe(
-      switchMap((tree) =>
+      switchMap((tree: any) =>
         schematicRunner.runExternalSchematicAsync(
           angularSchematic,
           'application',
           appOptions,
           tree
-        )
-      ),
-      switchMap((tree) =>
+        ) as any
+      ) as any,
+      switchMap((tree: any) =>
         schematicRunner.runExternalSchematicAsync(
           angularSchematic,
           'library',
           libOptions,
           tree
-        )
-      )
+        ) as any
+      ) as any
     )
-    .toPromise();
+    .toPromise() as Promise<UnitTestTree>;
 }

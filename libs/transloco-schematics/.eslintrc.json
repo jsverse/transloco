@@ -8,7 +8,9 @@
     },
     {
       "files": ["*.ts", "*.tsx"],
-      "rules": {}
+      "rules": {
+        "@typescript-eslint/ban-ts-comment": "off"
+      }
     },
     {
       "files": ["*.js", "*.jsx"],

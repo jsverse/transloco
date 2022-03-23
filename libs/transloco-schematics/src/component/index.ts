@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 export default function (options): Rule {
+  // @ts-ignore
   return (host: Tree, context: SchematicContext) => {
     const template = `<ng-template transloco let-t>
   <h1> {{ t('title') }} </h1>
@@ -19,7 +20,7 @@ export default function (options): Rule {
       'component',
       options
     );
-    const tree$ = (cmpRule(host, context) as Observable<Tree>).pipe(
+    const tree$ = (cmpRule(host, context) as unknown as Observable<Tree>).pipe(
       tap((tree) => {
         const templatePath = tree.actions.find(
           (action) => !!action.path.match(/component.html/)

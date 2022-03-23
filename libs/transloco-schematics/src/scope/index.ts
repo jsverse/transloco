@@ -124,6 +124,7 @@ function createTranslationFiles(
 }
 
 export default function (options: SchemaOptions): Rule {
+  // @ts-ignore
   return (host: Tree, context: SchematicContext) => {
     const project = getProject(host, options.project);
     const rootPath = (project && project.sourceRoot) || 'src';
@@ -144,7 +145,7 @@ export default function (options: SchemaOptions): Rule {
     }
 
     const cmpRule = externalSchematic('@schematics/angular', 'module', options);
-    const tree$ = (cmpRule(host, context) as Observable<Tree>).pipe(
+    const tree$ = (cmpRule(host, context) as unknown as Observable<Tree>).pipe(
       tap((tree) => {
         const modulePath = tree.actions.find(
           (action) =>
