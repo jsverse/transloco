@@ -16,7 +16,7 @@ import { TranslocoPreloadLangsModule } from '@ngneat/transloco-preload-langs';
 
 @NgModule({
   imports: [
-    TranslocoPreloadLangsModule.preload(['es', 'some-scope'])
+    TranslocoPreloadLangsModule.forRoot(['es', 'some-scope'])
   ]
   ...
 })
