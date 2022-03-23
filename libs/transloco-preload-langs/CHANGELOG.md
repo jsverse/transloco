@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [4.0.0](https://github.com/ngneat/transloco/compare/transloco-preload-langs-3.0.2...transloco-preload-langs-4.0.0) (2022-03-23)
+
+
+### Features
+
+* **preload-langs:** 🎸 upgrade to angular v13 ([ad07d88](https://github.com/ngneat/transloco/commit/ad07d88eb3e07dc849c78981da98c1f89e93e5b5)), closes [#536](https://github.com/ngneat/transloco/issues/536)
+
+
+### BREAKING CHANGES
+
+* **preload-langs:** 🧨 Minimum Angular version is now 13
+
+
+
 ## [3.0.2](https://github.com/ngneat/transloco/compare/transloco-preload-langs-3.0.1...transloco-preload-langs-3.0.2) (2021-10-07)
 
 ### Bug Fixes
