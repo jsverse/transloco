@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [4.0.0](https://github.com/ngneat/transloco/compare/transloco-3.2.0...transloco-4.0.0) (2022-03-23)
+
+
+### Features
+
+* **transloco:** 🎸 upgrade to v13 ([d973668](https://github.com/ngneat/transloco/commit/d9736685caee6959b4af2b3659071e7a553d858c)), closes [#536](https://github.com/ngneat/transloco/issues/536)
+
+
+### BREAKING CHANGES
+
+* **transloco:** 🧨 Minimum Angular version is now 13
+
+
+
 # [3.2.0](https://github.com/ngneat/transloco/compare/transloco-3.1.4...transloco-3.2.0) (2022-03-19)
 
 
