@@ -16,7 +16,7 @@ jobs:
             */*/node_modules
             /home/runner/.cache/Cypress
           key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
-      - run: npm i -g npm@7.15.0
+      - run: npm i -g npm@8.4.0
       - run: npm i 
       - run: npm run ci:build
   test:
