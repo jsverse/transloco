@@ -1,6 +1,6 @@
 {
   "name": "@ngneat/transloco-persist-lang",
-  "version": "3.0.1",
+  "version": "4.0.0",
   "description": "Transloco persist active language",
   "publishConfig": {
     "access": "public"
