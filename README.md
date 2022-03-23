@@ -15,7 +15,6 @@ It exposes a rich API to manage translations efficiently and cleanly. It provide
 ✅ &nbsp;Support for Testing  
 ✅ &nbsp;Support for SSR  
 ✅ &nbsp;Support for L10N  
-✅ &nbsp;Supports Ivy  
 ✅ &nbsp;Rich Plugins  
 ✅ &nbsp;Hackable  
 ✅ &nbsp;Schematics
