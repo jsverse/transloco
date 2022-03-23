@@ -2,7 +2,7 @@ import {
   UnitTestTree,
   SchematicTestRunner,
 } from '@angular-devkit/schematics/testing';
-import { switchMap } from 'rxjs/operators';
+import { switchMap } from 'rxjs';
 
 export const defaultWorkspaceOptions = {
   name: 'workspace',

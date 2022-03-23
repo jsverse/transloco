@@ -12,16 +12,16 @@ module.exports = () => {
       require('karma-jasmine'),
       require('karma-chrome-launcher'),
       require('karma-jasmine-html-reporter'),
-      require('karma-coverage-istanbul-reporter'),
+      require('karma-coverage'),
       require('@angular-devkit/build-angular/plugins/karma'),
     ],
     client: {
       clearContext: false, // leave Jasmine Spec Runner output visible in browser
     },
-    coverageIstanbulReporter: {
-      dir: join(__dirname, '../../coverage'),
-      reports: ['html', 'lcovonly'],
-      fixWebpackSourcePaths: true,
+    coverageReporter: {
+      dir: join(__dirname, './coverage'),
+      subdir: '.',
+      reporters: [{ type: 'html' }, { type: 'text-summary' }],
     },
     reporters: ['progress', 'kjhtml'],
     port: 9876,
@@ -31,6 +31,6 @@ module.exports = () => {
     browsers: ['ChromeHeadless'], //[process.env.CI ? 'ChromeHeadless' : 'Chrome'],
     singleRun: true,
     failOnEmptyTestSuite: false,
-    restartOnFileChange: true
+    restartOnFileChange: true,
   };
 };

@@ -1,12 +1,12 @@
 {
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
   "dest": "../../dist/libs/transloco",
-  "assets": ["README.md", "CHANGELOG.md"],
+  "assets": [
+    "README.md",
+    "CHANGELOG.md"
+  ],
   "lib": {
-    "entryFile": "src/index.ts",
-    "umdModuleIds": {
-      "flat": "flat"
-    }
+    "entryFile": "src/index.ts"
   },
   "allowedNonPeerDependencies": [
     "flat",

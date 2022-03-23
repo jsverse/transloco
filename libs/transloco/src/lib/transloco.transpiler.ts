@@ -158,7 +158,7 @@ export class FunctionalTranspiler
               this.injector.get(functionName);
 
             return func.transpile(...getFunctionArgs(args));
-          } catch (e) {
+          } catch (e: any) {
             let message = `There is an error in: '${value}'. 
                           Check that the you used the right syntax in your translation and that the implementation of ${functionName} is correct.`;
             if (e.message.includes('NullInjectorError')) {

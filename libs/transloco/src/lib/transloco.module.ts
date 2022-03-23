@@ -42,9 +42,8 @@ export const defaultProviders = [
 ];
 
 @NgModule({
-  declarations: [TranslocoDirective, TranslocoPipe, TranslocoLoaderComponent],
-  providers: [defaultProviders],
-  exports: [TranslocoDirective, TranslocoPipe],
-  entryComponents: [TranslocoLoaderComponent],
+    declarations: [TranslocoDirective, TranslocoPipe, TranslocoLoaderComponent],
+    providers: [defaultProviders],
+    exports: [TranslocoDirective, TranslocoPipe]
 })
 export class TranslocoModule {}
