@@ -16,7 +16,6 @@ jobs:
             */*/node_modules
             /home/runner/.cache/Cypress
           key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
-      - run: npm i -g npm@8.4.0
       - run: npm i 
       - run: npm run ci:build
   test:
@@ -34,7 +33,6 @@ jobs:
             */*/node_modules
             /home/runner/.cache/Cypress
           key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
-      - run: npm i -g npm@8.4.0
       - run: npm i
       - run: npm run ci:test  
   lint:
@@ -52,7 +50,6 @@ jobs:
             */*/node_modules
             /home/runner/.cache/Cypress
           key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
-      - run: npm i -g npm@8.4.0
       - run: npm i
       - run: npm run ci:lint  
   e2e:
@@ -70,6 +67,5 @@ jobs:
             */*/node_modules
             /home/runner/.cache/Cypress
           key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
-      - run: npm i -g npm@8.4.0
       - run: npm i
       - run: npm run ci:e2e
