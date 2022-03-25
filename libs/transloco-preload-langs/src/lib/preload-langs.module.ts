@@ -1,4 +1,4 @@
-import { ModuleWithProviders, NgModule } from '@angular/core';
+import {APP_INITIALIZER, ModuleWithProviders, NgModule} from '@angular/core';
 import {
   PRELOAD_LANGUAGES,
   TranslocoPreloadLangsService,
@@ -30,6 +30,9 @@ interface IdleDeadline {
     clearTimeout(id);
   };
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+function noop() {}
+
 @NgModule()
 export class TranslocoPreloadLangsModule {
   static forRoot(
@@ -40,6 +43,12 @@ export class TranslocoPreloadLangsModule {
       providers: [
         TranslocoPreloadLangsService,
         { provide: PRELOAD_LANGUAGES, useValue: langs },
+        {
+          provide: APP_INITIALIZER,
+          useFactory: () => noop,
+          multi: true,
+          deps: [TranslocoPreloadLangsService]
+        },
       ],
     };
   }

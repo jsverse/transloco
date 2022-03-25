@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { timer } from 'rxjs';
-import { mapTo } from 'rxjs/operators';
+import { timer, map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -9,10 +8,9 @@ export class UserService {
   getUser() {
     return timer(500)
       .pipe(
-        mapTo({
-          lang: 'en',
+        map(() => {
+          return {lang: 'en'};
         })
-      )
-      .toPromise();
+      );
   }
 }

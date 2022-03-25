@@ -23,6 +23,7 @@ export class TranslocoHttpLoader implements TranslocoLoader {
 
 @NgModule({
   imports: [
+    // TranslocoPreloadLangsModule.forRoot(['lazy-page/es']),
     TranslocoMessageFormatModule.forRoot(),
     TranslocoLocaleModule.forRoot({
       langToLocaleMapping: {
