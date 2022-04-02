@@ -3,7 +3,10 @@ module.exports = {
     {
       type: 'category',
       label: 'Getting Started',
-      items: ['installation', 'config-options'],
+      items: [
+        'getting-started/installation', 
+        'getting-started/config-options'
+      ],
     },
     {
       type: 'doc',
@@ -20,7 +23,10 @@ module.exports = {
     {
       type: 'category',
       label: 'Lazy Load Translation Files',
-      items: ['scope-configuration', 'inline-loaders'],
+      items: [
+        'lazy-load/scope-configuration', 
+        'lazy-load/inline-loaders'
+      ],
     },
     {
       type: 'doc',

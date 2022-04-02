@@ -156,7 +156,7 @@ function docsButton() {
       </div>
     ),
     className: 'getting-started',
-    to: useBaseUrl('docs/installation')
+    to: useBaseUrl('docs/getting-started/installation')
   });
 }
 

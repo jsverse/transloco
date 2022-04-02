@@ -8,6 +8,7 @@
     "nx": "nx",
     "commit": "git-cz",
     "start": "ng serve",
+    "start:docs": "npm start --prefix=docs",
     "build:transloco": "nx run transloco:build && npm run build:schematics",
     "build:locale": "nx run transloco-locale:build",
     "build:messageformat": "nx run transloco-messageformat:build",
