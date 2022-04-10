@@ -32,7 +32,7 @@ It exposes a rich API to manage translations efficiently and cleanly. It provide
 
 - 🤓 &nbsp;Learn about it on the [docs site](https://ngneat.github.io/transloco/)
 - 🎥 &nbsp;Watch our instructional [video guides](https://www.youtube.com/watch?v=MYkYcafJdGw&list=PLTuTW7EgL6ouXk5BqE4zWdDJkAuC4HTWi)
-- 🚀 &nbsp;See it in action on [StackBlitz](https://stackblitz.com/edit/ngneat-transloco)
+- 🚀 &nbsp;See it in action on [CodeSandbox](https://codesandbox.io/s/ngneat-transloco-kn52hs)
 - 😎 &nbsp;Use [schematics](https://ngneat.github.io/transloco/docs/schematics)
 - 👉 &nbsp;Checkout the [sample application](https://ngneat.github.io/transloco/sampleApp)
 - 📖 &nbsp;Read the blog [posts](https://ngneat.github.io/transloco/docs/blog-posts)
