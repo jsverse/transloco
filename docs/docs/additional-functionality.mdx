@@ -51,12 +51,14 @@ So the result of `service.translate('greet', {name: 'John'})` will be: "Hello Jo
 
 ### `translate()`
 
-You don't have to inject the service each time you need to translate a key. Transloco has an exported `translate()` function:
+You don't have to inject the service each time you need to translate a key or translate an object. Transloco has two exported `translate()` and `translateObject()` functions:
 
 ```ts
-import { translate } from '@ngneat/transloco';
+import { translate, translateObject } from '@ngneat/transloco';
 
 translate('hello');
+
+translateObject('some.object');
 ```
 
 :::important

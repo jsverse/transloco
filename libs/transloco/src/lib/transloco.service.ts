@@ -88,6 +88,14 @@ export function translate<T = string>(
   return service.translate<T>(key, params, lang);
 }
 
+export function translateObject<T>(
+  key:  TranslateParams,
+  params: HashMap = {},
+  lang?: string
+): T | T[] {
+  return service.translateObject<T>(key, params, lang);
+}
+
 @Injectable({ providedIn: 'root' })
 export class TranslocoService implements OnDestroy {
   langChanges$: Observable<string>;
