@@ -112,7 +112,7 @@ You can also provide a custom transpiler by creating a class that implements the
 import { TranslocoTranspiler } from '@ngneat/transloco';
 
 export class CustomTranspiler implements TranslocoTranspiler {
-  transpile(value: any, params, translation: Translation) {
+  transpile(value: any, params, translation: Translation, key: string) {
     return ...;
   }
 }

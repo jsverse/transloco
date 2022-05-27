@@ -16,7 +16,8 @@ import {
 export const TRANSLOCO_TRANSPILER = new InjectionToken('TRANSLOCO_TRANSPILER');
 
 export interface TranslocoTranspiler {
-  transpile(value: any, params: HashMap, translation: Translation): any;
+  // TODO: Change parameters to object in the next major release
+  transpile(value: any, params: HashMap, translation: Translation, key: string): any;
 
   onLangChanged?(lang: string): void;
 }
@@ -31,7 +32,7 @@ export class DefaultTranspiler implements TranslocoTranspiler {
     this.interpolationMatcher = resolveMatcher(userConfig);
   }
 
-  transpile(value: any, params: HashMap = {}, translation: Translation): any {
+  transpile(value: any, params: HashMap = {}, translation: Translation, key: string): any {
     if (isString(value)) {
       return value.replace(this.interpolationMatcher, (_, match) => {
         match = match.trim();
@@ -40,14 +41,14 @@ export class DefaultTranspiler implements TranslocoTranspiler {
         }
 
         return isDefined(translation[match])
-          ? this.transpile(translation[match], params, translation)
+          ? this.transpile(translation[match], params, translation, key)
           : '';
       });
     } else if (params) {
       if (isObject(value)) {
-        value = this.handleObject(value, params, translation);
+        value = this.handleObject(value, params, translation, key);
       } else if (Array.isArray(value)) {
-        value = this.handleArray(value, params, translation);
+        value = this.handleArray(value, params, translation, key);
       }
     }
 
@@ -81,7 +82,8 @@ export class DefaultTranspiler implements TranslocoTranspiler {
   protected handleObject(
     value: any,
     params: HashMap = {},
-    translation: Translation
+    translation: Translation,
+    key: string
   ) {
     let result = value;
 
@@ -92,7 +94,7 @@ export class DefaultTranspiler implements TranslocoTranspiler {
       const getParams = getValue(params, p);
 
       // transpile the value => "Hello Transloco"
-      const transpiled = this.transpile(v, getParams, translation);
+      const transpiled = this.transpile(v, getParams, translation, key);
 
       // set "b.c" to `transpiled`
       result = setValue(result, p, transpiled);
@@ -104,9 +106,10 @@ export class DefaultTranspiler implements TranslocoTranspiler {
   protected handleArray(
     value: string[],
     params: HashMap = {},
-    translation: Translation
+    translation: Translation,
+    key: string
   ) {
-    return value.map((v) => this.transpile(v, params, translation));
+    return value.map((v) => this.transpile(v, params, translation, key));
   }
 }
 
@@ -147,7 +150,7 @@ export class FunctionalTranspiler
     super();
   }
 
-  transpile(value: any, params: HashMap = {}, translation: Translation): any {
+  transpile(value: any, params: HashMap = {}, translation: Translation, key: string): any {
     let transpiled = value;
     if (isString(value)) {
       transpiled = value.replace(
@@ -170,6 +173,6 @@ export class FunctionalTranspiler
       );
     }
 
-    return super.transpile(transpiled, params, translation);
+    return super.transpile(transpiled, params, translation, key);
   }
 }

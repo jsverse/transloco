@@ -286,15 +286,15 @@ export class TranslocoService implements OnDestroy {
     }
 
     key = scope ? `${scope}.${key}` : key;
-
+    
     const translation = this.getTranslation(resolveLang);
     const value = translation[key];
-
+    
     if (!value) {
       return this._handleMissingKey(key, value, params);
     }
 
-    return this.parser.transpile(value, params, translation);
+    return this.parser.transpile(value, params, translation, key);
   }
 
   /**
@@ -401,7 +401,7 @@ export class TranslocoService implements OnDestroy {
       /* If an empty object was returned we want to try and translate the key as a string and not an object */
       return isEmpty(value)
         ? this.translate(key, params!, lang)
-        : this.parser.transpile(value, params!, translation);
+        : this.parser.transpile(value, params!, translation, key);
     }
 
     const translations: T[] = [];

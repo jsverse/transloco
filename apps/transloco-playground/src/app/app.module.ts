@@ -15,6 +15,6 @@ import { TranslocoRootModule } from './transloco-root.module';
     TranslocoRootModule,
     HttpClientModule,
   ],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent]
 })
 export class AppModule {}
