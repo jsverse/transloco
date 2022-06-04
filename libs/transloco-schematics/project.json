@@ -1,5 +1,4 @@
 {
-  "root": "libs/transloco-schematics",
   "sourceRoot": "libs/transloco-schematics/src",
   "projectType": "library",
   "targets": {
@@ -35,7 +34,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/transloco-schematics"],
       "options": {
-        "jestConfig": "libs/transloco-schematics/jest.config.js",
+        "jestConfig": "libs/transloco-schematics/jest.config.ts",
         "passWithNoTests": true
       }
     }

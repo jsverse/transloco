@@ -1,5 +1,4 @@
 {
-  "root": "apps/transloco-playground-e2e",
   "sourceRoot": "apps/transloco-playground-e2e/src",
   "projectType": "application",
   "targets": {

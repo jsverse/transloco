@@ -1,6 +1,5 @@
 {
   "projectType": "application",
-  "root": "apps/transloco-playground",
   "sourceRoot": "apps/transloco-playground/src",
   "prefix": "transloco-nx-shell",
   "targets": {

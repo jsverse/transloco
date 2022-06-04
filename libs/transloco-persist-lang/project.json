@@ -1,6 +1,5 @@
 {
   "projectType": "library",
-  "root": "libs/transloco-persist-lang",
   "sourceRoot": "libs/transloco-persist-lang/src",
   "prefix": "transloco-nx-shell",
   "targets": {

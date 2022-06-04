@@ -1,5 +1,4 @@
 {
-  "root": "libs/transloco-validator",
   "sourceRoot": "libs/transloco-validator/src",
   "projectType": "library",
   "targets": {

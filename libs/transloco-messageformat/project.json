@@ -1,6 +1,5 @@
 {
   "projectType": "library",
-  "root": "libs/transloco-messageformat",
   "sourceRoot": "libs/transloco-messageformat/src",
   "prefix": "transloco-nx-shell",
   "targets": {

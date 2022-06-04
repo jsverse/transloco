@@ -85,7 +85,7 @@ export class TranslocoLocaleService implements OnDestroy {
     const numberFormat = new Intl.NumberFormat(locale, {
       style: 'currency',
       currencyDisplay: 'symbol',
-      currency: currency,
+      currency,
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     });

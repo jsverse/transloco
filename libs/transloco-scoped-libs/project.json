@@ -1,5 +1,4 @@
 {
-  "root": "libs/transloco-scoped-libs",
   "sourceRoot": "libs/transloco-scoped-libs/src",
   "projectType": "library",
   "targets": {
