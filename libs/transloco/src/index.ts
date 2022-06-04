@@ -1,4 +1,4 @@
-export { translate, TranslocoService } from './lib/transloco.service';
+export { translate, translateObject, TranslocoService } from './lib/transloco.service';
 export { TranslocoDirective } from './lib/transloco.directive';
 export { TranslocoPipe } from './lib/transloco.pipe';
 export { TranslocoModule, defaultProviders } from './lib/transloco.module';
