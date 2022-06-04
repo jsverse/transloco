@@ -65,6 +65,22 @@ It will not work if the service didn't initialize.
 In order to safely use this method, you are responsible for ensuring that the translation files have been successfully loaded by the time it's called.
 :::
 
+### `translateObject()`
+
+You don't have to inject the service each time you need to translate an object. Transloco has an exported `translateObject()` function:
+
+```ts
+import { translateObject } from '@ngneat/transloco';
+
+translateObject('some.object');
+```
+
+:::important
+Note that this function is a proxy to the [TranslocoService.translateObject](./translation-api#translateObject) method. 
+It will not work if the service didn't initialize.  
+In order to safely use this method, you are responsible for ensuring that the translation files have been successfully loaded by the time it's called.
+:::
+
 ### `getBrowserLang()`
 
 Returns the language code name from the browser, e.g. `"en"`
