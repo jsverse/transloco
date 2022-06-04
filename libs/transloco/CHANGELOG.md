@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [4.1.0](https://github.com/ngneat/transloco/compare/transloco-4.0.0...transloco-4.1.0) (2022-06-04)
+
+
+### Features
+
+* **transloco:** 🎸 export translateObject as a proxy to the TranslocoService.translateObject method ([#565](https://github.com/ngneat/transloco/issues/565)) ([26ef1a0](https://github.com/ngneat/transloco/commit/26ef1a0fb7f9dc564d280ced3290be87ae2fedc8))
+
+
+
 # [4.0.0](https://github.com/ngneat/transloco/compare/transloco-3.2.0...transloco-4.0.0) (2022-03-23)
 
 
