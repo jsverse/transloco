@@ -3,9 +3,9 @@
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
     "sourceMap": false,
-    "declaration": false,
+    "declaration": true,
     "module": "commonjs"
   },
   "include": ["**/*.ts"],
-  "exclude": ["**/*.spec.ts"]
+  "exclude": ["**/*.spec.ts", "src/test-setup.ts"]
 }
