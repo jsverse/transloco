@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.0.4](https://github.com/ngneat/transloco/compare/transloco-utils-3.0.3...transloco-utils-3.0.4) (2022-07-19)
+
+
+### Bug Fixes
+
+* **utils:** 🐛 remove peer dependencies ([39b46e8](https://github.com/ngneat/transloco/commit/39b46e871ddf73ac8e23ce3e169ba9c09c8c9f97))
+
+
+
 ## [3.0.3](https://github.com/ngneat/transloco/compare/transloco-utils-3.0.2...transloco-utils-3.0.3) (2022-07-19)
 
 
