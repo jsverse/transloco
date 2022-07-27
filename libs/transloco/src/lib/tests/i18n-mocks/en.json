@@ -15,5 +15,9 @@
     "desc": "Desc english"
   },
   "key.is.like.path": "key is like path",
-  "empty": ""
+  "empty": "",
+  "fallback-object":{
+    "title": "Title english",
+    "desc": "Desc english"
+  }
 }

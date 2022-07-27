@@ -24,6 +24,23 @@ describe('translateObject', () => {
       });
     }));
 
+    it('should return a nested object from the fallback language', fakeAsync(() => {
+      service = createService({
+        fallbackLang: 'en',
+        missingHandler: {
+          useFallbackTranslation: true
+        }
+      })
+      loadLang(service, 'es');
+      loadLang(service, 'en');
+      service.setActiveLang('es');
+
+      expect(service.translateObject('fallback-object')).toEqual({
+        "title": "Title english",
+        "desc": "Desc english"
+      });
+    }));    
+
     it('should should support params', fakeAsync(() => {
       loadLang(service);
       expect(
