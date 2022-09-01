@@ -25,7 +25,10 @@
     },
     "project": {
       "type": "string",
-      "description": "The root project name."
+      "description": "The root project name.",
+      "$default": {
+        "$source": "projectName"
+      }
     }
   },
   "required": []

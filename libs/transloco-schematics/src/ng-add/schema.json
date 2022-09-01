@@ -38,7 +38,10 @@
     },
     "project": {
       "description": "The project name.",
-      "type": "string"
+      "type": "string",
+      "$default": {
+        "$source": "projectName"
+      }
     },
     "module": {
       "description": "The root module name.",
