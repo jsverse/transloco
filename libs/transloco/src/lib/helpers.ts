@@ -1,5 +1,5 @@
 import { ProviderScope, Translation } from './types';
-import { flatten as _flatten, unflatten as _unflatten } from 'flat';
+import _flatten from 'flat'; 
 
 export function getValue<T>(obj: T, path: keyof T) {
   if (!obj) {
@@ -124,7 +124,7 @@ export function hasInlineLoader(item: any): item is ProviderScope {
 }
 
 export function unflatten(obj: Translation): Translation {
-  return _unflatten(obj);
+  return _flatten.unflatten(obj);
 }
 
 export function flatten(obj: Translation): Translation {
