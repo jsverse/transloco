@@ -9,8 +9,8 @@ module.exports = {
   themeConfig: {
     image: 'img/large-logo.png',
     algolia: {
-      appId: 'BH4D9OD16A',
-      apiKey: '0fe261e8a7d089862d9a959da892561f',
+      appId: 'O8JZ6BVNRL',
+      apiKey: 'b4f9e14b8d8137f05f96c1758e90fb80',
       indexName: 'transloco',
     },
     navbar: {
