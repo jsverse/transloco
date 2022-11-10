@@ -53,6 +53,12 @@ module.exports = {
           className: 'header-icon-link header-gitter-link',
         },
         {
+          href: 'https://github.com/sponsors/ngneat',
+          label: ' ',
+          position: 'right',
+          className: 'header-icon-link header-sponsor-link',
+        },
+        {
           href: 'https://github.com/ngneat/transloco/',
           label: ' ',
           position: 'right',
@@ -128,4 +134,49 @@ module.exports = {
       },
     ],
   ],
+  plugins: [
+    [
+      '@docusaurus/plugin-client-redirects',
+      {
+        redirects: [
+          {
+            from: '/docs/inline-loaders',
+            to: '/docs/lazy-load/inline-loaders',
+          },          
+          {
+            from: '/docs/scope-configuration',
+            to: '/docs/lazy-load/scope-configuration',
+          },          
+          {
+            from: '/docs/installation',
+            to: '/docs/getting-started/installation',
+          },                   
+          {
+            from: '/docs/config-options',
+            to: '/docs/getting-started/config-options',
+          },                             
+          {
+            from: '/docs/plugins/preload',
+            to: '/docs/plugins/preload-langs',
+          },                                       
+          {
+            from: '/docs/tools/comments/optimize',
+            to: '/docs/tools/optimize',
+          },                                        
+          {
+            from: '/docs/schematics/add',
+            to: '/docs/schematics/ng-add',
+          },                                          
+          {
+            from: '/docs/transpiler/additional-functionality',
+            to: '/docs/additional-functionality',
+          },                                               
+          {
+            from: '/docs/plugins/persist',
+            to: '/docs/plugins/persist-translations',
+          },          
+        ],
+      }
+    ]
+  ]
 };

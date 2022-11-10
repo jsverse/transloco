@@ -33,10 +33,10 @@ function VideoGuides() {
       <main>
         <div className="video-preview margin-top--xl margin-bottom--xl">
           <iframe
+            style={{border: 'none'}}
             width="60%"
             height="100%"
             src={`https://www.youtube.com/embed/${videoId}`}
-            frameBorder="0"
             allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
           ></iframe>
@@ -50,7 +50,7 @@ function VideoGuides() {
               ></div>
             ))}
           </div>
-          <p className="text margin-top--md">Liked these videos? subscribe to the channel for more great content!</p>
+          <span className="text margin-top--md"><a href={'https://www.youtube.com/@ngneat?sub_confirmation=1&feature=subscribe-embed-click'}>Subscribe</a> to the NgNeat official youtube channel</span>
         </div>
       </main>
     </Layout>

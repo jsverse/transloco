@@ -5,13 +5,16 @@
   "scripts": {
     "start": "docusaurus start",
     "build": "docusaurus build",
+    "serve": "docusaurus serve",
     "postbuild": "node post-build",
     "swizzle": "docusaurus swizzle",
-    "deploy": "npm run build && GIT_USER=NetanelBasal USE_SSH=true docusaurus deploy --skip-build"
+    "release": "npm run build && npm run deploy",
+    "deploy": "GIT_USER=NetanelBasal USE_SSH=true docusaurus deploy --skip-build"
   },
   "dependencies": {
-    "@docusaurus/core": "2.0.0-beta.6",
-    "@docusaurus/preset-classic": "2.0.0-beta.6",
+    "@docusaurus/core": "2.2.0",
+    "@docusaurus/preset-classic": "2.2.0",
+    "@docusaurus/plugin-client-redirects": "2.2.0",
     "classnames": "2.3.1",
     "react": "16.14.0",
     "react-dom": "16.14.0"
