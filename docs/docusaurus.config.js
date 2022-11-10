@@ -14,7 +14,7 @@ module.exports = {
     }],
     algolia: {
       appId: 'O8JZ6BVNRL',
-      apiKey: 'b4f9e14b8d8137f05f96c1758e90fb80',
+      apiKey: '921502728c526dfe7f906bae383e64ae',
       indexName: 'transloco',
     },
     navbar: {
