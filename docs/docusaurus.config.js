@@ -8,6 +8,10 @@ module.exports = {
   projectName: 'transloco',
   themeConfig: {
     image: 'img/large-logo.png',
+    metadata: [{
+      name: 'google-site-verification',
+      content: 'zLIQAxOp2sGFy10UE51HAMtWTqg7J8z1hpTxZR9G1WA'
+    }],
     algolia: {
       appId: 'O8JZ6BVNRL',
       apiKey: 'b4f9e14b8d8137f05f96c1758e90fb80',
