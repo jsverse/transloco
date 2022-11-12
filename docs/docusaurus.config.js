@@ -58,7 +58,7 @@ module.exports = {
         },
         {
           href: 'https://github.com/sponsors/ngneat',
-          label: ' ',
+          label: 'Sponsor',
           position: 'right',
           className: 'header-icon-link header-sponsor-link',
         },
