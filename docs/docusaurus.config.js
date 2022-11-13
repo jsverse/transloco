@@ -84,6 +84,10 @@ module.exports = {
               label: 'Translation',
               to: 'docs/translation-in-the-template',
             },
+            {
+              label: 'FAQ',
+              to: 'docs/faq',
+            },
           ],
         },
         {
@@ -94,25 +98,30 @@ module.exports = {
               href: 'https://stackoverflow.com/questions/tagged/transloco',
             },
             {
-              label: 'FAQ',
-              to: 'docs/faq',
+              label: 'Gitter',
+              href: 'https://gitter.im/ngneat-transloco/lobby?source=orgpage',
             },
           ],
         },
         {
-          title: 'Social',
+          title: 'More',
           items: [
-            {
-              label: 'Gitter',
-              href: 'https://gitter.im/ngneat-transloco/lobby?source=orgpage',
-            },
+
             {
               label: 'GitHub',
               href: 'https://github.com/ngneat/transloco/',
             },
             {
               label: 'Twitter',
-              href: 'https://twitter.com/NetanelBasal',
+              href: 'https://twitter.com/ngneat_org',
+            },
+            {
+              label: 'YouTube',
+              href: 'https://youtube.com/@ngneat',
+            },
+            {
+              label: 'Official site',
+              href: 'https://ngneat.com',
             },
           ],
         },
