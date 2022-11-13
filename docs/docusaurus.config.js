@@ -1,3 +1,4 @@
+/** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
   title: 'Transloco Angular i18n',
   tagline: '🚀 The internationalization (i18n) library for Angular 😍',
@@ -93,6 +94,10 @@ module.exports = {
         {
           title: 'Community',
           items: [
+            {
+              label: 'Discussions',
+              href: 'https://github.com/ngneat/transloco/discussions',
+            },
             {
               label: 'Stack Overflow',
               href: 'https://stackoverflow.com/questions/tagged/transloco',

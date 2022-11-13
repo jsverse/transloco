@@ -68,6 +68,7 @@ header.hero .hero__subtitle {
   border-color: #2ebbe4;
   color: #2ebbe4 !important;
 }
+
 .getting-started:hover {
   background-color: rgba(46, 187, 228, 0.8);
   color: white !important;
@@ -178,6 +179,10 @@ header iframe {
   align-self: center;
 }
 
+.star-btn {
+  border-color: #303846;
+}
+
 .youtube {
   background-color: #2ebbe4;
   border-color: #51d1f6;
@@ -239,6 +244,19 @@ header iframe {
   font-weight: 600;
   line-height: 20px;
   font-size: 14px;
+}
+
+@media (max-width: 996px) {
+  .header-sponsor-link {
+    position: absolute;
+    right: 170px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-sponsor-link {
+    right: 50px;
+  }
 }
 
 .header-sponsor-link::before {

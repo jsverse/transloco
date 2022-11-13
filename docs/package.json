@@ -17,6 +17,9 @@
     "react": "16.14.0",
     "react-dom": "16.14.0"
   },
+  "devDependencies": {
+    "@docusaurus/types": "2.2.0"
+  },
   "browserslist": {
     "production": [
       ">0.2%",
