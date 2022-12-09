@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.1.1](https://github.com/ngneat/transloco/compare/transloco-4.1.0...transloco-4.1.1) (2022-07-13)
+
+
+### Bug Fixes
+
+* **transloco:** key as array in translateObject throws ([#577](https://github.com/ngneat/transloco/issues/577)) ([5c8e90b](https://github.com/ngneat/transloco/commit/5c8e90b3ecf67106e3a22c33a9f82f990353d0bd))
+
+
+
 # [4.1.0](https://github.com/ngneat/transloco/compare/transloco-4.0.0...transloco-4.1.0) (2022-06-04)
 
 

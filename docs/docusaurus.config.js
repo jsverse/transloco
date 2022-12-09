@@ -1,3 +1,4 @@
+/** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
   title: 'Transloco Angular i18n',
   tagline: '🚀 The internationalization (i18n) library for Angular 😍',
@@ -8,9 +9,13 @@ module.exports = {
   projectName: 'transloco',
   themeConfig: {
     image: 'img/large-logo.png',
+    metadata: [{
+      name: 'google-site-verification',
+      content: 'zLIQAxOp2sGFy10UE51HAMtWTqg7J8z1hpTxZR9G1WA'
+    }],
     algolia: {
-      appId: 'BH4D9OD16A',
-      apiKey: '0fe261e8a7d089862d9a959da892561f',
+      appId: 'O8JZ6BVNRL',
+      apiKey: '921502728c526dfe7f906bae383e64ae',
       indexName: 'transloco',
     },
     navbar: {
@@ -53,6 +58,12 @@ module.exports = {
           className: 'header-icon-link header-gitter-link',
         },
         {
+          href: 'https://github.com/sponsors/ngneat',
+          label: 'Sponsor',
+          position: 'right',
+          className: 'header-icon-link header-sponsor-link',
+        },
+        {
           href: 'https://github.com/ngneat/transloco/',
           label: ' ',
           position: 'right',
@@ -74,15 +85,6 @@ module.exports = {
               label: 'Translation',
               to: 'docs/translation-in-the-template',
             },
-          ],
-        },
-        {
-          title: 'Community',
-          items: [
-            {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/transloco',
-            },
             {
               label: 'FAQ',
               to: 'docs/faq',
@@ -90,19 +92,41 @@ module.exports = {
           ],
         },
         {
-          title: 'Social',
+          title: 'Community',
           items: [
+            {
+              label: 'Discussions',
+              href: 'https://github.com/ngneat/transloco/discussions',
+            },
+            {
+              label: 'Stack Overflow',
+              href: 'https://stackoverflow.com/questions/tagged/transloco',
+            },
             {
               label: 'Gitter',
               href: 'https://gitter.im/ngneat-transloco/lobby?source=orgpage',
             },
+          ],
+        },
+        {
+          title: 'More',
+          items: [
+
             {
               label: 'GitHub',
               href: 'https://github.com/ngneat/transloco/',
             },
             {
               label: 'Twitter',
-              href: 'https://twitter.com/NetanelBasal',
+              href: 'https://twitter.com/ngneat_org',
+            },
+            {
+              label: 'YouTube',
+              href: 'https://youtube.com/@ngneat',
+            },
+            {
+              label: 'Official site',
+              href: 'https://ngneat.com',
             },
           ],
         },
@@ -128,4 +152,49 @@ module.exports = {
       },
     ],
   ],
+  plugins: [
+    [
+      '@docusaurus/plugin-client-redirects',
+      {
+        redirects: [
+          {
+            from: '/docs/inline-loaders',
+            to: '/docs/lazy-load/inline-loaders',
+          },          
+          {
+            from: '/docs/scope-configuration',
+            to: '/docs/lazy-load/scope-configuration',
+          },          
+          {
+            from: '/docs/installation',
+            to: '/docs/getting-started/installation',
+          },                   
+          {
+            from: '/docs/config-options',
+            to: '/docs/getting-started/config-options',
+          },                             
+          {
+            from: '/docs/plugins/preload',
+            to: '/docs/plugins/preload-langs',
+          },                                       
+          {
+            from: '/docs/tools/comments/optimize',
+            to: '/docs/tools/optimize',
+          },                                        
+          {
+            from: '/docs/schematics/add',
+            to: '/docs/schematics/ng-add',
+          },                                          
+          {
+            from: '/docs/transpiler/additional-functionality',
+            to: '/docs/additional-functionality',
+          },                                               
+          {
+            from: '/docs/plugins/persist',
+            to: '/docs/plugins/persist-translations',
+          },          
+        ],
+      }
+    ]
+  ]
 };

@@ -34,6 +34,19 @@ describe('translateObject', () => {
     }));
   });
 
+  describe('The key is an array', () => {
+    it('should return two objects', fakeAsync(() => {
+      loadLang(service);
+      expect(service.translateObject(['a', 'nested'])).toEqual([{
+        b: { c: 'a.b.c {{fromList}} english' },
+      },{
+        "title": "Title english",
+        "desc": "Desc english"
+      },
+    ]);
+    }));
+  });
+
   describe('The key is an object', () => {
     it('should return an array', fakeAsync(() => {
       loadLang(service);

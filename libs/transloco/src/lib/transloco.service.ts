@@ -383,6 +383,7 @@ export class TranslocoService implements OnDestroy {
     lang = this.getActiveLang()
   ): T | T[] {
     if (isString(key) || Array.isArray(key)) {
+      const { resolveLang, scope } = this.resolveLangAndScope(lang);
       if (Array.isArray(key)) {
         return key.map((k) =>
           this.translateObject(
@@ -392,7 +393,6 @@ export class TranslocoService implements OnDestroy {
           )
         ) as any;
       }
-      const { resolveLang, scope } = this.resolveLangAndScope(lang);
 
       const translation = this.getTranslation(resolveLang);
       key = scope ? `${scope}.${key}` : key;
