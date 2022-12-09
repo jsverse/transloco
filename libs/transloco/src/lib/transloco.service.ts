@@ -398,9 +398,10 @@ export class TranslocoService implements OnDestroy {
       key = scope ? `${scope}.${key}` : key;
 
       const value = unflatten(this.getObjectByKey(translation, key));
-      /* If an empty object was returned we want to try and translate the key as a string and not an object */
+      /* If an empty object was returned we want to try the same with the fallback language and afterwards translate 
+         the key as a string and not an object */
       return isEmpty(value)
-        ? this.translate(key, params!, lang)
+        ? this._handleMissingKeyForObject(key, value, params!, lang)
         : this.parser.transpile(value, params!, translation);
     }
 
@@ -622,6 +623,30 @@ export class TranslocoService implements OnDestroy {
       this.getMissingHandlerData(),
       params
     );
+  }
+
+  /**
+   * @internal
+   */
+  _handleMissingKeyForObject(key: string, value: any, params: HashMap |  undefined, lang: string) {
+    if (this.config.missingHandler!.allowEmpty && value === '') {
+      return '';
+    }
+
+    if (!this.isResolvedMissingOnce && this.useFallbackTranslation()) {
+      // We need to set it to true to prevent a loop
+      this.isResolvedMissingOnce = true;
+      const fallbackValue = this.translateObject(
+        key,
+        params,
+        this.firstFallbackLang!
+      );
+      this.isResolvedMissingOnce = false;
+
+      return fallbackValue;
+    }
+    
+    return this.translate(key, params!, lang);
   }
 
   /**
