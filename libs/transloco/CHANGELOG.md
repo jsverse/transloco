@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [4.2.0](https://github.com/ngneat/transloco/compare/transloco-4.1.1...transloco-4.2.0) (2022-12-10)
+
+
+### Features
+
+* **transloco:** 🎸 add translation key to transpile method ([#569](https://github.com/ngneat/transloco/issues/569)) ([3a19ba6](https://github.com/ngneat/transloco/commit/3a19ba6cde6a96c8d4af893b824400dd7217cd71)), closes [ngneat#568](https://github.com/ngneat/issues/568)
+_Note:_ if you are using `@ngneat/transloco-messageformat` You'll need to update to 4.1.0 and above.
+
+
 ## [4.1.2](https://github.com/ngneat/transloco/compare/transloco-4.1.1...transloco-4.1.2) (2022-12-10)
 
 
