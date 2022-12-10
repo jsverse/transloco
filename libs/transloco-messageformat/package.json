@@ -1,6 +1,6 @@
 {
   "name": "@ngneat/transloco-messageformat",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "description": "Transpiler for Transloco that uses messageformat.js to compile translations using ICU syntax for handling pluralization and gender",
   "publishConfig": {
     "access": "public"
@@ -28,7 +28,7 @@
   "license": "MIT",
   "peerDependencies": {
     "@angular/core": ">=13.0.0",
-    "@ngneat/transloco": ">=4.0.0",
+    "@ngneat/transloco": ">=4.2.0",
     "rxjs": ">=6.0.0"
   },
   "dependencies": {
