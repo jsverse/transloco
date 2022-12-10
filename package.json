@@ -54,7 +54,7 @@
     "glob": "7.1.7",
     "lodash.kebabcase": "4.1.1",
     "replace-in-file": "6.2.0",
-    "rxjs": "7.5.5",
+    "rxjs": "7.5.6",
     "tslib": "2.3.1",
     "zone.js": "0.11.5"
   },
@@ -68,7 +68,7 @@
     "@angular/language-service": "13.3.10",
     "@commitlint/cli": "12.1.4",
     "@commitlint/config-conventional": "12.1.4",
-    "@jscutlery/semver": "2.10.0",
+    "@jscutlery/semver": "2.26.0",
     "@ngneat/spectator": "10.0.0",
     "@nrwl/angular": "14.1.6",
     "@nrwl/cli": "13.9.3",
