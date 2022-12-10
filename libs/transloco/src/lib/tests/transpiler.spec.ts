@@ -29,19 +29,20 @@ describe('TranslocoTranspiler', () => {
     testDefaultBehaviour(parser);
 
     it('should call the correct function', () => {
-      const parsed = parser.transpile('[[ upperCase(lowercase) ]]', {}, {});
+      const parsed = parser.transpile('[[ upperCase(lowercase) ]]', {}, {}, 'key');
       expect(parsed).toEqual('LOWERCASE');
     });
 
     it('should pass the function params', () => {
       const spy = spyOn(transpilerFunctions['upperCase'], 'transpile');
-      parser.transpile('[[ upperCase(lowercase) ]]', {}, {});
+      parser.transpile('[[ upperCase(lowercase) ]]', {}, {}, 'key');
       expect(spy).toHaveBeenCalledWith('lowercase');
       spy.calls.reset();
       parser.transpile(
         '[[ upperCase(lowercase, another one, many more) ]]',
         {},
-        {}
+        {},
+        'key'
       );
       expect(spy as any).toHaveBeenCalledWith(
         'lowercase',
@@ -54,7 +55,8 @@ describe('TranslocoTranspiler', () => {
       const parsed = parser.transpile(
         '[[ testParams(and {{anotherParson}}) ]]',
         { person: 'Shahar', anotherParson: 'Netanel' },
-        {}
+        {},
+        'key'
       );
       expect(parsed).toEqual('Hello Shahar and Netanel');
     });
@@ -63,7 +65,8 @@ describe('TranslocoTranspiler', () => {
       const parsed = parser.transpile(
         '[[ testKeyReference() ]]',
         {},
-        { fromList: 'Hello' }
+        { fromList: 'Hello' },
+        'key'
       );
       expect(parsed).toEqual('Hello');
     });
@@ -72,7 +75,8 @@ describe('TranslocoTranspiler', () => {
       const parsed = parser.transpile(
         '[[ returnSecondParam(noop, one\\, two, noop) ]]',
         {},
-        {}
+        {},
+        'key'
       );
       expect(parsed).toEqual('one, two');
     });
@@ -117,7 +121,8 @@ describe('TranslocoTranspiler', () => {
       const parsed = parser.transpile(
         `Hello ${wrapParam('value')}`,
         { value: 'World' },
-        {}
+        {},
+        'key'
       );
       expect(parsed).toEqual('Hello World');
     });
@@ -126,7 +131,8 @@ describe('TranslocoTranspiler', () => {
       const parsed = parser.transpile(
         `Hello ${wrapParam('from')} ${wrapParam('name')}`,
         { name: 'Transloco', from: 'from' },
-        {}
+        {},
+        'key'
       );
       expect(parsed).toEqual('Hello from Transloco');
     });
@@ -135,7 +141,8 @@ describe('TranslocoTranspiler', () => {
       const parsed = parser.transpile(
         `Hello ${wrapParam('world')}`,
         {},
-        flatten({ world: 'World' })
+        flatten({ world: 'World' }),
+        'key'
       );
       expect(parsed).toEqual('Hello World');
     });
@@ -152,7 +159,8 @@ describe('TranslocoTranspiler', () => {
           'lang'
         )} ${wrapParam('nes.ted')}`,
         {},
-        lang
+        lang,
+        'key'
       );
       expect(parsed).toEqual(
         'Hello with keys from lang supporting nested values!'
@@ -167,7 +175,8 @@ describe('TranslocoTranspiler', () => {
       const parsed = parser.transpile(
         `${wrapParam('hello')}`,
         { name: 'world' },
-        lang
+        lang,
+        'key'
       );
       expect(parsed).toEqual('Hello dear world');
     });
@@ -176,7 +185,8 @@ describe('TranslocoTranspiler', () => {
       const parsed = parser.transpile(
         `Hello ${wrapParam('from')} ${wrapParam('name')}`,
         { name: 'Transloco' },
-        flatten({ from: 'from' })
+        flatten({ from: 'from' }),
+        'key'
       );
       expect(parsed).toEqual('Hello from Transloco');
     });
@@ -188,15 +198,16 @@ describe('TranslocoTranspiler', () => {
       const parsed = parser.transpile(
         `${wrapParam('hello')}, good ${wrapParam('timeOfDay')}`,
         { name: 'world', timeOfDay: 'morning' },
-        lang
+        lang,
+        'key'
       );
       expect(parsed).toEqual('Hello world, good morning');
     });
 
     it('should return the given value when the value is falsy', () => {
-      expect(parser.transpile('', {}, {})).toEqual('');
-      expect(parser.transpile(null, {}, {})).toEqual(null);
-      expect(parser.transpile(undefined, {}, {})).toEqual(undefined);
+      expect(parser.transpile('', {}, {}, 'key')).toEqual('');
+      expect(parser.transpile(null, {}, {}, 'key')).toEqual(null);
+      expect(parser.transpile(undefined, {}, {}, 'key')).toEqual(undefined);
     });
 
     describe('Objects', () => {
@@ -218,7 +229,7 @@ describe('TranslocoTranspiler', () => {
       };
 
       it('should support objects', () => {
-        expect(parser.transpile(translations.b, {}, {})).toEqual(
+        expect(parser.transpile(translations.b, {}, {}, 'key')).toEqual(
           translations.b
         );
       });
@@ -232,7 +243,8 @@ describe('TranslocoTranspiler', () => {
               'g.h': { name: 'Transloco' },
               flat: { dynamic: 'HOLA' },
             },
-            {}
+            {},
+            'key'
           )
         ).toEqual({
           flat: 'Flat HOLA',
@@ -251,7 +263,8 @@ describe('TranslocoTranspiler', () => {
             {
               j: { value: 'Transloco' },
             },
-            {}
+            {},
+            'key'
           )
         ).toEqual({
           j: 'Hey Transloco',
@@ -263,7 +276,8 @@ describe('TranslocoTranspiler', () => {
             {
               d: { value: 'Transloco' },
             },
-            {}
+            {},
+            'key'
           )
         ).toEqual({
           otherKey: 'otherKey',
@@ -294,7 +308,7 @@ describe('TranslocoTranspiler', () => {
       };
 
       it('should work with arrays', () => {
-        expect(parser.transpile(translations.a, {}, {})).toEqual(
+        expect(parser.transpile(translations.a, {}, {}, 'key')).toEqual(
           translations.a
         );
       });
@@ -304,13 +318,13 @@ describe('TranslocoTranspiler', () => {
           ref: 'Hello world',
           refWithParam: `Hello ${wrapParam('name')}`,
         };
-        expect(parser.transpile(translations.d, {}, translation)).toEqual([
+        expect(parser.transpile(translations.d, {}, translation, 'key')).toEqual([
           'Hello world',
           'Hello',
         ]);
 
         expect(
-          parser.transpile(translations.e, { name: 'Transloco' }, translation)
+          parser.transpile(translations.e, { name: 'Transloco' }, translation, 'key')
         ).toEqual([
           'Hello Transloco',
           'Hello world',
@@ -320,7 +334,7 @@ describe('TranslocoTranspiler', () => {
 
       it('should support params', () => {
         expect(
-          parser.transpile(translations.b, { name: 'Transloco' }, {})
+          parser.transpile(translations.b, { name: 'Transloco' }, {}, 'key')
         ).toEqual(['Hello Transloco', 'Hello world', 'Hello there Transloco']);
 
         expect(
@@ -331,7 +345,8 @@ describe('TranslocoTranspiler', () => {
               two: 'Transloco2',
               three: 'Transloco3',
             },
-            {}
+            {},
+            'key'
           )
         ).toEqual([
           'Hello Transloco1 Transloco2',

@@ -67,11 +67,11 @@ const routes: Routes = [
     path: 'locale',
     loadChildren: () =>
       import('./locale/locale.module').then((m) => m.LocaleModule),
-  },
+  }
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }
