@@ -8,8 +8,7 @@ import {
   TranslocoModule,
 } from '@ngneat/transloco';
 import { TranslocoMessageFormatModule } from '@ngneat/transloco-messageformat';
-import { Injectable, NgModule } from '@angular/core';
-import { environment } from '../environments/environment';
+import {Injectable, isDevMode, NgModule} from '@angular/core';
 import { TranslocoLocaleModule } from '@ngneat/transloco-locale';
 
 @Injectable({ providedIn: 'root' })
@@ -37,7 +36,7 @@ export class TranslocoHttpLoader implements TranslocoLoader {
     {
       provide: TRANSLOCO_CONFIG,
       useValue: translocoConfig({
-        prodMode: environment.production,
+        prodMode: !isDevMode(),
         availableLangs: [
           { id: 'en', label: 'English' },
           { id: 'es', label: 'Spanish' },

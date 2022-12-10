@@ -128,15 +128,15 @@ function createTranslocoModule({
     template({
       ts: 'ts',
       stringifyList: stringifyList,
-      isLib: isLib,
-      langs: langs,
-      importEnv: ssr || !isLib,
+      isLib,
+      langs,
+      importEnv: ssr,
       envPath: path.relative(
         modulePath,
         `${sourceRoot}/environments/environment`
       ).split(path.sep).join('/'),
       loaderPrefix: ssr ? '${environment.baseUrl}' : '',
-      prodMode: isLib ? 'false' : 'environment.production',
+      prodMode: isLib ? 'false' : '!isDevMode()',
     }),
     move('/', modulePath),
   ]);

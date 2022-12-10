@@ -42,14 +42,14 @@ translocoConfig({
 ```
 
 ### `prodMode`
- Whether the application runs in production mode: (defaults to `false`)  
+ Whether the application runs in production mode: (defaults to `false`)
  When enabled, Transloco will disable all console warnings.
 
 ```ts
-import { environment } from '../environments/environment';
+import { isDevMode } from '@angular/core';
 
 translocoConfig({
-  prodMode: environment.production
+  prodMode: !isDevMode()
 })
 ```
 
@@ -96,11 +96,11 @@ translocoConfig({
 ### `flatten.aot`
 Check the optimization plugin:
 ```ts
-import { environment } from '../environments/environment';
+import {isDevMode} from "@angular/core";
 
 translocoConfig({
   flatten: {
-    aot: environment.production
+    aot: !isDevMode()
   }
 })
 ```
@@ -109,7 +109,7 @@ translocoConfig({
 The start and end markings for parameters: (defaults to `['{{', '}}']`)
 ```ts
 translocoConfig({
-  // This will enable you to specify parameters as such: `"Hello <<<value>>>"` 
+  // This will enable you to specify parameters as such: `"Hello <<<value>>>"`
   interpolation: ['<<<', '>>>']
 })
-```    
+```

@@ -21,8 +21,7 @@ import {
   translocoConfig,
   TranslocoModule
 } from '@ngneat/transloco';
-import { Injectable, NgModule } from '@angular/core';
-import { environment } from '../environments/environment';
+import { Injectable, isDevMode, NgModule } from '@angular/core';
 import { from } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
 // xliff v1.2
@@ -45,7 +44,7 @@ export class TranslocoXliffHttpLoader implements TranslocoLoader {
   getTranslation(lang: string) {
     return this.http.get<Translation>(`/assets/i18n/${lang}.xlf`, { responseType: 'text' })
       .pipe(
-        switchMap((translation) => from(xliff(translation))), 
+        switchMap((translation) => from(xliff(translation))),
         map(toTranslationFormat)
       );
   }
@@ -62,7 +61,7 @@ export class TranslocoXliffHttpLoader implements TranslocoLoader {
         // Remove this option if your application
         // doesn't support changing language in runtime.
         reRenderOnLangChange: true,
-        prodMode: environment.production,
+        prodMode: !isDevMode(),
       })
     },
     { provide: TRANSLOCO_LOADER, useClass: TranslocoXliffHttpLoader }

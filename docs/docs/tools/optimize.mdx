@@ -29,13 +29,13 @@ Add to your `package.json` the following script:
 Then, add the following config [option](../getting-started/config-options#flattenaot) to the application Transloco `config` object:
 
 ```ts
-import { environment } from '../environments/environment';
+import {isDevMode} from "@angular/core";
 
-{
+translocoConfig({
   flatten: {
-    aot: environment.production,
-  },
-};
+    aot: !isDevMode()
+  }
+})
 ```
 
 You can also use it as a function:
