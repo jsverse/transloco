@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.1.2](https://github.com/ngneat/transloco/compare/transloco-4.1.1...transloco-4.1.2) (2022-12-10)
+
+
+### Bug Fixes
+
+* **schematics:** set current directory as default project name ([#582](https://github.com/ngneat/transloco/issues/582)) ([89b213f9](https://github.com/ngneat/transloco/commit/89b213f9f3751d6414fb82aee0031e6863ed585f))
+
 ## [4.1.1](https://github.com/ngneat/transloco/compare/transloco-4.1.0...transloco-4.1.1) (2022-07-13)
 
 
