@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.2.1](https://github.com/ngneat/transloco/compare/transloco-4.2.0...transloco-4.2.1) (2022-12-10)
+
+### Bug Fixes
+
+* **transloco**: 🐛 replace environment with isDveMode for v15 ([e4bc6c91](https://github.com/ngneat/transloco/commit/e4bc6c91cb04d8e2ff41269abb963f1c6eed0c93))
+
 # [4.2.0](https://github.com/ngneat/transloco/compare/transloco-4.1.1...transloco-4.2.0) (2022-12-10)
 
 
