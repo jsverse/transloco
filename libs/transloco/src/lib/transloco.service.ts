@@ -423,6 +423,11 @@ export class TranslocoService implements OnDestroy {
     lang?: string
   ): Observable<T[]>;
   selectTranslateObject<T = any>(
+    key: TranslateParams,
+    params?: HashMap,
+    lang?: string
+  ): Observable<T> | Observable<T[]>;
+  selectTranslateObject<T = any>(
     key: HashMap | Map<string, HashMap>,
     params?: null,
     lang?: string
