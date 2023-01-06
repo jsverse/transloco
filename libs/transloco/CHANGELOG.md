@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.2.2](https://github.com/ngneat/transloco/compare/transloco-4.2.1...transloco-4.2.2) (2023-01-06)
+
+
+### Bug Fixes
+
+* **transloco:** add overload type in selectTranslateObject method ([#617](https://github.com/ngneat/transloco/issues/617)) ([071ca6b](https://github.com/ngneat/transloco/commit/071ca6b21bea872adaadba917484ca0190d4b051))
+
+
+
 ## [4.2.1](https://github.com/ngneat/transloco/compare/transloco-4.2.0...transloco-4.2.1) (2022-12-10)
 
 ### Bug Fixes
