@@ -194,10 +194,10 @@ function starButton() {
     className="star-btn button button--secondary button--lg margin-left--sm"
   >
     <a
-      href="https://github.com/ngneat/elf"
+      href="https://github.com/ngneat/transloco"
       rel="noopener"
       target="_blank"
-      aria-label="Star ngneat/elf on GitHub"
+      aria-label="Star ngneat/transloco on GitHub"
       style={{
         textDecoration: 'none',
         color: 'inherit',
