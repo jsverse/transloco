@@ -77,7 +77,12 @@ function getTranslation(template) {
     }
 
     key = kebabCase(key);
-    keyValue = keyValue.trim().replace(/(\r\n|\n|\r)/gm, '');
+    if (keyValue === undefined) {
+      console.warn(`Could not extract value for '${result[0]}'. Note that void elements are not supported.`);
+      keyValue = null; // include in output to make problem easier to notice
+    } else {
+      keyValue = keyValue.trim().replace(/(\r\n|\n|\r)/gm, '');
+    }
 
     if (context) {
       translation[context] = translation[context] || {};
