@@ -3,8 +3,7 @@ import {
   SchematicsException,
   schematic,
 } from '@angular-devkit/schematics';
-import { from } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { from, map } from 'rxjs';
 import { run } from './ngx-translate-migration';
 import { SchemaOptions } from './schema';
 

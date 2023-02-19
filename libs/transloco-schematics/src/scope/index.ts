@@ -8,8 +8,7 @@ import {
   source,
   EmptyTree,
 } from '@angular-devkit/schematics';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Observable, tap } from 'rxjs';
 import { ScriptTarget, createSourceFile } from 'typescript';
 import { applyChanges } from '../ng-add';
 import { LIB_NAME } from '../schematics.consts';

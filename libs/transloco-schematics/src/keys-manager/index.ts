@@ -6,8 +6,7 @@ import { addScriptToPackageJson } from '../utils/package';
 import { getWorkspace, setWorkspace } from '../utils/projects';
 import { updateConfig } from '../utils/transloco';
 import { SchemaOptions } from './schema';
-import { from } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { from, map } from 'rxjs';
 import { getConfig } from '../utils/config';
 
 async function installKeysManager() {
