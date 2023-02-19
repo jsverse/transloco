@@ -117,26 +117,35 @@ function createTranslocoModule({
   langs,
   modulePath,
   sourceRoot,
+                                 host
 }: {
   isLib: boolean;
   ssr: boolean;
   langs: string[];
   modulePath: string;
   sourceRoot: string;
+  host: Tree
 }): Source {
+  const envPath = path.relative(
+      modulePath,
+      `${sourceRoot}/environments/environment`
+  ).split(path.sep).join('/');
+  const envFileExists = host.exists(`${sourceRoot}/environments/environment.ts`);
+  let prodMode = envFileExists ? 'environment.production' : '!isDevMode()';
+  if(isLib) {
+    prodMode = 'false';
+  }
+
   return apply(url(`./files/transloco-module`), [
     template({
       ts: 'ts',
-      stringifyList: stringifyList,
+      stringifyList,
       isLib,
       langs,
-      importEnv: ssr,
-      envPath: path.relative(
-        modulePath,
-        `${sourceRoot}/environments/environment`
-      ).split(path.sep).join('/'),
+      importEnv: ssr || envFileExists,
+      envPath,
       loaderPrefix: ssr ? '${environment.baseUrl}' : '',
-      prodMode: isLib ? 'false' : '!isDevMode()',
+      prodMode,
     }),
     move('/', modulePath),
   ]);
@@ -205,6 +214,7 @@ export default function (options: SchemaOptions): Rule {
           ssr: options.ssr,
           langs,
           modulePath,
+          host
         })
       ),
       addImportsToModuleFile(

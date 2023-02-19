@@ -7,7 +7,7 @@ import {
   translocoConfig,
   TranslocoModule
 } from '@ngneat/transloco';
-import { Injectable, <% if (!isLib) {%>isDevMode, <% } %>NgModule } from '@angular/core';
+import { Injectable, <% if (!importEnv) {%>isDevMode, <% } %>NgModule } from '@angular/core';
 <% if (importEnv) {%>import { environment } from '<%= envPath %>';<% } %>
 
 @Injectable({ providedIn: 'root' })

@@ -23,5 +23,17 @@ describe('ng add', () => {
     expect(tree).toBeDefined();
     expect(tree.files).toContain('/transloco.config.js');
     expect(tree.files).toContain('/projects/bar/src/app/transloco-root.module.ts');
+    const content = tree.get('/projects/bar/src/app/transloco-root.module.ts').content.toString();
+    expect(content).toContain('environment.production');
+  });
+
+  it('should use isDevMode when environment file is missing', async () => {
+    const options: SchemaOptions = { project: 'bar' } as SchemaOptions;
+    appTree.delete('/projects/bar/src/environments/environment.ts');
+    const tree = await schematicRunner
+        .runSchematicAsync('ng-add', options, appTree)
+        .toPromise();
+    const content = tree.get('/projects/bar/src/app/transloco-root.module.ts').content.toString();
+    expect(content).toContain('isDevMode');
   });
 });
