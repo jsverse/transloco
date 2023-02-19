@@ -1,4 +1,4 @@
-import kebabCase from 'lodash.kebabcase';
+import * as kebabCase from 'lodash.kebabcase';
 import { sync as globSync } from 'glob';
 import * as fs from 'fs-extra';
 
