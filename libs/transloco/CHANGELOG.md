@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.2.3](https://github.com/ngneat/transloco/compare/transloco-4.2.2...transloco-4.2.3) (2023-02-19)
+
+
+### Bug Fixes
+
+* **transloco:** 🐛 add missing schematics deps ([581dda1](https://github.com/ngneat/transloco/commit/581dda1c4955ffa68f43ee0bfdef3ef2afc9f698)), closes [#623](https://github.com/ngneat/transloco/issues/623)
+
+
+
 ## [4.2.2](https://github.com/ngneat/transloco/compare/transloco-4.2.1...transloco-4.2.2) (2023-01-06)
 
 
