@@ -58,7 +58,7 @@ body:
   - type: input
     id: reproduction
     attributes:
-      label: Please provide a link to a minimal reproduction of the bug
+      label: Please provide a link to a minimal reproduction of the bug, if you won't provide a link the issue won't be handled.
     validations:
       required: true
       
