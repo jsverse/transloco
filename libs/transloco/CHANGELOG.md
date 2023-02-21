@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.2.5](https://github.com/ngneat/transloco/compare/transloco-4.2.4...transloco-4.2.5) (2023-02-21)
+
+
+### Bug Fixes
+
+* **transloco:** update fs-extra and glob dependencies ([#631](https://github.com/ngneat/transloco/issues/631)) ([e19057f](https://github.com/ngneat/transloco/commit/e19057f34e3daddc40dc7059974f721b3ea8a30e))
+
+
+
 ## [4.2.4](https://github.com/ngneat/transloco/compare/transloco-4.2.3...transloco-4.2.4) (2023-02-19)
 
 
