@@ -42,8 +42,8 @@
   "peerDependencies": {
     "@angular/core": ">=13.0.0",
     "rxjs": ">=6.0.0",
-    "fs-extra": "^9.1.0",
-    "glob": "^7.1.7"
+    "fs-extra": ">=9.1.0",
+    "glob": ">=7.1.7"
   },
   "dependencies": {
     "tslib": "^2.2.0",
