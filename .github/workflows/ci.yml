@@ -1,71 +1,67 @@
 name: CI
+
 on: [push, pull_request]
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - name: Npm install
+        uses: actions/setup-node@v3
         with:
           node-version: '16'
-      - name: use cache
-        uses: actions/cache@v2
-        with:
-          path: |
-            node_modules
-            */*/node_modules
-            /home/runner/.cache/Cypress
-          key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
-      - run: npm ci
-      - run: npm run ci:build
+          cache: 'npm'
+      - run: npm i
+
+      - name: Run build
+        run: npm run ci:build
+
+
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Npm install
+        uses: actions/setup-node@v3
         with:
           node-version: '16'
-      - name: use cache
-        uses: actions/cache@v2
-        with:
-          path: |
-            node_modules
-            */*/node_modules
-            /home/runner/.cache/Cypress
-          key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
-      - run: npm ci
-      - run: npm run ci:test  
+          cache: 'npm'
+      - run: npm i
+
+      - name: Run tests
+        run: npm run ci:test
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Npm install
+        uses: actions/setup-node@v3
         with:
           node-version: '16'
-      - name: use cache
-        uses: actions/cache@v2
-        with:
-          path: |
-            node_modules
-            */*/node_modules
-            /home/runner/.cache/Cypress
-          key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
-      - run: npm ci
-      - run: npm run ci:lint  
+          cache: 'npm'
+      - run: npm i
+
+      - name: Run lint
+        run: npm run ci:lint
   e2e:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Npm install
+        uses: actions/setup-node@v3
         with:
           node-version: '16'
-      - name: use cache
-        uses: actions/cache@v2
-        with:
-          path: |
-            node_modules
-            */*/node_modules
-            /home/runner/.cache/Cypress
-          key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
-      - run: npm ci
-      - run: npm run ci:e2e
+          cache: 'npm'
+      - run: npm i
+
+      - name: Run E2E
+        run: npm run ci:e2e
