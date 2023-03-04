@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.2.6](https://github.com/ngneat/transloco/compare/transloco-4.2.5...transloco-4.2.6) (2023-03-04)
+
+
+### Bug Fixes
+
+* **transloco:** 🐛 fix message format delay ([#634](https://github.com/ngneat/transloco/issues/634)) ([aa92418](https://github.com/ngneat/transloco/commit/aa92418ab319b42fc42b32e0884c6054fa7ccf2c))
+
+
+
 ## [4.2.5](https://github.com/ngneat/transloco/compare/transloco-4.2.4...transloco-4.2.5) (2023-02-21)
 
 
