@@ -125,9 +125,16 @@ export class DefaultTranspiler implements TranslocoTranspiler {
 }
 
 function resolveMatcher(config: TranslocoConfig): RegExp {
-  const [start, end] = config.interpolation;
+  const [start, end, forbiddenChars] = config.interpolation;
+  const matchingParamName = forbiddenChars != undefined ? `[^${escapeForRegExp(forbiddenChars)}]` : '.';
+  return new RegExp(
+    `${escapeForRegExp(start)}(${matchingParamName}*?)${escapeForRegExp(end)}`,
+    'g'
+  );
+}
 
-  return new RegExp(`${start}(.*?)${end}`, 'g');
+function escapeForRegExp(text: string) {
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 }
 
 export interface TranslocoTranspilerFunction {
