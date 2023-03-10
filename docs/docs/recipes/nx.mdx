@@ -1,0 +1,61 @@
+---
+title: Nx 15.7+
+description: Nx 15.7 and higher with transloco-key-manager
+---
+
+## Nx 15.7 and higher with transloco-key-manager
+
+When using nx 15.7 and higher you do not have a global `angular.json` therefore the `transloco-key-manager` cannot determine what directories your projects are in, to make this work correctly we can use:
+```
+npx transloco-key-manager extract --project foo
+```
+Note: Specifying the project when you don't have a root config is mandatory
+
+### Nx cli / config
+To get a similar like experience of extracting/finding for all projects like before 15.7, you can add the following to each `project.json` for each libary or application:
+```json
+"i18n-extract": {
+  "executor": "nx:run-commands",
+  "options": {
+    "command": "npx transloco-keys-manager extract --project myProjectName"
+  }
+}
+```
+
+
+Example:
+```json
+{
+  "name": "foo",
+  "$schema": "..\\..\\node_modules\\nx\\schemas\\project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/foo",
+  "prefix": "cca",
+  "targets": {
+    "build": { ... },
+    "test": { ... },
+    "lint": { ... },
+    // highlight-start
+    "i18n-extract": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx transloco-keys-manager extract --project foo"
+      }
+    }
+    // highlight-end
+  }
+}
+```
+
+
+This will allow you to use the `nx` cli to execute the `i18n-extract` target on each project that has such a target:
+
+All projects:
+
+`nx run-many --target=i18n-extract` 
+
+Affected projects:
+
+`nx affected --target=i18n-extract` 
+
+Extra benefit of this would be that we can extract keys from only affected projects by leveraging the `nx` cli 
