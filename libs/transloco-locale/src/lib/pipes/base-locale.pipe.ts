@@ -20,9 +20,9 @@ export abstract class BaseLocalePipe<VALUE = unknown, ARGS extends unknown[] = [
 
   protected lastValue?: VALUE;
   protected lastArgs?: string;
-  
+
   protected lastResult = '';
-  
+
   protected getLocale(locale?: Locale): Locale {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return locale || this.localeService.getLocale()!;

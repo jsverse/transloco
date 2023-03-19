@@ -1,6 +1,7 @@
 import { inject, Pipe, PipeTransform } from '@angular/core';
 import { isNil } from '@ngneat/transloco';
 
+import { isDate } from '../helpers';
 import { getDefaultOptions } from '../shared';
 import { TRANSLOCO_LOCALE_CONFIG } from '../transloco-locale.config';
 import {
@@ -51,6 +52,6 @@ export class TranslocoDatePipe
   }
 
   private getComparableDate(value?: any) {
-    return value?.getTime ? value.getTime() : value;
+    return isDate(value) ? value.getTime() : value;
   }
 }
