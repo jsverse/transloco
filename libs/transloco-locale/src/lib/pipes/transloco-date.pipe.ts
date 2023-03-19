@@ -17,7 +17,9 @@ import { BaseLocalePipe } from './base-locale.pipe';
   pure: false,
   standalone: true,
 })
-export class TranslocoDatePipe extends BaseLocalePipe implements PipeTransform {
+export class TranslocoDatePipe
+  extends BaseLocalePipe<ValidDate, [options?: DateFormatOptions, locale?: Locale]>
+  implements PipeTransform {
   private localeConfig: LocaleConfig = inject(TRANSLOCO_LOCALE_CONFIG);
 
   /**
@@ -34,7 +36,7 @@ export class TranslocoDatePipe extends BaseLocalePipe implements PipeTransform {
    * 1 | translocoDate: { dateStyle: 'medium' } // Jan 1, 1970
    * '2019-02-08' | translocoDate: { dateStyle: 'medium' } // Feb 8, 2019
    */
-  transform(date: ValidDate, options: DateFormatOptions = {}, locale?: Locale) {
+  protected override doTransform(date: ValidDate, options: DateFormatOptions = {}, locale?: Locale) {
     if (isNil(date)) return '';
     locale = this.getLocale(locale);
 
@@ -42,5 +44,13 @@ export class TranslocoDatePipe extends BaseLocalePipe implements PipeTransform {
       ...getDefaultOptions(locale, 'date', this.localeConfig),
       ...options,
     });
+  } 
+
+  protected override isSameValue(value?: ValidDate) {
+    return this.getComparableDate(this.lastValue) === this.getComparableDate(value);
+  }
+
+  private getComparableDate(value?: any) {
+    return value?.getTime ? value.getTime() : value;
   }
 }
