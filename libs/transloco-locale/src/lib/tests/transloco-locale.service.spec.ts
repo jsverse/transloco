@@ -80,6 +80,13 @@ describe('TranslocoLocaleService', () => {
       service.setLocale('en-us');
       expect(console.error).toHaveBeenCalledTimes(4);
     });
+
+    it('should allow locale syntax with a case-insensitive script subtag', () => {
+      service.setLocale('zh-Hant');
+      expect(service.getLocale()).toEqual('zh-Hant');
+      service.setLocale('zh-hant');
+      expect(service.getLocale()).toEqual('zh-hant');
+    })
   });
 
   describe('localeChanges$', () => {
