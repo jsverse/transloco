@@ -84,7 +84,7 @@ describe('TranslocoDatePipe', () => {
       cdr,
       defaultConfig.localeConfig
     );
-    expect(pipe.transform(0)).toEqual('1/1/1970');
+    expect(pipe.transform(0, {timeZone: 'UTC'})).toEqual('1/1/1970');
   });
 
   it('should transform string to date', () => {
