@@ -1,5 +1,4 @@
 import {
-  ChangeDetectorRef,
   Directive,
   ElementRef,
   EmbeddedViewRef,
@@ -13,23 +12,23 @@ import {
   SimpleChanges,
   TemplateRef,
   Type,
-  ViewContainerRef,
+  ViewContainerRef
 } from '@angular/core';
 import { forkJoin, Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { LangResolver } from './lang-resolver';
+import { ScopeResolver } from './scope-resolver';
+import {
+  listenOrNotOperator,
+  resolveInlineLoader,
+  shouldListenToLangChanges
+} from './shared';
 import { TemplateHandler, View } from './template-handler';
 import { TRANSLOCO_LANG } from './transloco-lang';
 import { TRANSLOCO_LOADING_TEMPLATE } from './transloco-loading-template';
 import { TRANSLOCO_SCOPE } from './transloco-scope';
 import { TranslocoService } from './transloco.service';
 import { HashMap, MaybeArray, Translation, TranslocoScope } from './types';
-import {
-  listenOrNotOperator,
-  resolveInlineLoader,
-  shouldListenToLangChanges,
-} from './shared';
-import { LangResolver } from './lang-resolver';
-import { ScopeResolver } from './scope-resolver';
 
 type TranslateFn = (key: string, params?: HashMap) => any;
 interface ViewContext {
@@ -83,7 +82,6 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     @Inject(TRANSLOCO_LOADING_TEMPLATE)
     private providedLoadingTpl: Type<unknown> | string,
     private vcr: ViewContainerRef,
-    private cdr: ChangeDetectorRef,
     private host: ElementRef,
     private renderer: Renderer2
   ) {
@@ -122,7 +120,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
         this.strategy === 'attribute'
           ? this.attributeStrategy()
           : this.structuralStrategy(this.currentLang, this.inlineRead);
-        this.cdr.markForCheck();
+        this.view?.detectChanges();
         this.initialized = true;
       });
 
