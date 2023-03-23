@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.0.1](https://github.com/ngneat/transloco/compare/transloco-locale-4.0.0...transloco-locale-4.0.1) (2023-03-23)
+
+
+### Bug Fixes
+
+* **transloco-locale:** fixed letter case sensitivity for scripts ([#638](https://github.com/ngneat/transloco/issues/638)) ([0c3fb7a](https://github.com/ngneat/transloco/commit/0c3fb7ab3a96abc683fff7581692943b42b049e4))
+
+
+
 # [4.0.0](https://github.com/ngneat/transloco/compare/transloco-locale-3.0.1...transloco-locale-4.0.0) (2022-03-23)
 
 
