@@ -2,8 +2,9 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
+    "esModuleInterop": true,
     "module": "commonjs",
-    "types": ["jasmine", "node"]
+    "types": ["jest", "node"]
   },
   "files": ["src/test-setup.ts"],
   "include": ["**/*.spec.ts", "**/*.d.ts"]
