@@ -12,6 +12,8 @@ export {
   TRANSLOCO_NUMBER_TRANSFORMER,
   TranslocoDateTransformer,
   TranslocoNumberTransformer,
+  DefaultDateTransformer,
+  DefaultNumberTransformer,
 } from './lib/transloco-locale.transformers';
 export * from './lib/transloco-locale.types';
 export * from './lib/pipes';

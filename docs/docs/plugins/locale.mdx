@@ -280,13 +280,18 @@ In some cases you might want to customize the localization transformation, to ac
 There are two types of transformers for date and number:
 
 ```ts title="custom-transformer.ts"
-export class CustomDateTransformer implements TranslocoDateTransformer {
+import { DefaultDateTransformer, DefaultNumberTransformer } from '@ngneat/transloco-locale';
+
+export class CustomDateTransformer extends DefaultDateTransformer {
   public transform(date: Date, locale: Locale, options: DateFormatOptions): string {
     return ...
+
+    // Fallback to default transformer
+    return super.transform(date, locale, options);
   }
 }
 
-export class CustomNumberTransformer implements TranslocoNumberTransformer {
+export class CustomNumberTransformer extends DefaultNumberTransformer {
   public transform(
     value: number | string,
     type: NumberTypes,
@@ -294,6 +299,9 @@ export class CustomNumberTransformer implements TranslocoNumberTransformer {
     options: Intl.NumberFormatOptions
   ): string {
     return ...
+    
+    // Fallback to default transformer
+    return super.transform(value, type, locale, options);
   }
 }
 
