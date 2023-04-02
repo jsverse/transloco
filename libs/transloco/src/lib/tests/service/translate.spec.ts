@@ -10,8 +10,8 @@ describe('translate', () => {
 
   it('should return the key when it is falsy', () => {
     expect(service.translate('')).toEqual('');
-    expect(service.translate(null as any)).toEqual(null);
-    expect(service.translate(undefined as any)).toEqual(undefined);
+    expect(service.translate(null as any)).toEqual(null as any);
+    expect(service.translate(undefined as any)).toEqual(undefined as any);
   });
 
   it('should return the value or the key based on the translation existing', fakeAsync(() => {

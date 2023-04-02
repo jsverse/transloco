@@ -1,4 +1,6 @@
 {
+  "name": "transloco-schematics",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/transloco-schematics/src",
   "projectType": "library",
   "targets": {
@@ -32,7 +34,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/transloco-schematics"],
+      "outputs": ["{workspaceRoot}/coverage/libs/transloco-schematics"],
       "options": {
         "jestConfig": "libs/transloco-schematics/jest.config.ts",
         "passWithNoTests": true
