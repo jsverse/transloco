@@ -1,5 +1,5 @@
 import { Rule, SchematicsException, Tree } from '@angular-devkit/schematics';
-import { getConfiguredPackageManager } from '@angular/cli/utilities/config';
+import { getConfiguredPackageManager } from '@angular/cli/src/utilities/config';
 import { TranslocoGlobalConfig } from '@ngneat/transloco-utils';
 import { execSync } from 'child_process';
 import { addScriptToPackageJson } from '../utils/package';
