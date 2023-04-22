@@ -127,7 +127,7 @@ let getLocals = () => {
     });
 };
 
-let trasnlate = (word, local) => {
+let translate = (word, local) => {
     return new Promise((resolve, reject) => {
         googleTranslate.translate(word, local, function (err, translation) {
             if (translation === undefined) {
