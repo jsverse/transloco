@@ -20,6 +20,9 @@
       "@ngneat/transloco-messageformat": [
         "libs/transloco-messageformat/src/index.ts"
       ],
+      "@ngneat/transloco-intlmessageformat": [
+        "libs/transloco-intlmessageformat/src/index.ts"
+      ],
       "@ngneat/transloco-optimize": ["libs/transloco-optimize/src/index.ts"],
       "@ngneat/transloco-persist-lang": [
         "libs/transloco-persist-lang/src/index.ts"

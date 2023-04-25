@@ -4,6 +4,7 @@
     "transloco": "libs/transloco",
     "transloco-locale": "libs/transloco-locale",
     "transloco-messageformat": "libs/transloco-messageformat",
+    "transloco-intlmessageformat": "libs/transloco-intlmessageformat",
     "transloco-optimize": "libs/transloco-optimize",
     "transloco-persist-lang": "libs/transloco-persist-lang",
     "transloco-persist-translations": "libs/transloco-persist-translations",
