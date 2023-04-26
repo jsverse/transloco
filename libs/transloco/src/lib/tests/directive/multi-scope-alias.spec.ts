@@ -6,15 +6,13 @@ import {
 } from '@ngneat/spectator';
 import { createFactory } from './shared';
 import { providersMock, runLoader } from '../mocks';
-import { Component } from '@angular/core';
+import { Component, Provider } from '@angular/core';
 import { TranslocoDirective } from '../../transloco.directive';
 import { TRANSLOCO_SCOPE } from '../../transloco-scope';
 import { TranslocoModule } from '../../transloco.module';
 
-describe('Scope alias', () => {
-  let spectator: SpectatorHost<TranslocoDirective>;
-
-  const createHost = createFactory([
+function getScopeProviders(): Provider[] {
+  return [
     {
       provide: TRANSLOCO_SCOPE,
       useValue: {
@@ -31,17 +29,52 @@ describe('Scope alias', () => {
       },
       multi: true,
     },
-  ]);
+  ];
+}
 
-  it('should support multiple scopes with aliases', fakeAsync(() => {
-    spectator = createHost(`
-        <section *transloco="let t;">
-          <div>
-            {{t('adminPageAlias.title')}}<br />
-            {{t('lazyPage.title')}}
-          </div>
-        </section>
-    `);
+function getNestedScopeProviders(): Provider[] {
+  return [
+    {
+      provide: TRANSLOCO_SCOPE,
+      useValue: [
+        {
+          scope: 'admin-page',
+          alias: 'adminPageAlias',
+        },
+        {
+          scope: 'lazy-page',
+          alias: 'lazyPage',
+        },
+      ],
+      multi: true,
+    },
+  ];
+}
+
+describe('Scope alias', () => {
+  let spectator: SpectatorHost<TranslocoDirective>;
+
+  const createHostWithSeparateScopes = createFactory(getScopeProviders());
+  const createHostWithNestedScopes = createFactory(getScopeProviders());
+  const template = `<section *transloco="let t;">
+    <div>
+      {{t('adminPageAlias.title')}}<br />
+      {{t('lazyPage.title')}}
+    </div>
+  </section>
+  `;
+
+  it('should support multiple scopes with aliases provided separately', fakeAsync(() => {
+    spectator = createHostWithSeparateScopes(template);
+    runLoader();
+    runLoader();
+    spectator.detectChanges();
+    expect(spectator.query('div')).toHaveText('Admin english', false);
+    expect(spectator.query('div')).toHaveText('Admin Lazy english', false);
+  }));
+
+  it('should support nested scopes with aliases', fakeAsync(() => {
+    spectator = createHostWithNestedScopes(template);
     runLoader();
     runLoader();
     spectator.detectChanges();
@@ -52,8 +85,8 @@ describe('Scope alias', () => {
 
 @Component({
   template: `
-    <p>{{ 'lazy.title' | transloco }}</p>
-    <span>{{ 'admin.title' | transloco }}</span>
+    <p>{{ 'lazyPage.title' | transloco }}</p>
+    <span>{{ 'adminPageAlias.title' | transloco }}</span>
     <h1>{{ 'nested.title' | transloco }}</h1>
   `,
 })
@@ -61,32 +94,30 @@ class TestPipe {}
 
 describe('Scope alias pipe', () => {
   let spectator: Spectator<TestPipe>;
-  const createComponent = createComponentFactory({
-    component: TestPipe,
-    imports: [TranslocoModule],
-    providers: [
-      providersMock,
-      {
-        provide: TRANSLOCO_SCOPE,
-        useValue: {
-          scope: 'lazy-page',
-          alias: 'lazy',
-        },
-        multi: true,
-      },
-      {
-        provide: TRANSLOCO_SCOPE,
-        useValue: {
-          scope: 'admin-page',
-          alias: 'admin',
-        },
-        multi: true,
-      },
-    ],
-  });
+  const createComponentFactoryWithProviders = (providers: Provider[]) =>
+    createComponentFactory({
+      component: TestPipe,
+      imports: [TranslocoModule],
+      providers: [providersMock, providers],
+    });
+  const createComponentSeparateScopes = createComponentFactoryWithProviders(
+    getScopeProviders()
+  );
+  const createComponentNestedScopes = createComponentFactoryWithProviders(
+    getNestedScopeProviders()
+  );
 
-  it('should support multiple scope aliasses', fakeAsync(() => {
-    spectator = createComponent();
+  it('should support multiple scope aliases provided separately', fakeAsync(() => {
+    spectator = createComponentSeparateScopes();
+    runLoader();
+    runLoader();
+    spectator.detectChanges();
+    expect(spectator.query('p')).toHaveText('Admin Lazy english');
+    expect(spectator.query('span')).toHaveText('Admin english');
+  }));
+
+  it('should support nested scope aliases', fakeAsync(() => {
+    spectator = createComponentNestedScopes();
     runLoader();
     runLoader();
     spectator.detectChanges();

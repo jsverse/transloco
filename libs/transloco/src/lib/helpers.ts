@@ -1,4 +1,4 @@
-import { ProviderScope, Translation } from './types';
+import { NestedArray, ProviderScope, Translation } from './types';
 import { flatten as _flatten, unflatten as _unflatten } from 'flat';
 
 export function getValue<T>(obj: T, path: keyof T) {
@@ -129,4 +129,10 @@ export function unflatten(obj: Translation): Translation {
 
 export function flatten(obj: Translation): Translation {
   return _flatten(obj, { safe: true });
+}
+
+export function flattenArray<T>(arr: NestedArray<T>): T[] {
+  // not using "Infinity" to avoid call stack issues if someone passes an array that references itself
+  // "100 as 1" is used to trick TS to not attempt to resolve that level of nesting
+  return arr.flat(100 as 1) as T[];
 }

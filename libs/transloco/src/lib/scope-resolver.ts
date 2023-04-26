@@ -1,10 +1,10 @@
-import { TranslocoScope, ProviderScope, MaybeArray } from './types';
+import { TranslocoScope, ProviderScope } from './types';
 import { TranslocoService } from './transloco.service';
 import { isScopeObject, toCamelCase } from './helpers';
 
 type ScopeResolverParams = {
   inline: string | undefined;
-  provider: MaybeArray<TranslocoScope>;
+  provider: TranslocoScope;
 };
 
 export class ScopeResolver {
