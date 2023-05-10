@@ -33,19 +33,21 @@ First, Transloco creates boilerplate files for the requested translations:
 }
 ```
 
+## NgModule Setup
+
 Next, it will create a new file, `transloco-root.module.ts` which exposes an Angular's module with a default configuration, and inject it into the `AppModule`:
 
 ```ts title="transloco-root.module.ts"
+import { Injectable, isDevMode, NgModule } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {
-  TRANSLOCO_LOADER,
   Translation,
   TranslocoLoader,
-  TRANSLOCO_CONFIG,
   translocoConfig,
-  TranslocoModule
+  TranslocoModule,
+  provideTranslocoConfig,
+  provideTranslocoLoader
 } from '@ngneat/transloco';
-import { Injectable, isDevMode, NgModule } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class TranslocoHttpLoader implements TranslocoLoader {
@@ -59,9 +61,8 @@ export class TranslocoHttpLoader implements TranslocoLoader {
 @NgModule({
   exports: [ TranslocoModule ],
   providers: [
-    {
-      provide: TRANSLOCO_CONFIG,
-      useValue: translocoConfig({
+    provideTranslocoConfig(
+      translocoConfig({
         availableLangs: ['en', 'es'],
         defaultLang: 'en',
         // Remove this option if your application
@@ -69,8 +70,8 @@ export class TranslocoHttpLoader implements TranslocoLoader {
         reRenderOnLangChange: true,
         prodMode: !isDevMode(),
       })
-    },
-    { provide: TRANSLOCO_LOADER, useClass: TranslocoHttpLoader }
+    ),
+    provideTranslocoLoader(TranslocoHttpLoader)
   ]
 })
 export class TranslocoRootModule {}
@@ -94,6 +95,49 @@ getTranslation(langPath: string) {
 ```
 :::
 And that's it! Now we are ready to use it in our project.
+
+## Standalone Setup 
+
+Add the `provideTransloco` function to your `main.ts` and pass in your configuration.
+
+```ts title="main.ts"
+import { Injectable, isDevMode } from '@angular/core';
+import { bootstrapApplication } from '@angular/platform-browser';
+import { HttpClient, provideHttpClient } from '@angular/common/http';
+import {
+  Translation,
+  TranslocoLoader,
+  translocoConfig,
+  provideTransloco,
+} from '@ngneat/transloco';
+import { AppComponent } from './app/app.component';
+
+@Injectable({ providedIn: 'root' })
+export class TranslocoHttpLoader implements TranslocoLoader {
+  constructor(private http: HttpClient) {}
+
+  getTranslation(lang: string) {
+    return this.http.get<Translation>(`/assets/i18n/${lang}.json`);
+  }
+}
+
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideHttpClient(),
+    provideTransloco({
+      config: translocoConfig({
+        availableLangs: ['en', 'es'],
+        defaultLang: 'en',
+        // Remove this option if your application
+        // doesn't support changing language in runtime.
+        reRenderOnLangChange: true,
+        prodMode: !isDevMode(),
+      }),
+      loader: TranslocoHttpLoader,
+    })
+  ]
+});
+```
 
 ## Angular & Transloco versions
 
