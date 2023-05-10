@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [4.1.0](https://github.com/ngneat/transloco/compare/transloco-locale-4.0.1...transloco-locale-4.1.0) (2023-05-10)
+
+
+### Features
+
+* **transloco-locale:** expose default transformers ([#435](https://github.com/ngneat/transloco/issues/435)) ([#641](https://github.com/ngneat/transloco/issues/641)) ([6b8a3f6](https://github.com/ngneat/transloco/commit/6b8a3f69a4cbd77e679c675a2d61116a6b57ed09))
+
+
+
 ## [4.0.1](https://github.com/ngneat/transloco/compare/transloco-locale-4.0.0...transloco-locale-4.0.1) (2023-03-23)
 
 
