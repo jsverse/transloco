@@ -2,6 +2,10 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.0.5](https://github.com/ngneat/transloco/compare/transloco-utils-3.0.4...transloco-utils-3.0.5) (2023-05-18)
+
+
+
 ## [3.0.4](https://github.com/ngneat/transloco/compare/transloco-utils-3.0.3...transloco-utils-3.0.4) (2022-07-19)
 
 
