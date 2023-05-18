@@ -2,6 +2,10 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.0.5](https://github.com/ngneat/transloco/compare/transloco-scoped-libs-3.0.4...transloco-scoped-libs-3.0.5) (2023-05-18)
+
+
+
 ## [3.0.4](https://github.com/ngneat/transloco/compare/transloco-scoped-libs-3.0.3...transloco-scoped-libs-3.0.4) (2022-01-15)
 
 ### Bug Fixes
