@@ -1,4 +1,6 @@
 {
+  "name": "transloco-utils",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/transloco-utils/src",
   "projectType": "library",
   "targets": {

@@ -1,4 +1,6 @@
 {
+  "name": "transloco-playground-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/transloco-playground-e2e/src",
   "projectType": "application",
   "targets": {

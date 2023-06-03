@@ -1,11 +1,13 @@
 {
+  "name": "transloco-persist-lang",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/transloco-persist-lang/src",
   "prefix": "transloco-nx-shell",
   "targets": {
     "build": {
       "executor": "@nrwl/angular:package",
-      "outputs": ["dist/libs/transloco-persist-lang"],
+      "outputs": ["{workspaceRoot}/dist/libs/transloco-persist-lang"],
       "options": {
         "updateBuildableProjectDepsInPackageJson": false,
         "project": "libs/transloco-persist-lang/ng-package.json"
