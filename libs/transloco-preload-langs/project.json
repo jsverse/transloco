@@ -6,7 +6,7 @@
   "prefix": "transloco-nx-shell",
   "targets": {
     "build": {
-      "executor": "@nrwl/angular:package",
+      "executor": "@nx/angular:package",
       "outputs": ["{workspaceRoot}/dist/libs/transloco-preload-langs"],
       "options": {
         "updateBuildableProjectDepsInPackageJson": false,
