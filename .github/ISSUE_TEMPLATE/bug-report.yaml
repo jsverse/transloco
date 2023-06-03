@@ -59,6 +59,7 @@ body:
     id: reproduction
     attributes:
       label: Please provide a link to a minimal reproduction of the bug, if you won't provide a link the issue won't be handled.
+      description: You can fork this CodeSandbox playground: https://codesandbox.io/s/ngneat-transloco-kn52hs
     validations:
       required: true
       
