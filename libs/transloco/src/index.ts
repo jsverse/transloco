@@ -48,4 +48,10 @@ export { getBrowserCultureLang, getBrowserLang } from './lib/browser-lang';
 export { getPipeValue, getLangFromScope, getScopeFromLang } from './lib/shared';
 export * from './lib/types';
 export * from './lib/helpers';
-export * from './lib/transloco.providers';
+export { 
+  defaultProviders,
+  provideTransloco,
+  provideTranslocoConfig,
+  provideTranslocoLoader,
+  provideTranslocoScope,
+} from './lib/transloco.providers';
