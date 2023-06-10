@@ -21,6 +21,6 @@ export class DefaultLoader implements TranslocoLoader {
   }
 }
 
-export const TRANSLOCO_LOADER = new InjectionToken<Translation>(
+export const TRANSLOCO_LOADER = new InjectionToken<TranslocoLoader>(
   'TRANSLOCO_LOADER'
 );

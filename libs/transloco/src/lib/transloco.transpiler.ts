@@ -13,7 +13,7 @@ import {
   TranslocoConfig,
 } from './transloco.config';
 
-export const TRANSLOCO_TRANSPILER = new InjectionToken('TRANSLOCO_TRANSPILER');
+export const TRANSLOCO_TRANSPILER = new InjectionToken<TranslocoTranspiler>('TRANSLOCO_TRANSPILER');
 
 export interface TranslocoTranspiler {
   // TODO: Change parameters to object in the next major release

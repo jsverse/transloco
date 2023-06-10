@@ -1,7 +1,7 @@
 import { InjectionToken, Injectable } from '@angular/core';
 import { Translation } from './types';
 
-export const TRANSLOCO_INTERCEPTOR = new InjectionToken(
+export const TRANSLOCO_INTERCEPTOR = new InjectionToken<TranslocoInterceptor>(
   'TRANSLOCO_INTERCEPTOR'
 );
 
