@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [4.3.0](https://github.com/ngneat/transloco/compare/transloco-4.2.7...transloco-4.3.0) (2023-06-10)
+
+
+### Bug Fixes
+
+* **transloco:** 🐛 providers typings ([38e4981](https://github.com/ngneat/transloco/commit/38e4981db2e2f82dfbf081b27f8eba0b68143fdb)), closes [#658](https://github.com/ngneat/transloco/issues/658)
+
+
+### Features
+
+* **transloco:** 🎸 providers functions ([528e548](https://github.com/ngneat/transloco/commit/528e548f747a76f027044fe4f97198e795872510))
+
+
+
 ## [4.2.7](https://github.com/ngneat/transloco/compare/transloco-4.2.6...transloco-4.2.7) (2023-05-18)
 
 
