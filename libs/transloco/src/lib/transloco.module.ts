@@ -1,49 +1,12 @@
 import { NgModule } from '@angular/core';
 import { TranslocoLoaderComponent } from './loader-component.component';
 import { TranslocoDirective } from './transloco.directive';
-import {
-  DefaultTranspiler,
-  TRANSLOCO_TRANSPILER,
-} from './transloco.transpiler';
+import { defaultProviders } from './transloco.providers';
 import { TranslocoPipe } from './transloco.pipe';
-import {
-  DefaultHandler,
-  TRANSLOCO_MISSING_HANDLER,
-} from './transloco-missing-handler';
-import {
-  DefaultInterceptor,
-  TRANSLOCO_INTERCEPTOR,
-} from './transloco.interceptor';
-import {
-  DefaultFallbackStrategy,
-  TRANSLOCO_FALLBACK_STRATEGY,
-} from './transloco-fallback-strategy';
-import { TRANSLOCO_CONFIG } from './transloco.config';
-
-export const defaultProviders = [
-  {
-    provide: TRANSLOCO_TRANSPILER,
-    useClass: DefaultTranspiler,
-    deps: [TRANSLOCO_CONFIG],
-  },
-  {
-    provide: TRANSLOCO_MISSING_HANDLER,
-    useClass: DefaultHandler,
-  },
-  {
-    provide: TRANSLOCO_INTERCEPTOR,
-    useClass: DefaultInterceptor,
-  },
-  {
-    provide: TRANSLOCO_FALLBACK_STRATEGY,
-    useClass: DefaultFallbackStrategy,
-    deps: [TRANSLOCO_CONFIG],
-  },
-];
 
 @NgModule({
-    declarations: [TranslocoDirective, TranslocoPipe, TranslocoLoaderComponent],
-    providers: [defaultProviders],
-    exports: [TranslocoDirective, TranslocoPipe]
+  declarations: [TranslocoDirective, TranslocoPipe, TranslocoLoaderComponent],
+  providers: [defaultProviders],
+  exports: [TranslocoDirective, TranslocoPipe],
 })
 export class TranslocoModule {}

@@ -9,7 +9,8 @@ import {
 import { TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import { HashMap, Translation } from './types';
 import { Observable, of } from 'rxjs';
-import { defaultProviders, TranslocoModule } from './transloco.module';
+import { TranslocoModule } from './transloco.module';
+import { defaultProviders } from './transloco.providers';
 import {
   TRANSLOCO_CONFIG,
   TranslocoConfig,
