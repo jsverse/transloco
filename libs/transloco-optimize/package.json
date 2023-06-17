@@ -3,6 +3,9 @@
   "version": "3.0.2",
   "description": "Transloco optimization process for production environments",
   "main": "src/lib/transloco-optimize.js",
+  "engines": {
+    "node": ">=16"
+  },
   "bin": {
     "transloco-optimize": "src/index.js"
   },
