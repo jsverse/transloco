@@ -3,6 +3,9 @@
   "version": "3.0.1",
   "description": "Transloco translation files validator",
   "main": "src/lib/transloco-validator.js",
+  "engines": {
+    "node": ">=16"
+  },
   "bin": {
     "transloco-validator": "src/index.js"
   },
