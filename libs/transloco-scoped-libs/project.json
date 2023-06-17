@@ -1,4 +1,6 @@
 {
+  "name": "transloco-scoped-libs",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/transloco-scoped-libs/src",
   "projectType": "library",
   "targets": {

@@ -1,4 +1,6 @@
 {
+  "name": "transloco-validator",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/transloco-validator/src",
   "projectType": "library",
   "targets": {

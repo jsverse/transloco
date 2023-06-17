@@ -28,7 +28,7 @@ export function setWorkspace(host: Tree, workspace): void {
 export function getProject(host: Tree, project?: string) {
   const workspace = getWorkspace(host);
   if (workspace) {
-    return workspace.projects[project || workspace.defaultProject];
+    return workspace.projects[project];
   }
 
   throw new SchematicsException('could not find a workspace project');

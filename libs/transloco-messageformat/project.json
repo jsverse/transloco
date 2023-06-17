@@ -1,11 +1,13 @@
 {
+  "name": "transloco-messageformat",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/transloco-messageformat/src",
   "prefix": "transloco-nx-shell",
   "targets": {
     "build": {
-      "executor": "@nrwl/angular:package",
-      "outputs": ["dist/libs/transloco-messageformat"],
+      "executor": "@nx/angular:package",
+      "outputs": ["{workspaceRoot}/dist/libs/transloco-messageformat"],
       "options": {
         "updateBuildableProjectDepsInPackageJson": false,
         "project": "libs/transloco-messageformat/ng-package.json"

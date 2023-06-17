@@ -1,4 +1,6 @@
 {
+  "name": "transloco-optimize",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/transloco-optimize/src",
   "projectType": "library",
   "targets": {
