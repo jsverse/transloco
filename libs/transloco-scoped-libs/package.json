@@ -1,6 +1,6 @@
 {
   "name": "@ngneat/transloco-scoped-libs",
-  "version": "3.0.5",
+  "version": "4.0.0",
   "description": "Transloco support tool for libraries with translations",
   "main": "src/lib/transloco-scoped-libs.js",
   "engines": {

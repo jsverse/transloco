@@ -2,6 +2,22 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [4.0.0](https://github.com/ngneat/transloco/compare/transloco-scoped-libs-3.0.5...transloco-scoped-libs-4.0.0) (2023-06-17)
+
+
+### chore
+
+* 🤖 upgrade to angular v16 ([#661](https://github.com/ngneat/transloco/issues/661)) ([08db7e7](https://github.com/ngneat/transloco/commit/08db7e7d1f64846fa0b07123dee8ff5bff20b4f0))
+* **scoped-libs:** 🤖 min node version is 16 ([42ffd32](https://github.com/ngneat/transloco/commit/42ffd329226bf59677b853845ddd51550f45e316))
+
+
+### BREAKING CHANGES
+
+* **scoped-libs:** 🧨   min node version is 16
+* 🧨 Angular 16
+
+
+
 ## [3.0.5](https://github.com/ngneat/transloco/compare/transloco-scoped-libs-3.0.4...transloco-scoped-libs-3.0.5) (2023-05-18)
 
 
