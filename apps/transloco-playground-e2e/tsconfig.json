@@ -6,5 +6,8 @@
     {
       "path": "./tsconfig.e2e.json"
     }
-  ]
+  ],
+  "compilerOptions": {
+    "sourceMap": false
+  }
 }
