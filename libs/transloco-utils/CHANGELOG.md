@@ -2,6 +2,22 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [4.0.0](https://github.com/ngneat/transloco/compare/transloco-utils-3.0.5...transloco-utils-4.0.0) (2023-06-17)
+
+
+### chore
+
+* 🤖 upgrade to angular v16 ([#661](https://github.com/ngneat/transloco/issues/661)) ([08db7e7](https://github.com/ngneat/transloco/commit/08db7e7d1f64846fa0b07123dee8ff5bff20b4f0))
+* **utils:** 🤖 min node version is 16 ([4c31b86](https://github.com/ngneat/transloco/commit/4c31b865ec57786ea961a414ef07510532afcddc))
+
+
+### BREAKING CHANGES
+
+* **utils:** 🧨 min node version is 16
+* 🧨 Angular 16
+
+
+
 ## [3.0.5](https://github.com/ngneat/transloco/compare/transloco-utils-3.0.4...transloco-utils-3.0.5) (2023-05-18)
 
 
