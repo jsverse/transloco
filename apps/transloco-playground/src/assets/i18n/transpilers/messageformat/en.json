@@ -3,6 +3,7 @@
   "params": "Replaces standard {{value}} - english",
   "messageFormat": "The {gender, select, male {boy named {{name}} won his} female {girl named {{name}} won her} other {person named {{name}} won their}} race and {gain, number, ::currency/EUR unit-width-narrow} - english",
   "messageFormatWithParams": "Can replace {{value}} and also give parse messageformat: The {gender, select, male {boy named {{name}} won his} female {girl named {{name}} won her} other {person named {{name}} won their}} race and {gain, number, ::currency/EUR unit-width-narrow} - english",
+  "messageFormatWithMissingParams": "Some text {not_a_variable} some text {not_a_variable_test}",
   "fromList": "from list",
   "a": {
     "b": {
