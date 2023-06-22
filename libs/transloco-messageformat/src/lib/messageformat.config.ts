@@ -14,7 +14,7 @@ export interface MessageformatConfig extends MessageFormatOptions<'string'> {
    * 
    * undefined will return undefined instead of missing parameters, e.g. "some text {not_a_variable}" -> "some text undefined"
    * 'self' will return themselves instead of missing parameters, e.g. "some text {not_a_variable}" -> "some text {not_a_variable}"
-   * 'empty' will return nothing instead of missing parameters, e.g. "some text {not_a_variable}" -> "some text"
+   * 'empty' will return nothing instead of missing parameters, e.g. "some text {not_a_variable}" -> "some text "
   **/
   missingParamHandling?: 'self' | 'empty';
 }

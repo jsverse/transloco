@@ -105,6 +105,42 @@ function assertParser(config: MessageformatConfig) {
     );
     expect(parsed).toEqual('The smart person won their race');
   });
+  
+  it('should translate with missing params and replace with themselves', () => {
+    const config: MessageformatConfig = { missingParamHandling: 'self' };
+    const parser = new MessageFormatTranspiler(config);
+    
+    const parsed = parser.transpile(
+      'Some text {not_a_variable} some text {not_a_variable_test}',
+      {},
+      {},
+      'key'
+    );
+    expect(parsed).toEqual('Some text {not_a_variable} some text {not_a_variable_test}');
+  });
+  
+  it('should translate with missing params and replace with an empty string', () => {
+    const config: MessageformatConfig = { missingParamHandling: 'empty' };
+    const parser = new MessageFormatTranspiler(config);
+    
+    const parsed = parser.transpile(
+      'Some text {not_a_variable} some text {not_a_variable_test}',
+      {},
+      {},
+      'key'
+    );
+    expect(parsed).toEqual('Some text  some text ');
+  });
+  
+  it('should translate with missing params and replace with undefined', () => {
+    const parsed = parser.transpile(
+      'Some text {not_a_variable} some text {not_a_variable_test}',
+      {},
+      {},
+      'key'
+    );
+    expect(parsed).toEqual('Some text undefined some text undefined');
+  });
 
   it('should translate simple param and interpolate params inside messageformat string', () => {
     const parsedMale = parser.transpile(

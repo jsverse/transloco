@@ -76,6 +76,25 @@ This is how you would enable bi-directional support and add a custom formatter, 
  export class TranslocoRootModule {}
 ```
 
+## Handling missing parameters
+MessageFormat instances provide the ability to handle missing parameters using the `missingParamHandling` property. There are several possible ways of handling:
+1. `undefined` will return undefined instead of missing parameters, e.g. "some text {not_a_variable}" -> "some text undefined"
+2. `self` will return themselves instead of missing parameters, e.g. "some text {not_a_variable}" -> "some text {not_a_variable}"
+3. `empty` will return nothing instead of missing parameters, e.g. "some text {not_a_variable}" -> "some text "
+
+This is how you would enable missingParamHandling, for example:
+```ts title="transloco-root.module.ts"
+ @NgModule({
+   imports: [
+     TranslocoMessageFormatModule.forRoot({
+         missingParamHandling: 'self',
+     })
+   ],
+   ...
+ })
+ export class TranslocoRootModule {}
+```
+
 ## Caching (from v3)
  By default the messageformat compile output is cached to reduce computing times, you can disable caching by passing the `enableCache` option:
  
