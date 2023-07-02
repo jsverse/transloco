@@ -40,8 +40,8 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "@angular/core": ">=13.0.0",
-    "rxjs": ">=6.0.0",
+    "@angular/core": ">=13.x.x || >=14.x.x || >=15.x.x || >=16.x.x",
+    "rxjs": ">=6.x.x || >=7.x.x",
     "fs-extra": ">=9.1.0",
     "glob": ">=7.1.7"
   },
