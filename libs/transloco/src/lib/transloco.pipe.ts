@@ -19,6 +19,7 @@ import {
 } from './shared';
 import { LangResolver } from './lang-resolver';
 import { ScopeResolver } from './scope-resolver';
+import { flattenArray } from './helpers';
 
 @Pipe({
   name: 'transloco',
@@ -79,7 +80,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
 
           return Array.isArray(this.providerScope)
             ? forkJoin(
-                (<TranslocoScope[]>this.providerScope).map((providerScope) =>
+                flattenArray(this.providerScope).map((providerScope) =>
                   this.resolveScope(lang, providerScope)
                 )
               )

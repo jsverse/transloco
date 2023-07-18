@@ -30,6 +30,7 @@ import {
 } from './shared';
 import { LangResolver } from './lang-resolver';
 import { ScopeResolver } from './scope-resolver';
+import { flattenArray } from './helpers';
 
 type TranslateFn = (key: string, params?: HashMap) => any;
 interface ViewContext {
@@ -107,7 +108,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
 
           return Array.isArray(this.providerScope)
             ? forkJoin(
-                (<TranslocoScope[]>this.providerScope).map((providerScope) =>
+                flattenArray(this.providerScope).map((providerScope) =>
                   this.resolveScope(lang, providerScope)
                 )
               )

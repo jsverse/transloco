@@ -44,7 +44,8 @@ export interface ProviderScope {
   loader?: InlineLoader;
   alias?: string;
 }
-export type MaybeArray<T> = T | T[];
+export type NestedArray<T> = Array<T> | Array<NestedArray<T>>;
+export type MaybeArray<T> = T | NestedArray<T>;
 export type TranslocoScope = ProviderScope | string | undefined;
 export type InlineLoader = HashMap<() => Promise<Translation>>;
 export interface LoadOptions {
