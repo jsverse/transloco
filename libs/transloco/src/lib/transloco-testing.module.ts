@@ -6,15 +6,13 @@ import {
   ModuleWithProviders,
   NgModule,
 } from '@angular/core';
-import { TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
+import {  TranslocoLoader } from './transloco.loader';
 import { HashMap, Translation } from './types';
 import { Observable, of } from 'rxjs';
 import { TranslocoModule } from './transloco.module';
-import { defaultProviders } from './transloco.providers';
+import {provideTransloco} from './transloco.providers';
 import {
-  TRANSLOCO_CONFIG,
   TranslocoConfig,
-  translocoConfig,
 } from './transloco.config';
 import { TranslocoService } from './transloco.service';
 
@@ -67,6 +65,14 @@ export class TranslocoTestingModule {
     return {
       ngModule: TranslocoTestingModule,
       providers: [
+          provideTransloco({
+            loader: TestingLoader,
+            config: {
+              prodMode: true,
+              missingHandler: { logMissingKey: false },
+              ...options.translocoConfig,
+            }
+          }),
         {
           provide: TRANSLOCO_TEST_LANGS,
           useValue: options.langs,
@@ -84,20 +90,7 @@ export class TranslocoTestingModule {
             TRANSLOCO_TEST_OPTIONS,
           ],
           multi: true,
-        },
-        {
-          provide: TRANSLOCO_LOADER,
-          useClass: TestingLoader,
-        },
-        defaultProviders,
-        {
-          provide: TRANSLOCO_CONFIG,
-          useValue: translocoConfig({
-            prodMode: true,
-            missingHandler: { logMissingKey: false },
-            ...options.translocoConfig,
-          }),
-        },
+        }
       ],
     };
   }

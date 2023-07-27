@@ -1,74 +1,50 @@
-import { Provider, Type } from '@angular/core';
+import {Provider, Type} from '@angular/core';
 
-import { TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
-import { TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
-import { TRANSLOCO_SCOPE } from './transloco-scope';
-import { TranslocoScope } from './types';
+import {TRANSLOCO_LOADER, TranslocoLoader} from './transloco.loader';
+import {PartialTranslocoConfig, TRANSLOCO_CONFIG, translocoConfig} from './transloco.config';
+import {TRANSLOCO_SCOPE} from './transloco-scope';
+import {TranslocoScope} from './types';
 
-import {
-  DefaultTranspiler,
-  TRANSLOCO_TRANSPILER,
-} from './transloco.transpiler';
-import {
-  DefaultHandler,
-  TRANSLOCO_MISSING_HANDLER,
-} from './transloco-missing-handler';
-import {
-  DefaultInterceptor,
-  TRANSLOCO_INTERCEPTOR,
-} from './transloco.interceptor';
+import {DefaultTranspiler, TRANSLOCO_TRANSPILER, TranslocoTranspiler,} from './transloco.transpiler';
+import {DefaultHandler, TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler,} from './transloco-missing-handler';
+import {DefaultInterceptor, TRANSLOCO_INTERCEPTOR, TranslocoInterceptor,} from './transloco.interceptor';
 import {
   DefaultFallbackStrategy,
   TRANSLOCO_FALLBACK_STRATEGY,
+  TranslocoFallbackStrategy,
 } from './transloco-fallback-strategy';
-
-export const defaultProviders = [
-  {
-    provide: TRANSLOCO_TRANSPILER,
-    useClass: DefaultTranspiler,
-    deps: [TRANSLOCO_CONFIG],
-  },
-  {
-    provide: TRANSLOCO_MISSING_HANDLER,
-    useClass: DefaultHandler,
-  },
-  {
-    provide: TRANSLOCO_INTERCEPTOR,
-    useClass: DefaultInterceptor,
-  },
-  {
-    provide: TRANSLOCO_FALLBACK_STRATEGY,
-    useClass: DefaultFallbackStrategy,
-    deps: [TRANSLOCO_CONFIG],
-  },
-];
+import {TRANSLOCO_LOADING_TEMPLATE} from "./transloco-loading-template";
+import {Content} from "./template-handler";
 
 type TranslocoOptions = {
-  config?: TranslocoConfig;
+  config: PartialTranslocoConfig;
   loader?: Type<TranslocoLoader>;
 };
 
 export function provideTransloco(options: TranslocoOptions) {
-  const providers: Provider[] = [...defaultProviders];
+  const providers: Provider[] = [
+      provideTranslocoTranspiler(DefaultTranspiler),
+      provideTranslocoMissingHandler(DefaultHandler),
+      provideTranslocoInterceptor(DefaultInterceptor),
+      provideTranslocoFallbackStrategy(DefaultFallbackStrategy)
+  ];
 
   if (options.config) {
-    providers.push(...provideTranslocoConfig(options.config));
+    providers.push(provideTranslocoConfig(options.config));
   }
 
   if (options.loader) {
-    providers.push(...provideTranslocoLoader(options.loader));
+    providers.push(provideTranslocoLoader(options.loader));
   }
 
   return providers;
 }
 
-export function provideTranslocoConfig(config: TranslocoConfig) {
-  return [
-    {
+export function provideTranslocoConfig(config: PartialTranslocoConfig) {
+  return{
       provide: TRANSLOCO_CONFIG,
-      useValue: config,
-    },
-  ];
+      useValue: translocoConfig(config),
+    };
 }
 
 export function provideTranslocoLoader(loader: Type<TranslocoLoader>) {
@@ -76,10 +52,45 @@ export function provideTranslocoLoader(loader: Type<TranslocoLoader>) {
 }
 
 export function provideTranslocoScope(scope: TranslocoScope) {
-  return [
-    {
+  return {
       provide: TRANSLOCO_SCOPE,
       useValue: scope,
-    },
-  ];
+    }
+}
+
+export function provideTranslocoLoadingTpl(content: Content) {
+  return {
+    provide: TRANSLOCO_LOADING_TEMPLATE ,
+    useValue: content
+  }
+}
+
+export function provideTranslocoTranspiler(transpiler: Type<TranslocoTranspiler>): Provider {
+  return {
+    provide: TRANSLOCO_TRANSPILER,
+    useClass: transpiler,
+    deps: [TRANSLOCO_CONFIG],
+  }
+}
+
+export function provideTranslocoFallbackStrategy(strategy: Type<TranslocoFallbackStrategy>): Provider {
+  return {
+    provide: TRANSLOCO_FALLBACK_STRATEGY,
+    useClass: strategy,
+    deps: [TRANSLOCO_CONFIG],
+  }
+}
+
+export function provideTranslocoMissingHandler(handler: Type<TranslocoMissingHandler>): Provider {
+  return   {
+    provide: TRANSLOCO_MISSING_HANDLER,
+    useClass: handler,
+  }
+}
+
+export function provideTranslocoInterceptor(interceptor: Type<TranslocoInterceptor>): Provider {
+  return   {
+    provide: TRANSLOCO_INTERCEPTOR,
+    useClass: interceptor,
+  }
 }

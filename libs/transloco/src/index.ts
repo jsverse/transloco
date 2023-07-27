@@ -29,7 +29,6 @@ export {
   TranslocoTestingModule,
   TranslocoTestingOptions,
 } from './lib/transloco-testing.module';
-export { TemplateHandler, View } from './lib/template-handler';
 export {
   TRANSLOCO_INTERCEPTOR,
   TranslocoInterceptor,
@@ -48,9 +47,13 @@ export { getBrowserCultureLang, getBrowserLang } from './lib/browser-lang';
 export { getPipeValue, getLangFromScope, getScopeFromLang } from './lib/shared';
 export * from './lib/types';
 export * from './lib/helpers';
-export { 
-  defaultProviders,
-  provideTransloco,
+export {
+  provideTranslocoFallbackStrategy,
+    provideTranslocoInterceptor,
+    provideTranslocoTranspiler,
+    provideTranslocoMissingHandler,
+    provideTranslocoLoadingTpl,
+    provideTransloco,
   provideTranslocoConfig,
   provideTranslocoLoader,
   provideTranslocoScope,

@@ -12,12 +12,11 @@ import {
   Renderer2,
   SimpleChanges,
   TemplateRef,
-  Type,
   ViewContainerRef,
 } from '@angular/core';
 import { forkJoin, Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { TemplateHandler, View } from './template-handler';
+import { TemplateHandler, Content } from './template-handler';
 import { TRANSLOCO_LANG } from './transloco-lang';
 import { TRANSLOCO_LOADING_TEMPLATE } from './transloco-loading-template';
 import { TRANSLOCO_SCOPE } from './transloco-scope';
@@ -39,6 +38,7 @@ interface ViewContext {
 
 @Directive({
   selector: '[transloco]',
+  standalone: true
 })
 export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   subscription: Subscription | null = null;
@@ -52,7 +52,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   @Input('translocoScope') inlineScope: string | undefined;
   @Input('translocoRead') inlineRead: string | undefined;
   @Input('translocoLang') inlineLang: string | undefined;
-  @Input('translocoLoadingTpl') inlineTpl: TemplateRef<unknown> | undefined;
+  @Input('translocoLoadingTpl') inlineTpl: Content | undefined;
 
   private currentLang: string | undefined;
   private loaderTplHandler: TemplateHandler | undefined;
@@ -81,7 +81,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     private providerLang: string | undefined,
     @Optional()
     @Inject(TRANSLOCO_LOADING_TEMPLATE)
-    private providedLoadingTpl: Type<unknown> | string,
+    private providedLoadingTpl: Content,
     private vcr: ViewContainerRef,
     private cdr: ChangeDetectorRef,
     private host: ElementRef,
@@ -126,10 +126,12 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
         this.initialized = true;
       });
 
-    const loadingTpl = this.getLoadingTpl();
-    if (!this.initialized && loadingTpl) {
-      this.loaderTplHandler = new TemplateHandler(loadingTpl, this.vcr);
-      this.loaderTplHandler.attachView();
+    if (!this.initialized) {
+      const loadingContent = this.resolveLoadingContent();
+      if (loadingContent) {
+        this.loaderTplHandler = new TemplateHandler(loadingContent, this.vcr);
+        this.loaderTplHandler.attachView();
+      }
     }
   }
 
@@ -192,7 +194,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     };
   }
 
-  private getLoadingTpl(): View {
+  private resolveLoadingContent(): Content {
     return this.inlineTpl || this.providedLoadingTpl;
   }
 

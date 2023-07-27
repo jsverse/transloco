@@ -23,6 +23,7 @@ import { ScopeResolver } from './scope-resolver';
 @Pipe({
   name: 'transloco',
   pure: false,
+  standalone: true
 })
 export class TranslocoPipe implements PipeTransform, OnDestroy {
   private subscription: Subscription | null = null;

@@ -27,9 +27,9 @@ export class DefaultTranspiler implements TranslocoTranspiler {
   protected interpolationMatcher: RegExp;
 
   constructor(
-    @Optional() @Inject(TRANSLOCO_CONFIG) userConfig?: TranslocoConfig
+    @Optional() @Inject(TRANSLOCO_CONFIG) config?: TranslocoConfig
   ) {
-    this.interpolationMatcher = resolveMatcher(userConfig);
+    this.interpolationMatcher = resolveMatcher(config ?? defaultConfig);
   }
 
   transpile(value: any, params: HashMap = {}, translation: Translation, key: string): any {
@@ -113,11 +113,8 @@ export class DefaultTranspiler implements TranslocoTranspiler {
   }
 }
 
-function resolveMatcher(userConfig?: TranslocoConfig): RegExp {
-  const [start, end] =
-    userConfig && userConfig.interpolation
-      ? userConfig.interpolation
-      : defaultConfig.interpolation!;
+function resolveMatcher(config: TranslocoConfig): RegExp {
+  const [start, end] = config.interpolation;
 
   return new RegExp(`${start}(.*?)${end}`, 'g');
 }

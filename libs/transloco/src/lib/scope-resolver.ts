@@ -8,7 +8,7 @@ type ScopeResolverParams = {
 };
 
 export class ScopeResolver {
-  constructor(private translocoService: TranslocoService) {}
+  constructor(private service: TranslocoService) {}
 
   // inline => provider
   resolve(
@@ -24,7 +24,7 @@ export class ScopeResolver {
     if (provider) {
       if (isScopeObject(provider)) {
         const { scope, alias = toCamelCase(scope) } = provider as ProviderScope;
-        this.translocoService._setScopeAlias(scope, alias);
+        this.service._setScopeAlias(scope, alias);
 
         return scope;
       }

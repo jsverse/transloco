@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { TranslocoLoaderComponent } from './loader-component.component';
 import { TranslocoDirective } from './transloco.directive';
-import { defaultProviders } from './transloco.providers';
 import { TranslocoPipe } from './transloco.pipe';
 
+const decl = [TranslocoDirective, TranslocoPipe];
+
 @NgModule({
-  declarations: [TranslocoDirective, TranslocoPipe, TranslocoLoaderComponent],
-  providers: [defaultProviders],
-  exports: [TranslocoDirective, TranslocoPipe],
+  imports: decl,
+  exports: decl
 })
 export class TranslocoModule {}

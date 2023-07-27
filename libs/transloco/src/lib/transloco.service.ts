@@ -1,32 +1,8 @@
-import { Inject, Injectable, OnDestroy, Optional } from '@angular/core';
-import {
-  BehaviorSubject,
-  combineLatest,
-  EMPTY,
-  forkJoin,
-  from,
-  Observable,
-  of,
-  Subject,
-  Subscription,
-} from 'rxjs';
-import {
-  catchError,
-  map,
-  retry,
-  shareReplay,
-  switchMap,
-  tap,
-} from 'rxjs/operators';
-import {
-  DefaultLoader,
-  TRANSLOCO_LOADER,
-  TranslocoLoader,
-} from './transloco.loader';
-import {
-  TRANSLOCO_TRANSPILER,
-  TranslocoTranspiler,
-} from './transloco.transpiler';
+import {Inject, Injectable, OnDestroy, Optional} from '@angular/core';
+import {BehaviorSubject, combineLatest, EMPTY, forkJoin, from, Observable, of, Subject, Subscription,} from 'rxjs';
+import {catchError, map, retry, shareReplay, switchMap, tap,} from 'rxjs/operators';
+import {DefaultLoader, TRANSLOCO_LOADER, TranslocoLoader,} from './transloco.loader';
+import {TRANSLOCO_TRANSPILER, TranslocoTranspiler,} from './transloco.transpiler';
 import {
   AvailableLangs,
   HashMap,
@@ -40,43 +16,18 @@ import {
   TranslocoEvents,
   TranslocoScope,
 } from './types';
-import {
-  flatten,
-  isEmpty,
-  isNil,
-  isScopeObject,
-  isString,
-  size,
-  toCamelCase,
-  unflatten,
-} from './helpers';
-import {
-  defaultConfig,
-  TRANSLOCO_CONFIG,
-  TranslocoConfig,
-} from './transloco.config';
+import {flatten, isEmpty, isNil, isScopeObject, isString, size, toCamelCase, unflatten,} from './helpers';
+import {TRANSLOCO_CONFIG, TranslocoConfig,} from './transloco.config';
 import {
   TRANSLOCO_MISSING_HANDLER,
   TranslocoMissingHandler,
   TranslocoMissingHandlerData,
 } from './transloco-missing-handler';
-import {
-  TRANSLOCO_INTERCEPTOR,
-  TranslocoInterceptor,
-} from './transloco.interceptor';
-import {
-  TRANSLOCO_FALLBACK_STRATEGY,
-  TranslocoFallbackStrategy,
-} from './transloco-fallback-strategy';
-import { mergeConfig } from './merge-config';
-import {
-  getEventPayload,
-  getLangFromScope,
-  getScopeFromLang,
-  resolveInlineLoader,
-} from './shared';
-import { getFallbacksLoaders } from './get-fallbacks-loaders';
-import { resolveLoader } from './resolve-loader';
+import {TRANSLOCO_INTERCEPTOR, TranslocoInterceptor,} from './transloco.interceptor';
+import {TRANSLOCO_FALLBACK_STRATEGY, TranslocoFallbackStrategy,} from './transloco-fallback-strategy';
+import {getEventPayload, getLangFromScope, getScopeFromLang, resolveInlineLoader,} from './shared';
+import {getFallbacksLoaders} from './get-fallbacks-loaders';
+import {resolveLoader} from './resolve-loader';
 
 let service: TranslocoService;
 
@@ -109,12 +60,12 @@ export class TranslocoService implements OnDestroy {
   private isResolvedMissingOnce = false;
   private lang: BehaviorSubject<string>;
   private failedLangs = new Set<string>();
-  private readonly mergedConfig: TranslocoConfig & {
-    scopeMapping?: HashMap<string>;
-  };
   private events = new Subject<TranslocoEvents>();
 
   events$ = this.events.asObservable();
+  readonly config: TranslocoConfig & {
+    scopeMapping?: HashMap<string>;
+  };
 
   constructor(
     @Optional() @Inject(TRANSLOCO_LOADER) private loader: TranslocoLoader,
@@ -122,7 +73,7 @@ export class TranslocoService implements OnDestroy {
     @Inject(TRANSLOCO_MISSING_HANDLER)
     private missingHandler: TranslocoMissingHandler,
     @Inject(TRANSLOCO_INTERCEPTOR) private interceptor: TranslocoInterceptor,
-    @Inject(TRANSLOCO_CONFIG) private userConfig: TranslocoConfig,
+    @Inject(TRANSLOCO_CONFIG) userConfig: TranslocoConfig,
     @Inject(TRANSLOCO_FALLBACK_STRATEGY)
     private fallbackStrategy: TranslocoFallbackStrategy
   ) {
@@ -130,11 +81,11 @@ export class TranslocoService implements OnDestroy {
       this.loader = new DefaultLoader(this.translations);
     }
     service = this;
-    this.mergedConfig = mergeConfig(defaultConfig, this.userConfig);
+    this.config = structuredClone(userConfig);
 
-    this.setAvailableLangs(this.mergedConfig.availableLangs || []);
-    this.setFallbackLangForMissingTranslation(this.mergedConfig);
-    this.setDefaultLang(this.mergedConfig.defaultLang);
+    this.setAvailableLangs(this.config.availableLangs || []);
+    this.setFallbackLangForMissingTranslation(this.config);
+    this.setDefaultLang(this.config.defaultLang);
     this.lang = new BehaviorSubject<string>(this.getDefaultLang());
     // Don't use distinctUntilChanged as we need the ability to update
     // the value when using setTranslation or setTranslationKeys
@@ -148,10 +99,6 @@ export class TranslocoService implements OnDestroy {
         this.setActiveLang(e.payload.langName);
       }
     });
-  }
-
-  get config() {
-    return this.mergedConfig;
   }
 
   getDefaultLang() {
@@ -245,7 +192,7 @@ export class TranslocoService implements OnDestroy {
         this.handleSuccess(path, translation);
       }),
       catchError((error) => {
-        if (!this.mergedConfig.prodMode) {
+        if (!this.config.prodMode) {
           console.error(`Error while trying to load "${path}"`, error);
         }
 
@@ -286,10 +233,10 @@ export class TranslocoService implements OnDestroy {
     }
 
     key = scope ? `${scope}.${key}` : key;
-    
+
     const translation = this.getTranslation(resolveLang);
     const value = translation[key];
-    
+
     if (!value) {
       return this._handleMissingKey(key, value, params);
     }
@@ -552,7 +499,7 @@ export class TranslocoService implements OnDestroy {
       ...flattenScopeOrTranslation,
     };
 
-    const flattenTranslation = this.mergedConfig.flatten!.aot
+    const flattenTranslation = this.config.flatten!.aot
       ? mergedTranslation
       : flatten(mergedTranslation);
     const withHook = this.interceptor.preSaveTranslation(
@@ -684,10 +631,10 @@ export class TranslocoService implements OnDestroy {
    * @internal
    */
   _setScopeAlias(scope: string, alias: string) {
-    if (!this.mergedConfig.scopeMapping) {
-      this.mergedConfig.scopeMapping = {};
+    if (!this.config.scopeMapping) {
+      this.config.scopeMapping = {};
     }
-    this.mergedConfig.scopeMapping[scope] = alias;
+    this.config.scopeMapping[scope] = alias;
   }
 
   ngOnDestroy() {

@@ -1,5 +1,4 @@
-import { InjectionToken, ComponentRef } from '@angular/core';
+import { InjectionToken } from '@angular/core';
+import {Content} from "./template-handler";
 
-export const TRANSLOCO_LOADING_TEMPLATE = new InjectionToken<{
-  component: ComponentRef<unknown> | string;
-}>('TRANSLOCO_LOADING_TEMPLATE');
+export const TRANSLOCO_LOADING_TEMPLATE = new InjectionToken<Content>('TRANSLOCO_LOADING_TEMPLATE');
