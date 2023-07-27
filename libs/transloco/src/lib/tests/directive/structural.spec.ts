@@ -66,7 +66,7 @@ describe('Structural directive', () => {
   it('should create embedded view once', fakeAsync(() => {
     spyOn(
       TranslocoDirective.prototype as any,
-      'getLoadingTpl'
+      'resolveLoadingContent'
     ).and.callThrough();
     spectator = createHost(`<section *transloco="let t"></section>`, {
       detectChanges: false,
@@ -79,7 +79,7 @@ describe('Structural directive', () => {
     service.setActiveLang('es');
     runLoader();
     expect(
-      (TranslocoDirective.prototype as any).getLoadingTpl
+      (TranslocoDirective.prototype as any).resolveLoadingContent
     ).toHaveBeenCalledTimes(1);
   }));
 

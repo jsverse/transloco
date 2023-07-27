@@ -1,23 +1,15 @@
-import { DefaultFallbackStrategy } from '../../transloco-fallback-strategy';
-import { DefaultHandler } from '../../transloco-missing-handler';
-import { DefaultInterceptor } from '../../transloco.interceptor';
-import { DefaultLoader } from '../../transloco.loader';
-import { TranslocoService } from '../../transloco.service';
-import { DefaultTranspiler } from '../../transloco.transpiler';
+import {DefaultLoader} from '../../transloco.loader';
+import {TranslocoService} from '../../transloco.service';
+import {createService} from "../mocks";
 
 describe('default loader', () => {
   it('should no throw and use the default loader', () => {
     let service: TranslocoService;
 
     expect(function () {
-      service = new TranslocoService(
-        null as any,
-        new DefaultTranspiler(),
-        new DefaultHandler(),
-        new DefaultInterceptor(),
-        { defaultLang: 'en', availableLangs: ['en'] },
-        new DefaultFallbackStrategy({ defaultLang: 'en', fallbackLang: 'en' })
-      );
+      service = createService({
+        availableLangs: ['en']
+      }, {loader: null as any});
     }).not.toThrow();
     expect((service! as any).loader instanceof DefaultLoader).toBe(true);
     service!.setTranslation(

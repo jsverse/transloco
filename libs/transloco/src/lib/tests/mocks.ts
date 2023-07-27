@@ -1,18 +1,18 @@
 import {
   DefaultTranspiler,
-  TRANSLOCO_TRANSPILER,
+  TRANSLOCO_TRANSPILER, TranslocoTranspiler,
 } from '../transloco.transpiler';
-import { TRANSLOCO_LOADER } from '../transloco.loader';
+import {TRANSLOCO_LOADER, TranslocoLoader} from '../transloco.loader';
 import {
+  PartialTranslocoConfig,
   TRANSLOCO_CONFIG,
-  TranslocoConfig,
   translocoConfig,
 } from '../transloco.config';
 import { timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 import {
   DefaultHandler,
-  TRANSLOCO_MISSING_HANDLER,
+  TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler,
 } from '../transloco-missing-handler';
 import en from './i18n-mocks/en.json';
 import es from './i18n-mocks/es.json';
@@ -29,13 +29,13 @@ import { TranslocoService } from '../transloco.service';
 import { TRANSLOCO_LOADING_TEMPLATE } from '../transloco-loading-template';
 import {
   DefaultInterceptor,
-  TRANSLOCO_INTERCEPTOR,
+  TRANSLOCO_INTERCEPTOR, TranslocoInterceptor,
 } from '../transloco.interceptor';
 import {
   DefaultFallbackStrategy,
-  TRANSLOCO_FALLBACK_STRATEGY,
+  TRANSLOCO_FALLBACK_STRATEGY, TranslocoFallbackStrategy,
 } from '../transloco-fallback-strategy';
-import { ProviderScope, Translation } from '../types';
+import {ProviderScope, Translation} from '../types';
 import { TRANSLOCO_SCOPE } from '../transloco-scope';
 
 export const mockLangs: Record<string, Translation> = {
@@ -51,7 +51,7 @@ export const mockLangs: Record<string, Translation> = {
   'transpilers/messageformat/es': esMF,
 };
 
-export const loader = {
+export const mockedLoader = {
   getTranslation(lang: string) {
     return timer(1000).pipe(map(() => mockLangs[lang]));
   },
@@ -64,7 +64,7 @@ export const configProviderMock = (config = {}) => ({
 
 export const loaderProviderMock = {
   provide: TRANSLOCO_LOADER,
-  useValue: loader,
+  useValue: mockedLoader,
 };
 
 export const transpilerProviderMock = {
@@ -105,7 +105,7 @@ export function setlistenToLangChange(
   service: TranslocoService,
   reRenderOnLangChange = true
 ) {
-  (service as any).mergedConfig.reRenderOnLangChange = reRenderOnLangChange;
+  service.config.reRenderOnLangChange = reRenderOnLangChange;
 }
 
 export const loadingTemplateMock = {
@@ -113,14 +113,30 @@ export const loadingTemplateMock = {
   useValue: 'loading template...',
 };
 
-export function createService(config: Partial<TranslocoConfig> = {}) {
+interface Providers {
+  loader?: TranslocoLoader,
+  transpiler?: TranslocoTranspiler,
+  missingHandler?: TranslocoMissingHandler
+  interceptor?: TranslocoInterceptor,
+  fallback?: TranslocoFallbackStrategy
+}
+export function createService(config: PartialTranslocoConfig = {}, providers: Providers = {}) {
+  const mergedConfig = translocoConfig({ defaultLang: 'en', availableLangs: ['en', 'es'], fallbackLang: 'en', ...config });
+  const {
+    loader = mockedLoader,
+    transpiler = new DefaultTranspiler(),
+    missingHandler = new DefaultHandler(),
+    interceptor = new DefaultInterceptor(),
+      fallback = new DefaultFallbackStrategy(mergedConfig)
+  } = providers;
+
   return new TranslocoService(
     loader,
-    new DefaultTranspiler(),
-    new DefaultHandler(),
-    new DefaultInterceptor(),
-    { defaultLang: 'en', availableLangs: ['en', 'es'], ...config },
-    new DefaultFallbackStrategy({ defaultLang: 'en', fallbackLang: 'en' })
+    transpiler,
+      missingHandler,
+      interceptor,
+      mergedConfig,
+    fallback
   );
 }
 

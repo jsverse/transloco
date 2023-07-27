@@ -83,7 +83,7 @@ describe('missingHandler', () => {
     }));
 
     it('should respect allow empty', fakeAsync(() => {
-      (service as any).mergedConfig.missingHandler.allowEmpty = true;
+      service.config.missingHandler.allowEmpty = true;
       spyOn((service as any).loader, 'getTranslation').and.callThrough();
       service.load('en').subscribe();
       runLoader(2000);

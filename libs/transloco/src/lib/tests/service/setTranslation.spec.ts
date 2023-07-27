@@ -82,7 +82,7 @@ describe('setTranslation', () => {
     });
 
     it("should map the scope's name in the merged translation", () => {
-      (service as any).mergedConfig.scopeMapping = { 'lazy-page': 'kazaz' };
+      service.config.scopeMapping = { 'lazy-page': 'kazaz' };
       service.setTranslation(translation, lang);
       const merged = {
         ...flatten(mockLangs.en),

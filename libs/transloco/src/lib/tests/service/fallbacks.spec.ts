@@ -1,16 +1,9 @@
-import { of, timer } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
-import { mockLangs, runLoader } from '../mocks';
-import { fakeAsync } from '@angular/core/testing';
-import { DefaultHandler } from '../../transloco-missing-handler';
-import { DefaultInterceptor } from '../../transloco.interceptor';
-import { TranslocoLoader } from '../../transloco.loader';
-import { TranslocoService } from '../../transloco.service';
-import { DefaultTranspiler } from '../../transloco.transpiler';
-import {
-  DefaultFallbackStrategy,
-  TranslocoFallbackStrategy,
-} from '../../transloco-fallback-strategy';
+import {of, timer} from 'rxjs';
+import {catchError, map} from 'rxjs/operators';
+import {createService, mockLangs, runLoader} from '../mocks';
+import {fakeAsync} from '@angular/core/testing';
+import {TranslocoLoader} from '../../transloco.loader';
+import {DefaultFallbackStrategy, TranslocoFallbackStrategy,} from '../../transloco-fallback-strategy';
 
 describe('Multiple fallbacks', () => {
   describe('DefaultFallbackStrategy', () => {
@@ -36,18 +29,10 @@ describe('Multiple fallbacks', () => {
     });
 
     it('should try load the fallbackLang when current lang failed', fakeAsync(() => {
-      const service = new TranslocoService(
-        loader,
-        new DefaultTranspiler(),
-        new DefaultHandler(),
-        new DefaultInterceptor(),
-        { defaultLang: 'en' },
-        new DefaultFallbackStrategy({
-          fallbackLang: 'es',
-          defaultLang: 'en',
-          failedRetries: 2,
-        })
-      );
+      const service = createService({
+        fallbackLang: 'es',
+        failedRetries: 2,
+      }, {loader});
 
       spyOn(service, 'load').and.callThrough();
       service.load('notExists').subscribe();
@@ -73,18 +58,10 @@ describe('Multiple fallbacks', () => {
     }));
 
     it('should load the fallbackLang only once', fakeAsync(() => {
-      const service = new TranslocoService(
-        loader,
-        new DefaultTranspiler(),
-        new DefaultHandler(),
-        new DefaultInterceptor(),
-        { defaultLang: 'en' },
-        new DefaultFallbackStrategy({
-          fallbackLang: 'es',
-          defaultLang: 'en',
-          failedRetries: 2,
-        })
-      );
+      const service = createService({
+        fallbackLang: 'es',
+        failedRetries: 2,
+      }, {loader});
 
       spyOn(service, 'load').and.callThrough();
       service.load('notExists').subscribe();
@@ -119,18 +96,11 @@ describe('Multiple fallbacks', () => {
     }));
 
     it('should should throw if the fallback lang is failed to load', fakeAsync(() => {
-      const service = new TranslocoService(
-        loader,
-        new DefaultTranspiler(),
-        new DefaultHandler(),
-        new DefaultInterceptor(),
-        { defaultLang: 'en' },
-        new DefaultFallbackStrategy({
-          fallbackLang: 'fallbackNotExists',
-          defaultLang: 'en',
-          failedRetries: 2,
-        })
-      );
+      const service = createService({
+        fallbackLang: 'fallbackNotExists',
+        failedRetries: 2,
+      }, {loader});
+
       spyOn(service, 'load').and.callThrough();
       service
         .load('notExists')
@@ -183,14 +153,9 @@ describe('Multiple fallbacks', () => {
     });
 
     it('should try load the it and gp then set en as the active', fakeAsync(() => {
-      const service = new TranslocoService(
-        loader,
-        new DefaultTranspiler(),
-        new DefaultHandler(),
-        new DefaultInterceptor(),
-        { defaultLang: 'es' },
-        new StrategyTest()
-      );
+      const service = createService({
+        defaultLang: 'es',
+      }, {loader, fallback: new StrategyTest()});
 
       spyOn(service, 'load').and.callThrough();
       service.load('notExists').subscribe();

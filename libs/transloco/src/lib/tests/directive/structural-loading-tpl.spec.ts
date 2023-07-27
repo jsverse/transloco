@@ -29,14 +29,14 @@ describe('Loading Template', () => {
         </ng-template>
       `);
 
-    expect((TemplateHandler.prototype as any).attachView).toHaveBeenCalledTimes(
+    expect(TemplateHandler.prototype.attachView).toHaveBeenCalledTimes(
       1
     );
     expect(spectator.queryHost('#lazy-page-loading')).toHaveText('Loading...');
     spectator.detectChanges();
     runLoader();
     expect(spectator.queryHost('#lazy-page-loading')).toBeNull();
-    expect((TemplateHandler.prototype as any).detachView).toHaveBeenCalledTimes(
+    expect(TemplateHandler.prototype.detachView).toHaveBeenCalledTimes(
       1
     );
   }));
@@ -53,7 +53,7 @@ describe('Loading Template', () => {
       `);
 
     expect(
-      (TemplateHandler.prototype as any).attachView
+      TemplateHandler.prototype.attachView
     ).not.toHaveBeenCalled();
   });
 
@@ -77,7 +77,7 @@ describe('Loading Template', () => {
     preloadTranslations(spectator);
 
     expect(
-      (TemplateHandler.prototype as any).attachView
+      TemplateHandler.prototype.attachView
     ).not.toHaveBeenCalled();
   }));
 });
@@ -87,8 +87,6 @@ describe('Custom loading template', () => {
 
   const createHost = createHostFactory({
     component: TranslocoDirective,
-    declarations: [TranslocoLoaderComponent],
-    entryComponents: [TranslocoLoaderComponent],
     providers: [...providersMock, loadingTemplateMock],
   });
 
@@ -108,14 +106,14 @@ describe('Custom loading template', () => {
         </section>
       `);
 
-    expect((TemplateHandler.prototype as any).attachView).toHaveBeenCalled();
+    expect(TemplateHandler.prototype.attachView).toHaveBeenCalled();
     expect(spectator.queryHost('.transloco-loader-template')).toHaveText(
       'loading template...'
     );
     spectator.detectChanges();
     runLoader();
     expect(spectator.queryHost('.transloco-loader-template')).toBeNull();
-    expect((TemplateHandler.prototype as any).detachView).toHaveBeenCalled();
+    expect(TemplateHandler.prototype.detachView).toHaveBeenCalled();
   }));
 
   it('should use the inline loader template instead of default', fakeAsync(() => {
