@@ -6,62 +6,35 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      
-      - name: Npm install
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-          cache: 'npm'
-      - run: npm i
+      - name: Setup
+        uses: ./.github/actions/step-setup
 
       - name: Run build
         run: npm run ci:build
 
-
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Npm install
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-          cache: 'npm'
-      - run: npm i
+      - name: Setup
+        uses: ./.github/actions/step-setup
 
       - name: Run tests
         run: npm run ci:test
+
   lint:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Npm install
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-          cache: 'npm'
-      - run: npm i
+      - name: Setup
+        uses: ./.github/actions/step-setup
 
       - name: Run lint
         run: npm run ci:lint
+
   e2e:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Npm install
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-          cache: 'npm'
-      - run: npm i
+      - name: Setup
+        uses: ./.github/actions/step-setup
 
       - name: Run E2E
         run: npm run ci:e2e
