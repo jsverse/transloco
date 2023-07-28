@@ -38,3 +38,6 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# Cypress
+apps/transloco-playground-e2e/cypress/screenshots/*
