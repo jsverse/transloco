@@ -31,7 +31,6 @@
       "extends": ["plugin:@nx/javascript"],
       "rules": {}
     },
-    // Disalble rules for sepcs
     {
       "files": ["**/*.spec.ts", "**/mocks.ts", "**/test-setup.ts"],
       "rules": {
@@ -41,7 +40,6 @@
         "@typescript-eslint/no-non-null-assertion": "off"
       }
     },
-    // Allow usage of any in types file and utility files
     {
       "files": ["**/types.ts", "**/helpers.ts"],
       "rules": {
