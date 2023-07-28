@@ -34,7 +34,7 @@ const ALL_DEPENDENCY_TYPE = [
 export function addPackageJsonDependency(
   tree: Tree,
   dependency: NodeDependency,
-  pkgJsonPath = PKG_JSON_PATH,
+  pkgJsonPath = PKG_JSON_PATH
 ): void {
   const json = new JSONFile(tree, pkgJsonPath);
 
@@ -48,7 +48,7 @@ export function addPackageJsonDependency(
 export function removePackageJsonDependency(
   tree: Tree,
   name: string,
-  pkgJsonPath = PKG_JSON_PATH,
+  pkgJsonPath = PKG_JSON_PATH
 ): void {
   const json = new JSONFile(tree, pkgJsonPath);
 
@@ -60,7 +60,7 @@ export function removePackageJsonDependency(
 export function getPackageJsonDependency(
   tree: Tree,
   name: string,
-  pkgJsonPath = PKG_JSON_PATH,
+  pkgJsonPath = PKG_JSON_PATH
 ): NodeDependency | null {
   const json = new JSONFile(tree, pkgJsonPath);
 

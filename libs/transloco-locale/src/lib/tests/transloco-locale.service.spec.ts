@@ -86,7 +86,7 @@ describe('TranslocoLocaleService', () => {
       expect(service.getLocale()).toEqual('zh-Hant');
       service.setLocale('zh-hant');
       expect(service.getLocale()).toEqual('zh-hant');
-    })
+    });
   });
 
   describe('localeChanges$', () => {

@@ -7,6 +7,6 @@ const decl = [TranslocoDirective, TranslocoPipe];
 
 @NgModule({
   imports: decl,
-  exports: decl
+  exports: decl,
 })
 export class TranslocoModule {}

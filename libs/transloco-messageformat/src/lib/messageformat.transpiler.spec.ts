@@ -38,7 +38,12 @@ describe('MessageFormatTranspiler', () => {
     const parser = new MessageFormatTranspiler({
       customFormatters: formatters,
     });
-    const upper = parser.transpile(messages.describe, { upper: 'big' }, {}, 'key');
+    const upper = parser.transpile(
+      messages.describe,
+      { upper: 'big' },
+      {},
+      'key'
+    );
     expect(upper).toEqual('This is BIG.');
 
     expect(

@@ -29,7 +29,12 @@ describe('TranslocoTranspiler', () => {
     testDefaultBehaviour(parser);
 
     it('should call the correct function', () => {
-      const parsed = parser.transpile('[[ upperCase(lowercase) ]]', {}, {}, 'key');
+      const parsed = parser.transpile(
+        '[[ upperCase(lowercase) ]]',
+        {},
+        {},
+        'key'
+      );
       expect(parsed).toEqual('LOWERCASE');
     });
 
@@ -318,13 +323,17 @@ describe('TranslocoTranspiler', () => {
           ref: 'Hello world',
           refWithParam: `Hello ${wrapParam('name')}`,
         };
-        expect(parser.transpile(translations.d, {}, translation, 'key')).toEqual([
-          'Hello world',
-          'Hello',
-        ]);
+        expect(
+          parser.transpile(translations.d, {}, translation, 'key')
+        ).toEqual(['Hello world', 'Hello']);
 
         expect(
-          parser.transpile(translations.e, { name: 'Transloco' }, translation, 'key')
+          parser.transpile(
+            translations.e,
+            { name: 'Transloco' },
+            translation,
+            'key'
+          )
         ).toEqual([
           'Hello Transloco',
           'Hello world',

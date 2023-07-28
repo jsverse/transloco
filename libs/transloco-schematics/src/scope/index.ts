@@ -5,7 +5,8 @@ import {
   SchematicContext,
   externalSchematic,
   mergeWith,
-  empty, chain,
+  empty,
+  chain,
 } from '@angular-devkit/schematics';
 import { ScriptTarget, createSourceFile } from 'typescript';
 import { LIB_NAME } from '../schematics.consts';
@@ -21,8 +22,8 @@ import { createTranslateFilesFromOptions } from '../utils/translations';
 import { SchemaOptions } from './schema';
 import * as p from 'path';
 import { getConfig } from '../utils/config';
-import {applyChangesToFile} from "../utils/ng-schematics-utils/standalone/util";
-import {Change} from "../utils/ng-schematics-utils/change";
+import { applyChangesToFile } from '../utils/ng-schematics-utils/standalone/util';
+import { Change } from '../utils/ng-schematics-utils/change';
 
 function getProviderValue(options: SchemaOptions) {
   const name = dasherize(options.name);
@@ -101,12 +102,7 @@ function addInlineLoader(
   tree.create(path, loader);
 }
 
-function createTranslationFiles(
-  options,
-  rootPath,
-  modulePath,
-  host: Tree
-) {
+function createTranslationFiles(options, rootPath, modulePath, host: Tree) {
   if (options.skipCreation) {
     return empty();
   }
@@ -147,23 +143,23 @@ export default function (options: SchemaOptions): Rule {
       cmpRule(host, context) as Rule,
       (tree) => {
         const modulePath = tree.actions.find(
-            (action) =>
-                !!action.path.match(/\.module\.ts/) &&
-                !action.path.match(/-routing\.module\.ts/)
+          (action) =>
+            !!action.path.match(/\.module\.ts/) &&
+            !action.path.match(/-routing\.module\.ts/)
         ).path;
         addScopeToModule(tree, modulePath, options);
         if (options.inlineLoader) {
           addInlineLoader(tree, modulePath, options.name, options.langs);
         }
         const translationRule = createTranslationFiles(
-            options,
-            rootPath,
-            modulePath,
-            host
+          options,
+          rootPath,
+          modulePath,
+          host
         );
 
         return mergeWith(translationRule);
-      }
+      },
     ]);
   };
 }

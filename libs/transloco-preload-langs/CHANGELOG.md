@@ -4,26 +4,19 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 ## [4.0.1](https://github.com/ngneat/transloco/compare/transloco-preload-langs-4.0.0...transloco-preload-langs-4.0.1) (2022-03-25)
 
-
 ### Bug Fixes
 
-* **preload-langs:** 🐛 init the preload service ([4a206f1](https://github.com/ngneat/transloco/commit/4a206f163a604a6fd1795798814d8daba348a09d)), closes [#551](https://github.com/ngneat/transloco/issues/551)
-
-
+- **preload-langs:** 🐛 init the preload service ([4a206f1](https://github.com/ngneat/transloco/commit/4a206f163a604a6fd1795798814d8daba348a09d)), closes [#551](https://github.com/ngneat/transloco/issues/551)
 
 # [4.0.0](https://github.com/ngneat/transloco/compare/transloco-preload-langs-3.0.2...transloco-preload-langs-4.0.0) (2022-03-23)
 
-
 ### Features
 
-* **preload-langs:** 🎸 upgrade to angular v13 ([ad07d88](https://github.com/ngneat/transloco/commit/ad07d88eb3e07dc849c78981da98c1f89e93e5b5)), closes [#536](https://github.com/ngneat/transloco/issues/536)
-
+- **preload-langs:** 🎸 upgrade to angular v13 ([ad07d88](https://github.com/ngneat/transloco/commit/ad07d88eb3e07dc849c78981da98c1f89e93e5b5)), closes [#536](https://github.com/ngneat/transloco/issues/536)
 
 ### BREAKING CHANGES
 
-* **preload-langs:** 🧨 Minimum Angular version is now 13
-
-
+- **preload-langs:** 🧨 Minimum Angular version is now 13
 
 ## [3.0.2](https://github.com/ngneat/transloco/compare/transloco-preload-langs-3.0.1...transloco-preload-langs-3.0.2) (2021-10-07)
 

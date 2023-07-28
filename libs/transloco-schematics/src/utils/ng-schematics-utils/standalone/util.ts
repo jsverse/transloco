@@ -18,7 +18,10 @@ import { BrowserBuilderOptions } from '../workspace-models';
  * @param tree File tree for the project.
  * @param projectName Name of the project in which to search.
  */
-export async function getMainFilePath(tree: Tree, projectName: string): Promise<string> {
+export async function getMainFilePath(
+  tree: Tree,
+  projectName: string
+): Promise<string> {
   const workspace = await getWorkspace(tree);
   const project = workspace.projects.get(projectName);
   const buildTarget = project?.targets.get('build');
@@ -37,18 +40,26 @@ export async function getMainFilePath(tree: Tree, projectName: string): Promise<
  */
 export function getSourceFile(tree: Tree, path: string): ts.SourceFile {
   const content = tree.readText(path);
-  const source = ts.createSourceFile(path, content, ts.ScriptTarget.Latest, true);
+  const source = ts.createSourceFile(
+    path,
+    content,
+    ts.ScriptTarget.Latest,
+    true
+  );
 
   return source;
 }
 
 /** Finds the call to `bootstrapApplication` within a file. */
-export function findBootstrapApplicationCall(tree: Tree, mainFilePath: string): ts.CallExpression {
+export function findBootstrapApplicationCall(
+  tree: Tree,
+  mainFilePath: string
+): ts.CallExpression {
   const sourceFile = getSourceFile(tree, mainFilePath);
   const localName = findImportLocalName(
     sourceFile,
     'bootstrapApplication',
-    '@angular/platform-browser',
+    '@angular/platform-browser'
   );
 
   if (localName) {
@@ -73,7 +84,9 @@ export function findBootstrapApplicationCall(tree: Tree, mainFilePath: string): 
     }
   }
 
-  throw new SchematicsException(`Could not find bootstrapApplication call in ${mainFilePath}`);
+  throw new SchematicsException(
+    `Could not find bootstrapApplication call in ${mainFilePath}`
+  );
 }
 
 /**
@@ -85,7 +98,7 @@ export function findBootstrapApplicationCall(tree: Tree, mainFilePath: string): 
 function findImportLocalName(
   sourceFile: ts.SourceFile,
   name: string,
-  moduleName: string,
+  moduleName: string
 ): string | null {
   for (const node of sourceFile.statements) {
     // Only look for top-level imports.
@@ -124,7 +137,11 @@ function findImportLocalName(
  * @param path Path to the file that is being changed.
  * @param changes Changes that should be applied to the file.
  */
-export function applyChangesToFile(tree: Tree, path: string, changes: Change[]) {
+export function applyChangesToFile(
+  tree: Tree,
+  path: string,
+  changes: Change[]
+) {
   if (changes.length > 0) {
     const recorder = tree.beginUpdate(path);
     applyToUpdateRecorder(recorder, changes);
@@ -141,15 +158,19 @@ export function isMergeAppConfigCall(node: ts.Node): node is ts.CallExpression {
   const localName = findImportLocalName(
     node.getSourceFile(),
     'mergeApplicationConfig',
-    '@angular/core',
+    '@angular/core'
   );
 
-  return !!localName && ts.isIdentifier(node.expression) && node.expression.text === localName;
+  return (
+    !!localName &&
+    ts.isIdentifier(node.expression) &&
+    node.expression.text === localName
+  );
 }
 
 /** Finds the `providers` array literal within an application config. */
 export function findProvidersLiteral(
-  config: ts.ObjectLiteralExpression,
+  config: ts.ObjectLiteralExpression
 ): ts.ArrayLiteralExpression | null {
   for (const prop of config.properties) {
     if (

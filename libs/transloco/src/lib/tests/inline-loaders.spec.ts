@@ -1,13 +1,22 @@
-import {createComponentFactory, Spectator, SpectatorHost,} from '@ngneat/spectator';
-import {createFactory} from './directive/shared';
-import {fakeAsync} from '@angular/core/testing';
-import {inlineScope, providersMock, runLoader, setlistenToLangChange,} from './mocks';
-import {Component} from '@angular/core';
-import {listenToLangChangesProvider} from './pipe/pipe-integration.spec';
-import {TRANSLOCO_SCOPE} from '../transloco-scope';
-import {TranslocoService} from '../transloco.service';
-import {TranslocoDirective} from '../transloco.directive';
-import {TranslocoModule} from '../transloco.module';
+import {
+  createComponentFactory,
+  Spectator,
+  SpectatorHost,
+} from '@ngneat/spectator';
+import { createFactory } from './directive/shared';
+import { fakeAsync } from '@angular/core/testing';
+import {
+  inlineScope,
+  providersMock,
+  runLoader,
+  setlistenToLangChange,
+} from './mocks';
+import { Component } from '@angular/core';
+import { listenToLangChangesProvider } from './pipe/pipe-integration.spec';
+import { TRANSLOCO_SCOPE } from '../transloco-scope';
+import { TranslocoService } from '../transloco.service';
+import { TranslocoDirective } from '../transloco.directive';
+import { TranslocoModule } from '../transloco.module';
 
 const inlineLoaders = {
   provide: TRANSLOCO_SCOPE,

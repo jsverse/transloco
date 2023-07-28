@@ -8,7 +8,7 @@
     },
     {
       "path": "./tsconfig.spec.json"
-    },
+    }
   ],
   "compilerOptions": {
     "forceConsistentCasingInFileNames": true,

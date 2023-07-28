@@ -37,13 +37,17 @@ export class JSONFile {
     }
 
     const errors: ParseError[] = [];
-    this._jsonAst = parseTree(this.content, errors, { allowTrailingComma: true });
+    this._jsonAst = parseTree(this.content, errors, {
+      allowTrailingComma: true,
+    });
     if (errors.length) {
       const { error, offset } = errors[0];
       throw new Error(
-        `Failed to parse "${this.path}" as JSON AST Object. ${printParseErrorCode(
-          error,
-        )} at location: ${offset}.`,
+        `Failed to parse "${
+          this.path
+        }" as JSON AST Object. ${printParseErrorCode(
+          error
+        )} at location: ${offset}.`
       );
     }
 
@@ -68,7 +72,7 @@ export class JSONFile {
   modify(
     jsonPath: JSONPath,
     value: JsonValue | undefined,
-    insertInOrder?: InsertionIndex | false,
+    insertInOrder?: InsertionIndex | false
   ): void {
     let getInsertionIndex: InsertionIndex | undefined;
     if (insertInOrder === undefined) {

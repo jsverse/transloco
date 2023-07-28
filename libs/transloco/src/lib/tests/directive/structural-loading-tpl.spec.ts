@@ -29,16 +29,12 @@ describe('Loading Template', () => {
         </ng-template>
       `);
 
-    expect(TemplateHandler.prototype.attachView).toHaveBeenCalledTimes(
-      1
-    );
+    expect(TemplateHandler.prototype.attachView).toHaveBeenCalledTimes(1);
     expect(spectator.queryHost('#lazy-page-loading')).toHaveText('Loading...');
     spectator.detectChanges();
     runLoader();
     expect(spectator.queryHost('#lazy-page-loading')).toBeNull();
-    expect(TemplateHandler.prototype.detachView).toHaveBeenCalledTimes(
-      1
-    );
+    expect(TemplateHandler.prototype.detachView).toHaveBeenCalledTimes(1);
   }));
 
   it('should not attachView if no inline loader template has provided', () => {
@@ -52,9 +48,7 @@ describe('Loading Template', () => {
         </section>
       `);
 
-    expect(
-      TemplateHandler.prototype.attachView
-    ).not.toHaveBeenCalled();
+    expect(TemplateHandler.prototype.attachView).not.toHaveBeenCalled();
   });
 
   it('should not attachView if the translation have already loaded', fakeAsync(() => {
@@ -76,9 +70,7 @@ describe('Loading Template', () => {
     );
     preloadTranslations(spectator);
 
-    expect(
-      TemplateHandler.prototype.attachView
-    ).not.toHaveBeenCalled();
+    expect(TemplateHandler.prototype.attachView).not.toHaveBeenCalled();
   }));
 });
 

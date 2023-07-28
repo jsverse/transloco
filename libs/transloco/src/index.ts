@@ -49,13 +49,13 @@ export * from './lib/types';
 export * from './lib/helpers';
 export {
   provideTranslocoFallbackStrategy,
-    provideTranslocoInterceptor,
-    provideTranslocoTranspiler,
-    provideTranslocoMissingHandler,
-    provideTranslocoLoadingTpl,
-    provideTransloco,
+  provideTranslocoInterceptor,
+  provideTranslocoTranspiler,
+  provideTranslocoMissingHandler,
+  provideTranslocoLoadingTpl,
+  provideTransloco,
   provideTranslocoConfig,
   provideTranslocoLoader,
   provideTranslocoScope,
-  provideTranslocoLang
+  provideTranslocoLang,
 } from './lib/transloco.providers';

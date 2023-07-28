@@ -2,9 +2,13 @@ import {
   UnitTestTree,
   SchematicTestRunner,
 } from '@angular-devkit/schematics/testing';
-import type {Schema as WorkspaceSchema} from '@schematics/angular/workspace/schema'
-import {Style, ViewEncapsulation, Schema as ApplicationSchema} from '@schematics/angular/application/schema'
-import type {Schema as LibrarySchema} from '@schematics/angular/library/schema'
+import type { Schema as WorkspaceSchema } from '@schematics/angular/workspace/schema';
+import {
+  Style,
+  ViewEncapsulation,
+  Schema as ApplicationSchema,
+} from '@schematics/angular/application/schema';
+import type { Schema as LibrarySchema } from '@schematics/angular/library/schema';
 
 export const defaultWorkspaceOptions: WorkspaceSchema = {
   name: 'workspace',
@@ -30,33 +34,34 @@ const defaultLibOptions = {
 export function createWorkspace(
   schematicRunner: SchematicTestRunner,
   options: {
-    workspaceOptions?: WorkspaceSchema,
-    appOptions?: ApplicationSchema,
-    libOptions?: LibrarySchema,
+    workspaceOptions?: WorkspaceSchema;
+    appOptions?: ApplicationSchema;
+    libOptions?: LibrarySchema;
   } = {}
 ) {
   const {
     workspaceOptions = defaultWorkspaceOptions,
     appOptions = defaultAppOptions,
-    libOptions = defaultLibOptions
+    libOptions = defaultLibOptions,
   } = options;
   const angularSchematic = '@schematics/angular';
 
   return schematicRunner
-      .runExternalSchematic(angularSchematic, 'workspace', workspaceOptions)
-      .then((tree) => schematicRunner.runExternalSchematic(
-            angularSchematic,
-            'application',
-            appOptions,
-            tree
-        )
+    .runExternalSchematic(angularSchematic, 'workspace', workspaceOptions)
+    .then((tree) =>
+      schematicRunner.runExternalSchematic(
+        angularSchematic,
+        'application',
+        appOptions,
+        tree
       )
-      .then((tree) =>
-        schematicRunner.runExternalSchematic(
-            angularSchematic,
-            'library',
-            libOptions,
-            tree
-        )
-      );
+    )
+    .then((tree) =>
+      schematicRunner.runExternalSchematic(
+        angularSchematic,
+        'library',
+        libOptions,
+        tree
+      )
+    );
 }

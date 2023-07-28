@@ -23,10 +23,7 @@
           "apps/transloco-playground/src/styles.scss",
           "node_modules/bootstrap/dist/css/bootstrap.min.css"
         ],
-        "allowedCommonJsDependencies": [
-          "flat",
-          "@messageformat/core"
-        ],
+        "allowedCommonJsDependencies": ["flat", "@messageformat/core"],
         "scripts": ["node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"]
       },
       "configurations": {

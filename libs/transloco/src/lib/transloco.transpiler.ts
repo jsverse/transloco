@@ -13,11 +13,18 @@ import {
   TranslocoConfig,
 } from './transloco.config';
 
-export const TRANSLOCO_TRANSPILER = new InjectionToken<TranslocoTranspiler>('TRANSLOCO_TRANSPILER');
+export const TRANSLOCO_TRANSPILER = new InjectionToken<TranslocoTranspiler>(
+  'TRANSLOCO_TRANSPILER'
+);
 
 export interface TranslocoTranspiler {
   // TODO: Change parameters to object in the next major release
-  transpile(value: any, params: HashMap, translation: Translation, key: string): any;
+  transpile(
+    value: any,
+    params: HashMap,
+    translation: Translation,
+    key: string
+  ): any;
 
   onLangChanged?(lang: string): void;
 }
@@ -26,13 +33,16 @@ export interface TranslocoTranspiler {
 export class DefaultTranspiler implements TranslocoTranspiler {
   protected interpolationMatcher: RegExp;
 
-  constructor(
-    @Optional() @Inject(TRANSLOCO_CONFIG) config?: TranslocoConfig
-  ) {
+  constructor(@Optional() @Inject(TRANSLOCO_CONFIG) config?: TranslocoConfig) {
     this.interpolationMatcher = resolveMatcher(config ?? defaultConfig);
   }
 
-  transpile(value: any, params: HashMap = {}, translation: Translation, key: string): any {
+  transpile(
+    value: any,
+    params: HashMap = {},
+    translation: Translation,
+    key: string
+  ): any {
     if (isString(value)) {
       return value.replace(this.interpolationMatcher, (_, match) => {
         match = match.trim();
@@ -147,7 +157,12 @@ export class FunctionalTranspiler
     super();
   }
 
-  transpile(value: any, params: HashMap = {}, translation: Translation, key: string): any {
+  transpile(
+    value: any,
+    params: HashMap = {},
+    translation: Translation,
+    key: string
+  ): any {
     let transpiled = value;
     if (isString(value)) {
       transpiled = value.replace(

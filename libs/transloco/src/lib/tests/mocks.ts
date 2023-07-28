@@ -1,8 +1,9 @@
 import {
   DefaultTranspiler,
-  TRANSLOCO_TRANSPILER, TranslocoTranspiler,
+  TRANSLOCO_TRANSPILER,
+  TranslocoTranspiler,
 } from '../transloco.transpiler';
-import {TRANSLOCO_LOADER, TranslocoLoader} from '../transloco.loader';
+import { TRANSLOCO_LOADER, TranslocoLoader } from '../transloco.loader';
 import {
   PartialTranslocoConfig,
   TRANSLOCO_CONFIG,
@@ -12,7 +13,8 @@ import { timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 import {
   DefaultHandler,
-  TRANSLOCO_MISSING_HANDLER, TranslocoMissingHandler,
+  TRANSLOCO_MISSING_HANDLER,
+  TranslocoMissingHandler,
 } from '../transloco-missing-handler';
 import en from './i18n-mocks/en.json';
 import es from './i18n-mocks/es.json';
@@ -29,13 +31,15 @@ import { TranslocoService } from '../transloco.service';
 import { TRANSLOCO_LOADING_TEMPLATE } from '../transloco-loading-template';
 import {
   DefaultInterceptor,
-  TRANSLOCO_INTERCEPTOR, TranslocoInterceptor,
+  TRANSLOCO_INTERCEPTOR,
+  TranslocoInterceptor,
 } from '../transloco.interceptor';
 import {
   DefaultFallbackStrategy,
-  TRANSLOCO_FALLBACK_STRATEGY, TranslocoFallbackStrategy,
+  TRANSLOCO_FALLBACK_STRATEGY,
+  TranslocoFallbackStrategy,
 } from '../transloco-fallback-strategy';
-import {ProviderScope, Translation} from '../types';
+import { ProviderScope, Translation } from '../types';
 import { TRANSLOCO_SCOPE } from '../transloco-scope';
 
 export const mockLangs: Record<string, Translation> = {
@@ -114,28 +118,36 @@ export const loadingTemplateMock = {
 };
 
 interface Providers {
-  loader?: TranslocoLoader,
-  transpiler?: TranslocoTranspiler,
-  missingHandler?: TranslocoMissingHandler
-  interceptor?: TranslocoInterceptor,
-  fallback?: TranslocoFallbackStrategy
+  loader?: TranslocoLoader;
+  transpiler?: TranslocoTranspiler;
+  missingHandler?: TranslocoMissingHandler;
+  interceptor?: TranslocoInterceptor;
+  fallback?: TranslocoFallbackStrategy;
 }
-export function createService(config: PartialTranslocoConfig = {}, providers: Providers = {}) {
-  const mergedConfig = translocoConfig({ defaultLang: 'en', availableLangs: ['en', 'es'], fallbackLang: 'en', ...config });
+export function createService(
+  config: PartialTranslocoConfig = {},
+  providers: Providers = {}
+) {
+  const mergedConfig = translocoConfig({
+    defaultLang: 'en',
+    availableLangs: ['en', 'es'],
+    fallbackLang: 'en',
+    ...config,
+  });
   const {
     loader = mockedLoader,
     transpiler = new DefaultTranspiler(),
     missingHandler = new DefaultHandler(),
     interceptor = new DefaultInterceptor(),
-      fallback = new DefaultFallbackStrategy(mergedConfig)
+    fallback = new DefaultFallbackStrategy(mergedConfig),
   } = providers;
 
   return new TranslocoService(
     loader,
     transpiler,
-      missingHandler,
-      interceptor,
-      mergedConfig,
+    missingHandler,
+    interceptor,
+    mergedConfig,
     fallback
   );
 }

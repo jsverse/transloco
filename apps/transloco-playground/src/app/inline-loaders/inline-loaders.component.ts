@@ -1,16 +1,16 @@
-import { Component, OnInit, inject } from "@angular/core";
+import { Component, OnInit, inject } from '@angular/core';
 import {
   TranslocoModule,
   TranslocoService,
-  TRANSLOCO_SCOPE
-} from "@ngneat/transloco";
+  TRANSLOCO_SCOPE,
+} from '@ngneat/transloco';
 
 @Component({
-  selector: "app-inline",
-  templateUrl: "./inline-loaders.component.html",
-  styleUrls: ["./inline-loaders.component.scss"],
+  selector: 'app-inline',
+  templateUrl: './inline-loaders.component.html',
+  styleUrls: ['./inline-loaders.component.scss'],
   standalone: true,
-  imports: [TranslocoModule]
+  imports: [TranslocoModule],
 })
 export default class InlineLoadersComponent implements OnInit {
   translocoService = inject(TranslocoService);
@@ -19,7 +19,7 @@ export default class InlineLoadersComponent implements OnInit {
   ngOnInit() {
     console.log(this.scope);
     this.translocoService
-      .selectTranslate("title", {}, this.scope)
+      .selectTranslate('title', {}, this.scope)
       .subscribe(console.log);
   }
 }

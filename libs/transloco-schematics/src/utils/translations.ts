@@ -1,15 +1,12 @@
-import {
-  SchematicsException,
-  Tree,
-} from '@angular-devkit/schematics';
+import { SchematicsException, Tree } from '@angular-devkit/schematics';
 import { TranslationFileTypes } from '../ng-add/schema';
 import * as p from 'path';
 import * as fs from 'fs';
 import {
   createTranslateFiles,
   jsonTranslationFileCreator,
-  typescriptTranslationFileCreator
-} from "../ng-add/generators/translation-files.gen";
+  typescriptTranslationFileCreator,
+} from '../ng-add/generators/translation-files.gen';
 
 export function checkIfTranslationFilesExist(
   path: string,

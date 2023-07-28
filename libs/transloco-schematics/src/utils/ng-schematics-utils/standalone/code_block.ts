@@ -45,7 +45,9 @@ export class CodeBlock {
   /** Function used to tag a code block in order to produce a `PendingCode` object. */
   code = (strings: TemplateStringsArray, ...params: unknown[]): PendingCode => {
     return {
-      expression: strings.map((part, index) => part + (params[index] || '')).join(''),
+      expression: strings
+        .map((part, index) => part + (params[index] || ''))
+        .join(''),
       imports: this._imports,
     };
   };
@@ -61,10 +63,16 @@ export class CodeBlock {
       this._imports.set(moduleName, new Map());
     }
 
-    const symbolsPerModule = this._imports.get(moduleName) as Map<string, string>;
+    const symbolsPerModule = this._imports.get(moduleName) as Map<
+      string,
+      string
+    >;
 
     if (!symbolsPerModule.has(symbolName)) {
-      symbolsPerModule.set(symbolName, `@@__SCHEMATIC_PLACEHOLDER_${uniqueIdCounter++}__@@`);
+      symbolsPerModule.set(
+        symbolName,
+        `@@__SCHEMATIC_PLACEHOLDER_${uniqueIdCounter++}__@@`
+      );
     }
 
     return symbolsPerModule.get(symbolName) as string;
@@ -87,23 +95,34 @@ export class CodeBlock {
             filePath,
             tree.readText(filePath),
             ts.ScriptTarget.Latest,
-            true,
+            true
           );
 
           // Note that this could still technically clash if there's a top-level symbol called
           // `${symbolName}_alias`, however this is unlikely. We can revisit this if it becomes
           // a problem.
-          const alias = hasTopLevelIdentifier(sourceFile, symbolName, moduleName)
+          const alias = hasTopLevelIdentifier(
+            sourceFile,
+            symbolName,
+            moduleName
+          )
             ? symbolName + '_alias'
             : undefined;
 
           code.expression = code.expression.replace(
             new RegExp(placeholder, 'g'),
-            alias || symbolName,
+            alias || symbolName
           );
 
           applyToUpdateRecorder(recorder, [
-            insertImport(sourceFile, filePath, symbolName, moduleName, false, alias),
+            insertImport(
+              sourceFile,
+              filePath,
+              symbolName,
+              moduleName,
+              false,
+              alias
+            ),
           ]);
           tree.commitUpdate(recorder);
         });

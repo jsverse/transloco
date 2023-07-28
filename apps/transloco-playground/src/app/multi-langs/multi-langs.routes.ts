@@ -1,9 +1,9 @@
-import { Route } from "@angular/router";
+import { Route } from '@angular/router';
 
 export const MULTI_LANGS_ROUTES: Route = {
-  path: "multi-langs",
+  path: 'multi-langs',
   loadComponent: () =>
-    import("./multi-langs.component").then(
+    import('./multi-langs.component').then(
       (MultilangsComponent) => MultilangsComponent
-    )
+    ),
 };

@@ -1,12 +1,12 @@
-import { Component } from "@angular/core";
-import { TranslocoModule } from "@ngneat/transloco";
-import { ProviderLangComponent } from "./provider-lang/provider-lang.component";
+import { Component } from '@angular/core';
+import { TranslocoModule } from '@ngneat/transloco';
+import { ProviderLangComponent } from './provider-lang/provider-lang.component';
 
 @Component({
-  selector: "app-multilangs",
-  templateUrl: "./multi-langs.component.html",
-  styleUrls: ["./multi-langs.component.scss"],
+  selector: 'app-multilangs',
+  templateUrl: './multi-langs.component.html',
+  styleUrls: ['./multi-langs.component.scss'],
   standalone: true,
-  imports: [TranslocoModule, ProviderLangComponent]
+  imports: [TranslocoModule, ProviderLangComponent],
 })
 export default class MultilangsComponent {}

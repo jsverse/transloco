@@ -24,8 +24,7 @@ async function installKeysManager() {
 export function updateAngularJson(host: Tree, options) {
   const angularJson = getWorkspace(host);
   if (angularJson) {
-    const project =
-      angularJson.projects[options.project];
+    const project = angularJson.projects[options.project];
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore - This is a custom builder type added after installing ngx-build-plus
     project.architect.serve.builder = 'ngx-build-plus:dev-server';

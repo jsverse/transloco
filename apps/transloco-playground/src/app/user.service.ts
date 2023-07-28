@@ -6,11 +6,10 @@ import { timer, map } from 'rxjs';
 })
 export class UserService {
   getUser() {
-    return timer(500)
-      .pipe(
-        map(() => {
-          return {lang: 'en'};
-        })
-      );
+    return timer(500).pipe(
+      map(() => {
+        return { lang: 'en' };
+      })
+    );
   }
 }

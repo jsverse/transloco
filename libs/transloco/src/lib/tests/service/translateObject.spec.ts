@@ -37,13 +37,15 @@ describe('translateObject', () => {
   describe('The key is an array', () => {
     it('should return two objects', fakeAsync(() => {
       loadLang(service);
-      expect(service.translateObject(['a', 'nested'])).toEqual([{
-        b: { c: 'a.b.c {{fromList}} english' },
-      },{
-        "title": "Title english",
-        "desc": "Desc english"
-      },
-    ]);
+      expect(service.translateObject(['a', 'nested'])).toEqual([
+        {
+          b: { c: 'a.b.c {{fromList}} english' },
+        },
+        {
+          title: 'Title english',
+          desc: 'Desc english',
+        },
+      ]);
     }));
   });
 

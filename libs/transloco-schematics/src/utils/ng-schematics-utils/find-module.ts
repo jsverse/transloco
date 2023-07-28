@@ -6,7 +6,14 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { NormalizedRoot, Path, dirname, join, normalize, relative } from '@angular-devkit/core';
+import {
+  NormalizedRoot,
+  Path,
+  dirname,
+  join,
+  normalize,
+  relative,
+} from '@angular-devkit/core';
 import { DirEntry, Tree } from '@angular-devkit/schematics';
 
 export interface ModuleOptions {
@@ -26,7 +33,10 @@ export const ROUTING_MODULE_EXT = '-routing.module.ts';
 /**
  * Find the module referred by a set of options passed to the schematics.
  */
-export function findModuleFromOptions(host: Tree, options: ModuleOptions): Path | undefined {
+export function findModuleFromOptions(
+  host: Tree,
+  options: ModuleOptions
+): Path | undefined {
   if (options.standalone || options.skipImport) {
     return undefined;
   }
@@ -37,7 +47,9 @@ export function findModuleFromOptions(host: Tree, options: ModuleOptions): Path 
   if (!options.module) {
     const pathToCheck = (options.path || '') + '/' + options.name;
 
-    return normalize(findModule(host, pathToCheck, moduleExt, routingModuleExt));
+    return normalize(
+      findModule(host, pathToCheck, moduleExt, routingModuleExt)
+    );
   } else {
     const modulePath = normalize(`/${options.path}/${options.module}`);
     const componentPath = normalize(`/${options.path}/${options.name}`);
@@ -52,11 +64,15 @@ export function findModuleFromOptions(host: Tree, options: ModuleOptions): Path 
       candidateSet.add(dir);
     }
 
-    const candidatesDirs = [...candidateSet].sort((a, b) => b.length - a.length);
+    const candidatesDirs = [...candidateSet].sort(
+      (a, b) => b.length - a.length
+    );
     for (const c of candidatesDirs) {
-      const candidateFiles = ['', `${moduleBaseName}.ts`, `${moduleBaseName}${moduleExt}`].map(
-        (x) => join(c, x),
-      );
+      const candidateFiles = [
+        '',
+        `${moduleBaseName}.ts`,
+        `${moduleBaseName}${moduleExt}`,
+      ].map((x) => join(c, x));
 
       for (const sc of candidateFiles) {
         if (host.exists(sc)) {
@@ -67,7 +83,9 @@ export function findModuleFromOptions(host: Tree, options: ModuleOptions): Path 
 
     throw new Error(
       `Specified module '${options.module}' does not exist.\n` +
-        `Looked in the following directories:\n    ${candidatesDirs.join('\n    ')}`,
+        `Looked in the following directories:\n    ${candidatesDirs.join(
+          '\n    '
+        )}`
     );
   }
 }
@@ -79,23 +97,26 @@ export function findModule(
   host: Tree,
   generateDir: string,
   moduleExt = MODULE_EXT,
-  routingModuleExt = ROUTING_MODULE_EXT,
+  routingModuleExt = ROUTING_MODULE_EXT
 ): Path {
   let dir: DirEntry | null = host.getDir('/' + generateDir);
   let foundRoutingModule = false;
 
   while (dir) {
     const allMatches = dir.subfiles.filter((p) => p.endsWith(moduleExt));
-    const filteredMatches = allMatches.filter((p) => !p.endsWith(routingModuleExt));
+    const filteredMatches = allMatches.filter(
+      (p) => !p.endsWith(routingModuleExt)
+    );
 
-    foundRoutingModule = foundRoutingModule || allMatches.length !== filteredMatches.length;
+    foundRoutingModule =
+      foundRoutingModule || allMatches.length !== filteredMatches.length;
 
     if (filteredMatches.length == 1) {
       return join(dir.path, filteredMatches[0]);
     } else if (filteredMatches.length > 1) {
       throw new Error(
         `More than one module matches. Use the '--skip-import' option to skip importing ` +
-          'the component into the closest module or use the module option to specify a module.',
+          'the component into the closest module or use the module option to specify a module.'
       );
     }
 
@@ -128,7 +149,7 @@ export function buildRelativePath(from: string, to: string): string {
 
   const relativePath = relative(
     normalize(fromParts.join('/') || '/'),
-    normalize(toParts.join('/') || '/'),
+    normalize(toParts.join('/') || '/')
   );
   let pathPrefix = '';
 

@@ -48,13 +48,13 @@
     <b>Regular: </b>{{ 'home' | transloco }}
   </li>
   <li class="list-group-item" data-cy="p-with-params">
-    <b>With params: </b>{{ 'alert' | transloco: { value: dynamic } }}
+    <b>With params: </b>{{ 'alert' | transloco : { value: dynamic } }}
   </li>
   <li class="list-group-item" data-cy="p-with-translation-reuse">
     <b>With translation reuse: </b> {{ 'a.b.c' | transloco }}
   </li>
   <li class="list-group-item" data-cy="p-static-lang-en">
-    <b>Static lang 'en': </b>{{ 'home' | transloco: {}:'en|static' }}
+    <b>Static lang 'en': </b>{{ 'home' | transloco : {} : 'en|static' }}
   </li>
 </ul>
 

@@ -75,7 +75,11 @@ export class RemoveChange implements Change {
   order: number;
   description: string;
 
-  constructor(public path: string, private pos: number, public toRemove: string) {
+  constructor(
+    public path: string,
+    private pos: number,
+    public toRemove: string
+  ) {
     if (pos < 0) {
       throw new Error('Negative positions are invalid');
     }
@@ -105,7 +109,7 @@ export class ReplaceChange implements Change {
     public path: string,
     private pos: number,
     public oldText: string,
-    public newText: string,
+    public newText: string
   ) {
     if (pos < 0) {
       throw new Error('Negative positions are invalid');
@@ -121,7 +125,9 @@ export class ReplaceChange implements Change {
       const text = content.substring(this.pos, this.pos + this.oldText.length);
 
       if (text !== this.oldText) {
-        return Promise.reject(new Error(`Invalid replace: "${text}" != "${this.oldText}".`));
+        return Promise.reject(
+          new Error(`Invalid replace: "${text}" != "${this.oldText}".`)
+        );
       }
 
       // TODO: throw error if oldText doesn't match removed string.
@@ -130,7 +136,10 @@ export class ReplaceChange implements Change {
   }
 }
 
-export function applyToUpdateRecorder(recorder: UpdateRecorder, changes: Change[]): void {
+export function applyToUpdateRecorder(
+  recorder: UpdateRecorder,
+  changes: Change[]
+): void {
   for (const change of changes) {
     if (change instanceof InsertChange) {
       recorder.insertLeft(change.pos, change.toAdd);
@@ -140,7 +149,9 @@ export function applyToUpdateRecorder(recorder: UpdateRecorder, changes: Change[
       recorder.remove(change.order, change.oldText.length);
       recorder.insertLeft(change.order, change.newText);
     } else if (!(change instanceof NoopChange)) {
-      throw new Error('Unknown Change type encountered when updating a recorder.');
+      throw new Error(
+        'Unknown Change type encountered when updating a recorder.'
+      );
     }
   }
 }

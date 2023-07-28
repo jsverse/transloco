@@ -37,7 +37,9 @@ class TreeWorkspaceHost implements workspaces.WorkspaceHost {
 
   async isDirectory(path: string): Promise<boolean> {
     // approximate a directory check
-    return !this.tree.exists(path) && this.tree.getDir(path).subfiles.length > 0;
+    return (
+      !this.tree.exists(path) && this.tree.getDir(path).subfiles.length > 0
+    );
   }
 
   async isFile(path: string): Promise<boolean> {
@@ -56,12 +58,17 @@ class TreeWorkspaceHost implements workspaces.WorkspaceHost {
  * workspace. A {@link WorkspaceDefinition} is provided as the first argument to the function.
  */
 export function updateWorkspace(
-  updater: (workspace: WorkspaceDefinition) => void | Rule | PromiseLike<void | Rule>,
+  updater: (
+    workspace: WorkspaceDefinition
+  ) => void | Rule | PromiseLike<void | Rule>
 ): Rule {
   return async (tree: Tree) => {
     const host = new TreeWorkspaceHost(tree);
 
-    const { workspace } = await workspaces.readWorkspace(DEFAULT_WORKSPACE_PATH, host);
+    const { workspace } = await workspaces.readWorkspace(
+      DEFAULT_WORKSPACE_PATH,
+      host
+    );
 
     const result = await updater(workspace);
 
@@ -83,7 +90,7 @@ export function updateWorkspace(
  */
 export async function getWorkspace(
   tree: Tree,
-  path = DEFAULT_WORKSPACE_PATH,
+  path = DEFAULT_WORKSPACE_PATH
 ): Promise<WorkspaceDefinition> {
   const host = new TreeWorkspaceHost(tree);
 
@@ -106,7 +113,7 @@ export async function getWorkspace(
 export async function writeWorkspace(
   tree: Tree,
   workspace: WorkspaceDefinition,
-  path?: string,
+  path?: string
 ): Promise<void> {
   const host = new TreeWorkspaceHost(tree);
 
@@ -117,15 +124,24 @@ export async function writeWorkspace(
  * Build a default project path for generating.
  * @param project The project which will have its default path generated.
  */
-export function buildDefaultPath(project: workspaces.ProjectDefinition): string {
-  const root = project.sourceRoot ? `/${project.sourceRoot}/` : `/${project.root}/src/`;
+export function buildDefaultPath(
+  project: workspaces.ProjectDefinition
+): string {
+  const root = project.sourceRoot
+    ? `/${project.sourceRoot}/`
+    : `/${project.root}/src/`;
   const projectDirName =
-    project.extensions['projectType'] === ProjectType.Application ? 'app' : 'lib';
+    project.extensions['projectType'] === ProjectType.Application
+      ? 'app'
+      : 'lib';
 
   return `${root}${projectDirName}`;
 }
 
-export async function createDefaultPath(tree: Tree, projectName: string): Promise<string> {
+export async function createDefaultPath(
+  tree: Tree,
+  projectName: string
+): Promise<string> {
   const workspace = await getWorkspace(tree);
   const project = workspace.projects.get(projectName);
   if (!project) {
@@ -136,8 +152,10 @@ export async function createDefaultPath(tree: Tree, projectName: string): Promis
 }
 
 export function* allWorkspaceTargets(
-  workspace: workspaces.WorkspaceDefinition,
-): Iterable<[string, workspaces.TargetDefinition, string, workspaces.ProjectDefinition]> {
+  workspace: workspaces.WorkspaceDefinition
+): Iterable<
+  [string, workspaces.TargetDefinition, string, workspaces.ProjectDefinition]
+> {
   for (const [projectName, project] of workspace.projects) {
     for (const [targetName, target] of project.targets) {
       yield [targetName, target, projectName, project];
@@ -147,7 +165,7 @@ export function* allWorkspaceTargets(
 
 export function* allTargetOptions(
   target: workspaces.TargetDefinition,
-  skipBaseOptions = false,
+  skipBaseOptions = false
 ): Iterable<[string | undefined, Record<string, json.JsonValue | undefined>]> {
   if (!skipBaseOptions && target.options) {
     yield [undefined, target.options];

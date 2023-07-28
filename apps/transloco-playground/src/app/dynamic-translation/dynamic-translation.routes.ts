@@ -1,9 +1,9 @@
-import { Route } from "@angular/router";
+import { Route } from '@angular/router';
 
 export const DYNAMIC_TRANSLATION_ROUTES: Route = {
-  path: "dynamic-translation",
+  path: 'dynamic-translation',
   loadComponent: () =>
-    import("./dynamic-translation.component").then(
+    import('./dynamic-translation.component').then(
       (DynamicTranslationComponent) => DynamicTranslationComponent
-    )
+    ),
 };

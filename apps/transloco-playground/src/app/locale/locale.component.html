@@ -24,24 +24,27 @@
     <b>Regular date: </b>{{ date | translocoDate }}
   </li>
   <li class="list-group-item" data-cy="date-long">
-    <b>Long date: </b>{{ date | translocoDate: { dateStyle: 'long', timeStyle:
-    'long' } }}
+    <b>Long date: </b
+    >{{ date | translocoDate : { dateStyle: 'long', timeStyle: 'long' } }}
   </li>
   <li class="list-group-item" data-cy="date-full">
-    <b>Full date: </b>{{ date | translocoDate: { dateStyle: 'full', timeStyle:
-    'full' } }}
+    <b>Full date: </b
+    >{{ date | translocoDate : { dateStyle: 'full', timeStyle: 'full' } }}
   </li>
   <li class="list-group-item" data-cy="date-full-utc">
-    <b>Date in timezone UTC: </b>{{ date | translocoDate: { timeZone: 'UTC',
-    timeStyle: 'full' } }}
+    <b>Date in timezone UTC: </b
+    >{{ date | translocoDate : { timeZone: 'UTC', timeStyle: 'full' } }}
   </li>
   <li class="list-group-item" data-cy="date-medium-unix">
-    <b>Unix timestamp time date: </b>{{ 1 | translocoDate: { dateStyle:
-    'medium', timeStyle: 'medium' } }}
+    <b>Unix timestamp time date: </b
+    >{{ 1 | translocoDate : { dateStyle: 'medium', timeStyle: 'medium' } }}
   </li>
   <li class="list-group-item" data-cy="date-medium-string">
-    <b>String format to date: </b>{{ '2019-02-08' | translocoDate: { dateStyle:
-    'medium', timeStyle: 'medium' } }}
+    <b>String format to date: </b
+    >{{
+      '2019-02-08'
+        | translocoDate : { dateStyle: 'medium', timeStyle: 'medium' }
+    }}
   </li>
 </ul>
 
@@ -51,8 +54,14 @@
     <b>Decimal number: </b>{{ 1234567890 | translocoDecimal }}
   </li>
   <li class="list-group-item" data-cy="number-decimal-grouped">
-    <b>Decimal without grouping: </b>{{ 1234567890 | translocoDecimal: {
-    useGrouping: false } }}
+    <b>Decimal without grouping: </b
+    >{{
+      1234567890
+        | translocoDecimal
+          : {
+              useGrouping: false
+            }
+    }}
   </li>
   <li class="list-group-item" data-cy="number-percent">
     <b>Percentage number: </b>{{ 1 | translocoPercent }}
@@ -68,10 +77,10 @@
     <b>Symbol currency: </b>{{ 1000000 | translocoCurrency }}
   </li>
   <li class="list-group-item" data-cy="currency-name">
-    <b>Name currency: </b>{{ 1000000 | translocoCurrency: 'name' }}
+    <b>Name currency: </b>{{ 1000000 | translocoCurrency : 'name' }}
   </li>
   <li class="list-group-item" data-cy="currency-custom-digit">
     <b>Custom digit formatted currency: </b>
-    {{ 1000000 | translocoCurrency: 'symbol':{ minimumFractionDigits: 0 } }}
+    {{ 1000000 | translocoCurrency : 'symbol' : { minimumFractionDigits: 0 } }}
   </li>
 </ul>

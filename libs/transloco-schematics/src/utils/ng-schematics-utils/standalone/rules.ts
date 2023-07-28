@@ -7,9 +7,17 @@
  */
 
 import { tags } from '@angular-devkit/core';
-import { Rule, SchematicsException, Tree, chain } from '@angular-devkit/schematics';
+import {
+  Rule,
+  SchematicsException,
+  Tree,
+  chain,
+} from '@angular-devkit/schematics';
 import * as ts from 'typescript';
-import { addSymbolToNgModuleMetadata, insertAfterLastOccurrence } from '../ast-utils';
+import {
+  addSymbolToNgModuleMetadata,
+  insertAfterLastOccurrence,
+} from '../ast-utils';
 import { InsertChange } from '../change';
 import { getAppModulePath, isStandaloneApp } from '../ng-ast-utils';
 import { ResolvedAppConfig, findAppConfig } from './app_config';
@@ -40,7 +48,10 @@ import {
  * }
  * ```
  */
-export function addRootImport(project: string, callback: CodeBlockCallback): Rule {
+export function addRootImport(
+  project: string,
+  callback: CodeBlockCallback
+): Rule {
   return getRootInsertionRule(project, callback, 'imports', {
     name: 'importProvidersFrom',
     module: '@angular/core',
@@ -64,7 +75,10 @@ export function addRootImport(project: string, callback: CodeBlockCallback): Rul
  * }
  * ```
  */
-export function addRootProvider(project: string, callback: CodeBlockCallback): Rule {
+export function addRootProvider(
+  project: string,
+  callback: CodeBlockCallback
+): Rule {
   return getRootInsertionRule(project, callback, 'providers');
 }
 
@@ -80,7 +94,7 @@ function getRootInsertionRule(
   project: string,
   callback: CodeBlockCallback,
   ngModuleField: string,
-  standaloneWrapperFunction?: { name: string; module: string },
+  standaloneWrapperFunction?: { name: string; module: string }
 ): Rule {
   return async (host) => {
     const mainFilePath = await getMainFilePath(host, project);
@@ -92,12 +106,15 @@ function getRootInsertionRule(
           tree,
           callback(codeBlock),
           mainFilePath,
-          standaloneWrapperFunction,
+          standaloneWrapperFunction
         );
     }
 
     const modulePath = getAppModulePath(host, mainFilePath);
-    const pendingCode = CodeBlock.transformPendingCode(callback(codeBlock), modulePath);
+    const pendingCode = CodeBlock.transformPendingCode(
+      callback(codeBlock),
+      modulePath
+    );
 
     return chain([
       ...pendingCode.rules,
@@ -108,7 +125,7 @@ function getRootInsertionRule(
           ngModuleField,
           pendingCode.code.expression,
           // Explicitly set the import path to null since we deal with imports here separately.
-          null,
+          null
         );
 
         applyChangesToFile(tree, modulePath, changes);
@@ -128,11 +145,15 @@ function addProviderToStandaloneBootstrap(
   host: Tree,
   pendingCode: PendingCode,
   mainFilePath: string,
-  wrapperFunction?: { name: string; module: string },
+  wrapperFunction?: { name: string; module: string }
 ): Rule {
   const bootstrapCall = findBootstrapApplicationCall(host, mainFilePath);
-  const fileToEdit = findAppConfig(bootstrapCall, host, mainFilePath)?.filePath || mainFilePath;
-  const { code, rules } = CodeBlock.transformPendingCode(pendingCode, fileToEdit);
+  const fileToEdit =
+    findAppConfig(bootstrapCall, host, mainFilePath)?.filePath || mainFilePath;
+  const { code, rules } = CodeBlock.transformPendingCode(
+    pendingCode,
+    fileToEdit
+  );
 
   return chain([
     ...rules,
@@ -143,10 +164,11 @@ function addProviderToStandaloneBootstrap(
       if (wrapperFunction) {
         const block = new CodeBlock();
         const result = CodeBlock.transformPendingCode(
-          block.code`${block.external(wrapperFunction.name, wrapperFunction.module)}(${
-            code.expression
-          })`,
-          fileToEdit,
+          block.code`${block.external(
+            wrapperFunction.name,
+            wrapperFunction.module
+          )}(${code.expression})`,
+          fileToEdit
         );
 
         wrapped = result.code;
@@ -158,7 +180,8 @@ function addProviderToStandaloneBootstrap(
 
       return chain([
         ...additionalRules,
-        (tree) => insertStandaloneRootProvider(tree, mainFilePath, wrapped.expression),
+        (tree) =>
+          insertStandaloneRootProvider(tree, mainFilePath, wrapped.expression),
       ]);
     },
   ]);
@@ -170,7 +193,11 @@ function addProviderToStandaloneBootstrap(
  * @param mainFilePath Path to the main file of the project.
  * @param expression Code expression to be inserted.
  */
-function insertStandaloneRootProvider(tree: Tree, mainFilePath: string, expression: string): void {
+function insertStandaloneRootProvider(
+  tree: Tree,
+  mainFilePath: string,
+  expression: string
+): void {
   const bootstrapCall = findBootstrapApplicationCall(tree, mainFilePath);
   const appConfig = findAppConfig(bootstrapCall, tree, mainFilePath);
 
@@ -178,7 +205,7 @@ function insertStandaloneRootProvider(tree: Tree, mainFilePath: string, expressi
     throw new SchematicsException(
       `Cannot add provider to invalid bootstrapApplication call in ${
         bootstrapCall.getSourceFile().fileName
-      }`,
+      }`
     );
   }
 
@@ -188,7 +215,9 @@ function insertStandaloneRootProvider(tree: Tree, mainFilePath: string, expressi
     return;
   }
 
-  const newAppConfig = `, {\n${tags.indentBy(2)`providers: [${expression}]`}\n}`;
+  const newAppConfig = `, {\n${tags.indentBy(
+    2
+  )`providers: [${expression}]`}\n}`;
   let targetCall: ts.CallExpression;
 
   if (bootstrapCall.arguments.length === 1) {
@@ -199,7 +228,7 @@ function insertStandaloneRootProvider(tree: Tree, mainFilePath: string, expressi
     throw new SchematicsException(
       `Cannot statically analyze bootstrapApplication call in ${
         bootstrapCall.getSourceFile().fileName
-      }`,
+      }`
     );
   }
 
@@ -208,7 +237,7 @@ function insertStandaloneRootProvider(tree: Tree, mainFilePath: string, expressi
       targetCall.arguments,
       newAppConfig,
       mainFilePath,
-      targetCall.getEnd() - 1,
+      targetCall.getEnd() - 1
     ),
   ]);
 }
@@ -222,7 +251,7 @@ function insertStandaloneRootProvider(tree: Tree, mainFilePath: string, expressi
 function addProvidersExpressionToAppConfig(
   tree: Tree,
   appConfig: ResolvedAppConfig,
-  expression: string,
+  expression: string
 ): void {
   const { node, filePath } = appConfig;
   const configProps = node.properties;
@@ -236,9 +265,11 @@ function addProvidersExpressionToAppConfig(
     applyChangesToFile(tree, filePath, [
       insertAfterLastOccurrence(
         providersLiteral.elements,
-        (hasTrailingComma || providersLiteral.elements.length === 0 ? '' : ', ') + expression,
+        (hasTrailingComma || providersLiteral.elements.length === 0
+          ? ''
+          : ', ') + expression,
         filePath,
-        providersLiteral.getStart() + 1,
+        providersLiteral.getStart() + 1
       ),
     ]);
   } else {
@@ -252,9 +283,13 @@ function addProvidersExpressionToAppConfig(
     } else {
       const hasTrailingComma = configProps.hasTrailingComma;
       toInsert = (hasTrailingComma ? '' : ',') + '\n' + prop;
-      insertPosition = configProps[configProps.length - 1].getEnd() + (hasTrailingComma ? 1 : 0);
+      insertPosition =
+        configProps[configProps.length - 1].getEnd() +
+        (hasTrailingComma ? 1 : 0);
     }
 
-    applyChangesToFile(tree, filePath, [new InsertChange(filePath, insertPosition, toInsert)]);
+    applyChangesToFile(tree, filePath, [
+      new InsertChange(filePath, insertPosition, toInsert),
+    ]);
   }
 }

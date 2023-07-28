@@ -13,9 +13,17 @@ import { findBootstrapApplicationCall } from './standalone/util';
 import * as ts from 'typescript';
 import { findNode, getSourceNodes } from './ast-utils';
 
-export function findBootstrapModuleCall(host: Tree, mainPath: string): ts.CallExpression | null {
+export function findBootstrapModuleCall(
+  host: Tree,
+  mainPath: string
+): ts.CallExpression | null {
   const mainText = host.readText(mainPath);
-  const source = ts.createSourceFile(mainPath, mainText, ts.ScriptTarget.Latest, true);
+  const source = ts.createSourceFile(
+    mainPath,
+    mainText,
+    ts.ScriptTarget.Latest,
+    true
+  );
 
   const allNodes = getSourceNodes(source);
 
@@ -23,7 +31,11 @@ export function findBootstrapModuleCall(host: Tree, mainPath: string): ts.CallEx
 
   for (const node of allNodes) {
     let bootstrapCallNode: ts.Node | null = null;
-    bootstrapCallNode = findNode(node, ts.SyntaxKind.Identifier, 'bootstrapModule');
+    bootstrapCallNode = findNode(
+      node,
+      ts.SyntaxKind.Identifier,
+      'bootstrapModule'
+    );
 
     // Walk up the parent until CallExpression is found.
     while (
@@ -56,7 +68,12 @@ function findBootstrapModulePath(host: Tree, mainPath: string): string {
   const bootstrapModule = bootstrapCall.arguments[0];
 
   const mainText = host.readText(mainPath);
-  const source = ts.createSourceFile(mainPath, mainText, ts.ScriptTarget.Latest, true);
+  const source = ts.createSourceFile(
+    mainPath,
+    mainText,
+    ts.ScriptTarget.Latest,
+    true
+  );
   const allNodes = getSourceNodes(source);
   const bootstrapModuleRelativePath = allNodes
     .filter(ts.isImportDeclaration)

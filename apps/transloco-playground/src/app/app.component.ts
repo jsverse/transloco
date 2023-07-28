@@ -1,16 +1,16 @@
-import { CommonModule } from "@angular/common";
-import { Component, inject, OnDestroy } from "@angular/core";
-import { RouterModule } from "@angular/router";
-import { TranslocoService } from "@ngneat/transloco";
-import { LangDefinition } from "@ngneat/transloco";
-import { Subscription, take } from "rxjs";
+import { CommonModule } from '@angular/common';
+import { Component, inject, OnDestroy } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { TranslocoService } from '@ngneat/transloco';
+import { LangDefinition } from '@ngneat/transloco';
+import { Subscription, take } from 'rxjs';
 
 @Component({
-  selector: "app-root",
-  templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.scss"],
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss'],
   standalone: true,
-  imports: [CommonModule, RouterModule]
+  imports: [CommonModule, RouterModule],
 })
 export class AppComponent implements OnDestroy {
   service = inject(TranslocoService);

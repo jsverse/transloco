@@ -31,8 +31,13 @@ export function findRootModule(
   }
 
   const modulePath = normalize(`${rootPath}/${module}`);
-  const matchingExt = ['', '.ts', MODULE_EXT, `/${module}${MODULE_EXT}`, `/${module}.ts`]
-      .find((ext) => host.exists(modulePath + ext));
+  const matchingExt = [
+    '',
+    '.ts',
+    MODULE_EXT,
+    `/${module}${MODULE_EXT}`,
+    `/${module}.ts`,
+  ].find((ext) => host.exists(modulePath + ext));
 
   if (matchingExt) {
     return normalize(modulePath + matchingExt);

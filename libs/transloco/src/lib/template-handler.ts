@@ -1,6 +1,6 @@
-import {TemplateRef, Type, ViewContainerRef,} from '@angular/core';
-import {isString} from './helpers';
-import {TranslocoLoaderComponent} from './loader-component.component';
+import { TemplateRef, Type, ViewContainerRef } from '@angular/core';
+import { isString } from './helpers';
+import { TranslocoLoaderComponent } from './loader-component.component';
 
 export type Content = string | TemplateRef<unknown> | Type<unknown>;
 

@@ -29,7 +29,7 @@ export interface ResolvedAppConfig {
 export function findAppConfig(
   bootstrapCall: ts.CallExpression,
   tree: Tree,
-  filePath: string,
+  filePath: string
 ): ResolvedAppConfig | null {
   if (bootstrapCall.arguments.length > 1) {
     const config = bootstrapCall.arguments[1];
@@ -55,7 +55,7 @@ export function findAppConfig(
 function resolveAppConfigFromIdentifier(
   identifier: ts.Identifier,
   tree: Tree,
-  bootstapFilePath: string,
+  bootstapFilePath: string
 ): ResolvedAppConfig | null {
   const sourceFile = identifier.getSourceFile();
 
@@ -81,11 +81,14 @@ function resolveAppConfigFromIdentifier(
       // Look for a variable with the imported name in the file. Note that ideally we would use
       // the type checker to resolve this, but we can't because these utilities are set up to
       // operate on individual files, not the entire program.
-      const filePath = join(dirname(bootstapFilePath), node.moduleSpecifier.text + '.ts');
+      const filePath = join(
+        dirname(bootstapFilePath),
+        node.moduleSpecifier.text + '.ts'
+      );
       const importedSourceFile = getSourceFile(tree, filePath);
       const resolvedVariable = findAppConfigFromVariableName(
         importedSourceFile,
-        (specifier.propertyName || specifier.name).text,
+        (specifier.propertyName || specifier.name).text
       );
 
       if (resolvedVariable) {
@@ -94,9 +97,14 @@ function resolveAppConfigFromIdentifier(
     }
   }
 
-  const variableInSameFile = findAppConfigFromVariableName(sourceFile, identifier.text);
+  const variableInSameFile = findAppConfigFromVariableName(
+    sourceFile,
+    identifier.text
+  );
 
-  return variableInSameFile ? { filePath: bootstapFilePath, node: variableInSameFile } : null;
+  return variableInSameFile
+    ? { filePath: bootstapFilePath, node: variableInSameFile }
+    : null;
 }
 
 /**
@@ -106,7 +114,7 @@ function resolveAppConfigFromIdentifier(
  */
 function findAppConfigFromVariableName(
   sourceFile: ts.SourceFile,
-  variableName: string,
+  variableName: string
 ): ts.ObjectLiteralExpression | null {
   for (const node of sourceFile.statements) {
     if (ts.isVariableStatement(node)) {

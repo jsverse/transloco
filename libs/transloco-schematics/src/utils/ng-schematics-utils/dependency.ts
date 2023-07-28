@@ -111,7 +111,7 @@ export function addDependency(
      * Defaults to {@link ExistingBehavior.Replace}.
      */
     existing?: ExistingBehavior;
-  } = {},
+  } = {}
 ): Rule {
   const {
     type = DependencyType.Default,
@@ -145,7 +145,7 @@ export function addDependency(
         // ExistingBehavior.Replace is the only other behavior currently
         context.logger.warn(
           `Package dependency "${name}" already exists with a different specifier. ` +
-            `"${existingSpecifier}" will be replaced with "${specifier}".`,
+            `"${existingSpecifier}" will be replaced with "${specifier}".`
         );
       }
 
@@ -164,7 +164,9 @@ export function addDependency(
       (install === InstallBehavior.Auto && !installPaths.has(packageJsonPath))
     ) {
       context.addTask(
-        new NodePackageInstallTask({ workingDirectory: path.dirname(packageJsonPath) }),
+        new NodePackageInstallTask({
+          workingDirectory: path.dirname(packageJsonPath),
+        })
       );
       installPaths.add(packageJsonPath);
       installTasks.set(context, installPaths);

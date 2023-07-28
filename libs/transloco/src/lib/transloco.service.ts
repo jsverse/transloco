@@ -1,8 +1,32 @@
-import {Inject, Injectable, OnDestroy, Optional} from '@angular/core';
-import {BehaviorSubject, combineLatest, EMPTY, forkJoin, from, Observable, of, Subject, Subscription,} from 'rxjs';
-import {catchError, map, retry, shareReplay, switchMap, tap,} from 'rxjs/operators';
-import {DefaultLoader, TRANSLOCO_LOADER, TranslocoLoader,} from './transloco.loader';
-import {TRANSLOCO_TRANSPILER, TranslocoTranspiler,} from './transloco.transpiler';
+import { Inject, Injectable, OnDestroy, Optional } from '@angular/core';
+import {
+  BehaviorSubject,
+  combineLatest,
+  EMPTY,
+  forkJoin,
+  from,
+  Observable,
+  of,
+  Subject,
+  Subscription,
+} from 'rxjs';
+import {
+  catchError,
+  map,
+  retry,
+  shareReplay,
+  switchMap,
+  tap,
+} from 'rxjs/operators';
+import {
+  DefaultLoader,
+  TRANSLOCO_LOADER,
+  TranslocoLoader,
+} from './transloco.loader';
+import {
+  TRANSLOCO_TRANSPILER,
+  TranslocoTranspiler,
+} from './transloco.transpiler';
 import {
   AvailableLangs,
   HashMap,
@@ -16,18 +40,38 @@ import {
   TranslocoEvents,
   TranslocoScope,
 } from './types';
-import {flatten, isEmpty, isNil, isScopeObject, isString, size, toCamelCase, unflatten,} from './helpers';
-import {TRANSLOCO_CONFIG, TranslocoConfig,} from './transloco.config';
+import {
+  flatten,
+  isEmpty,
+  isNil,
+  isScopeObject,
+  isString,
+  size,
+  toCamelCase,
+  unflatten,
+} from './helpers';
+import { TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 import {
   TRANSLOCO_MISSING_HANDLER,
   TranslocoMissingHandler,
   TranslocoMissingHandlerData,
 } from './transloco-missing-handler';
-import {TRANSLOCO_INTERCEPTOR, TranslocoInterceptor,} from './transloco.interceptor';
-import {TRANSLOCO_FALLBACK_STRATEGY, TranslocoFallbackStrategy,} from './transloco-fallback-strategy';
-import {getEventPayload, getLangFromScope, getScopeFromLang, resolveInlineLoader,} from './shared';
-import {getFallbacksLoaders} from './get-fallbacks-loaders';
-import {resolveLoader} from './resolve-loader';
+import {
+  TRANSLOCO_INTERCEPTOR,
+  TranslocoInterceptor,
+} from './transloco.interceptor';
+import {
+  TRANSLOCO_FALLBACK_STRATEGY,
+  TranslocoFallbackStrategy,
+} from './transloco-fallback-strategy';
+import {
+  getEventPayload,
+  getLangFromScope,
+  getScopeFromLang,
+  resolveInlineLoader,
+} from './shared';
+import { getFallbacksLoaders } from './get-fallbacks-loaders';
+import { resolveLoader } from './resolve-loader';
 
 let service: TranslocoService;
 
@@ -40,7 +84,7 @@ export function translate<T = string>(
 }
 
 export function translateObject<T>(
-  key:  TranslateParams,
+  key: TranslateParams,
   params: HashMap = {},
   lang?: string
 ): T | T[] {

@@ -8,7 +8,10 @@
 
 import { Rule, Tree, strings } from '@angular-devkit/schematics';
 import * as ts from 'typescript';
-import { addDeclarationToModule, addSymbolToNgModuleMetadata } from './ast-utils';
+import {
+  addDeclarationToModule,
+  addSymbolToNgModuleMetadata,
+} from './ast-utils';
 import { InsertChange } from './change';
 import { buildRelativePath } from './find-module';
 
@@ -23,7 +26,9 @@ export interface DeclarationToNgModuleOptions {
   standalone?: boolean;
 }
 
-export function addDeclarationToNgModule(options: DeclarationToNgModuleOptions): Rule {
+export function addDeclarationToNgModule(
+  options: DeclarationToNgModuleOptions
+): Rule {
   return (host: Tree) => {
     const modulePath = options.module;
     if (options.skipImport || options.standalone || !modulePath) {
@@ -31,7 +36,12 @@ export function addDeclarationToNgModule(options: DeclarationToNgModuleOptions):
     }
 
     const sourceText = host.readText(modulePath);
-    const source = ts.createSourceFile(modulePath, sourceText, ts.ScriptTarget.Latest, true);
+    const source = ts.createSourceFile(
+      modulePath,
+      sourceText,
+      ts.ScriptTarget.Latest,
+      true
+    );
 
     const filePath =
       `/${options.path}/` +
@@ -41,11 +51,24 @@ export function addDeclarationToNgModule(options: DeclarationToNgModuleOptions):
       strings.dasherize(options.type);
 
     const importPath = buildRelativePath(modulePath, filePath);
-    const classifiedName = strings.classify(options.name) + strings.classify(options.type);
-    const changes = addDeclarationToModule(source, modulePath, classifiedName, importPath);
+    const classifiedName =
+      strings.classify(options.name) + strings.classify(options.type);
+    const changes = addDeclarationToModule(
+      source,
+      modulePath,
+      classifiedName,
+      importPath
+    );
 
     if (options.export) {
-      changes.push(...addSymbolToNgModuleMetadata(source, modulePath, 'exports', classifiedName));
+      changes.push(
+        ...addSymbolToNgModuleMetadata(
+          source,
+          modulePath,
+          'exports',
+          classifiedName
+        )
+      );
     }
 
     const recorder = host.beginUpdate(modulePath);

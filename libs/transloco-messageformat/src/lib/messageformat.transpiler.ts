@@ -45,10 +45,15 @@ export class MessageFormatTranspiler extends DefaultTranspiler {
     this.messageFormat = this.mfFactory(locales, messageConfig);
   }
 
-  transpile(value: any, params: HashMap = {}, translation: Translation, key: string): any {
+  transpile(
+    value: any,
+    params: HashMap = {},
+    translation: Translation,
+    key: string
+  ): any {
     if (!value) {
       return value;
-    }    
+    }
     if (isObject(value) && params) {
       Object.keys(params).forEach((p) => {
         const v = getValue(value, p);

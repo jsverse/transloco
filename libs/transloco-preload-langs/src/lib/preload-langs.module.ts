@@ -1,4 +1,4 @@
-import {APP_INITIALIZER, ModuleWithProviders, NgModule} from '@angular/core';
+import { APP_INITIALIZER, ModuleWithProviders, NgModule } from '@angular/core';
 import {
   PRELOAD_LANGUAGES,
   TranslocoPreloadLangsService,
@@ -47,7 +47,7 @@ export class TranslocoPreloadLangsModule {
           provide: APP_INITIALIZER,
           useFactory: () => noop,
           multi: true,
-          deps: [TranslocoPreloadLangsService]
+          deps: [TranslocoPreloadLangsService],
         },
       ],
     };

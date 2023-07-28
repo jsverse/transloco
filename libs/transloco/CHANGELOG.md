@@ -4,146 +4,102 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 # [4.3.0](https://github.com/ngneat/transloco/compare/transloco-4.2.7...transloco-4.3.0) (2023-06-10)
 
-
 ### Bug Fixes
 
-* **transloco:** 🐛 providers typings ([38e4981](https://github.com/ngneat/transloco/commit/38e4981db2e2f82dfbf081b27f8eba0b68143fdb)), closes [#658](https://github.com/ngneat/transloco/issues/658)
-
+- **transloco:** 🐛 providers typings ([38e4981](https://github.com/ngneat/transloco/commit/38e4981db2e2f82dfbf081b27f8eba0b68143fdb)), closes [#658](https://github.com/ngneat/transloco/issues/658)
 
 ### Features
 
-* **transloco:** 🎸 providers functions ([528e548](https://github.com/ngneat/transloco/commit/528e548f747a76f027044fe4f97198e795872510))
-
-
+- **transloco:** 🎸 providers functions ([528e548](https://github.com/ngneat/transloco/commit/528e548f747a76f027044fe4f97198e795872510))
 
 ## [4.2.7](https://github.com/ngneat/transloco/compare/transloco-4.2.6...transloco-4.2.7) (2023-05-18)
 
-
-
 ## [4.2.6](https://github.com/ngneat/transloco/compare/transloco-4.2.5...transloco-4.2.6) (2023-03-04)
-
 
 ### Bug Fixes
 
-* **transloco:** 🐛 fix message format delay ([#634](https://github.com/ngneat/transloco/issues/634)) ([aa92418](https://github.com/ngneat/transloco/commit/aa92418ab319b42fc42b32e0884c6054fa7ccf2c))
-
-
+- **transloco:** 🐛 fix message format delay ([#634](https://github.com/ngneat/transloco/issues/634)) ([aa92418](https://github.com/ngneat/transloco/commit/aa92418ab319b42fc42b32e0884c6054fa7ccf2c))
 
 ## [4.2.5](https://github.com/ngneat/transloco/compare/transloco-4.2.4...transloco-4.2.5) (2023-02-21)
 
-
 ### Bug Fixes
 
-* **transloco:** update fs-extra and glob dependencies ([#631](https://github.com/ngneat/transloco/issues/631)) ([e19057f](https://github.com/ngneat/transloco/commit/e19057f34e3daddc40dc7059974f721b3ea8a30e))
-
-
+- **transloco:** update fs-extra and glob dependencies ([#631](https://github.com/ngneat/transloco/issues/631)) ([e19057f](https://github.com/ngneat/transloco/commit/e19057f34e3daddc40dc7059974f721b3ea8a30e))
 
 ## [4.2.4](https://github.com/ngneat/transloco/compare/transloco-4.2.3...transloco-4.2.4) (2023-02-19)
 
-
-
 ## [4.2.3](https://github.com/ngneat/transloco/compare/transloco-4.2.2...transloco-4.2.3) (2023-02-19)
-
 
 ### Bug Fixes
 
-* **transloco:** 🐛 add missing schematics deps ([581dda1](https://github.com/ngneat/transloco/commit/581dda1c4955ffa68f43ee0bfdef3ef2afc9f698)), closes [#623](https://github.com/ngneat/transloco/issues/623)
-
-
+- **transloco:** 🐛 add missing schematics deps ([581dda1](https://github.com/ngneat/transloco/commit/581dda1c4955ffa68f43ee0bfdef3ef2afc9f698)), closes [#623](https://github.com/ngneat/transloco/issues/623)
 
 ## [4.2.2](https://github.com/ngneat/transloco/compare/transloco-4.2.1...transloco-4.2.2) (2023-01-06)
 
-
 ### Bug Fixes
 
-* **transloco:** add overload type in selectTranslateObject method ([#617](https://github.com/ngneat/transloco/issues/617)) ([071ca6b](https://github.com/ngneat/transloco/commit/071ca6b21bea872adaadba917484ca0190d4b051))
-
-
+- **transloco:** add overload type in selectTranslateObject method ([#617](https://github.com/ngneat/transloco/issues/617)) ([071ca6b](https://github.com/ngneat/transloco/commit/071ca6b21bea872adaadba917484ca0190d4b051))
 
 ## [4.2.1](https://github.com/ngneat/transloco/compare/transloco-4.2.0...transloco-4.2.1) (2022-12-10)
 
 ### Bug Fixes
 
-* **transloco**: 🐛 replace environment with isDveMode for v15 ([e4bc6c91](https://github.com/ngneat/transloco/commit/e4bc6c91cb04d8e2ff41269abb963f1c6eed0c93))
+- **transloco**: 🐛 replace environment with isDveMode for v15 ([e4bc6c91](https://github.com/ngneat/transloco/commit/e4bc6c91cb04d8e2ff41269abb963f1c6eed0c93))
 
 # [4.2.0](https://github.com/ngneat/transloco/compare/transloco-4.1.1...transloco-4.2.0) (2022-12-10)
 
-
 ### Features
 
-* **transloco:** 🎸 add translation key to transpile method ([#569](https://github.com/ngneat/transloco/issues/569)) ([3a19ba6](https://github.com/ngneat/transloco/commit/3a19ba6cde6a96c8d4af893b824400dd7217cd71)), closes [ngneat#568](https://github.com/ngneat/issues/568)
-_Note:_ if you are using `@ngneat/transloco-messageformat` You'll need to update to 4.1.0 and above.
-
+- **transloco:** 🎸 add translation key to transpile method ([#569](https://github.com/ngneat/transloco/issues/569)) ([3a19ba6](https://github.com/ngneat/transloco/commit/3a19ba6cde6a96c8d4af893b824400dd7217cd71)), closes [ngneat#568](https://github.com/ngneat/issues/568)
+  _Note:_ if you are using `@ngneat/transloco-messageformat` You'll need to update to 4.1.0 and above.
 
 ## [4.1.2](https://github.com/ngneat/transloco/compare/transloco-4.1.1...transloco-4.1.2) (2022-12-10)
 
-
 ### Bug Fixes
 
-* **schematics:** set current directory as default project name ([#582](https://github.com/ngneat/transloco/issues/582)) ([89b213f9](https://github.com/ngneat/transloco/commit/89b213f9f3751d6414fb82aee0031e6863ed585f))
+- **schematics:** set current directory as default project name ([#582](https://github.com/ngneat/transloco/issues/582)) ([89b213f9](https://github.com/ngneat/transloco/commit/89b213f9f3751d6414fb82aee0031e6863ed585f))
 
 ## [4.1.1](https://github.com/ngneat/transloco/compare/transloco-4.1.0...transloco-4.1.1) (2022-07-13)
 
-
 ### Bug Fixes
 
-* **transloco:** key as array in translateObject throws ([#577](https://github.com/ngneat/transloco/issues/577)) ([5c8e90b](https://github.com/ngneat/transloco/commit/5c8e90b3ecf67106e3a22c33a9f82f990353d0bd))
-
-
+- **transloco:** key as array in translateObject throws ([#577](https://github.com/ngneat/transloco/issues/577)) ([5c8e90b](https://github.com/ngneat/transloco/commit/5c8e90b3ecf67106e3a22c33a9f82f990353d0bd))
 
 # [4.1.0](https://github.com/ngneat/transloco/compare/transloco-4.0.0...transloco-4.1.0) (2022-06-04)
 
-
 ### Features
 
-* **transloco:** 🎸 export translateObject as a proxy to the TranslocoService.translateObject method ([#565](https://github.com/ngneat/transloco/issues/565)) ([26ef1a0](https://github.com/ngneat/transloco/commit/26ef1a0fb7f9dc564d280ced3290be87ae2fedc8))
-
-
+- **transloco:** 🎸 export translateObject as a proxy to the TranslocoService.translateObject method ([#565](https://github.com/ngneat/transloco/issues/565)) ([26ef1a0](https://github.com/ngneat/transloco/commit/26ef1a0fb7f9dc564d280ced3290be87ae2fedc8))
 
 # [4.0.0](https://github.com/ngneat/transloco/compare/transloco-3.2.0...transloco-4.0.0) (2022-03-23)
 
-
 ### Features
 
-* **transloco:** 🎸 upgrade to v13 ([d973668](https://github.com/ngneat/transloco/commit/d9736685caee6959b4af2b3659071e7a553d858c)), closes [#536](https://github.com/ngneat/transloco/issues/536)
-
+- **transloco:** 🎸 upgrade to v13 ([d973668](https://github.com/ngneat/transloco/commit/d9736685caee6959b4af2b3659071e7a553d858c)), closes [#536](https://github.com/ngneat/transloco/issues/536)
 
 ### BREAKING CHANGES
 
-* **transloco:** 🧨 Minimum Angular version is now 13
-
-
+- **transloco:** 🧨 Minimum Angular version is now 13
 
 # [3.2.0](https://github.com/ngneat/transloco/compare/transloco-3.1.4...transloco-3.2.0) (2022-03-19)
 
-
 ### Features
 
-* **transloco:** 🎸 add langChanged event ([50e374f](https://github.com/ngneat/transloco/commit/50e374f762665ba5d532cd3bd6e1653fe07420f6))
-
-
+- **transloco:** 🎸 add langChanged event ([50e374f](https://github.com/ngneat/transloco/commit/50e374f762665ba5d532cd3bd6e1653fe07420f6))
 
 ## [3.1.4](https://github.com/ngneat/transloco/compare/transloco-3.1.3...transloco-3.1.4) (2022-02-15)
 
-
 ### Bug Fixes
 
-* **transloco:** 🐛 Add generic type default to Translate<T>() ([#545](https://github.com/ngneat/transloco/issues/545)) ([1a71d90](https://github.com/ngneat/transloco/commit/1a71d90b816a1297b1034dec48650a886a5caec2))
-
-
+- **transloco:** 🐛 Add generic type default to Translate<T>() ([#545](https://github.com/ngneat/transloco/issues/545)) ([1a71d90](https://github.com/ngneat/transloco/commit/1a71d90b816a1297b1034dec48650a886a5caec2))
 
 ## [3.1.3](https://github.com/ngneat/transloco/compare/transloco-3.1.2...transloco-3.1.3) (2022-01-22)
 
-
-
 ## [3.1.2](https://github.com/ngneat/transloco/compare/transloco-3.1.1...transloco-3.1.2) (2022-01-20)
-
 
 ### Bug Fixes
 
-* **transloco:** 🐛 structural directive redundant calls ([32230d6](https://github.com/ngneat/transloco/commit/32230d640c36c16e71f331451315de78527ceb0c))
-
-
+- **transloco:** 🐛 structural directive redundant calls ([32230d6](https://github.com/ngneat/transloco/commit/32230d640c36c16e71f331451315de78527ceb0c))
 
 ## [3.1.1](https://github.com/ngneat/transloco/compare/transloco-3.1.0...transloco-3.1.1) (2021-11-19)
 
