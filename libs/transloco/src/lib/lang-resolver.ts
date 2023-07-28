@@ -2,7 +2,7 @@ import { getLangFromScope, getPipeValue, getScopeFromLang } from './shared';
 
 interface LangResolverParams {
   inline?: string;
-  provider?: string;
+  provider: string | null;
   active: string;
 }
 
