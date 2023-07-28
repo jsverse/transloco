@@ -1,20 +1,15 @@
-import { Component } from '@angular/core';
-import { TRANSLOCO_SCOPE } from '@ngneat/transloco';
+import { Component } from "@angular/core";
+import {TranslocoModule, provideTranslocoScope} from "@ngneat/transloco";
 
 @Component({
-  selector: 'app-lazy-multiple-scopes',
-  templateUrl: './lazy-multiple-scopes.component.html',
+  selector: "app-lazy-multiple-scopes",
+  templateUrl: "./lazy-multiple-scopes.component.html",
+  styleUrls: ["./lazy-multiple-scopes.component.scss"],
   providers: [
-    {
-      provide: TRANSLOCO_SCOPE,
-      useValue: { scope: 'admin-page', alias: 'AdminPageAlias' },
-      multi: true,
-    },
-    {
-      provide: TRANSLOCO_SCOPE,
-      useValue: { scope: 'lazy-page', alias: 'LazyPageAlias' },
-      multi: true,
-    },
+      provideTranslocoScope({ scope: "admin-page", alias: "AdminPageAlias" }),
+      provideTranslocoScope({ scope: "lazy-page", alias: "LazyPageAlias" }),
   ],
+  standalone: true,
+  imports: [TranslocoModule]
 })
-export class LazyMultipleScopesComponent {}
+export default class LazyMultipleScopesComponent {}

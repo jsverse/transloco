@@ -1,67 +1,121 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <button
-    class="navbar-toggler"
-    type="button"
-    data-toggle="collapse"
-    data-target="#navbarSupportedContent"
-    aria-controls="navbarSupportedContent"
-    aria-expanded="false"
-    aria-label="Toggle navigation"
-  >
-    <span class="navbar-toggler-icon"></span>
-  </button>
+  <div>
+    <a
+      class="navbar-brand"
+      target="_blank"
+      href="https://github.com/ngneat/transloco"
+    >
+      <img height="50px" src="/assets/images/logo.svg" />
+    </a>
+    <button
+      class="navbar-toggler"
+      type="button"
 
-  <div id="navbarSupportedContent" class="collapse navbar-collapse">
+      data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </div>
+
+  <div
+    id="navbarSupportedContent"
+    style="padding-right: 180px;"
+    class="collapse navbar-collapse"
+  >
     <ul class="navbar-nav mr-auto">
       <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" routerLink="home">Home</a>
+        <a
+          class="nav-link"
+          routerLink="home"
+
+          data-bs-target="#navbarSupportedContent"
+          >Home</a
+        >
       </li>
       <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" routerLink="lazy">Lazy</a>
-      </li>
-      <!--      <li class="nav-item" routerLinkActive="active">-->
-      <!--        <a class="nav-link" routerLink="lazy-scope-alias">Lazy scope alias</a>-->
-      <!--      </li>-->
-      <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" routerLink="scope-sharing">Scope Sharing</a>
-      </li>
-      <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" routerLink="inline-loaders">Inline Loaders</a>
+        <a
+          class="nav-link"
+          routerLink="lazy"
+
+          data-bs-target="#navbarSupportedContent"
+          >Lazy</a
+        >
       </li>
       <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" routerLink="dynamic-translation"
+        <a
+          class="nav-link"
+          routerLink="scope-sharing"
+
+          data-bs-target="#navbarSupportedContent"
+          >Scope Sharing</a
+        >
+      </li>
+      <li class="nav-item" routerLinkActive="active">
+        <a
+          class="nav-link"
+          routerLink="inline-loaders"
+
+          data-bs-target="#navbarSupportedContent"
+          >Inline Loaders</a
+        >
+      </li>
+      <li class="nav-item" routerLinkActive="active">
+        <a
+          class="nav-link"
+          routerLink="dynamic-translation"
+
+          data-bs-target="#navbarSupportedContent"
           >Dynamic Translation</a
         >
       </li>
       <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" routerLink="multilangs">Multi Langs</a>
+        <a
+          class="nav-link"
+          routerLink="multi-langs"
+
+          data-bs-target="#navbarSupportedContent"
+          >Multi Langs</a
+        >
       </li>
       <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" routerLink="transpilers">Transpilers</a>
+        <a
+          class="nav-link"
+          routerLink="transpilers"
+
+          data-bs-target="#navbarSupportedContent"
+          >Transpilers</a
+        >
       </li>
       <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" routerLink="locale">Locale</a>
+        <a
+          class="nav-link"
+          routerLink="locale"
+
+          data-bs-target="#navbarSupportedContent"
+          >Locale</a
+        >
       </li>
     </ul>
   </div>
 
-  <div class="d-flex justify-content-between align-items-center">
-    <div class="lang-btns">
-      <button
-        *ngFor="let lang of availableLangs"
-        [attr.data-cy]="lang.id"
-        class="btn my-2 my-sm-0"
-        style="margin-right: 10px"
-        (click)="change(lang.id)"
-        [class.btn-primary]="activeLang === lang.id"
-        [class.btn-secondary]="activeLang !== lang.id"
-      >
-        {{ lang.label }}
-      </button>
-    </div>
+  <div class="lang-btns">
+    <button
+      *ngFor="let lang of availableLangs; last as last"
+      class="btn my-2 my-sm-0"
+      [attr.data-cy]="lang.id"
+      (click)="changeLang(lang.id)"
+      [class.mr-10]="!last"
+      [class.btn-primary]="activeLang === lang.id"
+      [class.btn-secondary]="activeLang !== lang.id"
+    >
+      {{ lang.label }}
+    </button>
   </div>
 </nav>
 
 <div class="container">
-  <router-outlet></router-outlet>
+  <router-outlet />
 </div>

@@ -8,6 +8,8 @@
   top: 0;
   width: 100%;
   z-index: 1;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .container {
@@ -33,4 +35,14 @@
 .btn-primary:not(:disabled):not(.disabled):active {
   background-color: #cd298d;
   border-color: #cd298d;
+}
+
+.lang-btns {
+  right: 10px;
+  top: 15px;
+  position: fixed;
+}
+
+.mr-10 {
+  margin-right: 10px;
 }
