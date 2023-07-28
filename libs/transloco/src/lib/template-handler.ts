@@ -1,15 +1,11 @@
-import {Injector, TemplateRef, Type, ViewContainerRef,} from '@angular/core';
+import {TemplateRef, Type, ViewContainerRef,} from '@angular/core';
 import {isString} from './helpers';
 import {TranslocoLoaderComponent} from './loader-component.component';
 
 export type Content = string | TemplateRef<unknown> | Type<unknown>;
 
 export class TemplateHandler {
-  private injector: Injector;
-
-  constructor(private view: Content, private vcr: ViewContainerRef) {
-    this.injector = this.vcr.injector;
-  }
+  constructor(private view: Content, private vcr: ViewContainerRef) {}
 
   attachView() {
     if (this.view instanceof TemplateRef) {
