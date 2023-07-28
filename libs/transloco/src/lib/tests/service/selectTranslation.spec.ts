@@ -1,4 +1,5 @@
 import { fakeAsync } from '@angular/core/testing';
+
 import { createService, mockLangs, runLoader } from '../mocks';
 import { flatten } from '../../helpers';
 import { TranslocoService } from '../../transloco.service';

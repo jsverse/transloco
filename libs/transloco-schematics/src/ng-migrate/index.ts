@@ -1,7 +1,9 @@
+import { exit } from 'process';
+
 import { Rule } from '@angular-devkit/schematics';
+
 import { run } from './ng-migrate';
 import { SchemaOptions } from './schema';
-import { exit } from 'process';
 
 export default function (options: SchemaOptions): Rule {
   return () => {

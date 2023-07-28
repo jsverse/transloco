@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+
 import { DYNAMIC_TRANSLATION_ROUTES } from './dynamic-translation/dynamic-translation.routes';
 import { INLINE_LOADERS_ROUTES } from './inline-loaders/inline-loaders.routes';
 import { LAZY_MULTIPLE_SCOPES_ROUTES } from './lazy-multiple-scopes/lazy-multiple-scopes.routes';

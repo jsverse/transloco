@@ -1,5 +1,7 @@
-import { Rule, SchematicsException } from '@angular-devkit/schematics';
 import { exit } from 'process';
+
+import { Rule, SchematicsException } from '@angular-devkit/schematics';
+
 import { SchemaOptions } from './schema';
 import { run } from './v2';
 

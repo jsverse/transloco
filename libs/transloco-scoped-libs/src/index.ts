@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { getGlobalConfig } from '@ngneat/transloco-utils';
 import commandLineArgs from 'command-line-args';
+
 import run from './lib/transloco-scoped-libs';
 
 const optionDefinitions: commandLineArgs.OptionDefinition[] = [

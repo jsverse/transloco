@@ -1,3 +1,5 @@
+import * as p from 'node:path';
+
 import { dasherize } from '@angular-devkit/core/src/utils/strings';
 import {
   Rule,
@@ -9,6 +11,7 @@ import {
   chain,
 } from '@angular-devkit/schematics';
 import { ScriptTarget, createSourceFile } from 'typescript';
+
 import { LIB_NAME } from '../schematics.consts';
 import { coerceArray, stringifyList } from '../utils/array';
 import {
@@ -19,11 +22,11 @@ import {
 import { findModuleFromOptions } from '../utils/find-module';
 import { getProject, getProjectPath } from '../utils/projects';
 import { createTranslateFilesFromOptions } from '../utils/translations';
-import { SchemaOptions } from './schema';
-import * as p from 'path';
 import { getConfig } from '../utils/config';
 import { applyChangesToFile } from '../utils/ng-schematics-utils/standalone/util';
 import { Change } from '../utils/ng-schematics-utils/change';
+
+import { SchemaOptions } from './schema';
 
 function getProviderValue(options: SchemaOptions) {
   const name = dasherize(options.name);

@@ -1,7 +1,8 @@
 import fs from 'fs';
-import glob from 'glob';
-import path from 'path';
+import path from 'node:path';
 import { promisify } from 'util';
+
+import glob from 'glob';
 import { flatten } from 'flat';
 
 type Translation = Record<string, any>;

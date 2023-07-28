@@ -1,8 +1,9 @@
-import { MFLocale } from './messageformat.config';
 import MessageFormat, {
   MessageFormatOptions,
   MessageFunction,
 } from '@messageformat/core';
+
+import { MFLocale } from './messageformat.config';
 
 export type MFFactory = (
   locales: MFLocale,

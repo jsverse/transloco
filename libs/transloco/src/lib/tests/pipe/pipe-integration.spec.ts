@@ -1,7 +1,8 @@
 import { createComponentFactory, Spectator } from '@ngneat/spectator';
 import { Component } from '@angular/core';
-import { providersMock, runLoader } from '../mocks';
 import { fakeAsync } from '@angular/core/testing';
+
+import { providersMock, runLoader } from '../mocks';
 import { defaultConfig, TRANSLOCO_CONFIG } from '../../transloco.config';
 import { TranslocoModule } from '../../transloco.module';
 import { TranslocoService } from '../../transloco.service';

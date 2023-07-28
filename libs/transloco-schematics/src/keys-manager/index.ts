@@ -1,13 +1,16 @@
+import { execSync } from 'child_process';
+
 import { Rule, SchematicsException, Tree } from '@angular-devkit/schematics';
 import { getConfiguredPackageManager } from '@angular/cli/src/utilities/config';
 import { TranslocoGlobalConfig } from '@ngneat/transloco-utils';
-import { execSync } from 'child_process';
+import { from, map } from 'rxjs';
+
 import { addScriptToPackageJson } from '../utils/package';
 import { getWorkspace, setWorkspace } from '../utils/projects';
 import { updateConfig } from '../utils/transloco';
-import { SchemaOptions } from './schema';
-import { from, map } from 'rxjs';
 import { getConfig } from '../utils/config';
+
+import { SchemaOptions } from './schema';
 
 async function installKeysManager() {
   const packageManager = await getConfiguredPackageManager();

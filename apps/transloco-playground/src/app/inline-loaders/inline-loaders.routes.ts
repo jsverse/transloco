@@ -1,6 +1,10 @@
 import { Route } from '@angular/router';
-import { provideTranslocoScope, Translation } from '@ngneat/transloco';
-import { TRANSLOCO_SCOPE } from '@ngneat/transloco';
+
+import {
+  provideTranslocoScope,
+  Translation,
+  TRANSLOCO_SCOPE,
+} from '@ngneat/transloco';
 
 const loader = ['en', 'es'].reduce((acc, lang: string) => {
   acc[lang] = () => import(`./i18n/${lang}.json`);

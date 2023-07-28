@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
+
 import { TranslocoModule } from '@ngneat/transloco';
+
 import { ProviderLangComponent } from './provider-lang/provider-lang.component';
 
 @Component({

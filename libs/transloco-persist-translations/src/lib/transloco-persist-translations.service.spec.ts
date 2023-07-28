@@ -3,6 +3,7 @@ import { TranslocoLoader } from '@ngneat/transloco';
 import { of, timer } from 'rxjs';
 import { mapTo } from 'rxjs/operators';
 import { Mock } from 'ts-mocks';
+
 import { defaultConfig } from './transloco-persist-translations.config';
 import { TranslocoPersistTranslations } from './transloco-persist-translations.service';
 import { MaybeAsyncStorage } from './transloco.storage';

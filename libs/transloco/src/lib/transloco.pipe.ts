@@ -5,10 +5,11 @@ import {
   Pipe,
   PipeTransform,
 } from '@angular/core';
-import { TranslocoService } from './transloco.service';
-import { HashMap, OrArray, Translation, TranslocoScope } from './types';
 import { switchMap } from 'rxjs/operators';
 import { forkJoin, Observable, Subscription } from 'rxjs';
+
+import { TranslocoService } from './transloco.service';
+import { HashMap, OrArray, Translation, TranslocoScope } from './types';
 import { TRANSLOCO_SCOPE } from './transloco-scope';
 import { TRANSLOCO_LANG } from './transloco-lang';
 import {

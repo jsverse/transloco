@@ -1,7 +1,8 @@
+import { ChangeDetectorRef } from '@angular/core';
+
 import { TranslocoDatePipe } from '../../pipes/transloco-date.pipe';
 import { mockLocaleService, mockCDR, LOCALE_CONFIG_MOCK } from '../mocks';
 import { defaultConfig } from '../../transloco-locale.config';
-import { ChangeDetectorRef } from '@angular/core';
 import { TranslocoLocaleService } from '../../transloco-locale.service';
 
 describe('TranslocoDatePipe', () => {

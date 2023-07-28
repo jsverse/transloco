@@ -1,7 +1,9 @@
 import { fakeAsync, tick } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { delay } from 'rxjs/operators';
+
 import { TranslocoLocaleService } from '../transloco-locale.service';
+
 import { mockService } from './mocks';
 
 describe('TranslocoLocaleService', () => {

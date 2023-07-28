@@ -19,6 +19,7 @@ import {
   strings,
   url,
 } from '@angular-devkit/schematics';
+
 import { parseName } from './parse-name';
 import { validateClassName } from './validation';
 import { createDefaultPath } from './workspace';

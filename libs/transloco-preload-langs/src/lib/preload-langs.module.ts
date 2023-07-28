@@ -1,4 +1,5 @@
 import { APP_INITIALIZER, ModuleWithProviders, NgModule } from '@angular/core';
+
 import {
   PRELOAD_LANGUAGES,
   TranslocoPreloadLangsService,

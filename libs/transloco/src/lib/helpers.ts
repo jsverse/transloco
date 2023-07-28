@@ -1,5 +1,6 @@
-import { ProviderScope, Translation } from './types';
 import { flatten as _flatten, unflatten as _unflatten } from 'flat';
+
+import { ProviderScope, Translation } from './types';
 
 export function getValue<T>(obj: T, path: keyof T) {
   if (!obj) {

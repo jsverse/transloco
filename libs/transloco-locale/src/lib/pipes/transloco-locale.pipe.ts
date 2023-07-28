@@ -1,5 +1,6 @@
 import { ChangeDetectorRef } from '@angular/core';
 import { Subscription } from 'rxjs';
+
 import { Locale } from '../../lib/transloco-locale.types';
 import { TranslocoLocaleService } from '../transloco-locale.service';
 

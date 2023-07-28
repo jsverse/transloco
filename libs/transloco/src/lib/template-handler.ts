@@ -1,4 +1,5 @@
 import { TemplateRef, Type, ViewContainerRef } from '@angular/core';
+
 import { isString } from './helpers';
 import { TranslocoLoaderComponent } from './loader-component.component';
 

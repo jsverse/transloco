@@ -6,6 +6,7 @@ import {
   OnDestroy,
 } from '@angular/core';
 import { isNil } from '@ngneat/transloco';
+
 import { getDefaultOptions } from '../shared';
 import { LOCALE_CONFIG } from '../transloco-locale.config';
 import { TranslocoLocaleService } from '../transloco-locale.service';
@@ -15,6 +16,7 @@ import {
   ValidDate,
   LocaleConfig,
 } from '../transloco-locale.types';
+
 import { TranslocoLocalePipe } from './transloco-locale.pipe';
 
 @Pipe({

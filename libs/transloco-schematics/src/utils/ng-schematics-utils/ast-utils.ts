@@ -8,6 +8,7 @@
 
 import { tags } from '@angular-devkit/core';
 import * as ts from 'typescript';
+
 import { Change, InsertChange, NoopChange } from './change';
 
 /**

@@ -1,5 +1,6 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { TRANSLOCO_TRANSPILER } from '@ngneat/transloco';
+
 import { MessageFormatTranspiler } from './messageformat.transpiler';
 import {
   TRANSLOCO_MESSAGE_FORMAT_CONFIG,

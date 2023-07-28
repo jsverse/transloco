@@ -1,10 +1,13 @@
+import * as path from 'node:path';
+
 import {
   SchematicTestRunner,
   UnitTestTree,
 } from '@angular-devkit/schematics/testing';
-import * as path from 'path';
-import { createWorkspace, defaultAppOptions } from './create-workspace';
+
 import { SchemaOptions } from '../ng-add/schema';
+
+import { createWorkspace, defaultAppOptions } from './create-workspace';
 
 const collectionPath = path.join(__dirname, '../collection.json');
 

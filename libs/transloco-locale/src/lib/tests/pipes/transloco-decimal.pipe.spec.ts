@@ -1,9 +1,11 @@
-import { defaultConfig } from './../../transloco-locale.config';
-import { mockLocaleService, mockCDR } from '../mocks';
-import { TranslocoDecimalPipe } from './../../pipes/transloco-decimal.pipe';
 import { ChangeDetectorRef } from '@angular/core';
+
+import { mockLocaleService, mockCDR } from '../mocks';
 import { TranslocoLocaleService } from '../../transloco-locale.service';
 import { LocaleConfig } from '../../transloco-locale.types';
+
+import { TranslocoDecimalPipe } from './../../pipes/transloco-decimal.pipe';
+import { defaultConfig } from './../../transloco-locale.config';
 
 describe('TranslocoDecimalPipe', () => {
   let service: TranslocoLocaleService;

@@ -6,9 +6,10 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
+import * as path from 'node:path';
+
 import { Rule, SchematicContext } from '@angular-devkit/schematics';
 import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
-import * as path from 'path';
 
 const installTasks = new WeakMap<SchematicContext, Set<string>>();
 

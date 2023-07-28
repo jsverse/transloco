@@ -6,6 +6,8 @@ import {
 } from '@ngneat/transloco';
 import { from, Observable, of, Subscription } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
+import { Inject, Injectable, OnDestroy } from '@angular/core';
+
 import { observify } from './helpers';
 import {
   defaultConfig,
@@ -14,7 +16,6 @@ import {
   PERSIST_TRANSLATIONS_STORAGE,
   StorageConfig,
 } from './transloco-persist-translations.config';
-import { Inject, Injectable, OnDestroy } from '@angular/core';
 import { MaybeAsyncStorage } from './transloco.storage';
 
 const getTimestampKey = (key: string) => `${key}/timestamp`;

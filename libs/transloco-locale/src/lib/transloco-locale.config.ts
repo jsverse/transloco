@@ -1,4 +1,5 @@
 import { InjectionToken } from '@angular/core';
+
 import LOCALE_CURRENCY from './locale-currency';
 import {
   NumberFormatOptions,

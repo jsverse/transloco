@@ -1,4 +1,5 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
+
 import { TranslocoPersistLangService } from './persist-lang.service';
 import {
   PersistLangConfig,

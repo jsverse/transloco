@@ -1,4 +1,5 @@
 import { Route } from '@angular/router';
+
 import {
   provideTranslocoLoadingTpl,
   provideTranslocoScope,

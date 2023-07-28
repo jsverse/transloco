@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+
 import { provideTranslocoScope, TranslocoModule } from '@ngneat/transloco';
 
 @Component({

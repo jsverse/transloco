@@ -1,4 +1,5 @@
 import { Schema } from '@schematics/angular/module/schema';
+
 import { TranslationFileFormat } from '../types';
 
 export interface SchemaOptions extends Schema {

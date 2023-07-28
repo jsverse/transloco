@@ -1,5 +1,6 @@
+import * as p from 'node:path';
+
 import * as ora from 'ora';
-import * as p from 'path';
 import { replaceInFile } from 'replace-in-file';
 
 // Example: `./src/ng2/**/*.html`;

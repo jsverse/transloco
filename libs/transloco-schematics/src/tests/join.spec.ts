@@ -1,15 +1,19 @@
+import * as path from 'node:path';
+
 import {
   SchematicTestRunner,
   UnitTestTree,
 } from '@angular-devkit/schematics/testing';
 import { TranslocoGlobalConfig } from '@ngneat/transloco-utils';
-import * as path from 'path';
+
 import { createWorkspace } from './create-workspace';
 import en from './mocks/en';
 import es from './mocks/es';
 import scopeEn from './mocks/scope-en';
 import scopeEs from './mocks/scope-es';
+
 jest.mock('../utils/config');
+// eslint-disable-next-line import/order
 import { getConfig } from '../utils/config';
 
 const collectionPath = path.join(__dirname, '../collection.json');

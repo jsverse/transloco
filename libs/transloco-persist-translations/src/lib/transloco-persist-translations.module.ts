@@ -1,5 +1,6 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { TRANSLOCO_LOADER } from '@ngneat/transloco';
+
 import { TranslocoPersistTranslations } from './transloco-persist-translations.service';
 import {
   PERSIST_TRANSLATIONS_STORAGE_CONFIG,

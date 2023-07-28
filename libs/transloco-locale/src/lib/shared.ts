@@ -1,5 +1,8 @@
-import { Locale } from './transloco-locale.types';
-import { LocaleFormatOptions, LocaleConfig } from './transloco-locale.types';
+import {
+  Locale,
+  LocaleFormatOptions,
+  LocaleConfig,
+} from './transloco-locale.types';
 
 export function getDefaultOptions(
   locale: Locale,

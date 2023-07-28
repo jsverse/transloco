@@ -1,5 +1,5 @@
-import NumberFormatOptions = Intl.NumberFormatOptions;
 import { toNumber } from '@ngneat/transloco';
+
 import { Locale, DateFormatOptions } from './transloco-locale.types';
 
 export const ISO8601_DATE_REGEX =
@@ -24,7 +24,7 @@ export function isLocaleFormat(val: any): val is Locale {
 export function localizeNumber(
   value: number | string,
   locale: Locale,
-  options: NumberFormatOptions
+  options: Intl.NumberFormatOptions
 ): string {
   const number = toNumber(value);
   return number !== null

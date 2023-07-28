@@ -1,7 +1,9 @@
 import { fakeAsync } from '@angular/core/testing';
-import { runLoader } from '../mocks';
 import { SpectatorHost } from '@ngneat/spectator';
+
+import { runLoader } from '../mocks';
 import { TranslocoDirective } from '../../transloco.directive';
+
 import {
   createFactory,
   testMergedScopedTranslation,

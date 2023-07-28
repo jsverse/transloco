@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+
 import { TranslocoModule } from '@ngneat/transloco';
 import {
   LOCALE_CURRENCY_MAPPING,

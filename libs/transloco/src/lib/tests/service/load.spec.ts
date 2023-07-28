@@ -1,8 +1,10 @@
 import { fakeAsync } from '@angular/core/testing';
 import { filter, pluck } from 'rxjs/operators';
+
 import { createService, runLoader } from '../mocks';
-import { loadLang } from './utils';
 import { TranslocoService } from '../../transloco.service';
+
+import { loadLang } from './utils';
 
 describe('load', () => {
   let service: TranslocoService;

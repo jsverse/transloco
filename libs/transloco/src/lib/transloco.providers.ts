@@ -13,7 +13,6 @@ import {
 } from './transloco.config';
 import { TRANSLOCO_SCOPE } from './transloco-scope';
 import { TranslocoScope } from './types';
-
 import {
   DefaultTranspiler,
   TRANSLOCO_TRANSPILER,

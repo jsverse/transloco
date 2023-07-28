@@ -8,6 +8,7 @@
 
 import { Rule, Tree } from '@angular-devkit/schematics';
 import * as ts from 'typescript';
+
 import { hasTopLevelIdentifier, insertImport } from '../ast-utils';
 import { applyToUpdateRecorder } from '../change';
 

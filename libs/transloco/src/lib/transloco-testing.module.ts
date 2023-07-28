@@ -6,9 +6,10 @@ import {
   ModuleWithProviders,
   NgModule,
 } from '@angular/core';
+import { Observable, of } from 'rxjs';
+
 import { TranslocoLoader } from './transloco.loader';
 import { HashMap, Translation } from './types';
-import { Observable, of } from 'rxjs';
 import { TranslocoModule } from './transloco.module';
 import { provideTransloco } from './transloco.providers';
 import { TranslocoConfig } from './transloco.config';

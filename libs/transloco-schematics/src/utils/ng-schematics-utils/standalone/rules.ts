@@ -14,12 +14,14 @@ import {
   chain,
 } from '@angular-devkit/schematics';
 import * as ts from 'typescript';
+
 import {
   addSymbolToNgModuleMetadata,
   insertAfterLastOccurrence,
 } from '../ast-utils';
 import { InsertChange } from '../change';
 import { getAppModulePath, isStandaloneApp } from '../ng-ast-utils';
+
 import { ResolvedAppConfig, findAppConfig } from './app_config';
 import { CodeBlock, CodeBlockCallback, PendingCode } from './code_block';
 import {

@@ -1,6 +1,7 @@
-import { MessageFormatTranspiler } from './messageformat.transpiler';
 import { flatten, translocoConfig } from '@ngneat/transloco';
 import { CustomFormatter } from '@messageformat/core';
+
+import { MessageFormatTranspiler } from './messageformat.transpiler';
 import { MessageformatConfig } from './messageformat.config';
 
 describe('MessageFormatTranspiler', () => {

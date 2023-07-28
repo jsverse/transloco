@@ -15,6 +15,7 @@ import {
 } from '@angular/core';
 import { forkJoin, Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+
 import { Content, TemplateHandler } from './template-handler';
 import { TRANSLOCO_LANG } from './transloco-lang';
 import { TRANSLOCO_LOADING_TEMPLATE } from './transloco-loading-template';

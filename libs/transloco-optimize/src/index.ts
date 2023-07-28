@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import commandLineArgs from 'command-line-args';
+
 import {
   getTranslationFiles,
   optimizeFiles,

@@ -1,3 +1,5 @@
+import * as path from 'node:path';
+
 import {
   SchematicTestRunner,
   UnitTestTree,
@@ -7,7 +9,7 @@ import {
   getGlobalConfig,
   TranslocoGlobalConfig,
 } from '@ngneat/transloco-utils';
-import * as path from 'path';
+
 import { createWorkspace } from './create-workspace';
 import scopeEn from './mocks/scope-en';
 import scopeEs from './mocks/scope-es';

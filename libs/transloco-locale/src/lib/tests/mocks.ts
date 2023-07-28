@@ -1,15 +1,15 @@
 import { of } from 'rxjs';
 import { TranslocoService } from '@ngneat/transloco';
+import { ChangeDetectorRef } from '@angular/core';
+import { Mock } from 'ts-mocks';
+
 import LOCALE_CURRENCY from '../locale-currency';
 import {
   DefaultDateTransformer,
   DefaultNumberTransformer,
 } from '../transloco-locale.transformers';
 import { TranslocoLocaleService } from '../transloco-locale.service';
-import { Locale } from '../transloco-locale.types';
-import { LocaleConfig } from '../../lib/transloco-locale.types';
-import { ChangeDetectorRef } from '@angular/core';
-import { Mock } from 'ts-mocks';
+import { Locale, LocaleConfig } from '../transloco-locale.types';
 
 export function mockLocaleService(locale: Locale = 'en-US') {
   return mockService(mockTranslocoService(locale), locale);

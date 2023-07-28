@@ -1,5 +1,6 @@
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
+
 import { resolveLoader } from './resolve-loader';
 import { TranslocoLoader, TranslocoLoaderData } from './transloco.loader';
 import { InlineLoader } from './types';

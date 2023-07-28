@@ -1,3 +1,5 @@
+import * as path from 'node:path';
+
 import {
   apply,
   move,
@@ -6,7 +8,7 @@ import {
   Tree,
   url,
 } from '@angular-devkit/schematics';
-import * as path from 'path';
+
 import { stringifyList } from '../../utils/array';
 
 export function createTranslocoModule({

@@ -1,5 +1,6 @@
-import { createService, runLoader } from '../mocks';
 import { fakeAsync } from '@angular/core/testing';
+
+import { createService, runLoader } from '../mocks';
 import { TranslocoService } from '../../transloco.service';
 
 describe('missingHandler', () => {

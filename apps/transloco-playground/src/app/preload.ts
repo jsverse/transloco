@@ -1,7 +1,9 @@
 import { APP_INITIALIZER } from '@angular/core';
-import { UserService } from './user.service';
-import { TranslocoService } from '@ngneat/transloco';
 import { switchMap } from 'rxjs';
+
+import { TranslocoService } from '@ngneat/transloco';
+
+import { UserService } from './user.service';
 
 export function preloadUser(
   userService: UserService,

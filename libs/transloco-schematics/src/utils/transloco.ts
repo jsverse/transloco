@@ -1,11 +1,14 @@
+import * as p from 'node:path';
+
 import { PathFragment } from '@angular-devkit/core';
 import { DirEntry, Tree } from '@angular-devkit/schematics';
 import { TranslocoGlobalConfig } from '@ngneat/transloco-utils';
+
 import { SchemaOptions } from '../join/schema';
 import { CONFIG_FILE } from '../schematics.consts';
+
 import { stringifyList } from './array';
 import { getProject } from './projects';
-import * as p from 'path';
 import { getConfig } from './config';
 
 export function createConfig(

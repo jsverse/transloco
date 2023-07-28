@@ -4,6 +4,9 @@ import {
   SchematicsException,
   Tree,
 } from '@angular-devkit/schematics';
+import { normalize } from '@angular-devkit/core';
+import * as fs from 'fs-extra';
+
 import { TranslationFileFormat } from '../types';
 import {
   getDefaultLang,
@@ -15,9 +18,8 @@ import {
   hasFiles,
   hasSubdirs,
 } from '../utils/transloco';
+
 import { SchemaOptions } from './schema';
-import { normalize } from '@angular-devkit/core';
-import * as fs from 'fs-extra';
 
 type Builder = (
   tree: Tree,

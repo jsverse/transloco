@@ -1,8 +1,11 @@
-import path from 'path';
+import path from 'node:path';
+
 import chalk from 'chalk';
 import glob from 'glob';
 import chokidar from 'chokidar';
 import fsExtra from 'fs-extra';
+import { TranslocoGlobalConfig } from '@ngneat/transloco-utils';
+
 import {
   coerceArray,
   cutPath,
@@ -18,7 +21,6 @@ import {
   ScopedLibsOptions,
   SetTranslationOptions,
 } from './scoped-libs.types';
-import { TranslocoGlobalConfig } from '@ngneat/transloco-utils';
 
 const libSrcExample = `
   e.g:

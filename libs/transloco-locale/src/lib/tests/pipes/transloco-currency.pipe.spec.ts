@@ -1,7 +1,8 @@
+import { ChangeDetectorRef } from '@angular/core';
+
 import { TranslocoCurrencyPipe } from '../../pipes/transloco-currency.pipe';
 import { defaultConfig } from '../../transloco-locale.config';
 import { mockLocaleService, mockCDR, LOCALE_CONFIG_MOCK } from '../mocks';
-import { ChangeDetectorRef } from '@angular/core';
 import { TranslocoLocaleService } from '../../transloco-locale.service';
 import { LocaleConfig } from '../../transloco-locale.types';
 

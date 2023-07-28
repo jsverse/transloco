@@ -4,12 +4,14 @@ import {
   Spectator,
   SpectatorHost,
 } from '@ngneat/spectator';
-import { createFactory } from './shared';
-import { providersMock, runLoader } from '../mocks';
 import { Component } from '@angular/core';
+
+import { providersMock, runLoader } from '../mocks';
 import { TranslocoDirective } from '../../transloco.directive';
 import { TRANSLOCO_SCOPE } from '../../transloco-scope';
 import { TranslocoModule } from '../../transloco.module';
+
+import { createFactory } from './shared';
 
 describe('Scope alias', () => {
   let spectator: SpectatorHost<TranslocoDirective>;

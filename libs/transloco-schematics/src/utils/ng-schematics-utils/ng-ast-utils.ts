@@ -6,11 +6,13 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
+import { dirname } from 'node:path';
+
 import { normalize } from '@angular-devkit/core';
 import { SchematicsException, Tree } from '@angular-devkit/schematics';
-import { dirname } from 'path';
-import { findBootstrapApplicationCall } from './standalone/util';
 import * as ts from 'typescript';
+
+import { findBootstrapApplicationCall } from './standalone/util';
 import { findNode, getSourceNodes } from './ast-utils';
 
 export function findBootstrapModuleCall(

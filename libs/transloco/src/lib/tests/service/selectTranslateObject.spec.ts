@@ -1,4 +1,5 @@
 import { fakeAsync } from '@angular/core/testing';
+
 import { createService, runLoader } from '../mocks';
 import { HashMap } from '../../types';
 import { TranslocoService } from '../../transloco.service';

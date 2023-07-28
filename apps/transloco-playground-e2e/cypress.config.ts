@@ -1,4 +1,5 @@
 import { defineConfig } from 'cypress';
+
 import plugins from './src/plugins/index';
 
 module.exports = defineConfig({

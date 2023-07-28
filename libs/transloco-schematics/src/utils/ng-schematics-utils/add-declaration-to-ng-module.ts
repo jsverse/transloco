@@ -8,6 +8,7 @@
 
 import { Rule, Tree, strings } from '@angular-devkit/schematics';
 import * as ts from 'typescript';
+
 import {
   addDeclarationToModule,
   addSymbolToNgModuleMetadata,

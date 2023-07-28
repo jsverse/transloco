@@ -1,5 +1,7 @@
+import * as path from 'node:path';
+
 import { cosmiconfigSync } from 'cosmiconfig';
-import * as path from 'path';
+
 import { TranslocoGlobalConfig } from './transloco-utils.types';
 
 export function getGlobalConfig(searchPath = ''): TranslocoGlobalConfig {

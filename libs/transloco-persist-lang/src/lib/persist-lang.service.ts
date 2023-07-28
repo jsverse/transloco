@@ -8,12 +8,13 @@ import {
 } from '@ngneat/transloco';
 import { Subscription } from 'rxjs';
 import { skip } from 'rxjs/operators';
+import { Inject, Injectable, OnDestroy } from '@angular/core';
+
 import {
   PersistLangConfig,
   TRANSLOCO_PERSIST_LANG_CONFIG,
   TRANSLOCO_PERSIST_LANG_STORAGE,
 } from './persist-lang.config';
-import { Inject, Injectable, OnDestroy } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class TranslocoPersistLangService implements OnDestroy {

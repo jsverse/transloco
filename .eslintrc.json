@@ -2,6 +2,13 @@
   "root": true,
   "ignorePatterns": ["**/*"],
   "plugins": ["@nx"],
+  "settings": {
+    "import/resolver": {
+      "typescript": {
+        "project": ["libs/*/tsconfig.json", "tsconfig.base.json"]
+      }
+    }
+  },
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
@@ -23,8 +30,20 @@
     },
     {
       "files": ["*.ts", "*.tsx"],
-      "extends": ["plugin:@nx/typescript"],
-      "rules": {}
+      "extends": [
+        "plugin:@nx/typescript",
+        "plugin:import/recommended",
+        "plugin:import/typescript"
+      ],
+      "rules": {
+        "import/order": [
+          "error",
+          {
+            "groups": ["builtin", "external", "internal", "parent", "sibling"],
+            "newlines-between": "always"
+          }
+        ]
+      }
     },
     {
       "files": ["*.js", "*.jsx"],

@@ -1,4 +1,5 @@
 import { InjectionToken } from '@angular/core';
+
 import { AvailableLangs } from './types';
 
 export interface TranslocoConfig {

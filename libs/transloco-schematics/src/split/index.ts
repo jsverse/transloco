@@ -1,4 +1,5 @@
 import { Rule, Tree } from '@angular-devkit/schematics';
+
 import { TranslationFileFormat } from '../types';
 import {
   getTranslationEntryPaths,
@@ -9,6 +10,7 @@ import {
   hasSubdirs,
   setFileContent,
 } from '../utils/transloco';
+
 import { SchemaOptions } from './schema';
 
 type Parser = (content: string) => any;

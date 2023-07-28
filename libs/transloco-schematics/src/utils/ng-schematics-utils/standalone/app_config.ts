@@ -6,9 +6,11 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
+import { dirname, join } from 'node:path';
+
 import { Tree } from '@angular-devkit/schematics';
-import { dirname, join } from 'path';
 import * as ts from 'typescript';
+
 import { getSourceFile } from './util';
 
 /** App config that was resolved to its source node. */

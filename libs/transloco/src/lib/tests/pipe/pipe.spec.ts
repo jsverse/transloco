@@ -1,8 +1,9 @@
 import { Mock } from 'ts-mocks';
 import { ChangeDetectorRef } from '@angular/core';
-import { createService, runLoader } from '../mocks';
 import { fakeAsync } from '@angular/core/testing';
 import { of } from 'rxjs';
+
+import { createService, runLoader } from '../mocks';
 import { TranslocoService } from '../../transloco.service';
 import { TranslocoPipe } from '../../transloco.pipe';
 import { TranslocoScope } from '../../types';

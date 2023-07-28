@@ -1,7 +1,8 @@
 import { of, timer } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { createService, mockLangs, runLoader } from '../mocks';
 import { fakeAsync } from '@angular/core/testing';
+
+import { createService, mockLangs, runLoader } from '../mocks';
 import { TranslocoLoader } from '../../transloco.loader';
 import {
   DefaultFallbackStrategy,

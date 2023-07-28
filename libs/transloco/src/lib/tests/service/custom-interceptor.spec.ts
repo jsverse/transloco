@@ -1,8 +1,10 @@
 import { fakeAsync } from '@angular/core/testing';
+
 import { TranslocoService } from '../../transloco.service';
 import { Translation } from '../../types';
 import { isString } from '../../helpers';
 import { createService, runLoader } from '../mocks';
+
 import { loadLang } from './utils';
 
 describe('Custom Interceptor', () => {

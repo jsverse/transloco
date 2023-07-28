@@ -1,3 +1,5 @@
+import * as _path from 'node:path';
+
 import {
   chain,
   mergeWith,
@@ -5,11 +7,11 @@ import {
   SchematicContext,
   Tree,
 } from '@angular-devkit/schematics';
+
 import { stringifyList } from '../utils/array';
 import { getProject, setEnvironments } from '../utils/projects';
 import { checkIfTranslationFilesExist } from '../utils/translations';
 import { createConfig } from '../utils/transloco';
-import { Loaders, SchemaOptions } from './schema';
 import {
   getAppModulePath,
   isStandaloneApp,
@@ -19,14 +21,15 @@ import {
   getMainFilePath,
 } from '../utils/ng-schematics-utils/standalone/util';
 import { addRootProvider } from '../utils/ng-schematics-utils/standalone';
+import { findAppConfig } from '../utils/ng-schematics-utils/standalone/app_config';
+
+import { Loaders, SchemaOptions } from './schema';
 import { createLoaderFile } from './generators/http-loader.gen';
 import {
   createTranslateFiles,
   jsonTranslationFileCreator,
 } from './generators/translation-files.gen';
 import { createTranslocoModule } from './generators/root-module.gen';
-import * as _path from 'node:path';
-import { findAppConfig } from '../utils/ng-schematics-utils/standalone/app_config';
 
 function updateEnvironmentBaseUrl(
   host: Tree,

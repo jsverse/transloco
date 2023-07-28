@@ -1,5 +1,6 @@
-import findDuplicatedPropertyKeys from 'find-duplicated-property-keys';
 import fs from 'fs';
+
+import findDuplicatedPropertyKeys from 'find-duplicated-property-keys';
 
 export default function (translationFilePaths: string[]) {
   translationFilePaths.forEach((path) => {

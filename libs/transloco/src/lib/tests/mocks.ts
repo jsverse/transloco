@@ -1,3 +1,7 @@
+import { timer } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { tick } from '@angular/core/testing';
+
 import {
   DefaultTranspiler,
   TRANSLOCO_TRANSPILER,
@@ -9,24 +13,11 @@ import {
   TRANSLOCO_CONFIG,
   translocoConfig,
 } from '../transloco.config';
-import { timer } from 'rxjs';
-import { map } from 'rxjs/operators';
 import {
   DefaultHandler,
   TRANSLOCO_MISSING_HANDLER,
   TranslocoMissingHandler,
 } from '../transloco-missing-handler';
-import en from './i18n-mocks/en.json';
-import es from './i18n-mocks/es.json';
-import enLazy from './i18n-mocks/lazy-page/en.json';
-import esLazy from './i18n-mocks/lazy-page/es.json';
-import enAdmin from './i18n-mocks/admin-page/en.json';
-import esAdmin from './i18n-mocks/admin-page/es.json';
-import enLazyScopeAlias from './i18n-mocks/lazy-scope-alias/en.json';
-import esLazyScopeAlias from './i18n-mocks/lazy-scope-alias/es.json';
-import enMF from './i18n-mocks/transpilers/messageformat/en.json';
-import esMF from './i18n-mocks/transpilers/messageformat/es.json';
-import { tick } from '@angular/core/testing';
 import { TranslocoService } from '../transloco.service';
 import { TRANSLOCO_LOADING_TEMPLATE } from '../transloco-loading-template';
 import {
@@ -41,6 +32,17 @@ import {
 } from '../transloco-fallback-strategy';
 import { ProviderScope, Translation } from '../types';
 import { TRANSLOCO_SCOPE } from '../transloco-scope';
+
+import en from './i18n-mocks/en.json';
+import es from './i18n-mocks/es.json';
+import enLazy from './i18n-mocks/lazy-page/en.json';
+import esLazy from './i18n-mocks/lazy-page/es.json';
+import enAdmin from './i18n-mocks/admin-page/en.json';
+import esAdmin from './i18n-mocks/admin-page/es.json';
+import enLazyScopeAlias from './i18n-mocks/lazy-scope-alias/en.json';
+import esLazyScopeAlias from './i18n-mocks/lazy-scope-alias/es.json';
+import enMF from './i18n-mocks/transpilers/messageformat/en.json';
+import esMF from './i18n-mocks/transpilers/messageformat/es.json';
 
 export const mockLangs: Record<string, Translation> = {
   en,

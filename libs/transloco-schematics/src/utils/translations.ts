@@ -1,7 +1,9 @@
-import { SchematicsException, Tree } from '@angular-devkit/schematics';
-import { TranslationFileTypes } from '../ng-add/schema';
-import * as p from 'path';
+import * as p from 'node:path';
 import * as fs from 'fs';
+
+import { SchematicsException, Tree } from '@angular-devkit/schematics';
+
+import { TranslationFileTypes } from '../ng-add/schema';
 import {
   createTranslateFiles,
   jsonTranslationFileCreator,

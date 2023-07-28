@@ -1,6 +1,7 @@
-import { sync as globSync } from 'glob';
-import * as p from 'path';
+import * as p from 'node:path';
 import * as fs from 'fs';
+
+import { sync as globSync } from 'glob';
 
 export function run(path) {
   console.log('\x1b[4m%s\x1b[0m', '⬆️ Starting v2 upgrade script ⬆️');
