@@ -8,7 +8,7 @@ import {
   TranslocoGlobalConfig,
 } from '@ngneat/transloco-utils';
 import * as path from 'path';
-import { createWorkspace } from '../utils/create-workspace';
+import { createWorkspace } from './create-workspace';
 import scopeEn from './mocks/scope-en';
 import scopeEs from './mocks/scope-es';
 
@@ -36,7 +36,7 @@ describe('Split', () => {
   }
 
   beforeEach(async () => {
-    appTree = await createWorkspace(schematicRunner, appTree);
+    appTree = await createWorkspace(schematicRunner);
     mockConfig();
   });
 

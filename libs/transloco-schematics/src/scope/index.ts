@@ -5,26 +5,24 @@ import {
   SchematicContext,
   externalSchematic,
   mergeWith,
-  source,
-  EmptyTree,
+  empty, chain,
 } from '@angular-devkit/schematics';
-import { Observable, tap } from 'rxjs';
 import { ScriptTarget, createSourceFile } from 'typescript';
-import { applyChanges } from '../ng-add';
 import { LIB_NAME } from '../schematics.consts';
 import { coerceArray, stringifyList } from '../utils/array';
 import {
   addProviderToModule,
   insertImport,
   addImportToModule,
-} from '../utils/ast-utils';
+} from '../utils/ng-schematics-utils/ast-utils';
 import { findModuleFromOptions } from '../utils/find-module';
 import { getProject, getProjectPath } from '../utils/projects';
 import { createTranslateFilesFromOptions } from '../utils/translations';
 import { SchemaOptions } from './schema';
 import * as p from 'path';
 import { getConfig } from '../utils/config';
-import { Change, InsertChange } from '../utils/change';
+import {applyChangesToFile} from "../utils/ng-schematics-utils/standalone/util";
+import {Change} from "../utils/ng-schematics-utils/change";
 
 function getProviderValue(options: SchemaOptions) {
   const name = dasherize(options.name);
@@ -69,7 +67,7 @@ function addScopeToModule(
     );
   }
 
-  applyChanges(tree, modulePath, changes as InsertChange[]);
+  applyChangesToFile(tree, modulePath, changes);
 }
 
 function getTranslationFilesFromAssets(host, translationsPath) {
@@ -108,9 +106,9 @@ function createTranslationFiles(
   rootPath,
   modulePath,
   host: Tree
-): Tree {
+) {
   if (options.skipCreation) {
-    return new EmptyTree();
+    return empty();
   }
   const defaultPath = options.inlineLoader
     ? p.join(p.dirname(modulePath), 'i18n')
@@ -138,33 +136,34 @@ export default function (options: SchemaOptions): Rule {
       if (modulePath) {
         addScopeToModule(host, modulePath, options);
         return mergeWith(
-          source(createTranslationFiles(options, rootPath, modulePath, host))
+          createTranslationFiles(options, rootPath, modulePath, host)
         )(host, context);
       }
     }
 
     const cmpRule = externalSchematic('@schematics/angular', 'module', options);
-    const tree$ = (cmpRule(host, context) as unknown as Observable<Tree>).pipe(
-      tap((tree) => {
+
+    return chain([
+      cmpRule(host, context) as Rule,
+      (tree) => {
         const modulePath = tree.actions.find(
-          (action) =>
-            !!action.path.match(/\.module\.ts/) &&
-            !action.path.match(/-routing\.module\.ts/)
+            (action) =>
+                !!action.path.match(/\.module\.ts/) &&
+                !action.path.match(/-routing\.module\.ts/)
         ).path;
         addScopeToModule(tree, modulePath, options);
         if (options.inlineLoader) {
           addInlineLoader(tree, modulePath, options.name, options.langs);
         }
         const translationRule = createTranslationFiles(
-          options,
-          rootPath,
-          modulePath,
-          host
+            options,
+            rootPath,
+            modulePath,
+            host
         );
-        tree.merge(translationRule);
-      })
-    );
 
-    return tree$;
+        return mergeWith(translationRule);
+      }
+    ]);
   };
 }

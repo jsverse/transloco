@@ -4,7 +4,7 @@ import {
 } from '@angular-devkit/schematics/testing';
 import { TranslocoGlobalConfig } from '@ngneat/transloco-utils';
 import * as path from 'path';
-import { createWorkspace } from '../utils/create-workspace';
+import { createWorkspace } from './create-workspace';
 import en from './mocks/en';
 import es from './mocks/es';
 import scopeEn from './mocks/scope-en';
@@ -25,7 +25,7 @@ describe('Join', () => {
   };
 
   beforeEach(async () => {
-    appTree = await createWorkspace(schematicRunner, appTree);
+    appTree = await createWorkspace(schematicRunner);
     appTree.create('src/assets/i18n/es.json', JSON.stringify(es));
     appTree.create('src/assets/i18n/en.json', JSON.stringify(en));
     (getConfig as jest.Mock).mockReturnValue(globalConfig);

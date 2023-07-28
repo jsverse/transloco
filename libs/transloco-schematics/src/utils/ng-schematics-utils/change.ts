@@ -1,14 +1,13 @@
-import * as ts from 'typescript';
-import { Tree, UpdateRecorder } from '@angular-devkit/schematics';
-
-/* istanbul ignore file */
 /**
  * @license
- * Copyright Google Inc. All Rights Reserved.
+ * Copyright Google LLC All Rights Reserved.
  *
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+
+import { UpdateRecorder } from '@angular-devkit/schematics';
+
 export interface Host {
   write(path: string, content: string): Promise<void>;
   read(path: string): Promise<string>;
@@ -76,18 +75,18 @@ export class RemoveChange implements Change {
   order: number;
   description: string;
 
-  constructor(public path: string, public pos: number, public end: number) {
-    if (pos < 0 || end < 0) {
+  constructor(public path: string, private pos: number, public toRemove: string) {
+    if (pos < 0) {
       throw new Error('Negative positions are invalid');
     }
-    this.description = `Removed text in position ${pos} to ${end} of ${path}`;
+    this.description = `Removed ${toRemove} into position ${pos} of ${path}`;
     this.order = pos;
   }
 
   apply(host: Host): Promise<void> {
     return host.read(this.path).then((content) => {
       const prefix = content.substring(0, this.pos);
-      const suffix = content.substring(this.end);
+      const suffix = content.substring(this.pos + this.toRemove.length);
 
       // TODO: throw error if toRemove doesn't match removed string.
       return host.write(this.path, `${prefix}${suffix}`);
@@ -104,9 +103,9 @@ export class ReplaceChange implements Change {
 
   constructor(
     public path: string,
-    public pos: number,
+    private pos: number,
     public oldText: string,
-    public newText: string
+    public newText: string,
   ) {
     if (pos < 0) {
       throw new Error('Negative positions are invalid');
@@ -122,9 +121,7 @@ export class ReplaceChange implements Change {
       const text = content.substring(this.pos, this.pos + this.oldText.length);
 
       if (text !== this.oldText) {
-        return Promise.reject(
-          new Error(`Invalid replace: "${text}" != "${this.oldText}".`)
-        );
+        return Promise.reject(new Error(`Invalid replace: "${text}" != "${this.oldText}".`));
       }
 
       // TODO: throw error if oldText doesn't match removed string.
@@ -133,45 +130,17 @@ export class ReplaceChange implements Change {
   }
 }
 
-export function createReplaceChange(
-  sourceFile: ts.SourceFile,
-  node: ts.Node,
-  oldText: string,
-  newText: string
-): ReplaceChange {
-  return new ReplaceChange(
-    sourceFile.fileName,
-    node.getStart(sourceFile),
-    oldText,
-    newText
-  );
-}
-
-export function createChangeRecorder(
-  tree: Tree,
-  path: string,
-  changes: Change[]
-): UpdateRecorder {
-  const recorder = tree.beginUpdate(path);
+export function applyToUpdateRecorder(recorder: UpdateRecorder, changes: Change[]): void {
   for (const change of changes) {
     if (change instanceof InsertChange) {
       recorder.insertLeft(change.pos, change.toAdd);
     } else if (change instanceof RemoveChange) {
-      recorder.remove(change.pos, change.end - change.pos);
+      recorder.remove(change.order, change.toRemove.length);
     } else if (change instanceof ReplaceChange) {
-      recorder.remove(change.pos, change.oldText.length);
-      recorder.insertLeft(change.pos, change.newText);
+      recorder.remove(change.order, change.oldText.length);
+      recorder.insertLeft(change.order, change.newText);
+    } else if (!(change instanceof NoopChange)) {
+      throw new Error('Unknown Change type encountered when updating a recorder.');
     }
   }
-  return recorder;
-}
-
-export function commitChanges(tree: Tree, path: string, changes: Change[]) {
-  if (changes.length === 0) {
-    return false;
-  }
-
-  const recorder = createChangeRecorder(tree, path, changes);
-  tree.commitUpdate(recorder);
-  return true;
 }

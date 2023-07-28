@@ -49,11 +49,6 @@ export function setEnvironments(
   });
 }
 
-export interface WorkspaceProject {
-  root: string;
-  projectType: string;
-}
-
 export function getProjectPath(host: Tree, project, options) {
   if (project.root.substr(-1) === '/') {
     project.root = project.root.substr(0, project.root.length - 1);
@@ -67,13 +62,4 @@ export function getProjectPath(host: Tree, project, options) {
   }
 
   return options.path;
-}
-
-export function isLib(
-  host: Tree,
-  options: { project?: string | undefined; path?: string | undefined }
-) {
-  const project = getProject(host, options.project);
-
-  return project.projectType === 'library';
 }

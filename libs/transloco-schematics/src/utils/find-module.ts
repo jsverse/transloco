@@ -31,19 +31,14 @@ export function findRootModule(
   }
 
   const modulePath = normalize(`${rootPath}/${module}`);
-  if (host.exists(modulePath)) {
-    return modulePath;
-  } else if (host.exists(modulePath + '.ts')) {
-    return normalize(modulePath + '.ts');
-  } else if (host.exists(modulePath + MODULE_EXT)) {
-    return normalize(modulePath + MODULE_EXT);
-  } else if (host.exists(`${modulePath}/${module}${MODULE_EXT}`)) {
-    return normalize(`${modulePath}/${module}${MODULE_EXT}`);
-  } else if (host.exists(`${modulePath}/${module}.ts`)) {
-    return normalize(`${modulePath}/${module}.ts`);
-  } else {
-    throw new Error(`Specified module path ${modulePath} does not exist`);
+  const matchingExt = ['', '.ts', MODULE_EXT, `/${module}${MODULE_EXT}`, `/${module}.ts`]
+      .find((ext) => host.exists(modulePath + ext));
+
+  if (matchingExt) {
+    return normalize(modulePath + matchingExt);
   }
+
+  throw new Error(`Specified module path ${modulePath} does not exist`);
 }
 
 /**
