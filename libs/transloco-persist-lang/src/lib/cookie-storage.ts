@@ -1,5 +1,9 @@
-// cookieExpiry: a month
-export function cookiesStorage(cookieExpiry = 720) {
+import { PersistStorage } from './persist-lang.types';
+
+const millisecondsInHour = 3_600_000;
+const hoursInMonth = 720;
+
+export function cookiesStorage(cookieExpiry = hoursInMonth): PersistStorage {
   return {
     getItem(key: string) {
       const name = encodeURIComponent(key);
@@ -14,7 +18,7 @@ export function cookiesStorage(cookieExpiry = 720) {
     setItem(key: string, value: string) {
       const name = encodeURIComponent(key);
       const date = new Date();
-      date.setTime(date.getTime() + cookieExpiry * 3600000);
+      date.setTime(date.getTime() + cookieExpiry * millisecondsInHour);
       document.cookie = `${name}=${encodeURIComponent(
         value
       )};expires=${date.toUTCString()}`;
