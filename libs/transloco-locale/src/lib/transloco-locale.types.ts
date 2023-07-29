@@ -1,5 +1,13 @@
 export interface NumberFormatOptions {
   /**
+   * When to display the sign for the number.
+   */
+  signDisplay?: Intl.NumberFormatOptions['signDisplay'];
+  /**
+   * The currency to use in currency formatting. Possible values are the ISO 4217 currency codes, such as "USD" for the US dollar, "EUR" for the euro
+   */
+  currency?: Intl.NumberFormatOptions['currency'];
+  /**
    * Whether to use grouping separators, such as thousands separators or thousand/lakh/crore separators. Possible values are true and false; the default is true.
    */
   useGrouping?: Intl.NumberFormatOptions['useGrouping'];
@@ -28,7 +36,7 @@ export interface NumberFormatOptions {
 /**
  * The number display formatting type.
  */
-export type NumberTypes = 'currency' | 'decimal' | 'percent';
+export type NumberStyles = 'currency' | 'decimal' | 'percent';
 
 /**
  * Allowed values with Date and Time formats
@@ -137,6 +145,7 @@ export interface LocaleFormatOptions {
   decimal?: NumberFormatOptions;
   currency?: NumberFormatOptions;
   percent?: NumberFormatOptions;
+  unit?: NumberFormatOptions;
 }
 
 export type LocaleConfigMapping = Record<string, LocaleFormatOptions>;

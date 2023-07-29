@@ -4,7 +4,7 @@ import { localizeNumber, localizeDate } from './helpers';
 import {
   Locale,
   DateFormatOptions,
-  NumberTypes,
+  NumberStyles,
 } from './transloco-locale.types';
 
 export interface TranslocoDateTransformer {
@@ -13,7 +13,7 @@ export interface TranslocoDateTransformer {
 export interface TranslocoNumberTransformer {
   transform(
     value: number | string,
-    type: NumberTypes,
+    type: NumberStyles,
     locale: Locale,
     options: Intl.NumberFormatOptions
   ): string;
@@ -38,7 +38,7 @@ export class DefaultDateTransformer implements TranslocoDateTransformer {
 export class DefaultNumberTransformer implements TranslocoNumberTransformer {
   public transform(
     value: number | string,
-    type: NumberTypes,
+    type: NumberStyles,
     locale: string,
     options: Intl.NumberFormatOptions
   ): string {

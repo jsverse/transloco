@@ -1,38 +1,26 @@
-import {
-  Pipe,
-  PipeTransform,
-  ChangeDetectorRef,
-  Inject,
-  OnDestroy,
-} from '@angular/core';
+import { inject, Pipe, PipeTransform } from '@angular/core';
 import { isNil } from '@ngneat/transloco';
 
 import { getDefaultOptions } from '../shared';
-import { LOCALE_CONFIG } from '../transloco-locale.config';
-import { TranslocoLocaleService } from '../transloco-locale.service';
+import { TRANSLOCO_LOCALE_CONFIG } from '../transloco-locale.config';
 import {
-  NumberFormatOptions,
   Locale,
   LocaleConfig,
+  NumberFormatOptions,
 } from '../transloco-locale.types';
 
-import { TranslocoLocalePipe } from './transloco-locale.pipe';
+import { BaseLocalePipe } from './base-locale.pipe';
 
 @Pipe({
   name: 'translocoPercent',
   pure: false,
+  standalone: true,
 })
 export class TranslocoPercentPipe
-  extends TranslocoLocalePipe
-  implements PipeTransform, OnDestroy
+  extends BaseLocalePipe
+  implements PipeTransform
 {
-  constructor(
-    protected translocoLocaleService: TranslocoLocaleService,
-    protected cdr: ChangeDetectorRef,
-    @Inject(LOCALE_CONFIG) private localeConfig: LocaleConfig
-  ) {
-    super(translocoLocaleService, cdr);
-  }
+  private localeConfig: LocaleConfig = inject(TRANSLOCO_LOCALE_CONFIG);
 
   /**
    * Transform a given number into the locale's currency format.
@@ -55,15 +43,7 @@ export class TranslocoPercentPipe
       ...getDefaultOptions(locale, 'percent', this.localeConfig),
       ...numberFormatOptions,
     };
-    return this.translocoLocaleService.localizeNumber(
-      value,
-      'percent',
-      locale,
-      options
-    );
-  }
 
-  ngOnDestroy(): void {
-    super.onDestroy();
+    return this.localeService.localizeNumber(value, 'percent', locale, options);
   }
 }

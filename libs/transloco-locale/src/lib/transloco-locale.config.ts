@@ -2,11 +2,12 @@ import { InjectionToken } from '@angular/core';
 
 import LOCALE_CURRENCY from './locale-currency';
 import {
-  NumberFormatOptions,
   TranslocoLocaleConfig,
   LocaleConfigMapping,
   LangToLocaleMapping,
   LocaleToCurrencyMapping,
+  Locale,
+  Currency,
 } from './transloco-locale.types';
 
 export const defaultConfig: Required<TranslocoLocaleConfig> = {
@@ -20,17 +21,18 @@ export const defaultConfig: Required<TranslocoLocaleConfig> = {
   langToLocaleMapping: {},
 };
 
-export const LOCALE_DEFAULT_LOCALE = new InjectionToken<NumberFormatOptions>(
-  'DEFAULT_LOCALE'
+export const TRANSLOCO_LOCALE_DEFAULT_LOCALE = new InjectionToken<Locale>(
+  'TRANSLOCO_LOCALE_DEFAULT_LOCALE'
 );
-export const LOCALE_DEFAULT_CURRENCY = new InjectionToken<NumberFormatOptions>(
-  'DEFAULT_LOCALE_CURRENCY'
+export const TRANSLOCO_LOCALE_DEFAULT_CURRENCY = new InjectionToken<Currency>(
+  'TRANSLOCO_LOCALE_DEFAULT_CURRENCY'
 );
-export const LOCALE_LANG_MAPPING = new InjectionToken<LangToLocaleMapping>(
-  'LOCALE_LANG_MAPPING'
+export const TRANSLOCO_LOCALE_LANG_MAPPING =
+  new InjectionToken<LangToLocaleMapping>('TRANSLOCO_LOCALE_LANG_MAPPING');
+export const TRANSLOCO_LOCALE_CONFIG = new InjectionToken<LocaleConfigMapping>(
+  'TRANSLOCO_LOCALE_CONFIG'
 );
-export const LOCALE_CONFIG = new InjectionToken<LocaleConfigMapping>(
-  'LOCALE_CONFIG'
-);
-export const LOCALE_CURRENCY_MAPPING =
-  new InjectionToken<LocaleToCurrencyMapping>('LOCALE_CURRENCY_MAPPING');
+export const TRANSLOCO_LOCALE_CURRENCY_MAPPING =
+  new InjectionToken<LocaleToCurrencyMapping>(
+    'TRANSLOCO_LOCALE_CURRENCY_MAPPING'
+  );

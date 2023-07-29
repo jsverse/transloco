@@ -1,39 +1,24 @@
-import {
-  Pipe,
-  ChangeDetectorRef,
-  PipeTransform,
-  Inject,
-  OnDestroy,
-} from '@angular/core';
+import { inject, Pipe, PipeTransform } from '@angular/core';
 import { isNil } from '@ngneat/transloco';
 
 import { getDefaultOptions } from '../shared';
-import { LOCALE_CONFIG } from '../transloco-locale.config';
-import { TranslocoLocaleService } from '../transloco-locale.service';
+import { TRANSLOCO_LOCALE_CONFIG } from '../transloco-locale.config';
 import {
   DateFormatOptions,
   Locale,
-  ValidDate,
   LocaleConfig,
+  ValidDate,
 } from '../transloco-locale.types';
 
-import { TranslocoLocalePipe } from './transloco-locale.pipe';
+import { BaseLocalePipe } from './base-locale.pipe';
 
 @Pipe({
   name: 'translocoDate',
   pure: false,
+  standalone: true,
 })
-export class TranslocoDatePipe
-  extends TranslocoLocalePipe
-  implements PipeTransform, OnDestroy
-{
-  constructor(
-    protected translocoLocaleService: TranslocoLocaleService,
-    protected cdr: ChangeDetectorRef,
-    @Inject(LOCALE_CONFIG) private localeConfig: LocaleConfig
-  ) {
-    super(translocoLocaleService, cdr);
-  }
+export class TranslocoDatePipe extends BaseLocalePipe implements PipeTransform {
+  private localeConfig: LocaleConfig = inject(TRANSLOCO_LOCALE_CONFIG);
 
   /**
    * Transform a date into the locale's date format.
@@ -53,13 +38,9 @@ export class TranslocoDatePipe
     if (isNil(date)) return '';
     locale = this.getLocale(locale);
 
-    return this.translocoLocaleService.localizeDate(date, locale, {
+    return this.localeService.localizeDate(date, locale, {
       ...getDefaultOptions(locale, 'date', this.localeConfig),
       ...options,
     });
-  }
-
-  ngOnDestroy(): void {
-    super.onDestroy();
   }
 }

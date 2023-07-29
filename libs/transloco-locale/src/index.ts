@@ -1,10 +1,10 @@
 export { TranslocoLocaleService } from './lib/transloco-locale.service';
 export {
-  LOCALE_CONFIG,
-  LOCALE_CURRENCY_MAPPING,
-  LOCALE_DEFAULT_CURRENCY,
-  LOCALE_DEFAULT_LOCALE,
-  LOCALE_LANG_MAPPING,
+  TRANSLOCO_LOCALE_CONFIG,
+  TRANSLOCO_LOCALE_CURRENCY_MAPPING,
+  TRANSLOCO_LOCALE_DEFAULT_CURRENCY,
+  TRANSLOCO_LOCALE_DEFAULT_LOCALE,
+  TRANSLOCO_LOCALE_LANG_MAPPING,
 } from './lib/transloco-locale.config';
 export { TranslocoLocaleModule } from './lib/transloco-locale.module';
 export {
@@ -15,5 +15,21 @@ export {
   DefaultDateTransformer,
   DefaultNumberTransformer,
 } from './lib/transloco-locale.transformers';
+export {
+  provideTranslocoLocaleLangMapping,
+  provideTranslocoLocaleCurrencyMapping,
+  provideTranslocoDateTransformer,
+  provideTranslocoDefaultCurrency,
+  provideTranslocoLocale,
+  provideTranslocoNumberTransformer,
+  provideTranslocoLocaleConfig,
+  provideTranslocoDefaultLocale,
+} from './lib/transloco-locale.providers';
 export * from './lib/transloco-locale.types';
-export * from './lib/pipes';
+export {
+  TranslocoCurrencyPipe,
+  TranslocoDatePipe,
+  TranslocoDecimalPipe,
+  TranslocoPercentPipe,
+  BaseLocalePipe,
+} from './lib/pipes';

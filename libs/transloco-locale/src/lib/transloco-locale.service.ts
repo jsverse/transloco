@@ -1,4 +1,4 @@
-import { Injectable, Inject, OnDestroy } from '@angular/core';
+import { Injectable, Inject, OnDestroy, inject } from '@angular/core';
 import { TranslocoService } from '@ngneat/transloco';
 import { Observable, BehaviorSubject, Subscription } from 'rxjs';
 import { map, distinctUntilChanged, filter } from 'rxjs/operators';
@@ -6,11 +6,11 @@ import { map, distinctUntilChanged, filter } from 'rxjs/operators';
 import { isLocaleFormat, toDate } from './helpers';
 import { getDefaultOptions } from './shared';
 import {
-  LOCALE_LANG_MAPPING,
-  LOCALE_DEFAULT_LOCALE,
-  LOCALE_CONFIG,
-  LOCALE_CURRENCY_MAPPING,
-  LOCALE_DEFAULT_CURRENCY,
+  TRANSLOCO_LOCALE_LANG_MAPPING,
+  TRANSLOCO_LOCALE_DEFAULT_LOCALE,
+  TRANSLOCO_LOCALE_CONFIG,
+  TRANSLOCO_LOCALE_CURRENCY_MAPPING,
+  TRANSLOCO_LOCALE_DEFAULT_CURRENCY,
 } from './transloco-locale.config';
 import {
   TRANSLOCO_DATE_TRANSFORMER,
@@ -21,48 +21,39 @@ import {
 import {
   Locale,
   DateFormatOptions,
-  NumberTypes,
+  NumberStyles,
   Currency,
   ValidDate,
   LocaleConfig,
   LocaleToCurrencyMapping,
   LangToLocaleMapping,
+  NumberFormatOptions,
 } from './transloco-locale.types';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TranslocoLocaleService implements OnDestroy {
-  localeChanges$: Observable<Locale>;
+  private translocoService = inject(TranslocoService);
+  private langLocaleMapping = inject(TRANSLOCO_LOCALE_LANG_MAPPING);
+  private defaultLocale = inject(TRANSLOCO_LOCALE_DEFAULT_LOCALE);
+  private defaultCurrency = inject(TRANSLOCO_LOCALE_DEFAULT_CURRENCY);
+  private localeCurrencyMapping = inject(TRANSLOCO_LOCALE_CURRENCY_MAPPING);
+  private numberTransformer = inject(TRANSLOCO_NUMBER_TRANSFORMER);
+  private dateTransformer = inject(TRANSLOCO_DATE_TRANSFORMER);
+  private localeConfig: LocaleConfig = inject(TRANSLOCO_LOCALE_CONFIG);
+
   private _locale =
     this.defaultLocale || this.toLocale(this.translocoService.getActiveLang());
   private locale: BehaviorSubject<Locale> = new BehaviorSubject(this._locale);
   private subscription: Subscription | null = this.translocoService.langChanges$
     .pipe(
-      map(this.toLocale.bind(this)),
-      filter((locale) => !!locale)
+      map((lang) => this.toLocale(lang)),
+      filter(Boolean)
     )
-    .subscribe({
-      next: (locale: Locale) => this.setLocale(locale),
-    });
+    .subscribe((locale: Locale) => this.setLocale(locale));
 
-  constructor(
-    private translocoService: TranslocoService,
-    @Inject(LOCALE_LANG_MAPPING) private langLocaleMapping: LangToLocaleMapping,
-    @Inject(LOCALE_DEFAULT_LOCALE) private defaultLocale: Locale,
-    @Inject(LOCALE_DEFAULT_CURRENCY) private defaultCurrency: Currency,
-    @Inject(LOCALE_CONFIG) private localeConfig: LocaleConfig,
-    @Inject(LOCALE_CURRENCY_MAPPING)
-    private localeCurrencyMapping: LocaleToCurrencyMapping,
-    @Inject(TRANSLOCO_NUMBER_TRANSFORMER)
-    private numberTransformer: TranslocoNumberTransformer,
-    @Inject(TRANSLOCO_DATE_TRANSFORMER)
-    private dateTransformer: TranslocoDateTransformer
-  ) {
-    this.localeChanges$ = this.locale
-      .asObservable()
-      .pipe(distinctUntilChanged());
-  }
+  localeChanges$ = this.locale.asObservable().pipe(distinctUntilChanged());
 
   getLocale() {
     return this._locale;
@@ -119,11 +110,10 @@ export class TranslocoLocaleService implements OnDestroy {
     locale: Locale = this.getLocale(),
     options: DateFormatOptions = {}
   ): string {
-    options = options
-      ? options
-      : getDefaultOptions(locale, 'date', this.localeConfig);
+    const resolved =
+      options ?? getDefaultOptions(locale, 'date', this.localeConfig);
 
-    return this.dateTransformer.transform(toDate(date), locale, options);
+    return this.dateTransformer.transform(toDate(date), locale, resolved);
   }
 
   /**
@@ -135,21 +125,21 @@ export class TranslocoLocaleService implements OnDestroy {
    */
   localizeNumber(
     value: number | string,
-    type: NumberTypes,
+    style: NumberStyles,
     locale: Locale = this.getLocale(),
     options?: Intl.NumberFormatOptions
   ): string {
     let resolved =
-      options ?? getDefaultOptions(locale, type, this.localeConfig);
+      options ?? getDefaultOptions(locale, style, this.localeConfig);
 
-    if (type === 'currency') {
+    if (style === 'currency') {
       resolved = {
         ...resolved,
         currency: resolved.currency || this._resolveCurrencyCode(locale),
       };
     }
 
-    return this.numberTransformer.transform(value, type, locale, resolved);
+    return this.numberTransformer.transform(value, style, locale, resolved);
   }
 
   /**
@@ -160,8 +150,7 @@ export class TranslocoLocaleService implements OnDestroy {
   }
 
   ngOnDestroy() {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this.subscription!.unsubscribe();
+    this.subscription?.unsubscribe();
     // Caretaker note: it's important to clean up references to subscriptions since they save the `next`
     // callback within its `destination` property, preventing classes from being GC'd.
     this.subscription = null;
