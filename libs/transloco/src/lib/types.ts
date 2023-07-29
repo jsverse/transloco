@@ -21,10 +21,6 @@ export interface LangChangedEvent {
 
 export type TranslocoEvents = LoadedEvent | FailedEvent | LangChangedEvent;
 export type Translation = HashMap;
-export type PersistStorage = Pick<
-  Storage,
-  'getItem' | 'setItem' | 'removeItem'
->;
 export type TranslateParams = string | string[];
 export type TranslateObjectParams =
   | TranslateParams
