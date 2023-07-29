@@ -31,7 +31,7 @@ export function provideTranslocoPersistLang({
   return makeEnvironmentProviders([
     {
       provide: TRANSLOCO_PERSIST_LANG_CONFIG,
-      useValue: config,
+      useValue: config ?? {},
     },
     // Initialize the service
     {
