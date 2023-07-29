@@ -83,7 +83,7 @@
     "@types/fs-extra": "9.0.12",
     "@types/jasmine": "4.0.3",
     "@types/jest": "29.5.0",
-    "@types/node": "16.7.2",
+    "@types/node": "18.17.1",
     "@typescript-eslint/eslint-plugin": "5.62.0",
     "@typescript-eslint/parser": "5.62.0",
     "cypress": "12.17.2",

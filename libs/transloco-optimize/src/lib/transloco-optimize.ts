@@ -1,6 +1,6 @@
-import fs from 'fs';
+import fs from 'node:fs';
 import path from 'node:path';
-import { promisify } from 'util';
+import { promisify } from 'node:util';
 
 import glob from 'glob';
 import { flatten } from 'flat';
