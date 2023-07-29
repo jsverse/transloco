@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 
 import { TranslocoModule } from '@ngneat/transloco';
 import {
-  LOCALE_CURRENCY_MAPPING,
+  TRANSLOCO_LOCALE_CURRENCY_MAPPING,
   LocaleToCurrencyMapping,
   TranslocoLocaleService,
   TranslocoLocaleModule,
@@ -23,7 +23,8 @@ export default class LocaleComponent {
 
   constructor(
     private localeService: TranslocoLocaleService,
-    @Inject(LOCALE_CURRENCY_MAPPING) localeMapping: LocaleToCurrencyMapping
+    @Inject(TRANSLOCO_LOCALE_CURRENCY_MAPPING)
+    localeMapping: LocaleToCurrencyMapping
   ) {
     this.localeList = Object.keys(localeMapping);
   }
