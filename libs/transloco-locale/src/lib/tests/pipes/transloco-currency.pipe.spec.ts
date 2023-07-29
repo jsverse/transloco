@@ -1,124 +1,136 @@
-import { ChangeDetectorRef } from '@angular/core';
-
 import { TranslocoCurrencyPipe } from '../../pipes/transloco-currency.pipe';
-import { defaultConfig } from '../../transloco-locale.config';
-import { mockLocaleService, mockCDR, LOCALE_CONFIG_MOCK } from '../mocks';
-import { TranslocoLocaleService } from '../../transloco-locale.service';
-import { LocaleConfig } from '../../transloco-locale.types';
+import { LOCALE_CONFIG_MOCK, provideTranslocoServiceMock } from '../mocks';
+import { SpectatorPipe } from '@ngneat/spectator';
+import { NumberFormatOptions } from '../../transloco-locale.types';
+import { createLocalePipeFactory } from '../utils';
 
 describe('TranslocoCurrencyPipe', () => {
-  let service: TranslocoLocaleService;
-  let cdr: ChangeDetectorRef;
-  let pipe: TranslocoCurrencyPipe;
+  let intlSpy: jasmine.Spy<(typeof Intl)['NumberFormat']>;
+  let spectator: SpectatorPipe<TranslocoCurrencyPipe>;
+  const pipeFactory = createLocalePipeFactory(TranslocoCurrencyPipe, {
+    localeConfig: LOCALE_CONFIG_MOCK,
+  });
+
+  function getIntlCallArgs() {
+    const [locale, options] = intlSpy.calls.argsFor(0);
+
+    return [locale!, options!] as const;
+  }
 
   beforeEach(() => {
-    service = mockLocaleService();
-    cdr = mockCDR();
-    pipe = new TranslocoCurrencyPipe(service, cdr, defaultConfig.localeConfig);
+    intlSpy = spyOn(Intl, 'NumberFormat').and.callThrough();
   });
 
   it('should transform number to currency', () => {
-    expect(pipe.transform(123)).toEqual('$123.00');
-    expect(pipe.transform('123')).toEqual('$123.00');
+    spectator = pipeFactory(`{{ 123 | translocoCurrency }}`);
+    expect(spectator.element).toHaveText('$123.00');
+  });
+
+  it('should transform string number to currency', () => {
+    spectator = pipeFactory(`{{ '123' | translocoCurrency }}`);
+    expect(spectator.element).toHaveText('$123.00');
   });
 
   it('should take the currency from the locale', () => {
-    service = mockLocaleService('es-ES');
-    pipe = new TranslocoCurrencyPipe(service, cdr, defaultConfig.localeConfig);
-    expect(pipe.transform('123')).toContain('€');
+    spectator = pipeFactory(`{{ '123' | translocoCurrency }}`, {
+      providers: [provideTranslocoServiceMock('es-ES')],
+    });
+    expect(spectator.element).toContainText('€');
   });
 
   it('should take the currency given currency', () => {
-    expect(pipe.transform('123', undefined, undefined, 'EUR')).toContain('€');
+    spectator = pipeFactory(
+      `{{ '123' | translocoCurrency:'symbol':{}:'EUR' }}`
+    );
+    expect(spectator.element).toContainText('€');
   });
 
   it('should use given display', () => {
-    spyOn(Intl, 'NumberFormat').and.callThrough();
-    pipe.transform('123', 'code');
-    const call = (Intl.NumberFormat as any).calls.argsFor(0);
-    expect(call[1].currencyDisplay).toEqual('code');
+    spectator = pipeFactory(`{{ '123' | translocoCurrency:'code' }}`);
+    const [, { currencyDisplay }] = getIntlCallArgs();
+    expect(currencyDisplay).toEqual('code');
   });
 
-  it('should handle none transformable values', () => {
-    expect(pipe.transform(null as any)).toEqual('');
-    expect(pipe.transform({} as any)).toEqual('');
-    expect(pipe.transform('none number string')).toEqual('');
+  describe('None transformable values', () => {
+    it('should handle null', () => {
+      spectator = pipeFactory(`{{ null | translocoCurrency }}`);
+      expect(spectator.element).toHaveText('');
+    });
+    it('should handle {}', () => {
+      spectator = pipeFactory(`{{ {} | translocoCurrency }}`);
+      expect(spectator.element).toHaveText('');
+    });
+    it('should handle none number string', () => {
+      spectator = pipeFactory(`{{ 'none number string' | translocoCurrency }}`);
+      expect(spectator.element).toHaveText('');
+    });
   });
 
   describe('config options', () => {
-    beforeEach(() => {
-      spyOn(Intl, 'NumberFormat').and.callThrough();
-    });
+    const defaultOptions = LOCALE_CONFIG_MOCK.global!.currency!;
 
     it('should use default config options', () => {
-      const config: LocaleConfig = {
-        global: { currency: { useGrouping: true, maximumFractionDigits: 2 } },
-        localeBased: {},
-      };
-      const pipe = new TranslocoCurrencyPipe(service, cdr, config);
-      pipe.transform('123');
-      const call = (Intl.NumberFormat as any).calls.argsFor(0);
-      expect(call[1].useGrouping).toBeTruthy();
-      expect(call[1].maximumFractionDigits).toEqual(2);
+      spectator = pipeFactory(`{{ '123' | translocoCurrency }}`);
+      const [, { useGrouping, maximumFractionDigits }] = getIntlCallArgs();
+      expect(useGrouping).toEqual(defaultOptions.useGrouping);
+      expect(maximumFractionDigits).toEqual(
+        defaultOptions.maximumFractionDigits
+      );
     });
 
     it('should use passed digit options instead of default options', () => {
-      const config = { useGrouping: true, maximumFractionDigits: 3 };
-      pipe.transform('123', undefined, config);
-      const call = (Intl.NumberFormat as any).calls.argsFor(0);
-      expect(call[1].useGrouping).toBeTruthy();
-      expect(call[1].maximumFractionDigits).toEqual(3);
+      const config: NumberFormatOptions = {
+        useGrouping: true,
+        maximumFractionDigits: 4,
+      };
+      spectator = pipeFactory(
+        `{{ '123' | translocoCurrency:'symbol':config }}`,
+        {
+          hostProps: {
+            config,
+          },
+        }
+      );
+      const [, { useGrouping, maximumFractionDigits }] = getIntlCallArgs();
+      expect(useGrouping).toBeTruthy();
+      expect(maximumFractionDigits).toEqual(4);
     });
 
     it('should take number options from locale settings', () => {
-      service = mockLocaleService('es-ES');
-
-      pipe = new TranslocoCurrencyPipe(service, cdr, LOCALE_CONFIG_MOCK);
-      pipe.transform('123');
-
-      const call = (Intl.NumberFormat as any).calls.argsFor(0);
-
-      expect(call[1].useGrouping).toBeTruthy();
-      expect(call[1].maximumFractionDigits).toEqual(3);
+      spectator = pipeFactory(`{{ '123' | translocoCurrency }}`, {
+        providers: [provideTranslocoServiceMock('es-ES')],
+      });
+      const [, { useGrouping, maximumFractionDigits }] = getIntlCallArgs();
+      expect(useGrouping).toBeTruthy();
+      expect(maximumFractionDigits).toEqual(3);
     });
 
     it('should take passed transform config options', () => {
-      service = mockLocaleService('es-ES');
-
-      pipe = new TranslocoCurrencyPipe(service, cdr, LOCALE_CONFIG_MOCK);
-
-      const config = { useGrouping: false, maximumFractionDigits: 3 };
-      pipe.transform('123', undefined, config);
-
-      const call = (Intl.NumberFormat as any).calls.argsFor(0);
-
-      expect(call[1].useGrouping).toBeFalsy();
-      expect(call[1].maximumFractionDigits).toEqual(3);
-    });
-
-    it('should override default config with the locale config', () => {
-      service = mockLocaleService('es-ES');
-
-      pipe = new TranslocoCurrencyPipe(service, cdr, LOCALE_CONFIG_MOCK);
-      pipe.transform('123');
-
-      const call = (Intl.NumberFormat as any).calls.argsFor(0);
-
-      expect(call[1].useGrouping).toBeTruthy();
-      expect(call[1].maximumFractionDigits).toEqual(3);
+      const config = { useGrouping: false, maximumFractionDigits: 4 };
+      spectator = pipeFactory(
+        `{{ '123' | translocoCurrency:'symbol':config }}`,
+        {
+          providers: [provideTranslocoServiceMock('es-ES')],
+          hostProps: {
+            config,
+          },
+        }
+      );
+      const [, { useGrouping, maximumFractionDigits }] = getIntlCallArgs();
+      expect(useGrouping).toBeFalsy();
+      expect(maximumFractionDigits).toEqual(4);
     });
 
     it('should fallback to default config when there are no settings for the current locale', () => {
-      service = mockLocaleService('en-US');
-
-      pipe = new TranslocoCurrencyPipe(service, cdr, LOCALE_CONFIG_MOCK);
-
-      pipe.transform('123');
-
-      const call = (Intl.NumberFormat as any).calls.argsFor(0);
-
-      expect(call[1].useGrouping).toBeFalsy();
-      expect(call[1].maximumFractionDigits).toEqual(2);
+      spectator = pipeFactory(
+        `{{ '123' | translocoCurrency:'symbol':config }}`,
+        { providers: [provideTranslocoServiceMock('en-US')] }
+      );
+      const [, { useGrouping, maximumFractionDigits }] = getIntlCallArgs();
+      expect(useGrouping).toEqual(defaultOptions.useGrouping);
+      expect(maximumFractionDigits).toEqual(
+        defaultOptions.maximumFractionDigits
+      );
     });
   });
 });

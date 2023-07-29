@@ -1,106 +1,134 @@
-import { ChangeDetectorRef } from '@angular/core';
-
-import { TranslocoDatePipe } from '../../pipes/transloco-date.pipe';
-import { mockLocaleService, mockCDR, LOCALE_CONFIG_MOCK } from '../mocks';
-import { defaultConfig } from '../../transloco-locale.config';
-import { TranslocoLocaleService } from '../../transloco-locale.service';
+import { SpectatorPipe } from '@ngneat/spectator';
+import { TranslocoDatePipe } from '../../pipes';
+import {
+  LOCALE_CONFIG_MOCK,
+  provideTranslocoLocaleConfigMock,
+  provideTranslocoServiceMock,
+} from '../mocks';
+import { createLocalePipeFactory } from '../utils';
 
 describe('TranslocoDatePipe', () => {
-  let service: TranslocoLocaleService;
-  let date: Date;
-  let cdr: ChangeDetectorRef;
+  let intlSpy: jasmine.Spy<(typeof Intl)['DateTimeFormat']>;
+  let spectator: SpectatorPipe<TranslocoDatePipe>;
+  const pipeFactory = createLocalePipeFactory(TranslocoDatePipe);
+
+  const date = new Date(2019, 9, 7, 12, 0, 0);
+
+  function getIntlCallArgs() {
+    const [locale, options] = intlSpy.calls.argsFor(0);
+
+    return [locale!, options!] as const;
+  }
 
   beforeEach(() => {
-    service = mockLocaleService();
-    cdr = mockCDR();
-    date = new Date(2019, 9, 7, 12, 0, 0);
+    intlSpy = spyOn(Intl, 'DateTimeFormat').and.callThrough();
   });
 
   it('should transform date to locale formatted date', () => {
-    const pipe = new TranslocoDatePipe(
-      service,
-      cdr,
-      defaultConfig.localeConfig
-    );
-    expect(pipe.transform(date)).toEqual('10/7/2019');
+    spectator = pipeFactory(`{{ date | translocoDate }}`, {
+      hostProps: {
+        date,
+      },
+    });
+    expect(spectator.element).toHaveText('10/7/2019');
   });
 
   it('should consider a given format over the current locale', () => {
-    spyOn(Intl, 'DateTimeFormat').and.callThrough();
-    const pipe = new TranslocoDatePipe(
-      service,
-      cdr,
-      defaultConfig.localeConfig
-    );
-    pipe.transform(date, { dateStyle: 'medium', timeStyle: 'medium' });
-    const call = (Intl.DateTimeFormat as any).calls.argsFor(0);
-
-    expect(call[1].dateStyle).toEqual('medium');
-    expect(call[1].timeStyle).toEqual('medium');
+    spectator = pipeFactory(`{{ date | translocoDate:config }}`, {
+      hostProps: {
+        date,
+        config: { dateStyle: 'medium', timeStyle: 'medium' },
+      },
+    });
+    const [, { dateStyle, timeStyle }] = getIntlCallArgs();
+    expect(dateStyle).toEqual('medium');
+    expect(timeStyle).toEqual('medium');
   });
 
   it('should consider a global date config', () => {
-    spyOn(Intl, 'DateTimeFormat').and.callThrough();
-    const pipe = new TranslocoDatePipe(service, cdr, LOCALE_CONFIG_MOCK);
-    pipe.transform(date);
-    const call = (Intl.DateTimeFormat as any).calls.argsFor(0);
-
-    expect(call[1].dateStyle).toEqual('medium');
-    expect(call[1].timeStyle).toEqual('medium');
+    spectator = pipeFactory(`{{ date | translocoDate }}`, {
+      hostProps: {
+        date,
+      },
+      providers: [provideTranslocoLocaleConfigMock(LOCALE_CONFIG_MOCK)],
+    });
+    const [, { dateStyle, timeStyle }] = getIntlCallArgs();
+    expect(dateStyle).toEqual('medium');
+    expect(timeStyle).toEqual('medium');
   });
 
   it('should consider a locale config over global', () => {
-    spyOn(Intl, 'DateTimeFormat').and.callThrough();
-    service = mockLocaleService('es-ES');
-    const pipe = new TranslocoDatePipe(service, cdr, LOCALE_CONFIG_MOCK);
-    pipe.transform(date);
-
-    const call = (Intl.DateTimeFormat as any).calls.argsFor(0);
-
-    expect(call[0]).toEqual('es-ES');
-    expect(call[1].dateStyle).toEqual('long');
-    expect(call[1].timeStyle).toEqual('long');
+    spectator = pipeFactory(`{{ date | translocoDate }}`, {
+      hostProps: {
+        date,
+      },
+      providers: [
+        provideTranslocoLocaleConfigMock(LOCALE_CONFIG_MOCK),
+        provideTranslocoServiceMock('es-ES'),
+      ],
+    });
+    const [locale, { dateStyle, timeStyle }] = getIntlCallArgs();
+    expect(locale).toEqual('es-ES');
+    expect(dateStyle).toEqual('long');
+    expect(timeStyle).toEqual('long');
   });
 
   it('should consider a given config over the global config', () => {
-    spyOn(Intl, 'DateTimeFormat').and.callThrough();
-    const pipe = new TranslocoDatePipe(service, cdr, LOCALE_CONFIG_MOCK);
-    pipe.transform(date, { dateStyle: 'full' });
-
-    const call = (Intl.DateTimeFormat as any).calls.argsFor(0);
-
-    expect(call[1].dateStyle).toEqual('full');
+    spectator = pipeFactory(`{{ date | translocoDate:config }}`, {
+      hostProps: {
+        date,
+        config: { dateStyle: 'full' },
+      },
+      providers: [provideTranslocoLocaleConfigMock(LOCALE_CONFIG_MOCK)],
+    });
+    const [, { dateStyle, timeStyle }] = getIntlCallArgs();
+    expect(dateStyle).toEqual('full');
+    expect(timeStyle).toEqual('medium');
   });
 
-  it('should handle none date values', () => {
-    const pipe = new TranslocoDatePipe(service, cdr, LOCALE_CONFIG_MOCK);
-    expect(pipe.transform(null as any)).toEqual('');
-    expect(pipe.transform({} as any)).toEqual('');
-    expect(pipe.transform('none date string')).toEqual('');
+  describe('None date values', () => {
+    it('should handle null', () => {
+      spectator = pipeFactory(`{{ null | translocoDate }}`);
+      expect(spectator.element).toHaveText('');
+    });
+    it('should handle {}', () => {
+      spectator = pipeFactory(`{{ {} | translocoDate }}`);
+      expect(spectator.element).toHaveText('');
+    });
+    it('should handle none number string', () => {
+      spectator = pipeFactory(`{{ 'none number string' | translocoDate }}`);
+      expect(spectator.element).toHaveText('');
+    });
   });
 
   it('should transform number to date', () => {
-    const pipe = new TranslocoDatePipe(
-      service,
-      cdr,
-      defaultConfig.localeConfig
-    );
-    expect(pipe.transform(0, { timeZone: 'UTC' })).toEqual('1/1/1970');
+    spectator = pipeFactory(`{{ date | translocoDate:config }}`, {
+      hostProps: {
+        date: 0,
+        config: { timeZone: 'UTC' },
+      },
+    });
+    expect(spectator.element).toHaveText('1/1/1970');
   });
 
   it('should transform string to date', () => {
-    const pipe = new TranslocoDatePipe(
-      service,
-      cdr,
-      defaultConfig.localeConfig
-    );
-    expect(pipe.transform('2019-02-08')).toEqual('2/8/2019');
+    spectator = pipeFactory(`{{ date | translocoDate:config }}`, {
+      hostProps: {
+        date: '2019-02-08',
+      },
+    });
+    expect(spectator.element).toHaveText('2/8/2019');
   });
 
   it('should transform an ISO 8601 string to date', () => {
-    const pipe = new TranslocoDatePipe(service, cdr, LOCALE_CONFIG_MOCK);
-    expect(
-      pipe.transform('2019-09-12T19:51:33Z', { timeZone: 'UTC' }, 'en-US')
-    ).toEqual('Sep 12, 2019, 7:51:33 PM');
+    spectator = pipeFactory(`{{ date | translocoDate:config:locale }}`, {
+      hostProps: {
+        date: '2019-09-12T19:51:33Z',
+        config: { timeZone: 'UTC' },
+        locale: 'en-US',
+      },
+      providers: [provideTranslocoLocaleConfigMock(LOCALE_CONFIG_MOCK)],
+    });
+    expect(spectator.element).toHaveText('Sep 12, 2019, 7:51:33 PM');
   });
 });

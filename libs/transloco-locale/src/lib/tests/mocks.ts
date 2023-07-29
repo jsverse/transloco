@@ -1,25 +1,10 @@
 import { of } from 'rxjs';
 import { TranslocoService } from '@ngneat/transloco';
-import { ChangeDetectorRef } from '@angular/core';
-import { Mock } from 'ts-mocks';
 
 import LOCALE_CURRENCY from '../locale-currency';
-import {
-  DefaultDateTransformer,
-  DefaultNumberTransformer,
-} from '../transloco-locale.transformers';
-import { TranslocoLocaleService } from '../transloco-locale.service';
 import { Locale, LocaleConfig } from '../transloco-locale.types';
-
-export function mockLocaleService(locale: Locale = 'en-US') {
-  return mockService(mockTranslocoService(locale), locale);
-}
-
-export function mockCDR() {
-  return new Mock<ChangeDetectorRef>({
-    markForCheck: () => {},
-  }).Object;
-}
+import { mockProvider } from '@ngneat/spectator';
+import { TRANSLOCO_LOCALE_CONFIG } from '../transloco-locale.config';
 
 export const LOCALE_CURRENCY_MOCK = LOCALE_CURRENCY;
 export const LANG_LOCALE_MOCK = { en: 'en-US', es: 'es-ES' };
@@ -66,27 +51,15 @@ export const LOCALE_CONFIG_MOCK: LocaleConfig = {
   },
 };
 
-export const mockTranslocoService = (locale?: Locale): TranslocoService =>
-  ({
+export function provideTranslocoServiceMock(locale?: Locale) {
+  return mockProvider(TranslocoService, {
     langChanges$: locale ? of(locale) : of(),
-  } as any);
-export const mockService = (
-  translocoService = mockTranslocoService(),
-  locale = DEFAULT_LOCALE_MOCK,
-  currency = DEFAULT_CURRENCY_MOCK,
-  langLocale = LANG_LOCALE_MOCK,
-  config = LOCALE_CONFIG_MOCK,
-  localeCurrencyMapping = LOCALE_CURRENCY_MOCK,
-  numberTransformer = new DefaultNumberTransformer(),
-  dateTransformer = new DefaultDateTransformer()
-) =>
-  new TranslocoLocaleService(
-    translocoService,
-    langLocale,
-    locale,
-    currency,
-    config,
-    localeCurrencyMapping,
-    numberTransformer,
-    dateTransformer
-  );
+  });
+}
+
+export function provideTranslocoLocaleConfigMock(config: LocaleConfig) {
+  return {
+    provide: TRANSLOCO_LOCALE_CONFIG,
+    useValue: config,
+  };
+}
