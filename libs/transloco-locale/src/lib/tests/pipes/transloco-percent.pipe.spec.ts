@@ -1,4 +1,5 @@
 import { SpectatorPipe } from '@ngneat/spectator';
+
 import { TranslocoPercentPipe } from '../../pipes';
 import { LOCALE_CONFIG_MOCK, provideTranslocoLocaleConfigMock } from '../mocks';
 import { createLocalePipeFactory, pipeTplFactory } from '../utils';

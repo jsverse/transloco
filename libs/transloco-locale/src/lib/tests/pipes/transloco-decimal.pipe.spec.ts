@@ -1,4 +1,5 @@
 import { SpectatorPipe } from '@ngneat/spectator';
+
 import { TranslocoDecimalPipe } from '../../pipes';
 import {
   LOCALE_CONFIG_MOCK,

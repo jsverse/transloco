@@ -1,13 +1,14 @@
-import { TranslocoPersistLangService } from './persist-lang.service';
-import { PersistStorage } from './persist-lang.types';
 import {
   createServiceFactory,
   mockProvider,
   SpectatorService,
 } from '@ngneat/spectator';
 import { TranslocoService } from '@ngneat/transloco';
-import { provideTranslocoPersistLang } from './persist-lang.providers';
 import { BehaviorSubject } from 'rxjs';
+
+import { TranslocoPersistLangService } from './persist-lang.service';
+import { PersistStorage } from './persist-lang.types';
+import { provideTranslocoPersistLang } from './persist-lang.providers';
 
 interface FakeStorage extends PersistStorage {
   storage: Map<string, any>;

@@ -1,3 +1,5 @@
+import { makeEnvironmentProviders, Type } from '@angular/core';
+
 import {
   Currency,
   LangToLocaleMapping,
@@ -6,7 +8,6 @@ import {
   LocaleToCurrencyMapping,
   TranslocoLocaleConfig,
 } from './transloco-locale.types';
-import { makeEnvironmentProviders, Type } from '@angular/core';
 import {
   defaultConfig,
   TRANSLOCO_LOCALE_CONFIG,

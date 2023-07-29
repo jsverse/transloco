@@ -1,9 +1,9 @@
 import { of } from 'rxjs';
 import { TranslocoService } from '@ngneat/transloco';
+import { mockProvider } from '@ngneat/spectator';
 
 import LOCALE_CURRENCY from '../locale-currency';
 import { Locale, LocaleConfig } from '../transloco-locale.types';
-import { mockProvider } from '@ngneat/spectator';
 import { TRANSLOCO_LOCALE_CONFIG } from '../transloco-locale.config';
 
 export const LOCALE_CURRENCY_MOCK = LOCALE_CURRENCY;

@@ -1,4 +1,5 @@
 import { InjectionToken } from '@angular/core';
+
 import { PersistStorage } from './persist-lang.types';
 
 export interface GetLangParams {

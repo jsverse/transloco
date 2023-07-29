@@ -121,7 +121,7 @@
   },
   "lint-staged": {
     "*.{ts,js}": [
-      "eslint --fix",
+      "nx lint --fix",
       "nx format --write"
     ],
     "*.{scss,html}": [

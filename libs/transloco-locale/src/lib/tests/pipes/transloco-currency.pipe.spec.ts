@@ -1,6 +1,7 @@
+import { SpectatorPipe } from '@ngneat/spectator';
+
 import { TranslocoCurrencyPipe } from '../../pipes/transloco-currency.pipe';
 import { LOCALE_CONFIG_MOCK, provideTranslocoServiceMock } from '../mocks';
-import { SpectatorPipe } from '@ngneat/spectator';
 import { NumberFormatOptions } from '../../transloco-locale.types';
 import { createLocalePipeFactory } from '../utils';
 

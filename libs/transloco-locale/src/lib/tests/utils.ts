@@ -1,6 +1,11 @@
 import { coerceArray, isObject, isString, OrArray } from '@ngneat/transloco';
 import { createPipeFactory } from '@ngneat/spectator';
+import { Type } from '@angular/core';
+
 import { BaseLocalePipe } from '../pipes';
+import { provideTranslocoLocale } from '../transloco-locale.providers';
+import { TranslocoLocaleConfig } from '../transloco-locale.types';
+
 import {
   DEFAULT_CURRENCY_MOCK,
   DEFAULT_LOCALE_MOCK,
@@ -8,9 +13,6 @@ import {
   LOCALE_CURRENCY_MOCK,
   provideTranslocoServiceMock,
 } from './mocks';
-import { provideTranslocoLocale } from '../transloco-locale.providers';
-import { TranslocoLocaleConfig } from '../transloco-locale.types';
-import { Type } from '@angular/core';
 
 export function pipeTplFactory(pipeName: `transloco${string}`) {
   return function <T>(value: T, params: OrArray<string> = []) {

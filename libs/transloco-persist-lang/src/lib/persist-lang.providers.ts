@@ -9,6 +9,7 @@ import {
   TypeProvider,
   ValueProvider,
 } from '@angular/core';
+
 import {
   PersistLangConfig,
   TRANSLOCO_PERSIST_LANG_CONFIG,

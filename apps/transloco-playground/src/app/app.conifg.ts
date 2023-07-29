@@ -5,11 +5,13 @@ import {
 } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { provideHttpClient } from '@angular/common/http';
-import { provideTransloco } from '../../../../libs/transloco/src';
-import { TranslocoHttpLoader } from './transloco-loader';
-import { provideTranslocoMessageformat } from '../../../../libs/transloco-messageformat/src';
-import { provideTranslocoLocale } from '../../../../libs/transloco-locale/src';
 import { provideRouter } from '@angular/router';
+
+import { provideTransloco } from '@ngneat/transloco';
+import { provideTranslocoMessageformat } from '@ngneat/transloco-messageformat';
+import { provideTranslocoLocale } from '@ngneat/transloco-locale';
+
+import { TranslocoHttpLoader } from './transloco-loader';
 import { ROUTES } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
