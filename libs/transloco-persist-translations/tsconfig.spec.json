@@ -6,5 +6,5 @@
     "types": ["jasmine", "node"]
   },
   "files": ["src/test-setup.ts"],
-  "include": ["**/*.spec.ts", "**/*.d.ts"]
+  "include": ["**/*.spec.ts", "**/*.d.ts", "src/lib/tests/mocks.ts"]
 }

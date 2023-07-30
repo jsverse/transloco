@@ -6,37 +6,33 @@ import {
 } from '@ngneat/transloco';
 import { from, Observable, of, Subscription } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
-import { Inject, Injectable, OnDestroy } from '@angular/core';
+import { inject, Injectable, OnDestroy } from '@angular/core';
 
 import { observify } from './helpers';
 import {
-  defaultConfig,
-  PERSIST_TRANSLATIONS_STORAGE_CONFIG,
-  PERSIST_TRANSLATIONS_LOADER,
-  PERSIST_TRANSLATIONS_STORAGE,
-  StorageConfig,
+  TRANSLOCO_PERSIST_TRANSLATIONS_LOADER,
+  TRANSLOCO_PERSIST_TRANSLATIONS_STORAGE,
+  TRANSLOCO_PERSIST_TRANSLATIONS_STORAGE_CONFIG,
 } from './transloco-persist-translations.config';
-import { MaybeAsyncStorage } from './transloco.storage';
 
-const getTimestampKey = (key: string) => `${key}/timestamp`;
+export function getTimestampKey(key: string) {
+  return `${key}/timestamp`;
+}
 
 @Injectable()
 export class TranslocoPersistTranslations
   implements TranslocoLoader, OnDestroy
 {
-  private merged: StorageConfig = { ...defaultConfig, ...this.config };
+  private loader = inject(TRANSLOCO_PERSIST_TRANSLATIONS_LOADER);
+  private storage = inject(TRANSLOCO_PERSIST_TRANSLATIONS_STORAGE);
+  private config = inject(TRANSLOCO_PERSIST_TRANSLATIONS_STORAGE_CONFIG);
+
   private subscription: Subscription | null =
     this.clearCurrentStorage().subscribe();
   private cache: Translation | null = null;
 
-  constructor(
-    @Inject(PERSIST_TRANSLATIONS_LOADER) private loader: TranslocoLoader,
-    @Inject(PERSIST_TRANSLATIONS_STORAGE) private storage: MaybeAsyncStorage,
-    @Inject(PERSIST_TRANSLATIONS_STORAGE_CONFIG) private config: StorageConfig
-  ) {}
-
   getTranslation(lang: string): Observable<Translation> {
-    const storageKey = this.merged.storageKey;
+    const storageKey = this.config.storageKey;
 
     return this.getCached(storageKey).pipe(
       switchMap((translations) => {
@@ -52,7 +48,7 @@ export class TranslocoPersistTranslations
   }
 
   clearCache() {
-    this.clearTimestamp(this.merged.storageKey);
+    this.clearTimestamp(this.config.storageKey);
     this.clearTranslations();
     this.cache = null;
   }
@@ -103,7 +99,7 @@ export class TranslocoPersistTranslations
 
   private getTimestamp(key: string): Observable<number> {
     return observify(this.storage.getItem(getTimestampKey(key))).pipe(
-      map((time: string) => parseInt(time))
+      map(parseInt)
     );
   }
 
@@ -112,16 +108,16 @@ export class TranslocoPersistTranslations
   }
 
   private clearTranslations(): void {
-    this.storage.removeItem(this.merged.storageKey);
+    this.storage.removeItem(this.config.storageKey);
   }
 
   private clearCurrentStorage(): Observable<number> {
-    const storageKey = this.merged.storageKey;
+    const storageKey = this.config.storageKey;
 
     return this.getTimestamp(storageKey).pipe(
-      filter((time) => !!time),
+      filter(Boolean),
       tap((time) => {
-        const isExpired = Date.now() - time >= this.merged.ttl;
+        const isExpired = Date.now() - time >= this.config.ttl;
         if (isExpired) {
           this.storage.removeItem(storageKey);
         }
@@ -130,8 +126,7 @@ export class TranslocoPersistTranslations
   }
 
   ngOnDestroy() {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this.subscription!.unsubscribe();
+    this.subscription?.unsubscribe();
     // Caretaker note: it's important to clean up references to subscriptions since they save the `next`
     // callback within its `destination` property, preventing classes from being GC'd.
     this.subscription = null;
