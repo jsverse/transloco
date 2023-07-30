@@ -2,6 +2,21 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [5.0.0](https://github.com/ngneat/transloco/compare/transloco-persist-translations-4.0.0...transloco-persist-translations-5.0.0) (2023-07-30)
+
+### chore
+
+- 🤖 upgrade to angular v16 ([#661](https://github.com/ngneat/transloco/issues/661)) ([08db7e7](https://github.com/ngneat/transloco/commit/08db7e7d1f64846fa0b07123dee8ff5bff20b4f0))
+
+### Features
+
+- **persist-translations:** 🎸 add provider function ([2c55a93](https://github.com/ngneat/transloco/commit/2c55a93386e187591a443adc136085a1128db173))
+
+### BREAKING CHANGES
+
+- **persist-translations:** 🧨 @angular/core peer dependency is now >=v16
+- 🧨 Angular 16
+
 # [4.0.0](https://github.com/ngneat/transloco/compare/transloco-persist-translations-3.0.1...transloco-persist-translations-4.0.0) (2022-03-23)
 
 ### Features
