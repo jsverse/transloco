@@ -2,6 +2,21 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [5.0.0](https://github.com/ngneat/transloco/compare/transloco-messageformat-4.1.0...transloco-messageformat-5.0.0) (2023-07-30)
+
+### chore
+
+- 🤖 upgrade to angular v16 ([#661](https://github.com/ngneat/transloco/issues/661)) ([08db7e7](https://github.com/ngneat/transloco/commit/08db7e7d1f64846fa0b07123dee8ff5bff20b4f0))
+
+### Features
+
+- **messageformat:** 🎸 replace module with providers function ([2e900cf](https://github.com/ngneat/transloco/commit/2e900cfea00bf13c31eddb1df420f7f685b174bb))
+
+### BREAKING CHANGES
+
+- **messageformat:** 🧨 Remove TranslocoMessageformatModule
+- 🧨 Angular 16
+
 # [4.1.0](https://github.com/ngneat/transloco/compare/transloco-messageformat-4.0.0...transloco-messageformat-4.1.0) (2022-12-10)
 
 ### Features
