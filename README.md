@@ -9,10 +9,12 @@
 <p align="center">🤩 ◦ 🚀 ◦ 🎖️ ◦ 🥉 ◦ 🥈 ◦ 🥇 ◦ 💎</p>
 <h2></h2>
 
-#### 🤩 Fans 
+#### 🤩 Fans
+
 [<img src="https://avatars.githubusercontent.com/u/49206247?v=4" width="25px">](https://github.com/tutkli)
 
 Show your support and [Sponsor Us](https://github.com/sponsors/ngneat)! We have various sponsorship tiers with different perks!
+
 <h2></h2>
 
 Transloco allows you to define translations for your content in different languages and switch between them easily in runtime.
@@ -27,7 +29,8 @@ It exposes a rich API to manage translations efficiently and cleanly. It provide
 ✅ &nbsp;Support for L10N  
 ✅ &nbsp;Rich Plugins  
 ✅ &nbsp;Hackable  
-✅ &nbsp;Schematics
+✅ &nbsp;Schematics  
+✅ &nbsp;Standalone support
 
 <hr />
 
