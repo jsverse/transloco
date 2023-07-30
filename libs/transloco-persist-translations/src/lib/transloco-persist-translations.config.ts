@@ -7,6 +7,7 @@ import {
   ValueProvider,
 } from '@angular/core';
 import { TranslocoLoader } from '@ngneat/transloco';
+
 import { MaybeAsyncStorage } from './transloco.storage';
 
 export interface StorageConfig {

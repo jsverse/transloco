@@ -1,6 +1,7 @@
-import { MaybeAsyncStorage } from '../transloco.storage';
 import { of, timer } from 'rxjs';
 import { map } from 'rxjs/operators';
+
+import { MaybeAsyncStorage } from '../transloco.storage';
 
 export function createLoaderMock(translations: Record<string, string>) {
   return class MockLoader {

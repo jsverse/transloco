@@ -1,3 +1,6 @@
+import { createServiceFactory, SpectatorService } from '@ngneat/spectator';
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+
 import {
   defaultConfig,
   TRANSLOCO_PERSIST_TRANSLATIONS_LOADER,
@@ -8,12 +11,11 @@ import {
   getTimestampKey,
   TranslocoPersistTranslations,
 } from '../transloco-persist-translations.service';
-import { createServiceFactory, SpectatorService } from '@ngneat/spectator';
 import {
   provideTranslocoPersistTranslations,
   provideTranslocoPersistTranslationsConfig,
 } from '../transloco-persist-translations.providers';
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { MaybeAsyncStorage } from '../transloco.storage';
 
 import {
   createAsyncLoaderMock,
@@ -21,7 +23,6 @@ import {
   createLoaderMock,
   createStorageMock,
 } from './mocks';
-import { MaybeAsyncStorage } from '../transloco.storage';
 
 describe('TranslocoPersistTranslations', () => {
   let spectator: SpectatorService<TranslocoPersistTranslations>;
