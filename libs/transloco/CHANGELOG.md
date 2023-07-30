@@ -2,6 +2,33 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [5.0.0](https://github.com/ngneat/transloco/compare/transloco-4.3.0...transloco-5.0.0) (2023-07-30)
+
+### Bug Fixes
+
+- **transloco:** 🐛 add missing provider + make environment ([71d61d7](https://github.com/ngneat/transloco/commit/71d61d7eb0c7dba9bc60185ddd093e57256c6d61))
+- **transloco:** 🐛 move to inject pattern and fix build ([8f9fe59](https://github.com/ngneat/transloco/commit/8f9fe598f6418620d94a73b84778c30ebe3bcc18))
+- **transloco:** 🐛 multi scope handling ([ec96ca6](https://github.com/ngneat/transloco/commit/ec96ca69e6f3ec504c3a398842aa36e2f6c3d1ab))
+
+### chore
+
+- 🤖 upgrade to angular v16 ([#661](https://github.com/ngneat/transloco/issues/661)) ([08db7e7](https://github.com/ngneat/transloco/commit/08db7e7d1f64846fa0b07123dee8ff5bff20b4f0))
+
+### Code Refactoring
+
+- **transloco:** 💡 remove type ([2f61221](https://github.com/ngneat/transloco/commit/2f61221bfe2b6eb5f58457d07f81677cda0b1853))
+
+### Features
+
+- **transloco:** 🎸 upgrade to v16 ([72381f5](https://github.com/ngneat/transloco/commit/72381f5bc05d1917a1e0c010d92366a24ae8cc64)), closes [#646](https://github.com/ngneat/transloco/issues/646)
+- **transloco:** 🎸 upgrade to v16 and standalone ([5f9e687](https://github.com/ngneat/transloco/commit/5f9e687d25679829a438de04a0acd255198f2f9b))
+
+### BREAKING CHANGES
+
+- **transloco:** 🧨 Remove PersistStorage type
+- **transloco:** 🧨 Minimum Angular version is now 16
+- 🧨 Angular 16
+
 # [4.3.0](https://github.com/ngneat/transloco/compare/transloco-4.2.7...transloco-4.3.0) (2023-06-10)
 
 ### Bug Fixes
