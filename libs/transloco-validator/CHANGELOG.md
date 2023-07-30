@@ -2,6 +2,8 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [5.0.0](https://github.com/ngneat/transloco/compare/transloco-validator-4.0.0...transloco-validator-5.0.0) (2023-07-30)
+
 # [4.0.0](https://github.com/ngneat/transloco/compare/transloco-validator-3.0.1...transloco-validator-4.0.0) (2023-06-17)
 
 ### chore
