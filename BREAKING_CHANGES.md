@@ -1,3 +1,75 @@
+# Transloco V5
+
+V5 was focused on a major infra upgrade to improve Transloco's maintainability also moving to new Angular features.
+please take a look at the following:
+
+## Transloco
+
+- `@angular/core` peer dependency is now `>=v16`
+- `TRANSLOCO_SCOPE` is now always provided as multi.
+- Remove `PersistStorage` type.
+- Pipes, directives and components are now standalone.
+- Removed `forRoot` from `TranslocoModule`, use `provideTransloco` and other provider functions.
+
+## Transloco Locale
+
+- `@angular/core` peer dependency is now `>=v16`
+- Pipes, directives and components are now standalone.
+- Injection tokens are now prefixed with `TRANSLOCO_`
+- Removed `forRoot` from `TranslocoLocaleModule`, use `provideTranslocoLocale` and other provider functions.
+
+## Transloco Messageformat
+
+- `@angular/core` peer dependency is now `>=v16`
+- Removed `TranslocoMessageFormatModule`, use `provideTranslocoMessageformnat`.
+
+## Transloco Persist Lang
+
+- `@angular/core` peer dependency is now `>=v16`
+- Removed `TranslocoPersistLangModule`, use `provideTranslocoPersistLang`.
+
+## Transloco Persist Translations
+
+- `@angular/core` peer dependency is now `>=v16`
+- Removed `TranslocoPersistTranslationsModule`, use `provideTranslocoPersistTranslations`.
+
+## Transloco Preload Langs
+
+- `@angular/core` peer dependency is now `>=v16`
+- Removed `TranslocoPreloadLangsModule`, use `provideTranslocoPreloadLangs`.
+
+Other packages were bumped to keep alignment.
+
+# Transloco V4
+
+Transloco now requires `@angular/core` v13 and above:
+
+## Transloco
+
+- `@angular/core` peer dependency is now `>=v13`
+
+## Transloco Locale
+
+- `@angular/core` peer dependency is now `>=v13`
+
+## Transloco Messageformat
+
+- `@angular/core` peer dependency is now `>=v13`
+
+## Transloco Persist Lang
+
+- `@angular/core` peer dependency is now `>=v13`
+
+## Transloco Persist Translations
+
+- `@angular/core` peer dependency is now `>=v13`
+
+## Transloco Preload Langs
+
+- `@angular/core` peer dependency is now `>=v13`
+
+Other packages were bumped to keep alignment.
+
 # Transloco V3
 
 V3 was focused on a major infra upgrade to improve Transloco's maintainability and the ability to create new features easily.
@@ -46,8 +118,7 @@ We have removed deprecated code and upgraded dependencies, please take a look at
 - Structural directive is now a **memoized** function:
 
 ```html
-// before {{ t.a.b }} {{ t.hello }} {{ t.someKey | translocoParams: { value:
-'value' } }}
+// before {{ t.a.b }} {{ t.hello }} {{ t.someKey | translocoParams: { value: 'value' } }}
 ```
 
 After:
