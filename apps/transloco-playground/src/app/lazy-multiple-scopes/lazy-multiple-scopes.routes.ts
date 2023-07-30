@@ -1,9 +1,6 @@
 import { Route } from '@angular/router';
 
-import {
-  provideTranslocoLoadingTpl,
-  TRANSLOCO_LOADING_TEMPLATE,
-} from '@ngneat/transloco';
+import { provideTranslocoLoadingTpl } from '@ngneat/transloco';
 
 export const LAZY_MULTIPLE_SCOPES_ROUTES: Route = {
   path: 'lazy-multiple-scopes',
