@@ -11,23 +11,17 @@ import {
   TranslocoPersistTranslationsConfig,
 } from './transloco-persist-translations.config';
 
-export function provideTranslocoPersistTranslations(
-  config: TranslocoPersistTranslationsConfig
-) {
-  return makeEnvironmentProviders(resolveProviders(config));
-}
-
-export function resolveProviders({
+export function provideTranslocoPersistTranslations({
   storage,
   loader,
   ...storageConfig
-}: TranslocoPersistTranslationsConfig): Provider[] {
-  return [
+}: TranslocoPersistTranslationsConfig) {
+  return makeEnvironmentProviders([
     { provide: TRANSLOCO_LOADER, useClass: TranslocoPersistTranslations },
     provideTranslocoPersistTranslationsConfig(storageConfig),
     { provide: TRANSLOCO_PERSIST_TRANSLATIONS_LOADER, useClass: loader },
     { provide: TRANSLOCO_PERSIST_TRANSLATIONS_STORAGE, ...storage },
-  ];
+  ]);
 }
 
 export function provideTranslocoPersistTranslationsConfig(
