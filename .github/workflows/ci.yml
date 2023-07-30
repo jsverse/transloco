@@ -6,6 +6,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+
       - name: Setup
         uses: ./.github/actions/step-setup
 
@@ -15,6 +17,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+
       - name: Setup
         uses: ./.github/actions/step-setup
 
@@ -24,6 +28,8 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+
       - name: Setup
         uses: ./.github/actions/step-setup
 
@@ -33,6 +39,8 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+        
       - name: Setup
         uses: ./.github/actions/step-setup
 
