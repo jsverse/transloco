@@ -1,6 +1,6 @@
 {
   "name": "@ngneat/transloco-preload-langs",
-  "version": "4.0.1",
+  "version": "5.0.0",
   "description": "Transloco preload languages while idle",
   "publishConfig": {
     "access": "public"

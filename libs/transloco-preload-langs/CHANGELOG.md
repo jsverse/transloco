@@ -2,6 +2,21 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [5.0.0](https://github.com/ngneat/transloco/compare/transloco-preload-langs-4.0.1...transloco-preload-langs-5.0.0) (2023-07-30)
+
+### chore
+
+- 🤖 upgrade to angular v16 ([#661](https://github.com/ngneat/transloco/issues/661)) ([08db7e7](https://github.com/ngneat/transloco/commit/08db7e7d1f64846fa0b07123dee8ff5bff20b4f0))
+
+### Features
+
+- **preload-langs:** 🎸 add provider function ([afa0b77](https://github.com/ngneat/transloco/commit/afa0b77dd776144cef9cc486d80d49966e50d9a3))
+
+### BREAKING CHANGES
+
+- **preload-langs:** 🧨 @angular/core peer dependency is now >=v16
+- 🧨 Angular 16
+
 ## [4.0.1](https://github.com/ngneat/transloco/compare/transloco-preload-langs-4.0.0...transloco-preload-langs-4.0.1) (2022-03-25)
 
 ### Bug Fixes
