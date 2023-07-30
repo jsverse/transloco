@@ -15,18 +15,15 @@ function changeLang(lang: string) {
 }
 
 describe('Transloco Full Cycle', () => {
-  it('should translate to english', () => {
-    /* Test home page */
-
+  it('Home page', () => {
     cy.visit('');
     testHomeContent();
     changeLang('es');
     testHomeContent('spanish');
     changeLang('en');
     testHomeContent();
-
-    /* Test lazy page */
-
+  });
+  it('Lazt page', () => {
     cy.visit('/lazy');
     /* it should display lazy translation */
     changeLang('es');
@@ -37,7 +34,8 @@ describe('Transloco Full Cycle', () => {
     changeLang('es');
     changeLang('en');
     generateContentWithoutLoader();
-
+  });
+  it('Lazy multi scopes page', () => {
     cy.visit('/lazy-multiple-scopes');
     /* it should display lazy translation */
     changeLang('es');
@@ -48,30 +46,26 @@ describe('Transloco Full Cycle', () => {
     changeLang('es');
     changeLang('en');
     generateContentWithoutLoader();
-
-    /* Test scope sharing page */
-
+  });
+  it('Scope sharing page', () => {
     cy.visit('scope-sharing');
     testScopeSharingContent();
     changeLang('es');
     testScopeSharingContent('spanish');
-
-    /* Test dynamic translation page */
-
+  });
+  it('Dynamic translation page', () => {
     cy.visit('/dynamic-translation');
     testDynamicContent();
-
-    /* Test multi langs page */
-
-    cy.visit('/multilangs');
+  });
+  it('Multi langs page', () => {
+    cy.visit('/multi-langs');
     cy.get(`[data-cy=in-provider]`).should('contain', 'home spanish');
     changeLang('en');
     testMultiLangContent('english', false);
     changeLang('es');
     testMultiLangContent('spanish');
-
-    /* Test transpilers page */
-
+  });
+  it('Transpilers page', () => {
     cy.visit('/transpilers');
     changeLang('en');
     testTranspilersContent();
@@ -79,9 +73,8 @@ describe('Transloco Full Cycle', () => {
     testTranspilersContent('spanish');
     changeLang('en');
     testTranspilersContent();
-
-    /* Test locale page */
-
+  });
+  it('Transpilers page', () => {
     cy.visit('/locale');
     changeLang('en');
     testLocaleContentUS();
@@ -100,17 +93,16 @@ describe('Lazy Load', () => {
   });
 
   it('should display lazy translation', () => {
-    cy.get(`[data-cy=es]`).click();
-
+    changeLang('es');
     generateLazyContent('spanish');
 
-    cy.get(`[data-cy=en]`).click();
+    changeLang('en');
     generateLazyContent();
   });
 
   it('should not display loader template after loaded once', () => {
-    cy.get(`[data-cy=es]`).click();
-    cy.get(`[data-cy=en]`).click();
+    changeLang('es');
+    changeLang('en');
 
     generateContentWithoutLoader();
   });
