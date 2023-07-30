@@ -35,9 +35,8 @@
     }
   ],
   "peerDependencies": {
-    "@angular/core": ">=13.0.0",
-    "@ngneat/transloco": ">=4.0.0",
-    "rxjs": ">=6.0.0"
+    "@angular/core": ">=16.0.0",
+    "@ngneat/transloco": ">=5.0.0"
   },
   "dependencies": {
     "tslib": "^2.2.0"
