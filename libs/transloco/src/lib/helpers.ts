@@ -120,6 +120,10 @@ export function isScopeObject(item: any): item is ProviderScope {
   return item && typeof item.scope === 'string';
 }
 
+export function isScopeArray(item: any): item is ProviderScope[] {
+  return Array.isArray(item) && item.every(isScopeObject);
+}
+
 export function hasInlineLoader(item: any): item is ProviderScope {
   return item && isObject(item.loader);
 }
