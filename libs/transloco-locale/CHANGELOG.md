@@ -2,6 +2,21 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [5.0.0](https://github.com/ngneat/transloco/compare/transloco-locale-4.1.0...transloco-locale-5.0.0) (2023-07-30)
+
+### chore
+
+- 🤖 upgrade to angular v16 ([#661](https://github.com/ngneat/transloco/issues/661)) ([08db7e7](https://github.com/ngneat/transloco/commit/08db7e7d1f64846fa0b07123dee8ff5bff20b4f0))
+
+### Features
+
+- **locale:** 🎸 Add provider functions and standalone ([972ffa4](https://github.com/ngneat/transloco/commit/972ffa4b9a3c754f0e996ae6a1656f930cd68f25))
+
+### BREAKING CHANGES
+
+- **locale:** 🧨 Rename injection tokens
+- 🧨 Angular 16
+
 # [4.1.0](https://github.com/ngneat/transloco/compare/transloco-locale-4.0.1...transloco-locale-4.1.0) (2023-05-10)
 
 ### Features
