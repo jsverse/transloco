@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [5.0.1](https://github.com/ngneat/transloco/compare/transloco-5.0.0...transloco-5.0.1) (2023-07-31)
+
+### Bug Fixes
+
+- **transloco:** 🐛 set transloco-utils dep version to 5 ([#675](https://github.com/ngneat/transloco/issues/675)) ([0463090](https://github.com/ngneat/transloco/commit/046309072d66115f6921019f04192978e7761b5e))
+
 # [5.0.0](https://github.com/ngneat/transloco/compare/transloco-4.3.0...transloco-5.0.0) (2023-07-30)
 
 ### Bug Fixes
