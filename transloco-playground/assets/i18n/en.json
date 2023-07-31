@@ -1,0 +1,19 @@
+{
+  "array": ["hello-1", "hello-2"],
+  "alert": "alert {{value}} english",
+  "home": "home english",
+  "fromList": "from list",
+  "a": {
+    "b": {
+      "c": "a.b.c {{fromList}} english"
+    }
+  },
+  "b": "b english",
+  "c": "c english",
+  "nested": {
+    "title": "Title english",
+    "desc": "Desc english"
+  },
+  "key.is.like.path": "key is like path",
+  "empty": ""
+}

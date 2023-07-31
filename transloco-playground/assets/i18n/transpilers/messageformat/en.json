@@ -1,0 +1,12 @@
+{
+  "home": "Home - english",
+  "params": "Replaces standard {{value}} - english",
+  "messageFormat": "The {gender, select, male {boy named {{name}} won his} female {girl named {{name}} won her} other {person named {{name}} won their}} race and {gain, number, ::currency/EUR unit-width-narrow} - english",
+  "messageFormatWithParams": "Can replace {{value}} and also give parse messageformat: The {gender, select, male {boy named {{name}} won his} female {girl named {{name}} won her} other {person named {{name}} won their}} race and {gain, number, ::currency/EUR unit-width-narrow} - english",
+  "fromList": "from list",
+  "a": {
+    "b": {
+      "c": "a.b.c {{fromList}} - english"
+    }
+  }
+}
