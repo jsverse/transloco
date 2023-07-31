@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 import { TranslocoModule } from '@ngneat/transloco';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-on-push',
@@ -12,6 +13,7 @@ import { TranslocoModule } from '@ngneat/transloco';
   imports: [CommonModule, TranslocoModule],
 })
 export class OnPushComponent {
+  isDocs = environment.isDocs;
   dynamic = '🦄';
   key = 'home';
 

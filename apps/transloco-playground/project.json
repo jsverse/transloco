@@ -6,7 +6,7 @@
   "prefix": "transloco-nx-shell",
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:browser",
+      "executor": "@nx/angular:webpack-browser",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/transloco-playground",
@@ -28,24 +28,22 @@
       },
       "configurations": {
         "production": {
-          "budgets": [
-            {
-              "type": "initial",
-              "maximumWarning": "500kb",
-              "maximumError": "1mb"
-            },
-            {
-              "type": "anyComponentStyle",
-              "maximumWarning": "2kb",
-              "maximumError": "4kb"
-            }
-          ],
           "fileReplacements": [
             {
               "replace": "apps/transloco-playground/src/environments/environment.ts",
               "with": "apps/transloco-playground/src/environments/environment.prod.ts"
             }
           ],
+          "outputHashing": "all"
+        },
+        "docs": {
+          "fileReplacements": [
+            {
+              "replace": "apps/transloco-playground/src/environments/environment.ts",
+              "with": "apps/transloco-playground/src/environments/environment.docs.ts"
+            }
+          ],
+          "indexFileTransformer": "apps/transloco-playground/index-html-transform.ts",
           "outputHashing": "all"
         },
         "development": {

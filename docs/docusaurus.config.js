@@ -7,12 +7,15 @@ module.exports = {
   favicon: 'img/favicon.ico',
   organizationName: 'ngneat',
   projectName: 'transloco',
+  trailingSlash: false,
   themeConfig: {
     image: 'img/large-logo.png',
-    metadata: [{
-      name: 'google-site-verification',
-      content: 'zLIQAxOp2sGFy10UE51HAMtWTqg7J8z1hpTxZR9G1WA'
-    }],
+    metadata: [
+      {
+        name: 'google-site-verification',
+        content: 'zLIQAxOp2sGFy10UE51HAMtWTqg7J8z1hpTxZR9G1WA',
+      },
+    ],
     algolia: {
       appId: 'O8JZ6BVNRL',
       apiKey: '921502728c526dfe7f906bae383e64ae',
@@ -40,13 +43,13 @@ module.exports = {
           position: 'left',
         },
         {
-          to: 'sampleApp',
-          activeBasePath: 'sampleApp',
-          label: 'Sample App',
+          to: 'live-app',
+          activeBasePath: 'live-app',
+          label: 'Live App',
           position: 'left',
         },
         {
-          href: 'https://stackblitz.com/edit/ngneat-transloco',
+          href: 'https://codesandbox.io/s/ngneat-transloco-kn52hs',
           label: 'Playground',
           position: 'left',
           className: 'header-playground-link',
@@ -111,7 +114,6 @@ module.exports = {
         {
           title: 'More',
           items: [
-
             {
               label: 'GitHub',
               href: 'https://github.com/ngneat/transloco/',
@@ -160,41 +162,41 @@ module.exports = {
           {
             from: '/docs/inline-loaders',
             to: '/docs/lazy-load/inline-loaders',
-          },          
+          },
           {
             from: '/docs/scope-configuration',
             to: '/docs/lazy-load/scope-configuration',
-          },          
+          },
           {
             from: '/docs/installation',
             to: '/docs/getting-started/installation',
-          },                   
+          },
           {
             from: '/docs/config-options',
             to: '/docs/getting-started/config-options',
-          },                             
+          },
           {
             from: '/docs/plugins/preload',
             to: '/docs/plugins/preload-langs',
-          },                                       
+          },
           {
             from: '/docs/tools/comments/optimize',
             to: '/docs/tools/optimize',
-          },                                        
+          },
           {
             from: '/docs/schematics/add',
             to: '/docs/schematics/ng-add',
-          },                                          
+          },
           {
             from: '/docs/transpiler/additional-functionality',
             to: '/docs/additional-functionality',
-          },                                               
+          },
           {
             from: '/docs/plugins/persist',
             to: '/docs/plugins/persist-translations',
-          },          
+          },
         ],
-      }
-    ]
-  ]
+      },
+    ],
+  ],
 };

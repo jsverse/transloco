@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { Subscription, take } from 'rxjs';
 
 import { TranslocoService, LangDefinition } from '@ngneat/transloco';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -13,6 +14,7 @@ import { TranslocoService, LangDefinition } from '@ngneat/transloco';
   imports: [CommonModule, RouterModule],
 })
 export class AppComponent implements OnDestroy {
+  isDocs = environment.isDocs;
   service = inject(TranslocoService);
   availableLangs = this.service.getAvailableLangs() as LangDefinition[];
   private subscription: Subscription | null;

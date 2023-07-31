@@ -47,7 +47,7 @@ It exposes a rich API to manage translations efficiently and cleanly. It provide
 - 🎥 &nbsp;Watch our instructional [video guides](https://www.youtube.com/watch?v=MYkYcafJdGw&list=PLTuTW7EgL6ouXk5BqE4zWdDJkAuC4HTWi)
 - 🚀 &nbsp;See it in action on [CodeSandbox](https://codesandbox.io/s/ngneat-transloco-kn52hs)
 - 😎 &nbsp;Use [schematics](https://ngneat.github.io/transloco/docs/schematics)
-- 👉 &nbsp;Checkout the [sample application](https://ngneat.github.io/transloco/sampleApp)
+- 👉 &nbsp;Checkout the [live application](https://ngneat.github.io/transloco/live-app)
 - 📖 &nbsp;Read the blog [posts](https://ngneat.github.io/transloco/docs/blog-posts)
 - 🍄 &nbsp;Join Transloco's [Gitter](https://gitter.im/ngneat-transloco/lobby?source=orgpage) room
 - ❓ &nbsp;Find answers in our [FAQ](https://ngneat.github.io/transloco/docs/faq) section
