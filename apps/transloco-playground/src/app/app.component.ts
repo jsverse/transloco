@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { Subscription, take } from 'rxjs';
 
 import { TranslocoService, LangDefinition } from '@ngneat/transloco';
+
 import { environment } from '../environments/environment';
 
 @Component({
