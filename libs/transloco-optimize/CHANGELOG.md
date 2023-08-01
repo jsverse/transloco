@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [5.0.1](https://github.com/ngneat/transloco/compare/transloco-optimize-5.0.0...transloco-optimize-5.0.1) (2023-08-01)
+
+### Bug Fixes
+
+- **optimize:** 🐛 remove redundant peerDependencies ([7a3def8](https://github.com/ngneat/transloco/commit/7a3def8de36f9238c10bfce739fd9f3e83513e72)), closes [#677](https://github.com/ngneat/transloco/issues/677)
+
 # [5.0.0](https://github.com/ngneat/transloco/compare/transloco-optimize-4.0.0...transloco-optimize-5.0.0) (2023-07-30)
 
 # [4.0.0](https://github.com/ngneat/transloco/compare/transloco-optimize-3.0.2...transloco-optimize-4.0.0) (2023-06-17)
