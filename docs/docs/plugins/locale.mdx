@@ -245,6 +245,8 @@ Note the format option of the global, locale's format and the one's being passed
 - `maximumFractionDigits`- The maximum number of fraction digits to use. Possible values are from 0 to 20 (default is 3).
 - `minimumSignificantDigits`- The minimum number of significant digits to use. Possible values are from 1 to 21 (default is 1).
 - `maximumSignificantDigits`- The maximum number of significant digits to use. Possible values are from 1 to 21 (default is 21).
+- `currency`- The currency to use in currency formatting. Possible values are the ISO 4217 currency codes, such as "USD" for the US dollar, "EUR" for the euro.
+- `signDisplay`- When to display the sign for the number. Possible values are "auto", "always", "exceptZero", "negative", "never" (default is "auto").
 
 ## Date Format Options
 
@@ -299,7 +301,7 @@ export class CustomNumberTransformer extends DefaultNumberTransformer {
     options: Intl.NumberFormatOptions
   ): string {
     return ...
-    
+
     // Fallback to default transformer
     return super.transform(value, type, locale, options);
   }

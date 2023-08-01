@@ -30,7 +30,7 @@ export interface NumberFormatOptions {
   /**
    * The maximum number of significant digits to use. Possible values are from 1 to 21
    */
-  maximumSignificantDigits?: number;
+  maximumSignificantDigits?: Intl.NumberFormatOptions['maximumSignificantDigits'];
 }
 
 /**
