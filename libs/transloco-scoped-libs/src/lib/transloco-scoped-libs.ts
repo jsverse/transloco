@@ -123,6 +123,7 @@ export default function run({
                   outputDir: output,
                   strategy,
                   files: [file],
+                  skipGitIgnoreUpdate,
                   scope,
                 });
               }
