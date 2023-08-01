@@ -8,6 +8,7 @@
       "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
+        "updateBuildableProjectDepsInPackageJson": false,
         "outputPath": "dist/libs/transloco-validator",
         "main": "libs/transloco-validator/src/index.ts",
         "tsConfig": "libs/transloco-validator/tsconfig.lib.json",
