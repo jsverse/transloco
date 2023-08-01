@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [5.0.1](https://github.com/ngneat/transloco/compare/transloco-scoped-libs-5.0.0...transloco-scoped-libs-5.0.1) (2023-08-01)
+
+### Bug Fixes
+
+- 🐛 Add skipGitIgnoreUpdate to watch mode options. ([#605](https://github.com/ngneat/transloco/issues/605)) ([781a6d3](https://github.com/ngneat/transloco/commit/781a6d349c3d5f12d7a01b21fa912ade2b6cd7f2)), closes [#604](https://github.com/ngneat/transloco/issues/604)
+
 # [5.0.0](https://github.com/ngneat/transloco/compare/transloco-scoped-libs-4.0.0...transloco-scoped-libs-5.0.0) (2023-07-30)
 
 ### Bug Fixes
