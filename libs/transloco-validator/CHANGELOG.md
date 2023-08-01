@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [5.0.1](https://github.com/ngneat/transloco/compare/transloco-validator-5.0.0...transloco-validator-5.0.1) (2023-08-01)
+
+### Bug Fixes
+
+- **validator:** 🐛 remove redundant peerDependencies ([806bd0a](https://github.com/ngneat/transloco/commit/806bd0a4090132a2015911605592041d8af3aca1)), closes [#677](https://github.com/ngneat/transloco/issues/677)
+
 # [5.0.0](https://github.com/ngneat/transloco/compare/transloco-validator-4.0.0...transloco-validator-5.0.0) (2023-07-30)
 
 # [4.0.0](https://github.com/ngneat/transloco/compare/transloco-validator-3.0.1...transloco-validator-4.0.0) (2023-06-17)
