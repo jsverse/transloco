@@ -30,7 +30,11 @@ export interface NumberFormatOptions {
   /**
    * The maximum number of significant digits to use. Possible values are from 1 to 21
    */
-  maximumSignificantDigits?: number;
+  maximumSignificantDigits?: Intl.NumberFormatOptions['maximumSignificantDigits'];
+  /**
+   * When to display the sign for the number. Possible values are "auto", "always", "exceptZero", "negative", "never"; the default is "auto".
+   */
+  signDisplay?: Intl.NumberFormatOptions['signDisplay'];
 }
 
 /**
