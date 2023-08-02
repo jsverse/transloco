@@ -40,6 +40,11 @@ describe('TranslocoTranspiler', () => {
       expect(parsed).toEqual('LOWERCASE');
     });
 
+    it('should work with multiple functions', () => {
+      const parsed = parser.transpile('first [[ upperCase(second) ]] third [[ upperCase(fourth) ]] fifth', {}, {}, 'key');
+      expect(parsed).toEqual('first SECOND third FOURTH fifth');
+    });
+
     it('should pass the function params', () => {
       const spy = spyOn(transpilerFunctions['upperCase'], 'transpile');
       parser.transpile('[[ upperCase(lowercase) ]]', {}, {}, 'key');

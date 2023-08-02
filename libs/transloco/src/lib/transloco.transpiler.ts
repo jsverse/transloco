@@ -167,7 +167,7 @@ export class FunctionalTranspiler
     let transpiled = value;
     if (isString(value)) {
       transpiled = value.replace(
-        /\[\[\s*(\w+)\((.*)\)\s*]]/g,
+        /\[\[\s*(\w+)\((.*?)\)\s*]]/g,
         (match: string, functionName: string, args: string) => {
           try {
             const func: TranslocoTranspilerFunction =
