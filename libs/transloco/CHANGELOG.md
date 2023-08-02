@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [5.0.3](https://github.com/ngneat/transloco/compare/transloco-5.0.2...transloco-5.0.3) (2023-08-02)
+
+### Bug Fixes
+
+- **transloco:** 🐛 allow multiple functions functional transpiler ([#667](https://github.com/ngneat/transloco/issues/667)) ([5095f96](https://github.com/ngneat/transloco/commit/5095f96f7bca90f61902b5d02f18b5a3ce8edf20))
+
 ## [5.0.2](https://github.com/ngneat/transloco/compare/transloco-5.0.1...transloco-5.0.2) (2023-07-31)
 
 ## [5.0.1](https://github.com/ngneat/transloco/compare/transloco-5.0.0...transloco-5.0.1) (2023-07-31)
