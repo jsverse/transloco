@@ -8,13 +8,34 @@ Start by installing all dependencies:
 
 ```bash
 npm i
+yarn
 ```
+
+The Transloco project is a monorepo managed by nx with the following structure:
+
+Packages:
+
+- transloco
+- transloco-locale
+- transloco-messageformat
+- transloco-optimize
+- transloco-presist-lang
+- transloco-presist-translations
+- transloco-preload-langs
+- transloco-schematics
+- transloco-utils
+- transloco-validator
+
+Apps:
+
+- transloco-playground
+- transloco-playground-e2e (cypress)
 
 Run the tests:
 
 ```bash
-npm test
-npm run e2e
+nx test [package-name]
+nx e2e transloco-playground-e2e
 ```
 
 Run the playground app:
@@ -26,8 +47,10 @@ npm start
 ## Building
 
 ```bash
-npm run build
+npm run build:[package]
 ```
+
+Note: Don't use nx directly as some apps might have further building steps
 
 ## <a name="rules"></a> Coding Rules
 
@@ -40,36 +63,18 @@ To ensure consistency throughout the source code, keep these rules in mind as yo
 
 We have very precise rules over how our git commit messages can be formatted. This leads to **more
 readable messages** that are easy to follow when looking through the **project history**. But also,
-we use the git commit messages to **generate the Akita changelog**.
+we use the git commit messages to **generate the changelog**.
 
 ### Commit Message Format
 
-Each commit message consists of a **header**, a **body** and a **footer**. The header has a special
-format that includes a **type**, a **scope** and a **subject**:
+All commits must be committed using the `commit` script:
 
-```
-<type>(<scope>): <subject>
-<BLANK LINE>
-<body>
-<BLANK LINE>
-<footer>
+```bash
+npm run commit
+yarn commit
 ```
 
-The **header** is mandatory and the **scope** of the header is optional.
+Choose the correct package you are making the changes for, if this is a repository level change
+you can choose the first (empty) option.
 
-Any line of the commit message cannot be longer 100 characters! This allows the message to be easier
-to read on GitHub as well as in various git tools.
-
-The footer should contain a [closing reference to an issue](https://help.github.com/articles/closing-issues-via-commit-messages/) if any.
-
-Samples: (even more [samples](https://github.com/angular/angular/commits/master))
-
-```
-docs(changelog): update changelog to beta.5
-```
-
-```
-fix(release): need to depend on latest rxjs and zone.js
-
-The version in our package.json gets copied to the one we publish, and users need the latest of these.
-```
+**Important:** Only put something in the `BREAKING CHANGES` prompt if you actually made a breaking change, no need ot answer it with "no".
