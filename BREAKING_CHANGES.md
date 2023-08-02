@@ -21,7 +21,7 @@ please take a look at the following:
 ## Transloco Messageformat
 
 - `@angular/core` peer dependency is now `>=v16`
-- Removed `TranslocoMessageFormatModule`, use `provideTranslocoMessageformnat`.
+- Removed `TranslocoMessageFormatModule`, use `provideTranslocoMessageformat`.
 
 ## Transloco Persist Lang
 
