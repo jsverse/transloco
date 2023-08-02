@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [5.1.0](https://github.com/ngneat/transloco/compare/transloco-locale-5.0.0...transloco-locale-5.1.0) (2023-08-02)
+
+### Features
+
+- **transloco-locale:** allow narrowSymbol display option ([#678](https://github.com/ngneat/transloco/issues/678)) ([ddebbff](https://github.com/ngneat/transloco/commit/ddebbff3a6b28c9c3819622f646c04084fe8fce8))
+
 # [5.0.0](https://github.com/ngneat/transloco/compare/transloco-locale-4.1.0...transloco-locale-5.0.0) (2023-07-30)
 
 ### chore
