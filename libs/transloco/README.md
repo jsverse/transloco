@@ -18,11 +18,11 @@ It exposes a rich API to manage translations efficiently and cleanly. It provide
 ✅ &nbsp;Rich Plugins  
 ✅ &nbsp;Hackable  
 ✅ &nbsp;Schematics
+✅ &nbsp;Standalone support
 
 <hr />
 
-[![Build Status](https://travis-ci.org/ngneat/transloco.svg?branch=master)](https://travis-ci.org/ngneat/transloco)
-[![All Contributors](https://img.shields.io/badge/all_contributors-33-orange.svg?style=flat-square)](#contributors-)
+[![Build Status](https://github.com/ngneat/transloco/actions/workflows/ci.yml/badge.svg)]()
 [![commitizen](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)]()
 [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)]()
 [![coc-badge](https://img.shields.io/badge/codeof-conduct-ff69b4.svg?style=flat-square)]()
@@ -35,7 +35,7 @@ It exposes a rich API to manage translations efficiently and cleanly. It provide
 - 🎥 &nbsp;Watch our instructional [video guides](https://www.youtube.com/watch?v=MYkYcafJdGw&list=PLTuTW7EgL6ouXk5BqE4zWdDJkAuC4HTWi)
 - 🚀 &nbsp;See it in action on [CodeSandbox](https://codesandbox.io/s/ngneat-transloco-kn52hs)
 - 😎 &nbsp;Use [schematics](https://ngneat.github.io/transloco/docs/schematics)
-- 👉 &nbsp;Checkout the [sample application](https://ngneat.github.io/transloco/sampleApp)
+- 👉 &nbsp;Checkout the [live application](https://ngneat.github.io/transloco/live-app)
 - 📖 &nbsp;Read the blog [posts](https://ngneat.github.io/transloco/docs/blog-posts)
 - 🍄 &nbsp;Join Transloco's [Gitter](https://gitter.im/ngneat-transloco/lobby?source=orgpage) room
 - ❓ &nbsp;Find answers in our [FAQ](https://ngneat.github.io/transloco/docs/faq) section
