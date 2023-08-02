@@ -46,6 +46,13 @@ describe('TranslocoCurrencyPipe', () => {
     expect(spectator.element).toContainText('€');
   });
 
+  it('should format the currency given narrowSymbol as display argument', () => {
+    spectator = pipeFactory(
+      `{{ '123' | translocoCurrency:'narrowSymbol':{}:'CAD' }}`
+    );
+    expect(spectator.element).toContainText('$');
+  });
+
   it('should use given display', () => {
     spectator = pipeFactory(`{{ '123' | translocoCurrency:'code' }}`);
     const [, { currencyDisplay }] = getIntlCallArgs();

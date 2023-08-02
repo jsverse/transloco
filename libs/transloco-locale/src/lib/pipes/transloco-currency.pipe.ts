@@ -31,11 +31,13 @@ export class TranslocoCurrencyPipe
    * 1000000 | translocoCurrency: 'symbol' : {} : USD // $1,000,000.00
    * 1000000 | translocoCurrency: 'name' : {} : USD // 1,000,000.00 US dollars
    * 1000000 | translocoCurrency: 'symbol' : {minimumFractionDigits: 0 } : USD // $1,000,000
+   * 1000000 | translocoCurrency: 'symbol' : {minimumFractionDigits: 0 } : CAD // CA$1,000,000
+   * 1000000 | translocoCurrency: 'narrowSymbol' : {minimumFractionDigits: 0 } : CAD // $1,000,000
    *
    */
   transform(
     value: number | string,
-    display: 'code' | 'symbol' | 'name' = 'symbol',
+    display: 'code' | 'symbol' | 'narrowSymbol' | 'name' = 'symbol',
     numberFormatOptions: NumberFormatOptions = {},
     currencyCode?: Currency,
     locale?: Locale
