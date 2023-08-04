@@ -9,7 +9,6 @@
       "executor": "@nx/angular:package",
       "outputs": ["{workspaceRoot}/dist/libs/transloco-persist-translations"],
       "options": {
-        "updateBuildableProjectDepsInPackageJson": false,
         "project": "libs/transloco-persist-translations/ng-package.json"
       },
       "configurations": {

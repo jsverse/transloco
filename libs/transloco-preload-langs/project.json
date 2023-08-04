@@ -9,7 +9,6 @@
       "executor": "@nx/angular:package",
       "outputs": ["{workspaceRoot}/dist/libs/transloco-preload-langs"],
       "options": {
-        "updateBuildableProjectDepsInPackageJson": false,
         "project": "libs/transloco-preload-langs/ng-package.json"
       },
       "configurations": {

@@ -8,7 +8,6 @@
       "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "updateBuildableProjectDepsInPackageJson": false,
         "outputPath": "dist/libs/transloco-utils",
         "main": "libs/transloco-utils/src/index.ts",
         "tsConfig": "libs/transloco-utils/tsconfig.lib.json",
