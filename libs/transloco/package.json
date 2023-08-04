@@ -40,11 +40,11 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "@angular/core": ">=16.0.0",
-    "fs-extra": ">=9.1.0",
-    "glob": ">=7.1.7"
+    "@angular/core": ">=16.0.0"
   },
   "dependencies": {
+    "fs-extra": "^11.0.0",
+    "glob": "^10.0.0",
     "tslib": "^2.2.0",
     "flat": "5.0.2",
     "@ngneat/transloco-utils": "^5.0.0",

@@ -5,7 +5,7 @@ import {
   Tree,
 } from '@angular-devkit/schematics';
 import { normalize } from '@angular-devkit/core';
-import * as fs from 'fs-extra';
+import { existsSync, removeSync } from 'fs-extra';
 
 import { TranslationFileFormat } from '../types';
 import {
@@ -64,8 +64,8 @@ function reduceTranslations(
 }
 
 function deletePrevFiles(host: Tree, options: SchemaOptions) {
-  if (fs.existsSync(options.outDir)) {
-    fs.removeSync(options.outDir);
+  if (existsSync(options.outDir)) {
+    removeSync(options.outDir);
   }
 }
 

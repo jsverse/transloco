@@ -1,5 +1,5 @@
 import * as p from 'node:path';
-import * as fs from 'fs';
+import * as fs from 'node:fs';
 
 import { sync as globSync } from 'glob';
 

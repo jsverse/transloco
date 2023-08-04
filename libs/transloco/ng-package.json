@@ -6,6 +6,8 @@
     "entryFile": "src/index.ts"
   },
   "allowedNonPeerDependencies": [
+    "fs-extra",
+    "glob",
     "flat",
     "@ngneat/transloco-utils",
     "replace-in-file",
