@@ -1,8 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { promisify } from 'node:util';
 
-import glob from 'glob';
+import { glob } from 'glob';
 import { flatten } from 'flat';
 
 type Translation = Record<string, any>;
@@ -26,7 +25,7 @@ export function getTranslationsFolder(dist: string) {
 export function getTranslationFiles(dist: string) {
   const filesMatcher = path.resolve(getTranslationsFolder(dist), '**/*.json');
 
-  return promisify(glob)(filesMatcher, {});
+  return glob(filesMatcher, {});
 }
 
 export function optimizeFiles(translationPaths: string[], commentsKey: string) {
