@@ -1,9 +1,9 @@
 import path from 'node:path';
 
 import chalk from 'chalk';
-import glob from 'glob';
+import { glob } from 'glob';
 import chokidar from 'chokidar';
-import fsExtra from 'fs-extra';
+import { mkdirsSync } from 'fs-extra';
 import { TranslocoGlobalConfig } from '@ngneat/transloco-utils';
 
 import {
@@ -99,12 +99,8 @@ export default function run({
     for (const scopeConfig of pkg.content.i18n) {
       const { scope, strategy } = scopeConfig;
 
-      glob(
-        `${path.join(input, scopeConfig.path)}/**/*.json`,
-        {},
-        function (err, files) {
-          if (err) console.log(chalk.red(err));
-
+      glob(`${path.join(input, scopeConfig.path)}/**/*.json`)
+        .then((files) => {
           for (const output of outputs) {
             copyScopes({
               outputDir: output,
@@ -129,8 +125,8 @@ export default function run({
               }
             });
           }
-        }
-      );
+        })
+        .catch((err) => console.log(chalk.red(err)));
     }
   }
 }
@@ -170,7 +166,7 @@ function copyScopes(options: CopyScopeOptions) {
       resolvedOptions.outputDir,
       options.scope
     );
-    fsExtra.mkdirsSync(resolvedOptions.outputDir);
+    mkdirsSync(resolvedOptions.outputDir);
   }
 
   copyScopeTranslationFiles(resolvedOptions);
