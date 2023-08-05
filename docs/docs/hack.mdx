@@ -19,15 +19,11 @@ export class CustomLoader implements TranslocoLoader {
     return ...
   }
 }
-
-export const customLoader = {
-  provide: TRANSLOCO_LOADER,
-  useClass: CustomLoader
-}
 ```
 
 ## The Interceptor
 The interceptor provides you with the ability to manipulate the translation object before it is saved by the service.
+
 ```ts
 import { TranslocoInterceptor } from '@ngneat/transloco';
 
@@ -40,11 +36,6 @@ export class CustomInterceptor implements TranslocoInterceptor {
     return value;
   }
 }
-
-export const customInterceptor = {
-  provide: TRANSLOCO_INTERCEPTOR,
-  useClass: CustomInterceptor
-};
 ```
 
 ## Missing Handler
@@ -58,11 +49,6 @@ export class CustomHandler implements TranslocoMissingHandler {
     return '...';
   }
 }
-
-export const customMissingHandler = {
-  provide: TRANSLOCO_MISSING_HANDLER,
-  useClass: CustomHandler
-};
 ```
 
 ## Fallback Strategy
@@ -79,11 +65,6 @@ export class CustomStrategy implements TranslocoFallbackStrategy {
     return '...';
   }
 }
-
-export const customFallbackStrategy = {
-  provide: TRANSLOCO_FALLBACK_STRATEGY,
-  useClass: CustomStrategy
-};
 ```
 
 The `getNextLangs` method is called with the failed language, and should return an array containing the next languages to load, in order of preference.

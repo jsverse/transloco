@@ -30,11 +30,11 @@ It then enables support for the following within your i18n translation files:
 To enable this plugin, add the following import in your `TranslocoRootModule`:
 
 ```ts title="transloco-root.module.ts"
-import { TranslocoMessageFormatModule } from '@ngneat/transloco-messageformat';
+import { provideTranslocoMessageformat } from '@ngneat/transloco-messageformat';
 
 @NgModule({
-  imports: [
-    TranslocoMessageFormatModule.forRoot()
+  providers: [
+    provideTranslocoMessageformat()
   ]
   ...
 })
@@ -47,8 +47,8 @@ By default, messageformat initializes _all_ locales. You could also provide the 
 
 ```ts title="transloco-root.module.ts"
 @NgModule({
-  imports: [
-    TranslocoMessageFormatModule.forRoot({
+  providers: [
+    provideTranslocoMessageformat({
         locales: 'en-GB'
     })
   ],
@@ -62,7 +62,7 @@ The value for `locales` is either a string or an array of strings. The first loc
 ## Advanced configuration
 MessageFormat instances provides some options to influence its behaviour, among them `customFormatters`, `biDiSupport`, and `strictNumberSign`. Learn about their meaning [here](https://messageformat.github.io/messageformat/api/core.messageformatoptions/)
 
-This is how you would enable bi-directional support and add a custom formatter, for example:
+This is how you would enable bidirectional support and add a custom formatter, for example:
 ```ts title="transloco-root.module.ts"
  @NgModule({
    imports: [
@@ -77,16 +77,16 @@ This is how you would enable bi-directional support and add a custom formatter, 
 ```
 
 ## Caching (from v3)
- By default the messageformat compile output is cached to reduce computing times, you can disable caching by passing the `enableCache` option:
- 
+ By default, the messageformat compile output is cached to reduce computing times, you can disable caching by passing the `enableCache` option:
+
  ```ts title="transloco-root.module.ts"
  @NgModule({
    imports: [
-     TranslocoMessageFormatModule.forRoot({
+     TranslocoMessageFormatModule({
          enableCache: false,
      })
    ],
    ...
  })
  export class TranslocoRootModule {}
- ``` 
+ ```

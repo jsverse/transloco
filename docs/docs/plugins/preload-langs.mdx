@@ -12,11 +12,11 @@ npm install @ngneat/transloco-preload-langs
 
 ## Usage
 ```ts title="transloco-root.module.ts"
-import { TranslocoPreloadLangsModule } from '@ngneat/transloco-preload-langs';
+import { provideTranslocoPreloadLangs } from '@ngneat/transloco-preload-langs';
 
 @NgModule({
-  imports: [
-    TranslocoPreloadLangsModule.forRoot(['es', 'some-scope'])
+  providers: [
+    provideTranslocoPreloadLangs(['es', 'some-scope'])
   ]
   ...
 })

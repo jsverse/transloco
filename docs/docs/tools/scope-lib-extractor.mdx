@@ -47,12 +47,10 @@ For example, here we have created a new CLI project, with the main application (
 Now we need to declare the [scope](../lazy-load/scope-configuration) in the `CoreModule`:
 
 ```ts title="core.module.ts"
+import {provideTranslocoScope} from "./transloco.providers";
 @NgModule({
   declarations: [CoreComponent],
-  providers: [{
-    provide: TRANSLOCO_SCOPE,
-    useValue: 'core'
-  }],
+  providers: [provideTranslocoScope('core')],
   imports: [TranslocoModule]
 })
 export class CoreModule {}
@@ -134,7 +132,7 @@ Now, if we run the script, the following things will happen:
 
 2. It will add the library's translation files to the `.gitignore` ( if you don't want to modify the `.gitignore` use the `--skip-gitignore` flag).
 
-<img class="gif" src={useBaseUrl('/img/extractor.gif')} />
+<img className="gif" src={useBaseUrl('/img/extractor.gif')} />
 
 ### Join Strategies
 

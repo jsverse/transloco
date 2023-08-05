@@ -4,8 +4,9 @@ module.exports = {
       type: 'category',
       label: 'Getting Started',
       items: [
-        'getting-started/installation', 
-        'getting-started/config-options'
+        'getting-started/installation',
+        'getting-started/angular-compatability',
+        'getting-started/config-options',
       ],
     },
     {
@@ -23,10 +24,7 @@ module.exports = {
     {
       type: 'category',
       label: 'Lazy Load Translation Files',
-      items: [
-        'lazy-load/scope-configuration', 
-        'lazy-load/inline-loaders'
-      ],
+      items: ['lazy-load/scope-configuration', 'lazy-load/inline-loaders'],
     },
     {
       type: 'doc',

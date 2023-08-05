@@ -5,21 +5,16 @@ description: Loading Template | Transloco Angular i18n
 
 Transloco provides you with a way to define a loading template, that will be used while the translation file is loading.
 
-Similarly to the previous examples, set the `TRANSLOCO_LOADING_TEMPLATE` provider either in lazy module providers, component providers, in the template, or even in the `AppModule` itself (affecting the entire app).
+Use the `provideTranslocoLoadingTpl` function either in lazy module providers, component providers, in the template, or even in the `AppModule`/`app.config.ts` itself (affecting the entire app).
 
 For example:
 
 
-```ts {6,7} title="my-comp.component.ts"
+```ts {4} title="my-comp.component.ts"
 @Component({
   selector: 'my-comp',
   templateUrl: './my-comp.component.html',
-  providers: [
-    {
-      provide: TRANSLOCO_LOADING_TEMPLATE,
-      useValue: '<p>loading...</p>'
-    }
-  ]
+  providers: [provideTranslocoLoadingTpl(`<p>loading...</p>`)]
 })
 export class MyComponent {}
 ```

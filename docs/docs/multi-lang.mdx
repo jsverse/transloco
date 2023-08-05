@@ -3,20 +3,15 @@ title: Multiple Languages Simultaneously
 description: Multiple Languages Simultaneously | Transloco Angular i18n
 ---
 
-There are times you may need to use a different language in a specific part of the template, or in a particular component or module. This can be achieved in a similar way to the previous example, except here set the `TRANSLOCO_LANG` provider either in lazy module providers list, the component providers or in the template.
+There are times you may need to use a different language in a specific part of the template, or in a particular component or module. This can be achieved in by using the `provideTranslocoLang` function.
 
 Here's an example of setting it in a component's providers:
 
-```ts {6,7} title="my-comp.component.ts"
+```ts {4} title="my-comp.component.ts"
 @Component({
   selector: 'my-comp',
   templateUrl: './my-comp.component.html',
-  providers: [
-    {
-      provide: TRANSLOCO_LANG,
-      useValue: 'es'
-    }
-  ]
+  providers: [provideTranslocoLang('es')]
 })
 export class MyComponent {}
 ```
@@ -33,23 +28,18 @@ Alternatively, here is how to use it directly in the template:
 
 Note that it will be used as the **initial** language. If you need it to be _static_, you can use the `static` pipe:
 
-```ts {7} title="my-comp.component.ts"
+```ts {4} title="my-comp.component.ts"
 @Component({
   selector: 'my-comp',
   templateUrl: './my-comp.component.html',
-  providers: [
-    {
-      provide: TRANSLOCO_LANG,
-      useValue: 'es|static'
-    }
-  ]
+  providers: [provideTranslocoLang('es|static')]
 })
 export class MyComponent {}
 ```
 
 Or in the template:
 
-```html title="my-comp.component.html"
+```html {5} title="my-comp.component.html"
 // Define the lang dynamically in the component
 <ng-container *transloco="let t; lang: someVariable">
 
