@@ -25,7 +25,7 @@ import {
   TranslocoNumberTransformer,
 } from './transloco-locale.transformers';
 
-export function provideTranslocoLocale(config: TranslocoLocaleConfig) {
+export function provideTranslocoLocale(config?: TranslocoLocaleConfig) {
   const merged = {
     ...defaultConfig,
     ...config,
