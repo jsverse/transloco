@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [5.0.3](https://github.com/ngneat/transloco/compare/transloco-scoped-libs-5.0.2...transloco-scoped-libs-5.0.3) (2023-08-05)
+
+### Bug Fixes
+
+- **scoped-libs:** 🐛 utils dependency version ([cded54b](https://github.com/ngneat/transloco/commit/cded54bb9a17ca9460577036d01018ebdef1abd7)), closes [#681](https://github.com/ngneat/transloco/issues/681)
+
 ## [5.0.2](https://github.com/ngneat/transloco/compare/transloco-scoped-libs-5.0.1...transloco-scoped-libs-5.0.2) (2023-08-04)
 
 ## [5.0.1](https://github.com/ngneat/transloco/compare/transloco-scoped-libs-5.0.0...transloco-scoped-libs-5.0.1) (2023-08-01)
