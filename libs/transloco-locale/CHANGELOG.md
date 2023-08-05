@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [5.1.1](https://github.com/ngneat/transloco/compare/transloco-locale-5.1.0...transloco-locale-5.1.1) (2023-08-05)
+
+### Bug Fixes
+
+- **locale:** 🐛 provider config should be optional ([e22f2ed](https://github.com/ngneat/transloco/commit/e22f2ede2054a4a153454851743b010a69f1a13b))
+
 # [5.1.0](https://github.com/ngneat/transloco/compare/transloco-locale-5.0.0...transloco-locale-5.1.0) (2023-08-02)
 
 ### Features
