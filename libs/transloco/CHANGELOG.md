@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [5.0.5](https://github.com/ngneat/transloco/compare/transloco-5.0.4...transloco-5.0.5) (2023-08-05)
+
+### Bug Fixes
+
+- **transloco:** 🐛 ng add in NgModule app ([ad7f8bd5](https://github.com/ngneat/transloco/commit/ad7f8bd57f7dd05dd75ab2549ed69ba60948849f))
+
 ## [5.0.4](https://github.com/ngneat/transloco/compare/transloco-5.0.3...transloco-5.0.4) (2023-08-04)
 
 ### Bug Fixes
