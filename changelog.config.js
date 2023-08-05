@@ -1,17 +1,49 @@
+const types = {
+  feat: {
+    description: 'A new feature',
+    emoji: '🎸',
+    value: 'feat',
+  },
+  fix: {
+    description: 'A bug fix',
+    emoji: '🐛',
+    value: 'fix',
+  },
+  test: {
+    description: 'Adding missing tests',
+    emoji: '💍',
+    value: 'test',
+  },
+  chore: {
+    description: 'Build process or auxiliary tool changes',
+    emoji: '🤖',
+    value: 'chore',
+  },
+  docs: {
+    description: 'Documentation only changes',
+    emoji: '✏️',
+    value: 'docs',
+  },
+  refactor: {
+    description: 'A code change that neither fixes a bug or adds a feature',
+    emoji: '💡',
+    value: 'refactor',
+  },
+  ci: {
+    description: 'CI related changes',
+    emoji: '🎡',
+    value: 'ci',
+  },
+  style: {
+    description: 'Markup, white-space, formatting, missing semi-colons...',
+    emoji: '💄',
+    value: 'style',
+  },
+};
+
 module.exports = {
   disableEmoji: false,
-  list: [
-    'test',
-    'feat',
-    'fix',
-    'chore',
-    'docs',
-    'refactor',
-    'style',
-    'ci',
-    'perf',
-    'plugin',
-  ],
+  list: Object.keys(types),
   maxMessageLength: 64,
   minMessageLength: 3,
   questions: [
@@ -32,66 +64,9 @@ module.exports = {
     'persist-lang',
     'persist-translations',
     'preload-langs',
-    'schematics',
     'scoped-libs',
     'utils',
     'validator',
   ],
-  types: {
-    chore: {
-      description: 'Build process or auxiliary tool changes',
-      emoji: '🤖',
-      value: 'chore',
-    },
-    ci: {
-      description: 'CI related changes',
-      emoji: '🎡',
-      value: 'ci',
-    },
-    docs: {
-      description: 'Documentation only changes',
-      emoji: '✏️',
-      value: 'docs',
-    },
-    feat: {
-      description: 'A new feature',
-      emoji: '🎸',
-      value: 'feat',
-    },
-    fix: {
-      description: 'A bug fix',
-      emoji: '🐛',
-      value: 'fix',
-    },
-    perf: {
-      description: 'A code change that improves performance',
-      emoji: '⚡️',
-      value: 'perf',
-    },
-    refactor: {
-      description: 'A code change that neither fixes a bug or adds a feature',
-      emoji: '💡',
-      value: 'refactor',
-    },
-    release: {
-      description: 'Create a release commit',
-      emoji: '🏹',
-      value: 'release',
-    },
-    style: {
-      description: 'Markup, white-space, formatting, missing semi-colons...',
-      emoji: '💄',
-      value: 'style',
-    },
-    test: {
-      description: 'Adding missing tests',
-      emoji: '💍',
-      value: 'test',
-    },
-    plugin: {
-      description: 'Add or update a plugin',
-      emoji: '💥',
-      value: 'plugin',
-    },
-  },
+  types,
 };

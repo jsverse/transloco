@@ -2,7 +2,7 @@ import {
   provideTransloco,
   TranslocoModule
 } from '@ngneat/transloco';
-import { Injectable, <% if (!importEnv) {%>isDevMode, <% } %>NgModule } from '@angular/core';
+import { <% if (!importEnv) {%>isDevMode, <% } %>NgModule } from '@angular/core';
 import { TranslocoHttpLoader } from './transloco-loader';
 <% if (importEnv) {%>import { environment } from '<%= envPath %>';<% } %>
 

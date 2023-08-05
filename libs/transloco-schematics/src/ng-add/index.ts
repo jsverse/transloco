@@ -20,7 +20,10 @@ import {
   findBootstrapApplicationCall,
   getMainFilePath,
 } from '../utils/ng-schematics-utils/standalone/util';
-import { addRootProvider } from '../utils/ng-schematics-utils/standalone';
+import {
+  addRootImport,
+  addRootProvider,
+} from '../utils/ng-schematics-utils/standalone';
 import { findAppConfig } from '../utils/ng-schematics-utils/standalone/app_config';
 
 import { Loaders, SchemaOptions } from './schema';
@@ -93,7 +96,7 @@ export default function (options: SchemaOptions): Rule {
         );
       } else {
         actions.push(
-          addRootProvider(
+          addRootImport(
             options.project,
             ({ code, external }) =>
               code`${external('HttpClientModule', '@angular/common/http')}`
@@ -145,7 +148,7 @@ export default function (options: SchemaOptions): Rule {
       );
     } else {
       actions.push(
-        addRootProvider(
+        addRootImport(
           options.project,
           ({ code, external }) =>
             code`${external('TranslocoRootModule', './transloco-root.module')}`
