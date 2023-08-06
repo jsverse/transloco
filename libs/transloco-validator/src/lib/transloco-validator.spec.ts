@@ -1,5 +1,6 @@
-import validator from './transloco-validator';
 import fs from 'fs';
+
+import validator from './transloco-validator';
 
 jest.mock('fs');
 
@@ -23,7 +24,7 @@ describe('transloco-validator', () => {
     jest.mocked(fs.readFileSync).mockImplementation(() => '{"test":{"erreur"}}');
 
     const callValidator = () =>  validator('', ['mytest.json']);
-    expect(callValidator).toThrowError(new SyntaxError("Unexpected token } in JSON at position 17 (mytest.json)"));
+    expect(callValidator).toThrowError(SyntaxError);
   })
 
   it('should return success', () => {

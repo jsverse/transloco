@@ -123,11 +123,25 @@ describe('TranslocoTranspiler', () => {
 
   function testDefaultBehaviour(
     parser: TranslocoTranspiler,
-    [start, end]: [string, string] = defaultConfig.interpolation
+    [start, end, forbiddenChars]: [string, string, string?] = defaultConfig.interpolation
   ) {
     function wrapParam(param: string) {
       return `${start} ${param} ${end}`;
     }
+
+    it('should skip if forbidden chars are used', () => {
+      if (forbiddenChars?.length) {
+        for (const char of forbiddenChars) {
+          const parsed = parser.transpile(
+            `Hello ${wrapParam('value ' + char)}`,
+            { value: 'World' },
+            {},
+            'key'
+          );
+          expect(parsed).toEqual(`Hello ${wrapParam('value ' + char)}`);
+        }
+      }
+    });
 
     it('should translate simple string from params', () => {
       const parsed = parser.transpile(
