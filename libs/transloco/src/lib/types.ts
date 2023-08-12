@@ -30,7 +30,7 @@ export interface LangDefinition {
   id: string;
   label: string;
 }
-export type AvailableLangs = string[] | LangDefinition[];
+export type AvailableLangs = string[] | LangDefinition[] | null;
 export interface SetTranslationOptions {
   merge?: boolean;
   emitChange?: boolean;

@@ -79,4 +79,16 @@ describe('translate', () => {
       'Admin Lazy spanish'
     );
   }));
+  
+  it('should return the translation when availableLangs is skipped', fakeAsync(() => {
+    service.setAvailableLangs(undefined);
+    loadLang(service);
+    expect(service.translate('home')).toEqual(mockLangs['en'].home);
+  }));
+  
+  it('should return the translation when availableLangs is set to null', fakeAsync(() => {
+    service.setAvailableLangs(null);
+    loadLang(service);
+    expect(service.translate('home')).toEqual(mockLangs['en'].home);
+  }));
 });

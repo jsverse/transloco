@@ -8,7 +8,7 @@ export interface TranslocoConfig {
   prodMode: boolean;
   fallbackLang?: string | string[];
   failedRetries: number;
-  availableLangs: AvailableLangs;
+  availableLangs?: AvailableLangs;
   flatten: {
     aot: boolean;
   };
