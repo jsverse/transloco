@@ -6,6 +6,8 @@ import { flatten } from 'flat';
 
 type Translation = Record<string, any>;
 
+const isWindows = process.platform === "win32";
+
 function removeComments(translation: Translation, commentsKey = 'comment') {
   return Object.keys(translation).reduce((acc, key) => {
     const lastKey = key.split('.').pop();
@@ -25,7 +27,7 @@ export function getTranslationsFolder(dist: string) {
 export function getTranslationFiles(dist: string) {
   const filesMatcher = path.resolve(getTranslationsFolder(dist), '**/*.json');
 
-  return glob(filesMatcher, {});
+  return glob(filesMatcher, {windowsPathsNoEscape: isWindows});
 }
 
 export function optimizeFiles(translationPaths: string[], commentsKey: string) {
