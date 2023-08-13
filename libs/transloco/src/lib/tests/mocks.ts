@@ -1,5 +1,4 @@
-import { timer } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, timer } from 'rxjs';
 import { tick } from '@angular/core/testing';
 
 import {

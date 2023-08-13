@@ -2,7 +2,6 @@ import { fakeAsync } from '@angular/core/testing';
 import { createHostFactory, SpectatorHost } from '@ngneat/spectator';
 
 import { loadingTemplateMock, providersMock, runLoader } from '../mocks';
-import { TranslocoLoaderComponent } from '../../loader-component.component';
 import { TranslocoDirective } from '../../transloco.directive';
 import { TemplateHandler } from '../../template-handler';
 

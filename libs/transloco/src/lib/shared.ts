@@ -1,5 +1,4 @@
-import { take } from 'rxjs/operators';
-import { Observable, OperatorFunction } from 'rxjs';
+import { Observable, OperatorFunction, take } from 'rxjs';
 
 import { TranslocoService } from './transloco.service';
 import { hasInlineLoader, isString } from './helpers';

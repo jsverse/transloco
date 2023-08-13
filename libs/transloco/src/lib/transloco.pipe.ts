@@ -1,14 +1,12 @@
 import {
   ChangeDetectorRef,
   Inject,
-  inject,
   OnDestroy,
   Optional,
   Pipe,
   PipeTransform,
 } from '@angular/core';
-import { switchMap } from 'rxjs/operators';
-import { forkJoin, Observable, Subscription } from 'rxjs';
+import { switchMap, forkJoin, Observable, Subscription } from 'rxjs';
 
 import { TranslocoService } from './transloco.service';
 import { HashMap, OrArray, Translation, TranslocoScope } from './types';

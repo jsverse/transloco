@@ -1,10 +1,11 @@
 import { createHostFactory, SpectatorHost } from '@ngneat/spectator';
+import { Provider } from '@angular/core';
 
 import { providersMock, runLoader, setlistenToLangChange } from '../mocks';
 import { TranslocoDirective } from '../../transloco.directive';
 import { TranslocoService } from '../../transloco.service';
 
-export function createFactory(providers: any[] = []) {
+export function createFactory(providers: Provider[] = []) {
   return createHostFactory({
     component: TranslocoDirective,
     providers: [providersMock, providers],

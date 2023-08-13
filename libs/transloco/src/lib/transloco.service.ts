@@ -1,23 +1,21 @@
 import { Inject, Injectable, OnDestroy, Optional } from '@angular/core';
 import {
   BehaviorSubject,
+  catchError,
   combineLatest,
   EMPTY,
   forkJoin,
   from,
+  map,
   Observable,
   of,
-  Subject,
-  Subscription,
-} from 'rxjs';
-import {
-  catchError,
-  map,
   retry,
   shareReplay,
+  Subject,
+  Subscription,
   switchMap,
   tap,
-} from 'rxjs/operators';
+} from 'rxjs';
 
 import {
   DefaultLoader,
@@ -32,8 +30,8 @@ import {
   AvailableLangs,
   HashMap,
   InlineLoader,
+  LangDefinition,
   LoadOptions,
-  ProviderScope,
   SetTranslationOptions,
   TranslateObjectParams,
   TranslateParams,
@@ -652,10 +650,10 @@ export class TranslocoService implements OnDestroy {
     const mainLang = getLangFromScope(path);
 
     if (this._isLangScoped(path) && !this.isLoadedTranslation(mainLang)) {
-      return combineLatest(
+      return combineLatest([
         this.load(mainLang),
-        this.load(path, { inlineLoader })
-      );
+        this.load(path, { inlineLoader }),
+      ]);
     }
     return this.load(path, { inlineLoader });
   }
@@ -708,7 +706,7 @@ export class TranslocoService implements OnDestroy {
       return this.getAvailableLangs() as string[];
     }
 
-    return (this.getAvailableLangs() as { id: string }[]).map((l) => l.id);
+    return (this.getAvailableLangs() as LangDefinition[]).map((l) => l.id);
   }
 
   private getMissingHandlerData(): TranslocoMissingHandlerData {
