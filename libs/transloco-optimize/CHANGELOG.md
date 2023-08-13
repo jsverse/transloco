@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [5.0.3](https://github.com/ngneat/transloco/compare/transloco-optimize-5.0.2...transloco-optimize-5.0.3) (2023-08-13)
+
+### Bug Fixes
+
+- **optimize:** 🐛 fixed file resolution on windows ([#687](https://github.com/ngneat/transloco/issues/687)) ([5260127](https://github.com/ngneat/transloco/commit/52601277edfe5ef3502a822fc6129e28723bc16c))
+
 ## [5.0.2](https://github.com/ngneat/transloco/compare/transloco-optimize-5.0.1...transloco-optimize-5.0.2) (2023-08-04)
 
 ## [5.0.1](https://github.com/ngneat/transloco/compare/transloco-optimize-5.0.0...transloco-optimize-5.0.1) (2023-08-01)
