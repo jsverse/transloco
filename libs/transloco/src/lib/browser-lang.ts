@@ -28,13 +28,7 @@ export function getBrowserCultureLang(): string {
     return '';
   }
 
-  const navigator = window.navigator as any;
-  let browserCultureLang = navigator.languages ? navigator.languages[0] : null;
-  browserCultureLang =
-    browserCultureLang ||
-    navigator.language ||
-    navigator.browserLanguage ||
-    navigator.userLanguage;
+  const navigator = window.navigator;
 
-  return browserCultureLang;
+  return navigator.languages?.[0] ?? navigator.language;
 }
