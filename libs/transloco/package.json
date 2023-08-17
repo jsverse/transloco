@@ -43,13 +43,7 @@
     "@angular/core": ">=16.0.0"
   },
   "dependencies": {
-    "fs-extra": "^11.0.0",
-    "glob": "^10.0.0",
     "tslib": "^2.2.0",
-    "flat": "5.0.2",
-    "@ngneat/transloco-utils": "^5.0.0",
-    "replace-in-file": "^7.0.1",
-    "ora": "^5.4.1",
-    "lodash.kebabcase": "^4.1.1"
+    "flat": "5.0.2"
   }
 }
