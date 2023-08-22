@@ -125,7 +125,7 @@ export class TranslocoService implements OnDestroy {
       this.loader = new DefaultLoader(this.translations);
     }
     service = this;
-    this.config = structuredClone(userConfig);
+    this.config = JSON.parse(JSON.stringify(userConfig));
 
     this.setAvailableLangs(this.config.availableLangs || []);
     this.setFallbackLangForMissingTranslation(this.config);
