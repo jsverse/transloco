@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [5.0.7](https://github.com/ngneat/transloco/compare/transloco-5.0.6...transloco-5.0.7) (2023-08-22)
+
+### Bug Fixes
+
+- **transloco:** 🐛 replace structuredClone with json clone ([a76cd05](https://github.com/ngneat/transloco/commit/a76cd05fd71148c79cfc418e996ca908a47aeeb2)), closes [#688](https://github.com/ngneat/transloco/issues/688)
+
 ## [5.0.6](https://github.com/ngneat/transloco/compare/transloco-5.0.5...transloco-5.0.6) (2023-08-05)
 
 ## [5.0.5](https://github.com/ngneat/transloco/compare/transloco-5.0.4...transloco-5.0.5) (2023-08-05)
