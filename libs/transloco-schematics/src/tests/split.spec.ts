@@ -82,10 +82,13 @@ describe('Split', () => {
       const resEn = readTranslation(tree, 'scope/en');
       const resESSub = readTranslation(tree, 'scope/subscope/es');
       const resEnSub = readTranslation(tree, 'scope/subscope/en');
-      expect(resES).toEqual(translatedEs.scope);
-      expect(resEn).toEqual(translatedEn.scope);
+
       expect(resESSub).toEqual(translatedEs.scope.subscope);
       expect(resEnSub).toEqual(translatedEn.scope.subscope);
+      delete translatedEs.scope.subscope;
+      delete translatedEn.scope.subscope;
+      expect(resES).toEqual(translatedEs.scope);
+      expect(resEn).toEqual(translatedEn.scope);
     });
   });
 

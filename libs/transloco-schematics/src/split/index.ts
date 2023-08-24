@@ -25,14 +25,7 @@ function reduceTranslations(
 ) {
   const dir = host.getDir(dirPath);
   if (!hasFiles(dir)) return translationJson;
-  dir.subfiles
-    .filter((fileName) => fileName.includes(`${lang}.json`))
-    .forEach((fileName) => {
-      if (!translationJson[key]) {
-        return translationJson;
-      }
-      setFileContent(host, dir.path, fileName, translationJson[key]);
-    });
+
   if (hasSubdirs(dir)) {
     dir.subdirs.forEach((subDirName) => {
       const subDir = dir.dir(subDirName);
@@ -41,9 +34,19 @@ function reduceTranslations(
       const subTranslationJson = translationJson[key];
       if (subTranslationJson) {
         reduceTranslations(host, subDir.path, subTranslationJson, lang, nestedKey);
-      }      
+        delete translationJson[key][nestedKey]
+      }
     });
   }
+
+  dir.subfiles
+    .filter((fileName) => fileName.includes(`${lang}.json`))
+    .forEach((fileName) => {
+      if (!translationJson[key]) {
+        return translationJson;
+      }
+      setFileContent(host, dir.path, fileName, translationJson[key]);
+    });
 
   delete translationJson[key];
   return translationJson;
