@@ -66,11 +66,13 @@ describe('Split', () => {
     });
 
     it('should split translated scope content', async () => {
-      const translatedEn = { scope: { hello: 'hello translated' } };
-      const translatedEs = { scope: { hello: 'hola translated' } };
+      const translatedEn = { scope: { hello: 'hello translated', subscope: { sun: "sun translated" } } };
+      const translatedEs = { scope: { hello: 'hola translated', subscope: { sun: "sol translated" } } };
       setupMerged(translatedEn, translatedEs);
       appTree.create(`${options.translationPath}/scope/en.json`, '');
       appTree.create(`${options.translationPath}/scope/es.json`, '');
+      appTree.create(`${options.translationPath}/scope/subscope/en.json`, '');
+      appTree.create(`${options.translationPath}/scope/subscope/es.json`, '');
 
       const tree = await schematicRunner
         .runSchematicAsync('split', options, appTree)
@@ -78,8 +80,12 @@ describe('Split', () => {
 
       const resES = readTranslation(tree, 'scope/es');
       const resEn = readTranslation(tree, 'scope/en');
+      const resESSub = readTranslation(tree, 'scope/subscope/es');
+      const resEnSub = readTranslation(tree, 'scope/subscope/en');
       expect(resES).toEqual(translatedEs.scope);
       expect(resEn).toEqual(translatedEn.scope);
+      expect(resESSub).toEqual(translatedEs.scope.subscope);
+      expect(resEnSub).toEqual(translatedEn.scope.subscope);
     });
   });
 
