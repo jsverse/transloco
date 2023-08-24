@@ -98,7 +98,7 @@ describe('setTranslation', () => {
       service.setTranslation(translation, lang);
       const merged = {
         ...flatten(mockLangs.en),
-        ...flatten({ myScopeAlias: { ...translation } }),
+        ...flatten({ lazyPage: { ...translation } }),
       };
       expect(setTranslationsSpy).toHaveBeenCalledWith('en', merged);
     });

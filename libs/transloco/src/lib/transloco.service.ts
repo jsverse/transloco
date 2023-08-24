@@ -276,7 +276,7 @@ export class TranslocoService implements OnDestroy {
       ) as any;
     }
 
-    key = scope ? `${scope}.${key}` : key;
+    key = scope ? `${scope}.${key}` : this.getMappedKey(key);
 
     const translation = this.getTranslation(resolveLang);
     const value = translation[key];
@@ -678,7 +678,7 @@ export class TranslocoService implements OnDestroy {
     if (!this.config.scopeMapping) {
       this.config.scopeMapping = {};
     }
-    this.config.scopeMapping[scope] = alias;
+    this.config.scopeMapping[alias] = toCamelCase(scope);
   }
 
   ngOnDestroy() {
@@ -794,6 +794,19 @@ export class TranslocoService implements OnDestroy {
   private getMappedScope(scope: string): string {
     const { scopeMapping = {} } = this.config;
     return scopeMapping[scope] || toCamelCase(scope);
+  }
+
+  private getMappedKey(key: string): string {
+    const split = key.split('.');
+    if(split.length > 1) {
+      let scope = split.shift();
+      if(scope) {
+        scope = this.getMappedScope(scope);
+        split.unshift(scope);
+        return split.join('.');
+      }
+    }
+    return key;
   }
 
   /**
