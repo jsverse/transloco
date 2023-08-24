@@ -1,3 +1,4 @@
+import { split } from '@angular-devkit/core';
 import { Rule, Tree } from '@angular-devkit/schematics';
 
 import { TranslationFileFormat } from '../types';
@@ -31,16 +32,20 @@ function reduceTranslations(
         return translationJson;
       }
       setFileContent(host, dir.path, fileName, translationJson[key]);
-      delete translationJson[key];
     });
   if (hasSubdirs(dir)) {
     dir.subdirs.forEach((subDirName) => {
       const subDir = dir.dir(subDirName);
-      const nestedKey = getTranslationKey(key, subDirName);
-      reduceTranslations(host, subDir.path, translationJson, lang, nestedKey);
+      const nestedKeyPath = getTranslationKey(key, subDirName);
+      const nestedKey = nestedKeyPath.split('.').at(-1);
+      const subTranslationJson = translationJson[key];
+      if (subTranslationJson) {
+        reduceTranslations(host, subDir.path, subTranslationJson, lang, nestedKey);
+      }      
     });
   }
 
+  delete translationJson[key];
   return translationJson;
 }
 
