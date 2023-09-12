@@ -3,6 +3,10 @@ import * as p from 'node:path';
 import * as ora from 'ora';
 import { replaceInFile } from 'replace-in-file';
 
+const PIPE_CONTENT_REGEX = `\\s*([^}\\r\\n]*?\\|)\\s*(translate)[^\\r\\n]*`;
+export const PIPE_REGEX = `{{${PIPE_CONTENT_REGEX}}}`;
+export const PIPE_IN_BINDING_REGEX = `\\]=('|")${PIPE_CONTENT_REGEX}\\1`;
+
 // Example: `./src/ng2/**/*.html`;
 export function run(path) {
   console.log('\x1b[4m%s\x1b[0m', '\nStarting migration script');
@@ -11,11 +15,10 @@ export function run(path) {
   path = p.join(dir, path, '/**/*');
 
   const noSpecFiles = { ignore: `${path}spec.ts`, files: `${path}.ts` };
-  const pipeContent = `\\s*([^}\\r\\n]*?\\|)\\s*(translate)\\s*(?::\\s*{[^}\\r\\n]+})?\\s*(\\s*\\|[\\s\\r\\t\\n]*\\w*)*\\s*`;
   const [directive, pipe, pipeInBinding] = [
     /(translate|\[translate(?:Params)?\])=("|')[^"']*\2/gm,
-    new RegExp(`{{${pipeContent}}}`, 'gm'),
-    new RegExp(`\\]=('|")${pipeContent}\\1`, 'gm'),
+    new RegExp(PIPE_REGEX, 'gm'),
+    new RegExp(PIPE_IN_BINDING_REGEX, 'gm'),
   ].map((regex) => ({
     files: `${path}.html`,
     from: regex,
