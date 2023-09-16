@@ -1,6 +1,6 @@
 {
   "name": "@ngneat/transloco",
-  "version": "5.0.7",
+  "version": "5.0.8",
   "description": "The internationalization (i18n) library for Angular",
   "schematics": "./schematics/src/collection.json",
   "publishConfig": {
