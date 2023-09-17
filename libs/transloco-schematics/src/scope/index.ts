@@ -1,4 +1,4 @@
-import * as p from 'node:path';
+import { join, dirname } from 'node:path';
 
 import { dasherize } from '@angular-devkit/core/src/utils/strings';
 import {
@@ -47,9 +47,7 @@ function addScopeToModule(
     ScriptTarget.Latest,
     true
   );
-  const provider = `{ provide: TRANSLOCO_SCOPE, useValue: ${getProviderValue(
-    options
-  )} }`;
+  const provider = `provideTranslocoScope(${getProviderValue(options)})`;
   const changes: Change[] = [];
   changes.push(
     addProviderToModule(moduleSource, modulePath, provider, LIB_NAME)[0]
@@ -61,7 +59,7 @@ function addScopeToModule(
     insertImport(
       moduleSource,
       modulePath,
-      'TRANSLOCO_SCOPE, TranslocoModule',
+      'provideTranslocoScope, TranslocoModule',
       LIB_NAME
     )
   );
@@ -101,7 +99,7 @@ function addInlineLoader(
 }, {});
 
 `;
-  const path = p.join(p.dirname(modulePath), 'transloco.loader.ts');
+  const path = join(dirname(modulePath), 'transloco.loader.ts');
   tree.create(path, loader);
 }
 
@@ -110,21 +108,30 @@ function createTranslationFiles(options, rootPath, modulePath, host: Tree) {
     return empty();
   }
   const defaultPath = options.inlineLoader
-    ? p.join(p.dirname(modulePath), 'i18n')
-    : p.join(rootPath, 'assets', 'i18n', dasherize(options.name));
+    ? join(dirname(modulePath), 'i18n')
+    : join(rootPath, 'assets', 'i18n', dasherize(options.name));
   const translationsPath = options.translationPath
-    ? p.join(rootPath, options.translationPath)
+    ? join(rootPath, options.translationPath)
     : defaultPath;
 
   return createTranslateFilesFromOptions(host, options, translationsPath);
 }
 
+function extractModuleOptions({
+  path,
+  project,
+  routing,
+  flat,
+  commonModule,
+}: SchemaOptions) {
+  return { path, project, routing, flat, commonModule };
+}
+
 export default function (options: SchemaOptions): Rule {
-  // @ts-ignore
   return (host: Tree, context: SchematicContext) => {
     const project = getProject(host, options.project);
-    const rootPath = (project && project.sourceRoot) || 'src';
-    const assetsPath = p.join(rootPath, 'assets', 'i18n');
+    const rootPath = project?.sourceRoot ?? 'src';
+    const assetsPath = join(rootPath, 'assets', 'i18n');
     options.langs = getTranslationFiles(options, host, assetsPath);
     if (options.module) {
       const projectPath = getProjectPath(host, project, options);
@@ -140,10 +147,12 @@ export default function (options: SchemaOptions): Rule {
       }
     }
 
-    const cmpRule = externalSchematic('@schematics/angular', 'module', options);
-
     return chain([
-      cmpRule(host, context) as Rule,
+      externalSchematic(
+        '@schematics/angular',
+        'module',
+        extractModuleOptions(options)
+      ),
       (tree) => {
         const modulePath = tree.actions.find(
           (action) =>
