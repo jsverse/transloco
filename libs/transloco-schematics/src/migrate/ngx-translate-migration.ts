@@ -3,7 +3,7 @@ import * as p from 'node:path';
 import * as ora from 'ora';
 import { replaceInFile } from 'replace-in-file';
 
-const PIPE_CONTENT_REGEX = `\\s*([^}\\r\\n]*?\\|)\\s*(translate)[^\\r\\n]*`;
+const PIPE_CONTENT_REGEX = `\\s*([^}\\r\\n]*?\\|)\\s*(translate)[^\\r\\n]*?`;
 export const PIPE_REGEX = `{{${PIPE_CONTENT_REGEX}}}`;
 export const PIPE_IN_BINDING_REGEX = `\\]=('|")${PIPE_CONTENT_REGEX}\\1`;
 
@@ -22,7 +22,7 @@ export function run(path) {
   ].map((regex) => ({
     files: `${path}.html`,
     from: regex,
-    to: (match) => match.replace('translate', 'transloco'),
+    to: (match) => match.replace(/translate/g, 'transloco'),
   }));
 
   const moduleMultiImport = {

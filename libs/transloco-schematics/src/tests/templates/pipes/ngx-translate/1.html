@@ -1,0 +1,32 @@
+<div class="bot-setup-container width-100 d-flex">
+  <form class="da-form d-flex-column width-100" [formGroup]="bot" novalidate>
+    <!-- Bot name -->
+    <div class="bot-setup-header allow-full-line d-flex">
+      <da-editable-input-text [value]="botSetupStore.bot.controls.name.value" [entity]="'bot'"
+        (onChange)="onNameChange($event)"></da-editable-input-text>
+    </div>
+
+    <edge-wizard-step [label]="'Restore Options' | translate" [validatingMessage]="'Processing archive...'|translate"
+      [validate]="simulateRestore" [useFormCtrlValidation]="profile">
+      <ui-view></ui-view>
+
+      <!-- Footer error message -->
+      <div class="footer-error-message d-flex" *ngIf="errorCounter > 0">
+        {{"1" | translate}} {{errorCounter}} {{"2" | translate}}{{errorCounter > 1 ? 's'
+      : ''}}
+      </div>
+      <div class="allow-full-line footer-buttons d-flex align-end-center">
+        <div class="setup-buttons d-flex">
+          <button class="da-btn secondary link footer cancel-button" type="button" (click)="backToPrevPage(false)">
+            {{"3" | translate}}
+          </button>
+          <button class="da-btn secondary save-button" *ngIf="isEditState && !isDuplicate" (click)="onSubmit(false)">
+            {{"4" | translate}}
+          </button>
+          <button class="da-btn primary save-run-button" (click)="onSubmit(true)">{{"5" | translate}}
+          </button>
+        </div>
+      </div>
+    </edge-wizard-step>
+  </form>
+</div>

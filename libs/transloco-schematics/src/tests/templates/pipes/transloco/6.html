@@ -1,0 +1,51 @@
+<div class="d-flex-column align-center-start name-input-wrapper mb-25">
+    <div class="mb-7" datoFont="note" datoColor="primary-300"></div>
+    <dato-input datoSize="lg" [formControlName]="name" [data-auto-id]="'53' | transloco | another"
+                [placeholder]="(condition ? '54' : '55') | transloco | another : { name: 'ccc'}" ngDefaultControl></dato-input>
+    <dato-input datoSize="lg" [formControlName]="name" [data-auto-id]="'56' | another | transloco | other "
+                [placeholder]="condition ? dontTake : '57' | another | transloco: { name: 'ccc'}" ngDefaultControl></dato-input>
+    <!-- Validation Message-->
+    <div [class.invisible]="'58' | transloco"
+         class="mt-8" datoFont="note" datoColor="red-400">
+        {{ '59' | transloco | another }}
+        {{ '60' | another | transloco | other }}
+        {{ '61' | another | other | transloco }}
+    </div>
+    <span>{{ var + 'not'  | transloco }}</span>
+
+</div>
+
+<textarea formControlName="outputContent" rows="10" cols="30"
+          class="mt-6" [ngClass]="txtareaClass"
+          placeholder="{{'62' | transloco }}" readonly>
+                </textarea>
+
+<div>{{ '63.64.65' | another | other | transloco }}</div>
+<a [title]="'admin.1' | lowercase
+    | translate"
+      [routerLink]="'admin' | lowercase">
+</a>
+<a [routerLink]="'admin' | lowercase"
+   [title]="'admin.2' | transloco">
+</a>
+<span class="my-span-class another-class also-span-class"
+      [inlineSVG]="'some/path/to/image.svg'"
+      data-e2e="DataAttributeValue"
+      matTooltipClass="my-tooltip-class"
+      matTooltip="{{ 'admin.3' | transloco }}">
+</span>
+
+{{ '66' | transloco }}
+{{ condition ? '67' | transloco : 'dont take' }}
+
+{{ var | another : {foo: '68' | transloco} | other : ('69' | transloco) }}
+{{ var | another : ('70' | transloco) | lowercase }}
+
+<my-comp [aa]="('71' | transloco) + 'a'"
+         [bb]="1 + 2"
+         [cc]="('72' | transloco) || var1 ? ('73' | transloco) + 1 : func(1 - ('74' | transloco))">
+    <comp a="{{('75' | transloco) + 'a'}}"
+          b="{{1 + ('76' | transloco)}}">
+        {{ (('77' | transloco) + 'a').split(('78' | transloco) || ',') }}
+    </comp>
+</my-comp>
