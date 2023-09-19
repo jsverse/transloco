@@ -1,0 +1,85 @@
+<div class="d-flex-column height-100" [formGroup]="form">
+  <div class="d-flex-column d-flex-0-0-auto">
+    <div class="mb-10" datoFont="headline">{{"28" | transloco}}</div>
+  </div>
+  <div class="d-flex-column d-flex-1-0-auto">
+    <div class="action-rule-setup-wrapper d-flex-column pt-20 pb-20 pl-20 pr-15 mb-30">
+      <!-- RULE NAME -->
+      <div class="d-flex-column align-center-start name-input-wrapper mb-25">
+        <div class="mb-7" datoFont="note" datoColor="primary-300">{{"29" | transloco: {id: 1}}</div>
+        <dato-input datoSize="lg" formControlName="name" data-auto-id="action_rule_setup_name_input"
+                    [placeholder]="'actionRule.typeMeaningfulName' | transloco" ngDefaultControl></dato-input>
+        <!-- Validation Message-->
+        <div [class.invisible]="form.controls.name.valid || !(showValidation$ | async)"
+             class="mt-8" datoFont="note" datoColor="red-400">{{"30" | transloco: { name: 'Avi' } }}
+        </div>
+      </div>
+
+      <!-- FREQUENCY -->
+      <da-frequency class="mb-25" [frequency]="actionRule.config.frequency" formControlName="frequency"
+                    (onFrequencyChange)="onFrequencyChange($event)" ngDefaultControl></da-frequency>
+
+      <!-- EXPIRATION -->
+      <div class="d-flex-column align-center-start">
+        <div datoFont="note" datoColor="primary-300">{{"31" | transloco}}</div>
+        <dato-checkbox formControlName="expiration" ngDefaultControl
+                       data-auto-id="action_rule_setup_expiration_checkbox">
+          {{ "32" | transloco }}
+        </dato-checkbox>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex-row align-space-between-center pt-15 footer-wrapper d-flex-0-0-auto">
+    <dato-button datoType="secondary" (click)="back()" class="ml-30" width="100px"
+                 data-auto-id="action_rule_setup_step_3_back">{{ "33" | transloco }}
+    </dato-button>
+    <div class="d-flex-row align-end-center">
+      <dato-link datoType="secondary" (click)="cancel()" class="mr-10 px-20"
+                 data-auto-id="action_rule_setup_step_3_cancel">{{"34" | transloco}}
+      </dato-link>
+      <dato-button datoType="secondary" *ngIf="editSetupMode" (click)="executeRule()" class="mr-10">
+        <dato-icon datoIcon="run-once"></dato-icon>
+        {{ (condition ? '35' : '36') | transloco: { name: 'ccc'} }}
+      </dato-button>
+      <dato-button (click)="save()" width="156px" class="pr-30" data-auto-id="action_rule_setup_step_3_save"
+                   [disabled]="disableSaveButton">{{saveButtonKey | transloco}}
+      </dato-button>
+    </div>
+  </div>
+</div>
+
+<ng-template #successToast>
+  <dato-link datoSize='sm' (click)='goToList()'>{{'37' | transloco}}</dato-link>
+  {{ (condition ? "38" : '39') | transloco: { name: "ccc"} }}
+
+</ng-template>
+
+<div>
+  {{ (condition ? '40' :
+
+  '41') | translate: { name: "ccc"} }}
+</div>
+
+<div>
+  {{ (condition ? '42' :
+
+  '43') | translate: { name: "ccc"} }}
+</div>
+
+<div class="d-flex-column align-center-start name-input-wrapper mb-25">
+  <div class="mb-7" datoFont="note" datoColor="primary-300"></div>
+  <dato-input datoSize="lg" [formControlName]="name" [data-auto-id]="'44' | transloco"
+              [placeholder]="(condition ? '45' : '46') | transloco: { name: 'ccc'}" ngDefaultControl></dato-input>
+  <!-- Validation Message-->
+  <div [class.invisible]="'47' | transloco"
+       class="mt-8" datoFont="note" datoColor="red-400">
+    {{ '48' | transloco }}
+    {{ '49.50.51.52' | transloco }}
+  </div>
+  <span>{{ 'not' + 4 | transloco }}</span>
+
+  <span>{{ 'numer' ++ 4 | transloco }}</span>
+
+</div>
+
