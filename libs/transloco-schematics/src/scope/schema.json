@@ -31,19 +31,23 @@
       "type": "boolean",
       "description": "Skip the translation files creation."
     },
-    "translateType": {
-      "description": "The translation files format.",
-      "type": "string",
-      "default": "JSON"
-    },
     "translationPath": {
       "description": "The to the translation files, relative to the project's root.",
       "type": "string"
     },
+    "lintFix": {
+      "type": "boolean",
+      "default": false,
+      "description": "When true, applies lint fixes after generating the module."
+    },
+
     "path": {
       "type": "string",
       "format": "path",
-      "description": "The path at which to create the NgModule, relative to the project's root.",
+      "$default": {
+        "$source": "workingDirectory"
+      },
+      "description": "The path at which to create the NgModule, relative to the workspace root.",
       "visible": false
     },
     "project": {
@@ -55,7 +59,7 @@
     },
     "routing": {
       "type": "boolean",
-      "description": "When true, creates a routing module.",
+      "description": "Create a routing module.",
       "default": false
     },
     "routingScope": {
@@ -66,19 +70,14 @@
     },
     "flat": {
       "type": "boolean",
-      "description": "When true, creates the new files at the top level of the current project root. ",
+      "description": "Create the new files at the top level of the current project root. ",
       "default": false
     },
     "commonModule": {
       "type": "boolean",
-      "description": "When true, the new NgModule imports \"CommonModule\". ",
+      "description": "The new NgModule imports \"CommonModule\". ",
       "default": true,
       "visible": false
-    },
-    "lintFix": {
-      "type": "boolean",
-      "default": false,
-      "description": "When true, applies lint fixes after generating the module."
     }
   },
   "required": []
