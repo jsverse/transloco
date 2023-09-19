@@ -1,4 +1,5 @@
-import {PIPE_IN_BINDING_REGEX, PIPE_REGEX, run} from '../migrate/ngx-translate-migration';
+// noinspection AngularUndefinedBinding
+
 import * as nodePath from 'node:path';
 import {readFile} from 'node:fs/promises';
 
