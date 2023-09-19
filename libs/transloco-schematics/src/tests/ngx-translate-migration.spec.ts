@@ -114,6 +114,11 @@ describe('ngx-translate migration', () => {
         },
         {
           testCase: `<compnent [title]="'Hello World ' + ('mom' | transloco) | fooBar">`
+        },
+        {
+          testCase: `<a [title]="'admin.1' | lowercase
+              | translate"
+          </a>`
         }
       ])('Case: $testCase', ({testCase}) => {
         const regex = new RegExp(PIPE_IN_BINDING_REGEX, 'gm');
