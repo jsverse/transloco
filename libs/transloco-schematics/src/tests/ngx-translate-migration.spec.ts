@@ -1,9 +1,13 @@
 import {PIPE_IN_BINDING_REGEX, PIPE_REGEX, run} from '../migrate/ngx-translate-migration';
 import * as nodePath from 'node:path';
-import {replaceInFile, ReplaceInFileConfig} from 'replace-in-file';
 import {readFile} from 'node:fs/promises';
-import Mock = jest.Mock;
+
+import {replaceInFile, ReplaceInFileConfig} from 'replace-in-file';
 import {glob} from 'glob';
+
+import {PIPE_IN_BINDING_REGEX, PIPE_REGEX, run} from '../migrate/ngx-translate-migration';
+
+import Mock = jest.Mock;
 
 jest.mock('replace-in-file');
 
