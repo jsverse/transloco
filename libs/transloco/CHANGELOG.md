@@ -2,15 +2,46 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [6.0.0](https://github.com/ngneat/transloco/compare/transloco-5.0.10...transloco-6.0.0) (2023-09-21)
+
+### BREAKING CHANGES
+
+- **transloco:** 🧨 Update to flat v6 which is ESM
+
 ## [5.0.10](https://github.com/ngneat/transloco/compare/transloco-5.0.9...transloco-5.0.10) (2023-09-20)
 
+This version contains breaking changes, please use 5.0.7 until you are ready to migrate to v6.
+
+- **transloco:** 🐛 migrate schematic improve "translate" pipe regex ([1d5cb65](https://github.com/ngneat/transloco/commit/1d5cb6535f86fe7bfd9f8558a9b80f325849a12a)), closes [#701](https://github.com/ngneat/transloco/issues/701)
+- **transloco:** 🐛 split schematic doesn't update subfolders ([841e2def](https://github.com/ngneat/transloco/commit/841e2def5d78319901c27ab6db7b79ffc52bd126)), closes [#695](https://github.com/ngneat/transloco/issues/695)
+
+### BREAKING CHANGES
+
+- **transloco:** 🧨 Update to flat v6 which is ESM
+
 ## [5.0.9](https://github.com/ngneat/transloco/compare/transloco-5.0.8...transloco-5.0.9) (2023-09-17)
+
+### Bug Fixes
+
+- **transloco:** 🐛 split scope schematics ([dfc5373](https://github.com/ngneat/transloco/commit/dfc537302564ec34f4f93bd974541e036d8c6983)), closes [#558](https://github.com/ngneat/transloco/issues/558)
+
+This version contains breaking changes, please use 5.0.7 until you are ready to migrate to v6.
+
+### BREAKING CHANGES
+
+- **transloco:** 🧨 Update to flat v6 which is ESM
 
 ## [5.0.8](https://github.com/ngneat/transloco/compare/transloco-5.0.7...transloco-5.0.8) (2023-09-16)
 
 ### Bug Fixes
 
+This version contains breaking changes, please use 5.0.7 until you are ready to migrate to v6.
+
 - **transloco:** 🐛 update flat to v6 ([7657b3d](https://github.com/ngneat/transloco/commit/7657b3de185b011bd35f815436da759aae33fc26)), closes [#570](https://github.com/ngneat/transloco/issues/570)
+
+### BREAKING CHANGES
+
+- **transloco:** 🧨 Update to flat v6 which is ESM
 
 ## [5.0.7](https://github.com/ngneat/transloco/compare/transloco-5.0.6...transloco-5.0.7) (2023-08-22)
 
