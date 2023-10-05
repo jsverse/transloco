@@ -132,7 +132,7 @@ export default function (options: SchemaOptions): Rule {
       actions.push(
         addRootProvider(options.project, ({ code, external }) => {
           external('isDevMode', '@angular/core');
-          external('TranslocoHttpLoader', './transloco-loader.ts');
+          external('TranslocoHttpLoader', './transloco-loader');
 
           return code`${external('provideTransloco', '@ngneat/transloco')}({
         config: { 
