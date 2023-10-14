@@ -45,6 +45,21 @@ export const TODO_ROUTES: Route = {
 
 ```
 
+We also can provide several scopes at once: 
+
+```ts title="core.module.ts"
+import { Route } from '@angular/router';
+import {provideTranslocoScope} from "./transloco.providers";
+
+export const TODO_ROUTES: Route = {
+    path: '',
+    loadComponent: () => import('./todos.component').then((TodosComponent) => TodosComponent),
+    providers: [
+      provideTranslocoScope('todos', { scope: 'shared', alias: 'sharedAlias' }),
+    ],
+};
+```
+
 </TabItem>
 
 <TabItem value="NgModule">

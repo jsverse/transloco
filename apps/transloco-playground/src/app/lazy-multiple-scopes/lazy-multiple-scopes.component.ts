@@ -7,8 +7,7 @@ import { TranslocoModule, provideTranslocoScope } from '@jsverse/transloco';
   templateUrl: './lazy-multiple-scopes.component.html',
   styleUrls: ['./lazy-multiple-scopes.component.scss'],
   providers: [
-    provideTranslocoScope({ scope: 'admin-page', alias: 'AdminPageAlias' }),
-    provideTranslocoScope({ scope: 'lazy-page', alias: 'LazyPageAlias' }),
+    provideTranslocoScope({ scope: 'admin-page', alias: 'AdminPageAlias' }, { scope: 'lazy-page', alias: 'LazyPageAlias' }),
   ],
   standalone: true,
   imports: [TranslocoModule],
