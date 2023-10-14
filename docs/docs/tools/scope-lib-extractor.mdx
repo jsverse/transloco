@@ -47,10 +47,22 @@ For example, here we have created a new CLI project, with the main application (
 Now we need to declare the [scope](../lazy-load/scope-configuration) in the `CoreModule`:
 
 ```ts title="core.module.ts"
-import {provideTranslocoScope} from "./transloco.providers";
+import {provideTranslocoScopes} from "./transloco.providers";
 @NgModule({
   declarations: [CoreComponent],
-  providers: [provideTranslocoScope('core')],
+  providers: [provideTranslocoScopes('core')],
+  imports: [TranslocoModule]
+})
+export class CoreModule {}
+```
+
+We also can provide several scopes at once: 
+
+```ts title="core.module.ts"
+import {provideTranslocoScopes} from "./transloco.providers";
+@NgModule({
+  declarations: [CoreComponent],
+  providers: [provideTranslocoScopes('core', { scope: 'shared', alias: 'sharedAlias' })],
   imports: [TranslocoModule]
 })
 export class CoreModule {}

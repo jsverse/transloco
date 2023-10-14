@@ -1,6 +1,6 @@
 import { Route } from '@angular/router';
 
-import { provideTranslocoScope, Translation } from '@ngneat/transloco';
+import { provideTranslocoScopes, Translation } from '@ngneat/transloco';
 
 const loader = ['en', 'es'].reduce((acc, lang: string) => {
   acc[lang] = () => import(`./i18n/${lang}.json`);
@@ -14,7 +14,7 @@ export const INLINE_LOADERS_ROUTES: Route = {
       (InlineLoadersComponent) => InlineLoadersComponent
     ),
   providers: [
-    provideTranslocoScope({
+    provideTranslocoScopes({
       scope: 'inline',
       loader,
     }),

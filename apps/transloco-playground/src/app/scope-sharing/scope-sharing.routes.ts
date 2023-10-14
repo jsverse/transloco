@@ -2,9 +2,7 @@ import { Route } from '@angular/router';
 
 import {
   provideTranslocoLoadingTpl,
-  provideTranslocoScope,
-  TRANSLOCO_LOADING_TEMPLATE,
-  TRANSLOCO_SCOPE,
+  provideTranslocoScopes,
 } from '@ngneat/transloco';
 
 export const SCOPE_SHARING_ROUTES: Route = {
@@ -14,7 +12,7 @@ export const SCOPE_SHARING_ROUTES: Route = {
       (ScopeSharingComponent) => ScopeSharingComponent
     ),
   providers: [
-    provideTranslocoScope({
+    provideTranslocoScopes({
       scope: 'todos-page',
       alias: 'todos',
     }),

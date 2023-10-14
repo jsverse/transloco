@@ -2,7 +2,7 @@ import { Route } from '@angular/router';
 
 import {
   provideTranslocoLoadingTpl,
-  provideTranslocoScope,
+  provideTranslocoScopes,
 } from '@ngneat/transloco';
 
 export const LAZY_ROUTES: Route = {
@@ -10,7 +10,7 @@ export const LAZY_ROUTES: Route = {
   loadComponent: () =>
     import('./lazy.component').then((LazyComponent) => LazyComponent),
   providers: [
-    provideTranslocoScope('admin-page'),
+    provideTranslocoScopes('admin-page'),
     provideTranslocoLoadingTpl(
       `<span id="default-loading-template">Loading template...</span>`
     ),

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 
-import { provideTranslocoScope, TranslocoModule } from '@ngneat/transloco';
+import { provideTranslocoScopes, TranslocoModule } from '@ngneat/transloco';
 
 @Component({
   selector: 'app-transpilers',
@@ -9,7 +9,7 @@ import { provideTranslocoScope, TranslocoModule } from '@ngneat/transloco';
   styleUrls: ['./transpilers.component.scss'],
   standalone: true,
   providers: [
-    provideTranslocoScope({
+    provideTranslocoScopes({
       scope: 'transpilers/messageformat',
       alias: 'mf',
     }),
