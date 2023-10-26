@@ -122,6 +122,16 @@ function assertParser(config: MessageformatConfig) {
     expect(parsedMale).toEqual('The smart boy named Henkie won his race');
   });
 
+  it('should translate simple param and interpolate params inside messageformat string with joined braces', () => {
+    const parsedMale = parser.transpile(
+      '{count, plural, =1 {1 person} other {{count} people}}',
+      { count: 10 },
+      {},
+      'key'
+    );
+    expect(parsedMale).toEqual('10 people');
+  });
+
   it('should translate simple param and interpolate params inside messageformat string using custom interpolation markers', () => {
     const parsedMale = parserWithCustomInterpolation.transpile(
       'The <<< value >>> { gender, select, male {boy named <<< name >>> won his} female {girl named <<< name >>> won her} other {person named <<< name >>> won their}} race',

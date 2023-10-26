@@ -22,11 +22,11 @@
       "outputs": ["{options.outputFile}"]
     },
     "test": {
-      "executor": "@angular-devkit/build-angular:karma",
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/transloco-schematics"],
       "options": {
-        "main": "libs/transloco-validator/src/test-setup.ts",
-        "tsConfig": "libs/transloco-validator/tsconfig.spec.json",
-        "karmaConfig": "libs/transloco-validator/karma.conf.js"
+        "jestConfig": "libs/transloco-validator/jest.config.ts",
+        "passWithNoTests": true
       }
     },
     "version": {

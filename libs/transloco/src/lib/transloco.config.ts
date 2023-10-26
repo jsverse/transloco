@@ -17,7 +17,7 @@ export interface TranslocoConfig {
     useFallbackTranslation: boolean;
     allowEmpty: boolean;
   };
-  interpolation: [string, string];
+  interpolation: [start: string, end: string, forbiddenChars?: string];
 }
 
 export const TRANSLOCO_CONFIG = new InjectionToken<TranslocoConfig>(
@@ -43,7 +43,7 @@ export const defaultConfig: TranslocoConfig = {
   flatten: {
     aot: false,
   },
-  interpolation: ['{{', '}}'],
+  interpolation: ['{{', '}}', '{}'],
 };
 
 type DeepPartial<T> = T extends Array<any>

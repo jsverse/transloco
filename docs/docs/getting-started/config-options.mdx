@@ -106,10 +106,10 @@ translocoConfig({
 ```
 
 ### `interpolation`
-The start and end markings for parameters: (defaults to `['{{', '}}']`)
+The start and end markings for parameters and forbidden characters for parameter names: (defaults to `['{{', '}}', '{}']`)
 ```ts
 translocoConfig({
   // This will enable you to specify parameters as such: `"Hello <<<value>>>"`
-  interpolation: ['<<<', '>>>']
+  interpolation: ['<<<', '>>>', '<>']
 })
 ```
