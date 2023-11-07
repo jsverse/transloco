@@ -7,7 +7,7 @@ export const TRANSLOCO_PRELOAD_LANGUAGES = new InjectionToken<string[]>(
   'Languages to be preloaded'
 );
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class TranslocoPreloadLangsService implements OnDestroy {
   private readonly idleCallbackId: number | undefined;
   private subscription: Subscription | null = null;
