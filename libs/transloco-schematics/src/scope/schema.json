@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "$id": "SchematicsTranslocoScope",
+  "$id": "transloco-scope",
   "title": "Add new transloco scope module, along with translation files.",
   "type": "object",
   "properties": {

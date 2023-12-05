@@ -1,4 +1,4 @@
-import * as _path from 'node:path';
+import { dirname } from 'node:path';
 
 import {
   chain,
@@ -7,24 +7,24 @@ import {
   SchematicContext,
   Tree,
 } from '@angular-devkit/schematics';
+import {
+  getAppModulePath,
+  isStandaloneApp,
+} from '@schematics/angular/utility/ng-ast-utils';
+import {
+  findBootstrapApplicationCall,
+  getMainFilePath,
+} from '@schematics/angular/utility/standalone/util';
+import {
+  addRootImport,
+  addRootProvider,
+} from '@schematics/angular/utility/standalone/rules';
+import { findAppConfig } from '@schematics/angular/utility/standalone/app_config';
 
 import { stringifyList } from '../utils/array';
 import { getProject, setEnvironments } from '../utils/projects';
 import { checkIfTranslationFilesExist } from '../utils/translations';
 import { createConfig } from '../utils/transloco';
-import {
-  getAppModulePath,
-  isStandaloneApp,
-} from '../utils/ng-schematics-utils/ng-ast-utils';
-import {
-  findBootstrapApplicationCall,
-  getMainFilePath,
-} from '../utils/ng-schematics-utils/standalone/util';
-import {
-  addRootImport,
-  addRootProvider,
-} from '../utils/ng-schematics-utils/standalone';
-import { findAppConfig } from '../utils/ng-schematics-utils/standalone/app_config';
 
 import { Loaders, SchemaOptions } from './schema';
 import { createLoaderFile } from './generators/http-loader.gen';
@@ -55,7 +55,7 @@ function resolveLoaderPath({ host, mainPath, isStandalone, modulePath }) {
     const bootstrapCall = findBootstrapApplicationCall(host, mainPath);
     resolved =
       findAppConfig(bootstrapCall, host, mainPath)?.filePath || mainPath;
-    resolved = _path.dirname(resolved);
+    resolved = dirname(resolved);
   }
 
   return resolved;
@@ -75,7 +75,7 @@ export default function (options: SchemaOptions): Rule {
     const isStandalone = isStandaloneApp(host, mainPath);
     const modulePath = isStandalone
       ? ''
-      : _path.dirname(getAppModulePath(host, mainPath));
+      : dirname(getAppModulePath(host, mainPath));
 
     const actions = [];
 

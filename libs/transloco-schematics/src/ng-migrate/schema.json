@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "$id": "SchematicsTranslocoNgMigrate",
-  "title": "Migration Script from Angular",
+  "$id": "transloco-ng-migrate",
+  "title": "Run a migration script from Angular i18n",
   "type": "object",
   "properties": {
     "langs": {

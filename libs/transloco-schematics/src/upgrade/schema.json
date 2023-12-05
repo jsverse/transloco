@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "$id": "SchematicsTranslocoUpgrade",
-  "title": "Run an upgrade script.",
+  "$id": "transloco-upgrade",
+  "title": "Run an upgrade script [Legacy and will be removed in v7]",
   "type": "object",
   "properties": {
     "path": {

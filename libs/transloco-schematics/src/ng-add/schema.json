@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "$id": "SchematicsTranslocoAdd",
-  "title": "Add Transloco to Your Project",
+  "$id": "transloco-ng-add",
+  "title": "Adds Transloco to a project",
   "type": "object",
   "properties": {
     "langs": {
@@ -10,6 +10,12 @@
       "type": "string",
       "default": "en, es",
       "alias": "la"
+    },
+    "ssr": {
+      "description": "If the user is working with server side rendering.",
+      "x-prompt": "\uD83D\uDE80 Are you working with server side rendering?",
+      "type": "boolean",
+      "default": false
     },
     "loader": {
       "description": "The loader strategy for the translate files.",
@@ -24,12 +30,6 @@
       "default": "JSON",
       "enum": ["JSON", "Typescript"],
       "alias": "t"
-    },
-    "ssr": {
-      "description": "If the user is working with server side rendering.",
-      "x-prompt": "\uD83D\uDE80 Are you working with server side rendering?",
-      "type": "boolean",
-      "default": false
     },
     "path": {
       "type": "string",

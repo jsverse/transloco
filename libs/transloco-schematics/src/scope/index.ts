@@ -11,20 +11,20 @@ import {
   chain,
 } from '@angular-devkit/schematics';
 import { ScriptTarget, createSourceFile } from 'typescript';
-
-import { LIB_NAME } from '../schematics.consts';
-import { coerceArray, stringifyList } from '../utils/array';
 import {
   addProviderToModule,
   insertImport,
   addImportToModule,
-} from '../utils/ng-schematics-utils/ast-utils';
+} from '@schematics/angular/utility/ast-utils';
+import { applyChangesToFile } from '@schematics/angular/utility/standalone/util';
+import { Change } from '@schematics/angular/utility/change';
+
+import { LIB_NAME } from '../schematics.consts';
+import { coerceArray, stringifyList } from '../utils/array';
 import { findModuleFromOptions } from '../utils/find-module';
 import { getProject, getProjectPath } from '../utils/projects';
 import { createTranslateFilesFromOptions } from '../utils/translations';
 import { getConfig } from '../utils/config';
-import { applyChangesToFile } from '../utils/ng-schematics-utils/standalone/util';
-import { Change } from '../utils/ng-schematics-utils/change';
 
 import { SchemaOptions } from './schema';
 

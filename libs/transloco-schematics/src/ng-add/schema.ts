@@ -14,7 +14,7 @@ export interface SchemaOptions {
    */
   langs: string;
   /**
-   * The languages of the project.
+   * The translations loader
    */
   loader: Loaders;
   /**

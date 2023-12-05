@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "$id": "SchematicsTranslocoSplit",
+  "$id": "transloco-split",
   "title": "Split translated files between the project's translation files.",
   "type": "object",
   "properties": {

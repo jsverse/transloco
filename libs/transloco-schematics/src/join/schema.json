@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "$id": "SchematicsTranslocoJoin",
+  "$id": "transloco-join",
   "title": "Merge all of the project's translation files into one.",
   "type": "object",
   "properties": {

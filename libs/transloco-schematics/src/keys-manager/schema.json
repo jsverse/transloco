@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "$id": "SchematicsTranslocoKeysManager",
-  "title": "Add Transloco Keys Manager to your project",
+  "$id": "transloco-keys-manager",
+  "title": "Adds Transloco Keys Manager to a project",
   "type": "object",
   "properties": {
     "strategy": {

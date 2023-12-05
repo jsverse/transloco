@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "$id": "SchematicsTranslocoMigrate",
+  "$id": "transloco-migrate",
   "title": "Run a migration script from @ngx-translate.",
   "type": "object",
   "properties": {
