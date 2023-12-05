@@ -1,3 +1,11 @@
+# Transloco V5.0.8-10 & V6
+
+Versions 5.0.8-10 also contains the breaking change in V6 but accidentally weren't marked correctly.
+
+## Transloco
+
+- Update `flat` package to v6 which is ESM
+
 # Transloco V5
 
 V5 was focused on a major infra upgrade to improve Transloco's maintainability also moving to new Angular features.
