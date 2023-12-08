@@ -17,7 +17,7 @@ It exposes a rich API to manage translations efficiently and cleanly. It provide
 ✅ &nbsp;Support for L10N  
 ✅ &nbsp;Rich Plugins  
 ✅ &nbsp;Hackable  
-✅ &nbsp;Schematics
+✅ &nbsp;Schematics  
 ✅ &nbsp;Standalone support
 
 <hr />
