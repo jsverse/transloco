@@ -2,6 +2,8 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [6.0.2](https://github.com/ngneat/transloco/compare/transloco-6.0.1...transloco-6.0.2) (2023-12-08)
+
 ## [6.0.1](https://github.com/ngneat/transloco/compare/transloco-6.0.0...transloco-6.0.1) (2023-12-05)
 
 - **transloco:** 🐛 Angular 17 ng-add ([b69f61e8](https://github.com/ngneat/transloco/commit/b69f61e8e8bfa406655061ad48f5a3cc8648a1d4)), closes [#729](https://github.com/ngneat/transloco/issues/729)
