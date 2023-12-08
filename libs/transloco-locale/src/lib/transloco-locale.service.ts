@@ -1,33 +1,27 @@
-import { Injectable, Inject, OnDestroy, inject } from '@angular/core';
+import { inject, Injectable, OnDestroy } from '@angular/core';
 import { TranslocoService } from '@ngneat/transloco';
-import { Observable, BehaviorSubject, Subscription } from 'rxjs';
-import { map, distinctUntilChanged, filter } from 'rxjs/operators';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 
 import { isLocaleFormat, toDate } from './helpers';
 import { getDefaultOptions } from './shared';
 import {
-  TRANSLOCO_LOCALE_LANG_MAPPING,
-  TRANSLOCO_LOCALE_DEFAULT_LOCALE,
   TRANSLOCO_LOCALE_CONFIG,
   TRANSLOCO_LOCALE_CURRENCY_MAPPING,
   TRANSLOCO_LOCALE_DEFAULT_CURRENCY,
+  TRANSLOCO_LOCALE_DEFAULT_LOCALE,
+  TRANSLOCO_LOCALE_LANG_MAPPING,
 } from './transloco-locale.config';
 import {
   TRANSLOCO_DATE_TRANSFORMER,
   TRANSLOCO_NUMBER_TRANSFORMER,
-  TranslocoDateTransformer,
-  TranslocoNumberTransformer,
 } from './transloco-locale.transformers';
 import {
-  Locale,
   DateFormatOptions,
-  NumberStyles,
-  Currency,
-  ValidDate,
+  Locale,
   LocaleConfig,
-  LocaleToCurrencyMapping,
-  LangToLocaleMapping,
-  NumberFormatOptions,
+  NumberStyles,
+  ValidDate,
 } from './transloco-locale.types';
 
 @Injectable({

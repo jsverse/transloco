@@ -45,18 +45,16 @@ describe('AppComponent', () => {
 });
 ```
 
-You can find an example [here](https://github.com/ngneat/transloco/blob/master/apps/transloco-playground/src/app/on-push/on-push.component.spec.ts).
-
 If you need to test `scopes`, you should add them as `languages`, for example:
 
 ```ts {6,7} title="transloco-testing.module.ts"
 export function getTranslocoModule(options: TranslocoTestingOptions = {}) {
   return TranslocoTestingModule.forRoot({
-    langs: { 
-      en, 
+    langs: {
+      en,
       es,
       'admin-page/en': admin,
-      'admin-page/es': adminSpanish,  
+      'admin-page/es': adminSpanish,
     },
     translocoConfig: {
       availableLangs: ['en', 'es'],
@@ -67,8 +65,6 @@ export function getTranslocoModule(options: TranslocoTestingOptions = {}) {
   });
 }
 ```
-
-You can find an example [here](https://github.com/ngneat/transloco/blob/master/apps/transloco-playground/src/app/lazy/lazy.component.spec.ts).
 
 Note that in order to import JSON files, you need to configure the TypeScript compiler by adding the following properties in `tsconfig.json`:
 
