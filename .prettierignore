@@ -3,3 +3,5 @@
 /dist
 /coverage
 /docs/docs
+
+/.nx/cache

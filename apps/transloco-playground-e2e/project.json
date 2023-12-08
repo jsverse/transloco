@@ -19,7 +19,7 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "options": {
         "lintFilePatterns": ["apps/transloco-playground-e2e/**/*.{js,ts}"]
       },
