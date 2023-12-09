@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [6.0.3](https://github.com/ngneat/transloco/compare/transloco-6.0.2...transloco-6.0.3) (2023-12-09)
+
+### Bug Fixes
+
+- **transloco:** 🐛 export TranslocoOptions ([396151f](https://github.com/ngneat/transloco/commit/396151f441d12e3856451377b5c21d3b0310475c)), closes [#709](https://github.com/ngneat/transloco/issues/709)
+
 ## [6.0.2](https://github.com/ngneat/transloco/compare/transloco-6.0.1...transloco-6.0.2) (2023-12-08)
 
 ## [6.0.1](https://github.com/ngneat/transloco/compare/transloco-6.0.0...transloco-6.0.1) (2023-12-05)
