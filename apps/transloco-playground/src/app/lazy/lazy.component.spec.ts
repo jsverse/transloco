@@ -5,14 +5,13 @@ import { TRANSLOCO_SCOPE } from '@ngneat/transloco';
 
 import { getTranslocoModule } from '../transloco-testing.module';
 
-import { LazyComponent } from './lazy.component';
+import LazyComponent from './lazy.component';
 
 describe('LazyComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'admin-page' }],
       imports: [getTranslocoModule()],
-      declarations: [LazyComponent],
     }).compileComponents();
   }));
 
