@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [6.0.4](https://github.com/ngneat/transloco/compare/transloco-6.0.3...transloco-6.0.4) (2023-12-09)
+
+### Bug Fixes
+
+- **transloco:** 🐛 providing the FunctionalTranspiler ([308438f](https://github.com/ngneat/transloco/commit/308438f7ae93ec3f7733b9b2cb2278f3aecacd33)), closes [#733](https://github.com/ngneat/transloco/issues/733)
+
 ## [6.0.3](https://github.com/ngneat/transloco/compare/transloco-6.0.2...transloco-6.0.3) (2023-12-09)
 
 ### Bug Fixes
