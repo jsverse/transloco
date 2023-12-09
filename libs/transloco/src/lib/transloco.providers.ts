@@ -37,10 +37,10 @@ import { TRANSLOCO_LOADING_TEMPLATE } from './transloco-loading-template';
 import { Content } from './template-handler';
 import { TRANSLOCO_LANG } from './transloco-lang';
 
-type TranslocoOptions = {
+export interface TranslocoOptions {
   config: PartialTranslocoConfig;
   loader?: Type<TranslocoLoader>;
-};
+}
 
 export function provideTransloco(options: TranslocoOptions) {
   const providers: EnvironmentProviders[] = [

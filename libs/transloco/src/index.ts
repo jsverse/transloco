@@ -58,4 +58,5 @@ export {
   provideTranslocoLoader,
   provideTranslocoScope,
   provideTranslocoLang,
+  TranslocoOptions,
 } from './lib/transloco.providers';
