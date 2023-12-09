@@ -1,5 +1,6 @@
 import {
   Inject,
+  inject,
   Injectable,
   InjectionToken,
   Injector,
@@ -34,6 +35,7 @@ export interface TranslocoTranspiler {
 export class DefaultTranspiler implements TranslocoTranspiler {
   protected interpolationMatcher: RegExp;
 
+  // TODO use inject in Transloco v7
   constructor(@Optional() @Inject(TRANSLOCO_CONFIG) config?: TranslocoConfig) {
     this.interpolationMatcher = resolveMatcher(config ?? defaultConfig);
   }
@@ -154,9 +156,7 @@ export class FunctionalTranspiler
   extends DefaultTranspiler
   implements TranslocoTranspiler
 {
-  constructor(private injector: Injector) {
-    super();
-  }
+  protected injector = inject(Injector);
 
   transpile(
     value: any,

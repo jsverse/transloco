@@ -28,6 +28,7 @@ export class MessageFormatTranspiler extends DefaultTranspiler {
   private readonly messageConfig: MessageFormatOptions<'string'>;
   private readonly mfFactory: MFFactory;
 
+  // TODO use inject in Transloco v7
   constructor(
     @Optional()
     @Inject(TRANSLOCO_MESSAGE_FORMAT_CONFIG)
