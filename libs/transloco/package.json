@@ -46,7 +46,7 @@
     "fs-extra": "^11.0.0",
     "glob": "^10.0.0",
     "tslib": "^2.2.0",
-    "flat": "6.0.0",
+    "flat": "6.0.1",
     "@ngneat/transloco-utils": "^5.0.0",
     "replace-in-file": "^7.0.1",
     "ora": "^5.4.1",
