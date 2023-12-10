@@ -4,8 +4,10 @@
       class="navbar-brand"
       target="_blank"
       href="https://github.com/ngneat/transloco"
-    >
-      <img *ngIf="!isDocs" height="50px" src="/assets/images/logo.svg" />
+      >
+      @if (!isDocs) {
+        <img height="50px" src="/assets/images/logo.svg" />
+      }
     </a>
     <button
       class="navbar-toggler"
@@ -14,7 +16,7 @@
       aria-controls="navbarSupportedContent"
       aria-expanded="false"
       aria-label="Toggle navigation"
-    >
+      >
       <span class="navbar-toggler-icon"></span>
     </button>
   </div>
@@ -23,7 +25,7 @@
     id="navbarSupportedContent"
     style="padding-right: 180px"
     class="collapse navbar-collapse"
-  >
+    >
     <ul class="navbar-nav mr-auto">
       <li class="nav-item" routerLinkActive="active">
         <a
@@ -31,82 +33,84 @@
           routerLink="home"
           data-bs-target="#navbarSupportedContent"
           >Home</a
-        >
-      </li>
-      <li class="nav-item" routerLinkActive="active">
-        <a
-          class="nav-link"
-          routerLink="lazy"
-          data-bs-target="#navbarSupportedContent"
-          >Lazy</a
-        >
-      </li>
-      <li class="nav-item" routerLinkActive="active">
-        <a
-          class="nav-link"
-          routerLink="scope-sharing"
-          data-bs-target="#navbarSupportedContent"
-          >Scope Sharing</a
-        >
-      </li>
-      <li class="nav-item" routerLinkActive="active">
-        <a
-          class="nav-link"
-          routerLink="inline-loaders"
-          data-bs-target="#navbarSupportedContent"
-          >Inline Loaders</a
-        >
-      </li>
-      <li class="nav-item" routerLinkActive="active">
-        <a
-          class="nav-link"
-          routerLink="dynamic-translation"
-          data-bs-target="#navbarSupportedContent"
-          >Dynamic Translation</a
-        >
-      </li>
-      <li class="nav-item" routerLinkActive="active">
-        <a
-          class="nav-link"
-          routerLink="multi-langs"
-          data-bs-target="#navbarSupportedContent"
-          >Multi Langs</a
-        >
-      </li>
-      <li class="nav-item" routerLinkActive="active">
-        <a
-          class="nav-link"
-          routerLink="transpilers"
-          data-bs-target="#navbarSupportedContent"
-          >Transpilers</a
-        >
-      </li>
-      <li class="nav-item" routerLinkActive="active">
-        <a
-          class="nav-link"
-          routerLink="locale"
-          data-bs-target="#navbarSupportedContent"
-          >Locale</a
-        >
-      </li>
-    </ul>
-  </div>
-
-  <div class="lang-btns">
-    <button
-      *ngFor="let lang of availableLangs; last as last"
-      class="btn my-2 my-sm-0"
-      [attr.data-cy]="lang.id"
-      (click)="changeLang(lang.id)"
-      [class.mr-10]="!last"
-      [class.btn-primary]="activeLang === lang.id"
-      [class.btn-secondary]="activeLang !== lang.id"
-    >
-      {{ lang.label }}
-    </button>
-  </div>
-</nav>
-
-<div class="container">
-  <router-outlet />
-</div>
+          >
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a
+            class="nav-link"
+            routerLink="lazy"
+            data-bs-target="#navbarSupportedContent"
+            >Lazy</a
+            >
+          </li>
+          <li class="nav-item" routerLinkActive="active">
+            <a
+              class="nav-link"
+              routerLink="scope-sharing"
+              data-bs-target="#navbarSupportedContent"
+              >Scope Sharing</a
+              >
+            </li>
+            <li class="nav-item" routerLinkActive="active">
+              <a
+                class="nav-link"
+                routerLink="inline-loaders"
+                data-bs-target="#navbarSupportedContent"
+                >Inline Loaders</a
+                >
+              </li>
+              <li class="nav-item" routerLinkActive="active">
+                <a
+                  class="nav-link"
+                  routerLink="dynamic-translation"
+                  data-bs-target="#navbarSupportedContent"
+                  >Dynamic Translation</a
+                  >
+                </li>
+                <li class="nav-item" routerLinkActive="active">
+                  <a
+                    class="nav-link"
+                    routerLink="multi-langs"
+                    data-bs-target="#navbarSupportedContent"
+                    >Multi Langs</a
+                    >
+                  </li>
+                  <li class="nav-item" routerLinkActive="active">
+                    <a
+                      class="nav-link"
+                      routerLink="transpilers"
+                      data-bs-target="#navbarSupportedContent"
+                      >Transpilers</a
+                      >
+                    </li>
+                    <li class="nav-item" routerLinkActive="active">
+                      <a
+                        class="nav-link"
+                        routerLink="locale"
+                        data-bs-target="#navbarSupportedContent"
+                        >Locale</a
+                        >
+                      </li>
+                    </ul>
+                  </div>
+                  
+                  <div class="lang-btns">
+                    @for (lang of availableLangs; track lang; let last = $last) {
+                      <button
+                        class="btn my-2 my-sm-0"
+                        [attr.data-cy]="lang.id"
+                        (click)="changeLang(lang.id)"
+                        [class.mr-10]="!last"
+                        [class.btn-primary]="activeLang === lang.id"
+                        [class.btn-secondary]="activeLang !== lang.id"
+                        >
+                        {{ lang.label }}
+                      </button>
+                    }
+                  </div>
+                </nav>
+                
+                <div class="container">
+                  <router-outlet />
+                </div>
+                

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 
 import { provideTranslocoScope, TranslocoModule } from '@ngneat/transloco';
@@ -14,7 +14,7 @@ import { provideTranslocoScope, TranslocoModule } from '@ngneat/transloco';
       alias: 'mf',
     }),
   ],
-  imports: [CommonModule, TranslocoModule],
+  imports: [TranslocoModule],
 })
 export default class TranspilersComponent {
   dynamic = '🦄';

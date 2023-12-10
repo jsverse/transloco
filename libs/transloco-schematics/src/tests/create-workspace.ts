@@ -1,5 +1,4 @@
 import {
-  UnitTestTree,
   SchematicTestRunner,
 } from '@angular-devkit/schematics/testing';
 import type { Schema as WorkspaceSchema } from '@schematics/angular/workspace/schema';
