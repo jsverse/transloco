@@ -65,4 +65,17 @@ describe('ScopeResolver', () => {
     expect(spy).toHaveBeenCalledTimes(1);
     expect(spy).toHaveBeenCalledWith('admin-page', 'adminPage');
   });
+  
+  it('should return provider nested scope with object and set the alias as the scope name if not provided', () => {
+    expect(
+      resolver.resolve({
+        inline: undefined,
+        provider: {
+          scope: 'nested-scope/nested-admin-page'
+        },
+      })
+    ).toEqual('nested-scope/nested-admin-page');
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledWith('nested-scope/nested-admin-page', 'nestedScope.nestedAdminPage');
+  })
 });
