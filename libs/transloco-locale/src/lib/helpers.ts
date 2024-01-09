@@ -12,7 +12,7 @@ export const ISO8601_DATE_REGEX =
  * isLocaleFormat('en-US') // true
  */
 export function isLocaleFormat(val: any): val is Locale {
-  const irregulars = `en-GB-oed|i-ami|i-bnn|i-default|i-enochian|i-hak|i-klingon|i-lux|i-mingo|i-navajo|i-pwn|i-tao|i-tay|i-tsu|sgn-BE-FR|sgn-BE-NL|sgn-CH-DE|art-lojban|cel-gaulish|no-bok|no-nyn|zh-guoyu|zh-hakka|zh-min|zh-min-nan|zh-xiang`;
+  const irregulars = `en-GB-oed|i-ami|i-bnn|i-default|i-enochian|i-hak|i-klingon|i-lux|i-mingo|i-navajo|i-pwn|i-tao|i-tay|i-tsu|sgn-BE-FR|sgn-BE-NL|sgn-CH-DE|art-lojban|cel-gaulish|no-bok|no-nyn|zh-guoyu|zh-hakka|zh-min|zh-min-nan|zh-xiang|es-419`;
   const BCPFormat = `[a-z]{2}-[A-Z]{2}`;
   const scriptFormat = `[a-z]{2}-[A-Za-z]{4}`;
   return (
