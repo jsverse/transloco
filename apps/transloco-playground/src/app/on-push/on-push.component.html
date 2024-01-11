@@ -1,79 +1,82 @@
-<h6 class="mb" *ngIf="isDocs">
-  You can find the source code for this app in the
-  <a
-    target="_blank"
-    href="https://github.com/ngneat/transloco/tree/master/apps/transloco-playground"
-    >transloco repo</a
-  >.
-</h6>
-
-<h3 class="mb">Structural Directive</h3>
-<ul class="list-group structural">
-  <ng-container *transloco="let t; currentLang as currentLang">
-    <li class="list-group-item" data-cy="regular">
-      <b>Regular: </b>{{ t('home') }}
-    </li>
-    <li class="list-group-item" data-cy="with-params">
-      <b>With params: </b>{{ t('alert', { value: dynamic }) }}
-    </li>
-    <li class="list-group-item" data-cy="with-translation-reuse">
-      <b>With translation reuse: </b> {{ t('a.b.c') }}
-    </li>
-    <ng-container *transloco="let staticT; lang: 'en|static'">
-      <li class="list-group-item" data-cy="static-lang-en">
-        <b>Static lang 'en': </b> {{ staticT('home') }}
+@if (isDocs) {
+  <h6 class="mb">
+    You can find the source code for this app in the
+    <a
+      target="_blank"
+      href="https://github.com/ngneat/transloco/tree/master/apps/transloco-playground"
+      >transloco repo</a
+      >.
+    </h6>
+  }
+  <h3 class="mb">Structural Directive</h3>
+  <ul class="list-group structural">
+    <ng-container *transloco="let t; currentLang as currentLang">
+      <li class="list-group-item" data-cy="regular">
+        <b>Regular: </b>{{ t('home') }}
+      </li>
+      <li class="list-group-item" data-cy="with-params">
+        <b>With params: </b>{{ t('alert', { value: dynamic }) }}
+      </li>
+      <li class="list-group-item" data-cy="with-translation-reuse">
+        <b>With translation reuse: </b> {{ t('a.b.c') }}
+      </li>
+      <ng-container *transloco="let staticT; lang: 'en|static'">
+        <li class="list-group-item" data-cy="static-lang-en">
+          <b>Static lang 'en': </b> {{ staticT('home') }}
+        </li>
+      </ng-container>
+      <li class="list-group-item" data-cy="current-lang">
+        <b>Current Lang: </b>{{ currentLang }}
       </li>
     </ng-container>
-    <li class="list-group-item" data-cy="current-lang">
-      <b>Current Lang: </b>{{ currentLang }}
+  </ul>
+
+  <h3 class="mtb">Directive</h3>
+  <ul class="list-group">
+    <li class="list-group-item" data-cy="d-regular">
+      <b>Regular: </b><span transloco="home"></span>
     </li>
-  </ng-container>
-</ul>
+    <li class="list-group-item" (click)="changeParam()" data-cy="d-with-params">
+      <b>(click) With params: </b
+        ><span transloco="alert" [translocoParams]="{ value: dynamic }"></span>
+      </li>
+      <li class="list-group-item" data-cy="d-with-translation-reuse">
+        <b>With translation reuse: </b> <span transloco="a.b.c"></span>
+      </li>
+      <li class="list-group-item" (click)="changeKey()" data-cy="d-dynamic-key">
+        (click) <b>Dynamic key: </b> <span [transloco]="key"></span>
+      </li>
+      <li class="list-group-item" data-cy="d-static-lang-es">
+        <b>Static lang 'es': </b
+          ><span transloco="home" translocoLang="es|static"></span>
+        </li>
+      </ul>
 
-<h3 class="mtb">Directive</h3>
-<ul class="list-group">
-  <li class="list-group-item" data-cy="d-regular">
-    <b>Regular: </b><span transloco="home"></span>
-  </li>
-  <li class="list-group-item" (click)="changeParam()" data-cy="d-with-params">
-    <b>(click) With params: </b
-    ><span transloco="alert" [translocoParams]="{ value: dynamic }"></span>
-  </li>
-  <li class="list-group-item" data-cy="d-with-translation-reuse">
-    <b>With translation reuse: </b> <span transloco="a.b.c"></span>
-  </li>
-  <li class="list-group-item" (click)="changeKey()" data-cy="d-dynamic-key">
-    (click) <b>Dynamic key: </b> <span [transloco]="key"></span>
-  </li>
-  <li class="list-group-item" data-cy="d-static-lang-es">
-    <b>Static lang 'es': </b
-    ><span transloco="home" translocoLang="es|static"></span>
-  </li>
-</ul>
-
-<h3 class="mtb">Pipe</h3>
-<ul class="list-group pipe">
-  <li class="list-group-item" data-cy="p-regular">
-    <b>Regular: </b>{{ 'home' | transloco }}
-  </li>
-  <li class="list-group-item" data-cy="p-with-params">
-    <b>With params: </b>{{ 'alert' | transloco : { value: dynamic } }}
-  </li>
-  <li class="list-group-item" data-cy="p-with-translation-reuse">
-    <b>With translation reuse: </b> {{ 'a.b.c' | transloco }}
-  </li>
-  <li class="list-group-item" data-cy="p-static-lang-en">
-    <b>Static lang 'en': </b>{{ 'home' | transloco : {} : 'en|static' }}
-  </li>
-</ul>
-
-<h3 class="mtb">Translation in ngFor</h3>
-<ul class="list-group">
-  <li
-    *ngFor="let key of translateList"
-    class="list-group-item"
-    data-cy="translation-loop"
-  >
-    {{ key | transloco }}
-  </li>
-</ul>
+      <h3 class="mtb">Pipe</h3>
+      <ul class="list-group pipe">
+        <li class="list-group-item" data-cy="p-regular">
+          <b>Regular: </b>{{ 'home' | transloco }}
+        </li>
+        <li class="list-group-item" data-cy="p-with-params">
+          <b>With params: </b>{{ 'alert' | transloco : { value: dynamic } }}
+        </li>
+        <li class="list-group-item" data-cy="p-with-translation-reuse">
+          <b>With translation reuse: </b> {{ 'a.b.c' | transloco }}
+        </li>
+        <li class="list-group-item" data-cy="p-static-lang-en">
+          <b>Static lang 'en': </b>{{ 'home' | transloco : {} : 'en|static' }}
+        </li>
+      </ul>
+      
+      <h3 class="mtb">Translation in ngFor</h3>
+      <ul class="list-group">
+        @for (key of translateList; track key) {
+          <li
+            class="list-group-item"
+            data-cy="translation-loop"
+            >
+            {{ key | transloco }}
+          </li>
+        }
+      </ul>
+      

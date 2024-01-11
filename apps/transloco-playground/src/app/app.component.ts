@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, inject, OnDestroy } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { Subscription, take } from 'rxjs';
@@ -12,7 +12,7 @@ import { environment } from '../environments/environment';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [RouterModule],
 })
 export class AppComponent implements OnDestroy {
   isDocs = environment.isDocs;

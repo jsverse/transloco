@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 
 import { TranslocoModule } from '@ngneat/transloco';
@@ -15,7 +15,7 @@ import {
   styleUrls: ['./locale.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [CommonModule, TranslocoModule, TranslocoLocaleModule],
+  imports: [TranslocoModule, TranslocoLocaleModule],
 })
 export default class LocaleComponent {
   date = new Date(2019, 7, 14, 0, 0, 0, 0);
