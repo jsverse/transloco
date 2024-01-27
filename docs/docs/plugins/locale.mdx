@@ -362,6 +362,8 @@ Note the format option of the global, locale's format and the one's being passed
 - `timeStyle` - The time formatting style.
 - `timeZone` - The time zone to use. The only value implementations must recognize is "UTC"; the default is the runtime's default time zone. Implementations may also recognize the time zone names of the [IANA](https://www.iana.org/time-zones) time zone database, such as "Asia/Shanghai", "Asia/Kolkata", "America/New_York".
 
+By default those options are passed to the native `Intl.DateTimeFormat`, full documentation for the options you can find [here](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat#options)
+
 ## Service API
 
 - `localeChanges$` - Observable of the active locale.
