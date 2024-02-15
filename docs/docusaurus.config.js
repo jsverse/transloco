@@ -3,9 +3,9 @@ module.exports = {
   title: 'Transloco Angular i18n',
   tagline: '🚀 The internationalization (i18n) library for Angular 😍',
   baseUrl: '/transloco/',
-  url: 'https://ngneat.github.io',
+  url: 'https://jsverse.github.io',
   favicon: 'img/favicon.ico',
-  organizationName: 'ngneat',
+  organizationName: 'jsverse',
   projectName: 'transloco',
   trailingSlash: false,
   themeConfig: {
@@ -13,7 +13,7 @@ module.exports = {
     metadata: [
       {
         name: 'google-site-verification',
-        content: 'zLIQAxOp2sGFy10UE51HAMtWTqg7J8z1hpTxZR9G1WA',
+        content: 'OVdCorlkGdaEo3iAodtFprKQ458Nxig5qLBfJpxlHsk',
       },
     ],
     algolia: {
@@ -55,19 +55,13 @@ module.exports = {
           className: 'header-playground-link',
         },
         {
-          href: 'https://gitter.im/ngneat-transloco/lobby',
-          label: ' ',
-          position: 'right',
-          className: 'header-icon-link header-gitter-link',
-        },
-        {
-          href: 'https://github.com/sponsors/ngneat',
+          href: 'https://github.com/sponsors/jsverse',
           label: 'Sponsor',
           position: 'right',
           className: 'header-icon-link header-sponsor-link',
         },
         {
-          href: 'https://github.com/ngneat/transloco/',
+          href: 'https://github.com/jsverse/transloco/',
           label: ' ',
           position: 'right',
           className: 'header-icon-link header-github-link',

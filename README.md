@@ -3,17 +3,9 @@
  <img width="50%" height="50%" src="./logo.svg">
 </p>
 
-> The internationalization (i18n) library for Angular
-
-<h3 align="center">Our Sponsors</h2>
-<p align="center">🤩 ◦ 🚀 ◦ 🎖️ ◦ 🥉 ◦ 🥈 ◦ 🥇 ◦ 💎</p>
-<h2></h2>
-
-#### 🤩 Fans
-
-[<img src="https://avatars.githubusercontent.com/u/49206247?v=4" width="25px">](https://github.com/tutkli)
-
-Show your support and [Sponsor Us](https://github.com/sponsors/ngneat)! We have various sponsorship tiers with different perks!
+<p align="center">
+  The internationalization (i18n) library for Angular
+</p>
 
 <h2></h2>
 
@@ -51,15 +43,6 @@ It exposes a rich API to manage translations efficiently and cleanly. It provide
 - 📖 &nbsp;Read the blog [posts](https://ngneat.github.io/transloco/docs/blog-posts)
 - 🍄 &nbsp;Join Transloco's [Gitter](https://gitter.im/ngneat-transloco/lobby?source=orgpage) room
 - ❓ &nbsp;Find answers in our [FAQ](https://ngneat.github.io/transloco/docs/faq) section
-
-## Core Team
-
-<table>
-  <tr>
-    <td align="center"><a href="https://www.netbasal.com"><img src="https://avatars1.githubusercontent.com/u/6745730?v=4" width="100px;" alt="Netanel Basal"/><br /><sub><b>Netanel Basal</b></sub></a><br /></td>
-    <td align="center"><a href="https://github.com/shaharkazaz"><img src="https://avatars2.githubusercontent.com/u/17194830?v=4" width="100px;" alt="Shahar Kazaz"/><br /><sub><b>Shahar Kazaz</b></sub></a><br /></td>
-    </tr>
-</table>
 
 ## Contributors ✨
 
