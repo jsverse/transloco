@@ -35,14 +35,14 @@ It exposes a rich API to manage translations efficiently and cleanly. It provide
 [![spectator](https://img.shields.io/badge/tested%20with-spectator-2196F3.svg?style=flat-square)](https://github.com/ngneat/spectator)
 [![Join the chat at https://gitter.im/ngneat-transloco](https://badges.gitter.im/gitterHQ/gitter.svg)](https://gitter.im/ngneat-transloco/lobby?source=orgpage)
 
-- 🤓 &nbsp;Learn about it on the [docs site](https://ngneat.github.io/transloco/)
+- 🤓 &nbsp;Learn about it on the [docs site](https://jsverse.github.io/transloco/)
 - 🎥 &nbsp;Watch our instructional [video guides](https://www.youtube.com/watch?v=MYkYcafJdGw&list=PLTuTW7EgL6ouXk5BqE4zWdDJkAuC4HTWi)
 - 🚀 &nbsp;See it in action on [CodeSandbox](https://codesandbox.io/s/ngneat-transloco-kn52hs)
-- 😎 &nbsp;Use [schematics](https://ngneat.github.io/transloco/docs/schematics)
-- 👉 &nbsp;Checkout the [live application](https://ngneat.github.io/transloco/live-app)
-- 📖 &nbsp;Read the blog [posts](https://ngneat.github.io/transloco/docs/blog-posts)
+- 😎 &nbsp;Use [schematics](https://jsverse.github.io/transloco/docs/schematics)
+- 👉 &nbsp;Checkout the [live application](https://jsverse.github.io/transloco/live-app)
+- 📖 &nbsp;Read the blog [posts](https://jsverse.github.io/transloco/docs/blog-posts)
 - 🍄 &nbsp;Join Transloco's [Gitter](https://gitter.im/ngneat-transloco/lobby?source=orgpage) room
-- ❓ &nbsp;Find answers in our [FAQ](https://ngneat.github.io/transloco/docs/faq) section
+- ❓ &nbsp;Find answers in our [FAQ](https://jsverse.github.io/transloco/docs/faq) section
 
 ## Contributors ✨
 
