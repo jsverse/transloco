@@ -52,7 +52,7 @@ export const FEATURE_ROUTES: Route = {
   path: 'feature',
   loadComponent: () => import('./feature.component').then(FeatureComponent => FeatureComponent),
   providers: [
-    provideTranslocoScope({
+    provideTranslocoScopes({
       scope: 'scopeName',
       loader
     })
@@ -101,7 +101,7 @@ export const loader = ['en', 'es'].reduce((acc, lang) => {
 @NgModule({
     imports: [TranslocoModule],
     providers: [
-      provideTranslocoScope({
+      provideTranslocoScopes({
         scope: 'scopeName',
         loader
       })

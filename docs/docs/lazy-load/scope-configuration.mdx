@@ -33,7 +33,7 @@ We can set it inside the _lazy route_ providers:
 
 ```ts title="todos.routes.ts"
 import { Route } from '@angular/router';
-import { provideTranslocoScope } from '@ngneat/transloco';
+import { provideTranslocoScopes } from '@ngneat/transloco';
 
 export const TODO_ROUTES: Route = {
     path: '',
@@ -52,7 +52,7 @@ export const TODO_ROUTES: Route = {
 We can set it inside the _lazy module_ providers:
 
 ```ts title="todos.module.ts"
-import { provideTranslocoScope } from '@ngneat/transloco';
+import { provideTranslocoScopes } from '@ngneat/transloco';
 
 const routes: Routes = [
     {
@@ -63,7 +63,7 @@ const routes: Routes = [
 
 @NgModule({
     declarations: [TodosComponent],
-    providers: [provideTranslocoScope('todos')],
+    providers: [provideTranslocoScopes('todos')],
     imports: [RouterModule.forChild(routes), TranslocoModule]
 })
 export class TodosModule {}
@@ -82,7 +82,7 @@ We can set it in a _component's providers_:
 @Component({
   selector: 'my-comp',
   templateUrl: './my-comp.component.html',
-  providers: [provideTranslocoScope('todos')]
+  providers: [provideTranslocoScopes('todos')]
 })
 export class MyComponent {}
 ```
@@ -128,7 +128,7 @@ Now we can access each one of the `todos` keys by using the `todos` namespace:
 By default, the namespace will be the `scope` name (camel cased), but we can override it by providing custom `alias` name in the module/component `scope` provider:
 
 ```ts
-provideTranslocoScope({ scope: 'todos', alias: 'customName' })
+provideTranslocoScopes({ scope: 'todos', alias: 'customName' })
 ```
 
 Now we can access it through `customName` instead of the original scope name (`todos` in our case):

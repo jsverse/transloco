@@ -1,14 +1,13 @@
 import { Component } from '@angular/core';
 
-import { TranslocoModule, provideTranslocoScope } from '@ngneat/transloco';
+import { TranslocoModule, provideTranslocoScopes } from '@ngneat/transloco';
 
 @Component({
   selector: 'app-lazy-multiple-scopes',
   templateUrl: './lazy-multiple-scopes.component.html',
   styleUrls: ['./lazy-multiple-scopes.component.scss'],
   providers: [
-    provideTranslocoScope({ scope: 'admin-page', alias: 'AdminPageAlias' }),
-    provideTranslocoScope({ scope: 'lazy-page', alias: 'LazyPageAlias' }),
+    provideTranslocoScopes({ scope: 'admin-page', alias: 'AdminPageAlias' }, { scope: 'lazy-page', alias: 'LazyPageAlias' }),
   ],
   standalone: true,
   imports: [TranslocoModule],

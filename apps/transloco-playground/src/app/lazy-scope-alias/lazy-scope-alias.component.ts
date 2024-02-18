@@ -2,8 +2,7 @@ import { Component } from '@angular/core';
 
 import {
   TranslocoModule,
-  TRANSLOCO_SCOPE,
-  provideTranslocoScope,
+  provideTranslocoScopes,
 } from '@ngneat/transloco';
 
 @Component({
@@ -11,7 +10,7 @@ import {
   templateUrl: './lazy-scope-alias.component.html',
   styleUrls: ['lazy-scope-alias.component.scss'],
   providers: [
-    provideTranslocoScope({ scope: 'lazy-scope-alias', alias: 'myScopeAlias' }),
+    provideTranslocoScopes({ scope: 'lazy-scope-alias', alias: 'myScopeAlias' }),
   ],
   standalone: true,
   imports: [TranslocoModule],
