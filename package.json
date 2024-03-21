@@ -7,7 +7,7 @@
     "postinstall": "node ./decorate-angular-cli.js",
     "nx": "nx",
     "commit": "git-cz",
-    "start": "ng serve",
+    "start": "nx run transloco-playground:serve",
     "start:docs": "npm start --prefix=docs",
     "build:transloco": "nx run transloco:build && npm run build:schematics",
     "build:locale": "nx run transloco-locale:build",
