@@ -26,18 +26,14 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["libs/transloco-schematics/**/*.ts"]
-      },
+      "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/transloco-schematics"],
       "options": {
-        "jestConfig": "libs/transloco-schematics/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/transloco-schematics/jest.config.ts"
       }
     }
   },

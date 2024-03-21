@@ -3,8 +3,6 @@ import { Route } from '@angular/router';
 import {
   provideTranslocoLoadingTpl,
   provideTranslocoScope,
-  TRANSLOCO_LOADING_TEMPLATE,
-  TRANSLOCO_SCOPE,
 } from '@ngneat/transloco';
 
 export const SCOPE_SHARING_ROUTES: Route = {

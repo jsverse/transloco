@@ -9,7 +9,6 @@ import { Subscription } from 'rxjs';
 import { Locale } from '../../lib/transloco-locale.types';
 import { TranslocoLocaleService } from '../transloco-locale.service';
 
-type Deps = [TranslocoLocaleService, ChangeDetectorRef];
 @Injectable()
 export abstract class BaseLocalePipe implements OnDestroy {
   protected localeService = inject(TranslocoLocaleService);

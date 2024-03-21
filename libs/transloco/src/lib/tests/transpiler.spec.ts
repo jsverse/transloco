@@ -1,5 +1,5 @@
 import { Injector } from '@angular/core';
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
 import {
   DefaultTranspiler,
@@ -14,40 +14,47 @@ import { provideTranslocoTranspiler } from '../transloco.providers';
 
 import { transpilerFunctions } from './mocks';
 
+const injectorMock = {
+  get: (key: keyof typeof transpilerFunctions) => transpilerFunctions[key],
+};
+
+function functionTranspilerFactory() {
+  return function getFunctionalTranspiler() {
+    return TestBed.configureTestingModule({
+      providers: [
+        { provide: Injector, useValue: injectorMock },
+        provideTranslocoTranspiler(FunctionalTranspiler),
+      ],
+    }).inject(TRANSLOCO_TRANSPILER);
+  };
+}
+
 describe('TranslocoTranspiler', () => {
   describe('DefaultTranspiler', () => {
     withDefaultBehaviorTests(() => new DefaultTranspiler());
   });
 
   describe('DefaultTranspiler with custom interpolation', () => {
+    const interpolation: [string, string] = ['<<', '>>'];
     withDefaultBehaviorTests(
       () =>
-        new DefaultTranspiler(translocoConfig({ interpolation: ['<<', '>>'] })),
-      ['<<', '>>']
+        new DefaultTranspiler(translocoConfig({ interpolation })),
+      interpolation
     );
   });
-
+  
   describe('FunctionalTranspiler', () => {
-    const injectorMock = {
-      get: (key: keyof typeof transpilerFunctions) => transpilerFunctions[key],
-    };
-
-    function getFunctionalTranspiler() {
-      return TestBed.configureTestingModule({
-        providers: [
-          { provide: Injector, useValue: injectorMock },
-          provideTranslocoTranspiler(FunctionalTranspiler),
-        ],
-      }).inject(TRANSLOCO_TRANSPILER);
-    }
-
+    withDefaultBehaviorTests(functionTranspilerFactory());
+  })
+  
+  describe('FunctionalTranspiler', () => {
     let parser: TranslocoTranspiler;
+    const getFunctionalTranspiler = functionTranspilerFactory();
+    
 
     beforeAll(() => {
       parser = getFunctionalTranspiler();
     });
-
-    withDefaultBehaviorTests(getFunctionalTranspiler);
 
     it('should call the correct function', () => {
       const parsed = parser.transpile(

@@ -8,8 +8,6 @@ import {glob} from 'glob';
 
 import {PIPE_IN_BINDING_REGEX, PIPE_REGEX, run} from '../migrate/ngx-translate-migration';
 
-import Mock = jest.Mock;
-
 jest.mock('replace-in-file');
 
 describe('ngx-translate migration', () => {
@@ -164,7 +162,7 @@ describe('ngx-translate migration', () => {
       const replacements: Record<string, string> = {},
         isWindows = process.platform === 'win32';
       
-      (replaceInFile as Mock).mockImplementation(
+      (replaceInFile as unknown as jest.Mock).mockImplementation(
         async (config: ReplaceInFileConfig): Promise<void> => {
           const path = config.files as string,
             regex = config.from as RegExp,

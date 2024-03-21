@@ -4,7 +4,7 @@ import path from 'node:path';
 import { glob } from 'glob';
 import { flatten } from 'flat';
 
-type Translation = Record<string, any>;
+type Translation = Record<string, string>;
 
 const isWindows = process.platform === "win32";
 

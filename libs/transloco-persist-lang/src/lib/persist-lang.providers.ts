@@ -1,21 +1,14 @@
 import {
   APP_INITIALIZER,
   ClassProvider,
-  ConstructorProvider,
   ExistingProvider,
   FactoryProvider,
   makeEnvironmentProviders,
-  Provider,
-  TypeProvider,
   ValueProvider,
 } from '@angular/core';
 
-import {
-  PersistLangConfig,
-  TRANSLOCO_PERSIST_LANG_CONFIG,
-  TRANSLOCO_PERSIST_LANG_STORAGE,
-} from './persist-lang.config';
-import { TranslocoPersistLangService } from './persist-lang.service';
+import {PersistLangConfig, TRANSLOCO_PERSIST_LANG_CONFIG, TRANSLOCO_PERSIST_LANG_STORAGE,} from './persist-lang.config';
+import {TranslocoPersistLangService} from './persist-lang.service';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 function noop() {}

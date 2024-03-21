@@ -2,7 +2,6 @@ import { Route } from '@angular/router';
 
 import {
   provideTranslocoLoadingTpl,
-  TRANSLOCO_LOADING_TEMPLATE,
 } from '@ngneat/transloco';
 
 export const LAZY_SCOPE_ALIAS_ROUTES: Route = {

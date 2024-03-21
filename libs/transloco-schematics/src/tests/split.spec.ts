@@ -56,8 +56,7 @@ describe('Split', () => {
       appTree.create(`${options.translationPath}/es.json`, '');
 
       const tree = await schematicRunner
-        .runSchematicAsync('split', options, appTree)
-        .toPromise();
+        .runSchematic('split', options, appTree)
 
       const resES = readTranslation(tree, 'es');
       const resEn = readTranslation(tree, 'en');
@@ -75,8 +74,7 @@ describe('Split', () => {
       appTree.create(`${options.translationPath}/scope/subscope/es.json`, '');
 
       const tree = await schematicRunner
-        .runSchematicAsync('split', options, appTree)
-        .toPromise();
+        .runSchematic('split', options, appTree)
 
       const resES = readTranslation(tree, 'scope/es');
       const resEn = readTranslation(tree, 'scope/en');
@@ -103,8 +101,7 @@ describe('Split', () => {
       appTree.create(`${scope}/en.json`, JSON.stringify(scopeEn));
       appTree.create(`${scope}/es.json`, JSON.stringify(scopeEs));
       const tree = await schematicRunner
-        .runSchematicAsync('split', options, appTree)
-        .toPromise();
+        .runSchematic('split', options, appTree)
 
       const resES = readTranslation(tree, 'es', scope);
       const resEn = readTranslation(tree, 'en', scope);

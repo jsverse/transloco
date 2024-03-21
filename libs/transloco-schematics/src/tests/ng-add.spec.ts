@@ -7,7 +7,7 @@ import {
 
 import { SchemaOptions } from '../ng-add/schema';
 
-import { createWorkspace, defaultAppOptions } from './create-workspace';
+import { createWorkspace } from './create-workspace';
 
 const collectionPath = path.join(__dirname, '../collection.json');
 
@@ -20,7 +20,9 @@ describe('ng add', () => {
       const tree = await schematicRunner.runSchematic(
         'ng-add',
         options,
-        await createWorkspace(schematicRunner)
+        await createWorkspace(schematicRunner, {
+          appOptions: {standalone: false},
+        })
       );
       expect(tree).toBeDefined();
       expect(tree.files).toContain('/transloco.config.js');
@@ -40,12 +42,7 @@ describe('ng add', () => {
       const tree = await schematicRunner.runSchematic(
         'ng-add',
         options,
-        await createWorkspace(schematicRunner, {
-          appOptions: {
-            ...defaultAppOptions,
-            standalone: true,
-          },
-        })
+        await createWorkspace(schematicRunner)
       );
       expect(tree).toBeDefined();
       expect(tree.files).toContain('/transloco.config.js');

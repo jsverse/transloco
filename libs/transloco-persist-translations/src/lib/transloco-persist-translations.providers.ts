@@ -1,4 +1,4 @@
-import { makeEnvironmentProviders, Provider } from '@angular/core';
+import { makeEnvironmentProviders } from '@angular/core';
 import { TRANSLOCO_LOADER } from '@ngneat/transloco';
 
 import { TranslocoPersistTranslations } from './transloco-persist-translations.service';

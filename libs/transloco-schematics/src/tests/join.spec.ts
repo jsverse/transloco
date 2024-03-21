@@ -43,27 +43,24 @@ describe('Join', () => {
 
     it('should merge translation files that are not the default language to dist', async () => {
       const tree = await schematicRunner
-        .runSchematicAsync('join', options, appTree)
-        .toPromise();
+        .runSchematic('join', options, appTree)
       expect(tree.files).toEqual(['/dist-i18n/es.json']);
       expect(tree.files).not.toEqual(['/dist-i18n/en.json']);
     });
 
     it('should merge translation files including the default language to dist', async () => {
       const tree = await schematicRunner
-        .runSchematicAsync(
+        .runSchematic(
           'join',
           { ...options, includeDefaultLang: true },
           appTree
-        )
-        .toPromise();
+        );
       expect(tree.files).toEqual(['/dist-i18n/es.json', '/dist-i18n/en.json']);
     });
 
     it('should merge scopes correctly', async () => {
       const tree = await schematicRunner
-        .runSchematicAsync('join', options, appTree)
-        .toPromise();
+        .runSchematic('join', options, appTree)
 
       expect(tree.readContent('/dist-i18n/es.json')).toMatchSnapshot();
     });
@@ -71,12 +68,10 @@ describe('Join', () => {
     it('should delete output file and pass on rerun', async () => {
       // first run.
       await schematicRunner
-        .runSchematicAsync('join', options, appTree)
-        .toPromise();
+        .runSchematic('join', options, appTree)
       // second run.
       const tree = await schematicRunner
-        .runSchematicAsync('join', options, appTree)
-        .toPromise();
+        .runSchematic('join', options, appTree)
       expect(tree.files).toEqual(['/dist-i18n/es.json']);
     });
 
@@ -91,8 +86,7 @@ describe('Join', () => {
       );
 
       const tree = await schematicRunner
-        .runSchematicAsync('join', {}, appTree)
-        .toPromise();
+        .runSchematic('join', {}, appTree)
       expect(tree.files).toEqual(['/dist-i18n/es.json']);
     });
 
@@ -107,8 +101,7 @@ describe('Join', () => {
       );
 
       const tree = await schematicRunner
-        .runSchematicAsync('join', { project: 'baz' }, appTree)
-        .toPromise();
+        .runSchematic('join', { project: 'baz' }, appTree)
       expect(tree.files).toEqual(['/dist-i18n/es.json']);
     });
   });
@@ -129,8 +122,7 @@ describe('Join', () => {
     it('should use scope map strategy', async () => {
       setup();
       const tree = await schematicRunner
-        .runSchematicAsync('join', options, appTree)
-        .toPromise();
+        .runSchematic('join', options, appTree)
       expect(tree.readContent('/dist-i18n/es.json')).toMatchSnapshot();
     });
 
@@ -141,8 +133,7 @@ describe('Join', () => {
       };
       setup(scopePathMap);
       const tree = await schematicRunner
-        .runSchematicAsync('join', options, appTree)
-        .toPromise();
+        .runSchematic('join', options, appTree)
 
       expect(tree.readContent('/dist-i18n/es.json')).toMatchSnapshot();
     });
@@ -154,8 +145,7 @@ describe('Join', () => {
       };
       setup(scopePathMap);
       const tree = await schematicRunner
-        .runSchematicAsync('join', options, appTree)
-        .toPromise();
+        .runSchematic('join', options, appTree)
 
       expect(tree.readContent('/dist-i18n/es.json')).toMatchSnapshot();
     });

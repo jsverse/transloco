@@ -1,4 +1,3 @@
-import { split } from '@angular-devkit/core';
 import { Rule, Tree } from '@angular-devkit/schematics';
 
 import { TranslationFileFormat } from '../types';
@@ -14,7 +13,7 @@ import {
 
 import { SchemaOptions } from './schema';
 
-type Parser = (content: string) => any;
+type Parser = (content: string) => unknown;
 
 function reduceTranslations(
   host: Tree,

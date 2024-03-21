@@ -61,10 +61,10 @@
       "executor": "@angular-devkit/build-angular:dev-server",
       "configurations": {
         "production": {
-          "browserTarget": "transloco-playground:build:production"
+          "buildTarget": "transloco-playground:build:production"
         },
         "development": {
-          "browserTarget": "transloco-playground:build:development"
+          "buildTarget": "transloco-playground:build:development"
         }
       },
       "defaultConfiguration": "development"
@@ -72,17 +72,11 @@
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
-        "browserTarget": "transloco-playground:build"
+        "buildTarget": "transloco-playground:build"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "apps/transloco-playground/src/**/*.ts",
-          "apps/transloco-playground/src/**/*.html"
-        ]
-      },
+      "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"]
     },
     "test": {

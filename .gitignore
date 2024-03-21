@@ -42,4 +42,6 @@ Thumbs.db
 # Cypress
 apps/transloco-playground-e2e/cypress/screenshots/*
 
+.nx/cache
+
 .nx
