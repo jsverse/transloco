@@ -183,9 +183,11 @@ export class TranslocoService implements OnDestroy {
   }
 
   load(path: string, options: LoadOptions = {}): Observable<Translation> {
-    const cached = this.cache.get(path);
-    if (cached) {
-      return cached;
+    if (!options.bypassCache) {
+      const cached = this.cache.get(path);
+      if (cached) {
+        return cached;
+      }
     }
 
     let loadTranslation: Observable<
