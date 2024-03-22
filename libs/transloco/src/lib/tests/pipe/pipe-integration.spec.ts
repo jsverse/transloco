@@ -31,7 +31,7 @@ class TestPipe {
   value = 'hey';
 }
 
-describe('Pipe', () => {
+describe('Transloco Pipe', () => {
   describe('Pipe basic', () => {
     let spectator: Spectator<TestPipe>;
     const createComponent = createComponentFactory({
@@ -148,6 +148,7 @@ describe('Pipe', () => {
   });
 
   @Component({
+    selector: 'transloco-scope-pipe',
     template: `
       <p>{{ 'lazyPage.title' | transloco }}</p>
       <h1>{{ 'nested.title' | transloco }}</h1>

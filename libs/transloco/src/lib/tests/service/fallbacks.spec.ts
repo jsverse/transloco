@@ -1,16 +1,17 @@
-import { catchError, map, of, timer } from 'rxjs';
-import { fakeAsync } from '@angular/core/testing';
+import {catchError, map, of, timer} from 'rxjs';
+import {fakeAsync} from '@angular/core/testing';
 
-import { createService, mockLangs, runLoader } from '../mocks';
-import { TranslocoLoader } from '../../transloco.loader';
-import { TranslocoFallbackStrategy } from '../../transloco-fallback-strategy';
+import {createService, mockLangs, runLoader} from '../mocks';
+import {TranslocoLoader} from '../../transloco.loader';
+import {TranslocoFallbackStrategy} from '../../transloco-fallback-strategy';
+import {Type} from "@angular/core";
 
 describe('Multiple fallbacks', () => {
   describe('DefaultFallbackStrategy', () => {
-    let loader: TranslocoLoader;
+    let loader: Type<TranslocoLoader>;
 
     beforeEach(() => {
-      loader = {
+      loader = class TestLoader implements TranslocoLoader {
         getTranslation(lang: string) {
           return timer(1000).pipe(
             map(() => mockLangs[lang]),
@@ -24,7 +25,7 @@ describe('Multiple fallbacks', () => {
               return translation;
             })
           );
-        },
+        }
       };
     });
 
@@ -142,10 +143,10 @@ describe('Multiple fallbacks', () => {
       }
     }
 
-    let loader: TranslocoLoader;
+    let loader: Type<TranslocoLoader>;
 
     beforeEach(() => {
-      loader = {
+      loader = class TestLoader implements TranslocoLoader {
         getTranslation(lang: string) {
           return timer(1000).pipe(
             map(() => mockLangs[lang]),
@@ -157,7 +158,7 @@ describe('Multiple fallbacks', () => {
               return translation;
             })
           );
-        },
+        }
       };
     });
 
@@ -166,7 +167,7 @@ describe('Multiple fallbacks', () => {
         {
           defaultLang: 'es',
         },
-        { loader, fallback: new StrategyTest() }
+        { loader, fallback: StrategyTest }
       );
 
       spyOn(service, 'load').and.callThrough();

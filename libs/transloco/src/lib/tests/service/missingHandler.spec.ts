@@ -5,11 +5,10 @@ import { TranslocoService } from '../../transloco.service';
 
 describe('missingHandler', () => {
   describe('missingHandler.allowEmpty', () => {
-    const service: any = createService({
-      missingHandler: { allowEmpty: true },
-    });
-
     it('should not call handle', () => {
+      const service = createService({
+        missingHandler: { allowEmpty: true },
+      });
       service.setTranslation(
         {
           empty: '',
@@ -17,11 +16,11 @@ describe('missingHandler', () => {
         'en'
       );
 
-      spyOn(service.missingHandler, 'handle').and.callThrough();
+      spyOn((service as any).missingHandler, 'handle').and.callThrough();
       const value = service.translate('empty');
 
       expect(value).toEqual('');
-      expect(service.missingHandler.handle).not.toHaveBeenCalled();
+      expect((service as any).missingHandler.handle).not.toHaveBeenCalled();
     });
   });
 

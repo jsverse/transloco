@@ -285,7 +285,9 @@ export class TranslocoService implements OnDestroy {
       return this._handleMissingKey(key, value, params);
     }
 
-    return this.parser.transpile(value, params, translation, key);
+    return this.parser.transpile({
+      value, params, translation, key
+    });
   }
 
   /**
@@ -392,7 +394,7 @@ export class TranslocoService implements OnDestroy {
       /* If an empty object was returned we want to try and translate the key as a string and not an object */
       return isEmpty(value)
         ? this.translate(key, params!, lang)
-        : this.parser.transpile(value, params!, translation, key);
+        : this.parser.transpile({value, params: params!, translation, key});
     }
 
     const translations: T[] = [];
@@ -567,10 +569,9 @@ export class TranslocoService implements OnDestroy {
   setTranslationKey(
     key: string,
     value: string,
-    // Todo: Add the lang to the options in v3
-    lang = this.getActiveLang(),
     options: Omit<SetTranslationOptions, 'merge'> = {}
   ) {
+    const lang = options.lang || this.getActiveLang();
     const withHook = this.interceptor.preSaveTranslationKey(key, value, lang);
     const newValue = {
       [key]: withHook,

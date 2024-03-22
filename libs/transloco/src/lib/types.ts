@@ -32,6 +32,7 @@ export interface LangDefinition {
 }
 export type AvailableLangs = string[] | LangDefinition[];
 export interface SetTranslationOptions {
+  lang?: string;
   merge?: boolean;
   emitChange?: boolean;
 }

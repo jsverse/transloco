@@ -1,3 +1,52 @@
+# Transloco v7
+
+Packages were moved to the jsverse scope, the versioning continues from the last version of the previous scope.
+
+## Transloco
+
+- The package is now published under the `@jsverse` scope.
+- The transpiler matching algorithm has changed, see this [key referencing discussion](https://github.com/jsverse/transloco/discussions/737).
+- The transpiler `transpile` method signature has changed to an object.
+- `setTranslationKey` method signature has changed, the `lang` parameter was moved to the config.
+
+## Transloco Messageformat
+
+- The package is now published under the `@jsverse` scope and aligned to the main package major version (v7).
+- Updated the transpile method usages.
+- Minimum Transloco version is now `^7.0.0`. 
+
+## Transloco Locale
+
+- The package is now published under the `@jsverse` scope and aligned to the main package major version (v7).
+
+## Transloco Optimize
+
+- The package is now published under the `@jsverse` scope and aligned to the main package major version (v7).
+
+## Transloco Persist Lang
+
+- The package is now published under the `@jsverse` scope and aligned to the main package major version (v7).
+
+## Transloco Persist Translations
+
+- The package is now published under the `@jsverse` scope and aligned to the main package major version (v7).
+
+## Transloco Preload Langs
+
+- The package is now published under the `@jsverse` scope and aligned to the main package major version (v7).
+
+## Transloco Utils
+
+- The package is now published under the `@jsverse` scope and aligned to the main package major version (v7).
+
+## Transloco Scoped Libs
+
+- The package is now published under the `@jsverse` scope and aligned to the main package major version (v7).
+
+## Transloco Scoped Validator
+
+- The package is now published under the `@jsverse` scope and aligned to the main package major version (v7).
+
 # Transloco V5.0.8-10 & V6
 
 Versions 5.0.8-10 also contains the breaking change in V6 but accidentally weren't marked correctly.

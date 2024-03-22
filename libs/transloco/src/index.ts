@@ -14,6 +14,7 @@ export {
   translocoConfig,
 } from './lib/transloco.config';
 export {
+  TranspileParams,
   TRANSLOCO_TRANSPILER,
   DefaultTranspiler,
   TranslocoTranspiler,
