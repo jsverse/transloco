@@ -2,6 +2,25 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [6.0.0](https://personal-github/jsverse/transloco/compare/transloco-messageformat-5.0.0...transloco-messageformat-6.0.0) (2024-03-23)
+
+
+### Bug Fixes
+
+* **transloco:** 🐛 providing the FunctionalTranspiler ([308438f](https://personal-github/jsverse/transloco/commit/308438f7ae93ec3f7733b9b2cb2278f3aecacd33)), closes [#733](https://personal-github/jsverse/transloco/issues/733)
+
+
+### Features
+
+* **transloco:** 🎸 Improve params algo matching ([8447634](https://personal-github/jsverse/transloco/commit/8447634588210771047c45072186f20867fd8a2f))
+
+
+### BREAKING CHANGES
+
+* **transloco:** 🧨 All breaking changes are listed in the breaking changes document
+
+
+
 # [5.0.0](https://github.com/ngneat/transloco/compare/transloco-messageformat-4.1.0...transloco-messageformat-5.0.0) (2023-07-30)
 
 ### chore
