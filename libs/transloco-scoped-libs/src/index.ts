@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { getGlobalConfig } from '@ngneat/transloco-utils';
+import { getGlobalConfig } from '@jsverse/transloco-utils';
 import commandLineArgs from 'command-line-args';
 
 import run from './lib/transloco-scoped-libs';

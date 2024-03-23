@@ -13,12 +13,12 @@
     "access": "public"
   },
   "bugs": {
-    "url": "https://github.com/ngneat/transloco/issues"
+    "url": "https://github.com/jsverse/transloco/issues"
   },
-  "homepage": "https://ngneat.github.io/transloco/docs/tools/scope-lib-extractor",
+  "homepage": "https://jsverse.github.io/transloco/docs/tools/scope-lib-extractor",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ngneat/transloco"
+    "url": "https://github.com/jsverse/transloco"
   },
   "keywords": [
     "angular",
@@ -33,19 +33,8 @@
     "optimize"
   ],
   "license": "MIT",
-  "author": "Itay Oded",
-  "contributors": [
-    {
-      "name": "Shahar Kazaz",
-      "url": "https://github.com/shaharkazaz"
-    },
-    {
-      "name": "Netanel Basal",
-      "url": "https://netbasal.com"
-    }
-  ],
   "dependencies": {
-    "@ngneat/transloco-utils": "^5.0.0",
+    "@jsverse/transloco-utils": "^7.0.0",
     "chalk": "^4.1.2",
     "chokidar": "^3.5.2",
     "command-line-args": "^5.1.1",

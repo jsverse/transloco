@@ -4,7 +4,7 @@ import chalk from 'chalk';
 import { glob } from 'glob';
 import chokidar from 'chokidar';
 import { mkdirsSync } from 'fs-extra';
-import { TranslocoGlobalConfig } from '@ngneat/transloco-utils';
+import { TranslocoGlobalConfig } from '@jsverse/transloco-utils';
 
 import {
   coerceArray,
