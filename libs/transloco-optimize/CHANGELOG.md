@@ -2,6 +2,10 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [6.0.0](https://personal-github/jsverse/transloco/compare/transloco-optimize-5.0.3...transloco-optimize-6.0.0) (2024-03-23)
+
+
+
 ## [5.0.3](https://github.com/ngneat/transloco/compare/transloco-optimize-5.0.2...transloco-optimize-5.0.3) (2023-08-13)
 
 ### Bug Fixes
