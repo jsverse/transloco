@@ -15,29 +15,29 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@ngneat/transloco": ["libs/transloco/src/index.ts"],
-      "@ngneat/transloco-locale": ["libs/transloco-locale/src/index.ts"],
-      "@ngneat/transloco-messageformat": [
+      "@jsverse/transloco": ["libs/transloco/src/index.ts"],
+      "@jsverse/transloco-locale": ["libs/transloco-locale/src/index.ts"],
+      "@jsverse/transloco-messageformat": [
         "libs/transloco-messageformat/src/index.ts"
       ],
-      "@ngneat/transloco-optimize": ["libs/transloco-optimize/src/index.ts"],
-      "@ngneat/transloco-persist-lang": [
+      "@jsverse/transloco-optimize": ["libs/transloco-optimize/src/index.ts"],
+      "@jsverse/transloco-persist-lang": [
         "libs/transloco-persist-lang/src/index.ts"
       ],
-      "@ngneat/transloco-persist-translations": [
+      "@jsverse/transloco-persist-translations": [
         "libs/transloco-persist-translations/src/index.ts"
       ],
-      "@ngneat/transloco-preload-langs": [
+      "@jsverse/transloco-preload-langs": [
         "libs/transloco-preload-langs/src/index.ts"
       ],
-      "@ngneat/transloco-schematics": [
+      "@jsverse/transloco-schematics": [
         "libs/transloco-schematics/src/index.ts"
       ],
-      "@ngneat/transloco-scoped-libs": [
+      "@jsverse/transloco-scoped-libs": [
         "libs/transloco-scoped-libs/src/index.ts"
       ],
-      "@ngneat/transloco-utils": ["libs/transloco-utils/src/index.ts"],
-      "@ngneat/transloco-validator": ["libs/transloco-validator/src/index.ts"]
+      "@jsverse/transloco-utils": ["libs/transloco-utils/src/index.ts"],
+      "@jsverse/transloco-validator": ["libs/transloco-validator/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
