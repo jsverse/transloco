@@ -9,7 +9,7 @@
     "fs-extra",
     "glob",
     "flat",
-    "@ngneat/transloco-utils",
+    "@jsverse/transloco-utils",
     "replace-in-file",
     "lodash.kebabcase",
     "ora"

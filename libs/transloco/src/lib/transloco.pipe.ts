@@ -46,8 +46,8 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
     this.scopeResolver = new ScopeResolver(this.service);
   }
 
-  // null is for handling strict mode + async pipe types https://github.com/ngneat/transloco/issues/311
-  // null is for handling strict mode + optional chaining types https://github.com/ngneat/transloco/issues/488
+  // null is for handling strict mode + async pipe types https://github.com/jsverse/transloco/issues/311
+  // null is for handling strict mode + optional chaining types https://github.com/jsverse/transloco/issues/488
   transform(
     key?: string | null,
     params?: HashMap,
