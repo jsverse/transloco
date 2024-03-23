@@ -49,7 +49,7 @@ module.exports = {
           position: 'left',
         },
         {
-          href: 'https://codesandbox.io/s/ngneat-transloco-kn52hs',
+          href: 'https://codesandbox.io/s/jsverse-transloco-kn52hs',
           label: 'Playground',
           position: 'left',
           className: 'header-playground-link',
@@ -93,15 +93,11 @@ module.exports = {
           items: [
             {
               label: 'Discussions',
-              href: 'https://github.com/ngneat/transloco/discussions',
+              href: 'https://github.com/jsverse/transloco/discussions',
             },
             {
               label: 'Stack Overflow',
               href: 'https://stackoverflow.com/questions/tagged/transloco',
-            },
-            {
-              label: 'Gitter',
-              href: 'https://gitter.im/ngneat-transloco/lobby?source=orgpage',
             },
           ],
         },
@@ -110,20 +106,12 @@ module.exports = {
           items: [
             {
               label: 'GitHub',
-              href: 'https://github.com/ngneat/transloco/',
+              href: 'https://github.com/jsverse/transloco/',
             },
             {
               label: 'Twitter',
-              href: 'https://twitter.com/ngneat_org',
-            },
-            {
-              label: 'YouTube',
-              href: 'https://youtube.com/@ngneat',
-            },
-            {
-              label: 'Official site',
-              href: 'https://ngneat.com',
-            },
+              href: 'https://twitter.com/shaharkazaz',
+            }
           ],
         },
       ],
@@ -140,7 +128,7 @@ module.exports = {
       {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          editUrl: 'https://github.com/ngneat/transloco/edit/master/docs',
+          editUrl: 'https://github.com/jsverse/transloco/edit/master/docs',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),

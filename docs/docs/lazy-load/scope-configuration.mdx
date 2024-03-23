@@ -33,7 +33,7 @@ We can set it inside the _lazy route_ providers:
 
 ```ts title="todos.routes.ts"
 import { Route } from '@angular/router';
-import { provideTranslocoScope } from '@ngneat/transloco';
+import { provideTranslocoScope } from '@jsverse/transloco';
 
 export const TODO_ROUTES: Route = {
     path: '',
@@ -52,7 +52,7 @@ export const TODO_ROUTES: Route = {
 We can set it inside the _lazy module_ providers:
 
 ```ts title="todos.module.ts"
-import { provideTranslocoScope } from '@ngneat/transloco';
+import { provideTranslocoScope } from '@jsverse/transloco';
 
 const routes: Routes = [
     {

@@ -12,7 +12,7 @@ Creates boilerplate translation files for the given languages, and adds Transloc
 ### Command
 
 ```
-  ng add @ngneat/transloco
+  ng add @jsverse/transloco
 ```
 
 ### Options
@@ -90,7 +90,7 @@ Add new Transloco scope to a new/existing Angular `module`, and create the scope
 ### Command
 
 ```bash
-ng generate @ngneat/transloco:scope [name]
+ng generate @jsverse/transloco:scope [name]
 ```
 
 ### Options
@@ -140,9 +140,9 @@ Define the location of the translation files.
 ### Examples
 
 ```bash
-ng g @ngneat/transloco:scope my-scope
-ng g @ngneat/transloco:scope my-scope --module path/to/my-scope
-ng g @ngneat/transloco:scope my-scope --inline-loader
+ng g @jsverse/transloco:scope my-scope
+ng g @jsverse/transloco:scope my-scope --module path/to/my-scope
+ng g @jsverse/transloco:scope my-scope --inline-loader
 ```
 
 ## Component
@@ -154,7 +154,7 @@ Creates boilerplate files for Angular `component` with a simple translation
 ### Command
 
 ```
-ng generate @ngneat/transloco:component [name]
+ng generate @jsverse/transloco:component [name]
 ```
 
 ### Options
@@ -174,7 +174,7 @@ Merge all our translation files into one piece for each language.
 ### Command
 
 ```bash
-ng generate @ngneat/transloco:join
+ng generate @jsverse/transloco:join
 ```
 
 :::info
@@ -237,7 +237,7 @@ Once you specify the scopePathMap the script will automatically use it
 
 Merge translations files to a specific output directory:
 ```bash
-ng g @ngneat/transloco:build --default-lang en
+ng g @jsverse/transloco:build --default-lang en
 ```
 
 ### Options
@@ -287,7 +287,7 @@ Does the opposite process of `join` command. It splits the translated files betw
 ### Command
 
 ```bash
-ng generate @ngneat/transloco:split
+ng generate @jsverse/transloco:split
 ```
 
 ### Options
@@ -317,12 +317,12 @@ The path of the source directory that contains the translated files.
 ### Overview
 
 The Library's upgrade script from lower versions. For more information about the script see:
-[v2-upgrade.md](https://github.com/ngneat/transloco/tree/master/schematics/src/upgrade/v2-upgrade.md)
+[v2-upgrade.md](https://github.com/jsverse/transloco/tree/master/schematics/src/upgrade/v2-upgrade.md)
 
 ### Command
 
 ```bash
- ng generate @ngneat/transloco:upgrade
+ ng generate @jsverse/transloco:upgrade
 ```
 
 ### Options

@@ -9,9 +9,9 @@ import TabItem from '@theme/TabItem';
 
 Install the library using Angular CLI:
 ```bash
-ng add @ngneat/transloco
+ng add @jsverse/transloco
 # On an nx workspace
-nx g @ngneat/transloco:ng-add
+nx g @jsverse/transloco:ng-add
 ```
 
 For more information, see the [ng-add](../schematics/ng-add) command page.
@@ -26,7 +26,7 @@ A default http loader implementation to fetch the translation files:
 
 ```ts
 import { inject, Injectable } from "@angular/core";
-import { Translation, TranslocoLoader } from "@ngneat/transloco";
+import { Translation, TranslocoLoader } from "@jsverse/transloco";
 import { HttpClient } from "@angular/common/http";
 
 @Injectable({ providedIn: 'root' })
@@ -67,7 +67,7 @@ The command will add the `provideTransloco` and `provideHttpClient` to your app 
 ```ts title="app.config.ts"
 import { ApplicationConfig, isDevMode } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
-import { provideTransloco } from '@ngneat/transloco';
+import { provideTransloco } from '@jsverse/transloco';
 
 import { TranslocoHttpLoader } from './transloco-loader';
 
@@ -99,7 +99,7 @@ When added to a module based application a new `transloco-root.module.ts` which 
 import {
     provideTransloco,
     TranslocoModule
-} from '@ngneat/transloco';
+} from '@jsverse/transloco';
 import { Injectable, isDevMode, NgModule } from '@angular/core';
 
 import { TranslocoHttpLoader } from './transloco-loader';

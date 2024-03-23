@@ -1,4 +1,4 @@
-## Code snippets for @ngneat/transloco
+## Code snippets for @jsverse/transloco
 
 #### Available snippets:
 

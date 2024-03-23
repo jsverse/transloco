@@ -3,7 +3,7 @@ title: Message Format
 description: Plugins - Message Format | Transloco Angular i18n
 ---
 
-Transpiler for `@ngneat/transloco` that uses `@messageformat/core` to compile translations using ICU syntax for handling pluralization and gender.
+Transpiler for `@jsverse/transloco` that uses `@messageformat/core` to compile translations using ICU syntax for handling pluralization and gender.
 
 Messageformat is a mechanism for handling both pluralization and gender in your app.
 
@@ -12,7 +12,7 @@ You can see its format guide [here](https://messageformat.github.io/messageforma
 ## Installation
 
 ```bash
-npm i @ngneat/transloco-messageformat
+npm i @jsverse/transloco-messageformat
 ```
 
 ## Usage
@@ -30,7 +30,7 @@ It then enables support for the following within your i18n translation files:
 To enable this plugin, add the following import in your `TranslocoRootModule`:
 
 ```ts title="transloco-root.module.ts"
-import { provideTranslocoMessageformat } from '@ngneat/transloco-messageformat';
+import { provideTranslocoMessageformat } from '@jsverse/transloco-messageformat';
 
 @NgModule({
   providers: [

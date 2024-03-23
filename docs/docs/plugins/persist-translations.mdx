@@ -7,14 +7,14 @@ This plugin provides the functionality of persisting translations to the provide
 
 ## Installation
 ```bash
-npm install @ngneat/transloco-persist-translations
+npm install @jsverse/transloco-persist-translations
 ```
 
 ## Usage
 Add persist translation providers using the into the `TranslocoRootModule`/`app.config.ts`, and provide the storage you would like to use:
 
 ```ts title="transloco-root.module.ts"
-import {provideTranslocoPersistTranslations} from '@ngneat/transloco-persist-translations';
+import {provideTranslocoPersistTranslations} from '@jsverse/transloco-persist-translations';
 
 import { TranslocoHttpLoader } from './transloco-loader';
 
@@ -35,7 +35,7 @@ Note that you should **not** include the default loader to make it work.
 You can also use an async storage. For example, let's install [localForage](https://github.com/localForage/localForage) and use `IndexedDB`:
 
 ```ts title="transloco-root.module.ts"
-import {provideTranslocoPersistTranslations} from '@ngneat/transloco-persist-translations';
+import {provideTranslocoPersistTranslations} from '@jsverse/transloco-persist-translations';
 import * as localForage from 'localforage';
 
 import { TranslocoHttpLoader } from './transloco-loader';
@@ -75,7 +75,7 @@ export class TranslocoRootModule {}
 The storage cleanup is done automatically once the `ttl` is passed, but it could also can be done manually by calling `clearCache` method from the cache service:
 
 ```ts title="app.component.ts"
-import { TranslocoPersistTranslations } from '@ngneat/transloco-persist-translations';
+import { TranslocoPersistTranslations } from '@jsverse/transloco-persist-translations';
 
 export class AppComponent {
   constructor(private loader: TranslocoPersistTranslations) {}

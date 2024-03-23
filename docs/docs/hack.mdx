@@ -8,7 +8,7 @@ description: Hack The Library | Transloco Angular i18n
 The loader provides you with the ability to override the default handling of translation file loading.
 
 ```ts
-import { TranslocoLoader } from '@ngneat/transloco';
+import { TranslocoLoader } from '@jsverse/transloco';
 
 export class CustomLoader implements TranslocoLoader {
   getTranslation(lang: string) {
@@ -25,7 +25,7 @@ export class CustomLoader implements TranslocoLoader {
 The interceptor provides you with the ability to manipulate the translation object before it is saved by the service.
 
 ```ts
-import { TranslocoInterceptor } from '@ngneat/transloco';
+import { TranslocoInterceptor } from '@jsverse/transloco';
 
 export class CustomInterceptor implements TranslocoInterceptor {
   preSaveTranslation(translation: Translation, lang: string): Translation {
@@ -42,7 +42,7 @@ export class CustomInterceptor implements TranslocoInterceptor {
 
 This handler is responsible for handling missing keys. The default handler calls `console.warn()` with the key when config.isProdMode is set to `false`, and returns an empty string to use as a replacement for the missing key's value.
 ```ts
-import { TranslocoMissingHandler } from '@ngneat/transloco';
+import { TranslocoMissingHandler } from '@jsverse/transloco';
 
 export class CustomHandler implements TranslocoMissingHandler {
   handle(key: string, config: TranslocoConfig) {
@@ -58,7 +58,7 @@ The fallback strategy is responsible for loading the fallback translation file, 
 When you need more control over this functionality, you can define your own strategy:
 
 ```ts
-import { TranslocoFallbackStrategy } from '@ngneat/transloco';
+import { TranslocoFallbackStrategy } from '@jsverse/transloco';
 
 export class CustomStrategy implements TranslocoFallbackStrategy {
   getNextLangs(failedLang: string) {

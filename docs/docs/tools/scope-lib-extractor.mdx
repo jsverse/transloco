@@ -74,7 +74,7 @@ export class CoreComponent {
 Now, let's install `transloco-scoped-libs` package:
 
  ```bash
- $ npm install @ngneat/transloco-scoped-libs --save-dev
+ $ npm install @jsverse/transloco-scoped-libs --save-dev
  ```
 
 The first thing we need to do is to add i18n configuration with the path to the translation folder in the library's `package.json`:
@@ -186,7 +186,7 @@ export const httpLoader = { provide: TRANSLOCO_LOADER, useClass: HttpLoader };
 Add custom Webpack support by using a tool such as [ngx-build-plus](https://github.com/manfredsteyer/ngx-build-plus), and add the plugin to `webpack.config` file:
 
 ```js title="webpack.config.js"
-const TranslocoScopedLibsWebpackPlugin = require('@ngneat/transloco-scoped-libs/webpack');
+const TranslocoScopedLibsWebpackPlugin = require('@jsverse/transloco-scoped-libs/webpack');
 
 module.exports = {
   plugins: [new TranslocoScopedLibsWebpackPlugin()]

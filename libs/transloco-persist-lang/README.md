@@ -1,3 +1,3 @@
 # Transloco Persist Language
 
-Please visit the [official Transloco docs](https://ngneat.github.io/transloco/docs/plugins/persist-lang).
+Please visit the [official Transloco docs](https://jsverse.github.io/transloco/docs/plugins/persist-lang).
