@@ -6,7 +6,7 @@ import {
   Type,
   ValueProvider,
 } from '@angular/core';
-import { TranslocoLoader } from '@ngneat/transloco';
+import { TranslocoLoader } from '@jsverse/transloco';
 
 import { MaybeAsyncStorage } from './transloco.storage';
 
