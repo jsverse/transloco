@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [7.0.0](https://personal-github/jsverse/transloco/compare/transloco-scoped-libs-6.0.0...transloco-scoped-libs-7.0.0) (2024-03-23)
+
+
+### chore
+
+* **scoped-libs:** 🤖 update package scope ([2b5ae85](https://personal-github/jsverse/transloco/commit/2b5ae85323cb13c70e3cff69a70ccf43200037f2))
+
+
+### BREAKING CHANGES
+
+* **scoped-libs:** 🧨 The package is now published under the jsverse scope
+
+
+
 # [6.0.0](https://personal-github/jsverse/transloco/compare/transloco-scoped-libs-5.0.3...transloco-scoped-libs-6.0.0) (2024-03-23)
 
 
