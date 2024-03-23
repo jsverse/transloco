@@ -1,6 +1,6 @@
 {
   "name": "@jsverse/transloco-utils",
-  "version": "6.0.0",
+  "version": "7.0.0",
   "description": "Transloco utils library",
   "main": "src/index.js",
   "engines": {
