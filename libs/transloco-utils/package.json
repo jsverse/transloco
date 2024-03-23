@@ -1,5 +1,5 @@
 {
-  "name": "@ngneat/transloco-utils",
+  "name": "@jsverse/transloco-utils",
   "version": "6.0.0",
   "description": "Transloco utils library",
   "main": "src/index.js",
@@ -10,24 +10,13 @@
     "access": "public"
   },
   "bugs": {
-    "url": "https://github.com/ngneat/transloco/issues"
+    "url": "https://github.com/jsverse/transloco/issues"
   },
-  "homepage": "https://github.com/ngneat/transloco#readme",
+  "homepage": "https://jsverse.github.io/transloco/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ngneat/transloco"
+    "url": "https://github.com/jsverse/transloco"
   },
-  "author": "Netanel Basal",
-  "contributors": [
-    {
-      "name": "Shahar Kazaz",
-      "url": "https://github.com/shaharkazaz"
-    },
-    {
-      "name": "Itay Oded",
-      "url": "https://github.com/itayod"
-    }
-  ],
   "keywords": [
     "angular",
     "angular 2",
