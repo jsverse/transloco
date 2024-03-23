@@ -6,7 +6,7 @@ import {
   translocoConfig,
   TranslocoConfig,
   TranspileParams
-} from '@ngneat/transloco';
+} from '@jsverse/transloco';
 import {CustomFormatter} from '@messageformat/core';
 
 import {MessageFormatTranspiler} from './messageformat.transpiler';

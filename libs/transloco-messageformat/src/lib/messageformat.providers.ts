@@ -1,5 +1,5 @@
 import { makeEnvironmentProviders } from '@angular/core';
-import { TRANSLOCO_TRANSPILER } from '@ngneat/transloco';
+import { TRANSLOCO_TRANSPILER } from '@jsverse/transloco';
 
 import {
   MessageformatConfig,

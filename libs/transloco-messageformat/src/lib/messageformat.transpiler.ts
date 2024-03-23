@@ -1,5 +1,5 @@
 import {Inject, Injectable, Optional} from '@angular/core';
-import {DefaultTranspiler, getValue, isObject, setValue, TranspileParams,} from '@ngneat/transloco';
+import {DefaultTranspiler, getValue, isObject, setValue, TranspileParams,} from '@jsverse/transloco';
 import MessageFormat, {MessageFormatOptions} from '@messageformat/core';
 
 import {MessageformatConfig, MFLocale, TRANSLOCO_MESSAGE_FORMAT_CONFIG,} from './messageformat.config';

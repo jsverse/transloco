@@ -1,17 +1,17 @@
 {
-  "name": "@ngneat/transloco-messageformat",
+  "name": "@jsverse/transloco-messageformat",
   "version": "6.0.0",
   "description": "Transpiler for Transloco that uses messageformat.js to compile translations using ICU syntax for handling pluralization and gender",
   "publishConfig": {
     "access": "public"
   },
   "bugs": {
-    "url": "https://github.com/ngneat/transloco/issues"
+    "url": "https://github.com/jsverse/transloco/issues"
   },
-  "homepage": "https://ngneat.github.io/transloco/docs/plugins/message-format",
+  "homepage": "https://jsverse.github.io/transloco/docs/plugins/message-format",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ngneat/transloco"
+    "url": "https://github.com/jsverse/transloco"
   },
   "keywords": [
     "angular",
@@ -27,8 +27,8 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "@angular/core": ">=13.0.0",
-    "@ngneat/transloco": ">=4.2.0",
+    "@angular/core": ">=16.0.0",
+    "@jsverse/transloco": ">=7.0.0",
     "rxjs": ">=6.0.0"
   },
   "dependencies": {
