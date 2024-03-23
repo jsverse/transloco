@@ -3,7 +3,7 @@ import {
   isString,
   Translation,
   TranslocoLoader,
-} from '@ngneat/transloco';
+} from '@jsverse/transloco';
 import { from, Observable, of, Subscription } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { inject, Injectable, OnDestroy } from '@angular/core';

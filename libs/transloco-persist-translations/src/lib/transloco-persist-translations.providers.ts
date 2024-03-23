@@ -1,5 +1,5 @@
 import { makeEnvironmentProviders } from '@angular/core';
-import { TRANSLOCO_LOADER } from '@ngneat/transloco';
+import { TRANSLOCO_LOADER } from '@jsverse/transloco';
 
 import { TranslocoPersistTranslations } from './transloco-persist-translations.service';
 import {
