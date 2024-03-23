@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [7.0.0](https://personal-github/jsverse/transloco/compare/transloco-locale-6.0.0...transloco-locale-7.0.0) (2024-03-23)
+
+
+### chore
+
+* **locale:** 🤖 update package scope ([d9bf473](https://personal-github/jsverse/transloco/commit/d9bf473ee1a77582068640d39e73f66a11f93e0f))
+
+
+### BREAKING CHANGES
+
+* **locale:** 🧨 The package is now published under the jsverse scope
+
+
+
 # [6.0.0](https://personal-github/jsverse/transloco/compare/transloco-locale-5.1.1...transloco-locale-6.0.0) (2024-03-23)
 
 
