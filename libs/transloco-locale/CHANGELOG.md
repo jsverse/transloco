@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [6.0.0](https://personal-github/jsverse/transloco/compare/transloco-locale-5.1.1...transloco-locale-6.0.0) (2024-03-23)
+
+
+### Bug Fixes
+
+* **locale:** 🐛 allow latin american spanish locale ([#740](https://personal-github/jsverse/transloco/issues/740)) ([bd9e8b7](https://personal-github/jsverse/transloco/commit/bd9e8b7d5c401f24aeab6801ee83f584383729a0))
+
+
+
 ## [5.1.1](https://github.com/ngneat/transloco/compare/transloco-locale-5.1.0...transloco-locale-5.1.1) (2023-08-05)
 
 ### Bug Fixes

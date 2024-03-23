@@ -1,6 +1,6 @@
 {
   "name": "@ngneat/transloco-locale",
-  "version": "5.1.1",
+  "version": "6.0.0",
   "description": "The localization (l10n) library plugin for Transloco",
   "publishConfig": {
     "access": "public"
