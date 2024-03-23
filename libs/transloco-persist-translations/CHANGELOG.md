@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [6.0.0](https://personal-github/jsverse/transloco/compare/transloco-persist-translations-5.0.0...transloco-persist-translations-6.0.0) (2024-03-23)
+
+
+### Bug Fixes
+
+* **transloco:** 🐛 update flat to v6 ([7657b3d](https://personal-github/jsverse/transloco/commit/7657b3de185b011bd35f815436da759aae33fc26)), closes [#570](https://personal-github/jsverse/transloco/issues/570)
+
+
+
 # [5.0.0](https://github.com/ngneat/transloco/compare/transloco-persist-translations-4.0.0...transloco-persist-translations-5.0.0) (2023-07-30)
 
 ### chore
