@@ -2,6 +2,26 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [7.0.0](https://personal-github/jsverse/transloco/compare/transloco-6.0.4...transloco-7.0.0) (2024-03-23)
+
+
+### chore
+
+* **transloco:** 🤖 update package scope ([f8b6d58](https://personal-github/jsverse/transloco/commit/f8b6d58f51d99fcb2912082fbefd95527a57e2e4))
+
+
+### Features
+
+* **transloco:** 🎸 Improve params algo matching ([8447634](https://personal-github/jsverse/transloco/commit/8447634588210771047c45072186f20867fd8a2f))
+
+
+### BREAKING CHANGES
+
+* **transloco:** 🧨 The package is now published under the jsverse scope
+* **transloco:** 🧨 All breaking changes are listed in the breaking changes document
+
+
+
 ## [6.0.4](https://github.com/ngneat/transloco/compare/transloco-6.0.3...transloco-6.0.4) (2023-12-09)
 
 ### Bug Fixes
