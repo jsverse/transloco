@@ -1,5 +1,5 @@
 import { of } from 'rxjs';
-import { TranslocoService } from '@ngneat/transloco';
+import { TranslocoService } from '@jsverse/transloco';
 import { mockProvider } from '@ngneat/spectator';
 
 import LOCALE_CURRENCY from '../locale-currency';

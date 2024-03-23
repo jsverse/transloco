@@ -1,4 +1,4 @@
-import { toNumber } from '@ngneat/transloco';
+import { toNumber } from '@jsverse/transloco';
 
 import { Locale, DateFormatOptions } from './transloco-locale.types';
 

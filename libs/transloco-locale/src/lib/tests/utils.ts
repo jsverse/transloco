@@ -1,4 +1,4 @@
-import { coerceArray, isObject, isString, OrArray } from '@ngneat/transloco';
+import { coerceArray, isObject, isString, OrArray } from '@jsverse/transloco';
 import { createPipeFactory } from '@ngneat/spectator';
 import { Type } from '@angular/core';
 
