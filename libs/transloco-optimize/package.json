@@ -1,6 +1,6 @@
 {
   "name": "@jsverse/transloco-optimize",
-  "version": "6.0.0",
+  "version": "7.0.0",
   "description": "Transloco optimization process for production environments",
   "main": "src/lib/transloco-optimize.js",
   "engines": {

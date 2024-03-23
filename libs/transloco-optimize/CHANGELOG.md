@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [7.0.0](https://personal-github/jsverse/transloco/compare/transloco-optimize-6.0.0...transloco-optimize-7.0.0) (2024-03-23)
+
+
+### chore
+
+* **optimize:** 🤖 update package scope ([65645ee](https://personal-github/jsverse/transloco/commit/65645ee0a79413c74be64ede5bf33174f06465f7))
+
+
+### BREAKING CHANGES
+
+* **optimize:** 🧨 The package is now published under the jsverse scope
+
+
+
 # [6.0.0](https://personal-github/jsverse/transloco/compare/transloco-optimize-5.0.3...transloco-optimize-6.0.0) (2024-03-23)
 
 
