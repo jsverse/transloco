@@ -2,7 +2,21 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
-# [6.0.0](https://personal-github/jsverse/transloco/compare/transloco-validator-5.0.1...transloco-validator-6.0.0) (2024-03-23)
+# [7.0.0](https://github.com/jsverse/transloco/compare/transloco-validator-6.0.0...transloco-validator-7.0.0) (2024-03-23)
+
+
+### chore
+
+* **validator:** 🤖 update package scope ([80737e7](https://github.com/jsverse/transloco/commit/80737e7e2568db0361987a4946a675426dcea867))
+
+
+### BREAKING CHANGES
+
+* **validator:** 🧨 The package is now published under the jsverse scope
+
+
+
+# [6.0.0](https://github.com/jsverse/transloco/compare/transloco-validator-5.0.1...transloco-validator-6.0.0) (2024-03-23)
 
 
 
