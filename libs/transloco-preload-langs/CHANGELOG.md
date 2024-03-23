@@ -2,6 +2,10 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [6.0.0](https://personal-github/jsverse/transloco/compare/transloco-preload-langs-5.0.1...transloco-preload-langs-6.0.0) (2024-03-23)
+
+
+
 ## [5.0.1](https://github.com/ngneat/transloco/compare/transloco-preload-langs-5.0.0...transloco-preload-langs-5.0.1) (2023-12-08)
 
 ### Bug Fixes
