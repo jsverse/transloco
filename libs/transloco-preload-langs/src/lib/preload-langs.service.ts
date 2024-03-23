@@ -1,5 +1,5 @@
 import { Inject, Injectable, InjectionToken, OnDestroy } from '@angular/core';
-import { TranslocoService } from '@ngneat/transloco';
+import { TranslocoService } from '@jsverse/transloco';
 import { tap } from 'rxjs/operators';
 import { forkJoin, Subscription } from 'rxjs';
 
