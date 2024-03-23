@@ -4,11 +4,11 @@ import {
   SchematicTestRunner,
   UnitTestTree,
 } from '@angular-devkit/schematics/testing';
-jest.mock('@ngneat/transloco-utils');
+jest.mock('@jsverse/transloco-utils');
 import {
   getGlobalConfig,
   TranslocoGlobalConfig,
-} from '@ngneat/transloco-utils';
+} from '@jsverse/transloco-utils';
 
 import { createWorkspace } from './create-workspace';
 import scopeEn from './mocks/scope-en';

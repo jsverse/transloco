@@ -4,7 +4,7 @@ import {
   SchematicTestRunner,
   UnitTestTree,
 } from '@angular-devkit/schematics/testing';
-import { TranslocoGlobalConfig } from '@ngneat/transloco-utils';
+import { TranslocoGlobalConfig } from '@jsverse/transloco-utils';
 
 import { createWorkspace } from './create-workspace';
 import en from './mocks/en';

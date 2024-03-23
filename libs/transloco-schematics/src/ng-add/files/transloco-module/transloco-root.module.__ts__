@@ -1,7 +1,7 @@
 import {
   provideTransloco,
   TranslocoModule
-} from '@ngneat/transloco';
+} from '@jsverse/transloco';
 import { <% if (!importEnv) {%>isDevMode, <% } %>NgModule } from '@angular/core';
 import { TranslocoHttpLoader } from './transloco-loader';
 <% if (importEnv) {%>import { environment } from '<%= envPath %>';<% } %>

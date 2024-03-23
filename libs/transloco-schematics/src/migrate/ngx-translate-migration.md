@@ -2,7 +2,7 @@
 
 **Note:** some manual changes might still be needed after the script ran.
 
-`ng g @ngneat/transloco:migrate`
+`ng g @jsverse/transloco:migrate`
 
 ## What will be done?
 
@@ -36,10 +36,10 @@ The `TranslateService` imports will be replaced with `TranslocoService`.
 
 ##### Examples:
 
-1. `import {TranslateService} from '@ngx-translate/core';` will be replaced with `import { TranslocoService } from '@ngneat/transloco';`
+1. `import {TranslateService} from '@ngx-translate/core';` will be replaced with `import { TranslocoService } from '@jsverse/transloco';`
 2. `import {TranslateModule, TranslateLoader} from '@ngx-translate/core';` will be replaced with  
     `import {TranslateLoader} from '@ngx-translate/core';`
-   `import { TranslocoService } from '@ngneat/transloco';`
+   `import { TranslocoService } from '@jsverse/transloco';`
 
 ### Constructor Injections
 

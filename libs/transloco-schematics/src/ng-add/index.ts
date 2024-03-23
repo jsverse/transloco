@@ -134,7 +134,7 @@ export default function (options: SchemaOptions): Rule {
           external('isDevMode', '@angular/core');
           external('TranslocoHttpLoader', './transloco-loader');
 
-          return code`${external('provideTransloco', '@ngneat/transloco')}({
+          return code`${external('provideTransloco', '@jsverse/transloco')}({
         config: { 
           availableLangs: [${stringifyList(langs)}],
           defaultLang: '${langs[0]}',

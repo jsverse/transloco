@@ -1,7 +1,7 @@
 import {
   getGlobalConfig,
   TranslocoGlobalConfig,
-} from '@ngneat/transloco-utils';
+} from '@jsverse/transloco-utils';
 
 let config: TranslocoGlobalConfig;
 

@@ -34,13 +34,13 @@ export function run(path) {
         .replace(/,\s*,/, ',')
         .replace(/{\s*,/, '{')
         .replace(/,\s*}/, '}')
-        .concat(`\nimport { TranslocoModule } from '@ngneat/transloco';`),
+        .concat(`\nimport { TranslocoModule } from '@jsverse/transloco';`),
   };
 
   const moduleSingleImport = {
     files: `${path}.ts`,
     from: /import\s*{\s*(TranslateModule),?\s*}\s*from\s*('|").?ngx-translate(\/[^'"]+)?('|");?/g,
-    to: `import { TranslocoModule } from '@ngneat/transloco';`,
+    to: `import { TranslocoModule } from '@jsverse/transloco';`,
   };
 
   const modules = {
@@ -58,7 +58,7 @@ export function run(path) {
         .replace(/,\s*,/, ',')
         .replace(/{\s*,/, '{')
         .replace(/,\s*}/, '}')
-        .concat(`\nimport { TranslocoService } from '@ngneat/transloco';`),
+        .concat(`\nimport { TranslocoService } from '@jsverse/transloco';`),
   };
 
   const [serviceSingleImport, pipeImport] = [
@@ -67,7 +67,7 @@ export function run(path) {
   ].map((regex) => ({
     ...noSpecFiles,
     from: regex,
-    to: `import { TranslocoService } from '@ngneat/transloco';`,
+    to: `import { TranslocoService } from '@jsverse/transloco';`,
   }));
 
   const constructorInjection = {
@@ -187,7 +187,7 @@ export function run(path) {
       console.log('\n              🌵 Done! 🌵');
       console.log('Welcome to a better translation experience 🌐');
       console.log(
-        '\nFor more information about this script please visit 👉 https://ngneat.github.io/transloco/docs/migration/ngx\n'
+        '\nFor more information about this script please visit 👉 https://jsverse.github.io/transloco/docs/migration/ngx\n'
       );
     });
 }

@@ -2,7 +2,7 @@ import * as p from 'node:path';
 
 import { PathFragment } from '@angular-devkit/core';
 import { DirEntry, Tree } from '@angular-devkit/schematics';
-import { TranslocoGlobalConfig } from '@ngneat/transloco-utils';
+import { TranslocoGlobalConfig } from '@jsverse/transloco-utils';
 
 import { SchemaOptions } from '../join/schema';
 import { CONFIG_FILE } from '../schematics.consts';

@@ -1,5 +1,5 @@
 import { inject, Injectable } from "@angular/core";
-import { Translation, TranslocoLoader } from "@ngneat/transloco";
+import { Translation, TranslocoLoader } from "@jsverse/transloco";
 import { HttpClient } from "@angular/common/http";
 
 @Injectable({ providedIn: 'root' })

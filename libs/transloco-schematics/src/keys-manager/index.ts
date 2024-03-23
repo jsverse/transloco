@@ -2,7 +2,7 @@ import { execSync } from 'child_process';
 
 import { Rule, SchematicsException, Tree } from '@angular-devkit/schematics';
 import { getConfiguredPackageManager } from '@angular/cli/src/utilities/config';
-import { TranslocoGlobalConfig } from '@ngneat/transloco-utils';
+import { TranslocoGlobalConfig } from '@jsverse/transloco-utils';
 import { from, map } from 'rxjs';
 
 import { addScriptToPackageJson } from '../utils/package';
@@ -16,10 +16,10 @@ async function installKeysManager() {
   const packageManager = await getConfiguredPackageManager();
   console.log('Installing packages for tooling...');
   if (packageManager === 'yarn') {
-    execSync('yarn add --dev @ngneat/transloco-keys-manager ngx-build-plus');
+    execSync('yarn add --dev @jsverse/transloco-keys-manager ngx-build-plus');
   } else {
     execSync(
-      'npm install --save-dev @ngneat/transloco-keys-manager ngx-build-plus'
+      'npm install --save-dev @jsverse/transloco-keys-manager ngx-build-plus'
     );
   }
 }
@@ -37,7 +37,7 @@ export function updateAngularJson(host: Tree, options) {
 }
 
 export function createWebpackConfig(host: Tree) {
-  const webpackConfig = `const { TranslocoExtractKeysWebpackPlugin } = require('@ngneat/transloco-keys-manager');
+  const webpackConfig = `const { TranslocoExtractKeysWebpackPlugin } = require('@jsverse/transloco-keys-manager');
  
 module.exports = {
   plugins: [new TranslocoExtractKeysWebpackPlugin()]

@@ -85,7 +85,7 @@ export function run(path) {
   const modules = globSync(`${path}.module.ts`);
   for (const file of modules) {
     let str = fs.readFileSync(file).toString('utf8');
-    if (!str.includes('@ngneat/transloco')) continue;
+    if (!str.includes('@jsverse/transloco')) continue;
     /** change listenToLangChange to renderOnce */
     str = str.replace('listenToLangChange', 'reRenderOnLangChange');
     /** Remove scopeStrategy */

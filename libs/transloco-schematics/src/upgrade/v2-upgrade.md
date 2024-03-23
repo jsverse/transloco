@@ -1,6 +1,6 @@
 # Transloco v2 Upgrade script
 
-`ng g @ngneat/transloco:upgrade`
+`ng g @jsverse/transloco:upgrade`
 
 ## What will be done?
 

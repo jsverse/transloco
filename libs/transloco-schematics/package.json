@@ -1,5 +1,5 @@
 {
-  "name": "@ngneat/transloco-schematics",
+  "name": "@jsverse/transloco-schematics",
   "version": "0.0.0",
   "description": "Transloco's Angular schematics"
 }
