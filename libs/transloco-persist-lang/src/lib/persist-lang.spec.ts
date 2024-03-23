@@ -3,7 +3,7 @@ import {
   mockProvider,
   SpectatorService,
 } from '@ngneat/spectator';
-import { TranslocoService } from '@ngneat/transloco';
+import { TranslocoService } from '@jsverse/transloco';
 import { BehaviorSubject } from 'rxjs';
 
 import { TranslocoPersistLangService } from './persist-lang.service';

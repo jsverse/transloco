@@ -4,7 +4,7 @@ import {
   isBrowser,
   isFunction,
   TranslocoService,
-} from '@ngneat/transloco';
+} from '@jsverse/transloco';
 import { Subscription } from 'rxjs';
 import { skip } from 'rxjs/operators';
 import { inject, Injectable, OnDestroy } from '@angular/core';
