@@ -3,7 +3,7 @@ import { Route } from '@angular/router';
 import {
   provideTranslocoLoadingTpl,
   provideTranslocoScope,
-} from '@ngneat/transloco';
+} from '@jsverse/transloco';
 
 export const SCOPE_SHARING_ROUTES: Route = {
   path: 'scope-sharing',

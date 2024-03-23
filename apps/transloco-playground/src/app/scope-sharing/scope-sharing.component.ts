@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { TranslocoModule } from '@ngneat/transloco';
+import { TranslocoModule } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-scope-sharing',

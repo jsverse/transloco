@@ -7,9 +7,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 
-import { provideTransloco } from '@ngneat/transloco';
-import { provideTranslocoMessageformat } from '@ngneat/transloco-messageformat';
-import { provideTranslocoLocale } from '@ngneat/transloco-locale';
+import { provideTransloco } from '@jsverse/transloco';
+import { provideTranslocoMessageformat } from '@jsverse/transloco-messageformat';
+import { provideTranslocoLocale } from '@jsverse/transloco-locale';
 
 import { TranslocoHttpLoader } from './transloco-loader';
 import { ROUTES } from './app.routes';

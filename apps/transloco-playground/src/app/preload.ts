@@ -1,7 +1,7 @@
 import { APP_INITIALIZER } from '@angular/core';
 import { switchMap } from 'rxjs';
 
-import { TranslocoService } from '@ngneat/transloco';
+import { TranslocoService } from '@jsverse/transloco';
 
 import { UserService } from './user.service';
 

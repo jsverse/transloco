@@ -4,7 +4,7 @@ import {
   TranslocoModule,
   TranslocoService,
   TRANSLOCO_SCOPE,
-} from '@ngneat/transloco';
+} from '@jsverse/transloco';
 
 @Component({
   selector: 'app-inline',

@@ -1,13 +1,13 @@
 
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 
-import { TranslocoModule } from '@ngneat/transloco';
+import { TranslocoModule } from '@jsverse/transloco';
 import {
   TRANSLOCO_LOCALE_CURRENCY_MAPPING,
   LocaleToCurrencyMapping,
   TranslocoLocaleService,
   TranslocoLocaleModule,
-} from '@ngneat/transloco-locale';
+} from '@jsverse/transloco-locale';
 
 @Component({
   selector: 'app-locale',

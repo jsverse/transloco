@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { TranslocoModule, provideTranslocoLang } from '@ngneat/transloco';
+import { TranslocoModule, provideTranslocoLang } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-provider-lang',

@@ -3,7 +3,7 @@ import { Component, inject, OnDestroy } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { Subscription, take } from 'rxjs';
 
-import { TranslocoService, LangDefinition } from '@ngneat/transloco';
+import { TranslocoService, LangDefinition } from '@jsverse/transloco';
 
 import { environment } from '../environments/environment';
 
