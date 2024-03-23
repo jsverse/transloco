@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [7.0.0](https://personal-github/jsverse/transloco/compare/transloco-persist-lang-6.0.0...transloco-persist-lang-7.0.0) (2024-03-23)
+
+
+### chore
+
+* **persist-lang:** 🤖 update package scope ([8ba44fe](https://personal-github/jsverse/transloco/commit/8ba44fea1193309f6920284123a4a78839c40ffc))
+
+
+### BREAKING CHANGES
+
+* **persist-lang:** 🧨 The package is now published under the jsverse scope
+
+
+
 # [6.0.0](https://personal-github/jsverse/transloco/compare/transloco-persist-lang-5.0.0...transloco-persist-lang-6.0.0) (2024-03-23)
 
 
