@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [7.0.0](https://personal-github/jsverse/transloco/compare/transloco-messageformat-6.0.0...transloco-messageformat-7.0.0) (2024-03-23)
+
+
+### chore
+
+* **messageformat:** 🤖 update package scope ([5f00d4c](https://personal-github/jsverse/transloco/commit/5f00d4c3743f4954b81ea1fa1eaef5370f285fda))
+
+
+### BREAKING CHANGES
+
+* **messageformat:** 🧨 The package is now published under the jsverse scope
+
+
+
 # [6.0.0](https://personal-github/jsverse/transloco/compare/transloco-messageformat-5.0.0...transloco-messageformat-6.0.0) (2024-03-23)
 
 

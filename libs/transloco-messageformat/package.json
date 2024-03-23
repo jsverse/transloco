@@ -1,6 +1,6 @@
 {
   "name": "@jsverse/transloco-messageformat",
-  "version": "6.0.0",
+  "version": "7.0.0",
   "description": "Transpiler for Transloco that uses messageformat.js to compile translations using ICU syntax for handling pluralization and gender",
   "publishConfig": {
     "access": "public"
