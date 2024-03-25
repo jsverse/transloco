@@ -49,4 +49,5 @@ export interface LoadOptions {
   /** @internal */
   failedCounter?: number;
   inlineLoader?: InlineLoader;
+  bypassCache?: boolean;
 }
