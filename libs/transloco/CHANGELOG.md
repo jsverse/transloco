@@ -2,25 +2,26 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
-# [7.0.0](https://github.com/jsverse/transloco/compare/transloco-6.0.4...transloco-7.0.0) (2024-03-23)
-
-
-### chore
-
-* **transloco:** 🤖 update package scope ([f8b6d58](https://github.com/jsverse/transloco/commit/f8b6d58f51d99fcb2912082fbefd95527a57e2e4))
-
+# [7.1.0](https://github.com/ngneat/transloco/compare/transloco-7.0.0...transloco-7.1.0) (2024-03-30)
 
 ### Features
 
-* **transloco:** 🎸 Improve params algo matching ([8447634](https://github.com/jsverse/transloco/commit/8447634588210771047c45072186f20867fd8a2f))
+- **transloco:** 🎸 introduce prefix input ([1e27a8f](https://github.com/ngneat/transloco/commit/1e27a8fe9922e3e8f4ced0ea3960aca8ae4da92d))
 
+# [7.0.0](https://github.com/jsverse/transloco/compare/transloco-6.0.4...transloco-7.0.0) (2024-03-23)
+
+### chore
+
+- **transloco:** 🤖 update package scope ([f8b6d58](https://github.com/jsverse/transloco/commit/f8b6d58f51d99fcb2912082fbefd95527a57e2e4))
+
+### Features
+
+- **transloco:** 🎸 Improve params algo matching ([8447634](https://github.com/jsverse/transloco/commit/8447634588210771047c45072186f20867fd8a2f))
 
 ### BREAKING CHANGES
 
-* **transloco:** 🧨 The package is now published under the jsverse scope
-* **transloco:** 🧨 All breaking changes are listed in the breaking changes document
-
-
+- **transloco:** 🧨 The package is now published under the jsverse scope
+- **transloco:** 🧨 All breaking changes are listed in the breaking changes document
 
 ## [6.0.4](https://github.com/jsverse/transloco/compare/transloco-6.0.3...transloco-6.0.4) (2023-12-09)
 
