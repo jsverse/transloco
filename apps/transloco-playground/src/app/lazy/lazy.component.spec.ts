@@ -23,11 +23,12 @@ describe('LazyComponent', () => {
     ).toBe('Admin spanish');
   });
 
-  it('should get scoped translation with read', function () {
+  it('should get scoped translation with prefix', function () {
     const fixture = TestBed.createComponent(LazyComponent);
     fixture.detectChanges();
     expect(
-      fixture.debugElement.query(By.css('.admin-read')).nativeElement.innerText
-    ).toBe('Admin read spanish');
+      fixture.debugElement.query(By.css('.admin-prefix')).nativeElement
+        .innerText
+    ).toBe('Admin prefix spanish');
   });
 });

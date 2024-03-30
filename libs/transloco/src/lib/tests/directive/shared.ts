@@ -61,7 +61,7 @@ export function testScopedTranslation(
   expect(spectator.queryHost('div')).toHaveText('Admin Lazy spanish');
 }
 
-export function testTranslationWithRead(
+export function testTranslationWithPrefix(
   spectator: SpectatorHost<TranslocoDirective>
 ) {
   const service = spectator.inject(TranslocoService);

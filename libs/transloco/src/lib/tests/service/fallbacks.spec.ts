@@ -1,10 +1,10 @@
-import {catchError, map, of, timer} from 'rxjs';
-import {fakeAsync} from '@angular/core/testing';
+import { catchError, map, of, timer } from 'rxjs';
+import { fakeAsync } from '@angular/core/testing';
+import { Type } from '@angular/core';
 
-import {createService, mockLangs, runLoader} from '../mocks';
-import {TranslocoLoader} from '../../transloco.loader';
-import {TranslocoFallbackStrategy} from '../../transloco-fallback-strategy';
-import {Type} from "@angular/core";
+import { createService, mockLangs, runLoader } from '../mocks';
+import { TranslocoLoader } from '../../transloco.loader';
+import { TranslocoFallbackStrategy } from '../../transloco-fallback-strategy';
 
 describe('Multiple fallbacks', () => {
   describe('DefaultFallbackStrategy', () => {

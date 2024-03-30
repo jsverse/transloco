@@ -1,4 +1,4 @@
-import { createComponentFactory, Spectator } from '@jsverse/spectator';
+import { createComponentFactory, Spectator } from '@ngneat/spectator';
 
 import { TranslocoService } from '@jsverse/transloco';
 

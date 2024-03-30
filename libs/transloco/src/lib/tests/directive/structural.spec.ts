@@ -9,7 +9,7 @@ import {
   createFactory,
   testMergedScopedTranslation,
   testScopedTranslation,
-  testTranslationWithRead,
+  testTranslationWithPrefix,
 } from './shared';
 
 describe('Structural directive', () => {
@@ -135,15 +135,15 @@ describe('Structural directive', () => {
     }));
   });
 
-  describe('Read', () => {
-    it('should get translation of a nested property using read', fakeAsync(() => {
+  describe('Prefix', () => {
+    it('should get translation of a nested property using prefix', fakeAsync(() => {
       spectator = createHost(
-        `<section *transloco="let t; read: 'nested'"><div>{{t('title')}}</div></section>`,
+        `<section *transloco="let t; prefix: 'nested'"><div>{{t('title')}}</div></section>`,
         {
           detectChanges: false,
         }
       );
-      testTranslationWithRead(spectator);
+      testTranslationWithPrefix(spectator);
     }));
   });
 

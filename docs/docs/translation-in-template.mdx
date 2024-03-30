@@ -41,8 +41,12 @@ We can instruct the directive to use a `different` language in our template:
 
 This will translate each key based on the `Spanish` language translation file.
 
-### Utilizing the read input
-We can use the `read` input in the structural directive to get translations of a particular nested (including deeply nested) property.
+### Utilizing the `prefix` input
+:::important
+This input was previously named `read` and was renamed to `prefix` starting v7.1.0.<br/>
+The `read` input is deprecated and will be removed in v8.
+:::
+We can use the `prefix` input in the structural directive to get translations of a particular nested (including deeply nested) property.
 
 Let's say we need to use the `dashboard` scope all over the template. Given this translation file:
 ```json title="en.json"
@@ -59,7 +63,7 @@ Let's say we need to use the `dashboard` scope all over the template. Given this
 we can write:
 
 ```html {1} title="home.component.html"
-<ng-container *transloco="let t; read: 'dashboard'">
+<ng-container *transloco="let t; prefix: 'dashboard'">
   <p>{{ t('title') }}</p>
 </ng-container>
 ```

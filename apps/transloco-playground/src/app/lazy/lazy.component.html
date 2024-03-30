@@ -4,8 +4,8 @@
 </ng-container>
 
 <h4>Read from the default scope `admin-page`</h4>
-<ng-container *transloco="let t; read: 'adminPage'">
-  <p data-cy="read" class="admin-read">{{ t('read') }}</p>
+<ng-container *transloco="let t; prefix: 'adminPage'">
+  <p data-cy="prefix" class="admin-prefix">{{ t('prefix') }}</p>
 </ng-container>
 
 <h4>Scope is set to `lazy-page` inline in the directive</h4>

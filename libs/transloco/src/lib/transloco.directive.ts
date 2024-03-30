@@ -60,13 +60,14 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   subscription: Subscription | null = null;
   view: EmbeddedViewRef<ViewContext> | undefined;
 
-  private translationMemo: Record<string, { value: any; params?: HashMap }> =
-    {};
+  private memo = new Map<string, any>();
 
   @Input('transloco') key: string | undefined;
   @Input('translocoParams') params: HashMap = {};
   @Input('translocoScope') inlineScope: string | undefined;
+  /** @deprecated use prefix instead, will be removed in Transloco v8 */
   @Input('translocoRead') inlineRead: string | undefined;
+  @Input('translocoPrefix') prefix: string | undefined;
   @Input('translocoLang') inlineLang: string | undefined;
   @Input('translocoLoadingTpl') inlineTpl: Content | undefined;
 
@@ -117,7 +118,10 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
         );
         this.strategy === 'attribute'
           ? this.attributeStrategy()
-          : this.structuralStrategy(this.currentLang, this.inlineRead);
+          : this.structuralStrategy(
+              this.currentLang,
+              this.prefix || this.inlineRead
+            );
         this.cdr.markForCheck();
         this.initialized = true;
       });
@@ -149,17 +153,18 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     );
   }
 
-  private structuralStrategy(lang: string, read?: string) {
-    this.translationMemo = {};
+  private structuralStrategy(lang: string, prefix?: string) {
+    this.memo.clear();
+    const translateFn = this.getTranslateFn(lang, prefix);
 
     if (this.view) {
       // when the lang changes we need to change the reference so Angular will update the view
-      this.view.context['$implicit'] = this.getTranslateFn(lang, read);
+      this.view.context['$implicit'] = translateFn;
       this.view.context['currentLang'] = this.currentLang!;
     } else {
       this.detachLoader();
       this.view = this.vcr.createEmbeddedView(this.tpl!, {
-        $implicit: this.getTranslateFn(lang, read),
+        $implicit: translateFn,
         currentLang: this.currentLang!,
       });
     }
@@ -167,26 +172,22 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
 
   protected getTranslateFn(
     lang: string,
-    read: string | undefined
+    prefix: string | undefined
   ): TranslateFn {
     return (key: string, params?: HashMap) => {
-      const withRead = read ? `${read}.${key}` : key;
-      const withParams = params
-        ? `${withRead}${JSON.stringify(params)}`
-        : withRead;
+      const withPrefix = prefix ? `${prefix}.${key}` : key;
+      const memoKey = params
+        ? `${withPrefix}${JSON.stringify(params)}`
+        : withPrefix;
 
-      if (
-        Object.prototype.hasOwnProperty.call(this.translationMemo, withParams)
-      ) {
-        return this.translationMemo[withParams].value;
+      if (!this.memo.has(memoKey)) {
+        this.memo.set(
+          memoKey,
+          this.service.translate(withPrefix, params, lang)
+        );
       }
 
-      this.translationMemo[withParams] = {
-        params,
-        value: this.service.translate(withRead, params, lang),
-      };
-
-      return this.translationMemo[withParams].value;
+      return this.memo.get(memoKey);
     };
   }
 
@@ -195,6 +196,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnDestroy() {
+    this.memo.clear();
     if (this.subscription) {
       this.subscription.unsubscribe();
       // Caretaker note: it's important to clean up references to subscriptions since they save the `next`

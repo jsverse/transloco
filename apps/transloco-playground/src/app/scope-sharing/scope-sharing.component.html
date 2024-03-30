@@ -21,7 +21,7 @@
 
 <h5>Use read to get translations of a nested property</h5>
 
-<ng-container *transloco="let t; read: 'nested'">
+<ng-container *transloco="let t; prefix: 'nested'">
   <h5>{{ t('title') }}</h5>
   <p>{{ t('desc') }}</p>
 </ng-container>
