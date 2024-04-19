@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [7.2.0](https://github.com/ngneat/transloco/compare/transloco-7.1.0...transloco-7.2.0) (2024-04-19)
+
+### Features
+
+- **transloco:** allow to provide multiple scopes via `provideTranslocoScopes` ([#758](https://github.com/ngneat/transloco/issues/758)) ([623b46f](https://github.com/ngneat/transloco/commit/623b46f4384803e7f7f8f57e57a43cb29a29e8d2))
+
 # [7.1.0](https://github.com/ngneat/transloco/compare/transloco-7.0.0...transloco-7.1.0) (2024-03-30)
 
 ### Features
