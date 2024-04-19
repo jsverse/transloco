@@ -76,12 +76,12 @@ export function provideTranslocoLoader(loader: Type<TranslocoLoader>) {
   ]);
 }
 
-export function provideTranslocoScope(scope: TranslocoScope) {
-  return {
+export function provideTranslocoScope(...scopes: TranslocoScope[]) {
+  return scopes.map((scope) => ({
     provide: TRANSLOCO_SCOPE,
     useValue: scope,
     multi: true,
-  };
+  }));
 }
 
 export function provideTranslocoLoadingTpl(content: Content) {
