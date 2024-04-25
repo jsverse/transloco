@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [7.3.0](https://github.com/ngneat/transloco/compare/transloco-7.2.1...transloco-7.3.0) (2024-04-25)
+
+### Features
+
+- **transloco:** 🎸 Expose default handlers ([05c2ec1](https://github.com/ngneat/transloco/commit/05c2ec1f5429e604ae5caac19d417f5e64778394)), closes [#772](https://github.com/ngneat/transloco/issues/772)
+
 ## [7.2.1](https://github.com/ngneat/transloco/compare/transloco-7.2.0...transloco-7.2.1) (2024-04-22)
 
 # [7.2.0](https://github.com/ngneat/transloco/compare/transloco-7.1.0...transloco-7.2.0) (2024-04-19)
