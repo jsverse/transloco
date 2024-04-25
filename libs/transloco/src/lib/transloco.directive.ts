@@ -1,5 +1,6 @@
 import {
   ChangeDetectorRef,
+  DestroyRef,
   Directive,
   ElementRef,
   EmbeddedViewRef,
@@ -13,7 +14,8 @@ import {
   TemplateRef,
   ViewContainerRef,
 } from '@angular/core';
-import { forkJoin, Observable, Subscription, switchMap } from 'rxjs';
+import { forkJoin, Observable, switchMap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { Content, TemplateHandler } from './template-handler';
 import { TRANSLOCO_LANG } from './transloco-lang';
@@ -40,6 +42,7 @@ interface ViewContext {
   standalone: true,
 })
 export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
+  private destroyRef = inject(DestroyRef);
   private service = inject(TranslocoService);
   private tpl = inject<TemplateRef<ViewContext>>(TemplateRef, {
     optional: true,
@@ -57,7 +60,6 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   private vcr = inject(ViewContainerRef);
   private renderer = inject(Renderer2);
 
-  subscription: Subscription | null = null;
   view: EmbeddedViewRef<ViewContext> | undefined;
 
   private memo = new Map<string, any>();
@@ -93,7 +95,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
       this.providerLang || this.inlineLang
     );
 
-    this.subscription = this.service.langChanges$
+    this.service.langChanges$
       .pipe(
         switchMap((activeLang) => {
           const lang = this.langResolver.resolve({
@@ -110,7 +112,8 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
               )
             : this.resolveScope(lang, this.providerScope);
         }),
-        listenOrNotOperator(listenToLangChange)
+        listenOrNotOperator(listenToLangChange),
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(() => {
         this.currentLang = this.langResolver.resolveLangBasedOnScope(
@@ -197,12 +200,6 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
 
   ngOnDestroy() {
     this.memo.clear();
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-      // Caretaker note: it's important to clean up references to subscriptions since they save the `next`
-      // callback within its `destination` property, preventing classes from being GC'd.
-      this.subscription = null;
-    }
   }
 
   private detachLoader() {

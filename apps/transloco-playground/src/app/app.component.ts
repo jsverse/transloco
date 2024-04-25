@@ -1,9 +1,9 @@
-
-import { Component, inject, OnDestroy } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { Subscription, take } from 'rxjs';
+import { take } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { TranslocoService, LangDefinition } from '@jsverse/transloco';
+import { LangDefinition, TranslocoService } from '@jsverse/transloco';
 
 import { environment } from '../environments/environment';
 
@@ -14,11 +14,11 @@ import { environment } from '../environments/environment';
   standalone: true,
   imports: [RouterModule],
 })
-export class AppComponent implements OnDestroy {
+export class AppComponent {
+  private destroyRef = inject(DestroyRef);
   isDocs = environment.isDocs;
   service = inject(TranslocoService);
   availableLangs = this.service.getAvailableLangs() as LangDefinition[];
-  private subscription: Subscription | null;
 
   get activeLang() {
     return this.service.getActiveLang();
@@ -26,17 +26,11 @@ export class AppComponent implements OnDestroy {
 
   changeLang(lang: string) {
     // Ensure new active lang is loaded
-    this.subscription?.unsubscribe();
-    this.subscription = this.service
+    this.service
       .load(lang)
-      .pipe(take(1))
+      .pipe(take(1), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.service.setActiveLang(lang);
       });
-  }
-
-  ngOnDestroy() {
-    this.subscription?.unsubscribe();
-    this.subscription = null;
   }
 }

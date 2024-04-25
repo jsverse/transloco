@@ -12,10 +12,10 @@ import {
   retry,
   shareReplay,
   Subject,
-  Subscription,
   switchMap,
   tap,
 } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import {
   DefaultLoader,
@@ -95,7 +95,6 @@ export function translateObject<T>(
 export class TranslocoService implements OnDestroy {
   langChanges$: Observable<string>;
 
-  private subscription: Subscription | null = null;
   private translations = new Map<string, Translation>();
   private cache = new Map<string, Observable<Translation>>();
   private firstFallbackLang: string | undefined;
@@ -138,7 +137,7 @@ export class TranslocoService implements OnDestroy {
     /**
      * When we have a failure, we want to define the next language that succeeded as the active
      */
-    this.subscription = this.events$.subscribe((e) => {
+    this.events$.pipe(takeUntilDestroyed()).subscribe((e) => {
       if (e.type === 'translationLoadSuccess' && e.wasFailure) {
         this.setActiveLang(e.payload.langName);
       }
@@ -286,7 +285,10 @@ export class TranslocoService implements OnDestroy {
     }
 
     return this.parser.transpile({
-      value, params, translation, key
+      value,
+      params,
+      translation,
+      key,
     });
   }
 
@@ -394,7 +396,7 @@ export class TranslocoService implements OnDestroy {
       /* If an empty object was returned we want to try and translate the key as a string and not an object */
       return isEmpty(value)
         ? this.translate(key, params!, lang)
-        : this.parser.transpile({value, params: params!, translation, key});
+        : this.parser.transpile({ value, params: params!, translation, key });
     }
 
     const translations: T[] = [];
@@ -683,12 +685,6 @@ export class TranslocoService implements OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-      // Caretaker note: it's important to clean up references to subscriptions since they save the `next`
-      // callback within its `destination` property, preventing classes from being GC'd.
-      this.subscription = null;
-    }
     // Caretaker note: since this is the root provider, it'll be destroyed when the `NgModuleRef.destroy()` is run.
     // Cached values capture `this`, thus leading to a circular reference and preventing the `TranslocoService` from
     // being GC'd. This would lead to a memory leak when server-side rendering is used since the service is created
