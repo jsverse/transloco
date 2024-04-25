@@ -19,7 +19,7 @@ import {
   TranslocoTranspiler,
 } from './transloco.transpiler';
 import {
-  DefaultHandler,
+  DefaultMissingHandler,
   TRANSLOCO_MISSING_HANDLER,
   TranslocoMissingHandler,
 } from './transloco-missing-handler';
@@ -45,7 +45,7 @@ export interface TranslocoOptions {
 export function provideTransloco(options: TranslocoOptions) {
   const providers: EnvironmentProviders[] = [
     provideTranslocoTranspiler(DefaultTranspiler),
-    provideTranslocoMissingHandler(DefaultHandler),
+    provideTranslocoMissingHandler(DefaultMissingHandler),
     provideTranslocoInterceptor(DefaultInterceptor),
     provideTranslocoFallbackStrategy(DefaultFallbackStrategy),
   ];

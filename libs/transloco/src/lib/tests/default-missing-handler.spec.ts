@@ -1,8 +1,8 @@
-import { DefaultHandler } from '../transloco-missing-handler';
+import { DefaultMissingHandler } from '../transloco-missing-handler';
 import { defaultConfig, TranslocoConfig } from '../transloco.config';
 
 describe('TranslocoMissingHandler', () => {
-  const parser = new DefaultHandler();
+  const parser = new DefaultMissingHandler();
   const _defaultConfig: TranslocoConfig = {
     ...defaultConfig,
     reRenderOnLangChange: true,

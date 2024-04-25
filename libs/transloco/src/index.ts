@@ -33,6 +33,7 @@ export {
 export {
   TRANSLOCO_INTERCEPTOR,
   TranslocoInterceptor,
+  DefaultInterceptor,
 } from './lib/transloco.interceptor';
 export {
   TRANSLOCO_FALLBACK_STRATEGY,
@@ -43,6 +44,7 @@ export {
   TRANSLOCO_MISSING_HANDLER,
   TranslocoMissingHandler,
   TranslocoMissingHandlerData,
+  DefaultMissingHandler,
 } from './lib/transloco-missing-handler';
 export { getBrowserCultureLang, getBrowserLang } from './lib/browser-lang';
 export { getPipeValue, getLangFromScope, getScopeFromLang } from './lib/shared';

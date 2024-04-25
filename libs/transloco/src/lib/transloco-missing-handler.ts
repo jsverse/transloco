@@ -15,7 +15,7 @@ export interface TranslocoMissingHandler {
 }
 
 @Injectable()
-export class DefaultHandler implements TranslocoMissingHandler {
+export class DefaultMissingHandler implements TranslocoMissingHandler {
   handle(key: string, config: TranslocoConfig) {
     if (config.missingHandler.logMissingKey && !config.prodMode) {
       const msg = `Missing translation for '${key}'`;
