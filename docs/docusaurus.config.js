@@ -115,7 +115,7 @@ module.exports = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Transloco, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © 2019-${new Date().getFullYear()} Transloco, Inc. Built with Docusaurus.`,
     },
     prism: {
       theme: require('prism-react-renderer/themes/nightOwlLight'),

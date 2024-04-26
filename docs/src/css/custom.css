@@ -414,9 +414,8 @@ header iframe {
     right: 170px;
   }
 
-  .header-playground-link {
+  .navbar__item.header-playground-link {
     display: none;
-    align-items: center;
   }
 }
 
