@@ -86,6 +86,10 @@ header.hero .hero__subtitle {
   color: #e6e6e6;
 }
 
+[data-theme='dark'] a code {
+  color: inherit;
+}
+
 [data-theme='dark'] .admonition-content code {
   color: inherit;
 }
@@ -130,21 +134,24 @@ header iframe {
   width: 150px;
 }
 
+[data-theme='dark'] .video-container.main {
+  background-color: #404c5c;
+}
+
 .video-container.main {
   transition: background-color 0.2s ease-in-out;
   background-color: #e4f4ff;
 }
 
-[data-theme='dark'] .video-container.main {
-  background-color: #404c5c;
-}
-
 .video-container {
-  padding: 56px;
+  padding-block: 32px;
   display: flex;
   align-items: flex-start;
   justify-content: center;
+  flex-wrap: wrap;
+  gap: 32px;
 }
+
 .video-container .actions {
   display: flex;
   margin-top: 2.5rem;
@@ -154,23 +161,22 @@ header iframe {
   width: 560px;
   height: 315px;
 }
+
 .video-container .feature-container {
   width: 485px;
   height: 100%;
-  margin-right: 30px;
 }
+
 .video-container .title {
   display: flex;
   justify-content: flex-start;
-}
-.video-container .title img {
-  width: 50px;
-  margin-right: 10px;
+  gap: 10px;
 }
 
 .video-container .title h2 {
   margin: 0;
   align-self: center;
+  text-wrap: normal;
 }
 
 .star-btn {
@@ -238,19 +244,6 @@ header iframe {
   font-weight: 600;
   line-height: 20px;
   font-size: 14px;
-}
-
-@media (max-width: 996px) {
-  .header-sponsor-link {
-    position: absolute;
-    right: 170px;
-  }
-}
-
-@media (max-width: 768px) {
-  .header-sponsor-link {
-    right: 50px;
-  }
 }
 
 .header-sponsor-link::before {
@@ -413,4 +406,36 @@ header iframe {
 
 .compatability-table th:first-of-type {
   min-width: 93px;
+}
+
+@media (max-width: 996px) {
+  .header-sponsor-link {
+    position: absolute;
+    right: 170px;
+  }
+
+  .header-playground-link {
+    display: none;
+    align-items: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-sponsor-link {
+    right: 50px;
+  }
+}
+
+@media screen and (max-width: 966px) {
+  .video-container {
+    padding-inline: 1rem;
+  }
+
+  .video-container .feature-container {
+    width: 100%;
+  }
+
+  .video-container .actions {
+    justify-content: space-around;
+  }
 }

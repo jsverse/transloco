@@ -4,51 +4,67 @@ import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import useBaseUrl from '@docusaurus/useBaseUrl';
-import styles from './styles.module.css';
+import styles from './main-page.module.css';
 
 const features = [
   {
     title: <>Clean and DRY templates</>,
     imageUrl: 'img/clean.svg',
-    description: <>Keep your templates clean and DRY using the Transloco structural directive</>
+    description: (
+      <>
+        Keep your templates clean and DRY using the Transloco structural
+        directive
+      </>
+    ),
   },
   {
     title: <>Support for Lazy Load</>,
     imageUrl: 'img/sloth.svg',
-    description: <>Load translation files on-demand using Transloco's built-in scope feature</>
+    description: (
+      <>
+        Load translation files on-demand using Transloco's built-in scope
+        feature
+      </>
+    ),
   },
   {
     title: <>Rich Plugins</>,
     imageUrl: 'img/plugin.svg',
     description: (
       <>
-        Transloco has a rich plugins ecosystem that provides the tools you need for both development and production
-        environments
+        Transloco has a rich plugins ecosystem that provides the tools you need
+        for both development and production environments
       </>
-    )
+    ),
   },
   {
     title: <>Support for Multiple Fallbacks</>,
     imageUrl: 'img/fallback.svg',
     description: (
-      <>Extensive support for fallbacks. Multiple fallbacks for failed requests and missing keys replacement</>
-    )
+      <>
+        Extensive support for fallbacks. Multiple fallbacks for failed requests
+        and missing keys replacement
+      </>
+    ),
   },
   {
     title: <>Support for SSR</>,
     imageUrl: 'img/server.svg',
-    description: <>Pre-render your translations with Angular SSR and Transloco!</>
+    description: (
+      <>Pre-render your translations with Angular SSR and Transloco!</>
+    ),
   },
   {
     title: <>L10N</>,
     imageUrl: 'img/local.svg',
     description: (
       <>
-        Localize your app with Transloco. Transloco provides the <b>transloco-locale</b> package which provides pipes
-        such as <code>Date</code>,<code>Number</code>,<code>Currency</code> and more!
+        Localize your app with Transloco. Transloco provides the{' '}
+        <b>transloco-locale</b> package which provides pipes such as{' '}
+        <code>Date</code>,<code>Number</code>,<code>Currency</code> and more!
       </>
-    )
-  }
+    ),
+  },
 ];
 
 const videoGuides = {
@@ -56,10 +72,10 @@ const videoGuides = {
   imageUrl: 'img/academic-hat.png',
   description: (
     <p>
-      To help you get started, we made the Transloco Guide! watch the videos, follow the docs, and you will master
-      Transloco in no time!
+      To help you get started, we made the Transloco Guide! watch the videos,
+      follow the docs, and you will master Transloco in no time!
     </p>
-  )
+  ),
 };
 
 function Feature({ imageUrl, title, description }) {
@@ -79,26 +95,60 @@ function Feature({ imageUrl, title, description }) {
 
 function logo() {
   return (
-    <svg width="300px" height="172px" viewBox="0 0 430 246" version="1.1" xmlns="http://www.w3.org/2000/svg">
-      <g id="transloco" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+    <svg
+      width="300px"
+      height="172px"
+      viewBox="0 0 430 246"
+      version="1.1"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g
+        id="transloco"
+        stroke="none"
+        strokeWidth="1"
+        fill="none"
+        fillRule="evenodd"
+      >
         <g id="Artboard-Copy-7" transform="translate(-108.000000, -47.000000)">
           <g id="Group-2" transform="translate(107.000000, 47.000000)">
-            <text id="{" fontFamily="Arial" fontSize="61" fontWeight="300" fill="currentColor">
+            <text
+              id="{"
+              fontFamily="Arial"
+              fontSize="61"
+              fontWeight="300"
+              fill="currentColor"
+            >
               <tspan x="0" y="234">
                 {'{'}
               </tspan>
             </text>
-            <text id="}" fontFamily="Arial" fontSize="61" fontWeight="300" fill="currentColor">
+            <text
+              id="}"
+              fontFamily="Arial"
+              fontSize="61"
+              fontWeight="300"
+              fill="currentColor"
+            >
               <tspan x="407" y="233">
-                }
+                {'}'}
               </tspan>
             </text>
-            <text id="TransLoco" fontFamily="Arial" fontSize="59" fontWeight="300" fill="currentColor">
+            <text
+              id="TransLoco"
+              fontFamily="Arial"
+              fontSize="59"
+              fontWeight="300"
+              fill="currentColor"
+            >
               <tspan x="32" y="238">
                 TRANSLOCO
               </tspan>
             </text>
-            <g id="Group" transform="translate(89.000000, 0.000000)" fillRule="nonzero">
+            <g
+              id="Group"
+              transform="translate(89.000000, 0.000000)"
+              fillRule="nonzero"
+            >
               <polygon
                 id="Left"
                 fill="#06c4f1"
@@ -111,7 +161,11 @@ function logo() {
                 strokeWidth="2"
                 fill="#06c4f1"
               ></path>
-              <polygon id="Line" fill="currentColor" points="143.107571 0 103 148 106.734351 148 147 0"></polygon>
+              <polygon
+                id="Line"
+                fill="currentColor"
+                points="143.107571 0 103 148 106.734351 148 147 0"
+              ></polygon>
               <polygon
                 id="T"
                 fill="#ec079e"
@@ -131,10 +185,10 @@ function logo() {
   );
 }
 
-function docsButton() {
+function docsButton(className) {
   return button({
     text: (
-      <div className={classnames(styles.buttons)}>
+      <div className={styles.buttonContent}>
         <svg
           className="margin-right--sm"
           fill="currentColor"
@@ -155,8 +209,8 @@ function docsButton() {
         <span>Read The Docs</span>
       </div>
     ),
-    className: 'getting-started',
-    to: useBaseUrl('docs/getting-started/installation')
+    className: classnames('getting-started', className),
+    to: useBaseUrl('docs/getting-started/installation'),
   });
 }
 
@@ -164,8 +218,13 @@ function youtubeButton(className) {
   return button({
     text: (
       <>
-        <div className={classnames(styles.buttons)}>
-          <svg height="18" width="13" fill="currentColor" className="margin-right--sm">
+        <div className={styles.buttonContent}>
+          <svg
+            height="18"
+            width="13"
+            fill="currentColor"
+            className="margin-right--sm"
+          >
             <polygon points="0,3 0,16 13,9" />
           </svg>
           <span>Watch The Guide️</span>
@@ -173,7 +232,7 @@ function youtubeButton(className) {
       </>
     ),
     className: `youtube margin-left--sm ${className}`,
-    to: useBaseUrl('videoGuides')
+    to: useBaseUrl('videoGuides'),
   });
 }
 
@@ -181,7 +240,11 @@ function button(props) {
   const { className, text, ...rest } = props;
   return (
     <Link
-      className={classnames('button button--outline button--secondary button--lg', styles.getStarted, className)}
+      className={classnames(
+        'button button--outline button--secondary button--lg',
+        styles.getStarted,
+        className
+      )}
       {...rest}
     >
       {text}
@@ -190,36 +253,36 @@ function button(props) {
 }
 
 function starButton() {
-  return (          <div
-    className="star-btn button button--secondary button--lg margin-left--sm"
-  >
-    <a
-      href="https://github.com/jsverse/transloco"
-      rel="noopener"
-      target="_blank"
-      aria-label="Star jsverse/transloco on GitHub"
-      style={{
-        textDecoration: 'none',
-        color: 'inherit',
-        display: 'flex',
-        alignItems: 'center',
-      }}
-    >
-      <svg
-        viewBox="0 0 16 16"
-        width="16"
-        height="16"
-        className="octicon octicon-mark-github"
-        aria-hidden="true"
+  return (
+    <div className="star-btn button button--secondary button--lg margin-left--sm">
+      <a
+        href="https://github.com/jsverse/transloco"
+        rel="noopener"
+        target="_blank"
+        aria-label="Star jsverse/transloco on GitHub"
+        style={{
+          textDecoration: 'none',
+          color: 'inherit',
+          display: 'flex',
+          alignItems: 'center',
+        }}
       >
-        <path
-          fillRule="evenodd"
-          d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"
-        ></path>
-      </svg>
-      &nbsp;<span>Star</span>
-    </a>
-  </div>);
+        <svg
+          viewBox="0 0 16 16"
+          width="16"
+          height="16"
+          className="octicon octicon-mark-github"
+          aria-hidden="true"
+        >
+          <path
+            fillRule="evenodd"
+            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"
+          ></path>
+        </svg>
+        &nbsp;<span>Give us a Star</span>
+      </a>
+    </div>
+  );
 }
 
 function Home() {
@@ -231,11 +294,27 @@ function Home() {
       keywords={['Angular', 'Transloco', 'i18n', 'translations', 'translate']}
       permalink={siteConfig.baseUrl}
     >
-      <header className={classnames('hero', styles.heroBanner)}>
+      <div className={styles.banner}>
+        <div>
+          🎉 Transloco has a new home <span className={styles.flip}>🎉</span>
+        </div>
+        <div>
+          Update your dependency to{' '}
+          <a
+            href="https://www.npmjs.com/package/@jsverse/transloco"
+            target="_blank"
+          >
+            <code>@jsverse/transloco</code>
+          </a>{' '}
+          and get the latest features!
+        </div>
+      </div>
+
+      <header className={classnames('hero', styles.welcomeHeader)}>
         <div className="container">
           {logo()}
           <p className="margin-top--md hero__subtitle">{siteConfig.tagline}</p>
-          <div className={styles.buttons}>
+          <div className={styles.buttonsContainer}>
             {docsButton()}
             {youtubeButton()}
             {starButton()}
@@ -243,9 +322,11 @@ function Home() {
         </div>
       </header>
       <div className="container description">
-        Transloco allows you to define translations for your content in different languages and switch between them
-        easily in runtime. It exposes a rich API to manage translations efficiently and cleanly. It provides multiple
-        plugins that will improve your development experience. <br />
+        Transloco allows you to define translations for your content in
+        different languages and switch between them easily in runtime. It
+        exposes a rich API to manage translations efficiently and cleanly. It
+        provides multiple plugins that will improve your development experience.{' '}
+        <br />
         Here is a small taste of the features it offers:
       </div>
       <main>
@@ -269,8 +350,8 @@ function Home() {
           </div>
           {videoGuides.description}
           <div className="actions">
-            {docsButton()}
-            {youtubeButton()}
+            {docsButton('mobile-sm')}
+            {youtubeButton('mobile-sm')}
           </div>
         </div>
         <iframe

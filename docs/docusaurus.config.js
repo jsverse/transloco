@@ -1,7 +1,7 @@
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
   title: 'Transloco Angular i18n',
-  tagline: '🚀 The internationalization (i18n) library for Angular 😍',
+  tagline: 'The internationalization (i18n) library for Angular',
   baseUrl: '/transloco/',
   url: 'https://jsverse.github.io',
   favicon: 'img/favicon.ico',
@@ -111,7 +111,7 @@ module.exports = {
             {
               label: 'Twitter',
               href: 'https://twitter.com/shaharkazaz',
-            }
+            },
           ],
         },
       ],
