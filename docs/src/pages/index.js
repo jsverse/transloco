@@ -304,7 +304,7 @@ function Home() {
             href="https://www.npmjs.com/package/@jsverse/transloco"
             target="_blank"
           >
-            <code>@jsverse/transloco</code>
+            @jsverse/transloco
           </a>{' '}
           and get the latest features!
         </div>
