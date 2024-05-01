@@ -1,3 +1,6 @@
+> [!IMPORTANT]  
+> The Transloco packages are now published under the **@jsverse** scope, update your dependencies to get the latest features 🚀
+
 <br />
 <p align="center">
  <img width="50%" height="50%" src="./logo.svg">
