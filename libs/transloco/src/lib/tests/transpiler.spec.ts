@@ -285,6 +285,24 @@ describe('TranslocoTranspiler', () => {
         );
       });
 
+      it('should support nested params', () => {
+        expect(
+          transpiler.transpile(
+            getTranspilerParams(
+              `From ${wrapParam('range.start')} to ${wrapParam('range.end')}`,
+              {
+                params: {
+                  range: {
+                    start: 1,
+                    end: 10,
+                  },
+                },
+              }
+            )
+          )
+        ).toEqual('From 1 to 10');
+      });
+
       it('should support key referencing', () => {
         const lang = flatten({
           ab: `a b ${wrapParam('cd')}`,
