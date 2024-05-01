@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [7.4.0](https://github.com/ngneat/transloco/compare/transloco-7.3.0...transloco-7.4.0) (2024-05-01)
+
+### Features
+
+- **transloco:** 🎸 support nested objects in params ([57b58f1](https://github.com/ngneat/transloco/commit/57b58f159705a9b32fb975ee0c1b627237941ba4)), closes [#652](https://github.com/ngneat/transloco/issues/652)
+
 # [7.3.0](https://github.com/ngneat/transloco/compare/transloco-7.2.1...transloco-7.3.0) (2024-04-25)
 
 ### Features
