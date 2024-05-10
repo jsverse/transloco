@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [7.4.1](https://github.com/ngneat/transloco/compare/transloco-7.4.0...transloco-7.4.1) (2024-05-10)
+
+### Bug Fixes
+
+- **transloco:** 🐛 selectTranslate lang should support arrays ([a77c79c](https://github.com/ngneat/transloco/commit/a77c79c3f9a44f57a6dd69c3326053fd1624d62f))
+
 # [7.4.0](https://github.com/ngneat/transloco/compare/transloco-7.3.0...transloco-7.4.0) (2024-05-01)
 
 ### Features
