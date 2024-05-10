@@ -6,10 +6,10 @@ import {
 import { fakeAsync } from '@angular/core/testing';
 import { Component } from '@angular/core';
 
-import { TRANSLOCO_SCOPE } from '../transloco-scope';
 import { TranslocoService } from '../transloco.service';
 import { TranslocoDirective } from '../transloco.directive';
 import { TranslocoModule } from '../transloco.module';
+import { provideTranslocoScope } from '../transloco.providers';
 
 import { listenToLangChangesProvider } from './pipe/pipe-integration.spec';
 import {
@@ -20,10 +20,7 @@ import {
 } from './mocks';
 import { createFactory } from './directive/shared';
 
-const inlineLoaders = {
-  provide: TRANSLOCO_SCOPE,
-  useValue: inlineScope,
-};
+const inlineLoaders = provideTranslocoScope(inlineScope);
 
 function updateView<T>(spectator: Spectator<T>, service: TranslocoService) {
   runLoader();

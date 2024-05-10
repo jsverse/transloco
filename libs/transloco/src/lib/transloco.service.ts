@@ -43,7 +43,6 @@ import {
   flatten,
   isEmpty,
   isNil,
-  isScopeArray,
   isScopeObject,
   isString,
   size,
@@ -322,9 +321,10 @@ export class TranslocoService implements OnDestroy {
       return this.langChanges$.pipe(switchMap((lang) => load(lang)));
     }
 
-    if (isScopeArray(lang) || isScopeObject(lang)) {
+    lang = Array.isArray(lang) ? lang[0] : lang;
+    if (isScopeObject(lang)) {
       // it's a scope object.
-      const providerScope = Array.isArray(lang) ? lang[0] : lang;
+      const providerScope = lang;
       lang = providerScope.scope;
       inlineLoader = resolveInlineLoader(providerScope, providerScope.scope);
     }
