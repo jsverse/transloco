@@ -1,4 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import {
   TranslocoModule,
@@ -14,13 +15,14 @@ import {
   imports: [TranslocoModule],
 })
 export default class InlineLoadersComponent implements OnInit {
-  translocoService = inject(TranslocoService);
+  private translocoService = inject(TranslocoService);
   private scope = inject(TRANSLOCO_SCOPE);
+  private title$ = this.translocoService
+    .selectTranslate('title', {}, this.scope)
+    .pipe(takeUntilDestroyed());
 
   ngOnInit() {
     console.log(this.scope);
-    this.translocoService
-      .selectTranslate('title', {}, this.scope)
-      .subscribe(console.log);
+    this.title$.subscribe(console.log);
   }
 }
