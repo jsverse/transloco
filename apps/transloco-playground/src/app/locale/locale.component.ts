@@ -19,6 +19,7 @@ import {
 })
 export default class LocaleComponent {
   date = new Date(2019, 7, 14, 0, 0, 0, 0);
+  endDate = new Date(2019, 8, 5, 0, 0, 0, 0);
   localeList: string[];
 
   constructor(

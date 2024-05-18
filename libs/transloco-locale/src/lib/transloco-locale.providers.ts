@@ -18,11 +18,14 @@ import {
 } from './transloco-locale.config';
 import {
   DefaultDateTransformer,
+  DefaultDateRangeTransformer,
   DefaultNumberTransformer,
   TRANSLOCO_DATE_TRANSFORMER,
+  TRANSLOCO_DATE_RANGE_TRANSFORMER,
   TRANSLOCO_NUMBER_TRANSFORMER,
   TranslocoDateTransformer,
   TranslocoNumberTransformer,
+  TranslocoDateRangeTransformer,
 } from './transloco-locale.transformers';
 
 export function provideTranslocoLocale(config?: TranslocoLocaleConfig) {
@@ -38,6 +41,7 @@ export function provideTranslocoLocale(config?: TranslocoLocaleConfig) {
     provideTranslocoLocaleLangMapping(merged.langToLocaleMapping),
     provideTranslocoLocaleCurrencyMapping(merged.localeToCurrencyMapping),
     provideTranslocoDateTransformer(DefaultDateTransformer),
+    provideTranslocoDateRangeTransformer(DefaultDateRangeTransformer),
     provideTranslocoNumberTransformer(DefaultNumberTransformer),
   ];
 }
@@ -97,6 +101,16 @@ export function provideTranslocoDateTransformer(
   return makeEnvironmentProviders([
     {
       provide: TRANSLOCO_DATE_TRANSFORMER,
+      useClass: transformer,
+    },
+  ]);
+}
+export function provideTranslocoDateRangeTransformer(
+  transformer: Type<TranslocoDateRangeTransformer>
+) {
+  return makeEnvironmentProviders([
+    {
+      provide: TRANSLOCO_DATE_RANGE_TRANSFORMER,
       useClass: transformer,
     },
   ]);
