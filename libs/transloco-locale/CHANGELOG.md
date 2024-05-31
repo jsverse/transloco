@@ -2,28 +2,23 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
-# [7.0.0](https://github.com/jsverse/transloco/compare/transloco-locale-6.0.0...transloco-locale-7.0.0) (2024-03-23)
+## [7.0.1](https://github.com/ngneat/transloco/compare/transloco-locale-7.0.0...transloco-locale-7.0.1) (2024-05-31)
 
+# [7.0.0](https://github.com/jsverse/transloco/compare/transloco-locale-6.0.0...transloco-locale-7.0.0) (2024-03-23)
 
 ### chore
 
-* **locale:** 🤖 update package scope ([d9bf473](https://github.com/jsverse/transloco/commit/d9bf473ee1a77582068640d39e73f66a11f93e0f))
-
+- **locale:** 🤖 update package scope ([d9bf473](https://github.com/jsverse/transloco/commit/d9bf473ee1a77582068640d39e73f66a11f93e0f))
 
 ### BREAKING CHANGES
 
-* **locale:** 🧨 The package is now published under the jsverse scope
-
-
+- **locale:** 🧨 The package is now published under the jsverse scope
 
 # [6.0.0](https://github.com/jsverse/transloco/compare/transloco-locale-5.1.1...transloco-locale-6.0.0) (2024-03-23)
 
-
 ### Bug Fixes
 
-* **locale:** 🐛 allow latin american spanish locale ([#740](https://github.com/jsverse/transloco/issues/740)) ([bd9e8b7](https://github.com/jsverse/transloco/commit/bd9e8b7d5c401f24aeab6801ee83f584383729a0))
-
-
+- **locale:** 🐛 allow latin american spanish locale ([#740](https://github.com/jsverse/transloco/issues/740)) ([bd9e8b7](https://github.com/jsverse/transloco/commit/bd9e8b7d5c401f24aeab6801ee83f584383729a0))
 
 ## [5.1.1](https://github.com/jsverse/transloco/compare/transloco-locale-5.1.0...transloco-locale-5.1.1) (2023-08-05)
 
