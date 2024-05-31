@@ -2,23 +2,19 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
-# [7.0.0](https://github.com/jsverse/transloco/compare/transloco-preload-langs-6.0.0...transloco-preload-langs-7.0.0) (2024-03-23)
+## [7.0.1](https://github.com/ngneat/transloco/compare/transloco-preload-langs-7.0.0...transloco-preload-langs-7.0.1) (2024-05-31)
 
+# [7.0.0](https://github.com/jsverse/transloco/compare/transloco-preload-langs-6.0.0...transloco-preload-langs-7.0.0) (2024-03-23)
 
 ### chore
 
-* **preload-langs:** 🤖 update package scope ([305d327](https://github.com/jsverse/transloco/commit/305d327e7260b4c82884ebeb529c06d2b327d88a))
-
+- **preload-langs:** 🤖 update package scope ([305d327](https://github.com/jsverse/transloco/commit/305d327e7260b4c82884ebeb529c06d2b327d88a))
 
 ### BREAKING CHANGES
 
-* **preload-langs:** 🧨 The package is now published under the jsverse scope
-
-
+- **preload-langs:** 🧨 The package is now published under the jsverse scope
 
 # [6.0.0](https://github.com/jsverse/transloco/compare/transloco-preload-langs-5.0.1...transloco-preload-langs-6.0.0) (2024-03-23)
-
-
 
 ## [5.0.1](https://github.com/jsverse/transloco/compare/transloco-preload-langs-5.0.0...transloco-preload-langs-5.0.1) (2023-12-08)
 
