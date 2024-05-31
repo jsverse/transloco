@@ -2,38 +2,35 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
-# [7.0.0](https://github.com/jsverse/transloco/compare/transloco-messageformat-6.0.0...transloco-messageformat-7.0.0) (2024-03-23)
-
-
-### chore
-
-* **messageformat:** 🤖 update package scope ([5f00d4c](https://github.com/jsverse/transloco/commit/5f00d4c3743f4954b81ea1fa1eaef5370f285fda))
-
-
-### BREAKING CHANGES
-
-* **messageformat:** 🧨 The package is now published under the jsverse scope
-
-
-
-# [6.0.0](https://github.com/jsverse/transloco/compare/transloco-messageformat-5.0.0...transloco-messageformat-6.0.0) (2024-03-23)
-
-
-### Bug Fixes
-
-* **transloco:** 🐛 providing the FunctionalTranspiler ([308438f](https://github.com/jsverse/transloco/commit/308438f7ae93ec3f7733b9b2cb2278f3aecacd33)), closes [#733](https://github.com/jsverse/transloco/issues/733)
-
+## [7.0.1](https://github.com/ngneat/transloco/compare/transloco-messageformat-7.0.0...transloco-messageformat-7.0.1) (2024-05-31)
 
 ### Features
 
-* **transloco:** 🎸 Improve params algo matching ([8447634](https://github.com/jsverse/transloco/commit/8447634588210771047c45072186f20867fd8a2f))
+- **transloco:** 🎸 introduce prefix input ([1e27a8f](https://github.com/ngneat/transloco/commit/1e27a8fe9922e3e8f4ced0ea3960aca8ae4da92d))
 
+# [7.0.0](https://github.com/jsverse/transloco/compare/transloco-messageformat-6.0.0...transloco-messageformat-7.0.0) (2024-03-23)
+
+### chore
+
+- **messageformat:** 🤖 update package scope ([5f00d4c](https://github.com/jsverse/transloco/commit/5f00d4c3743f4954b81ea1fa1eaef5370f285fda))
 
 ### BREAKING CHANGES
 
-* **transloco:** 🧨 All breaking changes are listed in the breaking changes document
+- **messageformat:** 🧨 The package is now published under the jsverse scope
 
+# [6.0.0](https://github.com/jsverse/transloco/compare/transloco-messageformat-5.0.0...transloco-messageformat-6.0.0) (2024-03-23)
 
+### Bug Fixes
+
+- **transloco:** 🐛 providing the FunctionalTranspiler ([308438f](https://github.com/jsverse/transloco/commit/308438f7ae93ec3f7733b9b2cb2278f3aecacd33)), closes [#733](https://github.com/jsverse/transloco/issues/733)
+
+### Features
+
+- **transloco:** 🎸 Improve params algo matching ([8447634](https://github.com/jsverse/transloco/commit/8447634588210771047c45072186f20867fd8a2f))
+
+### BREAKING CHANGES
+
+- **transloco:** 🧨 All breaking changes are listed in the breaking changes document
 
 # [5.0.0](https://github.com/jsverse/transloco/compare/transloco-messageformat-4.1.0...transloco-messageformat-5.0.0) (2023-07-30)
 
