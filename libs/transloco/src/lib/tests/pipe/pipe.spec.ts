@@ -29,6 +29,21 @@ describe('TranslocoPipe', () => {
     expect(pipe.transform('title', {})).toBe('');
   });
 
+  describe('None transformable values', () => {
+    beforeEach(() => {
+      pipe = new TranslocoPipe(serviceMock, undefined, 'es', cdrMock);
+    });
+    it('should handle null', () => {
+      expect(pipe.transform(null)).toBeNull();
+    });
+    it('should handle undefined', () => {
+      expect(pipe.transform(undefined)).toBeUndefined();
+    });
+    it('should handle empty string', () => {
+      expect(pipe.transform('')).toBe('');
+    });
+  });
+
   it('should use provided language', fakeAsync(() => {
     spyOn(serviceMock, 'translate').and.callThrough();
     pipe = new TranslocoPipe(serviceMock, undefined, 'es', cdrMock);
