@@ -34,8 +34,39 @@ export class TranslocoDatePipe extends BaseLocalePipe implements PipeTransform {
    * 1 | translocoDate: { dateStyle: 'medium' } // Jan 1, 1970
    * '2019-02-08' | translocoDate: { dateStyle: 'medium' } // Feb 8, 2019
    */
-  transform(date: ValidDate, options: DateFormatOptions = {}, locale?: Locale) {
-    if (isNil(date)) return '';
+  // overloads for strict mode
+  transform(
+    date: ValidDate,
+    options?: DateFormatOptions,
+    locale?: Locale
+  ): string;
+  transform(
+    date: null | undefined,
+    options?: DateFormatOptions,
+    locale?: Locale
+  ): null | undefined;
+  transform(
+    date: ValidDate | null,
+    options?: DateFormatOptions,
+    locale?: Locale
+  ): string | null;
+  transform(
+    date: ValidDate | undefined,
+    options?: DateFormatOptions,
+    locale?: Locale
+  ): string | undefined;
+  transform(
+    date: ValidDate | null | undefined,
+    options?: DateFormatOptions,
+    locale?: Locale
+  ): string | null | undefined;
+
+  transform(
+    date: ValidDate | null | undefined,
+    options: DateFormatOptions = {},
+    locale?: Locale
+  ): string | null | undefined {
+    if (isNil(date)) return date;
     locale = this.getLocale(locale);
 
     return this.localeService.localizeDate(date, locale, {
