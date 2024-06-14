@@ -174,7 +174,7 @@ const localSource = sourceFile(defaultSourceLang);
                         final[section][word] = destlSource[section][word]
                     } else {
                         console.log('   >>> ' + section + ' ' + words[word]);
-                        const newWord = await trasnlate(words[word], local);
+                        const newWord = await translate(words[word], local);
                         console.log('       ### translated to ' + newWord);
                         final[section][word] = newWord;
                     }
