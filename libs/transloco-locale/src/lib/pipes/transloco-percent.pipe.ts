@@ -17,7 +17,7 @@ import { BaseLocalePipe } from './base-locale.pipe';
   standalone: true,
 })
 export class TranslocoPercentPipe
-  extends BaseLocalePipe
+  extends BaseLocalePipe<number | string, [numberFormatOptions?: NumberFormatOptions, locale?: Locale]>
   implements PipeTransform
 {
   private localeConfig: LocaleConfig = inject(TRANSLOCO_LOCALE_CONFIG);
@@ -31,7 +31,7 @@ export class TranslocoPercentPipe
    * "1" | translocoPercent : {} : en-US // 100%
    *
    */
-  transform(
+  protected override doTransform(
     value: number | string,
     numberFormatOptions: NumberFormatOptions = {},
     locale?: Locale
