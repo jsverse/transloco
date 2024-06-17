@@ -43,6 +43,21 @@ export function localizeDate(
   return '';
 }
 
+export function localizeDateRange(
+  startDate: Date,
+  endDate: Date,
+  locale: Locale,
+  options: DateFormatOptions,
+): string {
+  if (isDate(startDate) && isDate(endDate)) {
+    return new Intl.DateTimeFormat(locale, options as any).formatRange(
+      startDate,
+      endDate,
+    );
+  }
+  return '';
+}
+
 export function isDate(value: any): boolean {
   return value instanceof Date && !isNaN(<any>value);
 }

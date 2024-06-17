@@ -13,6 +13,7 @@ import {
   TRANSLOCO_LOCALE_LANG_MAPPING,
 } from './transloco-locale.config';
 import {
+  TRANSLOCO_DATE_RANGE_TRANSFORMER,
   TRANSLOCO_DATE_TRANSFORMER,
   TRANSLOCO_NUMBER_TRANSFORMER,
 } from './transloco-locale.transformers';
@@ -35,6 +36,7 @@ export class TranslocoLocaleService implements OnDestroy {
   private localeCurrencyMapping = inject(TRANSLOCO_LOCALE_CURRENCY_MAPPING);
   private numberTransformer = inject(TRANSLOCO_NUMBER_TRANSFORMER);
   private dateTransformer = inject(TRANSLOCO_DATE_TRANSFORMER);
+  private dateRangeTransformer = inject(TRANSLOCO_DATE_RANGE_TRANSFORMER);
   private localeConfig: LocaleConfig = inject(TRANSLOCO_LOCALE_CONFIG);
 
   private _locale =
@@ -108,6 +110,31 @@ export class TranslocoLocaleService implements OnDestroy {
       options ?? getDefaultOptions(locale, 'date', this.localeConfig);
 
     return this.dateTransformer.transform(toDate(date), locale, resolved);
+  }
+
+  /**
+  /**
+   * Transform two dates into the locale's date range format.
+   *
+   * The date expression: a `Date` object,  a number
+   * (milliseconds since UTC epoch), or an ISO string (https://www.w3.org/TR/NOTE-datetime).
+   *
+   * @example
+   *
+   * startDate | translocoDateRange: endDate : {} : en-US // 9/10–10/10/2019
+   * startDate | translocoDate: endDate : { dateStyle: 'medium', timeStyle: 'medium' } : en-US // Sep 10, 2019, 10:46:12 PM – Oct 10, 2019, 10:46:12 PM
+   * '2019-02-08' | translocoDate: '2020-03-10' : { dateStyle: 'medium' } // Feb 8 2019 – Mar 10 2020
+   */
+  localizeDateRange(
+    startDate: ValidDate,
+    endDate: ValidDate,
+    locale: Locale = this.getLocale(),
+    options: DateFormatOptions = {}
+  ): string {
+    const resolved =
+      options ?? getDefaultOptions(locale, 'date', this.localeConfig);
+
+    return this.dateRangeTransformer.transform(toDate(startDate), toDate(endDate), locale, resolved);
   }
 
   /**
