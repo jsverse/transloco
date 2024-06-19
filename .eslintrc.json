@@ -42,13 +42,18 @@
             "groups": ["builtin", "external", "internal", "parent", "sibling"],
             "newlines-between": "always"
           }
-        ]
+        ],
+        "@typescript-eslint/no-extra-semi": "error",
+        "no-extra-semi": "off"
       }
     },
     {
       "files": ["*.js", "*.jsx"],
       "extends": ["plugin:@nx/javascript"],
-      "rules": {}
+      "rules": {
+        "@typescript-eslint/no-extra-semi": "error",
+        "no-extra-semi": "off"
+      }
     },
     {
       "files": ["**/*.spec.ts", "**/mocks.ts", "**/test-setup.ts"],

@@ -4,6 +4,7 @@
   "projectType": "application",
   "sourceRoot": "apps/transloco-playground/src",
   "prefix": "transloco-nx-shell",
+  "tags": [],
   "targets": {
     "build": {
       "executor": "@nx/angular:webpack-browser",
@@ -76,8 +77,7 @@
       }
     },
     "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@angular-devkit/build-angular:karma",
@@ -87,6 +87,5 @@
         "karmaConfig": "apps/transloco-playground/karma.conf.js"
       }
     }
-  },
-  "tags": []
+  }
 }

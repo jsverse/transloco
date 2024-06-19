@@ -4,6 +4,7 @@
   "projectType": "library",
   "sourceRoot": "libs/transloco-preload-langs/src",
   "prefix": "transloco-nx-shell",
+  "tags": [],
   "targets": {
     "build": {
       "executor": "@nx/angular:package",
@@ -30,12 +31,10 @@
       }
     },
     "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
+      "executor": "@nx/eslint:lint"
     },
     "version": {
       "executor": "@jscutlery/semver:version"
     }
-  },
-  "tags": []
+  }
 }
