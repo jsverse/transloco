@@ -70,7 +70,7 @@
     "@commitlint/cli": "12.1.4",
     "@commitlint/config-conventional": "12.1.4",
     "@jscutlery/semver": "5.2.2",
-    "@ngneat/spectator": "15.0.1",
+    "@ngneat/spectator": "19.0.0",
     "@nx/angular": "19.3.0",
     "@nx/cypress": "19.3.0",
     "@nx/eslint": "19.3.0",

@@ -22,7 +22,7 @@ import { createFactory } from './directive/shared';
 
 const inlineLoaders = provideTranslocoScope(inlineScope);
 
-function updateView<T>(spectator: Spectator<T>, service: TranslocoService) {
+function updateView<T>(spectator: Spectator<T> | SpectatorHost<T>, service: TranslocoService) {
   runLoader();
   spectator.detectChanges();
   expect(spectator.query('span')).toHaveText('Todos Title English');
