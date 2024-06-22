@@ -47,7 +47,7 @@ npm start
 ## Building
 
 ```bash
-npm run build:[package]
+npm run build [package]
 ```
 
 Note: Don't use nx directly as some apps might have further building steps
