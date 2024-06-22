@@ -1,11 +1,13 @@
 {
   "migrations": [
     {
-      "version": "17.1.0",
-      "factory": "./update-17/add-browser-sync-dependency",
-      "description": "Add 'browser-sync' as dev dependency when '@angular-devkit/build-angular:ssr-dev-server' is used, as it is no longer a direct dependency of '@angular-devkit/build-angular'.",
+      "version": "18.0.0",
+      "factory": "./use-application-builder/migration",
+      "description": "Migrate application projects to the new build system. Application projects that are using the '@angular-devkit/build-angular' package's 'browser' and/or 'browser-esbuild' builders will be migrated to use the new 'application' builder. You can read more about this, including known issues and limitations, here: https://angular.dev/tools/cli/build-system-migration",
+      "optional": true,
+      "documentation": "tools/cli/build-system-migration",
       "package": "@angular/cli",
-      "name": "add-browser-sync-dependency"
+      "name": "use-application-builder"
     }
   ]
 }

@@ -11,7 +11,6 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "downlevelIteration": true,
     "importHelpers": true,
     "target": "ES2022",
     "typeRoots": [
