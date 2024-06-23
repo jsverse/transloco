@@ -69,5 +69,34 @@
   },
   "parallel": 1,
   "useInferencePlugins": false,
-  "defaultBase": "master"
+  "defaultBase": "master",
+  "release": {
+    "releaseTagPattern": "{projectName}-{version}",
+    "projects": [
+      "transloco",
+      "transloco-locale",
+      "transloco-messageformat",
+      "transloco-optimize",
+      "transloco-persist-lang",
+      "transloco-persist-translations",
+      "transloco-preload-langs",
+      "transloco-scoped-libs",
+      "transloco-utils",
+      "transloco-validator"
+    ],
+    "projectsRelationship": "independent",
+    "version": {
+      "conventionalCommits": true
+    },
+    "git": {
+      "commit": true,
+      "commitArgs": "--no-verify"
+    },
+    "changelog": {
+      "automaticFromRef": true,
+      "projectChangelogs": {
+        "createRelease": false
+      }
+    }
+  }
 }

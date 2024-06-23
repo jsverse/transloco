@@ -1,7 +1,3 @@
-# Changelog
-
-This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
-
 ## [7.0.1](https://github.com/ngneat/transloco/compare/transloco-preload-langs-7.0.0...transloco-preload-langs-7.0.1) (2024-05-31)
 
 # [7.0.0](https://github.com/jsverse/transloco/compare/transloco-preload-langs-6.0.0...transloco-preload-langs-7.0.0) (2024-03-23)

@@ -1,7 +1,3 @@
-# Changelog
-
-This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
-
 ## [7.4.2](https://github.com/ngneat/transloco/compare/transloco-7.4.1...transloco-7.4.2) (2024-05-31)
 
 ## [7.4.1](https://github.com/ngneat/transloco/compare/transloco-7.4.0...transloco-7.4.1) (2024-05-10)

@@ -1,7 +1,3 @@
-# Changelog
-
-This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
-
 ## [7.0.1](https://github.com/ngneat/transloco/compare/transloco-messageformat-7.0.0...transloco-messageformat-7.0.1) (2024-05-31)
 
 ### Features
