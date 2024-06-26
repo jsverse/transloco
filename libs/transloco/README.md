@@ -32,7 +32,6 @@ It exposes a rich API to manage translations efficiently and cleanly. It provide
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e5079.svg?style=flat-square)](https://github.com/semantic-release/semantic-release)
 
 - 🤓 &nbsp;Learn about it on the [docs site](https://jsverse.github.io/transloco/)
-- 🎥 &nbsp;Watch our instructional [video guides](https://www.youtube.com/watch?v=MYkYcafJdGw&list=PLTuTW7EgL6ouXk5BqE4zWdDJkAuC4HTWi)
 - 🚀 &nbsp;See it in action on [CodeSandbox](https://codesandbox.io/s/jsverse-transloco-kn52hs)
 - 😎 &nbsp;Use [schematics](https://jsverse.github.io/transloco/docs/schematics)
 - 👉 &nbsp;Checkout the [live application](https://jsverse.github.io/transloco/live-app)

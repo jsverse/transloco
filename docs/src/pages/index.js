@@ -243,7 +243,7 @@ function button(props) {
       className={classnames(
         'button button--outline button--secondary button--lg',
         styles.getStarted,
-        className
+        className,
       )}
       {...rest}
     >
@@ -342,27 +342,27 @@ function Home() {
           </section>
         )}
       </main>
-      <div className="main video-container">
-        <div className="feature-container">
-          <div className="title">
-            <img src={videoGuides.imageUrl} alt={videoGuides.title} />
-            <h2>{videoGuides.title}</h2>
-          </div>
-          {videoGuides.description}
-          <div className="actions">
-            {docsButton('mobile-sm')}
-            {youtubeButton('mobile-sm')}
-          </div>
-        </div>
-        <iframe
-          width="560"
-          height="315"
-          src="https://www.youtube.com/embed/MYkYcafJdGw"
-          frameBorder="0"
-          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        ></iframe>
-      </div>
+      {/*<div className="main video-container">*/}
+      {/*  <div className="feature-container">*/}
+      {/*    <div className="title">*/}
+      {/*      <img src={videoGuides.imageUrl} alt={videoGuides.title} />*/}
+      {/*      <h2>{videoGuides.title}</h2>*/}
+      {/*    </div>*/}
+      {/*    {videoGuides.description}*/}
+      {/*    <div className="actions">*/}
+      {/*      {docsButton('mobile-sm')}*/}
+      {/*      {youtubeButton('mobile-sm')}*/}
+      {/*    </div>*/}
+      {/*  </div>*/}
+      {/*  <iframe*/}
+      {/*    width="560"*/}
+      {/*    height="315"*/}
+      {/*    src="https://www.youtube.com/embed/MYkYcafJdGw"*/}
+      {/*    frameBorder="0"*/}
+      {/*    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"*/}
+      {/*    allowFullScreen*/}
+      {/*  ></iframe>*/}
+      {/*</div>*/}
     </Layout>
   );
 }
