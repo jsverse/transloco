@@ -21,8 +21,8 @@ module.exports = async function () {
         },
       ],
       algolia: {
-        appId: 'O8JZ6BVNRL',
-        apiKey: '921502728c526dfe7f906bae383e64ae',
+        appId: 'TJQR54QJD0',
+        apiKey: 'b1b00a6233a5eaf6a679cc57ad00eaae',
         indexName: 'transloco',
       },
       navbar: {
