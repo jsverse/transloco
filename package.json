@@ -4,7 +4,6 @@
   "license": "MIT",
   "scripts": {
     "prepare": "husky",
-    "postinstall": "node ./decorate-angular-cli.js",
     "commit": "git-cz",
     "start": "nx run transloco-playground:serve",
     "start:docs": "npm start --prefix=docs",
