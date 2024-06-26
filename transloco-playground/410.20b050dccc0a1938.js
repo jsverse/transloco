@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunktransloco_playground=self.webpackChunktransloco_playground||[]).push([[410],{1410:s=>{s.exports=JSON.parse('{"title":"Inline Loaders Spanish"}')}}]);
