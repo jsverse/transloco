@@ -1,4 +1,7 @@
 import { SpectatorPipe } from '@ngneat/spectator';
+import { ChangeDetectorRef } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { Mock } from 'ts-mocks';
 
 import { TranslocoPercentPipe } from '../../pipes';
 import { LOCALE_CONFIG_MOCK, provideTranslocoLocaleConfigMock } from '../mocks';
@@ -31,17 +34,30 @@ describe('TranslocoPercentPipe', () => {
   });
 
   describe('None transformable values', () => {
+    let pipe: TranslocoPercentPipe;
+    let cdrMock: ChangeDetectorRef;
+
+    beforeEach(() => {
+      cdrMock = new Mock<ChangeDetectorRef>({
+        markForCheck: () => {},
+      }).Object;
+
+      TestBed.configureTestingModule({
+        providers: [{ provide: ChangeDetectorRef, useValue: cdrMock }],
+      });
+      pipe = TestBed.runInInjectionContext(() => new TranslocoPercentPipe());
+    });
     it('should handle null', () => {
-      spectator = pipeFactory(getPipeTpl(null));
-      expect(spectator.element).toHaveText('');
+      expect(pipe.transform(null)).toBeNull();
+    });
+    it('should handle undefined', () => {
+      expect(pipe.transform(undefined)).toBeUndefined();
     });
     it('should handle {}', () => {
-      spectator = pipeFactory(getPipeTpl({}));
-      expect(spectator.element).toHaveText('');
+      expect(pipe.transform({} as any)).toBe('');
     });
     it('should handle none number string', () => {
-      spectator = pipeFactory(getPipeTpl('none number string'));
-      expect(spectator.element).toHaveText('');
+      expect(pipe.transform('none number string')).toBe('');
     });
   });
 

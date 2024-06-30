@@ -1,4 +1,7 @@
 import { SpectatorPipe } from '@ngneat/spectator';
+import { ChangeDetectorRef } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { Mock } from 'ts-mocks';
 
 import { TranslocoDecimalPipe } from '../../pipes';
 import {
@@ -66,17 +69,30 @@ describe('TranslocoDecimalPipe', () => {
   });
 
   describe('None transformable values', () => {
+    let pipe: TranslocoDecimalPipe;
+    let cdrMock: ChangeDetectorRef;
+
+    beforeEach(() => {
+      cdrMock = new Mock<ChangeDetectorRef>({
+        markForCheck: () => {},
+      }).Object;
+
+      TestBed.configureTestingModule({
+        providers: [{ provide: ChangeDetectorRef, useValue: cdrMock }],
+      });
+      pipe = TestBed.runInInjectionContext(() => new TranslocoDecimalPipe());
+    });
     it('should handle null', () => {
-      spectator = pipeFactory(`{{ null | translocoDecimal }}`);
-      expect(spectator.element).toHaveText('');
+      expect(pipe.transform(null)).toBeNull();
+    });
+    it('should handle undefined', () => {
+      expect(pipe.transform(undefined)).toBeUndefined();
     });
     it('should handle {}', () => {
-      spectator = pipeFactory(`{{ {} | translocoDecimal }}`);
-      expect(spectator.element).toHaveText('');
+      expect(pipe.transform({} as any)).toBe('');
     });
     it('should handle none number string', () => {
-      spectator = pipeFactory(`{{ 'none number string' | translocoDecimal }}`);
-      expect(spectator.element).toHaveText('');
+      expect(pipe.transform('none number string')).toBe('');
     });
   });
 });

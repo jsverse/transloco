@@ -1,4 +1,7 @@
 import { SpectatorPipe } from '@ngneat/spectator';
+import { ChangeDetectorRef } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { Mock } from 'ts-mocks';
 
 import { TranslocoCurrencyPipe } from '../../pipes/transloco-currency.pipe';
 import { LOCALE_CONFIG_MOCK, provideTranslocoServiceMock } from '../mocks';
@@ -60,17 +63,30 @@ describe('TranslocoCurrencyPipe', () => {
   });
 
   describe('None transformable values', () => {
+    let pipe: TranslocoCurrencyPipe;
+    let cdrMock: ChangeDetectorRef;
+
+    beforeEach(() => {
+      cdrMock = new Mock<ChangeDetectorRef>({
+        markForCheck: () => {},
+      }).Object;
+
+      TestBed.configureTestingModule({
+        providers: [{ provide: ChangeDetectorRef, useValue: cdrMock }],
+      });
+      pipe = TestBed.runInInjectionContext(() => new TranslocoCurrencyPipe());
+    });
     it('should handle null', () => {
-      spectator = pipeFactory(`{{ null | translocoCurrency }}`);
-      expect(spectator.element).toHaveText('');
+      expect(pipe.transform(null)).toBeNull();
+    });
+    it('should handle undefined', () => {
+      expect(pipe.transform(undefined)).toBeUndefined();
     });
     it('should handle {}', () => {
-      spectator = pipeFactory(`{{ {} | translocoCurrency }}`);
-      expect(spectator.element).toHaveText('');
+      expect(pipe.transform({} as any)).toBe('');
     });
     it('should handle none number string', () => {
-      spectator = pipeFactory(`{{ 'none number string' | translocoCurrency }}`);
-      expect(spectator.element).toHaveText('');
+      expect(pipe.transform('none number string')).toBe('');
     });
   });
 

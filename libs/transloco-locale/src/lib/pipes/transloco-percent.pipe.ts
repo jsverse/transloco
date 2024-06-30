@@ -31,12 +31,39 @@ export class TranslocoPercentPipe
    * "1" | translocoPercent : {} : en-US // 100%
    *
    */
+  // overloads for strict mode
   transform(
     value: number | string,
+    numberFormatOptions?: NumberFormatOptions,
+    locale?: Locale
+  ): string;
+  transform(
+    value: null | undefined,
+    numberFormatOptions?: NumberFormatOptions,
+    locale?: Locale
+  ): null | undefined;
+  transform(
+    value: number | string | null,
+    numberFormatOptions?: NumberFormatOptions,
+    locale?: Locale
+  ): string | null;
+  transform(
+    value: number | string | undefined,
+    numberFormatOptions?: NumberFormatOptions,
+    locale?: Locale
+  ): string | undefined;
+  transform(
+    value: number | string | null | undefined,
+    numberFormatOptions?: NumberFormatOptions,
+    locale?: Locale
+  ): string | null | undefined;
+
+  transform(
+    value?: number | string | null,
     numberFormatOptions: NumberFormatOptions = {},
     locale?: Locale
-  ): string {
-    if (isNil(value)) return '';
+  ): string | null | undefined {
+    if (isNil(value)) return value;
     locale = this.getLocale(locale);
 
     const options = {
