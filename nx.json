@@ -95,7 +95,10 @@
     "changelog": {
       "automaticFromRef": true,
       "projectChangelogs": {
-        "createRelease": false
+        "createRelease": false,
+        "renderOptions": {
+          "authors": false
+        }
       }
     }
   }
