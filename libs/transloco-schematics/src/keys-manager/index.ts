@@ -19,7 +19,7 @@ async function installKeysManager() {
     execSync('yarn add --dev @jsverse/transloco-keys-manager ngx-build-plus');
   } else {
     execSync(
-      'npm install --save-dev @jsverse/transloco-keys-manager ngx-build-plus'
+      'npm install --save-dev @jsverse/transloco-keys-manager ngx-build-plus',
     );
   }
 }
@@ -51,12 +51,12 @@ function addKeysDetectiveScript(host: Tree, strategy: string) {
     addScriptToPackageJson(
       host,
       'start',
-      'ng serve --extra-webpack-config webpack-dev.config.js'
+      'ng serve --extra-webpack-config webpack-dev.config.js',
     );
     addScriptToPackageJson(
       host,
       'i18n:extract',
-      'transloco-keys-manager extract'
+      'transloco-keys-manager extract',
     );
   }
 
@@ -64,7 +64,7 @@ function addKeysDetectiveScript(host: Tree, strategy: string) {
     addScriptToPackageJson(
       host,
       'i18n:extract',
-      'transloco-keys-manager extract'
+      'transloco-keys-manager extract',
     );
   }
 
@@ -72,7 +72,7 @@ function addKeysDetectiveScript(host: Tree, strategy: string) {
     addScriptToPackageJson(
       host,
       'start',
-      'ng serve --extra-webpack-config webpack-dev.config.js'
+      'ng serve --extra-webpack-config webpack-dev.config.js',
     );
   }
 
@@ -85,7 +85,7 @@ function updateTranslocoConfig(host, options) {
   if (!config.rootTranslationsPath) {
     if (!options.translationPath) {
       throw new SchematicsException(
-        'Please provide the translation root path by using the --translation-path flag'
+        'Please provide the translation root path by using the --translation-path flag',
       );
     }
     config.rootTranslationsPath = options.translationPath;
@@ -94,7 +94,7 @@ function updateTranslocoConfig(host, options) {
   if (!config.langs) {
     if (!options.langs) {
       throw new SchematicsException(
-        'Please provide the available languages either by using --langs or through the "langs" property in transloco.config.js file'
+        'Please provide the available languages either by using --langs or through the "langs" property in transloco.config.ts file',
       );
     }
 
@@ -127,7 +127,7 @@ export default function (options: SchemaOptions): Rule {
         addKeysDetectiveScript(host, options.strategy);
 
         return host;
-      })
+      }),
     );
   };
 }

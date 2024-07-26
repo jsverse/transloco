@@ -5,24 +5,25 @@ import { DirEntry, Tree } from '@angular-devkit/schematics';
 import { TranslocoGlobalConfig } from '@jsverse/transloco-utils';
 
 import { SchemaOptions } from '../join/schema';
-import { CONFIG_FILE } from '../schematics.consts';
+import { CONFIG_FILE, generateConfigFile } from '../schematics.utils';
 
-import { stringifyList } from './array';
 import { getProject } from './projects';
 import { getConfig } from './config';
 
 export function createConfig(
   host: Tree,
   langs: string[],
-  rootTranslationsPath = 'assets/i18n/'
+  rootTranslationsPath = 'assets/i18n/',
 ) {
   if (!host.get(CONFIG_FILE)) {
-    const config = `module.exports = {
-  rootTranslationsPath: '${rootTranslationsPath}',
-  langs: [${stringifyList(langs)}],
-  keysManager: {}
-};`;
-    host.create(CONFIG_FILE, config);
+    host.create(
+      CONFIG_FILE,
+      generateConfigFile({
+        rootTranslationsPath: rootTranslationsPath,
+        langs,
+        keysManager: {},
+      }),
+    );
   }
 }
 
@@ -31,19 +32,16 @@ export function updateConfig(host: Tree, config: TranslocoGlobalConfig) {
   if (!originalConfig || Object.keys(originalConfig).length === 0) {
     return createConfig(host, config.langs, config.rootTranslationsPath);
   }
-  const stringifyConfig = JSON.stringify(
-    { ...config, ...originalConfig },
-    null,
-    2
+  host.overwrite(
+    CONFIG_FILE,
+    generateConfigFile({ ...config, ...originalConfig }),
   );
-  const content = `module.exports = ${stringifyConfig};`;
-  host.overwrite(CONFIG_FILE, content);
 }
 
 export function getJsonFileContent(
   fileName: PathFragment,
   dir: DirEntry,
-  parser = JSON.parse
+  parser = JSON.parse,
 ) {
   return parser(dir.file(fileName).content.toString('utf-8'));
 }
@@ -52,11 +50,11 @@ export function setFileContent(
   host: Tree,
   dirPath: string,
   fileName: PathFragment,
-  content
+  content,
 ) {
   return host.overwrite(
     p.join(dirPath, fileName),
-    JSON.stringify(content, null, 2)
+    JSON.stringify(content, null, 2),
   );
 }
 
@@ -74,7 +72,7 @@ export function getTranslationKey(prefix = '', key) {
 
 export function getTranslationsRoot(
   host: Tree,
-  options: { project?: string; translationPath?: string }
+  options: { project?: string; translationPath?: string },
 ): string {
   const translocoConfig = getConfig();
   if (options.translationPath) {
@@ -91,7 +89,7 @@ export function getTranslationsRoot(
 export function getTranslationFiles(
   host: Tree,
   root: string,
-  parser?
+  parser?,
 ): { lang: string; translation: Record<string, unknown> }[] {
   const rootDir = host.getDir(root);
   return rootDir.subfiles.map((fileName) => ({
@@ -102,7 +100,7 @@ export function getTranslationFiles(
 
 export function getTranslationEntryPaths(
   host: Tree,
-  rootDirPath: string
+  rootDirPath: string,
 ): { scope: string; path: string }[] {
   const translocoConfig = getConfig();
   if (
@@ -113,7 +111,7 @@ export function getTranslationEntryPaths(
       ([scope, path]: [string, string]) => ({
         scope,
         path,
-      })
+      }),
     );
   }
   const rootDir = host.getDir(rootDirPath);

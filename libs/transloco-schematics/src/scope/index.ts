@@ -19,7 +19,7 @@ import {
 import { applyChangesToFile } from '@schematics/angular/utility/standalone/util';
 import { Change } from '@schematics/angular/utility/change';
 
-import { LIB_NAME } from '../schematics.consts';
+import { LIB_NAME } from '../schematics.utils';
 import { coerceArray, stringifyList } from '../utils/array';
 import { findModuleFromOptions } from '../utils/find-module';
 import { getProject, getProjectPath } from '../utils/projects';
@@ -37,7 +37,7 @@ function getProviderValue(options: SchemaOptions) {
 function addScopeToModule(
   tree: Tree,
   modulePath: string,
-  options: SchemaOptions
+  options: SchemaOptions,
 ) {
   const module = tree.read(modulePath);
 
@@ -45,27 +45,27 @@ function addScopeToModule(
     modulePath,
     module.toString('utf-8'),
     ScriptTarget.Latest,
-    true
+    true,
   );
   const provider = `provideTranslocoScope(${getProviderValue(options)})`;
   const changes: Change[] = [];
   changes.push(
-    addProviderToModule(moduleSource, modulePath, provider, LIB_NAME)[0]
+    addProviderToModule(moduleSource, modulePath, provider, LIB_NAME)[0],
   );
   changes.push(
-    addImportToModule(moduleSource, modulePath, 'TranslocoModule', LIB_NAME)[0]
+    addImportToModule(moduleSource, modulePath, 'TranslocoModule', LIB_NAME)[0],
   );
   changes.push(
     insertImport(
       moduleSource,
       modulePath,
       'provideTranslocoScope, TranslocoModule',
-      LIB_NAME
-    )
+      LIB_NAME,
+    ),
   );
   if (options.inlineLoader) {
     changes.push(
-      insertImport(moduleSource, modulePath, 'loader', './transloco.loader')
+      insertImport(moduleSource, modulePath, 'loader', './transloco.loader'),
     );
   }
 
@@ -89,10 +89,10 @@ function addInlineLoader(
   tree: Tree,
   modulePath: string,
   name: string,
-  langs: string | string[]
+  langs: string | string[],
 ) {
   const loader = `export const loader = [${stringifyList(
-    coerceArray(langs)
+    coerceArray(langs),
   )}].reduce((acc: any, lang: string) => {
   acc[lang] = () => import(\`./i18n/\${lang}.json\`);
   return acc;
@@ -142,7 +142,7 @@ export default function (options: SchemaOptions): Rule {
       if (modulePath) {
         addScopeToModule(host, modulePath, options);
         return mergeWith(
-          createTranslationFiles(options, rootPath, modulePath, host)
+          createTranslationFiles(options, rootPath, modulePath, host),
         )(host, context);
       }
     }
@@ -151,13 +151,13 @@ export default function (options: SchemaOptions): Rule {
       externalSchematic(
         '@schematics/angular',
         'module',
-        extractModuleOptions(options)
+        extractModuleOptions(options),
       ),
       (tree) => {
         const modulePath = tree.actions.find(
           (action) =>
             !!action.path.match(/\.module\.ts/) &&
-            !action.path.match(/-routing\.module\.ts/)
+            !action.path.match(/-routing\.module\.ts/),
         ).path;
         addScopeToModule(tree, modulePath, options);
         if (options.inlineLoader) {
@@ -167,7 +167,7 @@ export default function (options: SchemaOptions): Rule {
           options,
           rootPath,
           modulePath,
-          host
+          host,
         );
 
         return mergeWith(translationRule);
