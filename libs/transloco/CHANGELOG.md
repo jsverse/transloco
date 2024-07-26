@@ -1,3 +1,7 @@
+## 7.4.3 (2024-07-26)
+
+This was a version bump only for transloco to align it with other projects, there were no code changes.
+
 ## [7.4.2](https://github.com/ngneat/transloco/compare/transloco-7.4.1...transloco-7.4.2) (2024-05-31)
 
 ## [7.4.1](https://github.com/ngneat/transloco/compare/transloco-7.4.0...transloco-7.4.1) (2024-05-10)

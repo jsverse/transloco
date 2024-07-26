@@ -1,6 +1,6 @@
 {
   "name": "@jsverse/transloco",
-  "version": "7.4.2",
+  "version": "7.4.3",
   "description": "The internationalization (i18n) library for Angular",
   "schematics": "./schematics/src/collection.json",
   "publishConfig": {
