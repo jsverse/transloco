@@ -91,23 +91,23 @@ The first thing we need to do is to add i18n configuration with the path to the 
 }
 ```
 
-Next, we need to add the library's path into `transloco.config.js` as following (we can also pass `npm` package):
-```js title="transloco.config.js"
-module.exports = {
-  scopedLibs: ['./projects/core/', '@lib/name']
-};
+Next, we need to add the library's path into your [global config](../getting-started/installation#transloco-global-config) as following (we can also pass `npm` package):
+```js title="transloco.config.ts"
+const config: TranslocoGlobalConfig = {
+    scopedLibs: ['./projects/core/', '@lib/name']
+}
 ```
 
 If **multiple** destination is needed you could also pass `scopedLibs` as an object:
-```js title="transloco.config.js"
-module.exports = {
+```js title="transloco.config.ts"
+const config: TranslocoGlobalConfig = {
   scopedLibs: [
     {
       src: './projects/core',
       dist: ['./projects/spa/src/assets/i18n', './src/assets/i18n/']
     }
   ]
-};
+}
 ```
 
 Note that the path should refer to the location of the library's `package.json` file.
