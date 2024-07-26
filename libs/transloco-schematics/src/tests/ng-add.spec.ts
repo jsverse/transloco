@@ -21,17 +21,17 @@ describe('ng add', () => {
         'ng-add',
         options,
         await createWorkspace(schematicRunner, {
-          appOptions: {standalone: false},
-        })
+          appOptions: { standalone: false },
+        }),
       );
       expect(tree).toBeDefined();
-      expect(tree.files).toContain('/transloco.config.js');
+      expect(tree.files).toContain('/transloco.config.ts');
       expect(tree.files).toContain('/projects/bar/src/app/transloco-loader.ts');
       expect(tree.files).toContain(
-        '/projects/bar/src/app/transloco-root.module.ts'
+        '/projects/bar/src/app/transloco-root.module.ts',
       );
       expect(readFile(tree, 'app/transloco-root.module.ts')).toContain(
-        "from './transloco-loader'"
+        "from './transloco-loader'",
       );
     });
   });
@@ -42,13 +42,13 @@ describe('ng add', () => {
       const tree = await schematicRunner.runSchematic(
         'ng-add',
         options,
-        await createWorkspace(schematicRunner)
+        await createWorkspace(schematicRunner),
       );
       expect(tree).toBeDefined();
-      expect(tree.files).toContain('/transloco.config.js');
+      expect(tree.files).toContain('/transloco.config.ts');
       expect(tree.files).toContain('/projects/bar/src/app/transloco-loader.ts');
       expect(readFile(tree, 'app/app.config.ts')).toContain(
-        'provideTransloco('
+        'provideTransloco(',
       );
     });
   });
