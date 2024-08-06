@@ -62,4 +62,31 @@ describe('TranslocoPercentPipe', () => {
     expect(useGrouping).toBeTrue();
     expect(maximumFractionDigits).toEqual(3);
   });
+
+  it('should return previous result with same config', () => {
+    spectator = pipeFactory(
+      `{{ data | translocoPercent:config }}`,
+      {
+        hostProps: {
+          data: '123',
+          config: { useGrouping: false, maximumFractionDigits: 3 }
+        }
+      }
+    );
+
+    const [, { useGrouping, maximumFractionDigits }] = getIntlCallArgs();
+    expect(useGrouping).toBeFalsy();
+    expect(maximumFractionDigits).toEqual(3);
+    const first = spectator.element.textContent;
+
+    intlSpy.calls.reset();
+    spectator.setHostInput({
+      data: '123',
+      config: { useGrouping: false, maximumFractionDigits: 3 }
+    });
+    const second = spectator.element.textContent;
+
+    expect(intlSpy).not.toHaveBeenCalled();
+    expect(second).toBe(first);
+  });
 });

@@ -104,6 +104,39 @@ describe('TranslocoCurrencyPipe', () => {
       expect(maximumFractionDigits).toEqual(4);
     });
 
+    it('should return previous result with same config', () => {
+      spectator = pipeFactory(
+        `{{ data | translocoCurrency:'symbol':config }}`,
+        {
+          hostProps: {
+            data: '123',
+            config: {
+              useGrouping: false,
+              maximumFractionDigits: 3,
+            },
+          },
+        }
+      );
+
+      const [, { useGrouping, maximumFractionDigits }] = getIntlCallArgs();
+      expect(useGrouping).toBeFalsy();
+      expect(maximumFractionDigits).toEqual(3);
+      const first = spectator.element.textContent;
+
+      intlSpy.calls.reset();
+      spectator.setHostInput({
+        data: '123',
+        config: {
+          useGrouping: false,
+          maximumFractionDigits: 3,
+        },
+      });
+      const second = spectator.element.textContent;
+
+      expect(intlSpy).not.toHaveBeenCalled();
+      expect(second).toBe(first);
+    });
+
     it('should take number options from locale settings', () => {
       spectator = pipeFactory(`{{ '123' | translocoCurrency }}`, {
         providers: [provideTranslocoServiceMock('es-ES')],
