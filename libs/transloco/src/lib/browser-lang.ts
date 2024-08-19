@@ -30,5 +30,9 @@ export function getBrowserCultureLang(): string {
 
   const navigator = window.navigator;
 
-  return navigator.languages?.[0] ?? navigator.language;
+  return (
+    navigator.languages.find((lang) =>
+      ['-', '_'].some((c) => lang.includes(c)),
+    ) ?? navigator.language
+  );
 }
