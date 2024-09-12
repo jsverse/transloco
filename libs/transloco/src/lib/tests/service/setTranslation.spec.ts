@@ -102,5 +102,16 @@ describe('setTranslation', () => {
       };
       expect(setTranslationsSpy).toHaveBeenCalledWith('en', merged);
     });
+
+    it("should not change scope's name given scope.keepCasing is set to true", () => {
+      service.config.scopes.keepCasing = true;
+      lang = 'LAZY-page/en';
+      service.setTranslation(translation, lang);
+      const merged = {
+        ...flatten(mockLangs.en),
+        ...flatten({ 'LAZY-page': { ...translation } }),
+      };
+      expect(setTranslationsSpy).toHaveBeenCalledWith('en', merged);
+    });
   });
 });

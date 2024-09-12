@@ -139,8 +139,9 @@ Now we can access each one of the `todos` keys by using the `todos` namespace:
 ```
 
 ## Scope's namespace
+By default, the namespace will be the `scope`'s name camel-cased. you can keep the original casing by providing the [`scope.keepCasing`](../getting-started/config-options#scopeskeepcasing) config option.
 
-By default, the namespace will be the `scope` name (camel cased), but we can override it by providing custom `alias` name in the module/component `scope` provider:
+You can also provide a custom scope namespace by specifying an `alias` name in the module/component `scope` provider:
 
 ```ts
 provideTranslocoScope({ scope: 'todos', alias: 'customName' });

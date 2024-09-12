@@ -789,8 +789,10 @@ export class TranslocoService implements OnDestroy {
   }
 
   private getMappedScope(scope: string): string {
-    const { scopeMapping = {} } = this.config;
-    return scopeMapping[scope] || toCamelCase(scope);
+    const { scopeMapping = {}, scopes = { keepCasing: false } } = this.config;
+    return (
+      scopeMapping[scope] || (scopes.keepCasing ? scope : toCamelCase(scope))
+    );
   }
 
   /**

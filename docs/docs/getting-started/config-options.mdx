@@ -133,3 +133,14 @@ translocoConfig({
   interpolation: ['<<<', '>>>'],
 });
 ```
+
+### `scopes.keepCasing`
+This will make sure that the casing of the provided scope name is not altered, given that no alias has been set otherwise this setting will be ignored.
+
+```ts
+translocoConfig({
+  scopes: {
+    keepCasing: false
+  }
+})
+```
