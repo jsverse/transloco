@@ -1,29 +1,20 @@
-# Changelog
-
-This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
+## [7.0.1](https://github.com/ngneat/transloco/compare/transloco-persist-lang-7.0.0...transloco-persist-lang-7.0.1) (2024-05-31)
 
 # [7.0.0](https://github.com/jsverse/transloco/compare/transloco-persist-lang-6.0.0...transloco-persist-lang-7.0.0) (2024-03-23)
 
-
 ### chore
 
-* **persist-lang:** 🤖 update package scope ([8ba44fe](https://github.com/jsverse/transloco/commit/8ba44fea1193309f6920284123a4a78839c40ffc))
-
+- **persist-lang:** 🤖 update package scope ([8ba44fe](https://github.com/jsverse/transloco/commit/8ba44fea1193309f6920284123a4a78839c40ffc))
 
 ### BREAKING CHANGES
 
-* **persist-lang:** 🧨 The package is now published under the jsverse scope
-
-
+- **persist-lang:** 🧨 The package is now published under the jsverse scope
 
 # [6.0.0](https://github.com/jsverse/transloco/compare/transloco-persist-lang-5.0.0...transloco-persist-lang-6.0.0) (2024-03-23)
 
-
 ### Bug Fixes
 
-* **transloco:** 🐛 update flat to v6 ([7657b3d](https://github.com/jsverse/transloco/commit/7657b3de185b011bd35f815436da759aae33fc26)), closes [#570](https://github.com/jsverse/transloco/issues/570)
-
-
+- **transloco:** 🐛 update flat to v6 ([7657b3d](https://github.com/jsverse/transloco/commit/7657b3de185b011bd35f815436da759aae33fc26)), closes [#570](https://github.com/jsverse/transloco/issues/570)
 
 # [5.0.0](https://github.com/jsverse/transloco/compare/transloco-persist-lang-4.0.0...transloco-persist-lang-5.0.0) (2023-07-30)
 

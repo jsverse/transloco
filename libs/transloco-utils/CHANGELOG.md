@@ -1,24 +1,23 @@
-# Changelog
+## 7.0.2 (2024-07-26)
 
-This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
+
+### 🩹 Fixes
+
+- **utils:** 🐛 update the global config types
+
+## [7.0.1](https://github.com/ngneat/transloco/compare/transloco-utils-7.0.0...transloco-utils-7.0.1) (2024-05-31)
 
 # [7.0.0](https://github.com/jsverse/transloco/compare/transloco-utils-6.0.0...transloco-utils-7.0.0) (2024-03-23)
 
-
 ### chore
 
-* **utils:** 🤖 update scope to jsverse ([89662d0](https://github.com/jsverse/transloco/commit/89662d0d950d233bed5502fa7a182f42cdad2838))
-
+- **utils:** 🤖 update scope to jsverse ([89662d0](https://github.com/jsverse/transloco/commit/89662d0d950d233bed5502fa7a182f42cdad2838))
 
 ### BREAKING CHANGES
 
-* **utils:** 🧨 The package is noe published under the jsverse scope
-
-
+- **utils:** 🧨 The package is noe published under the jsverse scope
 
 # [6.0.0](https://github.com/jsverse/transloco/compare/transloco-utils-5.0.0...transloco-utils-6.0.0) (2024-03-23)
-
-
 
 # [5.0.0](https://github.com/jsverse/transloco/compare/transloco-utils-4.0.0...transloco-utils-5.0.0) (2023-07-30)
 

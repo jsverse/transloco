@@ -1,6 +1,10 @@
-# Changelog
+## [7.4.3](https://github.com/ngneat/transloco/compare/transloco-7.4.2...transloco-7.4.3) (2024-07-26)
 
-This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
+### Features
+
+- **transloco:** 🎸 Schematics move to transloco.config.ts ([fc4fc6b7](https://github.com/ngneat/transloco/commit/fc4fc6b73c8707a15671de14c60cc7665c74395e))
+
+## [7.4.2](https://github.com/ngneat/transloco/compare/transloco-7.4.1...transloco-7.4.2) (2024-05-31)
 
 ## [7.4.1](https://github.com/ngneat/transloco/compare/transloco-7.4.0...transloco-7.4.1) (2024-05-10)
 

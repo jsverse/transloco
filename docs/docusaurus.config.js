@@ -21,9 +21,9 @@ module.exports = async function () {
         },
       ],
       algolia: {
-        appId: 'O8JZ6BVNRL',
-        apiKey: '921502728c526dfe7f906bae383e64ae',
-        indexName: 'transloco',
+        appId: 'TJQR54QJD0',
+        apiKey: 'b1b00a6233a5eaf6a679cc57ad00eaae',
+        indexName: 'jsverseio',
       },
       navbar: {
         title: 'Transloco',
@@ -40,12 +40,12 @@ module.exports = async function () {
             position: 'left',
             className: 'first-nav-element',
           },
-          {
-            to: 'videoGuides',
-            activeBasePath: 'videoGuides',
-            label: 'Video Guides',
-            position: 'left',
-          },
+          // {
+          //   to: 'videoGuides',
+          //   activeBasePath: 'videoGuides',
+          //   label: 'Video Guides',
+          //   position: 'left',
+          // },
           {
             to: 'live-app',
             activeBasePath: 'live-app',

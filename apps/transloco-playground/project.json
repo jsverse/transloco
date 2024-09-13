@@ -43,7 +43,7 @@
               "with": "apps/transloco-playground/src/environments/environment.docs.ts"
             }
           ],
-          "indexFileTransformer": "apps/transloco-playground/index-html-transform.ts",
+          "indexHtmlTransformer": "apps/transloco-playground/index-html-transform.ts",
           "outputHashing": "all"
         },
         "development": {

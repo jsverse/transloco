@@ -3,6 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/transloco-validator/src",
   "projectType": "library",
+  "tags": [],
   "targets": {
     "build": {
       "executor": "@nx/js:tsc",
@@ -25,10 +26,6 @@
         "tsConfig": "libs/transloco-validator/tsconfig.spec.json",
         "karmaConfig": "libs/transloco-validator/karma.conf.js"
       }
-    },
-    "version": {
-      "executor": "@jscutlery/semver:version"
     }
-  },
-  "tags": []
+  }
 }

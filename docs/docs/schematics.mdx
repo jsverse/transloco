@@ -178,7 +178,8 @@ ng generate @jsverse/transloco:join
 ```
 
 :::info
-If you have more then one entry folder for your translation files, you will have to add a mapping for each folder entry and the scope name. It could be done using scopePathMap property in your `transloco.config.js` file.
+If you have more then one entry folder for your translation files, you will have to add a mapping for each folder entry
+and the scope name. It could be done using `scopePathMap` property in your [global config](./getting-started/installation#transloco-global-config) file.
 :::
 
 By default the build script will go over the root translation file directory and will refer every sub directory as scope.
@@ -218,11 +219,12 @@ Say our project's default language is English,  if we run the script the expecte
 }
 ```
 
-If we have more then one entry folder for a `scope` we can specify a map between the `scope` name and the path to the translations using scopePathMap property in your `transloco.config.js` file:
+If we have more then one entry folder for a `scope` we can specify a map between the `scope` name and the path to the
+translations using `scopePathMap` property in your [global config](./getting-started/installation#transloco-global-config) file:
 
-```js title="transloco.config.js"
-{
-  "scopePathMap": {
+```js title="transloco.config.ts"
+const config: TranslocoGlobalConfig = {
+  scopePathMap: {
     "my-scope": "src/app/path-to-scope",
     "my-project-scope": "projects/my-project/i18n"
   }
@@ -230,7 +232,7 @@ If we have more then one entry folder for a `scope` we can specify a map between
 ```
 
 :::info
-Once you specify the scopePathMap the script will automatically use it
+Once you specify the `scopePathMap` the script will automatically use it
 :::
 
 ### Examples

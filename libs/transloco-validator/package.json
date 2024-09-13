@@ -1,6 +1,6 @@
 {
   "name": "@jsverse/transloco-validator",
-  "version": "7.0.0",
+  "version": "7.0.1",
   "description": "Transloco translation files validator",
   "main": "src/lib/transloco-validator.js",
   "engines": {

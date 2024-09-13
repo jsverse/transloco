@@ -16,9 +16,10 @@ node_modules
 *.launch
 .settings/
 *.sublime-workspace
+.idx/
 
 # IDE - VSCode
-.vscode/*
+.vscode
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
@@ -43,5 +44,6 @@ Thumbs.db
 apps/transloco-playground-e2e/cypress/screenshots/*
 
 .nx/cache
+.nx/workspace-data
 
 .nx

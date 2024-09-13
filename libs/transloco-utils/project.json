@@ -3,6 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/transloco-utils/src",
   "projectType": "library",
+  "tags": [],
   "targets": {
     "build": {
       "executor": "@nx/js:tsc",
@@ -25,10 +26,6 @@
         "tsConfig": "libs/transloco-utils/tsconfig.spec.json",
         "karmaConfig": "libs/transloco-utils/karma.conf.js"
       }
-    },
-    "version": {
-      "executor": "@jscutlery/semver:version"
     }
-  },
-  "tags": []
+  }
 }

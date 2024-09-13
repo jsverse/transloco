@@ -1,24 +1,16 @@
-# Changelog
-
-This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
+## [7.0.1](https://github.com/ngneat/transloco/compare/transloco-optimize-7.0.0...transloco-optimize-7.0.1) (2024-05-31)
 
 # [7.0.0](https://github.com/jsverse/transloco/compare/transloco-optimize-6.0.0...transloco-optimize-7.0.0) (2024-03-23)
 
-
 ### chore
 
-* **optimize:** 🤖 update package scope ([65645ee](https://github.com/jsverse/transloco/commit/65645ee0a79413c74be64ede5bf33174f06465f7))
-
+- **optimize:** 🤖 update package scope ([65645ee](https://github.com/jsverse/transloco/commit/65645ee0a79413c74be64ede5bf33174f06465f7))
 
 ### BREAKING CHANGES
 
-* **optimize:** 🧨 The package is now published under the jsverse scope
-
-
+- **optimize:** 🧨 The package is now published under the jsverse scope
 
 # [6.0.0](https://github.com/jsverse/transloco/compare/transloco-optimize-5.0.3...transloco-optimize-6.0.0) (2024-03-23)
-
-
 
 ## [5.0.3](https://github.com/jsverse/transloco/compare/transloco-optimize-5.0.2...transloco-optimize-5.0.3) (2023-08-13)
 

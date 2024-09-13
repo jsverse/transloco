@@ -11,8 +11,11 @@ jobs:
       - name: Setup
         uses: ./.github/actions/step-setup
 
-      - name: Run build
+      - name: Build libs & apps
         run: npm run ci:build
+
+      - name: Build docs
+        run: cd docs && npm i && npm run build
 
   test:
     runs-on: ubuntu-latest

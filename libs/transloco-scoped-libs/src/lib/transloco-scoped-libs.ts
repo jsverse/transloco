@@ -65,7 +65,7 @@ export default function run({
   for (const lib of scopedLibsArr) {
     if (!lib.src) {
       console.log(
-        chalk.red(`Please specify the library's src.`, libSrcExample)
+        chalk.red(`Please specify the library's src.`, libSrcExample),
       );
 
       return;
@@ -76,8 +76,8 @@ export default function run({
       console.log(
         chalk.red(
           `${path.join(lib.src, 'package.json')} is missing i18n information.`,
-          packageJsoni18nExample
-        )
+          packageJsoni18nExample,
+        ),
       );
 
       return;
@@ -87,8 +87,8 @@ export default function run({
       console.log(
         chalk.red(
           'please specify dist path, by either set "rootTranslationsPath" or specify the "dist" for each library',
-          libSrcExample
-        )
+          libSrcExample,
+        ),
       );
 
       return;
@@ -133,14 +133,14 @@ export default function run({
 
 function coerceScopedLibs(
   scopedLibs: TranslocoGlobalConfig['scopedLibs'],
-  defaultPath: TranslocoGlobalConfig['rootTranslationsPath']
+  defaultPath: TranslocoGlobalConfig['rootTranslationsPath'],
 ) {
   if (!scopedLibs?.length) {
     console.log(
       chalk.red(
-        'Please add "scopedLibs" configuration in transloco.config.js file.',
-        libSrcExample
-      )
+        'Please add "scopedLibs" configuration in transloco.config.ts file.',
+        libSrcExample,
+      ),
     );
 
     return [];
@@ -164,7 +164,7 @@ function copyScopes(options: CopyScopeOptions) {
   } else {
     resolvedOptions.outputDir = path.join(
       resolvedOptions.outputDir,
-      options.scope
+      options.scope,
     );
     mkdirsSync(resolvedOptions.outputDir);
   }
@@ -193,7 +193,7 @@ function copyScopeTranslationFiles(options: CopyScopeTranslationsOptions) {
       '✅ Copy translation from file:',
       chalk.blue(cutPath(translationFilePath)),
       'to:',
-      chalk.blue(cutPath(outputFilePath))
+      chalk.blue(cutPath(outputFilePath)),
     );
 
     if (!skipGitIgnoreUpdate) {

@@ -11,6 +11,7 @@ Install the library using Angular CLI:
 ```bash
 ng add @jsverse/transloco
 # On an nx workspace
+npm i @jsverse/transloco
 nx g @jsverse/transloco:ng-add
 ```
 
@@ -18,46 +19,8 @@ For more information, see the [ng-add](../schematics/ng-add) command page.
 
 <!-- <img className="gif" src={useBaseUrl('/img/installation.gif')} /> -->
 
-As part of the installation process you'll be presented with questions; Once you answer them, everything you need will automatically be created for you. Let's take a closer look at the generated files:
-
-#### Transloco loader
-
-A default http loader implementation to fetch the translation files:
-
-```ts
-import { inject, Injectable } from "@angular/core";
-import { Translation, TranslocoLoader } from "@jsverse/transloco";
-import { HttpClient } from "@angular/common/http";
-
-@Injectable({ providedIn: 'root' })
-export class TranslocoHttpLoader implements TranslocoLoader {
-    private http = inject(HttpClient);
-
-    getTranslation(lang: string) {
-        return this.http.get<Translation>(`/assets/i18n/${lang}.json`);
-    }
-}
-
-```
-
-:::note
-
-When you deploy your application and Transloco is unable to load your language files it might because you need to use a relative path:
-
-```ts
-getTranslation(langPath: string) {
-  return this.http.get(`./assets/i18n/${langPath}.json`);
-}
-```
-:::
-
-#### Translation JSON files
-
-Transloco creates boilerplate files for the requested languages with an empty JSON:
-
-```json title="assets/i18n/{en, es}.json"
-{}
-```
+As part of the installation process you'll be presented with questions; Once you answer them, everything you need will
+automatically be created for you. Let's take a closer look at the updates made and the generated files:
 
 <Tabs queryString="app-type">
 <TabItem value="standalone" label="Standalone">
@@ -130,6 +93,63 @@ You should import the `TranslocoRootModule` once in your root module, and use `T
 </TabItem>
 
 </Tabs>
+
+#### Transloco loader
+
+A default http loader implementation to fetch the translation files:
+
+```ts
+import { inject, Injectable } from "@angular/core";
+import { Translation, TranslocoLoader } from "@jsverse/transloco";
+import { HttpClient } from "@angular/common/http";
+
+@Injectable({ providedIn: 'root' })
+export class TranslocoHttpLoader implements TranslocoLoader {
+    private http = inject(HttpClient);
+
+    getTranslation(lang: string) {
+        return this.http.get<Translation>(`/assets/i18n/${lang}.json`);
+    }
+}
+
+```
+
+:::note
+
+When you deploy your application and Transloco is unable to load your language files it might because you need to use a
+relative path:
+
+```ts
+getTranslation(langPath: string) {
+  return this.http.get(`./assets/i18n/${langPath}.json`);
+}
+```
+:::
+
+#### Translation JSON files
+
+Transloco creates boilerplate files for the requested languages with an empty JSON:
+
+```json title="assets/i18n/{en, es}.json"
+{}
+```
+
+#### Transloco Global Config
+
+This config is used by tools & plugins such as the [scoped lib extractor](../tools/scope-lib-extractor)
+and the [keys-manager](https://github.com/jsverse/transloco-keys-manager).
+
+```ts title="transloco.config.ts"
+import {TranslocoGlobalConfig} from '@jsverse/transloco-utils';
+
+const config: TranslocoGlobalConfig = {
+  rootTranslationsPath: 'src/assets/i18n/',
+  langs: [ 'en', 'es' ],
+  keysManager: {}
+};
+
+export default config;
+```
 
 And that's it! Now we are ready to use it in our project.
 
