@@ -7,8 +7,18 @@
     "declarationMap": true,
     "inlineSources": true,
     "types": [],
-    "lib": ["dom", "es2020"]
+    "lib": [
+      "dom",
+      "es2020",
+      "ES2021.Intl"
+    ]
   },
-  "exclude": ["src/test-setup.ts", "**/*.spec.ts", "src/lib/tests/mocks.ts"],
-  "include": ["**/*.ts"]
+  "exclude": [
+    "src/test-setup.ts",
+    "**/*.spec.ts",
+    "src/lib/tests/mocks.ts"
+  ],
+  "include": [
+    "**/*.ts"
+  ]
 }

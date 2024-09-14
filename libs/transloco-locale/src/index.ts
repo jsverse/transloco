@@ -9,8 +9,10 @@ export {
 export { TranslocoLocaleModule } from './lib/transloco-locale.module';
 export {
   TRANSLOCO_DATE_TRANSFORMER,
+  TRANSLOCO_DATE_RANGE_TRANSFORMER,
   TRANSLOCO_NUMBER_TRANSFORMER,
   TranslocoDateTransformer,
+  TranslocoDateRangeTransformer,
   TranslocoNumberTransformer,
   DefaultDateTransformer,
   DefaultNumberTransformer,
@@ -19,6 +21,7 @@ export {
   provideTranslocoLocaleLangMapping,
   provideTranslocoLocaleCurrencyMapping,
   provideTranslocoDateTransformer,
+  provideTranslocoDateRangeTransformer,
   provideTranslocoDefaultCurrency,
   provideTranslocoLocale,
   provideTranslocoNumberTransformer,
@@ -29,6 +32,7 @@ export * from './lib/transloco-locale.types';
 export {
   TranslocoCurrencyPipe,
   TranslocoDatePipe,
+  TranslocoDateRangePipe,
   TranslocoDecimalPipe,
   TranslocoPercentPipe,
   BaseLocalePipe,

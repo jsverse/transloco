@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import {
   TranslocoCurrencyPipe,
   TranslocoDatePipe,
+  TranslocoDateRangePipe,
   TranslocoDecimalPipe,
   TranslocoPercentPipe,
 } from './pipes';
@@ -10,6 +11,7 @@ import {
 const decl = [
   TranslocoCurrencyPipe,
   TranslocoDatePipe,
+  TranslocoDateRangePipe,
   TranslocoDecimalPipe,
   TranslocoPercentPipe,
 ];
@@ -18,4 +20,4 @@ const decl = [
   imports: decl,
   exports: decl,
 })
-export class TranslocoLocaleModule {}
+export class TranslocoLocaleModule { }
