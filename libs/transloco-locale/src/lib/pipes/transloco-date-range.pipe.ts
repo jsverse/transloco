@@ -1,11 +1,17 @@
 import { inject, Pipe, PipeTransform } from '@angular/core';
 import { isNil } from '@jsverse/transloco';
 
-import { toDate } from "../helpers";
-import { getDefaultOptions } from "../shared";
-import { TRANSLOCO_LOCALE_CONFIG } from "../transloco-locale.config";
-import { Locale, DateFormatOptions, LocaleConfig, ValidDate } from "../transloco-locale.types";
-import { BaseLocalePipe } from "./base-locale.pipe";
+import { getDefaultOptions } from '../shared';
+import { TRANSLOCO_LOCALE_CONFIG } from '../transloco-locale.config';
+import {
+  Locale,
+  DateFormatOptions,
+  LocaleConfig,
+  ValidDate,
+} from '../transloco-locale.types';
+
+import { BaseLocalePipe } from './base-locale.pipe';
+import { TranslocoDatePipe } from './transloco-date.pipe';
 
 @Pipe({
   name: 'translocoDateRange',
@@ -14,7 +20,8 @@ import { BaseLocalePipe } from "./base-locale.pipe";
 })
 export class TranslocoDateRangePipe
   extends BaseLocalePipe
-  implements PipeTransform {
+  implements PipeTransform
+{
   private localeConfig: LocaleConfig = inject(TRANSLOCO_LOCALE_CONFIG);
 
   /**
@@ -37,9 +44,9 @@ export class TranslocoDateRangePipe
   ) {
     if (isNil(startDate)) return '';
     if (isNil(endDate)) {
-      // @TODO Fallback to TranslocoDatePipe;
-      return ''
-    };
+      return inject(TranslocoDatePipe).transform(startDate, options, locale);
+    }
+
     locale = this.getLocale(locale);
 
     return this.localeService.localizeDateRange(startDate, endDate, locale, {
