@@ -100,9 +100,9 @@ export function run(path) {
       const serviceCallRgx = ({ map, func }) =>
         new RegExp(
           `(?:(?:\\s*|this\\.)${sanitizedName})(?:\\s*\\t*\\r*\\n*)*\\.(?:\\s*\\t*\\r*\\n*)*(${getTarget(
-            map
+            map,
           )})[\\r\\t\\n\\s]*${func ? '\\(' : '(?!\\()'}`,
-          'g'
+          'g',
         );
       const getTarget = (t) => Object.keys(t).join('|');
       return [
@@ -110,7 +110,10 @@ export function run(path) {
         { func: false, map: propsMap },
       ].reduce((acc, curr) => {
         return acc.replace(serviceCallRgx(curr), (str) =>
-          str.replace(new RegExp(getTarget(curr.map)), (func) => curr.map[func])
+          str.replace(
+            new RegExp(getTarget(curr.map)),
+            (func) => curr.map[func],
+          ),
         );
       }, match);
     },
@@ -158,6 +161,8 @@ export function run(path) {
   async function migrate(matchersArr, filesType) {
     console.log(`\nMigrating ${filesType} files 📜`);
     let spinner;
+    const isWindows = process.platform === 'win32';
+
     for (let i = 0; i < matchersArr.length; i++) {
       const { step, matchers } = matchersArr[i];
       const msg = `Step ${i + 1}/${matchersArr.length}: Migrating ${step}`;
@@ -165,7 +170,12 @@ export function run(path) {
       const noFilesFound = [];
       for (const matcher of matchers) {
         try {
-          await replaceInFile(matcher);
+          await replaceInFile({
+            ...matcher,
+            glob: {
+              windowsPathsNoEscape: isWindows,
+            },
+          });
         } catch (e) {
           if (e.message.includes('No files match the pattern')) {
             noFilesFound.push(e.message);
@@ -176,7 +186,7 @@ export function run(path) {
       }
       spinner.succeed(msg);
       noFilesFound.forEach((pattern) =>
-        console.log('\x1b[33m%s\x1b[0m', `⚠️ ${pattern}`)
+        console.log('\x1b[33m%s\x1b[0m', `⚠️ ${pattern}`),
       );
     }
   }
@@ -187,7 +197,7 @@ export function run(path) {
       console.log('\n              🌵 Done! 🌵');
       console.log('Welcome to a better translation experience 🌐');
       console.log(
-        '\nFor more information about this script please visit 👉 https://jsverse.github.io/transloco/docs/migration/ngx\n'
+        '\nFor more information about this script please visit 👉 https://jsverse.github.io/transloco/docs/migration/ngx\n',
       );
     });
 }
