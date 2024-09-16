@@ -11,7 +11,7 @@ if (pkgName === 'docs') {
 
 const possibleTargets = resolveSubDirs('libs').concat(resolveSubDirs('apps'));
 
-pkgName = ['transloco', pkgName].filter(Boolean).join('-');
+pkgName = pkgName === 'transloco' ? pkgName : ['transloco', pkgName].filter(Boolean).join('-');
 
 if (!possibleTargets.includes(pkgName)) {
     console.error(`Resolved package name is '${pkgName}', which is not an app or a lib`);
