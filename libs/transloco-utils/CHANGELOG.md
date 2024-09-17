@@ -1,6 +1,5 @@
 ## 7.0.2 (2024-07-26)
 
-
 ### 🩹 Fixes
 
 - **utils:** 🐛 update the global config types

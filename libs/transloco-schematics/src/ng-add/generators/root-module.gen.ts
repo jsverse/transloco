@@ -31,7 +31,7 @@ export function createTranslocoModule({
     .split(path.sep)
     .join('/');
   const envFileExists = host.exists(
-    `${sourceRoot}/environments/environment.ts`
+    `${sourceRoot}/environments/environment.ts`,
   );
   let prodMode = envFileExists ? 'environment.production' : '!isDevMode()';
 

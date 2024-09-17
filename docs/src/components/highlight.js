@@ -6,7 +6,7 @@ export const Highlight = ({ children, bgColor, color }) => (
       backgroundColor: bgColor || '#f5f6f7',
       borderRadius: '2px',
       color: color || 'rgb(153, 76, 195)',
-      padding: '3.2px 6.4px'
+      padding: '3.2px 6.4px',
     }}
   >
     {' '}

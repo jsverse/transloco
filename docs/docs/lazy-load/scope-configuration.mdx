@@ -2,6 +2,7 @@
 title: Scope Configuration
 description: Scope Configuration | Transloco Angular i18n
 ---
+
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
@@ -36,27 +37,26 @@ import { Route } from '@angular/router';
 import { provideTranslocoScope } from '@jsverse/transloco';
 
 export const TODO_ROUTES: Route = {
-    path: '',
-    loadComponent: () => import('./todos.component').then((TodosComponent) => TodosComponent),
-    providers: [
-        provideTranslocoScope('todos'),
-    ],
+  path: '',
+  loadComponent: () =>
+    import('./todos.component').then((TodosComponent) => TodosComponent),
+  providers: [provideTranslocoScope('todos')],
 };
-
 ```
 
-We also can provide several scopes at once: 
+We also can provide several scopes at once:
 
 ```ts title="core.module.ts"
 import { Route } from '@angular/router';
-import {provideTranslocoScope} from "./transloco.providers";
+import { provideTranslocoScope } from './transloco.providers';
 
 export const TODO_ROUTES: Route = {
-    path: '',
-    loadComponent: () => import('./todos.component').then((TodosComponent) => TodosComponent),
-    providers: [
-      provideTranslocoScope('todos', { scope: 'shared', alias: 'sharedAlias' }),
-    ],
+  path: '',
+  loadComponent: () =>
+    import('./todos.component').then((TodosComponent) => TodosComponent),
+  providers: [
+    provideTranslocoScope('todos', { scope: 'shared', alias: 'sharedAlias' }),
+  ],
 };
 ```
 
@@ -70,24 +70,23 @@ We can set it inside the _lazy module_ providers:
 import { provideTranslocoScope } from '@jsverse/transloco';
 
 const routes: Routes = [
-    {
-        path: '',
-        component: TodosComponent
-    }
+  {
+    path: '',
+    component: TodosComponent,
+  },
 ];
 
 @NgModule({
-    declarations: [TodosComponent],
-    providers: [provideTranslocoScope('todos')],
-    imports: [RouterModule.forChild(routes), TranslocoModule]
+  declarations: [TodosComponent],
+  providers: [provideTranslocoScope('todos')],
+  imports: [RouterModule.forChild(routes), TranslocoModule],
 })
 export class TodosModule {}
 ```
+
 </TabItem>
 
 </Tabs>
-
-
 
 ## Component's Providers
 
@@ -97,7 +96,7 @@ We can set it in a _component's providers_:
 @Component({
   selector: 'my-comp',
   templateUrl: './my-comp.component.html',
-  providers: [provideTranslocoScope('todos')]
+  providers: [provideTranslocoScope('todos')],
 })
 export class MyComponent {}
 ```
@@ -115,6 +114,7 @@ We can set the `scope` input in the `transloco` structural directive:
 Each one of these options tells Transloco to load the corresponding `scope` based on the active language and merge it under the scope namespace into the active language translation object.
 
 For example, if the active language is `en`, it will load the `todos/en.json` file, and will set the translation to be the following:
+
 ```json
 {
   "header": "",
@@ -143,10 +143,11 @@ Now we can access each one of the `todos` keys by using the `todos` namespace:
 By default, the namespace will be the `scope` name (camel cased), but we can override it by providing custom `alias` name in the module/component `scope` provider:
 
 ```ts
-provideTranslocoScope({ scope: 'todos', alias: 'customName' })
+provideTranslocoScope({ scope: 'todos', alias: 'customName' });
 ```
 
 Now we can access it through `customName` instead of the original scope name (`todos` in our case):
+
 ```html title="todos.component.html"
 <ng-container *transloco="let t">
   <h1>{{ t('customName.title') }}</h1>

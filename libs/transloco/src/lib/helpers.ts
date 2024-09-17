@@ -89,7 +89,7 @@ export function coerceArray<T>(value: T | T[]): T[] {
 export function toCamelCase(str: string): string {
   return str
     .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) =>
-      index == 0 ? word.toLowerCase() : word.toUpperCase()
+      index == 0 ? word.toLowerCase() : word.toUpperCase(),
     )
     .replace(/\s+|_|-|\//g, '');
 }

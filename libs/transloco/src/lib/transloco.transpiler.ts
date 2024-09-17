@@ -9,7 +9,7 @@ import {
 } from './transloco.config';
 
 export const TRANSLOCO_TRANSPILER = new InjectionToken<TranslocoTranspiler>(
-  'TRANSLOCO_TRANSPILER'
+  'TRANSLOCO_TRANSPILER',
 );
 
 export interface TranslocoTranspiler {
@@ -134,7 +134,7 @@ export class DefaultTranspiler implements TranslocoTranspiler {
       this.transpile({
         value: v,
         ...rest,
-      })
+      }),
     );
   }
 }
@@ -190,7 +190,7 @@ export class FunctionalTranspiler
             }
             throw new Error(message);
           }
-        }
+        },
       );
     }
 

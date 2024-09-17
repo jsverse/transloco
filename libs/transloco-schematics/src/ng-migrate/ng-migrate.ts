@@ -31,7 +31,7 @@ export function run({ input, output, langs }) {
   console.log('\n              🌵 Done! 🌵');
   console.log('Welcome to a better translation experience 🌐');
   console.log(
-    '\nFor more information about this script please visit 👉 https://jsverse.github.io/transloco/docs/migration/angular\n'
+    '\nFor more information about this script please visit 👉 https://jsverse.github.io/transloco/docs/migration/angular\n',
   );
 }
 
@@ -112,7 +112,7 @@ function getNewTemplate(template) {
       propName,
       propMark,
       propValue,
-      innerText
+      innerText,
     ) {
       let replace = ' i18n';
       const key = resolveKey(attrValue, propValue || innerText);
@@ -129,6 +129,6 @@ function getNewTemplate(template) {
       }
 
       return match.replace(replace, '').replace(value, newValue);
-    }
+    },
   );
 }

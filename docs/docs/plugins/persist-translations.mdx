@@ -6,11 +6,13 @@ description: Plugins - Persist Translations | Transloco Angular i18n
 This plugin provides the functionality of persisting translations to the provided storage.
 
 ## Installation
+
 ```bash
 npm install @jsverse/transloco-persist-translations
 ```
 
 ## Usage
+
 Add persist translation providers using the into the `TranslocoRootModule`/`app.config.ts`, and provide the storage you would like to use:
 
 ```ts title="transloco-root.module.ts"
@@ -59,6 +61,7 @@ export class TranslocoRootModule {}
 ```
 
 ## Configuration
+
 `provideTranslocoPersistTranslations` can also receive the following configuration:
 
 ```ts
@@ -72,6 +75,7 @@ export class TranslocoRootModule {}
 - `storageKey`: The key to be used to save the translations data.
 
 ## Clear Storage
+
 The storage cleanup is done automatically once the `ttl` is passed, but it could also can be done manually by calling `clearCache` method from the cache service:
 
 ```ts title="app.component.ts"
@@ -85,4 +89,3 @@ export class AppComponent {
   }
 }
 ```
-

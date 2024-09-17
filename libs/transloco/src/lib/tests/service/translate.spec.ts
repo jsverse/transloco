@@ -39,7 +39,7 @@ describe('translate', () => {
     const eng = mockLangs['en'];
     expect(service.translate('home')).toEqual(eng.home);
     expect(service.translate('alert', { value: 'val' })).toEqual(
-      'alert val english'
+      'alert val english',
     );
     expect(service.translate('a.b.c')).toEqual('a.b.c from list english');
     expect(service.translate('key.is.like.path')).toEqual('key is like path');
@@ -60,7 +60,7 @@ describe('translate', () => {
       'a.b.c from list english',
     ];
     expect(
-      service.translate(['home', 'alert', 'a.b.c'], { value: 'val' })
+      service.translate(['home', 'alert', 'a.b.c'], { value: 'val' }),
     ).toEqual(expected);
   }));
 
@@ -68,7 +68,7 @@ describe('translate', () => {
     loadLang(service, 'lazy-page/en');
     // should append the active lang by default
     expect(service.translate('title', {}, 'lazy-page')).toEqual(
-      'Admin Lazy english'
+      'Admin Lazy english',
     );
   }));
 
@@ -76,7 +76,7 @@ describe('translate', () => {
     loadLang(service, 'lazy-page/en');
     loadLang(service, 'lazy-page/es');
     expect(service.translate('title', {}, 'lazy-page/es')).toEqual(
-      'Admin Lazy spanish'
+      'Admin Lazy spanish',
     );
   }));
 });

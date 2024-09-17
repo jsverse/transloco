@@ -20,7 +20,7 @@ function reduceTranslations(
   dirPath: string,
   translationJson,
   lang: string,
-  key = ''
+  key = '',
 ) {
   const dir = host.getDir(dirPath);
   if (!hasFiles(dir)) return translationJson;
@@ -32,8 +32,14 @@ function reduceTranslations(
       const nestedKey = nestedKeyPath.split('.').at(-1);
       const subTranslationJson = translationJson[key];
       if (subTranslationJson) {
-        reduceTranslations(host, subDir.path, subTranslationJson, lang, nestedKey);
-        delete translationJson[key][nestedKey]
+        reduceTranslations(
+          host,
+          subDir.path,
+          subTranslationJson,
+          lang,
+          nestedKey,
+        );
+        delete translationJson[key][nestedKey];
       }
     });
   }
@@ -80,7 +86,7 @@ export default function (options: SchemaOptions): Rule {
         (acc, { scope, path }) => {
           return reduceTranslations(host, path, translation, lang, scope);
         },
-        translation
+        translation,
       );
     }
 

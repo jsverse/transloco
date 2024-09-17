@@ -27,7 +27,7 @@ describe('Scope alias', () => {
 
   it('should support scope alias', fakeAsync(() => {
     spectator = createHost(
-      `<section *transloco="let t;"><div>{{t('lazy.title')}}</div></section>`
+      `<section *transloco="let t;"><div>{{t('lazy.title')}}</div></section>`,
     );
     runLoader();
     runLoader();

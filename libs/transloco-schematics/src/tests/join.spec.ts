@@ -42,66 +42,63 @@ describe('Join', () => {
     });
 
     it('should merge translation files that are not the default language to dist', async () => {
-      const tree = await schematicRunner
-        .runSchematic('join', options, appTree)
+      const tree = await schematicRunner.runSchematic('join', options, appTree);
       expect(tree.files).toEqual(['/dist-i18n/es.json']);
       expect(tree.files).not.toEqual(['/dist-i18n/en.json']);
     });
 
     it('should merge translation files including the default language to dist', async () => {
-      const tree = await schematicRunner
-        .runSchematic(
-          'join',
-          { ...options, includeDefaultLang: true },
-          appTree
-        );
+      const tree = await schematicRunner.runSchematic(
+        'join',
+        { ...options, includeDefaultLang: true },
+        appTree,
+      );
       expect(tree.files).toEqual(['/dist-i18n/es.json', '/dist-i18n/en.json']);
     });
 
     it('should merge scopes correctly', async () => {
-      const tree = await schematicRunner
-        .runSchematic('join', options, appTree)
+      const tree = await schematicRunner.runSchematic('join', options, appTree);
 
       expect(tree.readContent('/dist-i18n/es.json')).toMatchSnapshot();
     });
 
     it('should delete output file and pass on rerun', async () => {
       // first run.
-      await schematicRunner
-        .runSchematic('join', options, appTree)
+      await schematicRunner.runSchematic('join', options, appTree);
       // second run.
-      const tree = await schematicRunner
-        .runSchematic('join', options, appTree)
+      const tree = await schematicRunner.runSchematic('join', options, appTree);
       expect(tree.files).toEqual(['/dist-i18n/es.json']);
     });
 
     it(`should take default project's path`, async () => {
       appTree.create(
         'projects/bar/src/assets/i18n/en.json',
-        JSON.stringify(scopeEn)
+        JSON.stringify(scopeEn),
       );
       appTree.create(
         'projects/bar/src/assets/i18n/es.json',
-        JSON.stringify(scopeEs)
+        JSON.stringify(scopeEs),
       );
 
-      const tree = await schematicRunner
-        .runSchematic('join', {}, appTree)
+      const tree = await schematicRunner.runSchematic('join', {}, appTree);
       expect(tree.files).toEqual(['/dist-i18n/es.json']);
     });
 
     it('should take specific project path', async () => {
       appTree.create(
         'projects/baz/src/assets/i18n/en.json',
-        JSON.stringify(scopeEn)
+        JSON.stringify(scopeEn),
       );
       appTree.create(
         'projects/baz/src/assets/i18n/es.json',
-        JSON.stringify(scopeEs)
+        JSON.stringify(scopeEs),
       );
 
-      const tree = await schematicRunner
-        .runSchematic('join', { project: 'baz' }, appTree)
+      const tree = await schematicRunner.runSchematic(
+        'join',
+        { project: 'baz' },
+        appTree,
+      );
       expect(tree.files).toEqual(['/dist-i18n/es.json']);
     });
   });
@@ -121,8 +118,7 @@ describe('Join', () => {
 
     it('should use scope map strategy', async () => {
       setup();
-      const tree = await schematicRunner
-        .runSchematic('join', options, appTree)
+      const tree = await schematicRunner.runSchematic('join', options, appTree);
       expect(tree.readContent('/dist-i18n/es.json')).toMatchSnapshot();
     });
 
@@ -132,8 +128,7 @@ describe('Join', () => {
         scopeB: 'src/app/assets/i18n/scope2',
       };
       setup(scopePathMap);
-      const tree = await schematicRunner
-        .runSchematic('join', options, appTree)
+      const tree = await schematicRunner.runSchematic('join', options, appTree);
 
       expect(tree.readContent('/dist-i18n/es.json')).toMatchSnapshot();
     });
@@ -144,8 +139,7 @@ describe('Join', () => {
         libB: 'projects/baz/src/assets/i18n',
       };
       setup(scopePathMap);
-      const tree = await schematicRunner
-        .runSchematic('join', options, appTree)
+      const tree = await schematicRunner.runSchematic('join', options, appTree);
 
       expect(tree.readContent('/dist-i18n/es.json')).toMatchSnapshot();
     });

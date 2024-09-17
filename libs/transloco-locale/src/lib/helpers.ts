@@ -24,7 +24,7 @@ export function isLocaleFormat(val: any): val is Locale {
 export function localizeNumber(
   value: number | string,
   locale: Locale,
-  options: Intl.NumberFormatOptions
+  options: Intl.NumberFormatOptions,
 ): string {
   const number = toNumber(value);
   return number !== null
@@ -35,7 +35,7 @@ export function localizeNumber(
 export function localizeDate(
   date: Date,
   locale: Locale,
-  options: DateFormatOptions
+  options: DateFormatOptions,
 ): string {
   if (isDate(date)) {
     return new Intl.DateTimeFormat(locale, options as any).format(date);

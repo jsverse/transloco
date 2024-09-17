@@ -9,7 +9,7 @@ export function cookiesStorage(cookieExpiry = hoursInMonth): PersistStorage {
       const name = encodeURIComponent(key);
       const regexp = new RegExp(
         '(?:^' + name + '|;\\s*' + name + ')=(.*?)(?:;|$)',
-        'g'
+        'g',
       );
       const result = regexp.exec(document.cookie);
 
@@ -20,7 +20,7 @@ export function cookiesStorage(cookieExpiry = hoursInMonth): PersistStorage {
       const date = new Date();
       date.setTime(date.getTime() + cookieExpiry * millisecondsInHour);
       document.cookie = `${name}=${encodeURIComponent(
-        value
+        value,
       )};expires=${date.toUTCString()}`;
     },
     // eslint-disable-next-line  @typescript-eslint/no-empty-function

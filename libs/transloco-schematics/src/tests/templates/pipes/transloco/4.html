@@ -1,28 +1,37 @@
 <div class="insights-container d-flex-column d-flex-0-1-auto">
   <div class="insights d-flex-1-1-auto mx-30 mb-30">
-    <ng-container *ngIf="{
+    <ng-container
+      *ngIf="{
         insights: insightGroups$ | async,
         totalInsights: totalInsights$ | async,
         botKpiMetric: botKpiMetric$ | async,
         botMagnitudeMetric: botMagnitudeMetric$ | async
-     } as data">
-      <div *ngFor="let group of data.insights; trackBy: groupTrack; let i = index">
+     } as data"
+    >
+      <div
+        *ngFor="let group of data.insights; trackBy: groupTrack; let i = index"
+      >
         <da-insights-list-item
-                class="mb-20" [insights]="group.insights" [listIndex]="i"
-                [listLength]="'24' | transloco" [insightContext]="insightContext"
-                [insightListData]="listData" [botKpiMetric]="data.botKpiMetric | transloco"
-                [botMagnitudeMetric]="data.botMagnitudeMetric"
-                (insightDismiss)="dismissInsight($event)"
-                [attr.data-auto-id]='"25" | transloco'>
+          class="mb-20"
+          [insights]="group.insights"
+          [listIndex]="i"
+          [listLength]="'24' | transloco"
+          [insightContext]="insightContext"
+          [insightListData]="listData"
+          [botKpiMetric]="data.botKpiMetric | transloco"
+          [botMagnitudeMetric]="data.botMagnitudeMetric"
+          (insightDismiss)="dismissInsight($event)"
+          [attr.data-auto-id]='"25" | transloco'
+        >
         </da-insights-list-item>
       </div>
-
-
     </ng-container>
   </div>
-  <da-facebook-loader-insight-bot *ngIf="loadingInsights$ | async"
-                                  class="mx-30 mb-30">
-    {{ '26' |   transloco}}
+  <da-facebook-loader-insight-bot
+    *ngIf="loadingInsights$ | async"
+    class="mx-30 mb-30"
+  >
+    {{ '26' | transloco}}
     <div [class.name]="'27' | transloco"></div>
   </da-facebook-loader-insight-bot>
 </div>

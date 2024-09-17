@@ -30,7 +30,7 @@ export function createStorageMock() {
 
 export function createAsyncLoaderMock(
   delay: number,
-  translations: Record<string, string>
+  translations: Record<string, string>,
 ) {
   return class MockLoader {
     getTranslation() {

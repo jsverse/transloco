@@ -1,4 +1,3 @@
-
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 import { TranslocoModule } from '@jsverse/transloco';

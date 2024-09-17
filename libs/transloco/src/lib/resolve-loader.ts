@@ -19,7 +19,7 @@ export function resolveLoader(options: Options) {
     }
 
     return inlineLoader[path]().then((res) =>
-      res.default ? res.default : res
+      res.default ? res.default : res,
     );
   }
 

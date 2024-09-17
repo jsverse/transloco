@@ -33,7 +33,7 @@ describe('TranslocoMissingHandler', () => {
           logMissingKey: false,
         },
       },
-      false
+      false,
     );
   });
 });

@@ -37,7 +37,7 @@ import { createTranslocoModule } from './generators/root-module.gen';
 function updateEnvironmentBaseUrl(
   host: Tree,
   sourceRoot: string,
-  defaultValue: string
+  defaultValue: string,
 ) {
   const template = `$1{
   baseUrl: '${defaultValue}',`;
@@ -45,7 +45,7 @@ function updateEnvironmentBaseUrl(
   setEnvironments(host, sourceRoot, (env: string) =>
     env.indexOf('baseUrl') === -1
       ? env.replace(/(environment.*=*)\{/, template)
-      : env
+      : env,
   );
 }
 
@@ -64,7 +64,7 @@ function resolveLoaderPath({ host, mainPath, isStandalone, modulePath }) {
 export default function (options: SchemaOptions): Rule {
   return async (
     host: Tree,
-    context: SchematicContext
+    context: SchematicContext,
   ): Promise<Rule | void> => {
     const langs = options.langs.split(',').map((l) => l.trim());
     const project = getProject(host, options.project);
@@ -91,16 +91,16 @@ export default function (options: SchemaOptions): Rule {
           addRootProvider(
             options.project,
             ({ code, external }) =>
-              code`${external('provideHttpClient', '@angular/common/http')}()`
-          )
+              code`${external('provideHttpClient', '@angular/common/http')}()`,
+          ),
         );
       } else {
         actions.push(
           addRootImport(
             options.project,
             ({ code, external }) =>
-              code`${external('HttpClientModule', '@angular/common/http')}`
-          )
+              code`${external('HttpClientModule', '@angular/common/http')}`,
+          ),
         );
       }
 
@@ -109,8 +109,8 @@ export default function (options: SchemaOptions): Rule {
           createLoaderFile({
             ssr: options.ssr,
             loaderPath,
-          })
-        )
+          }),
+        ),
       );
     }
 
@@ -118,13 +118,13 @@ export default function (options: SchemaOptions): Rule {
       assetsPath,
       langs,
       '.json',
-      true
+      true,
     );
     if (!hasTranslationFiles) {
       actions.push(
         mergeWith(
-          createTranslateFiles(langs, jsonTranslationFileCreator, assetsPath)
-        )
+          createTranslateFiles(langs, jsonTranslationFileCreator, assetsPath),
+        ),
       );
     }
 
@@ -144,14 +144,14 @@ export default function (options: SchemaOptions): Rule {
         },
         loader: TranslocoHttpLoader
       })`;
-        })
+        }),
       );
     } else {
       actions.push(
         addRootImport(
           options.project,
           ({ code, external }) =>
-            code`${external('TranslocoRootModule', './transloco-root.module')}`
+            code`${external('TranslocoRootModule', './transloco-root.module')}`,
         ),
         mergeWith(
           createTranslocoModule({
@@ -161,8 +161,8 @@ export default function (options: SchemaOptions): Rule {
             langs,
             modulePath,
             host,
-          })
-        )
+          }),
+        ),
       );
     }
 

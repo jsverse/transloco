@@ -13,7 +13,7 @@ export default function (translationFilePaths: string[]) {
     const result = findDuplicatedPropertyKeys(translation);
     if (result.length) {
       throw new Error(
-        `Found duplicate keys: ${result.map(({ key }) => key)} (${path})`
+        `Found duplicate keys: ${result.map(({ key }) => key)} (${path})`,
       );
     }
   });

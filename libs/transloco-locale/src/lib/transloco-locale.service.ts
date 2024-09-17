@@ -43,7 +43,7 @@ export class TranslocoLocaleService implements OnDestroy {
   private subscription: Subscription | null = this.translocoService.langChanges$
     .pipe(
       map((lang) => this.toLocale(lang)),
-      filter(Boolean)
+      filter(Boolean),
     )
     .subscribe((locale: Locale) => this.setLocale(locale));
 
@@ -102,7 +102,7 @@ export class TranslocoLocaleService implements OnDestroy {
   localizeDate(
     date: ValidDate,
     locale: Locale = this.getLocale(),
-    options: DateFormatOptions = {}
+    options: DateFormatOptions = {},
   ): string {
     const resolved =
       options ?? getDefaultOptions(locale, 'date', this.localeConfig);
@@ -121,7 +121,7 @@ export class TranslocoLocaleService implements OnDestroy {
     value: number | string,
     style: NumberStyles,
     locale: Locale = this.getLocale(),
-    options?: Intl.NumberFormatOptions
+    options?: Intl.NumberFormatOptions,
   ): string {
     let resolved =
       options ?? getDefaultOptions(locale, style, this.localeConfig);

@@ -4,7 +4,7 @@ import { tap } from 'rxjs/operators';
 import { forkJoin, Subscription } from 'rxjs';
 
 export const TRANSLOCO_PRELOAD_LANGUAGES = new InjectionToken<string[]>(
-  'Languages to be preloaded'
+  'Languages to be preloaded',
 );
 
 @Injectable({ providedIn: 'root' })
@@ -14,7 +14,7 @@ export class TranslocoPreloadLangsService implements OnDestroy {
 
   constructor(
     service: TranslocoService,
-    @Inject(TRANSLOCO_PRELOAD_LANGUAGES) langs: string[]
+    @Inject(TRANSLOCO_PRELOAD_LANGUAGES) langs: string[],
   ) {
     if (!langs.length) return;
 
@@ -27,10 +27,10 @@ export class TranslocoPreloadLangsService implements OnDestroy {
             if (!service.config.prodMode) {
               console.log(
                 `%c 👁 Preloaded ${lang}`,
-                'background: #fff; color: #607D8B;'
+                'background: #fff; color: #607D8B;',
               );
             }
-          })
+          }),
         );
       });
       this.subscription = forkJoin(preloads).subscribe();

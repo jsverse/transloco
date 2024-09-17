@@ -71,7 +71,7 @@ describe('TranslocoPipe', () => {
         { scope: 'admin-page', alias: 'adminPageAlias' },
       ],
       undefined,
-      cdrMock
+      cdrMock,
     );
     (pipe as any).listenToLangChange = true;
     pipe.transform('lazyPageAlias.title', {});
@@ -79,7 +79,7 @@ describe('TranslocoPipe', () => {
     expect(serviceMock.translate).toHaveBeenCalledWith(
       'lazyPageAlias.title',
       {},
-      'en'
+      'en',
     );
 
     pipe.transform('adminPageAlias.title', {});
@@ -87,7 +87,7 @@ describe('TranslocoPipe', () => {
     expect(serviceMock.translate).toHaveBeenCalledWith(
       'adminPageAlias.title',
       {},
-      'en'
+      'en',
     );
 
     serviceMock.setActiveLang('es');
@@ -96,7 +96,7 @@ describe('TranslocoPipe', () => {
     expect(serviceMock.translate).toHaveBeenCalledWith(
       'lazyPageAlias.title',
       {},
-      'es'
+      'es',
     );
 
     pipe.transform('adminPageAlias.title', {});
@@ -104,7 +104,7 @@ describe('TranslocoPipe', () => {
     expect(serviceMock.translate).toHaveBeenCalledWith(
       'adminPageAlias.title',
       {},
-      'es'
+      'es',
     );
   }));
 

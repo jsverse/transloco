@@ -19,13 +19,13 @@ getTranslationFiles(dist)
     if (filesPaths.length === 0) {
       return Promise.reject(
         `Transloco Optimize: No Translation path found under: ${getTranslationsFolder(
-          dist
-        )}`
+          dist,
+        )}`,
       );
     }
 
     console.log(
-      `Transloco Optimize: found ${filesPaths.length} translation files, optimizing...`
+      `Transloco Optimize: found ${filesPaths.length} translation files, optimizing...`,
     );
 
     return optimizeFiles(filesPaths, commentsKey);

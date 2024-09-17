@@ -34,7 +34,7 @@ export class TranslocoDecimalPipe
   transform(
     value: string | number,
     numberFormatOptions: NumberFormatOptions = {},
-    locale?: Locale
+    locale?: Locale,
   ): string {
     if (isNil(value)) return '';
     locale = this.getLocale(locale);

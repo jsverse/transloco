@@ -58,7 +58,7 @@ describe('TranslocoDecimalPipe', () => {
 
   it('should use passed digit options instead of default options', () => {
     spectator = pipeFactory(
-      `{{ 123456 | translocoDecimal:{ useGrouping: true, maximumFractionDigits: 3 } }}`
+      `{{ 123456 | translocoDecimal:{ useGrouping: true, maximumFractionDigits: 3 } }}`,
     );
     const [, { useGrouping, maximumFractionDigits }] = getIntlCallArgs();
     expect(useGrouping).toEqual(true);

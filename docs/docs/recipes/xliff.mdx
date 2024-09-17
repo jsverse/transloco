@@ -4,6 +4,7 @@ description: Recipe - Using xliff | Transloco Angular i18n
 ---
 
 Install the [`xliff`](https://www.npmjs.com/package/xliff) package:
+
 ```bash
 npm i xliff
 yarn add xliff
@@ -19,13 +20,13 @@ import {
   TranslocoLoader,
   TRANSLOCO_CONFIG,
   translocoConfig,
-  TranslocoModule
+  TranslocoModule,
 } from '@jsverse/transloco';
 import { Injectable, isDevMode, NgModule } from '@angular/core';
 import { from } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
 // xliff v1.2
-import xliff from "xliff/esm/xliff12ToJs";
+import xliff from 'xliff/esm/xliff12ToJs';
 // xliff v2
 //import xliff from "xliff/esm/xliff2js";
 
@@ -42,16 +43,17 @@ export class TranslocoXliffHttpLoader implements TranslocoLoader {
   constructor(private http: HttpClient) {}
 
   getTranslation(lang: string) {
-    return this.http.get<Translation>(`/assets/i18n/${lang}.xlf`, { responseType: 'text' })
+    return this.http
+      .get<Translation>(`/assets/i18n/${lang}.xlf`, { responseType: 'text' })
       .pipe(
         switchMap((translation) => from(xliff(translation))),
-        map(toTranslationFormat)
+        map(toTranslationFormat),
       );
   }
 }
 
 @NgModule({
-  exports: [ TranslocoModule ],
+  exports: [TranslocoModule],
   providers: [
     {
       provide: TRANSLOCO_CONFIG,
@@ -62,10 +64,10 @@ export class TranslocoXliffHttpLoader implements TranslocoLoader {
         // doesn't support changing language in runtime.
         reRenderOnLangChange: true,
         prodMode: !isDevMode(),
-      })
+      }),
     },
-    { provide: TRANSLOCO_LOADER, useClass: TranslocoXliffHttpLoader }
-  ]
+    { provide: TRANSLOCO_LOADER, useClass: TranslocoXliffHttpLoader },
+  ],
 })
 export class TranslocoRootModule {}
 ```

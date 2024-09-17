@@ -6,7 +6,7 @@ import { Tree } from '@angular-devkit/schematics';
 export function addScriptToPackageJson(
   host: Tree,
   scriptName: string,
-  script: string
+  script: string,
 ): Tree {
   const packageFile = host.read('package.json');
   if (packageFile !== null) {

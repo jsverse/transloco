@@ -1,6 +1,6 @@
 ---
 title: Additional Functionality
-description: Additional Functionality | Transloco Angular i18n 
+description: Additional Functionality | Transloco Angular i18n
 ---
 
 ### Reference Other Keys
@@ -60,7 +60,7 @@ translate('hello');
 ```
 
 :::important
-Note that this function is a proxy to the [TranslocoService.translate](./translation-api#translate) method. 
+Note that this function is a proxy to the [TranslocoService.translate](./translation-api#translate) method.
 It will not work if the service didn't initialize.  
 In order to safely use this method, you are responsible for ensuring that the translation files have been successfully loaded by the time it's called.
 :::
@@ -76,7 +76,7 @@ translateObject('some.object');
 ```
 
 :::important
-Note that this function is a proxy to the [TranslocoService.translateObject](./translation-api#translateObject) method. 
+Note that this function is a proxy to the [TranslocoService.translateObject](./translation-api#translateObject) method.
 It will not work if the service didn't initialize.  
 In order to safely use this method, you are responsible for ensuring that the translation files have been successfully loaded by the time it's called.
 :::
@@ -84,6 +84,7 @@ In order to safely use this method, you are responsible for ensuring that the tr
 ### `getBrowserLang()`
 
 Returns the language code name from the browser, e.g. `"en"`
+
 ```ts
 import { getBrowserLang } from '@jsverse/transloco';
 
@@ -92,9 +93,10 @@ getBrowserLang();
 
 ### `getBrowserCultureLang()`
 
-Returns the culture language code name from the browser, e.g. ``"en-US"``
+Returns the culture language code name from the browser, e.g. `"en-US"`
+
 ```ts
 import { getBrowserCultureLang } from '@jsverse/transloco';
 
-getBrowserCultureLang()
+getBrowserCultureLang();
 ```

@@ -37,7 +37,7 @@ export function getProject(host: Tree, project?: string) {
 export function setEnvironments(
   host: Tree,
   sourceRoot: string,
-  transformer: (env: string) => string
+  transformer: (env: string) => string,
 ) {
   const path = sourceRoot + '/environments';
   const environments = host.getDir(path);

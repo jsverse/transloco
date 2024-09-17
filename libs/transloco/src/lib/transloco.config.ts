@@ -25,7 +25,7 @@ export const TRANSLOCO_CONFIG = new InjectionToken<TranslocoConfig>(
   {
     providedIn: 'root',
     factory: () => defaultConfig,
-  }
+  },
 );
 
 export const defaultConfig: TranslocoConfig = {
@@ -46,16 +46,17 @@ export const defaultConfig: TranslocoConfig = {
   interpolation: ['{{', '}}'],
 };
 
-type DeepPartial<T> = T extends Array<any>
-  ? T
-  : T extends object
-  ? { [P in keyof T]?: DeepPartial<T[P]> }
-  : T;
+type DeepPartial<T> =
+  T extends Array<any>
+    ? T
+    : T extends object
+      ? { [P in keyof T]?: DeepPartial<T[P]> }
+      : T;
 
 export type PartialTranslocoConfig = DeepPartial<TranslocoConfig>;
 
 export function translocoConfig(
-  config: PartialTranslocoConfig = {}
+  config: PartialTranslocoConfig = {},
 ): TranslocoConfig {
   return {
     ...defaultConfig,

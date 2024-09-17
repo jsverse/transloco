@@ -31,7 +31,7 @@
           value: 'transloco params',
           gender: '',
           name: 'Joko',
-          gain: 3000
+          gain: 3000,
         })
       }}
     </li>
@@ -72,7 +72,7 @@
         value: 'transloco params',
         gender: '',
         name: 'Ono',
-        gain: 3100
+        gain: 3100,
       }"
     ></span>
   </li>
@@ -84,7 +84,7 @@
     <b>Regular: </b>{{ 'mf.home' | transloco }}
   </li>
   <li class="list-group-item" data-cy="p-with-params">
-    <b>With params: </b>{{ 'mf.params' | transloco : { value: dynamic } }}
+    <b>With params: </b>{{ 'mf.params' | transloco: { value: dynamic } }}
   </li>
   <li class="list-group-item" data-cy="p-with-translation-reuse">
     <b>With translation reuse: </b> {{ 'mf.a.b.c' | transloco }}
@@ -93,14 +93,14 @@
     <b>Using messageformat: </b
     >{{
       'mf.messageFormat'
-        | transloco : { gender: 'male', name: 'Stef', gain: 1200 }
+        | transloco: { gender: 'male', name: 'Stef', gain: 1200 }
     }}
   </li>
   <li class="list-group-item" data-cy="p-with-message-format-dynamic">
     <b>Using messageformat with dynamic value: </b
     >{{
       'mf.messageFormat'
-        | transloco : { gender: userGender, name: 'Donna', gain: 2200 }
+        | transloco: { gender: userGender, name: 'Donna', gain: 2200 }
     }}
   </li>
   <li class="list-group-item" data-cy="p-with-message-format-params">

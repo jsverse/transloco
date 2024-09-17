@@ -13,7 +13,7 @@ describe('missingHandler', () => {
         {
           empty: '',
         },
-        'en'
+        'en',
       );
 
       spyOn((service as any).missingHandler, 'handle').and.callThrough();
@@ -38,7 +38,7 @@ describe('missingHandler', () => {
     it('should load the active and the fallback lang', fakeAsync(() => {
       const loaderSpy = spyOn(
         (service as any).loader,
-        'getTranslation'
+        'getTranslation',
       ).and.callThrough();
       service.load('en').subscribe();
       runLoader();
@@ -62,14 +62,14 @@ describe('missingHandler', () => {
       service.load('en').subscribe();
       runLoader(2000);
       expect(service.translate('empty', { value: 'hello' })).toEqual(
-        "I'm a spanish empty fallback hello"
+        "I'm a spanish empty fallback hello",
       );
     }));
 
     it('should load the scope fallback when working with scopes', fakeAsync(() => {
       const loaderSpy = spyOn(
         (service as any).loader,
-        'getTranslation'
+        'getTranslation',
       ).and.callThrough();
       service.load('lazy-page/en').subscribe();
       runLoader(2000);
@@ -78,7 +78,7 @@ describe('missingHandler', () => {
         ['lazy-page/es', { scope: 'lazy-page' }],
       ]);
       expect(service.translate('empty', {}, 'lazy-page/en')).toEqual(
-        'resolved from es'
+        'resolved from es',
       );
     }));
 

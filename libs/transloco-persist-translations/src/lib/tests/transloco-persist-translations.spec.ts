@@ -39,7 +39,7 @@ describe('TranslocoPersistTranslations', () => {
   function spyOnGetTranslation() {
     return spyOn(
       spectator.inject(TRANSLOCO_PERSIST_TRANSLATIONS_LOADER),
-      'getTranslation'
+      'getTranslation',
     ).and.callThrough();
   }
 
@@ -166,7 +166,7 @@ describe('TranslocoPersistTranslations', () => {
       tick(DELAY * 4);
       expect(spy).toHaveBeenCalledWith(
         getConfig().storageKey,
-        JSON.stringify({ en: res })
+        JSON.stringify({ en: res }),
       );
     }));
 

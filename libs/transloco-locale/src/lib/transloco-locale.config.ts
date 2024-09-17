@@ -22,17 +22,17 @@ export const defaultConfig: Required<TranslocoLocaleConfig> = {
 };
 
 export const TRANSLOCO_LOCALE_DEFAULT_LOCALE = new InjectionToken<Locale>(
-  'TRANSLOCO_LOCALE_DEFAULT_LOCALE'
+  'TRANSLOCO_LOCALE_DEFAULT_LOCALE',
 );
 export const TRANSLOCO_LOCALE_DEFAULT_CURRENCY = new InjectionToken<Currency>(
-  'TRANSLOCO_LOCALE_DEFAULT_CURRENCY'
+  'TRANSLOCO_LOCALE_DEFAULT_CURRENCY',
 );
 export const TRANSLOCO_LOCALE_LANG_MAPPING =
   new InjectionToken<LangToLocaleMapping>('TRANSLOCO_LOCALE_LANG_MAPPING');
 export const TRANSLOCO_LOCALE_CONFIG = new InjectionToken<LocaleConfigMapping>(
-  'TRANSLOCO_LOCALE_CONFIG'
+  'TRANSLOCO_LOCALE_CONFIG',
 );
 export const TRANSLOCO_LOCALE_CURRENCY_MAPPING =
   new InjectionToken<LocaleToCurrencyMapping>(
-    'TRANSLOCO_LOCALE_CURRENCY_MAPPING'
+    'TRANSLOCO_LOCALE_CURRENCY_MAPPING',
   );

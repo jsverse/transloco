@@ -2,7 +2,7 @@ export function testLocaleContentUS() {
   const date = new Date(2019, 7, 14, 0, 0, 0, 0);
   const dateTimeOptions: any = { timeStyle: 'full', timeZone: 'UTC' };
   const expectedFullTime = Intl.DateTimeFormat('en-US', dateTimeOptions).format(
-    date
+    date,
   );
 
   // Date Pipe
@@ -10,7 +10,7 @@ export function testLocaleContentUS() {
   cy.get(`[data-cy=date-long]`).should('contain', 'August 14, 2019 at');
   cy.get(`[data-cy=date-full]`).should(
     'contain',
-    'Wednesday, August 14, 2019 at'
+    'Wednesday, August 14, 2019 at',
   );
   cy.get(`[data-cy=date-full-utc]`).should('contain', expectedFullTime);
   cy.get(`[data-cy=date-medium-unix]`).should('contain', 'Jan 1, 1970');
@@ -26,7 +26,7 @@ export function testLocaleContentUS() {
   cy.get(`[data-cy=currency-symbol]`).should('contain', '$1,000,000.00');
   cy.get(`[data-cy=currency-name]`).should(
     'contain',
-    '1,000,000.00 US dollars'
+    '1,000,000.00 US dollars',
   );
   cy.get(`[data-cy=currency-custom-digit]`).should('contain', '$1,000,000');
 }
@@ -35,7 +35,7 @@ export function testLocaleContentES() {
   const date = new Date(2019, 7, 14, 0, 0, 0, 0);
   const dateTimeOptions: any = { timeStyle: 'full', timeZone: 'UTC' };
   const expectedFullTime = Intl.DateTimeFormat('es-ES', dateTimeOptions).format(
-    date
+    date,
   );
 
   // Date Pipe
@@ -43,7 +43,7 @@ export function testLocaleContentES() {
   cy.get(`[data-cy=date-long]`).should('contain', '14 de agosto de 2019');
   cy.get(`[data-cy=date-full]`).should(
     'contain',
-    ' miércoles, 14 de agosto de 2019,'
+    ' miércoles, 14 de agosto de 2019,',
   );
   cy.get(`[data-cy=date-full-utc]`).should('contain', expectedFullTime);
   cy.get(`[data-cy=date-medium-unix]`).should('contain', '1 ene 1970');

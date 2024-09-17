@@ -199,7 +199,7 @@ Let's say we have the following translations folder:
 
 The script will run over all the directory files (minus the default language) and will merge the scope files to the main translation files.
 
-Say our project's default language is English,  if we run the script the expected output would be:
+Say our project's default language is English, if we run the script the expected output would be:
 
 ```json title="dist-i18n/es.json"
 {
@@ -238,6 +238,7 @@ Once you specify the `scopePathMap` the script will automatically use it
 ### Examples
 
 Merge translations files to a specific output directory:
+
 ```bash
 ng g @jsverse/transloco:build --default-lang en
 ```

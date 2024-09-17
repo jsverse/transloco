@@ -22,9 +22,9 @@ export const listenToLangChangesProvider = {
   template: `
     <p>{{ 'home' | transloco }}</p>
     <h1>{{ 'nested.title' | transloco }}</h1>
-    <span>{{ 'alert' | transloco : { value: 'netanel' } }}</span>
-    <h3>{{ 'alert' | transloco : { value: value } }}</h3>
-    <h5>{{ 'home' | transloco : null : 'es' }}</h5>
+    <span>{{ 'alert' | transloco: { value: 'netanel' } }}</span>
+    <h3>{{ 'alert' | transloco: { value: value } }}</h3>
+    <h5>{{ 'home' | transloco: null : 'es' }}</h5>
   `,
 })
 class TestPipe {
@@ -152,7 +152,7 @@ describe('Transloco Pipe', () => {
     template: `
       <p>{{ 'lazyPage.title' | transloco }}</p>
       <h1>{{ 'nested.title' | transloco }}</h1>
-      <span>{{ 'alert' | transloco : { value: 'netanel' } }}</span>
+      <span>{{ 'alert' | transloco: { value: 'netanel' } }}</span>
     `,
   })
   class TestScopePipe {}

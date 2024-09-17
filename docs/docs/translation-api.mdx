@@ -7,7 +7,9 @@ description: Translation API | Transloco Angular i18n
 Below is a list of the `TranslocoService` API and their usages:
 
 ### `translate()`
+
 Translate the given key. Sometimes you may need to translate a key in a component or a service. To do so, you can inject the `TranslocoService` and use its `translate` method:
+
 ```ts title="app.component.ts"
 export class AppComponent {
   constructor(private translocoService: TranslocoService) {}
@@ -31,6 +33,7 @@ Note that in order to safely use this method, you are responsible for ensuring t
 If you aren't sure, you can use the `selectTranslate()` method instead:
 
 ### `selectTranslate()`
+
 Returns an `observable` that when subscribed loads the translation file and emits the translation of the given key:
 
 ```ts title="app.component.ts"
@@ -58,13 +61,15 @@ and provide it to the `selectTranslate` function:
 
 ```ts title="app.component.ts"
 export class AppComponent {
-  constructor(private translocoService: TranslocoService,
-              @Inject(TRANSLOCO_SCOPE) private scope
+  constructor(
+    private translocoService: TranslocoService,
+    @Inject(TRANSLOCO_SCOPE) private scope,
   ) {}
 
   ngOnInit() {
-    this.translocoService.selectTranslate('title', params, this.scope)
-                          .subscribe(console.log);
+    this.translocoService
+      .selectTranslate('title', params, this.scope)
+      .subscribe(console.log);
   }
 }
 ```
@@ -84,10 +89,10 @@ export class AppComponent {
   "path": {
     "to": {
       "object": {
-         "welcome": "Welcome {{ name }}",
-         "nested": {
-            "subscribe": "subscribe today for {{ price }}$"
-         }
+        "welcome": "Welcome {{ name }}",
+        "nested": {
+          "subscribe": "subscribe today for {{ price }}$"
+        }
       }
     }
   }
@@ -105,20 +110,21 @@ export class AppComponent {
   ngOnInit() {
     let result = this.translocoService.translateObject('some.object');
     expect(result).toEqual({
-      hi: "Hi",
-      hey: "Hey"
+      hi: 'Hi',
+      hey: 'Hey',
     });
 
     /* When querying an object that should be transpiled */
     result = this.translocoService.translateObject('path.to.object', {
       welcome: { value: 'John' },
-      'nested.subscribe': { price: 100 }
+      'nested.subscribe': { price: 100 },
     });
     expect(result).toEqual({
-      welcome: "Welcome John",
+      welcome: 'Welcome John',
       nested: {
-        "subscribe": "subscribe today for 100$"
-    }});
+        subscribe: 'subscribe today for 100$',
+      },
+    });
   }
 }
 ```
@@ -133,31 +139,31 @@ export class AppComponent {
     /* If there are no parameters to transpile pass an empty `object` or `null` */
     let keyParams = {
       home: null, // {}
-    }
+    };
     let result = this.translocoService.translateObject(keyParams);
-    expect(result).toEqual(["Home"]);
+    expect(result).toEqual(['Home']);
 
     /* When querying an object that should be transpiled */
     keyParams = {
-       home: null,
-       hello: { name: 'John' },
-    }
+      home: null,
+      hello: { name: 'John' },
+    };
     result = this.translocoService.translateObject(keyParams);
-    expect(result).toEqual(["Home", "Hello John"]);
+    expect(result).toEqual(['Home', 'Hello John']);
 
     /* Works with object paths */
     keyParams = {
-       hello: { name: 'John' },
-       'path.to.object.nested': {subscribe: {price: 100}}
-    }
+      hello: { name: 'John' },
+      'path.to.object.nested': { subscribe: { price: 100 } },
+    };
     result = this.translocoService.translateObject(keyParams);
-    expect(result).toEqual([ "Home", { subscribe: "subscribe today for 100$" }]);
+    expect(result).toEqual(['Home', { subscribe: 'subscribe today for 100$' }]);
 
     /* Works with `Map` */
     keyParams = new Map();
     keyParams.set('home', null);
     result = this.translocoService.translateObject(keyParams);
-    expect(result).toEqual(["Home"]);
+    expect(result).toEqual(['Home']);
   }
 }
 ```
@@ -169,6 +175,7 @@ Note that in order to safely use this method, you are responsible for ensuring t
 If you aren't sure, you can use the `selectTranslateObject()` method instead:
 
 ### `selectTranslateObject()`
+
 Load the translation file (if not loaded yet) and behaves the same as `translateObject`.
 The only difference is that this method returns an observable to which you can subscribe.
 
@@ -179,32 +186,40 @@ export class AppComponent {
   constructor(private translocoService: TranslocoService) {}
 
   ngOnInit() {
-    this.translocoService.selectTranslateObject('path.to.object', {
-      welcome: { value: 'John' },
-      'nested.subscribe': { price: 100 }
-    }).subscribe(result => {
-      expect(result).toEqual({
-        welcome: "Welcome John",
-        nested: {
-          "subscribe": "subscribe today for 100$"
-        }
+    this.translocoService
+      .selectTranslateObject('path.to.object', {
+        welcome: { value: 'John' },
+        'nested.subscribe': { price: 100 },
+      })
+      .subscribe((result) => {
+        expect(result).toEqual({
+          welcome: 'Welcome John',
+          nested: {
+            subscribe: 'subscribe today for 100$',
+          },
+        });
       });
-    });
 
     keyParams = {
       hello: { name: 'John' },
-      'path.to.object.nested': {subscribe: {price: 100}}
-    }
-    this.translocoService.selectTranslateObject(keyParams)
-    .subscribe(result => {
-       expect(result).toEqual(["Home", { subscribe: "subscribe today for 100$" }]);
-    });
+      'path.to.object.nested': { subscribe: { price: 100 } },
+    };
+    this.translocoService
+      .selectTranslateObject(keyParams)
+      .subscribe((result) => {
+        expect(result).toEqual([
+          'Home',
+          { subscribe: 'subscribe today for 100$' },
+        ]);
+      });
   }
 }
 ```
 
 ### `getTranslation()`
+
 Returns the selected language translation or a scope translation, if a language isn't passed, the method will return the entire translation map:
+
 ```ts title="app.component.ts"
 export class AppComponent {
   constructor(private translocoService: TranslocoService) {}
@@ -218,6 +233,7 @@ export class AppComponent {
 ```
 
 ### `selectTranslation()`
+
 Returns an `observable` that when subscribed loads and emits the given language translation object, if no language is passed the active language will be used.  
 This method can also be used to retrieve a scope translation object:
 
@@ -227,23 +243,20 @@ export class AppComponent {
 
   // Don't forget to unsubscribe
   ngOnInit() {
-    this.translocoService.selectTranslation('es')
-                         .subscribe(console.log);
-                         
-    this.translocoService.selectTranslation('todos/es')
-                         .subscribe(console.log);
-                                                                    
-    // Will emit a new value on language changes.                     
-    this.translocoService.selectTranslation()
-                         .subscribe(console.log);
-                                                         
-    this.translocoService.selectTranslation('todos')
-                         .subscribe(console.log);   
+    this.translocoService.selectTranslation('es').subscribe(console.log);
+
+    this.translocoService.selectTranslation('todos/es').subscribe(console.log);
+
+    // Will emit a new value on language changes.
+    this.translocoService.selectTranslation().subscribe(console.log);
+
+    this.translocoService.selectTranslation('todos').subscribe(console.log);
   }
 }
 ```
 
 ### `setTranslation()`
+
 Manually sets a translations object to be used for a given language, set merge to true if you want to append the translations instead of replacing them:
 
 ```ts title="app.component.ts"
@@ -262,7 +275,9 @@ export class AppComponent {
 ```
 
 ### `setTranslationKey()`
+
 Sets the translated value of a key. If a language isn't specified in the third parameter, it sets the key value for the current active language:
+
 ```ts title="app.component.ts"
 export class AppComponent {
   constructor(private translocoService: TranslocoService) {}
@@ -271,12 +286,15 @@ export class AppComponent {
     this.translocoService.setTranslationKey('key', 'value');
     this.translocoService.setTranslationKey('key.nested', 'value');
     this.translocoService.setTranslationKey('key', 'value', 'en');
-    this.translocoService.setTranslationKey('key', 'value', 'en', { emitChange: false });
+    this.translocoService.setTranslationKey('key', 'value', 'en', {
+      emitChange: false,
+    });
   }
 }
 ```
 
 ### `events$`
+
 Subscribe to the translation loading events:
 
 ```ts title="app.component.ts"
@@ -293,7 +311,7 @@ export class AppComponent {
       filter(e => e.type === 'translationLoadFailure'),
       pluck('payload')
     ).subscribe(({ langName, scope }) => ...);
-    
+
     this.translocoService.events$.pipe(
       filter(e => e.type === 'langChanged'),
       pluck('payload')
@@ -302,5 +320,5 @@ export class AppComponent {
 ```
 
 :::important
-Note that these events will only fire when the translation is loaded from the server, meaning that when switching from a given lang and back won't trigger the events again since the language is loaded from the cache. 
+Note that these events will only fire when the translation is loaded from the server, meaning that when switching from a given lang and back won't trigger the events again since the language is loaded from the cache.
 :::

@@ -9,12 +9,11 @@ Use the `provideTranslocoLoadingTpl` function either in lazy module providers, c
 
 For example:
 
-
 ```ts {4} title="my-comp.component.ts"
 @Component({
   selector: 'my-comp',
   templateUrl: './my-comp.component.html',
-  providers: [provideTranslocoLoadingTpl(`<p>loading...</p>`)]
+  providers: [provideTranslocoLoadingTpl(`<p>loading...</p>`)],
 })
 export class MyComponent {}
 ```

@@ -92,7 +92,7 @@ export function provideTranslocoLoadingTpl(content: Content) {
 }
 
 export function provideTranslocoTranspiler(
-  transpiler: Type<TranslocoTranspiler>
+  transpiler: Type<TranslocoTranspiler>,
 ) {
   return makeEnvironmentProviders([
     {
@@ -104,7 +104,7 @@ export function provideTranslocoTranspiler(
 }
 
 export function provideTranslocoFallbackStrategy(
-  strategy: Type<TranslocoFallbackStrategy>
+  strategy: Type<TranslocoFallbackStrategy>,
 ) {
   return makeEnvironmentProviders([
     {
@@ -116,7 +116,7 @@ export function provideTranslocoFallbackStrategy(
 }
 
 export function provideTranslocoMissingHandler(
-  handler: Type<TranslocoMissingHandler>
+  handler: Type<TranslocoMissingHandler>,
 ) {
   return makeEnvironmentProviders([
     {
@@ -127,7 +127,7 @@ export function provideTranslocoMissingHandler(
 }
 
 export function provideTranslocoInterceptor(
-  interceptor: Type<TranslocoInterceptor>
+  interceptor: Type<TranslocoInterceptor>,
 ) {
   return makeEnvironmentProviders([
     {

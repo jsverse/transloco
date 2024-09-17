@@ -12,7 +12,7 @@ export const LAZY_ROUTES: Route = {
   providers: [
     provideTranslocoScope('admin-page'),
     provideTranslocoLoadingTpl(
-      `<span id="default-loading-template">Loading template...</span>`
+      `<span id="default-loading-template">Loading template...</span>`,
     ),
   ],
 };

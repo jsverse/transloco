@@ -1,6 +1,6 @@
 name: Bug Report
 description: Report a bug in one of the Transloco packages
-title: "Bug(scope):"
+title: 'Bug(scope):'
 
 body:
   - type: checkboxes
@@ -9,8 +9,8 @@ body:
       description: Please search to see if an issue already exists for the bug you encountered.
       options:
         - label: I have searched the existing issues
-          required: true  
-    
+          required: true
+
   - type: dropdown
     id: affected-packages
     attributes:
@@ -47,7 +47,7 @@ body:
       label: Current behavior
     validations:
       required: true
-      
+
   - type: textarea
     id: expected-behavior
     attributes:
@@ -59,10 +59,10 @@ body:
     id: reproduction
     attributes:
       label: Please provide a link to a minimal reproduction of the bug, if you won't provide a link the issue won't be handled.
-      description: "You can fork this CodeSandbox playground: https://codesandbox.io/s/ngneat-transloco-kn52hs"
+      description: 'You can fork this CodeSandbox playground: https://codesandbox.io/s/ngneat-transloco-kn52hs'
     validations:
       required: true
-      
+
   - type: textarea
     id: transloco-config
     attributes:
@@ -80,7 +80,7 @@ body:
         Angular: 
         Node: 
         Package Manager: 
-        OS: 
+        OS:
 
   - type: textarea
     id: browser
@@ -93,13 +93,13 @@ body:
         Safari (desktop/iOS) version XX
         IE version XX
         Edge version XX
-        
+
   - type: textarea
     id: other
     attributes:
       label: Additional context
       description: Links? References? Anything that will give us more context about the issue you are encountering!
-      
+
   - type: dropdown
     id: contribution
     attributes:
@@ -108,4 +108,4 @@ body:
         - 'Yes 🚀'
         - 'No'
     validations:
-      required: true    
+      required: true

@@ -7,7 +7,7 @@ import { UserService } from './user.service';
 
 export function preloadUser(
   userService: UserService,
-  transloco: TranslocoService
+  transloco: TranslocoService,
 ) {
   return () =>
     userService.getUser().pipe(switchMap(({ lang }) => transloco.load(lang)));

@@ -1,9 +1,6 @@
 import { Component } from '@angular/core';
 
-import {
-  TranslocoModule,
-  provideTranslocoScope,
-} from '@jsverse/transloco';
+import { TranslocoModule, provideTranslocoScope } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-lazy-scope-alias',

@@ -52,7 +52,7 @@ export function provideTranslocoLocaleConfig(config: LocaleConfig) {
 }
 
 export function provideTranslocoLocaleLangMapping(
-  langToLocale: LangToLocaleMapping
+  langToLocale: LangToLocaleMapping,
 ) {
   return makeEnvironmentProviders([
     {
@@ -63,7 +63,7 @@ export function provideTranslocoLocaleLangMapping(
 }
 
 export function provideTranslocoLocaleCurrencyMapping(
-  localeToCurrency: LocaleToCurrencyMapping
+  localeToCurrency: LocaleToCurrencyMapping,
 ) {
   return makeEnvironmentProviders([
     {
@@ -92,7 +92,7 @@ export function provideTranslocoDefaultCurrency(defaultCurrency: Currency) {
 }
 
 export function provideTranslocoDateTransformer(
-  transformer: Type<TranslocoDateTransformer>
+  transformer: Type<TranslocoDateTransformer>,
 ) {
   return makeEnvironmentProviders([
     {
@@ -103,7 +103,7 @@ export function provideTranslocoDateTransformer(
 }
 
 export function provideTranslocoNumberTransformer(
-  transformer: Type<TranslocoNumberTransformer>
+  transformer: Type<TranslocoNumberTransformer>,
 ) {
   return makeEnvironmentProviders([
     {

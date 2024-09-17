@@ -26,7 +26,7 @@ describe('setTranslationKey', () => {
 
   it('should add it even if lang not exists', fakeAsync(() => {
     loadLang(service);
-    service.setTranslationKey('a', 'new value', {lang: 'es'});
+    service.setTranslationKey('a', 'new value', { lang: 'es' });
     expect((service as any).getTranslation('es')).toEqual({
       a: 'new value',
     });
@@ -35,7 +35,10 @@ describe('setTranslationKey', () => {
   it('should not emit the change if option is set', fakeAsync(() => {
     loadLang(service);
     spyOn(service, 'setActiveLang');
-    service.setTranslationKey('a.b', 'newValue', { emitChange: false, lang: 'en' });
+    service.setTranslationKey('a.b', 'newValue', {
+      emitChange: false,
+      lang: 'en',
+    });
     expect(service.setActiveLang).not.toHaveBeenCalled();
   }));
 });

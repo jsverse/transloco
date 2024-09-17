@@ -40,7 +40,7 @@ export class TranslocoCurrencyPipe
     display: 'code' | 'symbol' | 'narrowSymbol' | 'name' = 'symbol',
     numberFormatOptions: NumberFormatOptions = {},
     currencyCode?: Currency,
-    locale?: Locale
+    locale?: Locale,
   ): string {
     if (isNil(value)) return '';
     locale = this.getLocale(locale);
@@ -56,7 +56,7 @@ export class TranslocoCurrencyPipe
       value,
       'currency',
       locale,
-      options
+      options,
     );
   }
 }

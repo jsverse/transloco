@@ -41,7 +41,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
     @Optional()
     @Inject(TRANSLOCO_LANG)
     private providerLang: string | undefined,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
   ) {
     this.scopeResolver = new ScopeResolver(this.service);
   }
@@ -51,7 +51,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
   transform(
     key?: string | null,
     params?: HashMap,
-    inlineLang?: string
+    inlineLang?: string,
   ): string {
     if (!key) {
       return key as any;
@@ -68,7 +68,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
 
     const listenToLangChange = shouldListenToLangChanges(
       this.service,
-      this.providerLang || inlineLang
+      this.providerLang || inlineLang,
     );
 
     this.subscription = this.service.langChanges$
@@ -83,12 +83,12 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
           return Array.isArray(this.providerScope)
             ? forkJoin(
                 this.providerScope.map((providerScope) =>
-                  this.resolveScope(lang, providerScope)
-                )
+                  this.resolveScope(lang, providerScope),
+                ),
               )
             : this.resolveScope(lang, this.providerScope);
         }),
-        listenOrNotOperator(listenToLangChange)
+        listenOrNotOperator(listenToLangChange),
       )
       .subscribe(() => this.updateValue(key, params));
 
@@ -110,7 +110,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
 
   private resolveScope(
     lang: string,
-    providerScope: TranslocoScope | null
+    providerScope: TranslocoScope | null,
   ): Observable<Translation | Translation[]> {
     const resolvedScope = this.scopeResolver.resolve({
       inline: undefined,

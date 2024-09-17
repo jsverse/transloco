@@ -37,7 +37,7 @@ export const TRANSLOCO_PERSIST_TRANSLATIONS_LOADER =
 
 export const TRANSLOCO_PERSIST_TRANSLATIONS_STORAGE =
   new InjectionToken<MaybeAsyncStorage>(
-    'The storage to use for the persistance behavior'
+    'The storage to use for the persistance behavior',
   );
 
 export const TRANSLOCO_PERSIST_TRANSLATIONS_STORAGE_CONFIG =

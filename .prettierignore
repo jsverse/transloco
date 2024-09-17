@@ -1,9 +1,12 @@
 # Add files here to ignore them from prettier formatting
 
+node_modules
 /dist
 /coverage
-/docs/docs
+/.nx
+/tmp
+/.angular
 
-/.nx/cache
-
-/.nx/workspace-data
+/docs/build
+/docs/.docusaurus
+/docs/static/transloco-playground

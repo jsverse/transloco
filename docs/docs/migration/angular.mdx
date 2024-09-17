@@ -7,9 +7,10 @@ description: Angular Migration | Transloco Angular i18n
 some manual changes might still be needed after the script ran.
 :::
 
-The script will iterate over all your HTML files, build a  translation file and will execute the replacements described below.
+The script will iterate over all your HTML files, build a translation file and will execute the replacements described below.
 
 ### Command
+
 `ng g @jsverse/transloco:migrate`
 
 ### The Translation file
@@ -34,18 +35,19 @@ Here is an example of an `HTML` section and the matching `JSON` output:
 ```
 
 Will output:
+
 ```json title="en.json"
 {
   "translation-value": "translation value",
   "site header": {
-     "val1": "Val1",
-     "val1.comment": "value 1 sample",
-     "val2": "Val2",
-     "val2.comment": "value 2 sample",
+    "val1": "Val1",
+    "val1.comment": "value 1 sample",
+    "val2": "Val2",
+    "val2.comment": "value 2 sample"
   },
   "other context": {
-     "myId": "Val3",
-     "myId.comment": "another comment"
+    "myId": "Val3",
+    "myId.comment": "another comment"
   }
 }
 ```
@@ -59,15 +61,13 @@ The `i18n` & `i18n-<attribute>` directives will be replaced with the `transloco`
 ```html title="before.html"
 <h1 i18n>Hello World</h1>
 <h1 i18n="other context|another comment@@myId">Some value</h1>
-<img src="..." i18n i18n-title="Wow image">
+<img src="..." i18n i18n-title="Wow image" />
 ```
 
 ```html title="after.html"
 <h1>{{ 'hello-world' | transloco }}</h1>
 <h1>{{ 'some-value' | transloco }}</h1>
-<img src="..." title="{{ 'wow-image' | transloco }}">
+<img src="..." title="{{ 'wow-image' | transloco }}" />
 ```
 
 If you encounter any issues with the migration script please open a Github issue so we can resolve them and make a better experience for all.
-
-

@@ -11,7 +11,7 @@ Here's an example of setting it in a component's providers:
 @Component({
   selector: 'my-comp',
   templateUrl: './my-comp.component.html',
-  providers: [provideTranslocoLang('es')]
+  providers: [provideTranslocoLang('es')],
 })
 export class MyComponent {}
 ```
@@ -32,7 +32,7 @@ Note that it will be used as the **initial** language. If you need it to be _sta
 @Component({
   selector: 'my-comp',
   templateUrl: './my-comp.component.html',
-  providers: [provideTranslocoLang('es|static')]
+  providers: [provideTranslocoLang('es|static')],
 })
 export class MyComponent {}
 ```
@@ -42,9 +42,9 @@ Or in the template:
 ```html {5} title="my-comp.component.html"
 // Define the lang dynamically in the component
 <ng-container *transloco="let t; lang: someVariable">
-
-// Or pass it as inline string
-<ng-container *transloco="let t; lang: 'es|static'">
-  <p>Inline (es) wins and stays: {{ t('home') }}</p>
-</ng-container>
+  // Or pass it as inline string
+  <ng-container *transloco="let t; lang: 'es|static'">
+    <p>Inline (es) wins and stays: {{ t('home') }}</p>
+  </ng-container></ng-container
+>
 ```

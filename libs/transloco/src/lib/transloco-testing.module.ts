@@ -22,16 +22,16 @@ export interface TranslocoTestingOptions {
 }
 
 const TRANSLOCO_TEST_LANGS = new InjectionToken<HashMap<Translation>>(
-  'TRANSLOCO_TEST_LANGS - Available testing languages'
+  'TRANSLOCO_TEST_LANGS - Available testing languages',
 );
 const TRANSLOCO_TEST_OPTIONS = new InjectionToken<TranslocoTestingOptions>(
-  'TRANSLOCO_TEST_OPTIONS - Testing options'
+  'TRANSLOCO_TEST_OPTIONS - Testing options',
 );
 
 @Injectable()
 export class TestingLoader implements TranslocoLoader {
   constructor(
-    @Inject(TRANSLOCO_TEST_LANGS) private langs: HashMap<Translation>
+    @Inject(TRANSLOCO_TEST_LANGS) private langs: HashMap<Translation>,
   ) {}
 
   getTranslation(lang: string): Observable<Translation> | Promise<Translation> {
@@ -42,12 +42,12 @@ export class TestingLoader implements TranslocoLoader {
 export function initTranslocoService(
   service: TranslocoService,
   langs: HashMap<Translation> = {},
-  options: TranslocoTestingOptions
+  options: TranslocoTestingOptions,
 ) {
   const preloadAllLangs = () =>
     options.preloadLangs
       ? Promise.all(
-          Object.keys(langs).map((lang) => service.load(lang).toPromise())
+          Object.keys(langs).map((lang) => service.load(lang).toPromise()),
         )
       : Promise.resolve();
 
@@ -59,7 +59,7 @@ export function initTranslocoService(
 })
 export class TranslocoTestingModule {
   static forRoot(
-    options: TranslocoTestingOptions
+    options: TranslocoTestingOptions,
   ): ModuleWithProviders<TranslocoTestingModule> {
     return {
       ngModule: TranslocoTestingModule,

@@ -16,6 +16,7 @@ npm i @jsverse/transloco-messageformat
 ```
 
 ## Usage
+
 The `MessageFormatTranspiler` is compatible with the `DefaultTranspiler` and therefore you can switch without worry that it will break your current translations.
 
 It then enables support for the following within your i18n translation files:
@@ -60,9 +61,11 @@ export class TranslocoRootModule {}
 The value for `locales` is either a string or an array of strings. The first locale is used as the default locale by messageformat. More info [here](https://messageformat.github.io/messageformat/api/core.messageformat._constructor_/).
 
 ## Advanced configuration
+
 MessageFormat instances provides some options to influence its behaviour, among them `customFormatters`, `biDiSupport`, and `strictNumberSign`. Learn about their meaning [here](https://messageformat.github.io/messageformat/api/core.messageformatoptions/)
 
 This is how you would enable bidirectional support and add a custom formatter, for example:
+
 ```ts title="transloco-root.module.ts"
  @NgModule({
    imports: [
@@ -77,16 +80,17 @@ This is how you would enable bidirectional support and add a custom formatter, f
 ```
 
 ## Caching (from v3)
- By default, the messageformat compile output is cached to reduce computing times, you can disable caching by passing the `enableCache` option:
 
- ```ts title="transloco-root.module.ts"
- @NgModule({
-   imports: [
-     TranslocoMessageFormatModule({
-         enableCache: false,
-     })
-   ],
-   ...
- })
- export class TranslocoRootModule {}
- ```
+By default, the messageformat compile output is cached to reduce computing times, you can disable caching by passing the `enableCache` option:
+
+```ts title="transloco-root.module.ts"
+@NgModule({
+  imports: [
+    TranslocoMessageFormatModule({
+        enableCache: false,
+    })
+  ],
+  ...
+})
+export class TranslocoRootModule {}
+```

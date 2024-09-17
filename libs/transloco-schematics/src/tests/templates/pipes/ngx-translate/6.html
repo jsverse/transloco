@@ -1,51 +1,69 @@
 <div class="d-flex-column align-center-start name-input-wrapper mb-25">
-    <div class="mb-7" datoFont="note" datoColor="primary-300"></div>
-    <dato-input datoSize="lg" [formControlName]="name" [data-auto-id]="'53' | translate | another"
-                [placeholder]="(condition ? '54' : '55') | translate | another : { name: 'ccc'}" ngDefaultControl></dato-input>
-    <dato-input datoSize="lg" [formControlName]="name" [data-auto-id]="'56' | another | translate | other "
-                [placeholder]="condition ? dontTake : '57' | another | translate: { name: 'ccc'}" ngDefaultControl></dato-input>
-    <!-- Validation Message-->
-    <div [class.invisible]="'58' | translate"
-         class="mt-8" datoFont="note" datoColor="red-400">
-        {{ '59' | translate | another }}
-        {{ '60' | another | translate | other }}
-        {{ '61' | another | other | translate }}
-    </div>
-    <span>{{ var + 'not'  | translate }}</span>
-
+  <div class="mb-7" datoFont="note" datoColor="primary-300"></div>
+  <dato-input
+    datoSize="lg"
+    [formControlName]="name"
+    [data-auto-id]="'53' | translate | another"
+    [placeholder]="(condition ? '54' : '55') | translate | another : { name: 'ccc'}"
+    ngDefaultControl
+  ></dato-input>
+  <dato-input
+    datoSize="lg"
+    [formControlName]="name"
+    [data-auto-id]="'56' | another | translate | other "
+    [placeholder]="condition ? dontTake : '57' | another | translate: { name: 'ccc'}"
+    ngDefaultControl
+  ></dato-input>
+  <!-- Validation Message-->
+  <div
+    [class.invisible]="'58' | translate"
+    class="mt-8"
+    datoFont="note"
+    datoColor="red-400"
+  >
+    {{ '59' | translate | another }} {{ '60' | another | translate | other }} {{
+    '61' | another | other | translate }}
+  </div>
+  <span>{{ var + 'not' | translate }}</span>
 </div>
 
-<textarea formControlName="outputContent" rows="10" cols="30"
-          class="mt-6" [ngClass]="txtareaClass"
-          placeholder="{{'62' | translate }}" readonly>
-                </textarea>
+<textarea
+  formControlName="outputContent"
+  rows="10"
+  cols="30"
+  class="mt-6"
+  [ngClass]="txtareaClass"
+  placeholder="{{'62' | translate }}"
+  readonly
+></textarea>
 
 <div>{{ '63.64.65' | another | other | translate }}</div>
-<a [title]="'admin.1' | lowercase
+<a
+  [title]="'admin.1' | lowercase
     | translate"
-      [routerLink]="'admin' | lowercase">
+  [routerLink]="'admin' | lowercase"
+>
 </a>
-<a [routerLink]="'admin' | lowercase"
-   [title]="'admin.2' | translate">
-</a>
-<span class="my-span-class another-class also-span-class"
-      [inlineSVG]="'some/path/to/image.svg'"
-      data-e2e="DataAttributeValue"
-      matTooltipClass="my-tooltip-class"
-      matTooltip="{{ 'admin.3' | translate }}">
+<a [routerLink]="'admin' | lowercase" [title]="'admin.2' | translate"> </a>
+<span
+  class="my-span-class another-class also-span-class"
+  [inlineSVG]="'some/path/to/image.svg'"
+  data-e2e="DataAttributeValue"
+  matTooltipClass="my-tooltip-class"
+  matTooltip="{{ 'admin.3' | translate }}"
+>
 </span>
 
-{{ '66' | translate }}
-{{ condition ? '67' | translate : 'dont take' }}
+{{ '66' | translate }} {{ condition ? '67' | translate : 'dont take' }} {{ var |
+another : {foo: '68' | translate} | other : ('69' | translate) }} {{ var |
+another : ('70' | translate) | lowercase }}
 
-{{ var | another : {foo: '68' | translate} | other : ('69' | translate) }}
-{{ var | another : ('70' | translate) | lowercase }}
-
-<my-comp [aa]="('71' | translate) + 'a'"
-         [bb]="1 + 2"
-         [cc]="('72' | translate) || var1 ? ('73' | translate) + 1 : func(1 - ('74' | translate))">
-    <comp a="{{('75' | translate) + 'a'}}"
-          b="{{1 + ('76' | translate)}}">
-        {{ (('77' | translate) + 'a').split(('78' | translate) || ',') }}
-    </comp>
+<my-comp
+  [aa]="('71' | translate) + 'a'"
+  [bb]="1 + 2"
+  [cc]="('72' | translate) || var1 ? ('73' | translate) + 1 : func(1 - ('74' | translate))"
+>
+  <comp a="{{('75' | translate) + 'a'}}" b="{{1 + ('76' | translate)}}">
+    {{ (('77' | translate) + 'a').split(('78' | translate) || ',') }}
+  </comp>
 </my-comp>

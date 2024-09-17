@@ -34,7 +34,7 @@ export class TranslocoPercentPipe
   transform(
     value: number | string,
     numberFormatOptions: NumberFormatOptions = {},
-    locale?: Locale
+    locale?: Locale,
   ): string {
     if (isNil(value)) return '';
     locale = this.getLocale(locale);

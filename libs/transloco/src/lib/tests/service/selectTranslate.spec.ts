@@ -100,7 +100,7 @@ describe('selectTranslate', () => {
       .selectTranslate(
         'params',
         { value: 'Transloco' },
-        'transpilers/messageformat'
+        'transpilers/messageformat',
       )
       .subscribe(spy);
     runLoader();
@@ -113,7 +113,7 @@ describe('selectTranslate', () => {
       .selectTranslate(
         'params',
         { value: 'Transloco' },
-        'transpilers/messageformat/es'
+        'transpilers/messageformat/es',
       )
       .subscribe(spy);
     runLoader();
@@ -133,7 +133,7 @@ describe('selectTranslate', () => {
         .selectTranslate(
           'withParam',
           { param: 'Transloco' },
-          { scope: 'lazy-page' }
+          { scope: 'lazy-page' },
         )
         .subscribe(spy);
       runLoader();
@@ -166,7 +166,7 @@ describe('selectTranslate', () => {
           .subscribe(spy);
         runLoader();
         expect(spy).toHaveBeenCalledWith(
-          'Replaces standard Transloco - spanish'
+          'Replaces standard Transloco - spanish',
         );
       }));
     });

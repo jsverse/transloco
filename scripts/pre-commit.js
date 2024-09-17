@@ -21,14 +21,14 @@ for (let [word, { extension, matcher }] of Object.entries(words)) {
   const failedFiles = execSync(gitCommand).toString();
   const filesAsArray = failedFiles.split('\n');
   const supportedFiles = filesAsArray.filter((file) =>
-    extension.test(file.trim())
+    extension.test(file.trim()),
   );
 
   if (supportedFiles.length) {
     status = 1;
     console.log(
       chalk.bgRed.whiteBright('Error:'),
-      `The following files contains '${word}' in them:`
+      `The following files contains '${word}' in them:`,
     );
     console.log(chalk.white(supportedFiles.join('\n')));
   }

@@ -7,19 +7,19 @@ import { MFLocale } from './messageformat.config';
 
 export type MFFactory = (
   locales: MFLocale,
-  messageConfig: MessageFormatOptions<'string'>
+  messageConfig: MessageFormatOptions<'string'>,
 ) => MessageFormat;
 
 export function defaultFactory(
   locales: MFLocale,
-  messageConfig: MessageFormatOptions<'string'>
+  messageConfig: MessageFormatOptions<'string'>,
 ): MessageFormat {
   return new MessageFormat<'string'>(locales, messageConfig);
 }
 
 export function cachedFactory(
   locales: MFLocale,
-  messageConfig: MessageFormatOptions<'string'>
+  messageConfig: MessageFormatOptions<'string'>,
 ): MessageFormat {
   const mf = defaultFactory(locales, messageConfig);
   const original = mf.compile;

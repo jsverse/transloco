@@ -6,9 +6,12 @@ description: Unit Testing | Transloco Angular i18n
 When running specs, we want to have the languages available immediately, in a synchronous fashion. Transloco provides you with a `TranslocoTestingModule`, where you can pass the languages you need in your specs, and the config.
 
 We recommend to be DRY and create a module factory function that we can use in each spec, For example:
-```ts title="transloco-testing.module.ts"
 
-import { TranslocoTestingModule, TranslocoTestingOptions } from '@jsverse/transloco';
+```ts title="transloco-testing.module.ts"
+import {
+  TranslocoTestingModule,
+  TranslocoTestingOptions,
+} from '@jsverse/transloco';
 import en from '../assets/i18n/en.json';
 import es from '../assets/i18n/es.json';
 
@@ -20,7 +23,7 @@ export function getTranslocoModule(options: TranslocoTestingOptions = {}) {
       defaultLang: 'en',
     },
     preloadLangs: true,
-    ...options
+    ...options,
   });
 }
 ```
@@ -32,15 +35,16 @@ describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [getTranslocoModule()],
-      declarations: [AppComponent]
+      declarations: [AppComponent],
     }).compileComponents();
   }));
 
   it('should work', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
-    expect(fixture.debugElement.query(By.css('h1'))
-               .nativeElement.innerText).toBe('hello');
+    expect(
+      fixture.debugElement.query(By.css('h1')).nativeElement.innerText,
+    ).toBe('hello');
   });
 });
 ```
@@ -63,7 +67,7 @@ export function getTranslocoModule(options: TranslocoTestingOptions = {}) {
       defaultLang: 'en',
     },
     preloadLangs: true,
-    ...options
+    ...options,
   });
 }
 ```

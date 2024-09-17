@@ -50,7 +50,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   private providerLang = inject(TRANSLOCO_LANG, { optional: true });
   private providerScope: OrArray<TranslocoScope> | null = inject(
     TRANSLOCO_SCOPE,
-    { optional: true }
+    { optional: true },
   );
   private providedLoadingTpl = inject(TRANSLOCO_LOADING_TEMPLATE, {
     optional: true,
@@ -84,7 +84,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
 
   static ngTemplateContextGuard(
     dir: TranslocoDirective,
-    ctx: unknown
+    ctx: unknown,
   ): ctx is ViewContext {
     return true;
   }
@@ -92,7 +92,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   ngOnInit() {
     const listenToLangChange = shouldListenToLangChanges(
       this.service,
-      this.providerLang || this.inlineLang
+      this.providerLang || this.inlineLang,
     );
 
     this.service.langChanges$
@@ -107,23 +107,23 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
           return Array.isArray(this.providerScope)
             ? forkJoin(
                 this.providerScope.map((providerScope) =>
-                  this.resolveScope(lang, providerScope)
-                )
+                  this.resolveScope(lang, providerScope),
+                ),
               )
             : this.resolveScope(lang, this.providerScope);
         }),
         listenOrNotOperator(listenToLangChange),
-        takeUntilDestroyed(this.destroyRef)
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(() => {
         this.currentLang = this.langResolver.resolveLangBasedOnScope(
-          this.path!
+          this.path!,
         );
         this.strategy === 'attribute'
           ? this.attributeStrategy()
           : this.structuralStrategy(
               this.currentLang,
-              this.prefix || this.inlineRead
+              this.prefix || this.inlineRead,
             );
         this.cdr.markForCheck();
         this.initialized = true;
@@ -152,7 +152,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     this.renderer.setProperty(
       this.host.nativeElement,
       'innerText',
-      this.service.translate(this.key!, this.params, this.currentLang)
+      this.service.translate(this.key!, this.params, this.currentLang),
     );
   }
 
@@ -175,7 +175,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
 
   protected getTranslateFn(
     lang: string,
-    prefix: string | undefined
+    prefix: string | undefined,
   ): TranslateFn {
     return (key: string, params?: HashMap) => {
       const withPrefix = prefix ? `${prefix}.${key}` : key;
@@ -186,7 +186,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
       if (!this.memo.has(memoKey)) {
         this.memo.set(
           memoKey,
-          this.service.translate(withPrefix, params, lang)
+          this.service.translate(withPrefix, params, lang),
         );
       }
 
@@ -208,7 +208,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
 
   private resolveScope(
     lang: string,
-    providerScope: TranslocoScope | null
+    providerScope: TranslocoScope | null,
   ): Observable<Translation | Translation[]> {
     const resolvedScope = this.scopeResolver.resolve({
       inline: this.inlineScope,

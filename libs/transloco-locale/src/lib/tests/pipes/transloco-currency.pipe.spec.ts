@@ -41,14 +41,14 @@ describe('TranslocoCurrencyPipe', () => {
 
   it('should take the currency given currency', () => {
     spectator = pipeFactory(
-      `{{ '123' | translocoCurrency:'symbol':{}:'EUR' }}`
+      `{{ '123' | translocoCurrency:'symbol':{}:'EUR' }}`,
     );
     expect(spectator.element).toContainText('€');
   });
 
   it('should format the currency given narrowSymbol as display argument', () => {
     spectator = pipeFactory(
-      `{{ '123' | translocoCurrency:'narrowSymbol':{}:'CAD' }}`
+      `{{ '123' | translocoCurrency:'narrowSymbol':{}:'CAD' }}`,
     );
     expect(spectator.element).toContainText('$');
   });
@@ -82,7 +82,7 @@ describe('TranslocoCurrencyPipe', () => {
       const [, { useGrouping, maximumFractionDigits }] = getIntlCallArgs();
       expect(useGrouping).toEqual(defaultOptions.useGrouping);
       expect(maximumFractionDigits).toEqual(
-        defaultOptions.maximumFractionDigits
+        defaultOptions.maximumFractionDigits,
       );
     });
 
@@ -97,7 +97,7 @@ describe('TranslocoCurrencyPipe', () => {
           hostProps: {
             config,
           },
-        }
+        },
       );
       const [, { useGrouping, maximumFractionDigits }] = getIntlCallArgs();
       expect(useGrouping).toBeTruthy();
@@ -122,7 +122,7 @@ describe('TranslocoCurrencyPipe', () => {
           hostProps: {
             config,
           },
-        }
+        },
       );
       const [, { useGrouping, maximumFractionDigits }] = getIntlCallArgs();
       expect(useGrouping).toBeFalsy();
@@ -132,12 +132,12 @@ describe('TranslocoCurrencyPipe', () => {
     it('should fallback to default config when there are no settings for the current locale', () => {
       spectator = pipeFactory(
         `{{ '123' | translocoCurrency:'symbol':config }}`,
-        { providers: [provideTranslocoServiceMock('en-US')] }
+        { providers: [provideTranslocoServiceMock('en-US')] },
       );
       const [, { useGrouping, maximumFractionDigits }] = getIntlCallArgs();
       expect(useGrouping).toEqual(defaultOptions.useGrouping);
       expect(maximumFractionDigits).toEqual(
-        defaultOptions.maximumFractionDigits
+        defaultOptions.maximumFractionDigits,
       );
     });
   });

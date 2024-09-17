@@ -12,7 +12,7 @@ module.exports = function (config) {
       ...baseConfig.coverageIstanbulReporter,
       dir: join(
         __dirname,
-        '../../coverage/libs/transloco-persist-translations'
+        '../../coverage/libs/transloco-persist-translations',
       ),
     },
   });

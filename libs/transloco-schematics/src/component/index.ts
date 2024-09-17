@@ -18,15 +18,15 @@ export default function (options): Rule {
     const cmpRule = externalSchematic(
       '@schematics/angular',
       'component',
-      options
+      options,
     );
     const tree$ = (cmpRule(host, context) as unknown as Observable<Tree>).pipe(
       tap((tree) => {
         const templatePath = tree.actions.find(
-          (action) => !!action.path.match(/component.html/)
+          (action) => !!action.path.match(/component.html/),
         ).path;
         tree.overwrite(templatePath, template);
-      })
+      }),
     );
 
     return tree$;

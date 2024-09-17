@@ -25,14 +25,14 @@ export function pipeTplFactory(pipeName: `transloco${string}`) {
     }
 
     return `{{ ${resolvedValue} | ${[pipeName, ...coerceArray(params)].join(
-      ':'
+      ':',
     )} }}`;
   };
 }
 
 export function createLocalePipeFactory<T extends BaseLocalePipe>(
   pipe: Type<T>,
-  providers?: TranslocoLocaleConfig
+  providers?: TranslocoLocaleConfig,
 ) {
   return createPipeFactory({
     pipe,

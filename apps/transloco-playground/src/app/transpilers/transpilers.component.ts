@@ -1,4 +1,3 @@
-
 import { Component } from '@angular/core';
 
 import { provideTranslocoScope, TranslocoModule } from '@jsverse/transloco';

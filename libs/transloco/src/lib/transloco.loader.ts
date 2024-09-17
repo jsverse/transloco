@@ -6,7 +6,7 @@ import { Translation } from './types';
 export interface TranslocoLoader {
   getTranslation(
     lang: string,
-    data?: TranslocoLoaderData
+    data?: TranslocoLoaderData,
   ): Observable<Translation> | Promise<Translation>;
 }
 
@@ -23,5 +23,5 @@ export class DefaultLoader implements TranslocoLoader {
 }
 
 export const TRANSLOCO_LOADER = new InjectionToken<TranslocoLoader>(
-  'TRANSLOCO_LOADER'
+  'TRANSLOCO_LOADER',
 );

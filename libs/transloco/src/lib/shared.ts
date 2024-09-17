@@ -45,7 +45,7 @@ export function getLangFromScope(lang: string): string {
 export function getPipeValue(
   str: string | undefined,
   value: string,
-  char = '|'
+  char = '|',
 ): [boolean, string] {
   if (isString(str)) {
     const splitted = str.split(char);
@@ -59,7 +59,7 @@ export function getPipeValue(
 
 export function shouldListenToLangChanges(
   service: TranslocoService,
-  lang?: string
+  lang?: string,
 ) {
   const [hasStatic] = getPipeValue(lang, 'static');
   if (!hasStatic) {
@@ -72,22 +72,25 @@ export function shouldListenToLangChanges(
 }
 
 export function listenOrNotOperator<T>(
-  listenToLangChange?: boolean
+  listenToLangChange?: boolean,
 ): OperatorFunction<T, T> {
   return listenToLangChange ? (source: Observable<T>) => source : take<T>(1);
 }
 
 function prependScope(inlineLoader: InlineLoader, scope: string) {
-  return Object.keys(inlineLoader).reduce((acc, lang) => {
-    acc[`${scope}/${lang}`] = inlineLoader[lang];
+  return Object.keys(inlineLoader).reduce(
+    (acc, lang) => {
+      acc[`${scope}/${lang}`] = inlineLoader[lang];
 
-    return acc;
-  }, {} as Record<string, InlineLoader[keyof InlineLoader]>);
+      return acc;
+    },
+    {} as Record<string, InlineLoader[keyof InlineLoader]>,
+  );
 }
 
 export function resolveInlineLoader(
   providerScope: TranslocoScope | null,
-  scope?: string
+  scope?: string,
 ): InlineLoader | undefined {
   return hasInlineLoader(providerScope)
     ? prependScope(providerScope.loader!, scope!)

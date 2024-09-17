@@ -17,7 +17,7 @@ export class DefaultFallbackStrategy implements TranslocoFallbackStrategy {
     const fallbackLang = this.userConfig.fallbackLang;
     if (!fallbackLang) {
       throw new Error(
-        'When using the default fallback, a fallback language must be provided in the config!'
+        'When using the default fallback, a fallback language must be provided in the config!',
       );
     }
 

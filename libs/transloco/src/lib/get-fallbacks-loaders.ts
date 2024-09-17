@@ -28,7 +28,7 @@ export function getFallbacksLoaders({
       map((translation) => ({
         translation,
         lang: path,
-      }))
+      })),
     );
   });
 }

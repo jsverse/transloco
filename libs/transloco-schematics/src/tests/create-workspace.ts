@@ -1,6 +1,4 @@
-import {
-  SchematicTestRunner,
-} from '@angular-devkit/schematics/testing';
+import { SchematicTestRunner } from '@angular-devkit/schematics/testing';
 import type { Schema as WorkspaceSchema } from '@schematics/angular/workspace/schema';
 import {
   Style,
@@ -23,7 +21,7 @@ export const defaultAppOptions: ApplicationSchema = {
   viewEncapsulation: ViewEncapsulation.Emulated,
   routing: false,
   style: Style.Css,
-  skipTests: false
+  skipTests: false,
 };
 
 const defaultLibOptions = {
@@ -36,11 +34,14 @@ export function createWorkspace(
     workspaceOptions?: Partial<WorkspaceSchema>;
     appOptions?: Partial<ApplicationSchema>;
     libOptions?: Partial<LibrarySchema>;
-  } = {}
+  } = {},
 ) {
-  const appOptions = {...defaultAppOptions, ...options.appOptions};
-  const workspaceOptions = {...defaultWorkspaceOptions, ...options.workspaceOptions};
-  const libOptions = {...defaultLibOptions, ...options.libOptions};
+  const appOptions = { ...defaultAppOptions, ...options.appOptions };
+  const workspaceOptions = {
+    ...defaultWorkspaceOptions,
+    ...options.workspaceOptions,
+  };
+  const libOptions = { ...defaultLibOptions, ...options.libOptions };
   const angularSchematic = '@schematics/angular';
 
   return schematicRunner
@@ -50,15 +51,15 @@ export function createWorkspace(
         angularSchematic,
         'application',
         appOptions,
-        tree
-      )
+        tree,
+      ),
     )
     .then((tree) =>
       schematicRunner.runExternalSchematic(
         angularSchematic,
         'library',
         libOptions,
-        tree
-      )
+        tree,
+      ),
     );
 }

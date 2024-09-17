@@ -15,14 +15,14 @@ describe('setTranslation', () => {
     service = createService();
     setTranslationsSpy = spyOn(
       (service as any).translations,
-      'set'
+      'set',
     ).and.callThrough();
   });
 
   it('should add translation to the map after passing through the interceptor', () => {
     const interceptorSpy = spyOn(
       (service as any).interceptor,
-      'preSaveTranslation'
+      'preSaveTranslation',
     ).and.callThrough();
     const lang = 'en';
     const translation = flatten(mockLangs[lang]);

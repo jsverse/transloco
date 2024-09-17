@@ -3,11 +3,13 @@ id: installation
 title: Installation
 description: Installation | Transloco Angular i18n
 ---
+
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
 Install the library using Angular CLI:
+
 ```bash
 ng add @jsverse/transloco
 # On an nx workspace
@@ -35,21 +37,20 @@ import { provideTransloco } from '@jsverse/transloco';
 import { TranslocoHttpLoader } from './transloco-loader';
 
 export const appConfig: ApplicationConfig = {
-    providers: [
-        provideHttpClient(),
-        provideTransloco({
-            config: {
-                availableLangs: ['en', 'es'],
-                defaultLang: 'en',
-                // Remove this option if your application doesn't support changing language in runtime.
-                reRenderOnLangChange: true,
-                prodMode: !isDevMode(),
-            },
-            loader: TranslocoHttpLoader
-        })
-    ]
+  providers: [
+    provideHttpClient(),
+    provideTransloco({
+      config: {
+        availableLangs: ['en', 'es'],
+        defaultLang: 'en',
+        // Remove this option if your application doesn't support changing language in runtime.
+        reRenderOnLangChange: true,
+        prodMode: !isDevMode(),
+      },
+      loader: TranslocoHttpLoader,
+    }),
+  ],
 };
-
 ```
 
 </TabItem>
@@ -59,31 +60,27 @@ export const appConfig: ApplicationConfig = {
 When added to a module based application a new `transloco-root.module.ts` which exposes an Angular module with a default configuration, and inject it into the `AppModule`:
 
 ```ts title="transloco-root.module.ts"
-import {
-    provideTransloco,
-    TranslocoModule
-} from '@jsverse/transloco';
+import { provideTransloco, TranslocoModule } from '@jsverse/transloco';
 import { Injectable, isDevMode, NgModule } from '@angular/core';
 
 import { TranslocoHttpLoader } from './transloco-loader';
 
 @NgModule({
-    exports: [ TranslocoModule ],
-    providers: [
-        provideTransloco({
-            config: {
-                availableLangs: ['en', 'es'],
-                defaultLang: 'en',
-                // Remove this option if your application doesn't support changing language in runtime.
-                reRenderOnLangChange: true,
-                prodMode: !isDevMode(),
-            },
-            loader: TranslocoHttpLoader
-        }),
-    ],
+  exports: [TranslocoModule],
+  providers: [
+    provideTransloco({
+      config: {
+        availableLangs: ['en', 'es'],
+        defaultLang: 'en',
+        // Remove this option if your application doesn't support changing language in runtime.
+        reRenderOnLangChange: true,
+        prodMode: !isDevMode(),
+      },
+      loader: TranslocoHttpLoader,
+    }),
+  ],
 })
 export class TranslocoRootModule {}
-
 ```
 
 :::note
@@ -99,19 +96,18 @@ You should import the `TranslocoRootModule` once in your root module, and use `T
 A default http loader implementation to fetch the translation files:
 
 ```ts
-import { inject, Injectable } from "@angular/core";
-import { Translation, TranslocoLoader } from "@jsverse/transloco";
-import { HttpClient } from "@angular/common/http";
+import { inject, Injectable } from '@angular/core';
+import { Translation, TranslocoLoader } from '@jsverse/transloco';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })
 export class TranslocoHttpLoader implements TranslocoLoader {
-    private http = inject(HttpClient);
+  private http = inject(HttpClient);
 
-    getTranslation(lang: string) {
-        return this.http.get<Translation>(`/assets/i18n/${lang}.json`);
-    }
+  getTranslation(lang: string) {
+    return this.http.get<Translation>(`/assets/i18n/${lang}.json`);
+  }
 }
-
 ```
 
 :::note
@@ -124,6 +120,7 @@ getTranslation(langPath: string) {
   return this.http.get(`./assets/i18n/${langPath}.json`);
 }
 ```
+
 :::
 
 #### Translation JSON files
@@ -140,17 +137,15 @@ This config is used by tools & plugins such as the [scoped lib extractor](../too
 and the [keys-manager](https://github.com/jsverse/transloco-keys-manager).
 
 ```ts title="transloco.config.ts"
-import {TranslocoGlobalConfig} from '@jsverse/transloco-utils';
+import { TranslocoGlobalConfig } from '@jsverse/transloco-utils';
 
 const config: TranslocoGlobalConfig = {
   rootTranslationsPath: 'src/assets/i18n/',
-  langs: [ 'en', 'es' ],
-  keysManager: {}
+  langs: ['en', 'es'],
+  keysManager: {},
 };
 
 export default config;
 ```
 
 And that's it! Now we are ready to use it in our project.
-
-

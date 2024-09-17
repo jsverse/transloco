@@ -13,7 +13,7 @@ Packages were moved to the jsverse scope, the versioning continues from the last
 
 - The package is now published under the `@jsverse` scope and aligned to the main package major version (v7).
 - Updated the transpile method usages.
-- Minimum Transloco version is now `^7.0.0`. 
+- Minimum Transloco version is now `^7.0.0`.
 
 ## Transloco Locale
 

@@ -11,7 +11,7 @@ describe('default loader', () => {
         {
           availableLangs: ['en'],
         },
-        { loader: null as any }
+        { loader: null as any },
       );
     }).not.toThrow();
     expect((service! as any).loader instanceof DefaultLoader).toBe(true);
@@ -19,7 +19,7 @@ describe('default loader', () => {
       {
         key: 'Netanel',
       },
-      'en'
+      'en',
     );
     expect(service!.translate('key')).toEqual('Netanel');
   });

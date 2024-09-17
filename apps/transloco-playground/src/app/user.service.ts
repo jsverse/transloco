@@ -9,7 +9,7 @@ export class UserService {
     return timer(500).pipe(
       map(() => {
         return { lang: 'en' };
-      })
+      }),
     );
   }
 }

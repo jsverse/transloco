@@ -62,7 +62,7 @@ describe('PersistLang', () => {
     spectator = serviceFactory();
     saveSpy = spyOn(
       TranslocoPersistLangService.prototype as any,
-      'save'
+      'save',
     ).and.callThrough();
   });
 
@@ -88,7 +88,7 @@ describe('PersistLang', () => {
     beforeAll(() => {
       setActiveLangSpy = spyOn(
         TranslocoPersistLangService.prototype as any,
-        'setActiveLang'
+        'setActiveLang',
       ).and.callThrough();
       getItemSpy = spyOn(fakeStorage, 'getItem').and.callThrough();
     });

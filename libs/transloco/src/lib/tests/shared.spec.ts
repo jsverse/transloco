@@ -44,8 +44,8 @@ describe('shouldListenToLangChanges', () => {
             reRenderOnLangChange: true,
           },
         } as any,
-        'es|static'
-      )
+        'es|static',
+      ),
     ).toEqual(false);
   });
 
@@ -57,8 +57,8 @@ describe('shouldListenToLangChanges', () => {
             reRenderOnLangChange: true,
           },
         } as any,
-        'es'
-      )
+        'es',
+      ),
     ).toEqual(true);
   });
 
@@ -70,8 +70,8 @@ describe('shouldListenToLangChanges', () => {
             reRenderOnLangChange: false,
           },
         } as any,
-        'es'
-      )
+        'es',
+      ),
     ).toEqual(false);
   });
 });

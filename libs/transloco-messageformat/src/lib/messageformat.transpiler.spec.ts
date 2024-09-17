@@ -16,7 +16,7 @@ import { provideTranslocoMessageformat } from './messageformat.providers';
 
 function getTranspiler(
   config?: MessageformatConfig,
-  translocoConfig: TranslocoConfig = defaultConfig
+  translocoConfig: TranslocoConfig = defaultConfig,
 ) {
   return TestBed.configureTestingModule({
     providers: [
@@ -28,7 +28,7 @@ function getTranspiler(
 
 function getTranspilerParams(
   value: unknown,
-  overrides?: Partial<Omit<TranspileParams, 'value'>>
+  overrides?: Partial<Omit<TranspileParams, 'value'>>,
 ): TranspileParams {
   return {
     value,
@@ -50,7 +50,7 @@ describe('MessageFormatTranspiler', () => {
       '{count, plural, =0{No} one{A} other{Several}} {count, plural, one{word} other{words}}';
 
     const result = parser.transpile(
-      getTranspilerParams(message, { params: { count: 1 } })
+      getTranspilerParams(message, { params: { count: 1 } }),
     );
     expect(result).toBe('A word');
   });
@@ -72,7 +72,7 @@ describe('MessageFormatTranspiler', () => {
     const upper = transpiler.transpile(
       getTranspilerParams(messages.describe, {
         params: { upper: 'big' },
-      })
+      }),
     );
     expect(upper).toEqual('This is BIG.');
 
@@ -80,8 +80,8 @@ describe('MessageFormatTranspiler', () => {
       transpiler.transpile(
         getTranspilerParams(messages.answer, {
           params: { obj: { q: 3, a: 42 } },
-        })
-      )
+        }),
+      ),
     ).toBe('Answer: 42');
   });
 
@@ -93,11 +93,11 @@ describe('MessageFormatTranspiler', () => {
     const params = { count: 2 };
 
     expect(() =>
-      transpiler.transpile(getTranspilerParams(polishKey, { params }))
+      transpiler.transpile(getTranspilerParams(polishKey, { params })),
     ).toThrowError();
     transpiler.setLocale('pl');
     expect(
-      transpiler.transpile(getTranspilerParams(polishKey, { params }))
+      transpiler.transpile(getTranspilerParams(polishKey, { params })),
     ).toBe('2 things');
   });
 });
@@ -108,7 +108,7 @@ function assertParser(description: string, config: MessageformatConfig) {
     beforeEach(() => {
       transpiler = getTranspiler(
         config,
-        translocoConfig({ interpolation: ['<<<', '>>>'] })
+        translocoConfig({ interpolation: ['<<<', '>>>'] }),
       );
     });
 
@@ -118,8 +118,8 @@ function assertParser(description: string, config: MessageformatConfig) {
           'The <<< value >>> { gender, select, male {boy named <<< name >>> won his} female {girl named <<< name >>> won her} other {person named <<< name >>> won their}} race',
           {
             params: { value: 'smart', gender: 'male', name: 'Henkie' },
-          }
-        )
+          },
+        ),
       );
       expect(parsedMale).toEqual('The smart boy named Henkie won his race');
     });
@@ -138,7 +138,7 @@ function assertParser(description: string, config: MessageformatConfig) {
       const parsed = transpiler.transpile(
         getTranspilerParams(value, {
           params: { gender: 'male' },
-        })
+        }),
       );
       expect(parsed).toEqual('The boy won his race');
     });
@@ -149,7 +149,7 @@ function assertParser(description: string, config: MessageformatConfig) {
       const parsed = transpiler.transpile(
         getTranspilerParams(value, {
           params: { gender: 'female' },
-        })
+        }),
       );
       expect(parsed).toEqual('The girl won her race');
     });
@@ -160,7 +160,7 @@ function assertParser(description: string, config: MessageformatConfig) {
       const parsed = transpiler.transpile(
         getTranspilerParams(value, {
           params: { gender: '' },
-        })
+        }),
       );
       expect(parsed).toEqual('The person won their race');
     });
@@ -171,7 +171,7 @@ function assertParser(description: string, config: MessageformatConfig) {
       const parsed = transpiler.transpile(
         getTranspilerParams(value, {
           params: { value: 'smart', gender: '' },
-        })
+        }),
       );
       expect(parsed).toEqual('The smart person won their race');
     });
@@ -182,7 +182,7 @@ function assertParser(description: string, config: MessageformatConfig) {
       const parsedMale = transpiler.transpile(
         getTranspilerParams(value, {
           params: { value: 'smart', gender: 'male', name: 'Henkie' },
-        })
+        }),
       );
       expect(parsedMale).toEqual('The smart boy named Henkie won his race');
     });
@@ -191,7 +191,7 @@ function assertParser(description: string, config: MessageformatConfig) {
       const parsed = transpiler.transpile(
         getTranspilerParams('Hello {{ value }}', {
           params: { value: 'World' },
-        })
+        }),
       );
       expect(parsed).toEqual('Hello World');
     });
@@ -200,7 +200,7 @@ function assertParser(description: string, config: MessageformatConfig) {
       const parsed = transpiler.transpile(
         getTranspilerParams('Hello {{ from }} {{ name }}', {
           params: { from: 'from', name: 'Transloco' },
-        })
+        }),
       );
       expect(parsed).toEqual('Hello from Transloco');
     });
@@ -209,7 +209,7 @@ function assertParser(description: string, config: MessageformatConfig) {
       const parsed = transpiler.transpile(
         getTranspilerParams('Hello {{ world }}', {
           translation: { world: 'World' },
-        })
+        }),
       );
       expect(parsed).toEqual('Hello World');
     });
@@ -226,11 +226,11 @@ function assertParser(description: string, config: MessageformatConfig) {
           'Hello {{ withKeys }} {{ from }} {{ lang }} {{nes.ted}}',
           {
             translation: lang,
-          }
-        )
+          },
+        ),
       );
       expect(parsed).toEqual(
-        'Hello with keys from lang supporting nested values!'
+        'Hello with keys from lang supporting nested values!',
       );
     });
 
@@ -239,7 +239,7 @@ function assertParser(description: string, config: MessageformatConfig) {
         getTranspilerParams('Hello {{ from }} {{ name }}', {
           params: { name: 'Transloco' },
           translation: { from: 'from' },
-        })
+        }),
       );
       expect(parsed).toEqual('Hello from Transloco');
     });
@@ -248,7 +248,7 @@ function assertParser(description: string, config: MessageformatConfig) {
       expect(transpiler.transpile(getTranspilerParams(''))).toEqual('');
       expect(transpiler.transpile(getTranspilerParams(null))).toEqual(null);
       expect(transpiler.transpile(getTranspilerParams(undefined))).toEqual(
-        undefined
+        undefined,
       );
     });
 
@@ -272,8 +272,8 @@ function assertParser(description: string, config: MessageformatConfig) {
               people: { count: '1' },
               'moreNesting.projects': { count: '1' },
             },
-          })
-        )
+          }),
+        ),
       ).toEqual({
         messageFormatWithParams:
           'Can replace Hey and also give parse messageformat: The girl won her race - english',

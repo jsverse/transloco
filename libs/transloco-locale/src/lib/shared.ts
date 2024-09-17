@@ -7,7 +7,7 @@ import {
 export function getDefaultOptions<T extends keyof LocaleFormatOptions>(
   locale: Locale,
   style: T,
-  localeConfig: LocaleConfig
+  localeConfig: LocaleConfig,
 ) {
   const defaultConfig = (localeConfig.global?.[style] ?? {}) as NonNullable<
     LocaleFormatOptions[T]

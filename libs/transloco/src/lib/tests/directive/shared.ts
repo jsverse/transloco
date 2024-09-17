@@ -14,7 +14,7 @@ export function createFactory(providers: Provider[] = []) {
 
 function initScopeTest(
   host: SpectatorHost<TranslocoDirective>,
-  service: TranslocoService
+  service: TranslocoService,
 ) {
   setlistenToLangChange(service);
   host.detectChanges();
@@ -25,7 +25,7 @@ function initScopeTest(
 
 export function testMergedScopedTranslation(
   spectator: SpectatorHost<TranslocoDirective>,
-  preload?: boolean
+  preload?: boolean,
 ) {
   const service = spectator.inject(TranslocoService);
   if (preload) {
@@ -33,7 +33,7 @@ export function testMergedScopedTranslation(
   }
   initScopeTest(spectator, service);
   expect(spectator.queryHost('.global')).toHaveText(
-    preload ? 'home english' : ''
+    preload ? 'home english' : '',
   );
   expect(spectator.queryHost('.scoped')).toHaveText('Admin Lazy english');
   if (preload) {
@@ -44,13 +44,13 @@ export function testMergedScopedTranslation(
   runLoader();
   spectator.detectChanges();
   expect(spectator.queryHost('.global')).toHaveText(
-    preload ? 'home spanish' : ''
+    preload ? 'home spanish' : '',
   );
   expect(spectator.queryHost('.scoped')).toHaveText('Admin Lazy spanish');
 }
 
 export function testScopedTranslation(
-  spectator: SpectatorHost<TranslocoDirective>
+  spectator: SpectatorHost<TranslocoDirective>,
 ) {
   const service = spectator.inject(TranslocoService);
   initScopeTest(spectator, service);
@@ -62,7 +62,7 @@ export function testScopedTranslation(
 }
 
 export function testTranslationWithPrefix(
-  spectator: SpectatorHost<TranslocoDirective>
+  spectator: SpectatorHost<TranslocoDirective>,
 ) {
   const service = spectator.inject(TranslocoService);
   initScopeTest(spectator, service);
@@ -75,7 +75,7 @@ export function testTranslationWithPrefix(
 
 export function preloadTranslations(
   spectator: SpectatorHost<TranslocoDirective>,
-  lang = 'en'
+  lang = 'en',
 ) {
   const service = spectator.inject(TranslocoService);
   service.load(lang).subscribe();

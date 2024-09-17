@@ -2,9 +2,9 @@
 title: Locale L10N
 description: Plugins - Locale L10N | Transloco Angular i18n
 ---
+
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-
 
 This plugin provides localization(l10n) support for Transloco.
 
@@ -67,10 +67,11 @@ export class TranslocoRootModule {}
 </Tabs>
 
 ## Localization Pipes
+
 The library provides localization API provided by pipes or from a service, base on the native Javascript's [API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl).
 
-
 ### Date Pipe
+
 Transform a date into the locale's date format.
 
 The date expression could be: a Date object, a number (milliseconds since UTC epoch), or an [ISO](https://www.w3.org/TR/NOTE-datetime) string.
@@ -87,13 +88,9 @@ The date expression could be: a Date object, a number (milliseconds since UTC ep
   {{ date | translocoDate: { timeZone: 'UTC', timeStyle: 'full' } }}
 </span>
 <!-- Jan 1, 1970-->
-<span>
-  {{ 1 | translocoDate: { dateStyle: 'medium' } }}
-</span>
+<span> {{ 1 | translocoDate: { dateStyle: 'medium' } }} </span>
 <!-- Feb 8, 2019-->
-<span>
-  {{ '2019-02-08' | translocoDate: { dateStyle: 'medium' } }}
-</span>
+<span> {{ '2019-02-08' | translocoDate: { dateStyle: 'medium' } }} </span>
 ```
 
 ### Currency Pipe
@@ -107,9 +104,7 @@ The currency mapping could be customise if needed through the [config](#configur
 <!--$1,000,000.00-->
 <span> {{ 1000000 | translocoCurrency }} </span>
 <!--1,000,000.00 US dollars-->
-<span>
-  {{ 1000000 | translocoCurrency: 'name' }}
-</span>
+<span> {{ 1000000 | translocoCurrency: 'name' }} </span>
 <!--$1,000,000-->
 <span>
   {{ 1000000 | translocoCurrency: 'symbol' : { minimumFractionDigits: 0 } }}
@@ -122,13 +117,9 @@ Transform a given number into current locale's decimal number format.
 
 ```html title="my-comp.component.html"
 <!--1,234,567,890-->
-<span>
-  {{ 1234567890 | translocoDecimal }}
-</span>
+<span> {{ 1234567890 | translocoDecimal }} </span>
 <!--1234567890-->
-<span>
-  {{ 1234567890 | translocoDecimal: {useGrouping: false} }}
-</span>
+<span> {{ 1234567890 | translocoDecimal: {useGrouping: false} }} </span>
 ```
 
 ### Percent Pipe
@@ -319,14 +310,13 @@ export class TranslocoRootModule {}
 
 </Tabs>
 
-
 2. It could be set in the component's providers using `provideTranslocoLocaleConfig`:
 
 ```ts title="my-comp.component.html"
 @Component({
   selector: 'my-comp',
   templateUrl: './my-comp.component.html',
-  providers: [provideTranslocoLocaleConfig(localeConfig)]
+  providers: [provideTranslocoLocaleConfig(localeConfig)],
 })
 export class MyComponent {}
 ```
@@ -338,9 +328,7 @@ export class MyComponent {}
   {{ date | translocoDate: { dateStyle: 'medium', timeStyle: 'medium' } }}
 </span>
 
-<span>
-  {{ number | translocoDecimal: {useGrouping: false} }}
-</span>
+<span> {{ number | translocoDecimal: {useGrouping: false} }} </span>
 ```
 
 Note the format option of the global, locale's format and the one's being passed in the template, will be merged. While the template is the stronger one and then the locale and the global.
@@ -387,6 +375,7 @@ translocoLocaleService.getCurrencySymbol() // $
 ```
 
 ## Localization Transformer
+
 In some cases you might want to customize the localization transformation, to achieve that you could provide your own localization transformer class.
 
 There are two types of transformers for date and number:

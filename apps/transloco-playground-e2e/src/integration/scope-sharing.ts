@@ -2,7 +2,7 @@ export function testScopeSharingContent(lang = 'english') {
   // Structural Directive
   cy.get(`[data-cy=todos-page-scope]`).should(
     'contain',
-    `My scope name was mapped! ${lang}`
+    `My scope name was mapped! ${lang}`,
   );
   cy.get(`[data-cy=global]`).should('contain', `home ${lang}`);
 
@@ -13,7 +13,7 @@ export function testScopeSharingContent(lang = 'english') {
   // Pipe
   cy.get(`[data-cy=p-todos-page-scope]`).should(
     'contain',
-    `My scope name was mapped! ${lang}`
+    `My scope name was mapped! ${lang}`,
   );
   cy.get(`[data-cy=p-global]`).should('contain', `home ${lang}`);
 }

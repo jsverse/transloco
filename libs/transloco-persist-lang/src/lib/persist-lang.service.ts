@@ -75,7 +75,7 @@ export class TranslocoPersistLangService implements OnDestroy {
     if (!this.service.config.prodMode) {
       console.log(
         `%c 🍻 Saving ${lang} to storage`,
-        'background: #fff; color: #2196F3;'
+        'background: #fff; color: #2196F3;',
       );
     }
     this.storage.setItem(this.storageKey, lang);

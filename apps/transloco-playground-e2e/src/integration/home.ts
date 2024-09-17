@@ -4,7 +4,7 @@ export function testHomeContent(lang = 'english') {
   cy.get(`[data-cy=with-params]`).should('contain', `alert 🦄 ${lang}`);
   cy.get(`[data-cy=with-translation-reuse]`).should(
     'contain',
-    `a.b.c from list ${lang}`
+    `a.b.c from list ${lang}`,
   );
   cy.get(`[data-cy=static-lang-en]`).should('contain', `home english`);
   cy.get(`[data-cy=current-lang]`).should('contain', `en`);
@@ -14,7 +14,7 @@ export function testHomeContent(lang = 'english') {
   cy.get(`[data-cy=d-with-params]`).should('contain', `alert 🦄 ${lang}`);
   cy.get(`[data-cy=d-with-translation-reuse]`).should(
     'contain',
-    `a.b.c from list ${lang}`
+    `a.b.c from list ${lang}`,
   );
   cy.get(`[data-cy=d-dynamic-key]`).should('contain', `home ${lang}`);
   cy.get(`[data-cy=d-static-lang-es]`).should('contain', `home spanish`);
@@ -36,7 +36,7 @@ export function testHomeContent(lang = 'english') {
   cy.get(`[data-cy=p-with-params]`).should('contain', `alert 🦄 ${lang}`);
   cy.get(`[data-cy=p-with-translation-reuse]`).should(
     'contain',
-    `a.b.c from list ${lang}`
+    `a.b.c from list ${lang}`,
   );
   cy.get(`[data-cy=p-static-lang-en]`).should('contain', `home english`);
 

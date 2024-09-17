@@ -14,7 +14,7 @@ export function checkIfTranslationFilesExist(
   path: string,
   langs: string[],
   extension: string,
-  skipThrow?: boolean
+  skipThrow?: boolean,
 ) {
   for (const lang of langs) {
     const filePath = p.resolve(`${path}/${lang}${extension}`);
@@ -23,7 +23,7 @@ export function checkIfTranslationFilesExist(
         return true;
       }
       throw new SchematicsException(
-        `Translation file ${filePath} is already exist, please use --skip-creation`
+        `Translation file ${filePath} is already exist, please use --skip-creation`,
       );
     }
   }
@@ -33,7 +33,7 @@ export function checkIfTranslationFilesExist(
 export function createTranslateFilesFromOptions(
   host: Tree,
   options: { translateType?: TranslationFileTypes; langs: string[] },
-  translationFilePath
+  translationFilePath,
 ) {
   const extension =
     options.translateType === TranslationFileTypes.Typescript ? '.ts' : '.json';
@@ -47,6 +47,6 @@ export function createTranslateFilesFromOptions(
   return createTranslateFiles(
     options.langs,
     translationCreator,
-    translationFilePath
+    translationFilePath,
   );
 }

@@ -14,11 +14,11 @@ describe('Loading Template', () => {
   it('should attach and detach view with inline loader template', fakeAsync(() => {
     spyOn<TemplateHandler>(
       TemplateHandler.prototype,
-      'attachView'
+      'attachView',
     ).and.callThrough();
     spyOn<TemplateHandler>(
       TemplateHandler.prototype,
-      'detachView'
+      'detachView',
     ).and.callThrough();
     spectator = createHost(`
         <section *transloco="let t; scope: 'lazy-page'; loadingTpl: loading">
@@ -41,7 +41,7 @@ describe('Loading Template', () => {
   it('should not attachView if no inline loader template has provided', () => {
     spyOn<TemplateHandler>(
       TemplateHandler.prototype,
-      'attachView'
+      'attachView',
     ).and.callThrough();
     spectator = createHost(`
         <section *transloco="let t; scope: 'lazy-page';">
@@ -55,7 +55,7 @@ describe('Loading Template', () => {
   it('should not attachView if the translation have already loaded', fakeAsync(() => {
     spyOn<TemplateHandler>(
       TemplateHandler.prototype,
-      'attachView'
+      'attachView',
     ).and.callThrough();
     spectator = createHost(
       `
@@ -67,7 +67,7 @@ describe('Loading Template', () => {
           <h1 id="lazy-page-loading">Loading...</h1>
         </ng-template>
       `,
-      { detectChanges: false }
+      { detectChanges: false },
     );
     preloadTranslations(spectator);
 
@@ -86,11 +86,11 @@ describe('Custom loading template', () => {
   it('should call attach view with provided template', fakeAsync(() => {
     spyOn<TemplateHandler>(
       TemplateHandler.prototype,
-      'attachView'
+      'attachView',
     ).and.callThrough();
     spyOn<TemplateHandler>(
       TemplateHandler.prototype,
-      'detachView'
+      'detachView',
     ).and.callThrough();
 
     spectator = createHost(`
@@ -101,7 +101,7 @@ describe('Custom loading template', () => {
 
     expect(TemplateHandler.prototype.attachView).toHaveBeenCalled();
     expect(spectator.queryHost('.transloco-loader-template')).toHaveText(
-      'loading template...'
+      'loading template...',
     );
     spectator.detectChanges();
     runLoader();

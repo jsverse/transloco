@@ -41,9 +41,9 @@ export class TranslocoPersistTranslations
         }
 
         return from(this.loader.getTranslation(lang)).pipe(
-          tap((translation) => this.setCache(storageKey, lang, translation))
+          tap((translation) => this.setCache(storageKey, lang, translation)),
         );
-      })
+      }),
     );
   }
 
@@ -63,7 +63,7 @@ export class TranslocoPersistTranslations
           tap((item) => {
             this.cache = item;
           }),
-          take(1)
+          take(1),
         );
   }
 
@@ -99,7 +99,7 @@ export class TranslocoPersistTranslations
 
   private getTimestamp(key: string): Observable<number> {
     return observify(this.storage.getItem(getTimestampKey(key))).pipe(
-      map(parseInt)
+      map(parseInt),
     );
   }
 
@@ -121,7 +121,7 @@ export class TranslocoPersistTranslations
         if (isExpired) {
           this.storage.removeItem(storageKey);
         }
-      })
+      }),
     );
   }
 

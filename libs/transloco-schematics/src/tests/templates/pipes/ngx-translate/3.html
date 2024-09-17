@@ -1,15 +1,30 @@
 <div *ngIf="insightData">
-  <button aria-label="Open menu" class="da-btn secondary-link expand-clickable-area" (click)="openMenu($event)"
-          mat-icon-button [matMenuTriggerFor]="menu">
+  <button
+    aria-label="Open menu"
+    class="da-btn secondary-link expand-clickable-area"
+    (click)="openMenu($event)"
+    mat-icon-button
+    [matMenuTriggerFor]="menu"
+  >
     <span>{{"20" | translate}}</span>
     <span>{{ "" | translate}}</span>
-    <mat-icon svgIcon="Arrowdown-01" aria-hidden="true" class="nav-item stroke-color arrow-icon"></mat-icon>
+    <mat-icon
+      svgIcon="Arrowdown-01"
+      aria-hidden="true"
+      class="nav-item stroke-color arrow-icon"
+    ></mat-icon>
   </button>
-  <mat-menu #menu="matMenu" class="simple main-color dismiss-menu-items"
-            [overlapTrigger]="false" xPosition="before">
+  <mat-menu
+    #menu="matMenu"
+    class="simple main-color dismiss-menu-items"
+    [overlapTrigger]="false"
+    xPosition="before"
+  >
     <ng-container *ngIf="dims.length === 1 && !relatedCombo">
       <button (click)="doDismiss(true)" mat-menu-item>
-        <div class="item-label ellipsis">{{dims[0].insightDimensionName}} "{{dims[0].insightDimensionValue}}"</div>
+        <div class="item-label ellipsis">
+          {{dims[0].insightDimensionName}} "{{dims[0].insightDimensionValue}}"
+        </div>
       </button>
     </ng-container>
     <ng-container *ngIf="dims.length > 1">
@@ -18,15 +33,26 @@
       </button>
     </ng-container>
     <ng-container *ngIf="(dims.length === 1) && (!related || relatedCombo)">
-      <button (click)="doDismiss(false, i)" *ngFor="let dim of dims; trackBy: dimTrack" mat-menu-item>
+      <button
+        (click)="doDismiss(false, i)"
+        *ngFor="let dim of dims; trackBy: dimTrack"
+        mat-menu-item
+      >
         <div class="item-label ellipsis" aria-label="hide all">
           {{dim.insightDimensionName}}: {{"22" | translate}}
         </div>
       </button>
     </ng-container>
-    <button (click)="doDismiss(false)" *ngIf="dims.length > 1 && !related" mat-menu-item>
+    <button
+      (click)="doDismiss(false)"
+      *ngIf="dims.length > 1 && !related"
+      mat-menu-item
+    >
       <div class="item-label ellipsis">
-        <span aria-label="hide all" *ngFor="let dim of dims; trackBy: dimTrack; let i = index;">
+        <span
+          aria-label="hide all"
+          *ngFor="let dim of dims; trackBy: dimTrack; let i = index;"
+        >
           <span>{{dim.insightDimensionName}}</span>
           <span *ngIf="i != dims.length - 1">&nbsp;&&nbsp;</span>
         </span>

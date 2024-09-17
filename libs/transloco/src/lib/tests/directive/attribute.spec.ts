@@ -22,11 +22,11 @@ describe('Attribute directive', () => {
 
   it('should support params', fakeAsync(() => {
     spectator = createHost(
-      `<div transloco="alert" [translocoParams]="{ value: 'netanel' }"></div>`
+      `<div transloco="alert" [translocoParams]="{ value: 'netanel' }"></div>`,
     );
     runLoader();
     expect(spectator.queryHost('[transloco]')).toHaveText(
-      'alert netanel english'
+      'alert netanel english',
     );
   }));
 
@@ -48,16 +48,16 @@ describe('Attribute directive', () => {
         hostProps: {
           dynamic: 'netanel',
         },
-      }
+      },
     );
     runLoader();
     expect(spectator.queryHost('[transloco]')).toHaveText(
-      'alert netanel english'
+      'alert netanel english',
     );
     (spectator.hostComponent as any).dynamic = 'kazaz';
     spectator.detectChanges();
     expect(spectator.queryHost('[transloco]')).toHaveText(
-      'alert kazaz english'
+      'alert kazaz english',
     );
   }));
 
@@ -66,7 +66,7 @@ describe('Attribute directive', () => {
       `<div transloco="lazyPage.title" translocoScope="lazy-page"></div>`,
       {
         detectChanges: false,
-      }
+      },
     );
     testScopedTranslation(spectator);
   }));
@@ -78,7 +78,7 @@ describe('Attribute directive', () => {
         <div class="scoped" transloco="lazyPage.title" translocoScope="lazy-page"></div>`,
       {
         detectChanges: false,
-      }
+      },
     );
     testMergedScopedTranslation(spectator);
   }));
@@ -90,7 +90,7 @@ describe('Attribute directive', () => {
         <div class="scoped" transloco="lazyPage.title" translocoScope="lazy-page"></div>`,
       {
         detectChanges: false,
-      }
+      },
     );
     testMergedScopedTranslation(spectator, true);
   }));

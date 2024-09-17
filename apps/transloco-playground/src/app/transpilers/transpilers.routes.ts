@@ -4,6 +4,6 @@ export const TRANSPILERS_ROUTES: Route = {
   path: 'transpilers',
   loadComponent: () =>
     import('./transpilers.component').then(
-      (TranspilersComponent) => TranspilersComponent
+      (TranspilersComponent) => TranspilersComponent,
     ),
 };

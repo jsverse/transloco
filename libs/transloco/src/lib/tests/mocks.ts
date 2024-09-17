@@ -54,7 +54,7 @@ export function runLoader(times = 1) {
 
 export function setlistenToLangChange(
   service: TranslocoService,
-  reRenderOnLangChange = true
+  reRenderOnLangChange = true,
 ) {
   service.config.reRenderOnLangChange = reRenderOnLangChange;
 }
@@ -70,7 +70,7 @@ interface Providers {
 }
 export function createService(
   config: PartialTranslocoConfig = {},
-  overrides: Providers = {}
+  overrides: Providers = {},
 ) {
   const mergedConfig = translocoConfig({
     defaultLang: 'en',

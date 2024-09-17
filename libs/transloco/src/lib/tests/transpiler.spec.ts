@@ -27,7 +27,7 @@ const injectorMock = {
 
 function getTranspilerParams(
   value: unknown,
-  overrides?: Partial<Omit<TranspileParams, 'value'>>
+  overrides?: Partial<Omit<TranspileParams, 'value'>>,
 ): TranspileParams {
   return {
     value,
@@ -65,7 +65,7 @@ describe('TranslocoTranspiler', () => {
     const interpolation: [string, string] = ['<<', '>>'];
     withDefaultBehaviorTests(
       transpilerFactory(translocoConfig({ interpolation })),
-      interpolation
+      interpolation,
     );
   });
 
@@ -83,7 +83,7 @@ describe('TranslocoTranspiler', () => {
 
     it('should call the correct function', () => {
       const parsed = transpiler.transpile(
-        getTranspilerParams('[[ upperCase(lowercase) ]]')
+        getTranspilerParams('[[ upperCase(lowercase) ]]'),
       );
       expect(parsed).toEqual('LOWERCASE');
     });
@@ -91,8 +91,8 @@ describe('TranslocoTranspiler', () => {
     it('should work with multiple functions', () => {
       const parsed = transpiler.transpile(
         getTranspilerParams(
-          'first [[ upperCase(second) ]] third [[ upperCase(fourth) ]] fifth'
-        )
+          'first [[ upperCase(second) ]] third [[ upperCase(fourth) ]] fifth',
+        ),
       );
       expect(parsed).toEqual('first SECOND third FOURTH fifth');
     });
@@ -104,13 +104,13 @@ describe('TranslocoTranspiler', () => {
       spy.calls.reset();
       transpiler.transpile(
         getTranspilerParams(
-          '[[ upperCase(lowercase, another one, many more) ]]'
-        )
+          '[[ upperCase(lowercase, another one, many more) ]]',
+        ),
       );
       expect(spy as any).toHaveBeenCalledWith(
         'lowercase',
         'another one',
-        'many more'
+        'many more',
       );
     });
 
@@ -118,7 +118,7 @@ describe('TranslocoTranspiler', () => {
       const parsed = transpiler.transpile(
         getTranspilerParams('[[ testParams(and {{anotherParson}}) ]]', {
           params: { person: 'Shahar', anotherParson: 'Netanel' },
-        })
+        }),
       );
       expect(parsed).toEqual('Hello Shahar and Netanel');
     });
@@ -127,14 +127,14 @@ describe('TranslocoTranspiler', () => {
       const parsed = transpiler.transpile(
         getTranspilerParams('[[ testKeyReference() ]]', {
           translation: { fromList: 'Hello' },
-        })
+        }),
       );
       expect(parsed).toEqual('Hello');
     });
 
     it('should handle a param that includes a comma', () => {
       const parsed = transpiler.transpile(
-        getTranspilerParams('[[ returnSecondParam(noop, one\\, two, noop) ]]')
+        getTranspilerParams('[[ returnSecondParam(noop, one\\, two, noop) ]]'),
       );
       expect(parsed).toEqual('one, two');
     });
@@ -169,7 +169,7 @@ describe('TranslocoTranspiler', () => {
 
   function withDefaultBehaviorTests(
     getTranspiler: () => TranslocoTranspiler,
-    [start, end]: [string, string] = defaultConfig.interpolation
+    [start, end]: [string, string] = defaultConfig.interpolation,
   ) {
     function wrapParam(param: string) {
       return `${start} ${param} ${end}`;
@@ -186,7 +186,7 @@ describe('TranslocoTranspiler', () => {
         const parsed = transpiler.transpile(
           getTranspilerParams(`Hello ${wrapParam('value')}`, {
             params: { value: 'World' },
-          })
+          }),
         );
         expect(parsed).toEqual('Hello World');
       });
@@ -197,8 +197,8 @@ describe('TranslocoTranspiler', () => {
             `Hello ${wrapParam('from')} ${wrapParam('name')}`,
             {
               params: { name: 'Transloco', from: 'from' },
-            }
-          )
+            },
+          ),
         );
         expect(parsed).toEqual('Hello from Transloco');
       });
@@ -207,7 +207,7 @@ describe('TranslocoTranspiler', () => {
         const parsed = transpiler.transpile(
           getTranspilerParams(`Hello ${wrapParam('world')}`, {
             translation: flatten({ world: 'World' }),
-          })
+          }),
         );
         expect(parsed).toEqual('Hello World');
       });
@@ -222,15 +222,15 @@ describe('TranslocoTranspiler', () => {
         const parsed = transpiler.transpile(
           getTranspilerParams(
             `Hello ${wrapParam('withKeys')} ${wrapParam('from')} ${wrapParam(
-              'lang'
+              'lang',
             )} ${wrapParam('nes.ted')}`,
             {
               translation: lang,
-            }
-          )
+            },
+          ),
         );
         expect(parsed).toEqual(
-          'Hello with keys from lang supporting nested values!'
+          'Hello with keys from lang supporting nested values!',
         );
       });
 
@@ -243,7 +243,7 @@ describe('TranslocoTranspiler', () => {
           getTranspilerParams(`${wrapParam('hello')}`, {
             translation: lang,
             params: { name: 'world' },
-          })
+          }),
         );
         expect(parsed).toEqual('Hello dear world');
       });
@@ -255,8 +255,8 @@ describe('TranslocoTranspiler', () => {
             {
               params: { name: 'Transloco' },
               translation: flatten({ from: 'from' }),
-            }
-          )
+            },
+          ),
         );
         expect(parsed).toEqual('Hello from Transloco');
       });
@@ -271,8 +271,8 @@ describe('TranslocoTranspiler', () => {
             {
               params: { name: 'world', timeOfDay: 'morning' },
               translation: lang,
-            }
-          )
+            },
+          ),
         );
         expect(parsed).toEqual('Hello world, good morning');
       });
@@ -281,7 +281,7 @@ describe('TranslocoTranspiler', () => {
         expect(transpiler.transpile(getTranspilerParams(''))).toEqual('');
         expect(transpiler.transpile(getTranspilerParams(null))).toEqual(null);
         expect(transpiler.transpile(getTranspilerParams(undefined))).toEqual(
-          undefined
+          undefined,
         );
       });
 
@@ -297,9 +297,9 @@ describe('TranslocoTranspiler', () => {
                     end: 10,
                   },
                 },
-              }
-            )
-          )
+              },
+            ),
+          ),
         ).toEqual('From 1 to 10');
       });
 
@@ -312,8 +312,8 @@ describe('TranslocoTranspiler', () => {
           transpiler.transpile(
             getTranspilerParams(lang.ab, {
               translation: lang,
-            })
-          )
+            }),
+          ),
         ).toEqual('a b c d');
       });
 
@@ -328,23 +328,23 @@ describe('TranslocoTranspiler', () => {
           transpiler.transpile(
             getTranspilerParams(lang.ab, {
               translation: lang,
-            })
-          )
+            }),
+          ),
         ).toEqual('a b c d');
         expect(
           transpiler.transpile(
             getTranspilerParams(lang.reallyNested, {
               translation: lang,
-            })
-          )
+            }),
+          ),
         ).toEqual('a b c d e');
         expect(
           transpiler.transpile(
             getTranspilerParams(lang.withParams, {
               translation: lang,
               params: { name: 'b' },
-            })
-          )
+            }),
+          ),
         ).toEqual('Hello a b c d');
       });
 
@@ -368,7 +368,7 @@ describe('TranslocoTranspiler', () => {
 
         it('should support objects', () => {
           expect(
-            transpiler.transpile(getTranspilerParams(translations.b))
+            transpiler.transpile(getTranspilerParams(translations.b)),
           ).toEqual(translations.b);
         });
 
@@ -381,8 +381,8 @@ describe('TranslocoTranspiler', () => {
                   'g.h': { name: 'Transloco' },
                   flat: { dynamic: 'HOLA' },
                 },
-              })
-            )
+              }),
+            ),
           ).toEqual({
             flat: 'Flat HOLA',
             c: {
@@ -400,8 +400,8 @@ describe('TranslocoTranspiler', () => {
                 params: {
                   j: { value: 'Transloco' },
                 },
-              })
-            )
+              }),
+            ),
           ).toEqual({
             j: 'Hey Transloco',
           });
@@ -412,8 +412,8 @@ describe('TranslocoTranspiler', () => {
                 params: {
                   d: { value: 'Transloco' },
                 },
-              })
-            )
+              }),
+            ),
           ).toEqual({
             otherKey: 'otherKey',
             d: 'Hello Transloco',
@@ -444,7 +444,7 @@ describe('TranslocoTranspiler', () => {
 
         it('should work with arrays', () => {
           expect(
-            transpiler.transpile(getTranspilerParams(translations.a))
+            transpiler.transpile(getTranspilerParams(translations.a)),
           ).toEqual(translations.a);
         });
 
@@ -455,8 +455,8 @@ describe('TranslocoTranspiler', () => {
           };
           expect(
             transpiler.transpile(
-              getTranspilerParams(translations.d, { translation })
-            )
+              getTranspilerParams(translations.d, { translation }),
+            ),
           ).toEqual(['Hello world', 'Hello']);
 
           expect(
@@ -464,8 +464,8 @@ describe('TranslocoTranspiler', () => {
               getTranspilerParams(translations.e, {
                 translation,
                 params: { name: 'Transloco' },
-              })
-            )
+              }),
+            ),
           ).toEqual([
             'Hello Transloco',
             'Hello world',
@@ -478,8 +478,8 @@ describe('TranslocoTranspiler', () => {
             transpiler.transpile(
               getTranspilerParams(translations.b, {
                 params: { name: 'Transloco' },
-              })
-            )
+              }),
+            ),
           ).toEqual([
             'Hello Transloco',
             'Hello world',
@@ -494,8 +494,8 @@ describe('TranslocoTranspiler', () => {
                   two: 'Transloco2',
                   three: 'Transloco3',
                 },
-              })
-            )
+              }),
+            ),
           ).toEqual([
             'Hello Transloco1 Transloco2',
             'Transloco3',

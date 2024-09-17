@@ -24,7 +24,7 @@ export function findRootModule(
   host: Tree,
   module: string,
   rootPath = '',
-  skipImport = false
+  skipImport = false,
 ): string | undefined {
   if (skipImport || !module) {
     return undefined;
@@ -52,7 +52,7 @@ export function findRootModule(
 export function findModuleFromOptions(
   host: Tree,
   options,
-  projectPath
+  projectPath,
 ): Path | undefined {
   if (
     Object.prototype.hasOwnProperty.call(options, 'skipImport') &&
@@ -83,7 +83,7 @@ export function findModuleFromOptions(
     }
 
     const candidatesDirs = [...candidateSet].sort(
-      (a, b) => b.length - a.length
+      (a, b) => b.length - a.length,
     );
     for (const c of candidatesDirs) {
       const candidateFiles = [
@@ -102,8 +102,8 @@ export function findModuleFromOptions(
     throw new Error(
       `Specified module '${options.module}' does not exist.\n` +
         `Looked in the following directories:\n    ${candidatesDirs.join(
-          '\n    '
-        )}`
+          '\n    ',
+        )}`,
     );
   }
 }
@@ -115,7 +115,7 @@ export function findModule(
   host: Tree,
   generateDir: string,
   moduleExt = MODULE_EXT,
-  routingModuleExt = ROUTING_MODULE_EXT
+  routingModuleExt = ROUTING_MODULE_EXT,
 ): Path {
   let dir: DirEntry | null = host.getDir('/' + generateDir);
   let foundRoutingModule = false;
@@ -123,7 +123,7 @@ export function findModule(
   while (dir) {
     const allMatches = dir.subfiles.filter((p) => p.endsWith(moduleExt));
     const filteredMatches = allMatches.filter(
-      (p) => !p.endsWith(routingModuleExt)
+      (p) => !p.endsWith(routingModuleExt),
     );
 
     foundRoutingModule =
@@ -135,7 +135,7 @@ export function findModule(
       return null;
       throw new Error(
         'More than one module matches. Use skip-import option to skip importing ' +
-          'the component into the closest module.'
+          'the component into the closest module.',
       );
     }
 

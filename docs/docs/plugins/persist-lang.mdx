@@ -6,11 +6,13 @@ description: Plugins - Persist Lang | Transloco Angular i18n
 This plugin provides the functionality of persisting the active language to the provided storage.
 
 ## Installation
+
 ```bash
 npm install @jsverse/transloco-persist-lang
 ```
 
 ## Usage
+
 Add persist lang providers using the into the `TranslocoRootModule`/`app.config.ts`, and provide the storage you would like to use:
 
 ```ts title="transloco-root.module.ts"
@@ -76,4 +78,3 @@ import { provideTranslocoPersistLang, cookiesStorage } from '@jsverse/transloco-
 })
 export class TranslocoRootModule {}
 ```
-

@@ -56,7 +56,7 @@ describe('TranslocoPercentPipe', () => {
 
   it('should use passed digit options instead of default options', () => {
     spectator = pipeFactory(
-      getPipeTpl('1', '{ useGrouping: true, maximumFractionDigits: 3 }')
+      getPipeTpl('1', '{ useGrouping: true, maximumFractionDigits: 3 }'),
     );
     const [, { useGrouping, maximumFractionDigits }] = getIntlCallArgs();
     expect(useGrouping).toBeTrue();

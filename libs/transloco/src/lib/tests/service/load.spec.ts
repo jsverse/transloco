@@ -16,7 +16,7 @@ describe('load', () => {
     service.events$
       .pipe(
         filter((e: any) => e.type === 'translationLoadSuccess'),
-        map((e) => e.payload)
+        map((e) => e.payload),
       )
       .subscribe(spy);
     loadLang(service);
@@ -31,7 +31,7 @@ describe('load', () => {
     service.events$
       .pipe(
         filter((e: any) => e.type === 'translationLoadSuccess'),
-        map((e) => e.payload)
+        map((e) => e.payload),
       )
       .subscribe(spy);
     loadLang(service, 'admin-page/en');
@@ -53,7 +53,7 @@ describe('load', () => {
   it('should load the translation using the loader', fakeAsync(() => {
     const loaderSpy = spyOn(
       (service as any).loader,
-      'getTranslation'
+      'getTranslation',
     ).and.callThrough();
     service.load('en').subscribe();
     runLoader();

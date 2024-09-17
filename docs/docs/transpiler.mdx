@@ -7,6 +7,7 @@ The transpiler is responsible for resolving the given value.
 For example, when given `Hello {{ key }}` the default transpiler will replace the dynamic variable `key` based on the given params, or in some cases, within the [translation object itself](./additional-functionality#reference-other-keys).
 
 ## DefaultTranspiler
+
 The default transpiler can be configured with custom interpolation start and end markings to match message parameters.
 
 To configure the `DefaultTranspiler` interpolation markings you must provide a Transloco config with the [interpolation](./getting-started/config-options#interpolation) property set.
@@ -54,10 +55,12 @@ class FeatureFlagResolver implements TranslocoTranspilerFunction {
   }
 }
 ```
+
 As you can see, the `transpile` function can accept any number of arguments; you're the one who defines which arguments will be passed. In my case I'm passing three:
-* The feature flag's name.
-* The value I want to present in case the user has the flag.
-* The value I want to present in case the user doesn't have the flag.
+
+- The feature flag's name.
+- The value I want to present in case the user has the flag.
+- The value I want to present in case the user doesn't have the flag.
 
 Now we will add this transpiler function to the `TranslocoRootModule` providers:
 
@@ -80,7 +83,7 @@ The functional syntax is very similar to calling a regular function, here is an 
 
 ```json title="en.json"
 {
-  "title": "[[ hasFeatureFlag(newDashboards, has flag, missing flag) ]]",
+  "title": "[[ hasFeatureFlag(newDashboards, has flag, missing flag) ]]"
 }
 ```
 
@@ -91,11 +94,13 @@ In this case, we are checking if the user has the `newDashboard` flag, and in ca
 If the function returns a string that includes the interpolation syntax (`{{value}}`), the transpiler will replace it with the `params` or [other keys references](./additional-functionality#reference-other-keys) just like the default transpiler does.
 
 If your function param needs to include a comma, you need to escape it:
+
 ```json title="en.json"
 {
-  "title": "[[ someFunc(Hello {{user}}\\, welcome ,...) ]]",
+  "title": "[[ someFunc(Hello {{user}}\\, welcome ,...) ]]"
 }
 ```
+
 `'Hello {{user}}, welcome'` will be the first param passed.
 
 ## Custom Transpiler

@@ -23,7 +23,7 @@ describe('Multi Langs', () => {
       `,
       {
         detectChanges: false,
-      }
+      },
     );
     const service = spectator.inject<TranslocoService>(TranslocoService);
     setlistenToLangChange(service);
@@ -53,7 +53,7 @@ describe('Multi Langs', () => {
       `,
       {
         detectChanges: false,
-      }
+      },
     );
     const service = spectator.inject(TranslocoService);
     setlistenToLangChange(service);
@@ -88,7 +88,7 @@ describe('Multi Langs', () => {
       `,
       {
         detectChanges: false,
-      }
+      },
     );
     const service = spectator.inject(TranslocoService);
     setlistenToLangChange(service);

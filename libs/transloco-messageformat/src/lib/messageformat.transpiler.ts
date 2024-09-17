@@ -1,18 +1,34 @@
-import {Inject, Injectable, Optional} from '@angular/core';
-import {DefaultTranspiler, getValue, isObject, setValue, TranspileParams,} from '@jsverse/transloco';
-import MessageFormat, {MessageFormatOptions} from '@messageformat/core';
+import { Inject, Injectable, Optional } from '@angular/core';
+import {
+  DefaultTranspiler,
+  getValue,
+  isObject,
+  setValue,
+  TranspileParams,
+} from '@jsverse/transloco';
+import MessageFormat, { MessageFormatOptions } from '@messageformat/core';
 
-import {MessageformatConfig, MFLocale, TRANSLOCO_MESSAGE_FORMAT_CONFIG,} from './messageformat.config';
-import {cachedFactory, defaultFactory, MFFactory,} from './messageformat.factory';
+import {
+  MessageformatConfig,
+  MFLocale,
+  TRANSLOCO_MESSAGE_FORMAT_CONFIG,
+} from './messageformat.config';
+import {
+  cachedFactory,
+  defaultFactory,
+  MFFactory,
+} from './messageformat.factory';
 
 @Injectable()
 export class MessageFormatTranspiler extends DefaultTranspiler {
   private messageFormat: MessageFormat;
   private readonly messageConfig: MessageFormatOptions<'string'>;
   private readonly mfFactory: MFFactory;
-  
+
   constructor(
-    @Optional() @Inject(TRANSLOCO_MESSAGE_FORMAT_CONFIG) config: MessageformatConfig,
+    @Optional()
+    @Inject(TRANSLOCO_MESSAGE_FORMAT_CONFIG)
+    config: MessageformatConfig,
   ) {
     super();
     const {
@@ -25,11 +41,11 @@ export class MessageFormatTranspiler extends DefaultTranspiler {
     this.messageFormat = this.mfFactory(locales, messageConfig);
   }
 
-  transpile({value, params = {}, translation, key}: TranspileParams) {
+  transpile({ value, params = {}, translation, key }: TranspileParams) {
     if (!value) {
       return value;
     }
-    
+
     if (isObject(value) && params) {
       Object.keys(params).forEach((p) => {
         const transpiled = super.transpile({
@@ -42,7 +58,7 @@ export class MessageFormatTranspiler extends DefaultTranspiler {
         value = setValue(value, p, message(params[p]));
       });
     } else if (!Array.isArray(value)) {
-      const transpiled = super.transpile({value, params, translation, key});
+      const transpiled = super.transpile({ value, params, translation, key });
 
       const message = this.messageFormat.compile(transpiled);
       return message(params);

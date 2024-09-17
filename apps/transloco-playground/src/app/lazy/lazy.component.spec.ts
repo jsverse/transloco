@@ -19,7 +19,8 @@ describe('LazyComponent', () => {
     const fixture = TestBed.createComponent(LazyComponent);
     fixture.detectChanges();
     expect(
-      fixture.debugElement.query(By.css('.admin-title')).nativeElement.innerText
+      fixture.debugElement.query(By.css('.admin-title')).nativeElement
+        .innerText,
     ).toBe('Admin spanish');
   });
 
@@ -28,7 +29,7 @@ describe('LazyComponent', () => {
     fixture.detectChanges();
     expect(
       fixture.debugElement.query(By.css('.admin-prefix')).nativeElement
-        .innerText
+        .innerText,
     ).toBe('Admin prefix spanish');
   });
 });

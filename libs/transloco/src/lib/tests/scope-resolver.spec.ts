@@ -16,7 +16,7 @@ describe('ScopeResolver', () => {
       resolver.resolve({
         inline: 'lazy-page',
         provider: 'admin-page',
-      })
+      }),
     ).toEqual('lazy-page');
   });
 
@@ -25,7 +25,7 @@ describe('ScopeResolver', () => {
       resolver.resolve({
         inline: undefined,
         provider: 'admin-page',
-      })
+      }),
     ).toEqual('admin-page');
   });
 
@@ -34,7 +34,7 @@ describe('ScopeResolver', () => {
       resolver.resolve({
         inline: undefined,
         provider: undefined,
-      })
+      }),
     ).toEqual(undefined);
   });
 
@@ -46,7 +46,7 @@ describe('ScopeResolver', () => {
           scope: 'admin-page',
           alias: 'admin',
         },
-      })
+      }),
     ).toEqual('admin-page');
     expect(spy).toHaveBeenCalledTimes(1);
     expect(spy).toHaveBeenCalledWith('admin-page', 'admin');
@@ -59,7 +59,7 @@ describe('ScopeResolver', () => {
         provider: {
           scope: 'admin-page',
         },
-      })
+      }),
     ).toEqual('admin-page');
     // one from before
     expect(spy).toHaveBeenCalledTimes(1);
@@ -73,10 +73,13 @@ describe('ScopeResolver', () => {
         provider: {
           scope: 'nested/scopes/admin-page',
         },
-      })
+      }),
     ).toEqual('nested/scopes/admin-page');
     // one from before
     expect(spy).toHaveBeenCalledTimes(1);
-    expect(spy).toHaveBeenCalledWith('nested/scopes/admin-page', 'nestedScopesAdminPage');
+    expect(spy).toHaveBeenCalledWith(
+      'nested/scopes/admin-page',
+      'nestedScopesAdminPage',
+    );
   });
 });

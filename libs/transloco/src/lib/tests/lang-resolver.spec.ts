@@ -11,7 +11,7 @@ describe('LangResolver', () => {
         inline: 'es',
         provider: undefined,
         active: 'en',
-      })
+      }),
     ).toEqual('es');
   });
 
@@ -21,7 +21,7 @@ describe('LangResolver', () => {
         inline: undefined,
         provider: 'es',
         active: 'en',
-      })
+      }),
     ).toEqual('es');
   });
 
@@ -31,7 +31,7 @@ describe('LangResolver', () => {
         inline: undefined,
         provider: undefined,
         active: 'en',
-      })
+      }),
     ).toEqual('en');
   });
 
@@ -41,7 +41,7 @@ describe('LangResolver', () => {
         inline: 'es|static',
         provider: undefined,
         active: 'en',
-      })
+      }),
     ).toEqual('es');
   });
 
@@ -51,7 +51,7 @@ describe('LangResolver', () => {
         inline: undefined,
         provider: 'es|static',
         active: 'en',
-      })
+      }),
     ).toEqual('es');
   });
 
@@ -61,7 +61,7 @@ describe('LangResolver', () => {
         inline: undefined,
         provider: 'es',
         active: 'en',
-      })
+      }),
     ).toEqual('es');
 
     expect(
@@ -69,7 +69,7 @@ describe('LangResolver', () => {
         inline: undefined,
         provider: 'es',
         active: 'en',
-      })
+      }),
     ).toEqual('en');
   });
 
@@ -79,7 +79,7 @@ describe('LangResolver', () => {
         inline: 'es',
         provider: 'fr',
         active: 'en',
-      })
+      }),
     ).toEqual('es');
 
     expect(
@@ -87,7 +87,7 @@ describe('LangResolver', () => {
         inline: 'es',
         provider: 'fr',
         active: 'en',
-      })
+      }),
     ).toEqual('en');
   });
 
@@ -102,7 +102,7 @@ describe('LangResolver', () => {
     expect(resolver.resolveLangPath('en', undefined)).toEqual('en');
     expect(resolver.resolveLangPath('en', 'todos')).toEqual('todos/en');
     expect(resolver.resolveLangPath('es', 'todos/nested')).toEqual(
-      'todos/nested/es'
+      'todos/nested/es',
     );
   });
 });

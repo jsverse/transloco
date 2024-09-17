@@ -9,7 +9,7 @@ export const SCOPE_SHARING_ROUTES: Route = {
   path: 'scope-sharing',
   loadComponent: () =>
     import('./scope-sharing.component').then(
-      (ScopeSharingComponent) => ScopeSharingComponent
+      (ScopeSharingComponent) => ScopeSharingComponent,
     ),
   providers: [
     provideTranslocoScope({
@@ -17,7 +17,7 @@ export const SCOPE_SHARING_ROUTES: Route = {
       alias: 'todos',
     }),
     provideTranslocoLoadingTpl(
-      `<span id="default-loading-template">Loading template...</span>`
+      `<span id="default-loading-template">Loading template...</span>`,
     ),
   ],
 };

@@ -29,7 +29,7 @@ describe('translateObject', () => {
     it('should should support params', fakeAsync(() => {
       loadLang(service);
       expect(
-        service.translateObject('a.b', { c: { fromList: 'Hello' } })
+        service.translateObject('a.b', { c: { fromList: 'Hello' } }),
       ).toEqual({
         c: 'a.b.c Hello english',
       });

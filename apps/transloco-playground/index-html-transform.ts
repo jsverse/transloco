@@ -5,7 +5,7 @@ export default (targetOptions: Target, indexHtml: string) => {
   const $ = cheerio.load(indexHtml);
   $('base').attr(
     'href',
-    process.env.ORIGIN + '/transloco/transloco-playground/'
+    process.env.ORIGIN + '/transloco/transloco-playground/',
   );
 
   return $.html();

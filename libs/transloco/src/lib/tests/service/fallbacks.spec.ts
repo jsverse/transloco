@@ -23,7 +23,7 @@ describe('Multiple fallbacks', () => {
               }
 
               return translation;
-            })
+            }),
           );
         }
       };
@@ -35,7 +35,7 @@ describe('Multiple fallbacks', () => {
           fallbackLang: 'es',
           failedRetries: 2,
         },
-        { loader }
+        { loader },
       );
 
       spyOn(service, 'load').and.callThrough();
@@ -67,7 +67,7 @@ describe('Multiple fallbacks', () => {
           fallbackLang: 'es',
           failedRetries: 2,
         },
-        { loader }
+        { loader },
       );
 
       spyOn(service, 'load').and.callThrough();
@@ -108,7 +108,7 @@ describe('Multiple fallbacks', () => {
           fallbackLang: 'fallbackNotExists',
           failedRetries: 2,
         },
-        { loader }
+        { loader },
       );
 
       spyOn(service, 'load').and.callThrough();
@@ -117,10 +117,10 @@ describe('Multiple fallbacks', () => {
         .pipe(
           catchError((e) => {
             expect(e.message).toEqual(
-              'Unable to load translation and all the fallback languages'
+              'Unable to load translation and all the fallback languages',
             );
             return of('');
-          })
+          }),
         )
         .subscribe();
 
@@ -156,7 +156,7 @@ describe('Multiple fallbacks', () => {
               }
 
               return translation;
-            })
+            }),
           );
         }
       };
@@ -167,7 +167,7 @@ describe('Multiple fallbacks', () => {
         {
           defaultLang: 'es',
         },
-        { loader, fallback: StrategyTest }
+        { loader, fallback: StrategyTest },
       );
 
       spyOn(service, 'load').and.callThrough();

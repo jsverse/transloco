@@ -46,12 +46,12 @@ export function run(path) {
             let callEnd = ')';
             const pipes = (param && param.split('|')) || [];
             const [paramsPipe] = pipes.filter((pipe) =>
-              pipe.includes('translocoParams')
+              pipe.includes('translocoParams'),
             );
             if (paramsPipe) {
               const paramValue = paramsPipe.substring(
                 paramsPipe.indexOf('{'),
-                paramsPipe.lastIndexOf('}') + 1
+                paramsPipe.lastIndexOf('}') + 1,
               );
               if (paramValue) {
                 callEnd = `, ${paramValue})`;
@@ -65,11 +65,11 @@ export function run(path) {
                   `${rawKey}${param}`,
                   `${varName}('${key}'${callEnd} ${pipes
                     .filter((pipe) => !pipe.includes('translocoParams'))
-                    .join('|')}`
+                    .join('|')}`,
                 )
               : newStructuralStr.replace(
                   rawKey,
-                  `${varName}('${key}'${callEnd}`
+                  `${varName}('${key}'${callEnd}`,
                 );
             keySearch = keyRegex.exec(matchedStr);
           }
@@ -94,7 +94,7 @@ export function run(path) {
     if (!str.includes('availableLangs')) {
       str = str.replace(
         /((\s*)defaultLang:(.*?),)/,
-        (str, g1, g2, g3) => `${g1}${g2}availableLangs: [${g3.trim()}],`
+        (str, g1, g2, g3) => `${g1}${g2}availableLangs: [${g3.trim()}],`,
       );
     }
     fs.writeFileSync(file, str, { encoding: 'utf8' });

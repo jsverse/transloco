@@ -25,7 +25,7 @@ export function provideTranslocoPersistTranslations({
 }
 
 export function provideTranslocoPersistTranslationsConfig(
-  config?: Partial<StorageConfig>
+  config?: Partial<StorageConfig>,
 ) {
   return {
     provide: TRANSLOCO_PERSIST_TRANSLATIONS_STORAGE_CONFIG,

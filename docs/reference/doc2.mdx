@@ -17,8 +17,7 @@ import TabItem from '@theme/TabItem';
 <TabItem value="js">
 
 ```javascript title="src/components/HelloCodeTitle.js"
-function HelloCodeTitle(props) {
-}
+function HelloCodeTitle(props) {}
 ```
 
 </TabItem>
@@ -43,18 +42,21 @@ class HelloWorld {
 </TabItem>
 </Tabs>
 
-export const Highlight = ({children, color}) => (
+export const Highlight = ({ children, color }) => (
   <span
     style={{
       backgroundColor: color,
       borderRadius: '2px',
       color: '#fff',
       padding: '0.2rem',
-    }}>
+    }}
+  >
     {children}
   </span>
 );
 
-<Highlight color="#25c2a0">Docusaurus green</Highlight> and <Highlight color="#1877F2">Facebook blue</Highlight> are my favorite colors.
+<Highlight color="#25c2a0">Docusaurus green</Highlight> and <Highlight color="#1877F2">
+  Facebook blue
+</Highlight> are my favorite colors.
 
 I can write **Markdown** alongside my _JSX_!
