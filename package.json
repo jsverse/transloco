@@ -2,6 +2,9 @@
   "name": "transloco-nx",
   "version": "0.0.0",
   "license": "MIT",
+  "workspaces": [
+    "docs"
+  ],
   "scripts": {
     "prepare": "husky",
     "commit": "git-cz",
