@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunktransloco_docs=self.webpackChunktransloco_docs||[]).push([[8973],{8973:(s,c,o)=>{o.r(c)}}]);

@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunktransloco_docs=self.webpackChunktransloco_docs||[]).push([[9714],{9714:(c,s,a)=>{a.r(s),a.d(s,{DocSearchModal:()=>o.a1});var o=a(5044)}}]);
