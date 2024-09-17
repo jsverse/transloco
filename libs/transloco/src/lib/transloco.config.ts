@@ -18,6 +18,9 @@ export interface TranslocoConfig {
     allowEmpty: boolean;
   };
   interpolation: [string, string];
+  scopes: {
+    keepCasing?: boolean;
+  };
 }
 
 export const TRANSLOCO_CONFIG = new InjectionToken<TranslocoConfig>(
@@ -44,6 +47,9 @@ export const defaultConfig: TranslocoConfig = {
     aot: false,
   },
   interpolation: ['{{', '}}'],
+  scopes: {
+    keepCasing: false,
+  },
 };
 
 type DeepPartial<T> =
@@ -68,6 +74,10 @@ export function translocoConfig(
     flatten: {
       ...defaultConfig.flatten,
       ...config.flatten,
+    },
+    scopes: {
+      ...defaultConfig.scopes,
+      ...config.scopes,
     },
   };
 }

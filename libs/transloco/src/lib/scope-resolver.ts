@@ -19,7 +19,12 @@ export class ScopeResolver {
 
     if (provider) {
       if (isScopeObject(provider)) {
-        const { scope, alias = toCamelCase(scope) } = provider as ProviderScope;
+        const {
+          scope,
+          alias = this.service.config.scopes.keepCasing
+            ? scope
+            : toCamelCase(scope),
+        } = provider as ProviderScope;
         this.service._setScopeAlias(scope, alias);
 
         return scope;

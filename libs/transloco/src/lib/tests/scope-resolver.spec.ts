@@ -8,6 +8,11 @@ describe('ScopeResolver', () => {
     spy = jasmine.createSpy('setScopeAlias');
     resolver = new ScopeResolver({
       _setScopeAlias: spy,
+      config: {
+        scopes: {
+          keepCasing: false,
+        },
+      },
     } as any);
   });
 
@@ -81,5 +86,21 @@ describe('ScopeResolver', () => {
       'nested/scopes/admin-page',
       'nestedScopesAdminPage',
     );
+  });
+
+  it('should keep the original scope name', () => {
+    resolver = new ScopeResolver({
+      _setScopeAlias: spy,
+      config: { scopes: { keepCasing: true } },
+    } as any);
+
+    expect(
+      resolver.resolve({
+        inline: undefined,
+        provider: { scope: 'AdMiN-pAgE' },
+      }),
+    ).toEqual('AdMiN-pAgE');
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledWith('AdMiN-pAgE', 'AdMiN-pAgE');
   });
 });
