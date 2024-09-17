@@ -9,6 +9,7 @@ on:
 jobs:
   ci-step:
     strategy:
+      fail-fast: false
       matrix:
         target: ['ci:build', 'ci:test', 'ci:lint', 'ci:e2e', 'build docs']
     runs-on: ubuntu-latest
