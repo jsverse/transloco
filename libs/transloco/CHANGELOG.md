@@ -1,3 +1,10 @@
+## 7.5.0 (2024-09-17)
+
+
+### 🚀 Features
+
+- **transloco:** add option to not change the casing of the provided scope
+
 ## 7.4.4 (2024-09-16)
 
 - **transloco:** 🎸 Fixed file matching on Windows OS ([71aade96](https://github.com/ngneat/transloco/commit/71aade968fc3435522b1cde3481a76ca7e31baee))
