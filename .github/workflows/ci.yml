@@ -3,58 +3,27 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  build:
+  ci-step:
+    strategy:
+      matrix:
+        target: [ci:build, ci:test, ci:lint, ci:e2e, build:docs]
     runs-on: ubuntu-latest
+    name: ${{ matrix.target }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup
         uses: ./.github/actions/step-setup
 
-      - name: Build libs & apps
-        run: npm run ci:build
-
-      - name: Build docs
-        run: cd docs && npm i && npm run build
-
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Setup
-        uses: ./.github/actions/step-setup
-
-      - name: Run tests
-        run: npm run ci:test
-
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Setup
-        uses: ./.github/actions/step-setup
-
-      - name: Run lint
-        run: npm run ci:lint
-
-  e2e:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Setup
-        uses: ./.github/actions/step-setup
-
-      - name: Run E2E
-        run: npm run ci:e2e
+      - name: Run ${{ matrix.target }}
+        run: npm run ${{ matrix.target }}
+        shell: bash
 
   commitlint:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
