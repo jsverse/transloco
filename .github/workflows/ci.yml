@@ -6,7 +6,7 @@ jobs:
   ci-step:
     strategy:
       matrix:
-        target: [ci:build, ci:test, ci:lint, ci:e2e, build:docs]
+        target: ['ci:build', 'ci:test', 'ci:lint', 'ci:e2e', 'build:docs']
     runs-on: ubuntu-latest
     name: ${{ matrix.target }}
     steps:
