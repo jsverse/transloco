@@ -2,7 +2,7 @@
 
 ### 🚀 Features
 
-- **transloco:** add option to not change the casing of the provided scope
+- **transloco:** add option to not change the casing of the provided scope ([fdcf536d](https://github.com/jsverse/transloco/commit/fdcf536d06ea930b38c7d98a54619af32534e3d2))
 
 ## 7.4.4 (2024-09-16)
 
