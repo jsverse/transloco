@@ -21,7 +21,7 @@ export function cookiesStorage(cookieExpiry = hoursInMonth): PersistStorage {
       date.setTime(date.getTime() + cookieExpiry * millisecondsInHour);
       document.cookie = `${name}=${encodeURIComponent(
         value,
-      )};expires=${date.toUTCString()}`;
+      )};expires=${date.toUTCString()};path=/`;
     },
     // eslint-disable-next-line  @typescript-eslint/no-empty-function
     removeItem(): void {},

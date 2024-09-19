@@ -42,6 +42,11 @@ export const appConfig: ApplicationConfig = {
       },
     }),
     provideTranslocoMessageformat(),
+    // provideTranslocoPersistLang({
+    //   storage: {
+    //     useValue: cookiesStorage(),
+    //   }
+    // }),
     provideRouter(ROUTES),
   ],
 };
