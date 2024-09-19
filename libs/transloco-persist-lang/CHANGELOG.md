@@ -1,3 +1,10 @@
+## 7.0.2 (2024-09-19)
+
+
+### 🩹 Fixes
+
+- **persist-lang:** 🐛 set path when using cookie storage
+
 ## [7.0.1](https://github.com/ngneat/transloco/compare/transloco-persist-lang-7.0.0...transloco-persist-lang-7.0.1) (2024-05-31)
 
 # [7.0.0](https://github.com/jsverse/transloco/compare/transloco-persist-lang-6.0.0...transloco-persist-lang-7.0.0) (2024-03-23)
