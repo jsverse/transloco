@@ -3,7 +3,8 @@ name: CI
 on:
   pull_request:
   push:
-    branches: [ main, release/v[ 0-9 ].[ 0-9 ] ]
+    branches:
+      - master
 
 jobs:
   ci-step:
