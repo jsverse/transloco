@@ -7,6 +7,11 @@ module.exports = {
         'getting-started/installation',
         'getting-started/angular-compatability',
         'getting-started/config-options',
+        {
+          type: 'category',
+          label: 'Migration',
+          items: ['migration/ngx', 'migration/angular'],
+        },
       ],
     },
     {
@@ -55,14 +60,6 @@ module.exports = {
       id: 'hack',
     },
     {
-      type: 'doc',
-      id: 'blog-posts',
-    },
-    {
-      type: 'doc',
-      id: 'faq',
-    },
-    {
       type: 'category',
       label: 'Tools',
       items: [
@@ -103,17 +100,20 @@ module.exports = {
     },
     {
       type: 'category',
-      label: 'Migration',
-      items: ['migration/ngx', 'migration/angular'],
-    },
-    {
-      type: 'category',
       label: 'Recipes',
       items: [
         'recipes/prefetch',
         'recipes/xliff',
         'recipes/google-translate-integration',
       ],
+    },
+    {
+      type: 'doc',
+      id: 'blog-posts',
+    },
+    {
+      type: 'doc',
+      id: 'faq',
     },
   ],
 };
