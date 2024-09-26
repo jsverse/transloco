@@ -46,6 +46,30 @@ describe('TranslocoDatePipe', () => {
     expect(timeStyle).toEqual('medium');
   });
 
+  it('should return previous result with same config', () => {
+    spectator = pipeFactory(`{{ date | translocoDate:config }}`, {
+      hostProps: {
+        date,
+        config: { dateStyle: 'medium', timeStyle: 'medium' },
+      },
+    });
+
+    const [, { dateStyle, timeStyle }] = getIntlCallArgs();
+    expect(dateStyle).toEqual('medium');
+    expect(timeStyle).toEqual('medium');
+    const first = spectator.element.textContent;
+
+    intlSpy.calls.reset();
+    spectator.setHostInput({
+      date,
+      config: { dateStyle: 'medium', timeStyle: 'medium' },
+    });
+    const second = spectator.element.textContent;
+
+    expect(intlSpy).not.toHaveBeenCalled();
+    expect(second).toBe(first);
+  });
+
   it('should consider a global date config', () => {
     spectator = pipeFactory(`{{ date | translocoDate }}`, {
       hostProps: {
