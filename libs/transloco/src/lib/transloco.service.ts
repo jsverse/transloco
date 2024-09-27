@@ -98,7 +98,7 @@ export class TranslocoService implements OnDestroy {
   private cache = new Map<string, Observable<Translation>>();
   private firstFallbackLang: string | undefined;
   private defaultLang = '';
-  private availableLangs: AvailableLangs = [];
+  private availableLangs?: AvailableLangs;
   private isResolvedMissingOnce = false;
   private lang: BehaviorSubject<string>;
   private failedLangs = new Set<string>();
@@ -125,7 +125,7 @@ export class TranslocoService implements OnDestroy {
     service = this;
     this.config = JSON.parse(JSON.stringify(userConfig));
 
-    this.setAvailableLangs(this.config.availableLangs || []);
+    this.setAvailableLangs(this.config.availableLangs);
     this.setFallbackLangForMissingTranslation(this.config);
     this.setDefaultLang(this.config.defaultLang);
     this.lang = new BehaviorSubject<string>(this.getDefaultLang());
@@ -165,7 +165,7 @@ export class TranslocoService implements OnDestroy {
     return this;
   }
 
-  setAvailableLangs(langs: AvailableLangs) {
+  setAvailableLangs(langs: AvailableLangs | undefined) {
     this.availableLangs = langs;
   }
 
@@ -177,7 +177,7 @@ export class TranslocoService implements OnDestroy {
    * depending on how the available languages are set in your module.
    */
   getAvailableLangs() {
-    return this.availableLangs;
+    return this.availableLangs ?? [];
   }
 
   load(path: string, options: LoadOptions = {}): Observable<Translation> {
@@ -627,7 +627,11 @@ export class TranslocoService implements OnDestroy {
    * @internal
    */
   _isLangScoped(lang: string) {
-    return this.getAvailableLangsIds().indexOf(lang) === -1;
+    const availableLangsIds = this.getAvailableLangsIds();
+    if (!availableLangsIds) {
+      return true;
+    }
+    return availableLangsIds.indexOf(lang) === -1;
   }
 
   /**
@@ -637,7 +641,11 @@ export class TranslocoService implements OnDestroy {
    * False if the given string is not an available language.
    */
   isLang(lang: string): boolean {
-    return this.getAvailableLangsIds().indexOf(lang) !== -1;
+    const availableLangsIds = this.getAvailableLangsIds();
+    if (!availableLangsIds) {
+      return true;
+    }
+    return availableLangsIds.indexOf(lang) !== -1;
   }
 
   /**
@@ -696,8 +704,12 @@ export class TranslocoService implements OnDestroy {
     return size(this.getTranslation(lang));
   }
 
-  private getAvailableLangsIds(): string[] {
-    const first = this.getAvailableLangs()[0];
+  private getAvailableLangsIds(): string[] | null {
+    const first = this.getAvailableLangs()?.[0];
+    
+    if (isNil(first)) {
+      return null;
+    }
 
     if (isString(first)) {
       return this.getAvailableLangs() as string[];
