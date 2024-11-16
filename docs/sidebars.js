@@ -5,7 +5,7 @@ module.exports = {
       label: 'Getting Started',
       items: [
         'getting-started/installation',
-        'getting-started/angular-compatability',
+        'getting-started/angular-compatibility',
         'getting-started/config-options',
         {
           type: 'category',

@@ -400,11 +400,11 @@ header iframe {
   border-radius: 5px;
 }
 
-.compatability-table th {
+.compatibility-table th {
   white-space: nowrap;
 }
 
-.compatability-table th:first-of-type {
+.compatibility-table th:first-of-type {
   min-width: 93px;
 }
 
