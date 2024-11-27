@@ -70,6 +70,8 @@ translocoConfig({
   availableLangs: ['en', 'es'],
 });
 ```
+When the active language is not included in the `availableLangs`, the translations of this language will not be returned.
+You can omit this option or set it to `null`, in this case the translations will be returned for any language, if available.
 
 ### `missingHandler.allowEmpty`
 
