@@ -66,7 +66,7 @@ export class DefaultTranspiler implements TranslocoTranspiler {
     } else if (params) {
       if (isObject(value)) {
         value = this.handleObject({
-          value: value as Record<any, any>,
+          value,
           params,
           translation,
           key,

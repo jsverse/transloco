@@ -1,5 +1,3 @@
-import { flatten as _flatten, unflatten as _unflatten } from 'flat';
-
 import { ProviderScope, Translation } from './types';
 
 export function getValue<T>(obj: T, path: keyof T) {
@@ -68,7 +66,7 @@ export function isNumber(val: unknown): val is number {
   return typeof val === 'number';
 }
 
-export function isObject(item: unknown): boolean {
+export function isObject(item: unknown): item is Record<string, unknown> {
   return !!item && typeof item === 'object' && !Array.isArray(item);
 }
 
@@ -124,10 +122,41 @@ export function hasInlineLoader(item: any): item is ProviderScope {
   return item && isObject(item.loader);
 }
 
-export function unflatten(obj: Translation): Translation {
-  return _unflatten(obj);
+export function flatten(obj: Translation): Translation {
+  const result: Record<string, unknown> = {};
+
+  function recurse(curr: unknown, prop: string) {
+    if (curr === null) {
+      result[prop] = null;
+    } else if (isObject(curr)) {
+      for (const [key, value] of Object.entries(curr)) {
+        recurse(value, prop ? `${prop}.${key}` : key);
+      }
+    } else {
+      result[prop] = curr;
+    }
+  }
+
+  recurse(obj, '');
+  return result;
 }
 
-export function flatten(obj: Translation): Translation {
-  return _flatten(obj, { safe: true });
+export function unflatten(obj: Translation): Translation {
+  const result: Record<string, unknown> = {};
+
+  for (const [key, value] of Object.entries(obj)) {
+    const keys = key.split('.');
+    let current = result;
+
+    keys.forEach((key, i) => {
+      if (i === keys.length - 1) {
+        current[key] = value;
+      } else {
+        current[key] ??= {};
+        current = current[key] as Record<string, unknown>;
+      }
+    });
+  }
+
+  return result;
 }
