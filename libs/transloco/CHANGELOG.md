@@ -1,3 +1,10 @@
+## 7.5.1 (2024-12-24)
+
+
+### 🩹 Fixes
+
+- **transloco:** 🐛 Remove flat as dependency ([0730fd5f](https://github.com/jsverse/transloco/commit/0730fd5f))
+
 ## 7.5.0 (2024-09-17)
 
 ### 🚀 Features
