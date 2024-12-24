@@ -80,7 +80,7 @@ export class TranslocoPersistTranslations
   }
 
   private decode<T>(key: string, item: any): T | null {
-    if (isObject(item)) {
+    if (isObject(item) as T) {
       return item;
     } else if (isString(item)) {
       try {
