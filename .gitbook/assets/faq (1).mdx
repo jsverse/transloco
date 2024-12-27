@@ -1,0 +1,60 @@
+---
+title: FAQ
+description: FAQ | Transloco Angular i18n
+---
+
+A collection of common questions and their answers.
+
+### I'm calling the `translate` function inside `ngOnInit` but it says the translation is missing and when I use the structural directive it works fine, why?
+
+Loading the translations is an asynchronous task while `translate` is a synchronous function.
+You have 2 options:
+
+- Subscribe to the transloco service events and use `translate` inside the subscription.
+- Use `selectTranslate` instead.
+
+The structural directive is waiting for the translation to load on its own, that's why it's working in the template.
+
+### Is it possible to use an Angular component inside my translation string?
+
+You can't do it using while AOT compilation, but there are 2 alternatives:
+
+- Transform your component into a web component using `@angular/elements` and use the HTML tag in your translation.
+- Separate your translation into 2 parts and insert the desired component between.
+
+### `getBrowserLang` in SSR?
+
+The `getBrowserLang` function will only returns a value when executed in browser context, if you are using SSR you should add a desired default value:
+
+```
+const defaultLang = getBrowserLang() || 'en';
+```
+
+### Can I use HTML markings inside a translation?
+
+Yes, you can! Pass the translated string in an `innerHTML` binding.
+
+### I want to use the structural directive in my app, but isn't calling a function from the template a bad practice?
+
+Using a structural directive is the recommended approach. It’s DRY and efficient, as it creates one subscription per template.
+
+Moreover, the t function is `memoized`, It means that given the same key, it will return the result directly from the cache.
+
+Furthermore, when using on push change detection strategy (which is recommended) the change detection cycles should greatly reduce.
+
+### Why values don't get translated when using the `translate` in unit tests?
+
+As stated beneath the function, even in tests, it's you responsibility to make sure the translation are loaded
+before calling it.
+
+You can make sure you translations are loaded before your test executes by simply setting the `preloadLangs` to `true` in the options passed to
+`TranslocoTestingModule.forRoot`.
+
+### Why does querying an element inside the `*transloco` directive using `@ViewChild()` not working?
+
+The transloco structural directive has an async operation in its internals which is fetching the translations.
+
+Because of that, the contents of the directive won't be available until the translations are fetched, so you can't access
+the element in the `ngOnInit` nor the `ngAfterViewInit`.
+
+The simplest way you can gain access to the element on render is by making the `ViewChild` a setter.

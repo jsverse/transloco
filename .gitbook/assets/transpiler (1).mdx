@@ -1,0 +1,118 @@
+---
+title: The Transpiler
+description: The Transpiler | Transloco Angular i18n
+---
+
+The transpiler is responsible for resolving the given value.
+For example, when given `Hello {{ key }}` the default transpiler will replace the dynamic variable `key` based on the given params, or in some cases, within the [translation object itself](./additional-functionality#reference-other-keys).
+
+## DefaultTranspiler
+
+The default transpiler can be configured with custom interpolation start and end markings to match message parameters.
+
+To configure the `DefaultTranspiler` interpolation markings you must provide a Transloco config with the [interpolation](./getting-started/config-options#interpolation) property set.
+
+## Functional Transpiler
+
+In addition to the default transpiler, Transloco also exposes the `FunctionalTranspiler` which allows you to implement function calls into your translation values. This way you can leverage Angular's DI power and make your translations even more flexible.
+
+The `FunctionalTranspiler` is compatible with the `DefaultTranspiler`, therefore you can switch to the functional without worrying that it'll break your current translations.
+
+:::note
+Switching back to the default transpiler will require you to remove all the functional syntax.
+:::
+
+To enable this transpiler, add the following provider in your `TranslocoRootModule`:
+
+```ts title="transloco-root.module.ts"
+import { FunctionalTranspiler, provideTranslocoTranspiler } from '@jsverse/transloco';
+
+@NgModule({
+  ...
+  providers: [provideTranslocoTranspiler(FunctionalTranspiler)]
+})
+export class TranslocoRootModule {}
+```
+
+### Usage
+
+In order to use a function in the translation, we need to provide it to the transpiler.
+We do so by creating a new class that implements the `TranslocoTranspilerFunction` interface.
+
+For example, let's say we want to display different texts, based on whether the user is exposed to a specific feature or not:
+
+```ts title="has-feature-flag.ts"
+import { FFService } from './feature-flag.service';
+import { TranslocoTranspilerFunction } from '@jsverse/transloco';
+
+class FeatureFlagResolver implements TranslocoTranspilerFunction {
+  constructor(private featureFlagService: FFService) {}
+
+  transpile(...args: string[]): any {
+    const [flagName, trueValue, falseValue] = args;
+
+    return this.featureFlagService.hasFF(flagName) ? trueValue : falseValue;
+  }
+}
+```
+
+As you can see, the `transpile` function can accept any number of arguments; you're the one who defines which arguments will be passed. In my case I'm passing three:
+
+- The feature flag's name.
+- The value I want to present in case the user has the flag.
+- The value I want to present in case the user doesn't have the flag.
+
+Now we will add this transpiler function to the `TranslocoRootModule` providers:
+
+```ts title="transloco-root.module.ts"
+import { FunctionalTranspiler, provideTranslocoTranspiler } from '@jsverse/transloco';
+import { FeatureFlagResolver } from './has-feature-flag';
+
+@NgModule({
+  ...
+  providers: [provideTranslocoTranspiler(FunctionalTranspiler),
+  {
+    provide: 'hasFeatureFlag', // ====> The function name used in the translation
+    useClass: FeatureFlagResolver
+  }],
+})
+export class TranslocoRootModule {}
+```
+
+The functional syntax is very similar to calling a regular function, here is an example:
+
+```json title="en.json"
+{
+  "title": "[[ hasFeatureFlag(newDashboards, has flag, missing flag) ]]"
+}
+```
+
+In this case, we are checking if the user has the `newDashboard` flag, and in case he does, we want to display `'has flag'`; otherwise, we will display `'missing flag'`.
+
+### Usage Notes
+
+If the function returns a string that includes the interpolation syntax (`{{value}}`), the transpiler will replace it with the `params` or [other keys references](./additional-functionality#reference-other-keys) just like the default transpiler does.
+
+If your function param needs to include a comma, you need to escape it:
+
+```json title="en.json"
+{
+  "title": "[[ someFunc(Hello {{user}}\\, welcome ,...) ]]"
+}
+```
+
+`'Hello {{user}}, welcome'` will be the first param passed.
+
+## Custom Transpiler
+
+You can also provide a custom transpiler by creating a class that implements the `TranslocoTranspiler` interface.
+
+```ts
+import { TranslocoTranspiler } from '@jsverse/transloco';
+
+export class CustomTranspiler implements TranslocoTranspiler {
+  transpile(value: any, params, translation: Translation, key: string) {
+    return ...;
+  }
+}
+```

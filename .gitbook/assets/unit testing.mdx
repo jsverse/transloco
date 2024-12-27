@@ -1,0 +1,84 @@
+---
+title: Unit Testing
+description: Unit Testing | Transloco Angular i18n
+---
+
+When running specs, we want to have the languages available immediately, in a synchronous fashion. Transloco provides you with a `TranslocoTestingModule`, where you can pass the languages you need in your specs, and the config.
+
+We recommend to be DRY and create a module factory function that we can use in each spec, For example:
+
+```ts title="transloco-testing.module.ts"
+import {
+  TranslocoTestingModule,
+  TranslocoTestingOptions,
+} from '@jsverse/transloco';
+import en from '../assets/i18n/en.json';
+import es from '../assets/i18n/es.json';
+
+export function getTranslocoModule(options: TranslocoTestingOptions = {}) {
+  return TranslocoTestingModule.forRoot({
+    langs: { en, es },
+    translocoConfig: {
+      availableLangs: ['en', 'es'],
+      defaultLang: 'en',
+    },
+    preloadLangs: true,
+    ...options,
+  });
+}
+```
+
+Now we can use it in each `spec` file:
+
+```ts {4} title="app.component.spec.ts"
+describe('AppComponent', () => {
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      imports: [getTranslocoModule()],
+      declarations: [AppComponent],
+    }).compileComponents();
+  }));
+
+  it('should work', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    expect(
+      fixture.debugElement.query(By.css('h1')).nativeElement.innerText,
+    ).toBe('hello');
+  });
+});
+```
+
+You can find an example [here](https://github.com/jsverse/transloco/blob/master/apps/transloco-playground/src/app/on-push/on-push.component.spec.ts).
+
+If you need to test `scopes`, you should add them as `languages`, for example:
+
+```ts {6,7} title="transloco-testing.module.ts"
+export function getTranslocoModule(options: TranslocoTestingOptions = {}) {
+  return TranslocoTestingModule.forRoot({
+    langs: {
+      en,
+      es,
+      'admin-page/en': admin,
+      'admin-page/es': adminSpanish,
+    },
+    translocoConfig: {
+      availableLangs: ['en', 'es'],
+      defaultLang: 'en',
+    },
+    preloadLangs: true,
+    ...options,
+  });
+}
+```
+
+You can find an example [here](https://github.com/jsverse/transloco/blob/master/apps/transloco-playground/src/app/lazy/lazy.component.spec.ts).
+
+Note that in order to import JSON files, you need to configure the TypeScript compiler by adding the following properties in `tsconfig.json`:
+
+```json
+{
+  "resolveJsonModule": true,
+  "esModuleInterop": true
+}
+```

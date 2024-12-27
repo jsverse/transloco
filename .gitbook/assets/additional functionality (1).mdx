@@ -1,0 +1,102 @@
+---
+title: Additional Functionality
+description: Additional Functionality | Transloco Angular i18n
+---
+
+### Reference Other Keys
+
+You can point to specific keys in other keys from the same translation file. For example:
+
+```json title="en.json"
+{
+  "alert": "alert {{value}} english",
+  "home": "home english",
+  "fromList": "from {{home}}"
+}
+```
+
+So the result of `service.translate('fromList')` will be: "from home english".
+
+When using this feature inside a [scope](./lazy-load/scope-configuration), make sure you prefix the key reference with the scope name:
+
+```json title="admin/en.json"
+{
+  "alert": "alert {{value}} english",
+  "home": "home english",
+  "fromList": "from {{admin.home}}"
+}
+```
+
+So the result of `service.translate('admin.fromList')` will be: "from home english".
+
+You can also pass parameters to the reused key. For example:
+
+```json title="en.json"
+{
+  "hello": "Hello {{name}},",
+  "greet": "{{hello}}, have a good day!"
+}
+```
+
+So the result of `service.translate('greet', {name: 'John'})` will be: "Hello John, have a good day!".
+
+**Watch out from creating circular referencing!** For Example:
+
+```json title="en.json"
+{
+  "key": "{{key2}}",
+  "key2": "{{key}}"
+}
+```
+
+### `translate()`
+
+You don't have to inject the service each time you need to translate a key. Transloco has an exported `translate()` function:
+
+```ts
+import { translate } from '@jsverse/transloco';
+
+translate('hello');
+```
+
+:::important
+Note that this function is a proxy to the [TranslocoService.translate](./translation-api#translate) method.
+It will not work if the service didn't initialize.  
+In order to safely use this method, you are responsible for ensuring that the translation files have been successfully loaded by the time it's called.
+:::
+
+### `translateObject()`
+
+You don't have to inject the service each time you need to translate an object. Transloco has an exported `translateObject()` function:
+
+```ts
+import { translateObject } from '@jsverse/transloco';
+
+translateObject('some.object');
+```
+
+:::important
+Note that this function is a proxy to the [TranslocoService.translateObject](./translation-api#translateObject) method.
+It will not work if the service didn't initialize.  
+In order to safely use this method, you are responsible for ensuring that the translation files have been successfully loaded by the time it's called.
+:::
+
+### `getBrowserLang()`
+
+Returns the language code name from the browser, e.g. `"en"`
+
+```ts
+import { getBrowserLang } from '@jsverse/transloco';
+
+getBrowserLang();
+```
+
+### `getBrowserCultureLang()`
+
+Returns the culture language code name from the browser, e.g. `"en-US"`
+
+```ts
+import { getBrowserCultureLang } from '@jsverse/transloco';
+
+getBrowserCultureLang();
+```
