@@ -17,6 +17,8 @@
   * [SSR Support](advanced-topics/ssr-support.md)
   * [Unit Testing](advanced-topics/unit-testing.md)
   * [Hack the Library](advanced-topics/hack-the-library.md)
+* [🧪 Sandbox & Examples](sandbox-and-examples/README.md)
+  * [Transloco Sandbox](https://codesandbox.io/s/jsverse-transloco-kn52hs)
 * [⚙️ Additional Functionality](additional-functionality/README.md)
   * [Loading Template](additional-functionality/loading-template.md)
   * [Key Referencing](additional-functionality/key-referencing.md)
