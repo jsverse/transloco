@@ -3,7 +3,11 @@ import { Inject, Injectable, InjectionToken } from '@angular/core';
 import { TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 
 export const TRANSLOCO_FALLBACK_STRATEGY =
-  new InjectionToken<TranslocoFallbackStrategy>('TRANSLOCO_FALLBACK_STRATEGY');
+  new InjectionToken<TranslocoFallbackStrategy>(
+    typeof ngDevMode !== 'undefined' && ngDevMode
+      ? 'TRANSLOCO_FALLBACK_STRATEGY'
+      : '',
+  );
 
 export interface TranslocoFallbackStrategy {
   getNextLangs(failedLang: string): string[];

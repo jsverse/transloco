@@ -4,7 +4,11 @@ import { TranslocoConfig } from './transloco.config';
 import { HashMap } from './types';
 
 export const TRANSLOCO_MISSING_HANDLER =
-  new InjectionToken<TranslocoMissingHandlerData>('TRANSLOCO_MISSING_HANDLER');
+  new InjectionToken<TranslocoMissingHandlerData>(
+    typeof ngDevMode !== 'undefined' && ngDevMode
+      ? 'TRANSLOCO_MISSING_HANDLER'
+      : '',
+  );
 
 export interface TranslocoMissingHandlerData extends TranslocoConfig {
   activeLang: string;

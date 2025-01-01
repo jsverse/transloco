@@ -9,7 +9,7 @@ import {
 } from './transloco.config';
 
 export const TRANSLOCO_TRANSPILER = new InjectionToken<TranslocoTranspiler>(
-  'TRANSLOCO_TRANSPILER',
+  typeof ngDevMode !== 'undefined' && ngDevMode ? 'TRANSLOCO_TRANSPILER' : '',
 );
 
 export interface TranslocoTranspiler {
