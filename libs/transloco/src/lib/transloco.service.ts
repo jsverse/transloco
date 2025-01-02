@@ -71,6 +71,10 @@ import {
 } from './shared';
 import { getFallbacksLoaders } from './get-fallbacks-loaders';
 import { resolveLoader } from './resolve-loader';
+import {
+  formatTranslocoError,
+  TranslocoErrorCode,
+} from './transloco-error-code';
 
 let service: TranslocoService;
 
@@ -234,7 +238,7 @@ export class TranslocoService implements OnDestroy {
         this.handleSuccess(path, translation);
       }),
       catchError((error) => {
-        if (!this.config.prodMode) {
+        if (typeof ngDevMode !== 'undefined' && ngDevMode) {
           console.error(`Error while trying to load "${path}"`, error);
         }
 
@@ -762,12 +766,19 @@ export class TranslocoService implements OnDestroy {
     const isFallbackLang = nextLang === splitted[splitted.length - 1];
 
     if (!nextLang || isFallbackLang) {
-      let msg = `Unable to load translation and all the fallback languages`;
-      if (splitted.length > 1) {
-        msg += `, did you misspelled the scope name?`;
+      let message: string;
+      if (typeof ngDevMode !== 'undefined' && ngDevMode) {
+        message = `Unable to load translation and all the fallback languages`;
+        if (splitted.length > 1) {
+          message += `, did you misspelled the scope name?`;
+        }
+      } else {
+        message = formatTranslocoError(
+          TranslocoErrorCode.UnableToLoadTranslation,
+        );
       }
 
-      throw new Error(msg);
+      throw new Error(message);
     }
 
     let resolveLang = nextLang;

@@ -1,6 +1,10 @@
 import { TranslocoLoader, TranslocoLoaderData } from './transloco.loader';
 import { InlineLoader } from './types';
 import { isFunction } from './helpers';
+import {
+  formatTranslocoError,
+  TranslocoErrorCode,
+} from './transloco-error-code';
 
 interface Options {
   inlineLoader?: InlineLoader;
@@ -15,7 +19,15 @@ export function resolveLoader(options: Options) {
   if (inlineLoader) {
     const pathLoader = inlineLoader[path];
     if (isFunction(pathLoader) === false) {
-      throw `You're using an inline loader but didn't provide a loader for ${path}`;
+      let message: string;
+      if (typeof ngDevMode !== 'undefined' && ngDevMode) {
+        message = `You're using an inline loader but didn't provide a loader for ${path}`;
+      } else {
+        message = formatTranslocoError(
+          TranslocoErrorCode.NoLoaderProvidedForPath,
+        );
+      }
+      throw new Error(message);
     }
 
     return inlineLoader[path]().then((res) =>

@@ -22,7 +22,11 @@ describe('TranslocoMissingHandler', () => {
   });
 
   it('should not notify a warning message for production mode', () => {
+    // @ts-expect-error does not exist on `typeof globalThis`.
+    globalThis.ngDevMode = false;
     assertLog({ prodMode: true }, false);
+    // @ts-expect-error does not exist on `typeof globalThis`.
+    globalThis.ngDevMode = true;
   });
 
   it('should not notify a warning message when logMissingKey is false', () => {
