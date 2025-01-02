@@ -1,4 +1,10 @@
-import { Inject, Injectable, OnDestroy, Optional } from '@angular/core';
+import {
+  DestroyRef,
+  inject,
+  Inject,
+  Injectable,
+  Optional,
+} from '@angular/core';
 import {
   BehaviorSubject,
   catchError,
@@ -91,7 +97,7 @@ export function translateObject<T>(
 }
 
 @Injectable({ providedIn: 'root' })
-export class TranslocoService implements OnDestroy {
+export class TranslocoService {
   langChanges$: Observable<string>;
 
   private translations = new Map<string, Translation>();
@@ -108,6 +114,8 @@ export class TranslocoService implements OnDestroy {
   readonly config: TranslocoConfig & {
     scopeMapping?: HashMap<string>;
   };
+
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     @Optional() @Inject(TRANSLOCO_LOADER) private loader: TranslocoLoader,
@@ -136,10 +144,21 @@ export class TranslocoService implements OnDestroy {
     /**
      * When we have a failure, we want to define the next language that succeeded as the active
      */
-    this.events$.pipe(takeUntilDestroyed()).subscribe((e) => {
+    this.events$.subscribe((e) => {
       if (e.type === 'translationLoadSuccess' && e.wasFailure) {
         this.setActiveLang(e.payload.langName);
       }
+    });
+
+    this.destroyRef.onDestroy(() => {
+      // Complete subjects to release observers if users forget to unsubscribe manually.
+      // This is important in server-side rendering.
+      this.lang.complete();
+      this.events.complete();
+      // As a root provider, this service is destroyed with when the application is destroyed.
+      // Cached values retain `this`, causing circular references that block garbage collection,
+      // leading to memory leaks during server-side rendering.
+      this.cache.clear();
     });
   }
 
@@ -241,6 +260,7 @@ export class TranslocoService implements OnDestroy {
         return this.handleFailure(path, options);
       }),
       shareReplay(1),
+      takeUntilDestroyed(this.destroyRef),
     );
 
     this.cache.set(path, load$);
@@ -682,14 +702,6 @@ export class TranslocoService implements OnDestroy {
       this.config.scopeMapping = {};
     }
     this.config.scopeMapping[scope] = alias;
-  }
-
-  ngOnDestroy() {
-    // Caretaker note: since this is the root provider, it'll be destroyed when the `NgModuleRef.destroy()` is run.
-    // Cached values capture `this`, thus leading to a circular reference and preventing the `TranslocoService` from
-    // being GC'd. This would lead to a memory leak when server-side rendering is used since the service is created
-    // and destroyed per each HTTP request, but any service is not getting GC'd.
-    this.cache.clear();
   }
 
   private isLoadedTranslation(lang: string) {
