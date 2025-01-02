@@ -15,7 +15,15 @@ export interface PersistLangConfig {
 }
 
 export const TRANSLOCO_PERSIST_LANG_STORAGE =
-  new InjectionToken<PersistStorage>('TRANSLOCO_PERSIST_LANG_STORAGE');
+  /* @__PURE__ */ new InjectionToken<PersistStorage>(
+    typeof ngDevMode !== 'undefined' && ngDevMode
+      ? 'TRANSLOCO_PERSIST_LANG_STORAGE'
+      : '',
+  );
 
 export const TRANSLOCO_PERSIST_LANG_CONFIG =
-  new InjectionToken<PersistLangConfig>('TRANSLOCO_PERSIST_LANG_CONFIG');
+  /* @__PURE__ */ new InjectionToken<PersistLangConfig>(
+    typeof ngDevMode !== 'undefined' && ngDevMode
+      ? 'TRANSLOCO_PERSIST_LANG_CONFIG'
+      : '',
+  );

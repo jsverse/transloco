@@ -5,6 +5,7 @@ import { Type } from '@angular/core';
 import { createService, mockLangs, runLoader } from '../mocks';
 import { TranslocoLoader } from '../../transloco.loader';
 import { TranslocoFallbackStrategy } from '../../transloco-fallback-strategy';
+import { TranslationLoadError } from '../../transloco.service';
 
 describe('Multiple fallbacks', () => {
   describe('DefaultFallbackStrategy', () => {
@@ -125,6 +126,7 @@ describe('Multiple fallbacks', () => {
         .load('notExists')
         .pipe(
           catchError((e) => {
+            expect(e).toBeInstanceOf(TranslationLoadError);
             expect(e.message).toEqual(
               'Unable to load translation and all the fallback languages',
             );
