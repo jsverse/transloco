@@ -24,7 +24,7 @@ export interface TranslocoConfig {
 }
 
 export const TRANSLOCO_CONFIG = new InjectionToken<TranslocoConfig>(
-  'TRANSLOCO_CONFIG',
+  typeof ngDevMode !== 'undefined' && ngDevMode ? 'TRANSLOCO_CONFIG' : '',
   {
     providedIn: 'root',
     factory: () => defaultConfig,
