@@ -36,16 +36,6 @@
           ],
           "outputHashing": "all"
         },
-        "docs": {
-          "fileReplacements": [
-            {
-              "replace": "apps/transloco-playground/src/environments/environment.ts",
-              "with": "apps/transloco-playground/src/environments/environment.docs.ts"
-            }
-          ],
-          "indexHtmlTransformer": "apps/transloco-playground/index-html-transform.ts",
-          "outputHashing": "all"
-        },
         "development": {
           "buildOptimizer": false,
           "optimization": false,

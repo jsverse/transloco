@@ -2,17 +2,13 @@
   "name": "transloco-nx",
   "version": "0.0.0",
   "license": "MIT",
-  "workspaces": [
-    "docs"
-  ],
   "homepage": "https://jsverse.gitbook.io/transloco/",
   "scripts": {
     "prepare": "husky",
     "commit": "git-cz",
     "start": "nx run transloco-playground:serve",
-    "start:docs": "npm start --prefix=docs",
     "build": "node scripts/build.mjs",
-    "build:playground-docs": "nx build transloco-playground --configuration=docs",
+    "build:playground": "nx build transloco-playground",
     "ci:test": "nx run-many --target=test --all",
     "ci:build": "nx run-many --target=build --all",
     "ci:lint": "nx run-many --target=lint --all",
