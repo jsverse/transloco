@@ -5,6 +5,7 @@
   "workspaces": [
     "docs"
   ],
+  "homepage": "https://jsverse.gitbook.io/transloco/",
   "scripts": {
     "prepare": "husky",
     "commit": "git-cz",

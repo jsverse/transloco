@@ -15,7 +15,7 @@
   "bugs": {
     "url": "https://github.com/jsverse/transloco/issues"
   },
-  "homepage": "https://jsverse.github.io/transloco/docs/tools/validator",
+  "homepage": "https://jsverse.gitbook.io/transloco/tools/validator",
   "repository": {
     "type": "git",
     "url": "https://github.com/jsverse/transloco"

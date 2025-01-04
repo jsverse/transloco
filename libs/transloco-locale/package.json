@@ -8,7 +8,7 @@
   "bugs": {
     "url": "https://github.com/jsverse/transloco/issues"
   },
-  "homepage": "https://jsverse.github.io/transloco/docs/plugins/locale",
+  "homepage": "https://jsverse.gitbook.io/transloco/plugins/locale-l10n",
   "repository": {
     "type": "git",
     "url": "https://github.com/jsverse/transloco"

@@ -8,7 +8,7 @@
   "bugs": {
     "url": "https://github.com/jsverse/transloco/issues"
   },
-  "homepage": "https://jsverse.github.io/transloco/docs/plugins/message-format",
+  "homepage": "https://jsverse.gitbook.io/transloco/plugins/message-format",
   "repository": {
     "type": "git",
     "url": "https://github.com/jsverse/transloco"
