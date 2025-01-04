@@ -6,7 +6,7 @@
   "prefix": "transloco-nx-shell",
   "targets": {
     "build": {
-      "executor": "@nx/angular:webpack-browser",
+      "executor": "@nx/angular:browser-esbuild",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/transloco-playground",
@@ -23,7 +23,7 @@
           "apps/transloco-playground/src/styles.scss",
           "node_modules/bootstrap/dist/css/bootstrap.min.css"
         ],
-        "allowedCommonJsDependencies": ["flat", "@messageformat/core"],
+        "allowedCommonJsDependencies": ["@messageformat/core"],
         "scripts": ["node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"]
       },
       "configurations": {
@@ -48,7 +48,7 @@
       "defaultConfiguration": "production"
     },
     "serve": {
-      "executor": "@angular-devkit/build-angular:dev-server",
+      "executor": "@nx/angular:dev-server",
       "configurations": {
         "production": {
           "buildTarget": "transloco-playground:build:production"
