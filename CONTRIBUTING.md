@@ -44,22 +44,41 @@ Run the playground app:
 npm start
 ```
 
-## Building
+## Contributing to the Documentation
 
-```bash
-npm run build [package]
-```
+The Transloco documentation is hosted on GitBook and managed in the `gitbook-docs` branch.
 
-Note: Don't use nx directly as some apps might have further building steps
+### Steps to Contribute:
 
-## <a name="rules"></a> Coding Rules
+1. **Ensure you are working with the `gitbook-docs`**
+
+2. **Install Dependencies**  
+   Run the following commands to install the required dependencies:
+
+   ```bash
+   npm i
+   yarn
+   ```
+
+3. **Make Your Changes**  
+   Edit or add documentation files located in the `gitbook-docs` branch.
+
+4. **Preview Your Changes**  
+   Use GitBook CLI or relevant tools to preview the documentation locally if needed.
+
+5. **Submit a Pull Request**  
+   Once your changes are complete, push your branch and open a PR to the `gitbook-docs` branch. Make sure to clearly describe the changes in the PR description.
+
+We welcome contributions that improve clarity, fix typos, add examples, or enhance the existing content!
+
+## Coding Rules
 
 To ensure consistency throughout the source code, keep these rules in mind as you are working:
 
 - All features or bug fixes **must be tested** by one or more specs (unit-tests).
 - All public API methods **must be documented**.
 
-## <a name="commit"></a> Commit Message Guidelines
+## Commit Message Guidelines
 
 We have very precise rules over how our git commit messages can be formatted. This leads to **more
 readable messages** that are easy to follow when looking through the **project history**. But also,
@@ -74,7 +93,6 @@ npm run commit
 yarn commit
 ```
 
-Choose the correct package you are making the changes for, if this is a repository level change
-you can choose the first (empty) option.
+Choose the correct package you are making the changes for. If this is a repository-level change, you can choose the first (empty) option.
 
-**Important:** Only put something in the `BREAKING CHANGES` prompt if you actually made a breaking change, no need ot answer it with "no".
+**Important:** Only put something in the `BREAKING CHANGES` prompt if you actually made a breaking change; no need to answer it with "no."

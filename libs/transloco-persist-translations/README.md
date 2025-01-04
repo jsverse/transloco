@@ -1,3 +1,3 @@
 # Transloco Persist Translations
 
-Please visit the [official Transloco docs](https://jsverse.github.io/transloco/docs/plugins/persist-translations).
+Discover more about this plugin and how it can enhance your workflow in the [official Transloco documentation](https://jsverse.gitbook.io/transloco/plugins/persist-translations).

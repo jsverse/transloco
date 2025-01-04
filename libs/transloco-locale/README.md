@@ -1,3 +1,3 @@
 # Transloco Locale L10N
 
-Please visit the [official Transloco docs](https://jsverse.github.io/transloco/docs/plugins/locale).
+Discover more about this plugin and how it can enhance your workflow in the [official Transloco documentation](https://jsverse.gitbook.io/transloco/plugins/locale-l10n).
