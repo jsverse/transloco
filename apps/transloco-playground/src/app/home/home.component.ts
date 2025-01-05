@@ -5,14 +5,14 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { environment } from '../../environments/environment';
 
 @Component({
-  selector: 'app-on-push',
-  templateUrl: './on-push.component.html',
-  styleUrls: ['./on-push.component.scss'],
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [TranslocoModule],
 })
-export class OnPushComponent {
+export class HomeComponent {
   isDocs = environment.isDocs;
   dynamic = '🦄';
   key = 'home';

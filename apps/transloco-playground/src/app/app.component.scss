@@ -4,17 +4,7 @@
 
 .navbar {
   box-shadow: 0 0 2px;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 1;
-  padding-inline: 1rem;
   height: 66px;
-}
-
-.container {
-  margin-top: 130px;
-  z-index: 0;
 }
 
 .btn:focus {
@@ -37,12 +27,7 @@
   border-color: #cd298d;
 }
 
-.lang-btns {
-  right: 10px;
-  top: 15px;
-  position: fixed;
-}
-
-.mr-10 {
-  margin-right: 10px;
+main {
+  height: calc(100vh - 66px);
+  overflow: auto;
 }

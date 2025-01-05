@@ -5,7 +5,7 @@ import { INLINE_LOADERS_ROUTES } from './inline-loaders/inline-loaders.routes';
 import { LAZY_MULTIPLE_SCOPES_ROUTES } from './lazy-multiple-scopes/lazy-multiple-scopes.routes';
 import { LAZY_SCOPE_ALIAS_ROUTES } from './lazy-scope-alias/lazy-scope-alias.routes';
 import { LAZY_ROUTES } from './lazy/lazy.routes';
-import { OnPushComponent } from './on-push/on-push.component';
+import { HomeComponent } from './home/home.component';
 import { SCOPE_SHARING_ROUTES } from './scope-sharing/scope-sharing.routes';
 import { TRANSPILERS_ROUTES } from './transpilers/transpilers.routes';
 import { MULTI_LANGS_ROUTES } from './multi-langs/multi-langs.routes';
@@ -19,7 +19,7 @@ export const ROUTES: Routes = [
   },
   {
     path: 'home',
-    component: OnPushComponent,
+    component: HomeComponent,
   },
   LAZY_ROUTES,
   TRANSPILERS_ROUTES,

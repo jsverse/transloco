@@ -2,18 +2,17 @@
   font-family: 'Roboto', sans-serif;
 }
 
-.container {
-  margin-top: 20px;
-  margin-bottom: 40px;
+body {
+  height: 100vh;
+  overflow: hidden;
 }
 
-.mtb {
-  margin-top: 25px;
-  margin-bottom: 25px;
+.flex {
+  display: flex;
 }
 
-.mb {
-  margin-bottom: 25px;
+.gap-2 {
+  gap: 0.5rem;
 }
 
 pre {

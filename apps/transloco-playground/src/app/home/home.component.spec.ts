@@ -4,12 +4,12 @@ import { TranslocoService } from '@jsverse/transloco';
 
 import { getTranslocoModule } from '../transloco-testing.module';
 
-import { OnPushComponent } from './on-push.component';
+import { HomeComponent } from './home.component';
 
 describe('OnPushComponent', () => {
-  let spectator: Spectator<OnPushComponent>;
+  let spectator: Spectator<HomeComponent>;
   const createComponent = createComponentFactory({
-    component: OnPushComponent,
+    component: HomeComponent,
     imports: [
       getTranslocoModule({
         translocoConfig: { reRenderOnLangChange: true },

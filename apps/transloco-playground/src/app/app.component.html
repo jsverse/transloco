@@ -1,13 +1,11 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="flex w-full px-4 navbar navbar-expand-lg navbar-light bg-light">
   <div>
     <a
       class="navbar-brand"
       target="_blank"
-      href="https://github.com/jsverse/transloco"
+      href="https://jsverse.gitbook.io/transloco/"
     >
-      @if (!isDocs) {
-        <img height="50px" src="/assets/images/logo.svg" />
-      }
+      <img height="50px" src="/assets/images/logo.svg" />
     </a>
     <button
       class="navbar-toggler"
@@ -21,11 +19,7 @@
     </button>
   </div>
 
-  <div
-    id="navbarSupportedContent"
-    style="padding-right: 180px"
-    class="collapse navbar-collapse"
-  >
+  <div id="navbarSupportedContent" class="flex-1 collapse navbar-collapse">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item" routerLinkActive="active">
         <a
@@ -94,13 +88,15 @@
     </ul>
   </div>
 
-  <div class="lang-btns">
+  <div class="flex gap-2">
+    <a href="https://jsverse.gitbook.io/transloco/" class="inline-block btn"
+      >📖</a
+    >
     @for (lang of availableLangs; track lang; let last = $last) {
       <button
         class="btn my-2 my-sm-0"
         [attr.data-cy]="lang.id"
         (click)="changeLang(lang.id)"
-        [class.mr-10]="!last"
         [class.btn-primary]="activeLang === lang.id"
         [class.btn-secondary]="activeLang !== lang.id"
       >
@@ -110,6 +106,6 @@
   </div>
 </nav>
 
-<div class="container">
+<main class="p-4">
   <router-outlet />
-</div>
+</main>
