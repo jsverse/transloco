@@ -4,7 +4,7 @@ description: A list of the TranslocoService API methods and their usages
 
 # Translation API
 
-**`translate()`**
+## **`translate()`**
 
 Translate a given key, allowing optional parameters for dynamic values or language specification. Use this method when you need to translate keys directly in components or services.
 
@@ -32,7 +32,7 @@ Ensure translation files are loaded before calling this method. Otherwise, use `
 
 ***
 
-**`selectTranslate()`**
+## **`selectTranslate()`**
 
 Returns an observable that emits translations. It loads the required translation file automatically.
 
@@ -54,7 +54,7 @@ export class AppComponent {
 
 ***
 
-**`translateObject()`**
+## **`translateObject()`**
 
 Retrieve a nested object or an array of translated values based on keys.
 
@@ -86,7 +86,7 @@ Ensure translation files are loaded before calling this method. Otherwise, use `
 
 ***
 
-**`selectTranslateObject()`**
+## **`selectTranslateObject()`**
 
 Similar to `translateObject()`, but returns an observable. It ensures the translation file is loaded.
 
@@ -113,7 +113,7 @@ export class AppComponent {
 
 ***
 
-**`getTranslation()`**
+## **`getTranslation()`**
 
 Retrieve the entire translation map for the active language or a specific language/scope.
 
@@ -132,7 +132,7 @@ export class AppComponent {
 
 ***
 
-**`selectTranslation()`**
+## **`selectTranslation()`**
 
 Returns an observable that emits the full translation map for the specified language or scope.
 
@@ -151,7 +151,7 @@ export class AppComponent {
 
 ***
 
-**`setTranslation()`**
+## **`setTranslation()`**
 
 Manually sets translation data for a language or scope. Use `merge: true` to append data.
 
@@ -171,7 +171,7 @@ export class AppComponent {
 
 ***
 
-**`setTranslationKey()`**
+## **`setTranslationKey()`**
 
 Set or update the value of a specific translation key.
 
@@ -191,7 +191,7 @@ export class AppComponent {
 
 ***
 
-**`events$`**
+## **`events$`**
 
 Listen to translation events, such as language changes or load failures.
 
