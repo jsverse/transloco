@@ -1,5 +1,7 @@
 # 📚 Blog Posts
 
+{% embed url="https://lokalise.com/blog/angular-localization-with-transloco/" %}
+
 {% embed url="https://netbasal.com/introducing-transloco-angular-internationalization-done-right-54710337630c" %}
 
 {% embed url="https://medium.com/@shahar.kazaz/transloco-proudly-presents-functional-translations-e73fca275c33" %}
