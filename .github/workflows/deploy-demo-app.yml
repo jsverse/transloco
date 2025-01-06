@@ -1,5 +1,5 @@
 # Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+name: Deploy playground to Pages
 
 on:
   # Runs on pushes targeting the default branch
@@ -34,19 +34,19 @@ jobs:
 
       - name: Setup
         uses: ./.github/actions/step-setup
-        
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
       - name: Build playground
-        run: npm run build:playground
-        
+        run: ORIGIN='https://jsverse.github.io/transloco/' npm run build:playground
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           # Upload entire repository
           path: 'dist/apps/transloco-playground'
-          
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

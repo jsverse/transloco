@@ -8,7 +8,7 @@
     "commit": "git-cz",
     "start": "nx run transloco-playground:serve",
     "build": "node scripts/build.mjs",
-    "build:playground": "nx build transloco-playground",
+    "build:playground": "nx build transloco-playground --configuration=docs",
     "ci:test": "nx run-many --target=test --all",
     "ci:build": "nx run-many --target=build --all",
     "ci:lint": "nx run-many --target=lint --all",

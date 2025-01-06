@@ -5,18 +5,17 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { LangDefinition, TranslocoService } from '@jsverse/transloco';
 
-import { environment } from '../environments/environment';
+import { AppSrcDirective } from './app-src.directive';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   standalone: true,
-  imports: [RouterModule],
+  imports: [RouterModule, AppSrcDirective],
 })
 export class AppComponent {
   private destroyRef = inject(DestroyRef);
-  isDocs = environment.isDocs;
   service = inject(TranslocoService);
   availableLangs = this.service.getAvailableLangs() as LangDefinition[];
 

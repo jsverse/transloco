@@ -13,7 +13,6 @@ import { environment } from '../../environments/environment';
   imports: [TranslocoModule],
 })
 export class HomeComponent {
-  isDocs = environment.isDocs;
   dynamic = '🦄';
   key = 'home';
 
