@@ -14,5 +14,6 @@ export interface TranslocoGlobalConfig {
     replace?: boolean;
     defaultValue?: string | undefined;
     unflat?: boolean;
+    sort?: boolean;
   };
 }
