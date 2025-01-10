@@ -24,6 +24,11 @@ jobs:
         run: npm run ${{ matrix.target }}
         shell: bash
 
+      - name: Publish any commit / build for testing
+        run: npm run release:pkg-pr-new
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   commitlint:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
