@@ -14,7 +14,8 @@
     "ci:lint": "nx run-many --target=lint --all",
     "ci:e2e": "nx run transloco-playground-e2e:e2e:ci",
     "e2e": "nx run transloco-playground-e2e:e2e",
-    "pre-commit": "node scripts/pre-commit.js && lint-staged --allow-empty"
+    "pre-commit": "node scripts/pre-commit.js && lint-staged --allow-empty",
+    "release:pkg-pr-new": "npx pkg-pr-new@^0.0.30 publish --compact ./dist/libs/*"
   },
   "dependencies": {
     "@angular/animations": "18.2.9",
