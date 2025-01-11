@@ -1,6 +1,5 @@
 ## 7.5.1 (2024-12-24)
 
-
 ### 🩹 Fixes
 
 - **transloco:** 🐛 Remove flat as dependency ([0730fd5f](https://github.com/jsverse/transloco/commit/0730fd5f))
@@ -15,47 +14,47 @@
 
 ### Bug Fixes
 
-- **transloco:** 🐛 Fixed file matching on Windows OS ([71aade96](https://github.com/ngneat/transloco/commit/71aade968fc3435522b1cde3481a76ca7e31baee))
+- **transloco:** 🐛 Fixed file matching on Windows OS ([71aade96](https://github.com/jsverse/transloco/commit/71aade968fc3435522b1cde3481a76ca7e31baee))
 
-## [7.4.3](https://github.com/ngneat/transloco/compare/transloco-7.4.2...transloco-7.4.3) (2024-07-26)
+## [7.4.3](https://github.com/jsverse/transloco/compare/transloco-7.4.2...transloco-7.4.3) (2024-07-26)
 
 ### Features
 
-- **transloco:** 🎸 Schematics move to transloco.config.ts ([fc4fc6b7](https://github.com/ngneat/transloco/commit/fc4fc6b73c8707a15671de14c60cc7665c74395e))
+- **transloco:** 🎸 Schematics move to transloco.config.ts ([fc4fc6b7](https://github.com/jsverse/transloco/commit/fc4fc6b73c8707a15671de14c60cc7665c74395e))
 
-## [7.4.2](https://github.com/ngneat/transloco/compare/transloco-7.4.1...transloco-7.4.2) (2024-05-31)
+## [7.4.2](https://github.com/jsverse/transloco/compare/transloco-7.4.1...transloco-7.4.2) (2024-05-31)
 
-## [7.4.1](https://github.com/ngneat/transloco/compare/transloco-7.4.0...transloco-7.4.1) (2024-05-10)
+## [7.4.1](https://github.com/jsverse/transloco/compare/transloco-7.4.0...transloco-7.4.1) (2024-05-10)
 
 ### Bug Fixes
 
-- **transloco:** 🐛 selectTranslate lang should support arrays ([a77c79c](https://github.com/ngneat/transloco/commit/a77c79c3f9a44f57a6dd69c3326053fd1624d62f))
+- **transloco:** 🐛 selectTranslate lang should support arrays ([a77c79c](https://github.com/jsverse/transloco/commit/a77c79c3f9a44f57a6dd69c3326053fd1624d62f))
 
-# [7.4.0](https://github.com/ngneat/transloco/compare/transloco-7.3.0...transloco-7.4.0) (2024-05-01)
-
-### Features
-
-- **transloco:** 🎸 support nested objects in params ([57b58f1](https://github.com/ngneat/transloco/commit/57b58f159705a9b32fb975ee0c1b627237941ba4)), closes [#652](https://github.com/ngneat/transloco/issues/652)
-
-# [7.3.0](https://github.com/ngneat/transloco/compare/transloco-7.2.1...transloco-7.3.0) (2024-04-25)
+# [7.4.0](https://github.com/jsverse/transloco/compare/transloco-7.3.0...transloco-7.4.0) (2024-05-01)
 
 ### Features
 
-- **transloco:** 🎸 Expose default handlers ([05c2ec1](https://github.com/ngneat/transloco/commit/05c2ec1f5429e604ae5caac19d417f5e64778394)), closes [#772](https://github.com/ngneat/transloco/issues/772)
+- **transloco:** 🎸 support nested objects in params ([57b58f1](https://github.com/jsverse/transloco/commit/57b58f159705a9b32fb975ee0c1b627237941ba4)), closes [#652](https://github.com/jsverse/transloco/issues/652)
 
-## [7.2.1](https://github.com/ngneat/transloco/compare/transloco-7.2.0...transloco-7.2.1) (2024-04-22)
-
-# [7.2.0](https://github.com/ngneat/transloco/compare/transloco-7.1.0...transloco-7.2.0) (2024-04-19)
+# [7.3.0](https://github.com/jsverse/transloco/compare/transloco-7.2.1...transloco-7.3.0) (2024-04-25)
 
 ### Features
 
-- **transloco:** allow to provide multiple scopes via `provideTranslocoScopes` ([#758](https://github.com/ngneat/transloco/issues/758)) ([623b46f](https://github.com/ngneat/transloco/commit/623b46f4384803e7f7f8f57e57a43cb29a29e8d2))
+- **transloco:** 🎸 Expose default handlers ([05c2ec1](https://github.com/jsverse/transloco/commit/05c2ec1f5429e604ae5caac19d417f5e64778394)), closes [#772](https://github.com/jsverse/transloco/issues/772)
 
-# [7.1.0](https://github.com/ngneat/transloco/compare/transloco-7.0.0...transloco-7.1.0) (2024-03-30)
+## [7.2.1](https://github.com/jsverse/transloco/compare/transloco-7.2.0...transloco-7.2.1) (2024-04-22)
+
+# [7.2.0](https://github.com/jsverse/transloco/compare/transloco-7.1.0...transloco-7.2.0) (2024-04-19)
 
 ### Features
 
-- **transloco:** 🎸 introduce prefix input ([1e27a8f](https://github.com/ngneat/transloco/commit/1e27a8fe9922e3e8f4ced0ea3960aca8ae4da92d))
+- **transloco:** allow to provide multiple scopes via `provideTranslocoScopes` ([#758](https://github.com/jsverse/transloco/issues/758)) ([623b46f](https://github.com/jsverse/transloco/commit/623b46f4384803e7f7f8f57e57a43cb29a29e8d2))
+
+# [7.1.0](https://github.com/jsverse/transloco/compare/transloco-7.0.0...transloco-7.1.0) (2024-03-30)
+
+### Features
+
+- **transloco:** 🎸 introduce prefix input ([1e27a8f](https://github.com/jsverse/transloco/commit/1e27a8fe9922e3e8f4ced0ea3960aca8ae4da92d))
 
 # [7.0.0](https://github.com/jsverse/transloco/compare/transloco-6.0.4...transloco-7.0.0) (2024-03-23)
 

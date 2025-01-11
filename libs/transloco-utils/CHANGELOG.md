@@ -4,7 +4,7 @@
 
 - **utils:** 🐛 update the global config types
 
-## [7.0.1](https://github.com/ngneat/transloco/compare/transloco-utils-7.0.0...transloco-utils-7.0.1) (2024-05-31)
+## [7.0.1](https://github.com/jsverse/transloco/compare/transloco-utils-7.0.0...transloco-utils-7.0.1) (2024-05-31)
 
 # [7.0.0](https://github.com/jsverse/transloco/compare/transloco-utils-6.0.0...transloco-utils-7.0.0) (2024-03-23)
 
