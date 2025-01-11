@@ -25,6 +25,7 @@ jobs:
         shell: bash
 
       - name: Publish any commit / build for testing
+        if: ${{ matrix.target == 'ci:build' }}
         run: npm run release:pkg-pr-new
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
