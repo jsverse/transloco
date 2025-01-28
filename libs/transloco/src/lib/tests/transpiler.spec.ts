@@ -303,6 +303,21 @@ describe('TranslocoTranspiler', () => {
         ).toEqual('From 1 to 10');
       });
 
+      it('should support params method calls', () => {
+        expect(
+          transpiler.transpile(
+            getTranspilerParams(
+              `Length: ${wrapParam('text.length')}, Initial: ${wrapParam('text.charAt(0)')}`,
+              {
+                params: {
+                  text: 'Hello world',
+                },
+              },
+            ),
+          ),
+        ).toEqual('Length: 11, Initial: H');
+      });
+
       it('should support key referencing', () => {
         const lang = flatten({
           ab: `a b ${wrapParam('cd')}`,
