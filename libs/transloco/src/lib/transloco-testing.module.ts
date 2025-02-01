@@ -22,12 +22,13 @@ export interface TranslocoTestingOptions {
   langs?: HashMap<Translation>;
 }
 
-const TRANSLOCO_TEST_LANGS = new InjectionToken<HashMap<Translation>>(
-  'TRANSLOCO_TEST_LANGS - Available testing languages',
-);
-const TRANSLOCO_TEST_OPTIONS = new InjectionToken<TranslocoTestingOptions>(
-  'TRANSLOCO_TEST_OPTIONS - Testing options',
-);
+const TRANSLOCO_TEST_LANGS = /* @__PURE__ */ new InjectionToken<
+  HashMap<Translation>
+>('TRANSLOCO_TEST_LANGS - Available testing languages');
+const TRANSLOCO_TEST_OPTIONS =
+  /* @__PURE__ */ new InjectionToken<TranslocoTestingOptions>(
+    'TRANSLOCO_TEST_OPTIONS - Testing options',
+  );
 
 @Injectable()
 export class TestingLoader implements TranslocoLoader {

@@ -10,9 +10,10 @@ import {
 import { HashMap } from './utils/type.utils';
 import { getValue, setValue } from './utils/object.utils';
 
-export const TRANSLOCO_TRANSPILER = new InjectionToken<TranslocoTranspiler>(
-  ngDevMode ? 'TRANSLOCO_TRANSPILER' : '',
-);
+export const TRANSLOCO_TRANSPILER =
+  /* @__PURE__ */ new InjectionToken<TranslocoTranspiler>(
+    ngDevMode ? 'TRANSLOCO_TRANSPILER' : '',
+  );
 
 export interface TranslocoTranspiler {
   transpile(params: TranspileParams): any;
