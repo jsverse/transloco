@@ -4,7 +4,7 @@ import { TranslocoConfig } from './transloco.config';
 import { HashMap } from './types';
 
 export const TRANSLOCO_MISSING_HANDLER =
-  new InjectionToken<TranslocoMissingHandlerData>(
+  /* @__PURE__ */ new InjectionToken<TranslocoMissingHandlerData>(
     typeof ngDevMode !== 'undefined' && ngDevMode
       ? 'TRANSLOCO_MISSING_HANDLER'
       : '',
