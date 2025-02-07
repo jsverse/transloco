@@ -18,7 +18,11 @@ import { BaseLocalePipe } from './base-locale.pipe';
   standalone: true,
 })
 export class TranslocoCurrencyPipe
-  extends BaseLocalePipe
+  extends BaseLocalePipe<number | string, [
+                         display?: 'code' | 'symbol' | 'name',
+                         numberFormatOptions?: NumberFormatOptions,
+                         currencyCode?: Currency,
+                         locale?: Locale]>
   implements PipeTransform
 {
   private localeConfig: LocaleConfig = inject(TRANSLOCO_LOCALE_CONFIG);
@@ -35,7 +39,7 @@ export class TranslocoCurrencyPipe
    * 1000000 | translocoCurrency: 'narrowSymbol' : {minimumFractionDigits: 0 } : CAD // $1,000,000
    *
    */
-  transform(
+  protected override doTransform(
     value: number | string,
     display: 'code' | 'symbol' | 'narrowSymbol' | 'name' = 'symbol',
     numberFormatOptions: NumberFormatOptions = {},
