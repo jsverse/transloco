@@ -53,7 +53,37 @@ In this case, the `transpile` function accepts three arguments:
 
 {% tabs %}
 {% tab title="Standalone" %}
+To start using the Functional Transpiler, you need to add the following provider in your app's providers:
 
+```typescript
+import { FunctionalTranspiler, provideTransloco, provideTranslocoTranspiler } from '@jsverse/transloco';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    ...
+    provideTranslocoTranspiler(FunctionalTranspiler)
+  ]  
+}
+```
+
+Add the transpiler function to the providers array:
+
+```typescript
+import { FunctionalTranspiler, provideTransloco, provideTranslocoTranspiler } from '@jsverse/transloco';
+import { FeatureFlagResolver } from './feature-flag-resolver';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    ...
+    provideTranslocoTranspiler(FunctionalTranspiler),
+    {
+      // 👇 The function name used in the translation
+      provide: 'hasFeatureFlag',
+      useClass: FeatureFlagResolver
+    }
+  ]  
+}
+```
 {% endtab %}
 
 {% tab title="NgModule" %}
