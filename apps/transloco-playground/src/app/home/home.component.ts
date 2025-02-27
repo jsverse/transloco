@@ -23,7 +23,7 @@ export class HomeComponent {
   translocoParams = translateSignal('alert', { value: this.dynamic });
   translocoKeys = translateSignal(this.key);
 
-  translateList = ['b', 'c'];
+  translateList = ['home', 'a.b.c', 'b', 'c'];
 
   changeKey() {
     this.key.update((key) => (key === 'home' ? 'fromList' : 'home'));
