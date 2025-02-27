@@ -1,8 +1,10 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 
-import { TranslocoModule } from '@jsverse/transloco';
-
-import { environment } from '../../environments/environment';
+import {
+  TranslocoModule,
+  translateObjectSignal,
+  translateSignal,
+} from '@jsverse/transloco';
 
 @Component({
   selector: 'app-home',
@@ -13,16 +15,21 @@ import { environment } from '../../environments/environment';
   imports: [TranslocoModule],
 })
 export class HomeComponent {
-  dynamic = '🦄';
-  key = 'home';
+  dynamic = signal('🦄');
+  key = signal('home');
+
+  transloco = translateSignal('home');
+  translocoObject = translateObjectSignal('nested');
+  translocoParams = translateSignal('alert', { value: this.dynamic });
+  translocoKeys = translateSignal(this.key);
 
   translateList = ['b', 'c'];
 
   changeKey() {
-    this.key = this.key === 'home' ? 'fromList' : 'home';
+    this.key.update((key) => (key === 'home' ? 'fromList' : 'home'));
   }
 
   changeParam() {
-    this.dynamic = this.dynamic === '🦄' ? '🦄🦄🦄' : '🦄';
+    this.dynamic.update((dynamic) => (dynamic === '🦄' ? '🦄🦄🦄' : '🦄'));
   }
 }
