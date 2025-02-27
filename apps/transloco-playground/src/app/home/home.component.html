@@ -113,7 +113,7 @@
       <li class="list-group-item" data-cy="p-with-params">
         <b>With params: </b>{{ 'alert' | transloco: { value: dynamic() } }}
       </li>
-      <li class="list-group-item" (click)="changeKey()" data-cy="d-dynamic-key">
+      <li class="list-group-item" (click)="changeKey()" data-cy="p-dynamic-key">
         <b>(click) Dynamic key: </b> <span> {{ key() | transloco }}</span>
       </li>
       <li class="list-group-item" data-cy="p-with-translation-reuse">
@@ -127,20 +127,20 @@
   <div>
     <h3 class="my-6">Signal</h3>
     <ul class="list-group">
-      <li class="list-group-item" data-cy="translation-loop">
+      <li class="list-group-item" data-cy="s-regular">
         <b>Regular:</b> {{ transloco() }}
       </li>
-      <li class="list-group-item" data-cy="translation-loop">
+      <li class="list-group-item" data-cy="s-object">
         <b>Object:</b> {{ translocoObject().title }}
       </li>
       <li
         class="list-group-item"
-        data-cy="translation-loop"
+        data-cy="s-with-params"
         (click)="changeParam()"
       >
         <b>(click) Dynamic params:</b> {{ translocoParams() }}
       </li>
-      <li class="list-group-item" (click)="changeKey()" data-cy="d-dynamic-key">
+      <li class="list-group-item" (click)="changeKey()" data-cy="s-dynamic-key">
         <b>(click) Dynamic key: </b> {{ translocoKeys() }}
       </li>
     </ul>
