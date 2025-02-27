@@ -32,6 +32,22 @@ type TranslateObjectSignalRef<T> = T extends unknown[]
   ? Signal<Translation[]>
   : Signal<Translation>;
 
+/**
+ * Gets the translated value of a key as Signal
+ *
+ * @example
+ * text = translateSignal('hello');
+ * textList = translateSignal(['green', 'blue']);
+ * textVar = translateSignal('hello', { variable: 'Word' });
+ * textSpanish = translateSignal('hello', { variable: 'Word' }, 'es');
+ * textTodosScope = translateSignal('hello', { variable: 'Word' }, { scope: 'todos' });
+ *
+ * @example
+ * dynamicKey = signal('hello');
+ * dynamicParam = signal('Word');
+ * text = translateSignal(this.dynamicKey, { variable: this.dynamicParam });
+ *
+ */
 export function translateSignal<T extends TranslateSignalKey>(
   key: T,
   params?: HashMap,
@@ -58,6 +74,18 @@ export function translateSignal<T extends TranslateSignalKey>(
   }) as TranslateSignalRef<T>;
 }
 
+/**
+ * Gets the translated object of a key as Signal
+ *
+ * @example
+ * object = translateObjectSignal('nested.object');
+ * title = object().title;
+ *
+ * @example
+ * dynamicKey = signal('nested.object');
+ * dynamicParam = signal('Word');
+ * object = translateObjectSignal(this.dynamicKey, { variable: this.dynamicParam });
+ */
 export function translateObjectSignal<T extends TranslateSignalKey>(
   key: T,
   params?: HashMap,
