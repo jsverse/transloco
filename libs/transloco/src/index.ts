@@ -63,3 +63,4 @@ export {
   provideTranslocoLang,
   TranslocoOptions,
 } from './lib/transloco.providers';
+export { translateSignal, translateObjectSignal } from './lib/transloco.signal';

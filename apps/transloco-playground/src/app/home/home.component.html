@@ -1,10 +1,13 @@
-<h6 class="mb-6"></h6>
-
 <div class="text-center mb-4">
   <h1>Welcome to the Transloco Playground</h1>
-  <a href="https://jsverse.gitbook.io/transloco/" class="btn btn-primary"
-    >📖 Read the docs</a
+  <a
+    href="https://jsverse.gitbook.io/transloco/"
+    class="btn btn-primary"
+    target="_blank"
+    rel="noopener"
   >
+    <span>📖 Read the docs</span>
+  </a>
 </div>
 
 <div class="flex justify-around">
@@ -22,9 +25,13 @@
     <p>
       For detailed guides, advanced topics, and setup instructions, head over to
       the
-      <a href="https://jsverse.gitbook.io/transloco/"
-        >official Transloco documentation</a
-      >.
+      <a
+        href="https://jsverse.gitbook.io/transloco/"
+        target="_blank"
+        rel="noopener"
+      >
+        <span>official Transloco documentation</span>
+      </a>
     </p>
   </div>
 
@@ -33,10 +40,12 @@
     <p>
       You can find the source code for this app in the
       <a
-        target="_blank"
         href="https://github.com/jsverse/transloco/tree/master/apps/transloco-playground"
-        >transloco repo</a
-      >.
+        target="_blank"
+        rel="noopener"
+      >
+        <span>transloco repo</span>
+      </a>
     </p>
   </div>
 </div>
@@ -50,7 +59,7 @@
           <b>Regular: </b>{{ t('home') }}
         </li>
         <li class="list-group-item" data-cy="with-params">
-          <b>With params: </b>{{ t('alert', { value: dynamic }) }}
+          <b>With params: </b>{{ t('alert', { value: dynamic() }) }}
         </li>
         <li class="list-group-item" data-cy="with-translation-reuse">
           <b>With translation reuse: </b> {{ t('a.b.c') }}
@@ -78,13 +87,16 @@
         data-cy="d-with-params"
       >
         <b>(click) With params: </b
-        ><span transloco="alert" [translocoParams]="{ value: dynamic }"></span>
+        ><span
+          transloco="alert"
+          [translocoParams]="{ value: dynamic() }"
+        ></span>
       </li>
       <li class="list-group-item" data-cy="d-with-translation-reuse">
         <b>With translation reuse: </b> <span transloco="a.b.c"></span>
       </li>
       <li class="list-group-item" (click)="changeKey()" data-cy="d-dynamic-key">
-        (click) <b>Dynamic key: </b> <span [transloco]="key"></span>
+        <b>(click) Dynamic key: </b> <span [transloco]="key()"></span>
       </li>
       <li class="list-group-item" data-cy="d-static-lang-es">
         <b>Static lang 'es': </b
@@ -99,7 +111,10 @@
         <b>Regular: </b>{{ 'home' | transloco }}
       </li>
       <li class="list-group-item" data-cy="p-with-params">
-        <b>With params: </b>{{ 'alert' | transloco: { value: dynamic } }}
+        <b>With params: </b>{{ 'alert' | transloco: { value: dynamic() } }}
+      </li>
+      <li class="list-group-item" (click)="changeKey()" data-cy="p-dynamic-key">
+        <b>(click) Dynamic key: </b> <span> {{ key() | transloco }}</span>
       </li>
       <li class="list-group-item" data-cy="p-with-translation-reuse">
         <b>With translation reuse: </b> {{ 'a.b.c' | transloco }}
@@ -110,11 +125,32 @@
     </ul>
   </div>
   <div>
+    <h3 class="my-6">Signal</h3>
+    <ul class="list-group">
+      <li class="list-group-item" data-cy="s-regular">
+        <b>Regular:</b> {{ transloco() }}
+      </li>
+      <li class="list-group-item" data-cy="s-object">
+        <b>Object:</b> {{ translocoObject().title }}
+      </li>
+      <li
+        class="list-group-item"
+        data-cy="s-with-params"
+        (click)="changeParam()"
+      >
+        <b>(click) Dynamic params:</b> {{ translocoParams() }}
+      </li>
+      <li class="list-group-item" (click)="changeKey()" data-cy="s-dynamic-key">
+        <b>(click) Dynamic key: </b> {{ translocoKeys() }}
+      </li>
+    </ul>
+  </div>
+  <div>
     <h3 class="my-6">Translation in {{ '@for' }}</h3>
     <ul class="list-group">
-      @for (key of translateList; track key) {
+      @for (key of translateList; track key; let index = $index) {
         <li class="list-group-item" data-cy="translation-loop">
-          {{ key | transloco }}
+          <b>Index {{ index + 1 }}:</b> {{ key | transloco }}
         </li>
       }
     </ul>

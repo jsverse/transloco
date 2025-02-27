@@ -1,8 +1,12 @@
 <ng-container *transloco="let t">
-  {{ t('inline.title') }}
+  <p><strong>Directive:</strong> {{ t('inline.title') }}</p>
+
   <p>
-    {{ t('alert') }}
+    <strong>Directive Global Scope:</strong>
+    {{ t('alert', { value: 'global' }) }}
   </p>
 </ng-container>
 
-<p>{{ 'inline.title' | transloco }}</p>
+<p><strong>Pipe:</strong> {{ 'inline.title' | transloco }}</p>
+<p><strong>Async:</strong> {{ title$ | async }}</p>
+<p><strong>Signal:</strong> {{ title() }}</p>
