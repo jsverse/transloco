@@ -114,10 +114,16 @@ function computerParams(params?: HashMap) {
   if (!params) {
     return signal(params).asReadonly();
   }
+
+  if (isSignal(params)) {
+    return computed(() => params() as HashMap);
+  }
+
   const hasSignal = Object.values(params).some(isSignal);
   if (!hasSignal) {
     return signal(params).asReadonly();
   }
+
   const getter = computed(() => {
     return Object.entries(params).reduce((acc, [key, value]) => {
       acc[key] = isSignal(value) ? value() : value;
