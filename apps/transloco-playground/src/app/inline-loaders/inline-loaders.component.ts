@@ -1,3 +1,4 @@
+import { AsyncPipe } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -5,6 +6,7 @@ import {
   TranslocoModule,
   TranslocoService,
   TRANSLOCO_SCOPE,
+  translateSignal,
 } from '@jsverse/transloco';
 
 @Component({
@@ -12,14 +14,16 @@ import {
   templateUrl: './inline-loaders.component.html',
   styleUrls: ['./inline-loaders.component.scss'],
   standalone: true,
-  imports: [TranslocoModule],
+  imports: [TranslocoModule, AsyncPipe],
 })
 export default class InlineLoadersComponent implements OnInit {
   private translocoService = inject(TranslocoService);
   private scope = inject(TRANSLOCO_SCOPE);
-  private title$ = this.translocoService
+  public title$ = this.translocoService
     .selectTranslate('title', {}, this.scope)
     .pipe(takeUntilDestroyed());
+
+  public title = translateSignal('title');
 
   ngOnInit() {
     console.log(this.scope);
