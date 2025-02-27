@@ -45,7 +45,7 @@ type TranslateObjectSignalRef<T> = T extends unknown[]
  * @example
  * dynamicKey = signal('hello');
  * dynamicParam = signal({ variable: 'world' });
- * object = translateObjectSignal(this.dynamicKey, this.dynamicParam);
+ * object = translateSignal(this.dynamicKey, this.dynamicParam);
  *
  */
 export function translateSignal<T extends TranslateSignalKey>(
