@@ -5,7 +5,6 @@ import {
   Injector,
   isSignal,
   runInInjectionContext,
-  signal,
   Signal,
 } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
@@ -13,19 +12,15 @@ import { switchMap } from 'rxjs';
 
 import { TRANSLOCO_SCOPE } from './transloco-scope';
 import { TranslocoService } from './transloco.service';
-import {
-  HashMap,
-  TranslateObjectParams,
-  Translation,
-  TranslocoScope,
-} from './types';
+import { HashMap, Translation, TranslocoScope } from './types';
 
 type ScopeType = string | TranslocoScope | TranslocoScope[];
-type TranslateSignalKey = string | string[] | Signal<string> | Signal<string>[];
-type translateObjectSignal =
-  | TranslateObjectParams
-  | Signal<string>
-  | Signal<string>[];
+type SignalKey = Signal<string> | Signal<string[]> | Signal<string>[];
+type TranslateSignalKey = string | string[] | SignalKey;
+type TranslateSignalParams =
+  | HashMap
+  | HashMap<Signal<string>>
+  | Signal<HashMap>;
 type TranslateSignalRef<T> = T extends unknown[]
   ? Signal<string[]>
   : Signal<string>;
@@ -51,7 +46,7 @@ type TranslateObjectSignalRef<T> = T extends unknown[]
  */
 export function translateSignal<T extends TranslateSignalKey>(
   key: T,
-  params?: HashMap,
+  params?: TranslateSignalParams,
   lang?: ScopeType,
   injector?: Injector,
 ): TranslateSignalRef<T> {
@@ -64,17 +59,11 @@ export function translateSignal<T extends TranslateSignalKey>(
     const scope = resolveScope(lang);
     return toObservable(computerKeysAndParams(key, params)).pipe(
       switchMap((dynamic) =>
-        service.selectTranslate(
-          dynamic.key as string,
-          dynamic.params,
-          scope as string,
-        ),
+        service.selectTranslate(dynamic.key, dynamic.params, scope),
       ),
     );
   });
-  return toSignal(result, {
-    initialValue: Array.isArray(key) ? [] : '',
-  }) as TranslateSignalRef<T>;
+  return toSignal(result, { initialValue: Array.isArray(key) ? [''] : '' });
 }
 
 /**
@@ -91,7 +80,7 @@ export function translateSignal<T extends TranslateSignalKey>(
  */
 export function translateObjectSignal<T extends TranslateSignalKey>(
   key: T,
-  params?: HashMap,
+  params?: TranslateSignalParams,
   lang?: ScopeType,
   injector?: Injector,
 ): TranslateObjectSignalRef<T> {
@@ -105,7 +94,7 @@ export function translateObjectSignal<T extends TranslateSignalKey>(
     return toObservable(computerKeysAndParams(key, params)).pipe(
       switchMap((dynamic) =>
         service.selectTranslateObject(
-          dynamic.key as string,
+          dynamic.key,
           dynamic.params,
           scope as string,
         ),
@@ -115,51 +104,49 @@ export function translateObjectSignal<T extends TranslateSignalKey>(
   return toSignal(result, { initialValue: Array.isArray(key) ? [] : {} });
 }
 
-function computerParams(params?: HashMap) {
-  if (!params) {
-    return signal(params).asReadonly();
-  }
-
+function computerParams(params: HashMap<Signal<string>> | Signal<HashMap>) {
   if (isSignal(params)) {
-    return computed(() => params() as HashMap);
+    return computed(() => params());
   }
-
-  const hasSignal = Object.values(params).some(isSignal);
-  if (!hasSignal) {
-    return signal(params).asReadonly();
-  }
-
-  const getter = computed(() => {
+  return computed(() => {
     return Object.entries(params).reduce((acc, [key, value]) => {
       acc[key] = isSignal(value) ? value() : value;
       return acc;
     }, {} as HashMap);
   });
-  return getter;
 }
 
-function computerKeys<T extends TranslateSignalKey>(keys: T) {
+function computerKeys(
+  keys: Signal<string> | Signal<string[]> | Signal<string>[],
+) {
   if (Array.isArray(keys)) {
-    const hasSignal = keys.some(isSignal);
-    if (!hasSignal) {
-      return signal(keys).asReadonly();
-    }
-    const getter = computed(() => {
-      return keys.map((key) => {
-        return isSignal(key) ? key() : key;
-      });
-    });
-    return getter;
+    return computed(() => keys.map((key) => (isSignal(key) ? key() : key)));
   }
-  if (isSignal(keys)) {
-    return computed(() => keys());
-  }
-  return signal(keys).asReadonly();
+  return computed(() => keys());
 }
 
-function computerKeysAndParams(key: TranslateSignalKey, params?: HashMap) {
-  const computedKeys = computerKeys(key);
-  const computedParams = computerParams(params);
+function isSignalKey(key: TranslateSignalKey): key is SignalKey {
+  return Array.isArray(key) ? key.some(isSignal) : isSignal(key);
+}
+
+function isSignalParams(
+  params?: HashMap,
+): params is HashMap<Signal<string>> | Signal<HashMap> {
+  return params
+    ? isSignal(params) || Object.values(params).some(isSignal)
+    : false;
+}
+
+function computerKeysAndParams(
+  key: TranslateSignalKey,
+  params?: TranslateSignalParams,
+) {
+  const computedKeys = isSignalKey(key)
+    ? computerKeys(key)
+    : computed(() => key);
+  const computedParams = isSignalParams(params)
+    ? computerParams(params)
+    : computed(() => params);
   return computed(() => ({ key: computedKeys(), params: computedParams() }));
 }
 
