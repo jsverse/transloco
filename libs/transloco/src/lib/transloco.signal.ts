@@ -1,4 +1,5 @@
 import {
+  assertInInjectionContext,
   computed,
   inject,
   Injector,
@@ -54,6 +55,9 @@ export function translateSignal<T extends TranslateSignalKey>(
   lang?: ScopeType,
   injector?: Injector,
 ): TranslateSignalRef<T> {
+  if (!injector) {
+    assertInInjectionContext(translateSignal);
+  }
   injector ??= inject(Injector);
   const result = runInInjectionContext(injector, () => {
     const service = inject(TranslocoService);
@@ -92,6 +96,9 @@ export function translateObjectSignal<T extends TranslateSignalKey>(
   lang?: ScopeType,
   injector?: Injector,
 ): TranslateObjectSignalRef<T> {
+  if (!injector) {
+    assertInInjectionContext(translateObjectSignal);
+  }
   injector ??= inject(Injector);
   const result = runInInjectionContext(injector, () => {
     const service = inject(TranslocoService);
