@@ -61,8 +61,7 @@ export function translateSignal<T extends TranslateSignalKey>(
   injector ??= inject(Injector);
   const result = runInInjectionContext(injector, () => {
     const service = inject(TranslocoService);
-    const scope = (lang ??=
-      inject(TRANSLOCO_SCOPE, { optional: true }) ?? lang);
+    const scope = resolveScope(lang);
     return toObservable(computerKeysAndParams(key, params)).pipe(
       switchMap((dynamic) =>
         service.selectTranslate(
@@ -102,8 +101,7 @@ export function translateObjectSignal<T extends TranslateSignalKey>(
   injector ??= inject(Injector);
   const result = runInInjectionContext(injector, () => {
     const service = inject(TranslocoService);
-    const scope = (lang ??=
-      inject(TRANSLOCO_SCOPE, { optional: true }) ?? lang);
+    const scope = resolveScope(lang);
     return toObservable(computerKeysAndParams(key, params)).pipe(
       switchMap((dynamic) =>
         service.selectTranslateObject(
@@ -163,4 +161,12 @@ function computerKeysAndParams(key: TranslateSignalKey, params?: HashMap) {
   const computedKeys = computerKeys(key);
   const computedParams = computerParams(params);
   return computed(() => ({ key: computedKeys(), params: computedParams() }));
+}
+
+function resolveScope(scope?: ScopeType) {
+  if (typeof scope === 'undefined' || scope === '') {
+    const translocoScope = inject(TRANSLOCO_SCOPE, { optional: true });
+    return translocoScope ?? undefined;
+  }
+  return scope;
 }
