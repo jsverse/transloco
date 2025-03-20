@@ -21,10 +21,10 @@ type TranslateSignalParams =
   | HashMap
   | HashMap<Signal<string>>
   | Signal<HashMap>;
-type TranslateSignalRef<T> = T extends unknown[]
+type TranslateSignalRef<T> = T extends unknown[] | Signal<string[]>
   ? Signal<string[]>
   : Signal<string>;
-type TranslateObjectSignalRef<T> = T extends unknown[]
+type TranslateObjectSignalRef<T> = T extends unknown[] | Signal<string[]>
   ? Signal<Translation[]>
   : Signal<Translation>;
 
@@ -41,7 +41,7 @@ type TranslateObjectSignalRef<T> = T extends unknown[]
  * @example
  * dynamicKey = signal('hello');
  * dynamicParam = signal({ variable: 'world' });
- * object = translateSignal(this.dynamicKey, this.dynamicParam);
+ * text = translateSignal(this.dynamicKey, this.dynamicParam);
  *
  */
 export function translateSignal<T extends TranslateSignalKey>(
