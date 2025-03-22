@@ -1,3 +1,15 @@
+## 7.6.0 (2025-03-22)
+
+
+### 🚀 Features
+
+- **transloco:** 🎸 Add a `translateSignal` ([#838](https://github.com/jsverse/transloco/pull/838))
+
+
+### 🩹 Fixes
+
+- **transloco:** complete subjects when root view is removed ([#822](https://github.com/jsverse/transloco/pull/822))
+
 ## 7.5.1 (2024-12-24)
 
 ### 🩹 Fixes
