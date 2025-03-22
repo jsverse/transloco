@@ -8,9 +8,10 @@ import {
   TranslocoConfig,
 } from './transloco.config';
 
-export const TRANSLOCO_TRANSPILER = new InjectionToken<TranslocoTranspiler>(
-  typeof ngDevMode !== 'undefined' && ngDevMode ? 'TRANSLOCO_TRANSPILER' : '',
-);
+export const TRANSLOCO_TRANSPILER =
+  /* @__PURE__ */ new InjectionToken<TranslocoTranspiler>(
+    typeof ngDevMode !== 'undefined' && ngDevMode ? 'TRANSLOCO_TRANSPILER' : '',
+  );
 
 export interface TranslocoTranspiler {
   transpile(params: TranspileParams): any;
