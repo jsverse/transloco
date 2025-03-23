@@ -45,7 +45,7 @@ export const FEATURE_ROUTES: Route = {
     import('./feature.component').then((FeatureComponent) => FeatureComponent),
   providers: [
     provideTranslocoScope({
-<strong>      scope: 'scopeName',
+<strong>      scope: 'myFeature',
 </strong>      loader,
     }),
   ],
@@ -62,7 +62,7 @@ Now, you can translate the content using the defined `scope`:
   selector: 'app-feature',
   template: ` 
     &#x3C;ng-container *transloco="let t">
-<strong>      &#x3C;p>{{ t('scopeName.title') }}&#x3C;/p>
+<strong>      &#x3C;p>{{ t('myFeature.title') }}&#x3C;/p>
 </strong>    &#x3C;/ng-container>`,
   imports: [TranslocoDirective],
 })
