@@ -7,6 +7,7 @@
   * [Overview](getting-started/overview.md)
 * [💡 Core Concepts](core-concepts/README.md)
   * [Translation in the Template](core-concepts/translation-in-the-template.md)
+  * [Signals](core-concepts/signals.md)
   * [Translation API](core-concepts/translation-api.md)
   * [Language API](core-concepts/language-api.md)
 * [🧠 Advanced Topics](advanced-topics/README.md)
