@@ -4,7 +4,11 @@ description: A list of the TranslocoService API methods and their usages
 
 # Translation API
 
-## **`translate()`**
+{% hint style="success" %}
+Check out the new [signal translation API](signals.md) 🚦
+{% endhint %}
+
+**`translate()`**
 
 Translate a given key, allowing optional parameters for dynamic values or language specification. Use this method when you need to translate keys directly in components or services.
 
