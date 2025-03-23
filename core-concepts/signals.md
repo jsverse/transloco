@@ -49,7 +49,7 @@ dynamicParam = signal({ variable: 'world' });
 object = translateObjectSignal(this.dynamicKey, this.dynamicParam);
 ```
 
-### Integration with Angular Dependency Injection
+## Integration with Angular Dependency Injection
 
 Both `translateSignal` and `translateObjectSignal` integrate with Angular's dependency injection system. They can be called within an injection context or with an explicitly provided injector.
 
