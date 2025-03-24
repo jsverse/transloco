@@ -1,6 +1,10 @@
 import { Inject, Injectable, InjectionToken } from '@angular/core';
 
 import { TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
+import {
+  formatTranslocoError,
+  TranslocoErrorCode,
+} from './transloco-error-code';
 
 export const TRANSLOCO_FALLBACK_STRATEGY =
   new InjectionToken<TranslocoFallbackStrategy>(
@@ -18,9 +22,16 @@ export class DefaultFallbackStrategy implements TranslocoFallbackStrategy {
   getNextLangs() {
     const fallbackLang = this.userConfig.fallbackLang;
     if (!fallbackLang) {
-      throw new Error(
-        'When using the default fallback, a fallback language must be provided in the config!',
-      );
+      let message: string;
+      if (typeof ngDevMode !== 'undefined' && ngDevMode) {
+        message =
+          'When using the default fallback, a fallback language must be provided in the config!';
+      } else {
+        message = formatTranslocoError(
+          TranslocoErrorCode.NoFallbackLanguageProvided,
+        );
+      }
+      throw new Error(message);
     }
 
     return Array.isArray(fallbackLang) ? fallbackLang : [fallbackLang];

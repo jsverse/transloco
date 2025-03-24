@@ -5,6 +5,7 @@ import { AvailableLangs } from './types';
 export interface TranslocoConfig {
   defaultLang: string;
   reRenderOnLangChange: boolean;
+  /** @deprecated */
   prodMode: boolean;
   fallbackLang?: string | string[];
   failedRetries: number;
