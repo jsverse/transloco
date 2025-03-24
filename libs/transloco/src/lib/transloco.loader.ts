@@ -23,5 +23,5 @@ export class DefaultLoader implements TranslocoLoader {
 }
 
 export const TRANSLOCO_LOADER = new InjectionToken<TranslocoLoader>(
-  typeof ngDevMode !== 'undefined' && ngDevMode ? 'TRANSLOCO_LOADER' : '',
+  ngDevMode ? 'TRANSLOCO_LOADER' : '',
 );
