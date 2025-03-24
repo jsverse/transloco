@@ -5,6 +5,8 @@
 Update your dependency to [@jsverse/transloco](https://www.npmjs.com/package/@jsverse/transloco) and get the latest features!
 {% endhint %}
 
+![npm](https://img.shields.io/npm/v/@jsverse/transloco) ![Bundle Size](https://img.shields.io/bundlephobia/min/@jsverse/transloco) ![Downloads](https://img.shields.io/npm/dm/@jsverse/transloco) ![Build Status](https://github.com/jsverse/transloco/actions/workflows/ci.yml/badge.svg) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/jsverse/transloco/blob/master/CONTRIBUTING.md)
+
 Transloco allows you to define translations for your content in different languages and switch between them easily in runtime. It exposes a rich API to manage translations efficiently and cleanly. It provides multiple plugins that will improve your development experience.
 
 Here is a small taste of the features it offers:
