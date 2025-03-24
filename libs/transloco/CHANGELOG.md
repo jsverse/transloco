@@ -1,3 +1,10 @@
+## 7.6.1 (2025-03-24)
+
+
+### 🩹 Fixes
+
+- **transloco:** 🐛 ngDevMode declaration issue ([#843](https://github.com/jsverse/transloco/pull/843))
+
 ## 7.6.0 (2025-03-22)
 
 
