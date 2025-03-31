@@ -7,6 +7,10 @@ import {
   TRANSLOCO_CONFIG,
   TranslocoConfig,
 } from './transloco.config';
+import {
+  formatTranslocoError,
+  TranslocoErrorCode,
+} from './transloco-error-code';
 
 export const TRANSLOCO_TRANSPILER = new InjectionToken<TranslocoTranspiler>(
   ngDevMode ? 'TRANSLOCO_TRANSPILER' : '',
@@ -164,6 +168,8 @@ export function getFunctionArgs(argsString: string): string[] {
   return args;
 }
 
+const functionalCallRegExp = /\[\[\s*(\w+)\((.*?)\)\s*]]/g;
+
 @Injectable()
 export class FunctionalTranspiler
   extends DefaultTranspiler
@@ -175,7 +181,7 @@ export class FunctionalTranspiler
     let transpiled = value;
     if (isString(value)) {
       transpiled = value.replace(
-        /\[\[\s*(\w+)\((.*?)\)\s*]]/g,
+        functionalCallRegExp,
         (match: string, functionName: string, args: string) => {
           try {
             const func: TranslocoTranspilerFunction =
@@ -183,11 +189,19 @@ export class FunctionalTranspiler
 
             return func.transpile(...getFunctionArgs(args));
           } catch (e: unknown) {
-            let message = `There is an error in: '${value}'. 
+            let message: string;
+            if (typeof ngDevMode !== 'undefined' && ngDevMode) {
+              message = `There is an error in: '${value}'. 
                           Check that the you used the right syntax in your translation and that the implementation of ${functionName} is correct.`;
-            if ((e as Error).message.includes('NullInjectorError')) {
-              message = `You are using the '${functionName}' function in your translation but no provider was found!`;
+              if ((e as Error).message.includes('NullInjectorError')) {
+                message = `You are using the '${functionName}' function in your translation but no provider was found!`;
+              }
+            } else {
+              message = formatTranslocoError(
+                TranslocoErrorCode.FunctionalTranspilerInvalidSyntax,
+              );
             }
+
             throw new Error(message);
           }
         },
