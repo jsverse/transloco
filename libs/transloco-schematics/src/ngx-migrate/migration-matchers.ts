@@ -1,20 +1,10 @@
-import * as p from 'node:path';
-
-import * as ora from 'ora';
-import { replaceInFile } from 'replace-in-file';
-
 const PIPE_CONTENT_REGEX = `\\s*([^}\\r\\n]*?\\|)\\s*(translate)[^\\r\\n]*?`;
-export const PIPE_REGEX = `{{${PIPE_CONTENT_REGEX}}}`;
-export const PIPE_IN_BINDING_REGEX = `\\]=('|")${PIPE_CONTENT_REGEX}\\1`;
+const PIPE_REGEX = `{{${PIPE_CONTENT_REGEX}}}`;
+const PIPE_IN_BINDING_REGEX = `\\]=('|")${PIPE_CONTENT_REGEX}\\1`;
 
-// Example: `./src/ng2/**/*.html`;
-export function run(path) {
-  console.log('\x1b[4m%s\x1b[0m', '\nStarting migration script');
-  const dir = p.resolve(process.cwd());
-
-  path = p.join(dir, path, '/**/*');
-
+export function generateMatchers(path: string) {
   const noSpecFiles = { ignore: `${path}spec.ts`, files: `${path}.ts` };
+
   const [directive, pipe, pipeInBinding] = [
     /(translate|\[translate(?:Params)?\])=("|')[^"']*\2/gm,
     new RegExp(PIPE_REGEX, 'gm'),
@@ -158,46 +148,5 @@ export function run(path) {
     },
   ];
 
-  async function migrate(matchersArr, filesType) {
-    console.log(`\nMigrating ${filesType} files 📜`);
-    let spinner;
-    const isWindows = process.platform === 'win32';
-
-    for (let i = 0; i < matchersArr.length; i++) {
-      const { step, matchers } = matchersArr[i];
-      const msg = `Step ${i + 1}/${matchersArr.length}: Migrating ${step}`;
-      spinner = ora().start(msg);
-      const noFilesFound = [];
-      for (const matcher of matchers) {
-        try {
-          await replaceInFile({
-            ...matcher,
-            glob: {
-              windowsPathsNoEscape: isWindows,
-            },
-          });
-        } catch (e) {
-          if (e.message.includes('No files match the pattern')) {
-            noFilesFound.push(e.message);
-          } else {
-            throw e;
-          }
-        }
-      }
-      spinner.succeed(msg);
-      noFilesFound.forEach((pattern) =>
-        console.log('\x1b[33m%s\x1b[0m', `⚠️ ${pattern}`),
-      );
-    }
-  }
-
-  return migrate(htmlReplacements, 'HTML')
-    .then(() => migrate(tsReplacements, 'TS'))
-    .then(() => {
-      console.log('\n              🌵 Done! 🌵');
-      console.log('Welcome to a better translation experience 🌐');
-      console.log(
-        '\nFor more information about this script please visit 👉 https://jsverse.github.io/transloco/docs/migration/ngx\n',
-      );
-    });
+  return { htmlReplacements, tsReplacements };
 }
