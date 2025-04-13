@@ -1,15 +1,15 @@
-import * as path from 'node:path';
+import * as nodePath from 'node:path';
 
 import {
   SchematicTestRunner,
   UnitTestTree,
 } from '@angular-devkit/schematics/testing';
 
-import { SchemaOptions } from '../ng-add/schema';
+import { createWorkspace } from '../../schematics-core/testing';
 
-import { createWorkspace } from './create-workspace';
+import { SchemaOptions } from './schema';
 
-const collectionPath = path.join(__dirname, '../collection.json');
+const collectionPath = nodePath.join(__dirname, '../collection.json');
 
 describe('ng add', () => {
   const schematicRunner = new SchematicTestRunner('schematics', collectionPath);
@@ -55,5 +55,5 @@ describe('ng add', () => {
 });
 
 function readFile(host: UnitTestTree, path: string) {
-  return host.get(`/projects/bar/src/${path}`).content.toString();
+  return host.get(`/projects/bar/src/${path}`)!.content.toString();
 }

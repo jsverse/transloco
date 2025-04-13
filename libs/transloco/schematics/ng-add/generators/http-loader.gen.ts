@@ -1,6 +1,11 @@
 import { apply, move, template, url } from '@angular-devkit/schematics';
 
-export function createLoaderFile({ ssr, loaderPath }) {
+export interface CreateLoaderFileParams {
+  ssr: boolean;
+  loaderPath: string;
+}
+
+export function createLoaderFile({ ssr, loaderPath }: CreateLoaderFileParams) {
   return apply(url(`./files/transloco-loader`), [
     template({
       ts: 'ts',

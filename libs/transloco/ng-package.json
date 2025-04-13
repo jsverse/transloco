@@ -1,17 +1,13 @@
 {
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
   "dest": "../../dist/libs/transloco",
-  "assets": ["README.md", "CHANGELOG.md"],
+  "assets": [
+    "README.md",
+    "CHANGELOG.md",
+    "schematics/**/*.json",
+    "**/files/**/*"
+  ],
   "lib": {
     "entryFile": "src/index.ts"
-  },
-  "allowedNonPeerDependencies": [
-    "fs-extra",
-    "glob",
-    "flat",
-    "@jsverse/transloco-utils",
-    "replace-in-file",
-    "lodash.kebabcase",
-    "ora"
-  ]
+  }
 }

@@ -15,25 +15,16 @@
     "url": "https://github.com/jsverse/transloco"
   },
   "keywords": [
-    "angular",
-    "angular 2",
+    "Angular",
     "i18n",
-    "translate",
-    "angular translate",
-    "angular i18n",
-    "transloco"
+    "Translate",
+    "Angular Translate",
+    "Transloco",
+    "Schematics",
+    "Angular CLI"
   ],
   "license": "MIT",
   "peerDependencies": {
     "@angular/core": ">=16.0.0"
-  },
-  "dependencies": {
-    "fs-extra": "^11.0.0",
-    "glob": "^10.0.0",
-    "tslib": "^2.2.0",
-    "@jsverse/transloco-utils": "^7.0.0",
-    "replace-in-file": "^7.0.1",
-    "ora": "^5.4.1",
-    "lodash.kebabcase": "^4.1.1"
   }
 }

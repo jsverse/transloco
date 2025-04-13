@@ -9,7 +9,7 @@ import {
   url,
 } from '@angular-devkit/schematics';
 
-import { stringifyList } from '../../utils/array';
+import { stringifyList } from '../../../schematics-core';
 
 export function createTranslocoModule({
   isLib,

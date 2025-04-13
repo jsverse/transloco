@@ -21,17 +21,17 @@ import {
 } from '@schematics/angular/utility/standalone/rules';
 import { findAppConfig } from '@schematics/angular/utility/standalone/app_config';
 
-import { stringifyList } from '../utils/array';
-import { getProject, setEnvironments } from '../utils/projects';
-import { checkIfTranslationFilesExist } from '../utils/translations';
-import { createConfig } from '../utils/transloco';
+import {
+  checkIfTranslationFilesExist,
+  createTranslateFiles,
+  createTranslocoConfig,
+  getProject,
+  setEnvironments,
+  stringifyList,
+} from '../../schematics-core';
 
 import { Loaders, SchemaOptions } from './schema';
 import { createLoaderFile } from './generators/http-loader.gen';
-import {
-  createTranslateFiles,
-  jsonTranslationFileCreator,
-} from './generators/translation-files.gen';
 import { createTranslocoModule } from './generators/root-module.gen';
 
 function updateEnvironmentBaseUrl(
@@ -49,7 +49,19 @@ function updateEnvironmentBaseUrl(
   );
 }
 
-function resolveLoaderPath({ host, mainPath, isStandalone, modulePath }) {
+interface ResolveLoaderPathParams {
+  host: Tree;
+  mainPath: string;
+  isStandalone: boolean;
+  modulePath: string;
+}
+
+function resolveLoaderPath({
+  host,
+  mainPath,
+  isStandalone,
+  modulePath,
+}: ResolveLoaderPathParams) {
   let resolved = modulePath;
   if (isStandalone) {
     const bootstrapCall = findBootstrapApplicationCall(host, mainPath);
@@ -62,10 +74,7 @@ function resolveLoaderPath({ host, mainPath, isStandalone, modulePath }) {
 }
 
 export default function (options: SchemaOptions): Rule {
-  return async (
-    host: Tree,
-    context: SchematicContext,
-  ): Promise<Rule | void> => {
+  return async (host: Tree, context: SchematicContext) => {
     const langs = options.langs.split(',').map((l) => l.trim());
     const project = getProject(host, options.project);
     const sourceRoot = project.sourceRoot ?? 'src';
@@ -77,7 +86,7 @@ export default function (options: SchemaOptions): Rule {
       ? ''
       : dirname(getAppModulePath(host, mainPath));
 
-    const actions = [];
+    const actions: Rule[] = [];
 
     if (options.loader === Loaders.Http) {
       const loaderPath = resolveLoaderPath({
@@ -121,11 +130,7 @@ export default function (options: SchemaOptions): Rule {
       true,
     );
     if (!hasTranslationFiles) {
-      actions.push(
-        mergeWith(
-          createTranslateFiles(langs, jsonTranslationFileCreator, assetsPath),
-        ),
-      );
+      actions.push(mergeWith(createTranslateFiles(langs, assetsPath)));
     }
 
     if (isStandalone) {
@@ -170,8 +175,8 @@ export default function (options: SchemaOptions): Rule {
       updateEnvironmentBaseUrl(host, sourceRoot, 'http://localhost:4200');
     }
 
-    createConfig(host, langs, assetsPath);
+    createTranslocoConfig(host, langs, assetsPath);
 
-    return chain(actions)(host, context) as any;
+    return chain(actions)(host, context) as Rule;
   };
 }

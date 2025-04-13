@@ -1,0 +1,12 @@
+{
+  "extends": ["@schematics/angular"],
+  "$schema": "../../../node_modules/@angular-devkit/schematics/collection-schema.json",
+  "schematics": {
+    "ng-add": {
+      "aliases": ["init"],
+      "factory": "./ng-add/index",
+      "schema": "./ng-add/schema.json",
+      "description": "Add Transloco to your project."
+    }
+  }
+}

@@ -22,11 +22,12 @@ import { Change } from '@schematics/angular/utility/change';
 import { LIB_NAME } from '../schematics.utils';
 import { coerceArray, stringifyList } from '../utils/array';
 import { findModuleFromOptions } from '../utils/find-module';
-import { getProject, getProjectPath } from '../utils/projects';
+import { getProject } from '../utils/projects';
 import { createTranslateFilesFromOptions } from '../utils/translations';
 import { getConfig } from '../utils/config';
 
 import { SchemaOptions } from './schema';
+import { getProjectPath } from './utils';
 
 function getProviderValue(options: SchemaOptions) {
   const name = dasherize(options.name);
