@@ -67,6 +67,7 @@ module.exports = {
     'scoped-libs',
     'utils',
     'validator',
+    'schematics',
   ],
   types,
 };

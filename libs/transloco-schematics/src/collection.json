@@ -2,16 +2,10 @@
   "extends": ["@schematics/angular"],
   "$schema": "../../../node_modules/@angular-devkit/schematics/collection-schema.json",
   "schematics": {
-    "component": {
-      "aliases": ["c"],
-      "factory": "./component/index",
-      "schema": "../../../../@schematics/angular/component/schema.json",
-      "description": "Add component with translation."
-    },
-    "migrate": {
+    "ngx-migrate": {
       "aliases": ["m"],
-      "factory": "./migrate/index",
-      "schema": "./migrate/schema.json",
+      "factory": "./ngx-migrate/index",
+      "schema": "./ngx-migrate/schema.json",
       "description": "Run a migration script from @ngx-translate."
     },
     "scope": {
@@ -19,12 +13,6 @@
       "factory": "./scope/index",
       "schema": "./scope/schema.json",
       "description": "Add transloco scope."
-    },
-    "upgrade": {
-      "aliases": ["up"],
-      "factory": "./upgrade/index",
-      "schema": "./upgrade/schema.json",
-      "description": "Run an upgrade script."
     },
     "keys-manager": {
       "aliases": ["km"],

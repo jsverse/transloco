@@ -82,7 +82,8 @@
       "transloco-preload-langs",
       "transloco-scoped-libs",
       "transloco-utils",
-      "transloco-validator"
+      "transloco-validator",
+      "transloco-schematics"
     ],
     "projectsRelationship": "independent",
     "version": {
