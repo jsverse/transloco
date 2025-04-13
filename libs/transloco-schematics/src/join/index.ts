@@ -7,7 +7,6 @@ import {
 import { normalize } from '@angular-devkit/core';
 import { existsSync, removeSync } from 'fs-extra';
 
-import { TranslationFileFormat } from '../types';
 import {
   getGlobalConfig,
   getJsonFileContent,
@@ -20,12 +19,6 @@ import {
 } from '../../schematics-core';
 
 import { SchemaOptions } from './schema';
-
-type Builder = (
-  tree: Tree,
-  path: string,
-  content: Record<string, unknown>,
-) => void;
 
 function getDefaultLang(options: SchemaOptions) {
   return options.defaultLang || getGlobalConfig().defaultLang;
@@ -81,21 +74,6 @@ function jsonBuilder(
   tree.create(`${path}.json`, JSON.stringify(content, null, 2));
 }
 
-function builderFactory(format: TranslationFileFormat): Builder {
-  switch (format) {
-    case TranslationFileFormat.JSON:
-      return jsonBuilder;
-    case TranslationFileFormat.PO:
-      // TODO:
-      return jsonBuilder;
-    case TranslationFileFormat.XLIFF:
-      // TODO:
-      return jsonBuilder;
-    default:
-      return jsonBuilder;
-  }
-}
-
 export default function (options: SchemaOptions): Rule {
   return (host: Tree) => {
     deletePrevFiles(host, options);
@@ -127,9 +105,8 @@ export default function (options: SchemaOptions): Rule {
     }));
 
     const treeSource = new EmptyTree();
-    const builder = builderFactory(options.format);
     output.forEach((o) => {
-      builder(treeSource, `${options.outDir}/${o.lang}`, o.translation);
+      jsonBuilder(treeSource, `${options.outDir}/${o.lang}`, o.translation);
     });
 
     return treeSource;

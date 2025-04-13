@@ -24,13 +24,6 @@
       "description": "Determine rather join also the default language",
       "default": false
     },
-    "format": {
-      "description": "The output translation files format.",
-      "type": "string",
-      "default": "JSON",
-      "enum": ["JSON", "xliff", "po"],
-      "alias": "f"
-    },
     "project": {
       "type": "string",
       "description": "The root project name.",

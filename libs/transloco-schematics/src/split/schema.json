@@ -16,13 +16,6 @@
       "default": "dist-i18n",
       "alias": "o"
     },
-    "format": {
-      "description": "The translated files format.",
-      "type": "string",
-      "default": "JSON",
-      "enum": ["JSON", "xliff", "po"],
-      "alias": "f"
-    },
     "project": {
       "type": "string",
       "description": "The root project name.",
