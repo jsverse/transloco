@@ -16,7 +16,7 @@ export function getGlobalConfig(): TranslocoGlobalConfig {
   return config;
 }
 
-export function createTranslocoConfig(
+export function createGlobalConfig(
   host: Tree,
   langs: string[],
   rootTranslationsPath = 'assets/i18n/',
@@ -33,13 +33,10 @@ export function createTranslocoConfig(
   }
 }
 
-export function updateTranslocoConfig(
-  host: Tree,
-  config: TranslocoGlobalConfig,
-) {
+export function updateGlobalConfig(host: Tree, config: TranslocoGlobalConfig) {
   const originalConfig = getGlobalConfig();
   if (!originalConfig || Object.keys(originalConfig).length === 0) {
-    return createTranslocoConfig(
+    return createGlobalConfig(
       host,
       config.langs || [],
       config.rootTranslationsPath,

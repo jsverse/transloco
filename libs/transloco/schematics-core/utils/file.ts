@@ -5,6 +5,7 @@ import { DirEntry, Tree } from '@angular-devkit/schematics';
 
 export function getJsonFileContent(fileName: PathFragment, dir: DirEntry) {
   const content = dir.file(fileName)!.content.toString('utf-8');
+
   return JSON.parse(content);
 }
 
