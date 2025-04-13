@@ -6,15 +6,12 @@ import {
 } from '@angular-devkit/schematics/testing';
 import { TranslocoGlobalConfig } from '@jsverse/transloco-utils';
 
-import { createWorkspace } from './create-workspace';
-import en from './mocks/en';
-import es from './mocks/es';
-import scopeEn from './mocks/scope-en';
-import scopeEs from './mocks/scope-es';
-
-jest.mock('../utils/config');
-// eslint-disable-next-line import/order
-import { getConfig } from '../utils/config';
+jest.mock('../../schematics-core/utils/transloco');
+import { getGlobalConfig } from '../../schematics-core';
+import {
+  createWorkspace,
+  translationMocks,
+} from '../../schematics-core/testing';
 
 const collectionPath = path.join(__dirname, '../collection.json');
 
@@ -30,15 +27,27 @@ describe('Join', () => {
 
   beforeEach(async () => {
     appTree = await createWorkspace(schematicRunner);
-    appTree.create('src/assets/i18n/es.json', JSON.stringify(es));
-    appTree.create('src/assets/i18n/en.json', JSON.stringify(en));
-    (getConfig as jest.Mock).mockReturnValue(globalConfig);
+    appTree.create(
+      'src/assets/i18n/es.json',
+      JSON.stringify(translationMocks.es),
+    );
+    appTree.create(
+      'src/assets/i18n/en.json',
+      JSON.stringify(translationMocks.en),
+    );
+    (getGlobalConfig as jest.Mock).mockReturnValue(globalConfig);
   });
 
   describe('default strategy', () => {
     beforeEach(() => {
-      appTree.create('src/assets/i18n/scope/en.json', JSON.stringify(scopeEn));
-      appTree.create('src/assets/i18n/scope/es.json', JSON.stringify(scopeEs));
+      appTree.create(
+        'src/assets/i18n/scope/en.json',
+        JSON.stringify(translationMocks.scopeEn),
+      );
+      appTree.create(
+        'src/assets/i18n/scope/es.json',
+        JSON.stringify(translationMocks.scopeEs),
+      );
     });
 
     it('should merge translation files that are not the default language to dist', async () => {
@@ -73,11 +82,11 @@ describe('Join', () => {
     it(`should take default project's path`, async () => {
       appTree.create(
         'projects/bar/src/assets/i18n/en.json',
-        JSON.stringify(scopeEn),
+        JSON.stringify(translationMocks.scopeEn),
       );
       appTree.create(
         'projects/bar/src/assets/i18n/es.json',
-        JSON.stringify(scopeEs),
+        JSON.stringify(translationMocks.scopeEs),
       );
 
       const tree = await schematicRunner.runSchematic('join', {}, appTree);
@@ -87,11 +96,11 @@ describe('Join', () => {
     it('should take specific project path', async () => {
       appTree.create(
         'projects/baz/src/assets/i18n/en.json',
-        JSON.stringify(scopeEn),
+        JSON.stringify(translationMocks.scopeEn),
       );
       appTree.create(
         'projects/baz/src/assets/i18n/es.json',
-        JSON.stringify(scopeEs),
+        JSON.stringify(translationMocks.scopeEs),
       );
 
       const tree = await schematicRunner.runSchematic(
@@ -106,11 +115,17 @@ describe('Join', () => {
   describe('scope map strategy', () => {
     function setup(scopePathMap: any = { scope: 'src/app/assets/i18n' }) {
       Object.values(scopePathMap).forEach((path) => {
-        appTree.create(`${path}/en.json`, JSON.stringify(scopeEn));
-        appTree.create(`${path}/es.json`, JSON.stringify(scopeEs));
+        appTree.create(
+          `${path}/en.json`,
+          JSON.stringify(translationMocks.scopeEn),
+        );
+        appTree.create(
+          `${path}/es.json`,
+          JSON.stringify(translationMocks.scopeEs),
+        );
       });
 
-      (getConfig as jest.Mock).mockReturnValue({
+      (getGlobalConfig as jest.Mock).mockReturnValue({
         ...globalConfig,
         scopePathMap,
       });

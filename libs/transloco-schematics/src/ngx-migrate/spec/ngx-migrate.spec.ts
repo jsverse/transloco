@@ -6,11 +6,8 @@ import { readFile } from 'node:fs/promises';
 import { replaceInFile, ReplaceInFileConfig } from 'replace-in-file';
 import { glob } from 'glob';
 
-import {
-  PIPE_IN_BINDING_REGEX,
-  PIPE_REGEX,
-  run,
-} from '../migrate/ngx-translate-migration';
+import { run } from '../index';
+import { PIPE_IN_BINDING_REGEX, PIPE_REGEX } from '../migration-matchers';
 
 jest.mock('replace-in-file');
 
@@ -190,7 +187,7 @@ describe('ngx-translate migration', () => {
       const ngxTranslateTemplatePath =
         './src/tests/templates/pipes/ngx-translate';
 
-      await run(ngxTranslateTemplatePath);
+      await run({ path: ngxTranslateTemplatePath });
 
       expect(replaceInFile).toHaveBeenLastCalledWith(
         expect.objectContaining({

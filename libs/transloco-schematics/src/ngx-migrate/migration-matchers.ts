@@ -1,6 +1,6 @@
 const PIPE_CONTENT_REGEX = `\\s*([^}\\r\\n]*?\\|)\\s*(translate)[^\\r\\n]*?`;
-const PIPE_REGEX = `{{${PIPE_CONTENT_REGEX}}}`;
-const PIPE_IN_BINDING_REGEX = `\\]=('|")${PIPE_CONTENT_REGEX}\\1`;
+export const PIPE_REGEX = `{{${PIPE_CONTENT_REGEX}}}`;
+export const PIPE_IN_BINDING_REGEX = `\\]=('|")${PIPE_CONTENT_REGEX}\\1`;
 
 export function generateMatchers(path: string) {
   const noSpecFiles = { ignore: `${path}spec.ts`, files: `${path}.ts` };

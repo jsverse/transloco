@@ -10,9 +10,10 @@ import {
   TranslocoGlobalConfig,
 } from '@jsverse/transloco-utils';
 
-import { createWorkspace } from './create-workspace';
-import scopeEn from './mocks/scope-en';
-import scopeEs from './mocks/scope-es';
+import {
+  createWorkspace,
+  translationMocks,
+} from '../../schematics-core/testing';
 
 const collectionPath = path.join(__dirname, '../collection.json');
 
@@ -114,8 +115,14 @@ describe('Split', () => {
       const scope = `${options.translationPath}/scope`;
       const scopePathMap = { scope };
       mockConfig({ scopePathMap });
-      appTree.create(`${scope}/en.json`, JSON.stringify(scopeEn));
-      appTree.create(`${scope}/es.json`, JSON.stringify(scopeEs));
+      appTree.create(
+        `${scope}/en.json`,
+        JSON.stringify(translationMocks.scopeEn),
+      );
+      appTree.create(
+        `${scope}/es.json`,
+        JSON.stringify(translationMocks.scopeEs),
+      );
       const tree = await schematicRunner.runSchematic(
         'split',
         options,
