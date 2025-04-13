@@ -26,5 +26,8 @@
   "license": "MIT",
   "peerDependencies": {
     "@angular/core": ">=16.0.0"
+  },
+  "dependencies": {
+    "tslib": "^2.0.0"
   }
 }
