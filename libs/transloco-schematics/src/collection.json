@@ -2,11 +2,16 @@
   "extends": ["@schematics/angular"],
   "$schema": "../../../node_modules/@angular-devkit/schematics/collection-schema.json",
   "schematics": {
+    "ng-migrate": {
+      "factory": "./ng-migrate/index",
+      "schema": "./ng-migrate/schema.json",
+      "description": "Migrate from Angular i18n to Transloco."
+    },
     "ngx-migrate": {
       "aliases": ["m"],
       "factory": "./ngx-migrate/index",
       "schema": "./ngx-migrate/schema.json",
-      "description": "Run a migration script from @ngx-translate."
+      "description": "Migrate from @ngx-translate to Transloco."
     },
     "scope": {
       "aliases": ["s"],
@@ -18,7 +23,7 @@
       "aliases": ["km"],
       "factory": "./keys-manager/index",
       "schema": "./keys-manager/schema.json",
-      "description": "Add Transloco Keys Manager plugin to your project."
+      "description": "Add TKM (Transloco Keys Manager) plugin to your project."
     },
     "join": {
       "aliases": ["build"],
@@ -30,11 +35,6 @@
       "aliases": ["sp"],
       "factory": "./split/index",
       "schema": "./split/schema.json",
-      "description": "split the translated files over the project's translation files."
-    },
-    "ng-migrate": {
-      "factory": "./ng-migrate/index",
-      "schema": "./ng-migrate/schema.json",
       "description": "split the translated files over the project's translation files."
     }
   }

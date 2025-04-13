@@ -9,7 +9,7 @@ import { existsSync, removeSync } from 'fs-extra';
 
 import { TranslationFileFormat } from '../types';
 import {
-  getDefaultLang,
+  getGlobalConfig,
   getJsonFileContent,
   getTranslationEntryPaths,
   getTranslationFiles,
@@ -17,7 +17,7 @@ import {
   getTranslationsRoot,
   hasFiles,
   hasSubdirs,
-} from '../utils/transloco';
+} from '../../schematics-core';
 
 import { SchemaOptions } from './schema';
 
@@ -27,10 +27,14 @@ type Builder = (
   content: Record<string, unknown>,
 ) => void;
 
+function getDefaultLang(options: SchemaOptions) {
+  return options.defaultLang || getGlobalConfig().defaultLang;
+}
+
 function reduceTranslations(
   host: Tree,
   dirPath: string,
-  translationJson,
+  translationJson: Record<string, unknown>,
   lang: string,
   key = '',
 ) {
@@ -52,7 +56,7 @@ function reduceTranslations(
       const nestedKey = getTranslationKey(key, subDirName);
       reduceTranslations(
         host,
-        normalize(subDir.path).substr(1),
+        normalize(subDir.path).slice(1),
         translationJson,
         lang,
         nestedKey,

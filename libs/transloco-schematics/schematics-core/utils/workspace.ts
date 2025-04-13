@@ -1,7 +1,7 @@
 import { WorkspaceSchema } from '@schematics/angular/utility/workspace-models';
 import { SchematicsException, Tree } from '@angular-devkit/schematics';
 
-export function getWorkspacePath(host: Tree): string {
+function getWorkspacePath(host: Tree): string {
   const possibleFiles = ['/angular.json', '/.angular.json'];
   const [path] = possibleFiles.filter((path) => host.exists(path));
 
@@ -19,13 +19,13 @@ export function getWorkspace(host: Tree): WorkspaceSchema {
   return JSON.parse(config);
 }
 
-export function setWorkspace(host: Tree, workspace): void {
+export function setWorkspace(host: Tree, workspace: WorkspaceSchema): void {
   const path = getWorkspacePath(host);
 
   host.overwrite(path, JSON.stringify(workspace, null, 2));
 }
 
-export function getProject(host: Tree, project?: string) {
+export function getProject(host: Tree, project: string) {
   const workspace = getWorkspace(host);
   if (workspace) {
     return workspace.projects[project];
@@ -41,10 +41,11 @@ export function setEnvironments(
 ) {
   const path = sourceRoot + '/environments';
   const environments = host.getDir(path);
+
   return environments.subfiles.forEach((file) => {
     const filePath = `${path}/${file}`;
     const configBuffer = host.read(filePath);
-    const source = configBuffer.toString('utf-8');
+    const source = configBuffer!.toString('utf-8');
     host.overwrite(filePath, transformer(source));
   });
 }
