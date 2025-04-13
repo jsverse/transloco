@@ -24,7 +24,7 @@ import { findAppConfig } from '@schematics/angular/utility/standalone/app_config
 import {
   checkIfTranslationFilesExist,
   createTranslateFiles,
-  createTranslocoConfig,
+  createGlobalConfig,
   getProject,
   setEnvironments,
   stringifyList,
@@ -175,7 +175,7 @@ export default function (options: SchemaOptions): Rule {
       updateEnvironmentBaseUrl(host, sourceRoot, 'http://localhost:4200');
     }
 
-    createTranslocoConfig(host, langs, assetsPath);
+    createGlobalConfig(host, langs, assetsPath);
 
     return chain(actions)(host, context) as Rule;
   };
