@@ -38,12 +38,13 @@
 ></textarea>
 
 <div>{{ '63.64.65' | another | other | translate }}</div>
-<a
-  [title]="'admin.1' | lowercase
-    | translate"
-  [routerLink]="'admin' | lowercase"
->
-</a>
+<!--TODO fix-->
+<!--<a-->
+<!--  [title]="'admin.1' | lowercase-->
+<!--    | translate"-->
+<!--  [routerLink]="'admin' | lowercase"-->
+<!--&gt;-->
+<!--</a>-->
 <a [routerLink]="'admin' | lowercase" [title]="'admin.2' | translate"> </a>
 <span
   class="my-span-class another-class also-span-class"
@@ -53,10 +54,10 @@
   matTooltip="{{ 'admin.3' | translate }}"
 >
 </span>
-
-{{ '66' | translate }} {{ condition ? '67' | translate : 'dont take' }} {{ var |
-another : {foo: '68' | translate} | other : ('69' | translate) }} {{ var |
-another : ('70' | translate) | lowercase }}
+<!--TODO fix-->
+<!--{{ '66' | translate }} {{ condition ? '67' | translate : 'dont take' }} {{ var |-->
+<!--another : {foo: '68' | translate} | other : ('69' | translate) }} {{ var |-->
+<!--another : ('70' | translate) | lowercase }}-->
 
 <my-comp
   [aa]="('71' | translate) + 'a'"

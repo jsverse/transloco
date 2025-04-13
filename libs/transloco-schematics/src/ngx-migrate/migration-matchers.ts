@@ -2,6 +2,18 @@ const PIPE_CONTENT_REGEX = `\\s*([^}\\r\\n]*?\\|)\\s*(translate)[^\\r\\n]*?`;
 export const PIPE_REGEX = `{{${PIPE_CONTENT_REGEX}}}`;
 export const PIPE_IN_BINDING_REGEX = `\\]=('|")${PIPE_CONTENT_REGEX}\\1`;
 
+export interface MatcherDef {
+  files: string;
+  from: RegExp;
+  to: string | ((match: string, ...args: string[]) => string);
+}
+
+export interface Matcher {
+  matchers: MatcherDef[];
+  step: string;
+}
+
+// TODO refactor migration to be AST based
 export function generateMatchers(path: string) {
   const noSpecFiles = { ignore: `${path}spec.ts`, files: `${path}.ts` };
 
@@ -115,7 +127,7 @@ export function generateMatchers(path: string) {
     to: 'TranslocoService',
   };
 
-  const htmlReplacements = [
+  const htmlReplacements: Matcher[] = [
     {
       matchers: [directive],
       step: 'directives',
@@ -125,7 +137,7 @@ export function generateMatchers(path: string) {
       step: 'pipes',
     },
   ];
-  const tsReplacements = [
+  const tsReplacements: Matcher[] = [
     {
       matchers: [modules, moduleMultiImport, moduleSingleImport],
       step: 'modules',

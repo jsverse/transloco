@@ -93,6 +93,7 @@
     "karma-jasmine": "5.1.0",
     "karma-jasmine-html-reporter": "2.1.0",
     "lint-staged": "15.2.7",
+    "memfs": "4.17.0",
     "ng-packagr": "18.2.1",
     "nx": "19.8.9",
     "prettier": "3.3.2",

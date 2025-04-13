@@ -67,7 +67,6 @@
       "!{projectRoot}/src/test-setup.[jt]s"
     ]
   },
-  "parallel": 1,
   "useInferencePlugins": false,
   "defaultBase": "master",
   "release": {

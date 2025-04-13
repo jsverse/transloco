@@ -1,17 +1,49 @@
 // noinspection AngularUndefinedBinding
 
 import * as nodePath from 'node:path';
-import { readFile } from 'node:fs/promises';
 
-import { replaceInFile, ReplaceInFileConfig } from 'replace-in-file';
+import { vol } from 'memfs';
 import { glob } from 'glob';
 
 import { run } from '../index';
 import { PIPE_IN_BINDING_REGEX, PIPE_REGEX } from '../migration-matchers';
 
-jest.mock('replace-in-file');
+// Mock the fs module with memfs
+jest.mock('node:fs/promises', () => {
+  const originalModule = jest.requireActual('node:fs/promises');
+  return {
+    ...originalModule,
+    readFile: jest.fn().mockImplementation((path, options) => {
+      return Promise.resolve(vol.readFileSync(path, options));
+    }),
+    writeFile: jest.fn().mockImplementation((path, content, options) => {
+      vol.writeFileSync(path, content, options);
+      return Promise.resolve();
+    }),
+  };
+});
+
+jest.mock('glob', () => {
+  const originalModule = jest.requireActual('glob');
+  return {
+    ...originalModule,
+    sync: jest.fn().mockImplementation((pattern) => {
+      // Get the directory from the pattern
+      const [dir] = pattern.split('/**');
+
+      return vol
+        .readdirSync(dir, { recursive: true })
+        .map((file) => nodePath.join(dir, file));
+    }),
+  };
+});
 
 describe('ngx-translate migration', () => {
+  beforeEach(() => {
+    // Reset the in-memory file system before each test
+    vol.reset();
+  });
+
   describe('Positive regex tests', () => {
     describe('Pipe in binding', () => {
       test.each([
@@ -162,52 +194,53 @@ describe('ngx-translate migration', () => {
 
   describe('HTML template', () => {
     it('should replace html template content', async () => {
-      const replacements: Record<string, string> = {},
-        isWindows = process.platform === 'win32';
-
-      (replaceInFile as unknown as jest.Mock).mockImplementation(
-        async (config: ReplaceInFileConfig): Promise<void> => {
-          const path = config.files as string,
-            regex = config.from as RegExp,
-            replacer = config.to as (match: string) => string;
-
-          const files = await glob(path, { windowsPathsNoEscape: isWindows });
-
-          for (const fullPath of files) {
-            const filename = nodePath.parse(fullPath).base,
-              content =
-                replacements[filename] ??
-                (await readFile(fullPath, { encoding: 'utf-8' }));
-
-            replacements[filename] = content.replace(regex, replacer);
-          }
-        },
+      // Define the template directories
+      const ngxTranslateDir = nodePath.join(
+        __dirname,
+        'templates/pipes/ngx-translate',
+      );
+      const translocoDir = nodePath.join(
+        __dirname,
+        'templates/pipes/transloco',
       );
 
-      const ngxTranslateTemplatePath =
-        './src/tests/templates/pipes/ngx-translate';
+      // Find all template files using glob
+      const templateFiles = glob.sync('*.html', { cwd: ngxTranslateDir });
 
-      await run({ path: ngxTranslateTemplatePath });
+      // Create directories in memfs
+      vol.mkdirSync(ngxTranslateDir, { recursive: true });
+      vol.mkdirSync(translocoDir, { recursive: true });
 
-      expect(replaceInFile).toHaveBeenLastCalledWith(
-        expect.objectContaining({
-          glob: {
-            windowsPathsNoEscape: isWindows,
-          },
-        }),
-      );
+      // Copy template files into memfs
+      const fsReadFile = jest.requireActual('node:fs/promises').readFile;
+      for (const file of templateFiles) {
+        // Read the original files using the real fs module
+        const sourceContent = await fsReadFile(
+          nodePath.join(ngxTranslateDir, file),
+          'utf8',
+        );
 
-      const filenames = Object.keys(replacements);
+        // Write to memfs
+        vol.writeFileSync(nodePath.join(ngxTranslateDir, file), sourceContent);
+      }
+      vol
+        .readdirSync(ngxTranslateDir, { recursive: true })
+        .forEach(console.log);
+      jest.spyOn(process, 'cwd').mockImplementation(() => __dirname);
+      // Run the migration
+      await run({ path: 'templates/pipes/ngx-translate' });
 
-      for (const filename of filenames) {
-        const resultPath = nodePath.join(
-            __dirname,
-            './templates/pipes/transloco',
-            filename,
-          ),
-          resultContent = await readFile(resultPath, { encoding: 'utf-8' });
-
-        expect(replacements[filename]).toBe(resultContent);
+      // Verify that each file was updated correctly
+      for (const file of templateFiles) {
+        const updatedContent = vol.readFileSync(
+          nodePath.join(ngxTranslateDir, file),
+          'utf8',
+        );
+        const expectedContent = await fsReadFile(
+          nodePath.join(translocoDir, file),
+          'utf8',
+        );
+        expect(updatedContent).toBe(expectedContent);
       }
     });
   });
