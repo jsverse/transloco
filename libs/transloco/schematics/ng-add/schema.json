@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "$id": "transloco-ng-add",
+  "$id": "SchematicsTransloco",
   "title": "Adds Transloco to a project",
   "type": "object",
   "properties": {
