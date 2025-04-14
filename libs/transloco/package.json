@@ -25,9 +25,11 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "@angular/core": ">=16.0.0"
+    "@angular/core": ">=16.0.0",
+    "rxjs": ">=6.0.0"
   },
   "dependencies": {
-    "tslib": "^2.0.0"
-  }
+    "tslib": "^2.2.0"
+  },
+  "sideEffects": false
 }
