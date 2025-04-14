@@ -14,16 +14,16 @@
     "url": "https://github.com/jsverse/transloco"
   },
   "keywords": [
-    "angular",
-    "angular 2",
-    "declension",
+    "Angular",
     "i18n",
-    "icu",
-    "gender",
-    "messageformat",
-    "transloco",
-    "pluralization",
-    "translate"
+    "Translate",
+    "Angular Translate",
+    "Transloco",
+    "Declension",
+    "ICU",
+    "Gender",
+    "Messageformat",
+    "Pluralization"
   ],
   "license": "MIT",
   "peerDependencies": {
@@ -34,5 +34,6 @@
   "dependencies": {
     "@messageformat/core": "^3.0.0",
     "tslib": "^2.2.0"
-  }
+  },
+  "sideEffects": false
 }
