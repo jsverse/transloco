@@ -14,14 +14,13 @@
     "url": "https://github.com/jsverse/transloco"
   },
   "keywords": [
-    "angular",
-    "angular 2",
+    "Angular",
     "i18n",
-    "localization",
-    "l10n",
-    "angular translate",
-    "angular i18n",
-    "transloco"
+    "Translate",
+    "Angular Translate",
+    "Transloco",
+    "Localization",
+    "l10n"
   ],
   "license": "MIT",
   "peerDependencies": {
@@ -31,5 +30,6 @@
   },
   "dependencies": {
     "tslib": "^2.2.0"
-  }
+  },
+  "sideEffects": false
 }
