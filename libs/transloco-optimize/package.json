@@ -4,7 +4,7 @@
   "description": "Transloco optimization process for production environments",
   "main": "src/lib/transloco-optimize.js",
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   },
   "bin": {
     "transloco-optimize": "src/index.js"
@@ -21,16 +21,14 @@
     "url": "https://github.com/jsverse/transloco"
   },
   "keywords": [
-    "angular",
-    "angular 2",
+    "Angular",
     "i18n",
-    "translate",
-    "angular translate",
-    "angular i18n",
-    "transloco",
-    "comments",
-    "build",
-    "optimize"
+    "Translate",
+    "Angular Translate",
+    "Transloco",
+    "Translator Comments",
+    "Build",
+    "Optimize"
   ],
   "license": "MIT",
   "dependencies": {
