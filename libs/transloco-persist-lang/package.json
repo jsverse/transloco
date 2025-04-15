@@ -14,13 +14,13 @@
     "url": "https://github.com/jsverse/transloco"
   },
   "keywords": [
-    "angular",
-    "angular 2",
+    "Angular",
     "i18n",
-    "transloco",
-    "translate",
-    "persist",
-    "storage"
+    "Translate",
+    "Angular Translate",
+    "Transloco",
+    "Persist",
+    "Storage"
   ],
   "license": "MIT",
   "peerDependencies": {
@@ -29,5 +29,6 @@
   },
   "dependencies": {
     "tslib": "^2.2.0"
-  }
+  },
+  "sideEffects": false
 }
