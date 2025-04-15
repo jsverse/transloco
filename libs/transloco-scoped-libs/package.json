@@ -4,7 +4,7 @@
   "description": "Transloco support tool for libraries with translations",
   "main": "src/lib/transloco-scoped-libs.js",
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   },
   "bin": {
     "transloco-scoped-libs": "src/index.js"
@@ -21,16 +21,12 @@
     "url": "https://github.com/jsverse/transloco"
   },
   "keywords": [
-    "angular",
-    "angular 2",
+    "Angular",
     "i18n",
-    "translate",
-    "angular translate",
-    "angular i18n",
-    "transloco",
-    "comments",
-    "build",
-    "optimize"
+    "Translate",
+    "Angular Translate",
+    "Transloco",
+    "Build Tool"
   ],
   "license": "MIT",
   "dependencies": {
