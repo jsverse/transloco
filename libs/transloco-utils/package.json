@@ -4,7 +4,7 @@
   "description": "Transloco utils library",
   "main": "src/index.js",
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   },
   "publishConfig": {
     "access": "public"
@@ -18,16 +18,12 @@
     "url": "https://github.com/jsverse/transloco"
   },
   "keywords": [
-    "angular",
-    "angular 2",
+    "Angular",
     "i18n",
-    "translate",
-    "angular translate",
-    "angular i18n",
-    "transloco",
-    "comments",
-    "build",
-    "optimize"
+    "Translate",
+    "Angular Translate",
+    "Transloco",
+    "Utils"
   ],
   "license": "MIT",
   "dependencies": {
