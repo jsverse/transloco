@@ -4,7 +4,7 @@
   "description": "Transloco translation files validator",
   "main": "src/lib/transloco-validator.js",
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   },
   "bin": {
     "transloco-validator": "src/index.js"
@@ -21,14 +21,14 @@
     "url": "https://github.com/jsverse/transloco"
   },
   "keywords": [
-    "angular",
-    "angular 2",
+    "Angular",
     "i18n",
-    "transloco",
-    "translate",
-    "translation validator",
+    "Translate",
+    "Angular Translate",
+    "Transloco",
+    "Translation Validator",
     "JSON validator",
-    "validator"
+    "Validator"
   ],
   "license": "MIT",
   "dependencies": {
