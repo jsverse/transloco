@@ -1,9 +1,13 @@
 # Unit Testing
 
-{% hint style="info" %}
+{% hint style="warning" %}
 **Note**
 
-If you're encountering issues running unit tests with Jest and Transloco due to the flat library, try upgrading to **Transloco v7.5.1**, where the flat dependency has been removed.
+If you’re experiencing issues running unit tests with Jest and Transloco due to the ESM version of the flat library—commonly encountering an error like:
+
+`Error while trying to load ‘en’: TypeError: (0 , import_flat.flatten) is not a function`
+
+You can resolve this issue by upgrading to **Transloco version 7.5.1 or higher**, as the flat dependency was removed starting from that version.
 {% endhint %}
 
 When running tests, it's important to have the languages available immediately and synchronously. **Transloco** provides the `TranslocoTestingModule`, which allows you to specify the languages and configuration needed for your specs.
