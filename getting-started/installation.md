@@ -32,7 +32,12 @@ ng add @jsverse/transloco
 {% tab title="Nx 🐋" %}
 ```bash
 pnpm add @jsverse/transloco
+# Standalone
 nx g @jsverse/transloco:ng-add
+# Integrated monorepo workspace
+nx g @jsverse/transloco:ng-add --project=my-app
+
+
 ```
 {% endtab %}
 {% endtabs %}
