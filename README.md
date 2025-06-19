@@ -1,8 +1,7 @@
 # 🚀 Getting Started
 
 {% hint style="success" %}
-🎉 Transloco has a new home 🎉\
-Update your dependency to [@jsverse/transloco](https://www.npmjs.com/package/@jsverse/transloco) and get the latest features!
+TKM v6.2.0 now supports Angular v20 and Transloco's Signal API 🎉
 {% endhint %}
 
 ![npm](https://img.shields.io/npm/v/@jsverse/transloco) ![Bundle Size](https://img.shields.io/bundlephobia/min/@jsverse/transloco) ![Downloads](https://img.shields.io/npm/dm/@jsverse/transloco) ![Build Status](https://github.com/jsverse/transloco/actions/workflows/ci.yml/badge.svg) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/jsverse/transloco/blob/master/CONTRIBUTING.md)

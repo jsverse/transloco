@@ -7,5 +7,6 @@ Make sure you install the version corresponding to your Angular version:
 <table data-full-width="false"><thead><tr><th>Angular</th><th>@ngneat/transloco</th><th>@ngneat/transloco-*</th></tr></thead><tbody><tr><td>>=13 &#x3C;16</td><td>4.x</td><td>4.x</td></tr><tr><td>12</td><td>3.x</td><td>3.x</td></tr><tr><td>>=6 &#x3C;12</td><td>2.x</td><td>2.x</td></tr></tbody></table>
 
 {% hint style="warning" %}
-Transloco packages under the @ngneat scope are no longer supported, make sure you update to the @jsverse release
+Transloco packages under the @ngneat scope will no longer recive updates.\
+Update your dependency to [@jsverse/transloco](https://www.npmjs.com/package/@jsverse/transloco) and get the latest features and updates.
 {% endhint %}
