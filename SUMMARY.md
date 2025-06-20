@@ -60,3 +60,4 @@
     * [Preloading Translations Using Transloco](blog-posts/transloco-team-posts/preloading-translations-using-transloco.md)
   * [From the Community](blog-posts/from-the-community.md)
 * [❓ FAQs](faqs.md)
+* [❤️ Support](support.md)
