@@ -2,6 +2,8 @@
 
 If you’ve written something interesting about Transloco and would like to share it here, feel free to <mark style="background-color:green;">open a PR to include it!</mark>
 
+{% embed url="https://www.codeandweb.com/babeledit/tutorials/how-to-translate-your-angular-app-with-transloco" %}
+
 {% embed url="https://lokalise.com/blog/angular-localization-with-transloco/" %}
 
 {% embed url="https://medium.com/@ItayOded/lazy-load-and-encapsulate-i18n-files-in-angular-with-transloco-55af44885797" %}
