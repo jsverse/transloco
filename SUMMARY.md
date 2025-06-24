@@ -58,6 +58,7 @@
   * [Transloco Team Posts](blog-posts/transloco-team-posts/README.md)
     * [Transloco Goes Functional: A Guide to Transloco's Functional Transpiler](blog-posts/transloco-team-posts/transloco-goes-functional-a-guide-to-translocos-functional-transpiler.md)
     * [Preloading Translations Using Transloco](blog-posts/transloco-team-posts/preloading-translations-using-transloco.md)
+    * [Needs refactor](blog-posts/transloco-team-posts/needs-refactor.md)
   * [From the Community](blog-posts/from-the-community.md)
 * [❓ FAQs](faqs.md)
 * [❤️ Support](support.md)
