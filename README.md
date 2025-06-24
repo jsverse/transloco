@@ -4,8 +4,9 @@
 
 ![npm](https://img.shields.io/npm/v/@jsverse/transloco) ![Bundle Size](https://img.shields.io/bundlephobia/min/@jsverse/transloco) ![Downloads](https://img.shields.io/npm/dm/@jsverse/transloco) ![Build Status](https://github.com/jsverse/transloco/actions/workflows/ci.yml/badge.svg) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/jsverse/transloco/blob/master/CONTRIBUTING.md)
 
-{% hint style="success" %}
-TKM v6.2.2 now supports Transloco's Signal API 🎉
+{% hint style="info" %}
+The docs have been updated based on your feedback 👂\
+Check out the revised [Prefetch User Language](recipies/prefetch-user-language.md) and [Community Blog Posts](blog-posts/from-the-community.md)
 {% endhint %}
 
 Transloco allows you to define translations for your content in different languages and switch between them easily in runtime. It exposes a rich API to manage translations efficiently and cleanly. It provides multiple plugins that will improve your development experience.
