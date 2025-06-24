@@ -1,5 +1,10 @@
 # SSR Support
 
+{% hint style="info" %}
+This page is out-of-date with the latest SSR support for Angular\
+Want to contribute? Open a PR updating it
+{% endhint %}
+
 Create a new CLI project and add SSR support:
 
 ```bash
