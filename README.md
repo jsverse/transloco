@@ -13,11 +13,12 @@
 <h3></h3>
 
 ![npm](https://img.shields.io/npm/v/@jsverse/transloco)
-[![GitBook](https://img.shields.io/static/v1?message=Documented%20on%20GitBook&logo=gitbook&logoColor=ffffff&label=%20&labelColor=5c5c5c&color=3F89A1)](https://jsverse.gitbook.io/transloco)
 ![Bundle Size](https://img.shields.io/bundlephobia/min/@jsverse/transloco)
 ![Downloads](https://img.shields.io/npm/dm/@jsverse/transloco)
 [![Build Status](https://github.com/jsverse/transloco/actions/workflows/ci.yml/badge.svg)]()
 [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/jsverse/transloco/blob/master/CONTRIBUTING.md)
+[![GitBook](https://img.shields.io/static/v1?message=Documented%20on%20GitBook&logo=gitbook&logoColor=ffffff&label=%20&labelColor=5c5c5c&color=3F89A1)](https://jsverse.gitbook.io/transloco)
+[![pkg.pr.new](https://pkg.pr.new/badge/jsverse/transloco)](https://pkg.pr.new/~/jsverse/transloco)
 
 Transloco enables you to define translations for your content in multiple languages and seamlessly switch between them at runtime. With its robust API, managing translations becomes efficient and maintainable. Additionally, Transloco offers an array of plugins designed to enhance your development experience. Here's a quick look at its powerful features:
 
