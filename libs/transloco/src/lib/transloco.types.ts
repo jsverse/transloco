@@ -1,4 +1,4 @@
-export type HashMap<T = any> = Record<string, T>;
+import { HashMap } from './utils/type.utils';
 
 export interface LoadedEvent {
   type: 'translationLoadSuccess';
@@ -41,7 +41,6 @@ export interface ProviderScope {
   loader?: InlineLoader;
   alias?: string;
 }
-export type OrArray<T> = T | T[];
 export type TranslocoScope = ProviderScope | string | undefined;
 export type InlineLoader = HashMap<() => Promise<Translation>>;
 export interface LoadOptions {

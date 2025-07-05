@@ -25,7 +25,8 @@
   "license": "MIT",
   "peerDependencies": {
     "@angular/core": ">=16.0.0",
-    "@jsverse/transloco": ">=7.0.0"
+    "@jsverse/transloco": ">=7.0.0",
+    "@jsverse/utils": "^1.0.0"
   },
   "dependencies": {
     "tslib": "^2.2.0"

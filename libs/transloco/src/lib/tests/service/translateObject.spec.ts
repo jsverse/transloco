@@ -1,10 +1,10 @@
 import { fakeAsync } from '@angular/core/testing';
 
 import { createService } from '../mocks';
-import { HashMap } from '../../types';
 import { TranslocoService } from '../../transloco.service';
+import { HashMap } from '../../utils/type.utils';
 
-import { loadLang } from './utils';
+import { loadLang } from './service-spec-utils';
 
 describe('translateObject', () => {
   let service: TranslocoService;

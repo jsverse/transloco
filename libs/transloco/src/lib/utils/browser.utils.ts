@@ -1,4 +1,6 @@
-import { isBrowser } from './helpers';
+export function isBrowser() {
+  return typeof window !== 'undefined';
+}
 
 /**
  * Returns the language code name from the browser, e.g. "en"

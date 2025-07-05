@@ -3,7 +3,7 @@ import { fakeAsync } from '@angular/core/testing';
 import { createService, mockLangs } from '../mocks';
 import { TranslocoService } from '../../transloco.service';
 
-import { loadLang } from './utils';
+import { loadLang } from './service-spec-utils';
 
 describe('translate', () => {
   let service: TranslocoService;

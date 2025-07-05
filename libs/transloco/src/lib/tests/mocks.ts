@@ -7,7 +7,7 @@ import { PartialTranslocoConfig, translocoConfig } from '../transloco.config';
 import { TranslocoService } from '../transloco.service';
 import { TRANSLOCO_LOADING_TEMPLATE } from '../transloco-loading-template';
 import { TranslocoFallbackStrategy } from '../transloco-fallback-strategy';
-import { ProviderScope, Translation } from '../types';
+import { ProviderScope, Translation } from '../transloco.types';
 import {
   provideTransloco,
   provideTranslocoFallbackStrategy,

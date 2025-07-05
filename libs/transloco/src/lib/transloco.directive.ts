@@ -16,20 +16,22 @@ import {
 } from '@angular/core';
 import { forkJoin, Observable, switchMap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { OrArray } from '@jsverse/utils';
 
 import { Content, TemplateHandler } from './template-handler';
 import { TRANSLOCO_LANG } from './transloco-lang';
 import { TRANSLOCO_LOADING_TEMPLATE } from './transloco-loading-template';
 import { TRANSLOCO_SCOPE } from './transloco-scope';
 import { TranslocoService } from './transloco.service';
-import { HashMap, OrArray, Translation, TranslocoScope } from './types';
+import { Translation, TranslocoScope } from './transloco.types';
 import {
   listenOrNotOperator,
-  resolveInlineLoader,
   shouldListenToLangChanges,
-} from './shared';
+} from './utils/lang.utils';
+import { resolveInlineLoader } from './utils/scope.utils';
 import { LangResolver } from './lang-resolver';
 import { ScopeResolver } from './scope-resolver';
+import { HashMap } from './utils/type.utils';
 
 type TranslateFn = (key: string, params?: HashMap) => any;
 interface ViewContext {

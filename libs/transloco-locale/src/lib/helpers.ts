@@ -1,6 +1,6 @@
-import { toNumber } from '@jsverse/transloco';
+import { toNumber } from '@jsverse/utils';
 
-import { Locale, DateFormatOptions } from './transloco-locale.types';
+import { DateFormatOptions, Locale } from './transloco-locale.types';
 
 export const ISO8601_DATE_REGEX =
   /^(\d{4})-?(\d\d)-?(\d\d)(?:T(\d\d)(?::?(\d\d)(?::?(\d\d)(?:\.(\d+))?)?)?(Z|([+-])(\d\d):?(\d\d))?)?$/;

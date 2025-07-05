@@ -2,9 +2,9 @@ import {
   getBrowserCultureLang,
   getBrowserLang,
   isBrowser,
-  isFunction,
   TranslocoService,
 } from '@jsverse/transloco';
+import { isFunction } from '@jsverse/utils';
 import { Subscription } from 'rxjs';
 import { skip } from 'rxjs/operators';
 import { inject, Injectable, OnDestroy } from '@angular/core';

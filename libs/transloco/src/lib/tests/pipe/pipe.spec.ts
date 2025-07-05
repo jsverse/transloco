@@ -6,7 +6,7 @@ import { of } from 'rxjs';
 import { createService, runLoader } from '../mocks';
 import { TranslocoService } from '../../transloco.service';
 import { TranslocoPipe } from '../../transloco.pipe';
-import { TranslocoScope } from '../../types';
+import { TranslocoScope } from '../../transloco.types';
 
 describe('TranslocoPipe', () => {
   let serviceMock: TranslocoService;

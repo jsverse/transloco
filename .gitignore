@@ -18,6 +18,12 @@ node_modules
 *.sublime-workspace
 .idx/
 
+# IDE - Cursor
+.cursor/*
+!.cursor/mcp.json
+!.cursor/rules
+
+
 # IDE - VSCode
 .vscode
 !.vscode/settings.json

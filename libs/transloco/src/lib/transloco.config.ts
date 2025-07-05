@@ -1,6 +1,6 @@
 import { InjectionToken } from '@angular/core';
 
-import { AvailableLangs } from './types';
+import { AvailableLangs } from './transloco.types';
 
 export interface TranslocoConfig {
   defaultLang: string;

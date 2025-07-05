@@ -5,6 +5,7 @@ import {
   mergeWith,
   Rule,
   SchematicContext,
+  SchematicsException,
   Tree,
 } from '@angular-devkit/schematics';
 import {
@@ -23,8 +24,8 @@ import { findAppConfig } from '@schematics/angular/utility/standalone/app_config
 
 import {
   checkIfTranslationFilesExist,
-  createTranslateFiles,
   createGlobalConfig,
+  createTranslateFiles,
   getProject,
   setEnvironments,
   stringifyList,
@@ -73,9 +74,14 @@ function resolveLoaderPath({
   return resolved;
 }
 
-export default function (options: SchemaOptions): Rule {
+export function ngAdd(options: SchemaOptions): Rule {
   return async (host: Tree, context: SchematicContext) => {
     const langs = options.langs.split(',').map((l) => l.trim());
+    if (!options.project) {
+      throw new SchematicsException(
+        'Project name is required. Are you using Nx? In Nx you must explicitly provide the project name using --project=<project-name>',
+      );
+    }
     const project = getProject(host, options.project);
     const sourceRoot = project.sourceRoot ?? 'src';
     const isLib = project.projectType === 'library';

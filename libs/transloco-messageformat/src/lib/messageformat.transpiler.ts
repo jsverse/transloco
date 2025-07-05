@@ -2,10 +2,10 @@ import { Inject, Injectable, Optional } from '@angular/core';
 import {
   DefaultTranspiler,
   getValue,
-  isObject,
   setValue,
   TranspileParams,
 } from '@jsverse/transloco';
+import { isObject } from '@jsverse/utils';
 import MessageFormat, { MessageFormatOptions } from '@messageformat/core';
 
 import {

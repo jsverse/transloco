@@ -2,7 +2,7 @@ import { from, map } from 'rxjs';
 
 import { resolveLoader } from './resolve-loader';
 import { TranslocoLoader, TranslocoLoaderData } from './transloco.loader';
-import { InlineLoader } from './types';
+import { InlineLoader } from './transloco.types';
 
 interface Options {
   path: string;

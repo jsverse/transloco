@@ -29,6 +29,7 @@
   "peerDependencies": {
     "@angular/core": ">=16.0.0",
     "@jsverse/transloco": ">=7.0.0",
+    "@jsverse/utils": "1.0.0-beta.5",
     "rxjs": ">=6.0.0"
   },
   "dependencies": {

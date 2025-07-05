@@ -1,7 +1,7 @@
 import { InjectionToken } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
-import { Translation } from './types';
+import { Translation } from './transloco.types';
 
 export interface TranslocoLoader {
   getTranslation(

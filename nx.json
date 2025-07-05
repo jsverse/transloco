@@ -1,5 +1,5 @@
 {
-  "defaultProject": "transloco-playground",
+  "defaultProject": "transloco",
   "generators": {
     "@nx/angular": {
       "application": {
@@ -70,7 +70,7 @@
   "useInferencePlugins": false,
   "defaultBase": "master",
   "release": {
-    "releaseTagPattern": "{projectName}-{version}",
+    "releaseTagPattern": "releases/{version}",
     "projects": [
       "transloco",
       "transloco-locale",
@@ -84,7 +84,7 @@
       "transloco-validator",
       "transloco-schematics"
     ],
-    "projectsRelationship": "independent",
+    "projectsRelationship": "fixed",
     "version": {
       "conventionalCommits": true
     },
@@ -97,7 +97,9 @@
       "projectChangelogs": {
         "createRelease": false,
         "renderOptions": {
-          "authors": false
+          "authors": true,
+          "mapAuthorsToGitHubUsernames": true,
+          "commitReferences": true
         }
       }
     }

@@ -1,9 +1,6 @@
-import {
-  getLangFromScope,
-  getPipeValue,
-  getScopeFromLang,
-  shouldListenToLangChanges,
-} from '../shared';
+import { getPipeValue } from '../utils/pipe.utils';
+import { getLangFromScope, getScopeFromLang } from '../utils/scope.utils';
+import { shouldListenToLangChanges } from '../utils/lang.utils';
 
 describe('getPipeValue', () => {
   it('should work', () => {

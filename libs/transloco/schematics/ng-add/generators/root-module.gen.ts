@@ -41,9 +41,9 @@ export function createTranslocoModule({
 
   return apply(url(`./files/transloco-module`), [
     template({
+      // Replace the __ts__ with ts
       ts: 'ts',
       stringifyList,
-      isLib,
       langs,
       importEnv: ssr || envFileExists,
       envPath,

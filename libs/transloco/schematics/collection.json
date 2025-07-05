@@ -3,8 +3,8 @@
   "$schema": "../../../node_modules/@angular-devkit/schematics/collection-schema.json",
   "schematics": {
     "ng-add": {
-      "aliases": ["init"],
-      "factory": "./ng-add/index",
+      "save": "dependencies",
+      "factory": "./ng-add/index#ngAdd",
       "schema": "./ng-add/schema.json",
       "description": "Add Transloco to your project."
     }

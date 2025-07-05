@@ -9,11 +9,12 @@ import {
 import { Observable, of } from 'rxjs';
 
 import { TranslocoLoader } from './transloco.loader';
-import { HashMap, Translation } from './types';
+import { Translation } from './transloco.types';
 import { TranslocoModule } from './transloco.module';
 import { provideTransloco } from './transloco.providers';
 import { TranslocoConfig } from './transloco.config';
 import { TranslocoService } from './transloco.service';
+import { HashMap } from './utils/type.utils';
 
 export interface TranslocoTestingOptions {
   translocoConfig?: Partial<TranslocoConfig>;

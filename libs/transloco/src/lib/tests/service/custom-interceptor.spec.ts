@@ -1,11 +1,11 @@
 import { fakeAsync } from '@angular/core/testing';
+import { isString } from '@jsverse/utils';
 
 import { TranslocoService } from '../../transloco.service';
-import { Translation } from '../../types';
-import { isString } from '../../helpers';
+import { Translation } from '../../transloco.types';
 import { createService, runLoader } from '../mocks';
 
-import { loadLang } from './utils';
+import { loadLang } from './service-spec-utils';
 
 describe('Custom Interceptor', () => {
   let service: TranslocoService;

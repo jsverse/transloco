@@ -46,10 +46,6 @@ export {
   TranslocoMissingHandlerData,
   DefaultMissingHandler,
 } from './lib/transloco-missing-handler';
-export { getBrowserCultureLang, getBrowserLang } from './lib/browser-lang';
-export { getPipeValue, getLangFromScope, getScopeFromLang } from './lib/shared';
-export * from './lib/types';
-export * from './lib/helpers';
 export {
   provideTranslocoFallbackStrategy,
   provideTranslocoInterceptor,
@@ -64,3 +60,7 @@ export {
   TranslocoOptions,
 } from './lib/transloco.providers';
 export { translateSignal, translateObjectSignal } from './lib/transloco.signal';
+export * from './lib/utils/browser.utils';
+export * from './lib/utils/flat.utils';
+export * from './lib/utils/object.utils';
+export * from './lib/transloco.types';

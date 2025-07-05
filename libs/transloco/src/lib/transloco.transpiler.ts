@@ -1,12 +1,14 @@
 import { inject, Injectable, InjectionToken, Injector } from '@angular/core';
+import { isDefined, isObject, isString } from '@jsverse/utils';
 
-import { HashMap, Translation } from './types';
-import { getValue, isDefined, isObject, isString, setValue } from './helpers';
+import { Translation } from './transloco.types';
 import {
   defaultConfig,
   TRANSLOCO_CONFIG,
   TranslocoConfig,
 } from './transloco.config';
+import { HashMap } from './utils/type.utils';
+import { getValue, setValue } from './utils/object.utils';
 
 export const TRANSLOCO_TRANSPILER = new InjectionToken<TranslocoTranspiler>(
   ngDevMode ? 'TRANSLOCO_TRANSPILER' : '',
