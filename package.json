@@ -14,7 +14,7 @@
     "ci:e2e": "nx run transloco-playground-e2e:e2e:ci",
     "e2e": "nx run transloco-playground-e2e:e2e",
     "pre-commit": "node scripts/pre-commit.js && lint-staged --allow-empty",
-    "release:pkg-pr-new": "npx pkg-pr-new@0.0.54 publish './dist/libs/transloco'"
+    "release:pkg-pr-new": "npx pkg-pr-new@0.0.54 publish './dist/libs/*'"
   },
   "dependencies": {
     "@angular/animations": "18.2.9",
@@ -25,7 +25,7 @@
     "@angular/platform-browser": "18.2.9",
     "@angular/platform-browser-dynamic": "18.2.9",
     "@angular/router": "18.2.9",
-    "@jsverse/utils": "^1.0.0-beta.5",
+    "@jsverse/utils": "1.0.0-beta.5",
     "@messageformat/core": "3.0.0",
     "bootstrap": "5.3.1",
     "chalk": "4.1.2",
