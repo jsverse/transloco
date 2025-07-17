@@ -36,18 +36,27 @@ export class TranslocoLocaleService implements OnDestroy {
   private numberTransformer = inject(TRANSLOCO_NUMBER_TRANSFORMER);
   private dateTransformer = inject(TRANSLOCO_DATE_TRANSFORMER);
   private localeConfig: LocaleConfig = inject(TRANSLOCO_LOCALE_CONFIG);
+  private browserLocale = navigator?.language || this.defaultLocale;
 
-  private _locale =
-    this.defaultLocale || this.toLocale(this.translocoService.getActiveLang());
+  private _locale = '';
   private locale: BehaviorSubject<Locale> = new BehaviorSubject(this._locale);
-  private subscription: Subscription | null = this.translocoService.langChanges$
-    .pipe(
-      map((lang) => this.toLocale(lang)),
-      filter(Boolean),
-    )
-    .subscribe((locale: Locale) => this.setLocale(locale));
+  private subscription: Subscription | null = null;
 
   localeChanges$ = this.locale.asObservable().pipe(distinctUntilChanged());
+
+  constructor() {
+    // Initialize locale with fallback chain
+    this._locale = this.initializeLocale();
+    this.locale.next(this._locale);
+
+    // Subscribe to language changes
+    this.subscription = this.translocoService.langChanges$
+      .pipe(
+        map((lang) => this.toLocale(lang)),
+        filter(Boolean),
+      )
+      .subscribe((locale: Locale) => this.setLocale(locale));
+  }
 
   getLocale() {
     return this._locale;
@@ -160,5 +169,21 @@ export class TranslocoLocaleService implements OnDestroy {
     }
 
     return '';
+  }
+
+  private initializeLocale(): Locale {
+    // Try to get from active language first
+    const activeLang = this.translocoService.getActiveLang();
+    if (activeLang) {
+      const locale = this.toLocale(activeLang);
+      if (locale) return locale;
+    }
+
+    // Fallback to browser locale
+    const browserLocale = this.toLocale(this.browserLocale);
+    if (browserLocale) return browserLocale;
+
+    // Final fallback to default locale
+    return this.toLocale(this.defaultLocale) || 'en-US';
   }
 }
