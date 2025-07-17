@@ -172,18 +172,18 @@ export class TranslocoLocaleService implements OnDestroy {
   }
 
   private initializeLocale(): Locale {
-    // Try to get from active language first
+    const browserLocale = this.toLocale(this.browserLocale);
+    if (browserLocale) return browserLocale;
+
+    const defaultLocaleResolved = this.toLocale(this.defaultLocale);
+    if (defaultLocaleResolved) return defaultLocaleResolved;
+
     const activeLang = this.translocoService.getActiveLang();
     if (activeLang) {
       const locale = this.toLocale(activeLang);
       if (locale) return locale;
     }
 
-    // Fallback to browser locale
-    const browserLocale = this.toLocale(this.browserLocale);
-    if (browserLocale) return browserLocale;
-
-    // Final fallback to default locale
-    return this.toLocale(this.defaultLocale) || 'en-US';
+    return 'en-US'; // Fallback to a default locale
   }
 }
