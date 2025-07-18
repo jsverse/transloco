@@ -46,8 +46,7 @@ export class TranslocoLocaleService implements OnDestroy {
 
   constructor() {
     // Initialize locale with fallback chain
-    this._locale = this.initializeLocale();
-    this.locale.next(this._locale);
+    this.setLocale(this.initializeLocale());
 
     // Subscribe to language changes
     this.subscription = this.translocoService.langChanges$
