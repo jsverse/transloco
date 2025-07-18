@@ -1,5 +1,5 @@
 import { inject, Injectable, OnDestroy } from '@angular/core';
-import { TranslocoService } from '@jsverse/transloco';
+import { getBrowserCultureLang, TranslocoService } from '@jsverse/transloco';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 
@@ -36,7 +36,7 @@ export class TranslocoLocaleService implements OnDestroy {
   private numberTransformer = inject(TRANSLOCO_NUMBER_TRANSFORMER);
   private dateTransformer = inject(TRANSLOCO_DATE_TRANSFORMER);
   private localeConfig: LocaleConfig = inject(TRANSLOCO_LOCALE_CONFIG);
-  private browserLocale = navigator?.language || this.defaultLocale;
+  private browserLocale = getBrowserCultureLang() || this.defaultLocale;
 
   private _locale = '';
   private locale: BehaviorSubject<Locale> = new BehaviorSubject(this._locale);
@@ -170,6 +170,14 @@ export class TranslocoLocaleService implements OnDestroy {
 
     return '';
   }
+
+  /*
+   * Get the browser's language and validate.
+   * If the browser's language is not set, it will fall back to the default locale.
+   * If the default locale is not set, it will use the active language from TranslocoService.
+   * If no active language is set, it will default to "en-US".
+   * @returns {Locale} The browser's default locale in the format "en-US".
+   */
 
   private initializeLocale(): Locale {
     const browserLocale = this.toLocale(this.browserLocale);
