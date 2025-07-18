@@ -172,18 +172,14 @@ export class TranslocoLocaleService implements OnDestroy {
 
   /*
    * Get the browser's language and validate.
-   * If the browser's language is not set, it will fall back to the default locale.
-   * If the default locale is not set, it will use the active language from TranslocoService.
-   * If no active language is set, it will default to "en-US".
-   * @returns {Locale} The browser's default locale in the format "en-US".
+   * If the browser's language is not set, it will fall back to the active language from TranslocoService.
+   * If active language from TranslocoService is not valid, it will fall back to the default locale.
+   * If the default locale is not valid, it will return the default locale as a string
    */
 
   private initializeLocale(): Locale {
     const browserLocale = this.toLocale(this.browserLocale);
     if (browserLocale) return browserLocale;
-
-    const defaultLocaleResolved = this.toLocale(this.defaultLocale);
-    if (defaultLocaleResolved) return defaultLocaleResolved;
 
     const activeLang = this.translocoService.getActiveLang();
     if (activeLang) {
@@ -191,6 +187,9 @@ export class TranslocoLocaleService implements OnDestroy {
       if (locale) return locale;
     }
 
-    return 'en-US'; // Fallback to a default locale
+    const defaultLocaleResolved = this.toLocale(this.defaultLocale);
+    if (defaultLocaleResolved) return defaultLocaleResolved;
+
+    return this.defaultLocale; // Fallback to a default locale
   }
 }
