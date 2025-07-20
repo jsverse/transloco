@@ -1,5 +1,5 @@
 import { inject, Injectable, OnDestroy } from '@angular/core';
-import { TranslocoService } from '@jsverse/transloco';
+import { getBrowserCultureLang, TranslocoService } from '@jsverse/transloco';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 
@@ -36,18 +36,26 @@ export class TranslocoLocaleService implements OnDestroy {
   private numberTransformer = inject(TRANSLOCO_NUMBER_TRANSFORMER);
   private dateTransformer = inject(TRANSLOCO_DATE_TRANSFORMER);
   private localeConfig: LocaleConfig = inject(TRANSLOCO_LOCALE_CONFIG);
+  private browserLocale = getBrowserCultureLang() || this.defaultLocale;
 
-  private _locale =
-    this.defaultLocale || this.toLocale(this.translocoService.getActiveLang());
+  private _locale = '';
   private locale: BehaviorSubject<Locale> = new BehaviorSubject(this._locale);
-  private subscription: Subscription | null = this.translocoService.langChanges$
-    .pipe(
-      map((lang) => this.toLocale(lang)),
-      filter(Boolean),
-    )
-    .subscribe((locale: Locale) => this.setLocale(locale));
+  private subscription: Subscription | null = null;
 
   localeChanges$ = this.locale.asObservable().pipe(distinctUntilChanged());
+
+  constructor() {
+    // Initialize locale with fallback chain
+    this.setLocale(this.initializeLocale());
+
+    // Subscribe to language changes
+    this.subscription = this.translocoService.langChanges$
+      .pipe(
+        map((lang) => this.toLocale(lang)),
+        filter(Boolean),
+      )
+      .subscribe((locale: Locale) => this.setLocale(locale));
+  }
 
   getLocale() {
     return this._locale;
@@ -160,5 +168,28 @@ export class TranslocoLocaleService implements OnDestroy {
     }
 
     return '';
+  }
+
+  /*
+   * Get the browser's language and validate.
+   * If the browser's language is not set, it will fall back to the active language from TranslocoService.
+   * If active language from TranslocoService is not valid, it will fall back to the default locale.
+   * If the default locale is not valid, it will return the default locale as a string
+   */
+
+  private initializeLocale(): Locale {
+    const browserLocale = this.toLocale(this.browserLocale);
+    if (browserLocale) return browserLocale;
+
+    const activeLang = this.translocoService.getActiveLang();
+    if (activeLang) {
+      const locale = this.toLocale(activeLang);
+      if (locale) return locale;
+    }
+
+    const defaultLocaleResolved = this.toLocale(this.defaultLocale);
+    if (defaultLocaleResolved) return defaultLocaleResolved;
+
+    return this.defaultLocale; // Fallback to a default locale
   }
 }
