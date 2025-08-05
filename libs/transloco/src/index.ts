@@ -60,7 +60,10 @@ export {
   TranslocoOptions,
 } from './lib/transloco.providers';
 export { translateSignal, translateObjectSignal } from './lib/transloco.signal';
-export * from './lib/utils/browser.utils';
-export * from './lib/utils/flat.utils';
-export * from './lib/utils/object.utils';
+export {
+  getBrowserLang,
+  getBrowserCultureLang,
+  isBrowser,
+} from './lib/utils/browser.utils';
+export { setValue, getValue } from './lib/utils/object.utils';
 export * from './lib/transloco.types';
