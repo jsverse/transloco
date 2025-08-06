@@ -32,6 +32,7 @@ describe('Multiple fallbacks', () => {
     it('should try load the fallbackLang when current lang failed', fakeAsync(() => {
       const service = createService(
         {
+          prodMode: true,
           fallbackLang: 'es',
           failedRetries: 2,
         },
@@ -64,6 +65,7 @@ describe('Multiple fallbacks', () => {
     it('should load the fallbackLang only once', fakeAsync(() => {
       const service = createService(
         {
+          prodMode: true,
           fallbackLang: 'es',
           failedRetries: 2,
         },
@@ -105,6 +107,7 @@ describe('Multiple fallbacks', () => {
     it('should should throw if the fallback lang is failed to load', fakeAsync(() => {
       const service = createService(
         {
+          prodMode: true,
           fallbackLang: 'fallbackNotExists',
           failedRetries: 2,
         },
@@ -165,6 +168,7 @@ describe('Multiple fallbacks', () => {
     it('should try load the it and gp then set en as the active', fakeAsync(() => {
       const service = createService(
         {
+          prodMode: true,
           defaultLang: 'es',
         },
         { loader, fallback: StrategyTest },
