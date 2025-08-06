@@ -12,11 +12,11 @@ import { TranslocoLoader } from './transloco.loader';
 import { HashMap, Translation } from './types';
 import { TranslocoModule } from './transloco.module';
 import { provideTransloco } from './transloco.providers';
-import { TranslocoConfig } from './transloco.config';
+import { PartialTranslocoConfig } from './transloco.config';
 import { TranslocoService } from './transloco.service';
 
 export interface TranslocoTestingOptions {
-  translocoConfig?: Partial<TranslocoConfig>;
+  translocoConfig?: PartialTranslocoConfig;
   preloadLangs?: boolean;
   langs?: HashMap<Translation>;
 }
@@ -68,8 +68,11 @@ export class TranslocoTestingModule {
           loader: TestingLoader,
           config: {
             prodMode: true,
-            missingHandler: { logMissingKey: false },
             ...options.translocoConfig,
+            missingHandler: {
+              logMissingKey: false,
+              ...options.translocoConfig?.missingHandler,
+            },
           },
         }),
         {
