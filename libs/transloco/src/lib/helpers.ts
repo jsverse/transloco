@@ -1,4 +1,5 @@
 import { ProviderScope, Translation } from './types';
+import { getFunctionArgs } from './transloco.transpiler';
 
 export function getValue<T>(obj: T, path: keyof T) {
   if (!obj) {
@@ -10,7 +11,16 @@ export function getValue<T>(obj: T, path: keyof T) {
     return obj[path];
   }
 
-  return (path as string).split('.').reduce((p, c) => p?.[c], obj as any);
+  const pathMatcher = /\s*(\w+)(?:\((.*?)\))?\s*/;
+  return (path as string).split('.').reduce((p, c) => {
+    const match = pathMatcher.exec(c);
+    if (p && match) {
+      return isDefined(match[2])
+        ? p[match[1]](...getFunctionArgs(match[2]))
+        : p[match[1]];
+    }
+    return undefined;
+  }, obj as any);
 }
 
 export function setValue(obj: any, prop: string, val: any) {
