@@ -7,6 +7,7 @@
   "tags": [],
   "targets": {
     "build": {
+      "dependsOn": ["copy-readme"],
       "executor": "@nx/angular:package",
       "outputs": ["{workspaceRoot}/dist/libs/transloco"],
       "options": {
@@ -33,6 +34,12 @@
     "lint": {
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"]
+    },
+    "copy-readme": {
+      "command": "cp README.md {projectRoot}/README.md",
+      "inputs": ["{workspaceRoot}/README.md"],
+      "outputs": ["{projectRoot}/README.md"],
+      "cache": true
     }
   }
 }

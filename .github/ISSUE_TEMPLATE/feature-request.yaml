@@ -49,7 +49,7 @@ body:
     attributes:
       label: Describe alternatives you've considered
       render: markdown
-      placeholder: A clear and concise description of the current behavior. It's best to provide an example, for that you could use our [CodeSandbox example](https://codesandbox.io/s/ngneat-transloco-kn52hs)
+      placeholder: A clear and concise description of the current behavior. It's best to provide an example, for that you could use our [CodeSandbox example](https://codesandbox.io/p/sandbox/jsverse-transloco-kn52hs)
     validations:
       required: true
 
