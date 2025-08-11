@@ -20,6 +20,8 @@
 
 Transloco enables you to define translations for your content in multiple languages and seamlessly switch between them at runtime. With its robust API, managing translations becomes efficient and maintainable. Additionally, Transloco offers an array of plugins designed to enhance your development experience. Here's a quick look at its powerful features:
 
+✅ &nbsp;Signal-based API  
+✅ &nbsp;Fully supports standalone components  
 ✅ &nbsp;Clean and DRY templates  
 ✅ &nbsp;Lazy Loading support  
 ✅ &nbsp;Handle multiple languages simultaneously  
@@ -29,8 +31,7 @@ Transloco enables you to define translations for your content in multiple langua
 ✅ &nbsp;Localization (L10N) support  
 ✅ &nbsp;A variety of rich plugins  
 ✅ &nbsp;Highly customizable and hackable  
-✅ &nbsp;Schematics  
-✅ &nbsp;Fully supports standalone components
+✅ &nbsp;Schematics
 
 Transloco is your all-in-one solution for internationalizing Angular applications with ease and flexibility.
 

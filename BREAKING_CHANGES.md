@@ -153,7 +153,7 @@ We have removed deprecated code and upgraded dependencies, please take a look at
 
 ### Features
 
-- Messageformat compiled messages are now cached by default see [#358](https://github.com/ngneat/transloco/issues/358) & [messageformat caching](https://ngneat.github.io/transloco/docs/plugins/message-format#caching). Thank goes to [k3nsei](https://github.com/k3nsei).
+- Messageformat compiled messages are now cached by default see [#358](https://github.com/jsverse/transloco/issues/358) & [messageformat caching](https://jsverse.gitbook.io/transloco/plugins/message-format#caching-v3). Thank goes to [k3nsei](https://github.com/k3nsei).
 
 ## Transloco Persist Lang
 
@@ -224,8 +224,6 @@ We need this information to know whether we're dealing with a `language` or a `s
 - Remove messageformat from the library in favor of the external library.
 
 **We created a schematics command that'll do most of the work for you**
-
-For more information see the [schematics upgrade command](https://ngneat.github.io/transloco/docs/schematics/upgrade)
 
 ## Features
 

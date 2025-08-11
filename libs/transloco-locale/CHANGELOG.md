@@ -1,4 +1,4 @@
-## [7.0.1](https://github.com/ngneat/transloco/compare/transloco-locale-7.0.0...transloco-locale-7.0.1) (2024-05-31)
+## [7.0.1](https://github.com/jsverse/transloco/compare/transloco-locale-7.0.0...transloco-locale-7.0.1) (2024-05-31)
 
 # [7.0.0](https://github.com/jsverse/transloco/compare/transloco-locale-6.0.0...transloco-locale-7.0.0) (2024-03-23)
 

@@ -1,13 +1,11 @@
-import { InjectionToken, Injectable } from '@angular/core';
+import { Injectable, InjectionToken } from '@angular/core';
 
 import { TranslocoConfig } from './transloco.config';
 import { HashMap } from './types';
 
 export const TRANSLOCO_MISSING_HANDLER =
   new InjectionToken<TranslocoMissingHandlerData>(
-    typeof ngDevMode !== 'undefined' && ngDevMode
-      ? 'TRANSLOCO_MISSING_HANDLER'
-      : '',
+    ngDevMode ? 'TRANSLOCO_MISSING_HANDLER' : '',
   );
 
 export interface TranslocoMissingHandlerData extends TranslocoConfig {

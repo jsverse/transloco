@@ -1,8 +1,8 @@
-## [7.0.1](https://github.com/ngneat/transloco/compare/transloco-messageformat-7.0.0...transloco-messageformat-7.0.1) (2024-05-31)
+## [7.0.1](https://github.com/jsverse/transloco/compare/transloco-messageformat-7.0.0...transloco-messageformat-7.0.1) (2024-05-31)
 
 ### Features
 
-- **transloco:** 🎸 introduce prefix input ([1e27a8f](https://github.com/ngneat/transloco/commit/1e27a8fe9922e3e8f4ced0ea3960aca8ae4da92d))
+- **transloco:** 🎸 introduce prefix input ([1e27a8f](https://github.com/jsverse/transloco/commit/1e27a8fe9922e3e8f4ced0ea3960aca8ae4da92d))
 
 # [7.0.0](https://github.com/jsverse/transloco/compare/transloco-messageformat-6.0.0...transloco-messageformat-7.0.0) (2024-03-23)
 

@@ -50,11 +50,3 @@ export interface LoadOptions {
   failedCounter?: number;
   inlineLoader?: InlineLoader;
 }
-
-/** @internal */
-declare global {
-  // Indicates whether the application is operating in development mode.
-  // `ngDevMode` is a global flag set by Angular CLI.
-  // https://github.com/angular/angular-cli/blob/9b883fe28862c96720c7899b431174e9b47ad7e4/packages/angular/build/src/tools/esbuild/application-code-bundle.ts#L604
-  const ngDevMode: boolean;
-}
