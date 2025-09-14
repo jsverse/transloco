@@ -6,15 +6,19 @@ Just run the migration schematics and select the library you are migrating from:
 
 {% tabs %}
 {% tab title="Angular CLI" %}
+
 ```bash
-ng g @jsverse/transloco:migrate
+ng g @jsverse/transloco-schematics:ngx-migrate
 ```
+
 {% endtab %}
 
 {% tab title="Nx 🐋" %}
+
 ```bash
-nx g @jsverse/transloco:migrate
+nx g @jsverse/transloco-schematics:ngx-migrate
 ```
+
 {% endtab %}
 {% endtabs %}
 
@@ -25,4 +29,3 @@ If you encounter any issues with the migration script, please open a [GitHub iss
 {% hint style="warning" %}
 Ensure you review the changes made by the migration script, as manual adjustments may occasionally be necessary
 {% endhint %}
-
