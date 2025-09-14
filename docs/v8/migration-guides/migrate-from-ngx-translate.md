@@ -4,6 +4,29 @@ icon: globe
 
 # Migrate from ngx-translate
 
+## Command
+
+{% tabs %}
+{% tab title="Angular CLI" %}
+
+```bash
+ng g @jsverse/transloco-schematics:ngx-migrate
+```
+
+{% endtab %}
+
+{% tab title="Nx 🐋" %}
+
+```bash
+pnpm add @jsverse/transloco-schematics
+nx g @jsverse/transloco-schematics:ngx-migrate
+```
+
+{% endtab %}
+{% endtabs %}
+
+---
+
 ## What will be done?[​](https://jsverse.github.io/transloco/docs/migration/ngx#what-will-be-done) <a href="#what-will-be-done" id="what-will-be-done"></a>
 
 The migration script will recursively iterate over your HTML and TypeScript files and perform the following replacements:
