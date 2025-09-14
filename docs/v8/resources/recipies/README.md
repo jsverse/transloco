@@ -1,0 +1,6 @@
+---
+icon: hat-chef
+---
+
+# Recipes
+

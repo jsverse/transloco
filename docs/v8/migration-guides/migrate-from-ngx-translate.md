@@ -1,3 +1,7 @@
+---
+icon: globe
+---
+
 # Migrate from ngx-translate
 
 ## What will be done?[​](https://jsverse.github.io/transloco/docs/migration/ngx#what-will-be-done) <a href="#what-will-be-done" id="what-will-be-done"></a>

@@ -1,3 +1,7 @@
+---
+icon: arrows-retweet
+---
+
 # Key Referencing
 
 You can reference specific keys within other keys in the same translation file. This feature allows for dynamic translations, where one key can depend on another.

@@ -1,3 +1,7 @@
+---
+icon: spinner-scale
+---
+
 # Loading Template
 
 Transloco allows you to define a loading template that will be used while the translation file is being loaded.

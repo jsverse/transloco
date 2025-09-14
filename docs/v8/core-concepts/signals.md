@@ -1,5 +1,6 @@
 ---
 description: A list of the Transloco Signal-based API methods and their usages
+icon: traffic-light-stop
 ---
 
 # Signals

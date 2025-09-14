@@ -1,3 +1,7 @@
+---
+icon: rectangle-vertical-history
+---
+
 # Multiple Languages Simultaneously
 
 There are scenarios where you may need to use a different language within a specific part of your application, such as a component, module, or a template section. This can be achieved using the `provideTranslocoLang` function.

@@ -1,3 +1,7 @@
+---
+icon: wrench-simple
+---
+
 # Utility Functions
 
 ## **`translate()`**

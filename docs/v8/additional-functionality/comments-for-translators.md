@@ -1,5 +1,6 @@
 ---
 description: Help the translator with a description and meaning
+icon: comments
 ---
 
 # Comments for Translators
@@ -17,6 +18,6 @@ This companion key is post-fixed with `.comment`, as shown in the example below:
 ```
 {% endcode %}
 
-These comment keys are not meant to be included in the final bundle, so we can use the [`transloco-optimize`](../tools/optimize.md) library to remove them when building for production.
+These comment keys are not meant to be included in the final bundle, so we can use the [`transloco-optimize`](../developer-tools/optimize.md) library to remove them when building for production.
 
 The library automatically removes these comment keys from the translation files specified in the given path, ensuring that only the necessary translation data is included in the final output.

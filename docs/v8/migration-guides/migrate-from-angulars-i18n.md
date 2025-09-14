@@ -1,3 +1,7 @@
+---
+icon: a
+---
+
 # Migrate from Angular's i18n
 
 ### The Translation File
