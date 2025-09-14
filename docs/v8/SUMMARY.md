@@ -63,3 +63,7 @@
   * [From the Community](blog-posts/from-the-community.md)
 * [❓ FAQs](faqs.md)
 * [❤️ Support](support.md)
+
+## 🚀 Getting Started
+
+* [Installation](getting-started/installation.md)
