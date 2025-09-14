@@ -8,8 +8,8 @@ icon: globe
 
 ![npm](https://img.shields.io/npm/v/@jsverse/transloco) ![Bundle Size](https://img.shields.io/bundlephobia/min/@jsverse/transloco) ![Downloads](https://img.shields.io/npm/dm/@jsverse/transloco) ![Build Status](https://github.com/jsverse/transloco/actions/workflows/ci.yml/badge.svg) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/jsverse/transloco/blob/master/CONTRIBUTING.md)
 
-{% hint style="info" %}
-Some pages might need an update after v8 release, feel free to [open a PR](https://github.com/jsverse/transloco/pulls)/Issue if something is incorrect.
+{% hint style="success" %}
+Help Transloco improve! Found an issue or have suggestions? I welcome [contributions](https://github.com/jsverse/transloco/pulls) and [feedback](https://github.com/jsverse/transloco/issues) from the community. 🤝
 {% endhint %}
 
 Transloco allows you to define translations for your content in different languages and switch between them easily in runtime. It exposes a rich API to manage translations efficiently and cleanly. It provides multiple plugins that will improve your development experience.
