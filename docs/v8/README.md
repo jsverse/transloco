@@ -1,26 +1,56 @@
-# ❤️ Support
+---
+icon: rocket-launch
+---
 
-Transloco is maintained by volunteers and powered by community goodwill. You can help keep it going in a few simple ways:
+# Transloco
 
-***
+&#x20; 🩷 Want to support the project? [read here](../) for more information 🩵
 
-### Star the Repo
+![npm](https://img.shields.io/npm/v/@jsverse/transloco) ![Bundle Size](https://img.shields.io/bundlephobia/min/@jsverse/transloco) ![Downloads](https://img.shields.io/npm/dm/@jsverse/transloco) ![Build Status](https://github.com/jsverse/transloco/actions/workflows/ci.yml/badge.svg) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/jsverse/transloco/blob/master/CONTRIBUTING.md)
 
-A [star on GitHub](https://github.com/jsverse/transloco) helps others discover Transloco!
+{% hint style="info" %}
+Some pages might need an update after v8 release, feel free to [open a PR](https://github.com/jsverse/transloco/pulls)/Issue if something is incorrect.
+{% endhint %}
 
-### Click Relevant Ads
+Transloco allows you to define translations for your content in different languages and switch between them easily in runtime. It exposes a rich API to manage translations efficiently and cleanly. It provides multiple plugins that will improve your development experience.
 
-Saw an ad on the site that looks useful? Clicking it is a free way to show appreciation to the maintainers.
+Here is a small taste of the features it offers:
 
-### Contribute Code  & Docs
+{% stepper %}
+{% step %}
 
-* Open an issue or feature request
-* Even better, solve a bug or implement a feature by opening a PR—see our [Contribution Guide](https://github.com/jsverse/transloco/blob/master/CONTRIBUTING.md) for details.
+### Runtime Language Switching 🌐
 
-### Sponsor the Project
+Transloco enables dynamic language switching at runtime, allowing users to change languages without reloading the application. This feature enhances user experience by providing seamless transitions between different languages.
+{% endstep %}
 
-Transloco’s maintainers spend hours each month improving and supporting it—your sponsorship keeps that going [![Sponsor on GitHub](https://img.shields.io/badge/Sponsor%20on-GitHub-181717?style=flat\&logo=github)](https://github.com/sponsors/jsverse)
+{% step %}
 
-***
+### Clean and DRY Templates 🫧
 
-> Got other ideas to support Transloco? Open a discussion in the repo!
+The library provides a structural directive (`*transloco`) that facilitates efficient translations directly within templates. This method promotes a DRY (Don't Repeat Yourself) approach by creating a single subscription per template, ensuring efficient change detection and updates.
+{% endstep %}
+
+{% step %}
+
+### Lazy Loading with Scope Management 🦥
+
+Transloco enables the lazy loading of translation files through its scoping feature. Developers can organize translations into modular files corresponding to specific features or modules, improving maintainability and scalability. By loading only the necessary translation files when a user navigates to a particular module, application performance is optimized by reducing initial bundle sizes.
+{% endstep %}
+
+{% step %}
+
+### Rich Plugins 🔌
+
+Transloco's plugin ecosystem provides powerful tools for both development and production, simplifying key extraction, translation management, and localization workflows. These plugins enhance efficiency and ensure seamless integration with Angular's dependency system.
+{% endstep %}
+
+{% step %}
+
+### Hackable and Modular by Design 👩‍💻
+
+Transloco is built with modularity and flexibility at its core, making it highly customizable to suit diverse project needs. The library’s architecture allows developers to extend or override its behavior through plugins and custom handlers.
+{% endstep %}
+{% endstepper %}
+
+These features, among others, make Transloco a powerful tool for internationalizing your Angular applications. To explore all the capabilities and learn how to implement them, we encourage you to delve deeper into the documentation.
