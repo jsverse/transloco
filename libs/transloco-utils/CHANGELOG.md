@@ -1,3 +1,7 @@
+# 8.0.0 (2025-09-14)
+
+This was a version bump only for transloco-utils to align it with other projects, there were no code changes.
+
 ## 7.0.2 (2024-07-26)
 
 ### 🩹 Fixes

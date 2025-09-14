@@ -1,3 +1,7 @@
+# 8.0.0 (2025-09-14)
+
+This was a version bump only for transloco-persist-translations to align it with other projects, there were no code changes.
+
 ## [7.0.1](https://github.com/jsverse/transloco/compare/transloco-persist-translations-7.0.0...transloco-persist-translations-7.0.1) (2024-05-31)
 
 # [7.0.0](https://github.com/jsverse/transloco/compare/transloco-persist-translations-6.0.0...transloco-persist-translations-7.0.0) (2024-03-23)

@@ -1,3 +1,7 @@
+# 8.0.0 (2025-09-14)
+
+This was a version bump only for transloco-messageformat to align it with other projects, there were no code changes.
+
 ## [7.0.1](https://github.com/jsverse/transloco/compare/transloco-messageformat-7.0.0...transloco-messageformat-7.0.1) (2024-05-31)
 
 ### Features

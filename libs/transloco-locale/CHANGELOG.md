@@ -1,3 +1,15 @@
+# 8.0.0 (2025-09-14)
+
+
+### 🚀 Features
+
+- **locale:** improve locale detection logic in locale service ([#862](https://github.com/jsverse/transloco/pull/862))
+
+
+### ❤️  Thank You
+
+- chaitanay94 @chaitanay94
+
 ## [7.0.1](https://github.com/jsverse/transloco/compare/transloco-locale-7.0.0...transloco-locale-7.0.1) (2024-05-31)
 
 # [7.0.0](https://github.com/jsverse/transloco/compare/transloco-locale-6.0.0...transloco-locale-7.0.0) (2024-03-23)

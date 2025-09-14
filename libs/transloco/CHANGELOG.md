@@ -1,3 +1,15 @@
+# 8.0.0 (2025-09-14)
+
+
+### 🩹 Fixes
+
+- **transloco:** 🐛 fix wrong import ([e65f9f28](https://github.com/jsverse/transloco/commit/e65f9f28))
+
+
+### ❤️  Thank You
+
+- Shahar Kazaz
+
 ## 7.6.1 (2025-03-24)
 
 
