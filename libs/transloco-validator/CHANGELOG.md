@@ -1,3 +1,18 @@
+# 8.0.0 (2025-09-14)
+
+### 💡 Refactor
+
+- **validator:** 💡 update node version ([1ea9bf2f](https://github.com/jsverse/transloco/commit/1ea9bf2f))
+
+### ⚠ BREAKING CHANGES
+
+- **validator:** 🧨 Minimum node version is now 18
+
+### ❤️ Thank You
+
+- chaitanay94
+- Shahar Kazaz
+
 ## [7.0.1](https://github.com/jsverse/transloco/compare/transloco-validator-7.0.0...transloco-validator-7.0.1) (2024-05-31)
 
 # [7.0.0](https://github.com/jsverse/transloco/compare/transloco-validator-6.0.0...transloco-validator-7.0.0) (2024-03-23)

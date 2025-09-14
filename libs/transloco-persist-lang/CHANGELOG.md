@@ -1,3 +1,21 @@
+# 8.0.0 (2025-09-14)
+
+### 💡 Refactor
+
+- **persist-lang:** 💡 Add package optimizations ([d82c4bd5](https://github.com/jsverse/transloco/commit/d82c4bd5))
+
+### 🤖 Chore
+
+- **persist-lang:** 🤖 update persist-lang to correct utils version ([e435e9b3](https://github.com/jsverse/transloco/commit/e435e9b3))
+
+### ⚠ BREAKING CHANGES
+
+- **persist-lang:** 🧨 Minimum node version is now 18
+
+### ❤️ Thank You
+
+- shaharkazaz @shaharkazaz
+
 ## 7.0.2 (2024-09-19)
 
 ### 🩹 Fixes
