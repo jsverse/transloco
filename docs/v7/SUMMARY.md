@@ -50,7 +50,7 @@
   * [:scope](schematics/scope.md)
   * [:join](schematics/join.md)
   * [:split](schematics/split.md)
-* [🍳 Recipies](recipies/README.md)
+* [🍳 Recipes](recipies/README.md)
   * [Prefetch User Language](recipies/prefetch-user-language.md)
   * [Using Xliff](recipies/using-xliff.md)
   * [Generate Locale Files using Google Translate](recipies/generate-locale-files-using-google-translate.md)
