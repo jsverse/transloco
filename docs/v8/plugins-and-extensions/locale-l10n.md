@@ -1,5 +1,5 @@
 ---
-icon: globe
+icon: book-atlas
 ---
 
 # Locale l10n

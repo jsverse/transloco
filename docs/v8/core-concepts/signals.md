@@ -5,10 +5,6 @@ icon: traffic-light-stop
 
 # Signals
 
-{% hint style="info" %}
-If you're using TKM, make sure you use v6.2.1 and above to support the signals extraction
-{% endhint %}
-
 ## `translateSignal`
 
 Gets the translated value of a key as a Signal.

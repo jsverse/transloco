@@ -6,7 +6,7 @@ icon: puzzle
 
 Make sure you install the version corresponding to your Angular version:
 
-<table data-full-width="false"><thead><tr><th>Angular</th><th>@jsverse/transloco</th><th>@jsverse/transloco-*</th><th data-hidden>@jsverse/transloco-messageformat</th><th data-hidden>@jsverse/transloco-preload-langs</th><th data-hidden>@jsverse/transloco-persist-translations</th><th data-hidden>@jsverse/transloco-persist-lang</th></tr></thead><tbody><tr><td>>=16</td><td>>=5</td><td>>=5</td><td>7.x</td><td>7.x</td><td>7.x</td><td>7.x</td></tr></tbody></table>
+<table data-full-width="false"><thead><tr><th>Angular</th><th>@jsverse/transloco</th><th>@jsverse/transloco-*</th><th data-hidden>@jsverse/transloco-messageformat</th><th data-hidden>@jsverse/transloco-preload-langs</th><th data-hidden>@jsverse/transloco-persist-translations</th><th data-hidden>@jsverse/transloco-persist-lang</th></tr></thead><tbody><tr><td>>=16</td><td>>=5 &#x3C;=8</td><td>>=5 &#x3C;=8</td><td>7.x</td><td>7.x</td><td>7.x</td><td>7.x</td></tr></tbody></table>
 
 {% hint style="warning" %}
 Transloco packages under the @ngneat scope will no longer recive updates.\
