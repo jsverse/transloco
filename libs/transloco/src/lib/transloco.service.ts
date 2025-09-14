@@ -290,11 +290,15 @@ export class TranslocoService {
 
     if (Array.isArray(key)) {
       return key.map((k) =>
-        this.translate(scope ? `${scope}.${k}` : k, params, resolveLang),
+        this.translate(
+          this.config.scopes.autoPrefix && scope ? `${scope}.${k}` : k,
+          params,
+          resolveLang,
+        ),
       ) as any;
     }
 
-    key = scope ? `${scope}.${key}` : key;
+    key = this.config.scopes.autoPrefix && scope ? `${scope}.${key}` : key;
 
     const translation = this.getTranslation(resolveLang);
     const value = translation[key];
@@ -402,7 +406,7 @@ export class TranslocoService {
       if (Array.isArray(key)) {
         return key.map((k) =>
           this.translateObject(
-            scope ? `${scope}.${k}` : k,
+            this.config.scopes.autoPrefix && scope ? `${scope}.${k}` : k,
             params!,
             resolveLang,
           ),
@@ -410,7 +414,7 @@ export class TranslocoService {
       }
 
       const translation = this.getTranslation(resolveLang);
-      key = scope ? `${scope}.${key}` : key;
+      key = this.config.scopes.autoPrefix && scope ? `${scope}.${key}` : key;
 
       const value = unflatten(this.getObjectByKey(translation, key));
       /* If an empty object was returned we want to try and translate the key as a string and not an object */
