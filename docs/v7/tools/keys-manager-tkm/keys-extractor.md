@@ -15,6 +15,7 @@ Add a script to your `package.json`:
   "extract": "transloco-keys-manager extract"
 }
 ```
+
 {% endstep %}
 
 {% step %}
@@ -23,6 +24,7 @@ Run the extractor:
 ```bash
 pnpm extract
 ```
+
 {% endstep %}
 {% endstepper %}
 
@@ -37,11 +39,7 @@ import { TRANSLOCO_SCOPE, provideTranslocoScope } from '@jsverse/transloco';
 
 @Component({
   templateUrl: './admin-page.component.html',
-  providers: [
-      { provide: TRANSLOCO_SCOPE, useValue: 'admin' },
-      provideTranslocoScope('todo'),
-      provideTranslocoScope(['another', {scope: 'reallyLong', alias: 'rl'}]),
-  ]
+  providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'admin' }, provideTranslocoScope('todo'), provideTranslocoScope(['another', { scope: 'reallyLong', alias: 'rl' }])],
 })
 export class AdminPageComponent {}
 ```
@@ -77,11 +75,11 @@ export const loader = ['en', 'es'].reduce((acc, lang) => {
   providers: [
     provideTranslocoScope({
       scope: 'scopeName',
-      loader
-    })
+      loader,
+    }),
   ],
   declarations: [YourComponent],
-  exports: [YourComponent]
+  exports: [YourComponent],
 })
 export class FeatureModule {}
 ```
@@ -92,8 +90,8 @@ We can add it to the `scopePathMap` key in the [`transloco.config.ts`](../../rea
 const config: TranslocoGlobalConfig = {
   langs: ['en', 'es'],
   scopePathMap: {
-    scopeName: 'src/app/feature/i18n'
-  }
+    scopeName: 'src/app/feature/i18n',
+  },
 };
 
 export default config;
@@ -106,7 +104,7 @@ Now, it'll create the files in the provided folder.
 There are times when we need to extract keys with values that may change during runtime. One example can be when you need to use a dynamic expression:
 
 ```typescript
-import { TranslocoService } from '@jsverse`/transloco';
+import { TranslocoService } from '@jsverse/transloco';
 
 class MyComponent {
   someMethod() {
@@ -165,9 +163,10 @@ The extracted keys for the code above will be:
 ```
 
 {% hint style="info" %}
+
 1. When using a Typescript file, you must have `@jsverse/transloco` present somewhere in the file, if it's an import or simply adding a comment `// @jsverse/transloco`.
 2. When using comments in your HTML files, they _must_ contain only the markers without additional text. Here's an example for invalid comment: `<!-- For dropdown t(dynamic.1, dynamic.2) -->`
-{% endhint %}
+   {% endhint %}
 
 ### **Marker Function**
 
@@ -243,15 +242,15 @@ The extracted keys for the code above will be:
 ```
 
 ```typescript
-import {translate} from '@jsverse/transloco';
+import { translate } from '@jsverse/transloco';
 
 translate('key', { param: 123 });
 
 class MyComponent {
   someMethod() {
-    const value = translocoService.translate(`key`, {param: 123});
-    const value$ = translocoService.selectTranslate(`key`, {param: 123});
-    // Only literal params are supported, the following won't be extracted:   
+    const value = translocoService.translate(`key`, { param: 123 });
+    const value$ = translocoService.selectTranslate(`key`, { param: 123 });
+    // Only literal params are supported, the following won't be extracted:
     translocoService.translate(`key`, this.myParams);
   }
 }

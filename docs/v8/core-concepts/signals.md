@@ -6,7 +6,7 @@ icon: traffic-light-stop
 # Signals
 
 {% hint style="info" %}
-If your'e using TKM, make sure you use v6.2.1 and above to support the signals extraction
+If you're using TKM, make sure you use v6.2.1 and above to support the signals extraction
 {% endhint %}
 
 ## `translateSignal`

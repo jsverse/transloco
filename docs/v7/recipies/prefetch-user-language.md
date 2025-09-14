@@ -9,6 +9,7 @@ Here’s how you can implement it:
 {% tabs %}
 {% tab title="Angular >=19" %}
 {% code overflow="wrap" %}
+
 ```typescript
 import { provideAppInitializer } from '@angular/core';
 import { UserService } from './user.service';
@@ -31,10 +32,12 @@ export function providePreloadUserLang() {
   return provideAppInitializer(preloadUser);
 }
 ```
+
 {% endcode %}
 {% endtab %}
 
-{% tab title="Angualr <19" %}
+{% tab title="Angular <19" %}
+
 ```typescript
 import { APP_INITIALIZER } from '@angular/core';
 import { UserService } from './user.service';
@@ -61,19 +64,21 @@ export function providePreloadUserLang() {
   };
 }
 ```
+
 {% endtab %}
 {% endtabs %}
 
 #### Explanation:
 
-* The `preloadUser` function ensures that the user's language settings are fetched from the server, and the corresponding translation file is loaded before the application starts.
-* This guarantees that the app doesn’t boot up until the necessary language file is ready, preventing content flickering or layout shifts caused by missing translations.
+- The `preloadUser` function ensures that the user's language settings are fetched from the server, and the corresponding translation file is loaded before the application starts.
+- This guarantees that the app doesn’t boot up until the necessary language file is ready, preventing content flickering or layout shifts caused by missing translations.
 
 Now all that's left is adding it as a provider to our application:
 
 {% tabs %}
 {% tab title="Standalone" %}
 {% code title="app.config.ts" overflow="wrap" %}
+
 ```typescript
 import { ApplicationConfig, isDevMode } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
@@ -90,10 +95,12 @@ export const appConfig: ApplicationConfig = {
   ],
 };
 ```
+
 {% endcode %}
 {% endtab %}
 
 {% tab title="NgModule" %}
+
 ```typescript
 import { provideTransloco, TranslocoModule } from '@jsverse/transloco';
 import { Injectable, isDevMode, NgModule } from '@angular/core';
@@ -110,6 +117,7 @@ import { providePreloadUserLang } from './preload-user-lang';
 })
 export class TranslocoRootModule {}
 ```
+
 {% endtab %}
 {% endtabs %}
 

@@ -1,11 +1,11 @@
 # Keys Manager (TKM)
 
-the process of managing translations often presents a series of challenges:
+The process of managing translations often presents a series of challenges:
 
-* **Repetition and Redundancy**: Adding new text requires manually creating entries in translation files, locating the appropriate placements, and ensuring consistency across languages.
-* **Maintenance Overhead**: Removing obsolete keys demands vigilance to clean up translation files in all languages, which can become cumbersome as the project scales.
-* **Error-Prone Processes**: Keeping track of missing or extra keys, managing dynamic keys, and organizing translations can easily lead to errors and inconsistencies.
-* **Time Consumption**: Translating and maintaining localization files often distract developers from focusing on core functionalities and innovation.
+- **Repetition and Redundancy**: Adding new text requires manually creating entries in translation files, locating the appropriate placements, and ensuring consistency across languages.
+- **Maintenance Overhead**: Removing obsolete keys demands vigilance to clean up translation files in all languages, which can become cumbersome as the project scales.
+- **Error-Prone Processes**: Keeping track of missing or extra keys, managing dynamic keys, and organizing translations can easily lead to errors and inconsistencies.
+- **Time Consumption**: Translating and maintaining localization files often distract developers from focusing on core functionalities and innovation.
 
 To streamline these tasks, the **T**ransloco **K**eys **M**anager or **TKM** for short was developed. This toolset automates tedious processes like extracting, organizing, and validating translation keys, enabling teams to focus on delivering exceptional user experiences with less effort and fewer errors.
 
@@ -17,15 +17,19 @@ Assuming you've already added Transloco to your project, run the following schem
 
 {% tabs %}
 {% tab title="Angular CLI" %}
+
 ```
 ng g @jsverse/transloco:keys-manager
 ```
+
 {% endtab %}
 
 {% tab title="Nx 🐋" %}
+
 ```bash
 nx g @jsverse/transloco:keys-manager
 ```
+
 {% endtab %}
 {% endtabs %}
 
@@ -39,21 +43,27 @@ If you're going to use the Webpack plugin, and you've already defined other Webp
 
 {% tabs %}
 {% tab title="pnpm" %}
+
 ```bash
 pnpm add -D @jsverse/transloco-keys-manager
 ```
+
 {% endtab %}
 
 {% tab title="yarn" %}
+
 ```bash
 yarn add -D @jsverse/transloco-keys-manager
 ```
+
 {% endtab %}
 
 {% tab title="npm" %}
+
 ```bash
 npm i -D @jsverse/transloco-keys-manager
 ```
+
 {% endtab %}
 {% endtabs %}
 

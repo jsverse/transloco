@@ -1,2 +1,1 @@
-# 🍳 Recipies
-
+# 🍳 Recipes

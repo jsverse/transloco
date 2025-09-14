@@ -5,6 +5,7 @@ You can reference specific keys within other keys in the same translation file. 
 **Example:**
 
 {% code title="en.json" %}
+
 ```json
 {
   "alert": "alert {{value}} english",
@@ -12,12 +13,13 @@ You can reference specific keys within other keys in the same translation file. 
   "fromList": "from {{home}}"
 }
 ```
+
 {% endcode %}
 
 In this case, calling `service.translate('fromList')` will return:\
-&#xNAN;**"from home english"**.
+**"from home english"**.
 
-***
+---
 
 ### Key Referencing Within Scopes
 
@@ -26,6 +28,7 @@ When using key references inside a scope, be sure to prefix the referenced key w
 **Example:**
 
 {% code title="admin/en.json" %}
+
 ```json
 {
   "alert": "alert {{value}} english",
@@ -33,12 +36,13 @@ When using key references inside a scope, be sure to prefix the referenced key w
   "fromList": "from {{admin.home}}"
 }
 ```
+
 {% endcode %}
 
 Here, calling `service.translate('admin.fromList')` will return:\
 &#xNAN;**"from home english"**.
 
-***
+---
 
 ### Passing Parameters to Reused Keys
 
@@ -47,18 +51,20 @@ You can also pass parameters to the reused key. This allows you to dynamically i
 **Example:**
 
 {% code title="en.json" %}
+
 ```json
 {
   "hello": "Hello {{name}},",
   "greet": "{{hello}}, have a good day!"
 }
 ```
+
 {% endcode %}
 
 In this case, calling `service.translate('greet', {name: 'John'})` will return:\
-&#xNAN;**"Hello John, have a good day!"**.
+**"Hello John, have a good day!"**.
 
-***
+---
 
 ### Avoid Circular References
 
@@ -67,12 +73,14 @@ Be cautious when creating key references that may result in circular references.
 **Example:**
 
 {% code title="en.json" %}
+
 ```json
 {
   "key": "{{key2}}",
   "key2": "{{key}}"
 }
 ```
+
 {% endcode %}
 
 This will create a circular reference, which should be avoided.
