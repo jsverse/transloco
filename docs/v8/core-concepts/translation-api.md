@@ -1,8 +1,11 @@
 ---
 description: A list of the TranslocoService API methods and their usages
+icon: code
 ---
 
 # Translation API
+
+
 
 {% hint style="success" %}
 Check out the new [signal translation API](signals.md) 🚦

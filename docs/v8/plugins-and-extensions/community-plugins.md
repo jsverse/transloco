@@ -1,3 +1,7 @@
+---
+icon: plug
+---
+
 # Community Plugins
 
 Here is a list of plugins built with 🩵 by the community.
