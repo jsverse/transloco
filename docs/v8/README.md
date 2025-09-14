@@ -18,31 +18,31 @@ Here is a small taste of the features it offers:
 
 {% stepper %}
 {% step %}
-#### Runtime Language Switching 🌐
+<i class="fa-shuffle">:shuffle:</i> **Runtime Language Switching**
 
 Transloco enables dynamic language switching at runtime, allowing users to change languages without reloading the application. This feature enhances user experience by providing seamless transitions between different languages.
 {% endstep %}
 
 {% step %}
-#### Clean and DRY Templates 🫧
+<i class="fa-soap">:soap:</i> **Clean and DRY Templates**
 
 The library provides a structural directive (`*transloco`) that facilitates efficient translations directly within templates. This method promotes a DRY (Don't Repeat Yourself) approach by creating a single subscription per template, ensuring efficient change detection and updates.
 {% endstep %}
 
 {% step %}
-#### Lazy Loading with Scope Management 🦥
+<i class="fa-otter">:otter:</i> **Lazy Loading with Scope Management**
 
 Transloco enables the lazy loading of translation files through its scoping feature. Developers can organize translations into modular files corresponding to specific features or modules, improving maintainability and scalability. By loading only the necessary translation files when a user navigates to a particular module, application performance is optimized by reducing initial bundle sizes.
 {% endstep %}
 
 {% step %}
-#### Rich Plugins 🔌
+<i class="fa-plug">:plug:</i> **Rich Plugins**
 
 Transloco's plugin ecosystem provides powerful tools for both development and production, simplifying key extraction, translation management, and localization workflows. These plugins enhance efficiency and ensure seamless integration with Angular's dependency system.
 {% endstep %}
 
 {% step %}
-#### Hackable and Modular by Design 👩‍💻
+<i class="fa-user-hoodie">:user-hoodie:</i> **Hackable and Modular by Design**
 
 Transloco is built with modularity and flexibility at its core, making it highly customizable to suit diverse project needs. The library’s architecture allows developers to extend or override its behavior through plugins and custom handlers.
 {% endstep %}
