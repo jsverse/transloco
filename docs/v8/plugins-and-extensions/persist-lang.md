@@ -1,4 +1,8 @@
-# Persist Lang
+---
+icon: bookmark
+---
+
+# Persist Language
 
 This plugin provides the functionality of persisting the active language to the provided storage.
 

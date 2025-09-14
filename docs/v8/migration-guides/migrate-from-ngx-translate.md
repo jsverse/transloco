@@ -1,5 +1,5 @@
 ---
-icon: globe
+icon: box-open
 ---
 
 # Migrate from ngx-translate

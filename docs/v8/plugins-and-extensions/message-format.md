@@ -1,3 +1,7 @@
+---
+icon: brackets-curly
+---
+
 # Message Format
 
 The **@jsverse/transloco-messageformat** package integrates Transloco with **@messageformat/core**, enabling the compilation of translations using ICU syntax. This allows for advanced handling of pluralization and gender in your app's translations.

@@ -1,3 +1,7 @@
+---
+icon: bookmark
+---
+
 # Persist Translations
 
 The **@jsverse/transloco-persist-translations** plugin provides functionality to cache translations in specified storage. This ensures translations are stored locally and reduces the need for repeated network requests.

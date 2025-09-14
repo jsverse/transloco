@@ -1,4 +1,8 @@
-# Preload Langs
+---
+icon: floppy-disk
+---
+
+# Preload Languages
 
 This plugin enables the preloading of specified languages during periods of browser inactivity, leveraging the `requestIdleCallback` API for optimal performance.
 

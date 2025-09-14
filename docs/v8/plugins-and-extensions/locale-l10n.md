@@ -1,3 +1,7 @@
+---
+icon: globe
+---
+
 # Locale l10n
 
 This plugin adds localization (l10n) support to Transloco, enabling applications to adapt content to meet the language, cultural, and other requirements of specific locales.

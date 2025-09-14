@@ -1,3 +1,7 @@
+---
+icon: file-code
+---
+
 # Translation in the Template
 
 ### Structural Directive

@@ -1,5 +1,6 @@
 ---
 description: A list of TranslocoService language-related API methods and their usages
+icon: code
 ---
 
 # Language API
