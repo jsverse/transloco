@@ -109,6 +109,7 @@ export class TranslocoService {
   };
 
   private destroyRef = inject(DestroyRef);
+  private destroyed = false;
 
   constructor(
     @Optional() @Inject(TRANSLOCO_LOADER) private loader: TranslocoLoader,
@@ -144,6 +145,7 @@ export class TranslocoService {
     });
 
     this.destroyRef.onDestroy(() => {
+      this.destroyed = true;
       // Complete subjects to release observers if users forget to unsubscribe manually.
       // This is important in server-side rendering.
       this.lang.complete();
@@ -193,6 +195,13 @@ export class TranslocoService {
   }
 
   load(path: string, options: LoadOptions = {}): Observable<Translation> {
+    // If the application is already destroyed, the `load` should not
+    // execute anything in practice because other resources have already
+    // been released and destroyed.
+    if (this.destroyed) {
+      return EMPTY;
+    }
+
     const cached = this.cache.get(path);
     if (cached) {
       return cached;
