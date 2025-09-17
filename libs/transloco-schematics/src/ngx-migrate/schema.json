@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "SchematicsTranslocoMigrate",
+  "title": "Migrate from @ngx-translate to Transloco",
+  "type": "object",
+  "properties": {
+    "path": {
+      "description": "The path to the source root directory.",
+      "x-prompt": "✍ Which folder will contain the translation files?",
+      "type": "string",
+      "default": "./src/app",
+      "alias": "p"
+    }
+  },
+  "required": []
+}

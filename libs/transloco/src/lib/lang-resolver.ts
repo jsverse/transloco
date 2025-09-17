@@ -1,4 +1,5 @@
-import { getLangFromScope, getPipeValue, getScopeFromLang } from './shared';
+import { getPipeValue } from './utils/pipe.utils';
+import { getLangFromScope, getScopeFromLang } from './utils/scope.utils';
 
 interface LangResolverParams {
   inline?: string;

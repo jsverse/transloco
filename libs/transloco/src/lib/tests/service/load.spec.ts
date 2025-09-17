@@ -4,7 +4,7 @@ import { filter, map } from 'rxjs';
 import { createService, runLoader } from '../mocks';
 import { TranslocoService } from '../../transloco.service';
 
-import { loadLang } from './utils';
+import { loadLang } from './service-spec-utils';
 
 describe('load', () => {
   let service: TranslocoService;

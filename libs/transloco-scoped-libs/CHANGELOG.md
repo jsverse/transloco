@@ -1,3 +1,18 @@
+# 8.0.0 (2025-09-14)
+
+### 💡 Refactor
+
+- **scoped-libs:** 💡 update node version ([a9f6bc24](https://github.com/jsverse/transloco/commit/a9f6bc24))
+
+### ⚠ BREAKING CHANGES
+
+- **scoped-libs:** 🧨 Minimum node version is now 18
+
+### ❤️ Thank You
+
+- chaitanay94
+- Shahar Kazaz
+
 ## [7.0.1](https://github.com/jsverse/transloco/compare/transloco-scoped-libs-7.0.0...transloco-scoped-libs-7.0.1) (2024-05-31)
 
 # [7.0.0](https://github.com/jsverse/transloco/compare/transloco-scoped-libs-6.0.0...transloco-scoped-libs-7.0.0) (2024-03-23)

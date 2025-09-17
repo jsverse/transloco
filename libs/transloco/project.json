@@ -6,7 +6,7 @@
   "prefix": "transloco-nx-shell",
   "tags": [],
   "targets": {
-    "build": {
+    "build-package": {
       "dependsOn": ["copy-readme"],
       "executor": "@nx/angular:package",
       "outputs": ["{workspaceRoot}/dist/libs/transloco"],
@@ -22,6 +22,21 @@
         }
       },
       "defaultConfiguration": "production"
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "parallel": false,
+        "commands": [
+          {
+            "command": "nx build-package transloco"
+          },
+          {
+            "command": "npx tsc -p libs/transloco/tsconfig.schematics.json"
+          }
+        ]
+      },
+      "outputs": ["{workspaceRoot}/dist/libs/transloco"]
     },
     "test": {
       "executor": "@angular-devkit/build-angular:karma",

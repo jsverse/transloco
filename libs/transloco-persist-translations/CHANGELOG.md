@@ -1,3 +1,17 @@
+# 8.0.0 (2025-09-14)
+
+### 💡 Refactor
+
+- **persist-translations:** 💡 Add package optimizations ([b3933185](https://github.com/jsverse/transloco/commit/b3933185))
+
+### ⚠ BREAKING CHANGES
+
+- **persist-translations:** 🧨 Minimum node version is now 18
+
+### ❤️ Thank You
+
+- shaharkazaz @shaharkazaz
+
 ## [7.0.1](https://github.com/jsverse/transloco/compare/transloco-persist-translations-7.0.0...transloco-persist-translations-7.0.1) (2024-05-31)
 
 # [7.0.0](https://github.com/jsverse/transloco/compare/transloco-persist-translations-6.0.0...transloco-persist-translations-7.0.0) (2024-03-23)

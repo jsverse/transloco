@@ -1,6 +1,6 @@
 {
   "name": "@jsverse/transloco-persist-translations",
-  "version": "7.0.1",
+  "version": "8.0.0",
   "description": "Transloco persist translations",
   "publishConfig": {
     "access": "public"
@@ -14,20 +14,22 @@
     "url": "https://github.com/jsverse/transloco"
   },
   "keywords": [
-    "angular",
-    "angular 2",
+    "Angular",
     "i18n",
-    "transloco",
-    "translate",
-    "persist",
-    "storage"
+    "Translate",
+    "Angular Translate",
+    "Transloco",
+    "Persist",
+    "Storage"
   ],
   "license": "MIT",
   "peerDependencies": {
     "@angular/core": ">=16.0.0",
-    "@jsverse/transloco": ">=7.0.0"
+    "@jsverse/transloco": ">=7.0.0",
+    "@jsverse/utils": "^1.0.0"
   },
   "dependencies": {
     "tslib": "^2.2.0"
-  }
+  },
+  "sideEffects": false
 }

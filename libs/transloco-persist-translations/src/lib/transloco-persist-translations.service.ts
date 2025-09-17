@@ -1,9 +1,5 @@
-import {
-  isObject,
-  isString,
-  Translation,
-  TranslocoLoader,
-} from '@jsverse/transloco';
+import { Translation, TranslocoLoader } from '@jsverse/transloco';
+import { isObject, isString } from '@jsverse/utils';
 import { from, Observable, of, Subscription } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { inject, Injectable, OnDestroy } from '@angular/core';

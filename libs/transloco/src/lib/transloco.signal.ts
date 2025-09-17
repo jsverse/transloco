@@ -12,7 +12,8 @@ import { switchMap } from 'rxjs';
 
 import { TRANSLOCO_SCOPE } from './transloco-scope';
 import { TranslocoService } from './transloco.service';
-import { HashMap, Translation, TranslocoScope } from './types';
+import { Translation, TranslocoScope } from './transloco.types';
+import { HashMap } from './utils/type.utils';
 
 type ScopeType = string | TranslocoScope | TranslocoScope[];
 type SignalKey = Signal<string> | Signal<string[]> | Signal<string>[];

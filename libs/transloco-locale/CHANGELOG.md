@@ -1,3 +1,22 @@
+# 8.0.0 (2025-09-14)
+
+### 🚀 Features
+
+- **locale:** 🎸 improve locale detection logic in locale service ([73d21aa0](https://github.com/jsverse/transloco/commit/73d21aa0))
+
+### 🤖 Chore
+
+- **locale:** 🤖 Add package optimizations ([2bc8485c](https://github.com/jsverse/transloco/commit/2bc8485c))
+
+### ⚠ BREAKING CHANGES
+
+- **locale:** 🧨 Minimum node version is now 18
+
+### ❤️ Thank You
+
+- chaitanay94 @chaitanay94
+- shaharkazaz @shaharkazaz
+
 ## [7.0.1](https://github.com/jsverse/transloco/compare/transloco-locale-7.0.0...transloco-locale-7.0.1) (2024-05-31)
 
 # [7.0.0](https://github.com/jsverse/transloco/compare/transloco-locale-6.0.0...transloco-locale-7.0.0) (2024-03-23)

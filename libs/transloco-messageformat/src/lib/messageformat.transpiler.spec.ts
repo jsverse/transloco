@@ -1,6 +1,5 @@
 import {
   defaultConfig,
-  flatten,
   provideTranslocoConfig,
   TRANSLOCO_TRANSPILER,
   translocoConfig,
@@ -215,12 +214,12 @@ function assertParser(description: string, config: MessageformatConfig) {
     });
 
     it('should translate simple string multiple keys from lang', () => {
-      const lang = flatten({
+      const lang = {
         withKeys: 'with keys',
         from: 'from',
         lang: 'lang',
-        nes: { ted: 'supporting nested values!' },
-      });
+        'nes.ted': 'supporting nested values!',
+      };
       const parsed = transpiler.transpile(
         getTranspilerParams(
           'Hello {{ withKeys }} {{ from }} {{ lang }} {{nes.ted}}',

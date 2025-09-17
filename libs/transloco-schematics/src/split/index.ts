@@ -1,6 +1,5 @@
 import { Rule, Tree } from '@angular-devkit/schematics';
 
-import { TranslationFileFormat } from '../types';
 import {
   getTranslationEntryPaths,
   getTranslationFiles,
@@ -8,12 +7,10 @@ import {
   getTranslationsRoot,
   hasFiles,
   hasSubdirs,
-  setFileContent,
-} from '../utils/transloco';
+  writeToJson,
+} from '../../schematics-core';
 
 import { SchemaOptions } from './schema';
-
-type Parser = (content: string) => unknown;
 
 function reduceTranslations(
   host: Tree,
@@ -50,34 +47,18 @@ function reduceTranslations(
       if (!translationJson[key]) {
         return translationJson;
       }
-      setFileContent(host, dir.path, fileName, translationJson[key]);
+      writeToJson(host, dir.path, fileName, translationJson[key]);
     });
 
   delete translationJson[key];
   return translationJson;
 }
 
-function parserFactory(format: TranslationFileFormat): Parser {
-  switch (format) {
-    case TranslationFileFormat.JSON:
-      return JSON.parse;
-    case TranslationFileFormat.PO:
-      // TODO:
-      return JSON.parse;
-    case TranslationFileFormat.XLIFF:
-      // TODO:
-      return JSON.parse;
-    default:
-      return JSON.parse;
-  }
-}
-
 export default function (options: SchemaOptions): Rule {
   return (host: Tree) => {
     const root = getTranslationsRoot(host, options);
-    const parser = parserFactory(options.format);
 
-    const translatedFiles = getTranslationFiles(host, options.source, parser);
+    const translatedFiles = getTranslationFiles(host, options.source);
     const translationEntryPaths = getTranslationEntryPaths(host, root);
 
     const newTranslation = {};
@@ -92,7 +73,7 @@ export default function (options: SchemaOptions): Rule {
 
     host.getDir(root).subfiles.forEach((fileName) => {
       const lang = fileName.split('.')[0];
-      setFileContent(host, root, fileName, newTranslation[lang]);
+      writeToJson(host, root, fileName, newTranslation[lang]);
     });
 
     return host;

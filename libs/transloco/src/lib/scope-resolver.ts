@@ -1,6 +1,8 @@
-import { TranslocoScope, ProviderScope, OrArray } from './types';
+import { OrArray, toCamelCase } from '@jsverse/utils';
+
+import { ProviderScope, TranslocoScope } from './transloco.types';
 import { TranslocoService } from './transloco.service';
-import { isScopeObject, toCamelCase } from './helpers';
+import { isScopeObject } from './utils/scope.utils';
 
 type ScopeResolverParams = {
   inline: string | undefined;

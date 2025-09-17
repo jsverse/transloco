@@ -1,5 +1,5 @@
 import { inject, Pipe, PipeTransform } from '@angular/core';
-import { isNil } from '@jsverse/transloco';
+import { isNil } from '@jsverse/utils';
 
 import { getDefaultOptions } from '../shared';
 import { TRANSLOCO_LOCALE_CONFIG } from '../transloco-locale.config';

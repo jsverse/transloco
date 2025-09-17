@@ -19,14 +19,18 @@ import {
 import { applyChangesToFile } from '@schematics/angular/utility/standalone/util';
 import { Change } from '@schematics/angular/utility/change';
 
-import { LIB_NAME } from '../schematics.utils';
-import { coerceArray, stringifyList } from '../utils/array';
-import { findModuleFromOptions } from '../utils/find-module';
-import { getProject, getProjectPath } from '../utils/projects';
-import { createTranslateFilesFromOptions } from '../utils/translations';
-import { getConfig } from '../utils/config';
+import {
+  NAMES,
+  coerceArray,
+  stringifyList,
+  findModuleFromOptions,
+  getProject,
+  createTranslateFilesFromOptions,
+  getGlobalConfig,
+} from '../../schematics-core';
 
 import { SchemaOptions } from './schema';
+import { getProjectPath } from './utils';
 
 function getProviderValue(options: SchemaOptions) {
   const name = dasherize(options.name);
@@ -50,17 +54,22 @@ function addScopeToModule(
   const provider = `provideTranslocoScope(${getProviderValue(options)})`;
   const changes: Change[] = [];
   changes.push(
-    addProviderToModule(moduleSource, modulePath, provider, LIB_NAME)[0],
+    addProviderToModule(moduleSource, modulePath, provider, NAMES.LIB_NAME)[0],
   );
   changes.push(
-    addImportToModule(moduleSource, modulePath, 'TranslocoModule', LIB_NAME)[0],
+    addImportToModule(
+      moduleSource,
+      modulePath,
+      'TranslocoModule',
+      NAMES.LIB_NAME,
+    )[0],
   );
   changes.push(
     insertImport(
       moduleSource,
       modulePath,
       'provideTranslocoScope, TranslocoModule',
-      LIB_NAME,
+      NAMES.LIB_NAME,
     ),
   );
   if (options.inlineLoader) {
@@ -80,7 +89,7 @@ function getTranslationFilesFromAssets(host, translationsPath) {
 function getTranslationFiles(options, host, translationsPath): string[] {
   return (
     options.langs ||
-    getConfig().langs ||
+    getGlobalConfig().langs ||
     getTranslationFilesFromAssets(host, translationsPath)
   );
 }
@@ -114,7 +123,10 @@ function createTranslationFiles(options, rootPath, modulePath, host: Tree) {
     ? join(rootPath, options.translationPath)
     : defaultPath;
 
-  return createTranslateFilesFromOptions(host, options, translationsPath);
+  return createTranslateFilesFromOptions(host, {
+    ...options,
+    translationsPath,
+  });
 }
 
 function extractModuleOptions({

@@ -1,6 +1,6 @@
 import { Injectable, InjectionToken } from '@angular/core';
 
-import { Translation } from './types';
+import { Translation } from './transloco.types';
 
 export const TRANSLOCO_INTERCEPTOR = new InjectionToken<TranslocoInterceptor>(
   ngDevMode ? 'TRANSLOCO_INTERCEPTOR' : '',

@@ -6,19 +6,21 @@ import {
   Pipe,
   PipeTransform,
 } from '@angular/core';
-import { switchMap, forkJoin, Observable, Subscription } from 'rxjs';
+import { forkJoin, Observable, Subscription, switchMap } from 'rxjs';
+import { OrArray } from '@jsverse/utils';
 
 import { TranslocoService } from './transloco.service';
-import { HashMap, OrArray, Translation, TranslocoScope } from './types';
+import { Translation, TranslocoScope } from './transloco.types';
 import { TRANSLOCO_SCOPE } from './transloco-scope';
 import { TRANSLOCO_LANG } from './transloco-lang';
 import {
   listenOrNotOperator,
-  resolveInlineLoader,
   shouldListenToLangChanges,
-} from './shared';
+} from './utils/lang.utils';
 import { LangResolver } from './lang-resolver';
 import { ScopeResolver } from './scope-resolver';
+import { HashMap } from './utils/type.utils';
+import { resolveInlineLoader } from './utils/scope.utils';
 
 @Pipe({
   name: 'transloco',

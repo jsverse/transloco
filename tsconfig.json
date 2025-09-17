@@ -17,5 +17,11 @@
     "typeRoots": ["node_modules/@types"],
     "lib": ["es2018", "dom"],
     "useDefineForClassFields": false
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInputAccessModifiers": true,
+    "strictNullChecks": true,
+    "fullTemplateTypeCheck": true
   }
 }

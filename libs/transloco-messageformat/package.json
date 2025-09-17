@@ -1,6 +1,6 @@
 {
   "name": "@jsverse/transloco-messageformat",
-  "version": "7.0.1",
+  "version": "8.0.0",
   "description": "Transpiler for Transloco that uses messageformat.js to compile translations using ICU syntax for handling pluralization and gender",
   "publishConfig": {
     "access": "public"
@@ -14,25 +14,27 @@
     "url": "https://github.com/jsverse/transloco"
   },
   "keywords": [
-    "angular",
-    "angular 2",
-    "declension",
+    "Angular",
     "i18n",
-    "icu",
-    "gender",
-    "messageformat",
-    "transloco",
-    "pluralization",
-    "translate"
+    "Translate",
+    "Angular Translate",
+    "Transloco",
+    "Declension",
+    "ICU",
+    "Gender",
+    "Messageformat",
+    "Pluralization"
   ],
   "license": "MIT",
   "peerDependencies": {
     "@angular/core": ">=16.0.0",
     "@jsverse/transloco": ">=7.0.0",
+    "@jsverse/utils": "1.0.0-beta.5",
     "rxjs": ">=6.0.0"
   },
   "dependencies": {
     "@messageformat/core": "^3.0.0",
     "tslib": "^2.2.0"
-  }
+  },
+  "sideEffects": false
 }

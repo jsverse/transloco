@@ -8,7 +8,6 @@ import {
   TranslocoTranspiler,
   TranspileParams,
 } from '../transloco.transpiler';
-import { flatten } from '../helpers';
 import {
   defaultConfig,
   TranslocoConfig,
@@ -18,6 +17,7 @@ import {
   provideTransloco,
   provideTranslocoTranspiler,
 } from '../transloco.providers';
+import { flatten } from '../utils/flat.utils';
 
 import { transpilerFunctions } from './mocks';
 

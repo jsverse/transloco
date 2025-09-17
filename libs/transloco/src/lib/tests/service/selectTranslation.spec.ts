@@ -1,8 +1,8 @@
 import { fakeAsync } from '@angular/core/testing';
 
 import { createService, mockLangs, runLoader } from '../mocks';
-import { flatten } from '../../helpers';
 import { TranslocoService } from '../../transloco.service';
+import { flatten } from '../../utils/flat.utils';
 
 describe('selectTranslation', () => {
   let service: TranslocoService;

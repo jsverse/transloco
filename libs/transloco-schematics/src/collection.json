@@ -2,23 +2,16 @@
   "extends": ["@schematics/angular"],
   "$schema": "../../../node_modules/@angular-devkit/schematics/collection-schema.json",
   "schematics": {
-    "ng-add": {
-      "aliases": ["init"],
-      "factory": "./ng-add/index",
-      "schema": "./ng-add/schema.json",
-      "description": "Add transloco configuration for root module."
+    "ng-migrate": {
+      "factory": "./ng-migrate/index",
+      "schema": "./ng-migrate/schema.json",
+      "description": "Migrate from Angular i18n to Transloco."
     },
-    "component": {
-      "aliases": ["c"],
-      "factory": "./component/index",
-      "schema": "../../../../@schematics/angular/component/schema.json",
-      "description": "Add component with translation."
-    },
-    "migrate": {
+    "ngx-migrate": {
       "aliases": ["m"],
-      "factory": "./migrate/index",
-      "schema": "./migrate/schema.json",
-      "description": "Run a migration script from @ngx-translate."
+      "factory": "./ngx-migrate/index",
+      "schema": "./ngx-migrate/schema.json",
+      "description": "Migrate from @ngx-translate to Transloco."
     },
     "scope": {
       "aliases": ["s"],
@@ -26,17 +19,11 @@
       "schema": "./scope/schema.json",
       "description": "Add transloco scope."
     },
-    "upgrade": {
-      "aliases": ["up"],
-      "factory": "./upgrade/index",
-      "schema": "./upgrade/schema.json",
-      "description": "Run an upgrade script."
-    },
     "keys-manager": {
       "aliases": ["km"],
       "factory": "./keys-manager/index",
       "schema": "./keys-manager/schema.json",
-      "description": "Add Transloco Keys Manager plugin to your project."
+      "description": "Add TKM (Transloco Keys Manager) plugin to your project."
     },
     "join": {
       "aliases": ["build"],
@@ -48,11 +35,6 @@
       "aliases": ["sp"],
       "factory": "./split/index",
       "schema": "./split/schema.json",
-      "description": "split the translated files over the project's translation files."
-    },
-    "ng-migrate": {
-      "factory": "./ng-migrate/index",
-      "schema": "./ng-migrate/schema.json",
       "description": "split the translated files over the project's translation files."
     }
   }

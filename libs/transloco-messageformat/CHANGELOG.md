@@ -1,3 +1,21 @@
+# 8.0.0 (2025-09-14)
+
+### 🤖 Chore
+
+- **messageformat:** 🤖 Add package optimizations ([24d82d4a](https://github.com/jsverse/transloco/commit/24d82d4a))
+
+### 💍 Tests
+
+- **messageformat:** 💍 fix test ([4edf9afc](https://github.com/jsverse/transloco/commit/4edf9afc))
+
+### ⚠ BREAKING CHANGES
+
+- **messageformat:** 🧨 Minimum node version is now 18
+
+### ❤️ Thank You
+
+- shaharkazaz @shaharkazaz
+
 ## [7.0.1](https://github.com/jsverse/transloco/compare/transloco-messageformat-7.0.0...transloco-messageformat-7.0.1) (2024-05-31)
 
 ### Features
