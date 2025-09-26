@@ -1,3 +1,7 @@
+## 8.0.2 (2025-09-26)
+
+This was a version bump only for transloco-scoped-libs to align it with other projects, there were no code changes.
+
 ## 8.0.1 (2025-09-26)
 
 This was a version bump only for transloco-scoped-libs to align it with other projects, there were no code changes.

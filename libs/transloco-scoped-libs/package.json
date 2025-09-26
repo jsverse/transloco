@@ -1,6 +1,6 @@
 {
   "name": "@jsverse/transloco-scoped-libs",
-  "version": "8.0.1",
+  "version": "8.0.2",
   "description": "Transloco support tool for libraries with translations",
   "main": "src/lib/transloco-scoped-libs.js",
   "engines": {
@@ -30,7 +30,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@jsverse/transloco-utils": "^8.0.1",
+    "@jsverse/transloco-utils": "^8.0.2",
     "chalk": "^4.1.2",
     "chokidar": "^3.5.2",
     "command-line-args": "^5.1.1",
