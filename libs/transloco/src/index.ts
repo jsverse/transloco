@@ -6,7 +6,11 @@ export {
 export { TranslocoDirective } from './lib/transloco.directive';
 export { TranslocoPipe } from './lib/transloco.pipe';
 export { TranslocoModule } from './lib/transloco.module';
-export { TRANSLOCO_LOADER, TranslocoLoader } from './lib/transloco.loader';
+export {
+  TRANSLOCO_LOADER,
+  TranslocoLoader,
+  TranslocoLoaderData,
+} from './lib/transloco.loader';
 export {
   TranslocoConfig,
   TRANSLOCO_CONFIG,
