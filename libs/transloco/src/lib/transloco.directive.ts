@@ -69,7 +69,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   @Input('transloco') key: string | undefined;
   @Input('translocoParams') params: HashMap = {};
   @Input('translocoScope') inlineScope: string | undefined;
-  /** @deprecated use prefix instead, will be removed in Transloco v8 */
+  /** @deprecated use prefix instead, will be removed in Transloco v9 */
   @Input('translocoRead') inlineRead: string | undefined;
   @Input('translocoPrefix') prefix: string | undefined;
   @Input('translocoLang') inlineLang: string | undefined;
