@@ -1,6 +1,6 @@
 {
   "name": "@jsverse/transloco-locale",
-  "version": "8.0.0",
+  "version": "8.0.1",
   "description": "The localization (l10n) library plugin for Transloco",
   "publishConfig": {
     "access": "public"
