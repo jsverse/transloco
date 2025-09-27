@@ -20,6 +20,7 @@ export interface TranslocoConfig {
   interpolation: [string, string];
   scopes: {
     keepCasing?: boolean;
+    autoPrefixKeys?: boolean;
   };
 }
 
@@ -49,6 +50,7 @@ export const defaultConfig: TranslocoConfig = {
   interpolation: ['{{', '}}'],
   scopes: {
     keepCasing: false,
+    autoPrefixKeys: true,
   },
 };
 
