@@ -79,7 +79,7 @@ export function ngAdd(options: SchemaOptions): Rule {
     const langs = options.langs.split(',').map((l) => l.trim());
     if (!options.project) {
       throw new SchematicsException(
-        'Project name is required. Are you using Nx? In Nx you must explicitly provide the project name using --project=<project-name>',
+        'Project name is required. You must explicitly provide the project name using --project=<project-name>',
       );
     }
     const project = getProject(host, options.project);
