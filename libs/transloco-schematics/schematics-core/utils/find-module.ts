@@ -22,35 +22,6 @@ export const ROUTING_MODULE_EXT = '-routing.module.ts';
 /**
  * Find the module referred by a set of options passed to the schematics.
  */
-export function findRootModule(
-  host: Tree,
-  module: string,
-  rootPath = '',
-  skipImport = false,
-): string | undefined {
-  if (skipImport || !module) {
-    return undefined;
-  }
-
-  const modulePath = normalize(`${rootPath}/${module}`);
-  const matchingExt = [
-    '',
-    '.ts',
-    MODULE_EXT,
-    `/${module}${MODULE_EXT}`,
-    `/${module}.ts`,
-  ].find((ext) => host.exists(modulePath + ext));
-
-  if (matchingExt) {
-    return normalize(modulePath + matchingExt);
-  }
-
-  throw new Error(`Specified module path ${modulePath} does not exist`);
-}
-
-/**
- * Find the module referred by a set of options passed to the schematics.
- */
 export function findModuleFromOptions(
   host: Tree,
   options,
@@ -101,12 +72,6 @@ export function findModuleFromOptions(
       }
     }
     return null;
-    throw new Error(
-      `Specified module '${options.module}' does not exist.\n` +
-        `Looked in the following directories:\n    ${candidatesDirs.join(
-          '\n    ',
-        )}`,
-    );
   }
 }
 
@@ -135,20 +100,10 @@ export function findModule(
       return join(dir.path, filteredMatches[0]);
     } else if (filteredMatches.length > 1) {
       return null;
-      throw new Error(
-        'More than one module matches. Use skip-import option to skip importing ' +
-          'the component into the closest module.',
-      );
     }
 
     dir = dir.parent;
   }
 
-  const errorMsg = foundRoutingModule
-    ? 'Could not find a non Routing NgModule.' +
-      `\nModules with suffix '${routingModuleExt}' are strictly reserved for routing.` +
-      '\nUse the skip-import option to skip importing in NgModule.'
-    : 'Could not find an NgModule. Use the skip-import option to skip importing in NgModule.';
   return null;
-  throw new Error(errorMsg);
 }
