@@ -74,6 +74,35 @@ function resolveLoaderPath({
   return resolved;
 }
 
+function detectAssetsPath(host: Tree, sourceRoot: string): string {
+  // Primary: Check existing folder structure
+  if (host.exists('/public')) {
+    return 'public/i18n/';
+  }
+  if (host.exists(`${sourceRoot}/assets`)) {
+    return `${sourceRoot}/assets/i18n/`;
+  }
+
+  // Fallback: Check package.json for Angular version
+  try {
+    const packageJson = JSON.parse(host.read('/package.json')!.toString());
+    const version =
+      packageJson.dependencies?.['@angular/core'] ||
+      packageJson.devDependencies?.['@angular/core'];
+    const majorVersion = parseInt(version?.replace(/[^\d].*/, '') || '0');
+    return majorVersion >= 18 ? 'public/i18n/' : `${sourceRoot}/assets/i18n/`;
+  } catch {
+    return `${sourceRoot}/assets/i18n/`; // Safe default
+  }
+}
+
+function getUrlPathFromAssetsPath(assetsPath: string): string {
+  if (assetsPath.startsWith('public/')) {
+    return assetsPath.replace('public/', '');
+  }
+  return assetsPath;
+}
+
 export function ngAdd(options: SchemaOptions): Rule {
   return async (host: Tree, context: SchematicContext) => {
     const langs = options.langs.split(',').map((l) => l.trim());
@@ -85,7 +114,10 @@ export function ngAdd(options: SchemaOptions): Rule {
     const project = getProject(host, options.project);
     const sourceRoot = project.sourceRoot ?? 'src';
     const isLib = project.projectType === 'library';
-    const assetsPath = `${sourceRoot}/${options.path}`;
+    const assetsPath = options.path
+      ? `${sourceRoot}/${options.path}`
+      : detectAssetsPath(host, sourceRoot);
+    const urlPath = getUrlPathFromAssetsPath(assetsPath);
     const mainPath = await getMainFilePath(host, options.project);
     const isStandalone = isStandaloneApp(host, mainPath);
     const modulePath = isStandalone
@@ -124,6 +156,7 @@ export function ngAdd(options: SchemaOptions): Rule {
           createLoaderFile({
             ssr: options.ssr,
             loaderPath,
+            urlPath,
           }),
         ),
       );
