@@ -39,11 +39,23 @@
       "outputs": ["{workspaceRoot}/dist/libs/transloco"]
     },
     "test": {
+      "dependsOn": ["test-karma", "test-jest"],
+      "executor": "nx:noop"
+    },
+    "test-karma": {
       "executor": "@angular-devkit/build-angular:karma",
       "options": {
         "main": "libs/transloco/src/test-setup.ts",
         "tsConfig": "libs/transloco/tsconfig.spec.json",
         "karmaConfig": "libs/transloco/karma.conf.js"
+      }
+    },
+    "test-jest": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "jestConfig": "libs/transloco/jest.config.schematics.js",
+        "passWithNoTests": true
       }
     },
     "lint": {
