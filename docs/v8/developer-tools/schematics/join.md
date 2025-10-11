@@ -1,27 +1,24 @@
-# :join
+# Join Schematic
 
 This schematic merges all your translation files into a single file for each language.
 
----
+***
 
 ## Command
 
 {% tabs %}
 {% tab title="Angular CLI" %}
-
 ```bash
+pnpm add @jsverse/transloco-schematics
 ng generate @jsverse/transloco-schematics:join
 ```
-
 {% endtab %}
 
 {% tab title="Nx 🐋" %}
-
 ```bash
 pnpm add @jsverse/transloco-schematics
 nx g @jsverse/transloco-schematics:join
 ```
-
 {% endtab %}
 {% endtabs %}
 
@@ -81,13 +78,13 @@ const config: TranslocoGlobalConfig = {
 
 Once you specify the `scopePathMap`, the script will automatically use it.
 
----
+***
 
 ### Options
 
 <table data-header-hidden><thead><tr><th></th><th width="100"></th><th></th><th width="112"></th><th width="120"></th></tr></thead><tbody><tr><td><strong>Option</strong></td><td><strong>Alias</strong></td><td><strong>Description</strong></td><td><strong>Type</strong></td><td><strong>Default</strong></td></tr><tr><td><code>--translation-path</code></td><td><code>root</code></td><td>The folder that contains the root translation files.</td><td><code>string</code></td><td><code>src/assets/i18n</code></td></tr><tr><td><code>--out-dir</code></td><td><code>o</code></td><td>The output directory path where the merged translation files will be saved.</td><td><code>string</code></td><td><code>dist-i18n</code></td></tr><tr><td><code>--default-lang</code></td><td><code>-</code></td><td>The default language of the project.</td><td><code>string</code></td><td><code>-</code></td></tr><tr><td><code>--include-defaultLang</code></td><td><code>-</code></td><td>Determines whether to join the default language file as well.</td><td><code>boolean</code></td><td><code>false</code></td></tr></tbody></table>
 
----
+***
 
 ### **Usage Example**
 

@@ -1,27 +1,24 @@
-# :scope
+# Scope Schematic
 
 This schematic adds a new Transloco scope to an existing or new Angular module and creates the scope's translation files.
 
----
+***
 
 ## Command
 
 {% tabs %}
 {% tab title="Angular CLI" %}
-
 ```bash
+pnpm add @jsverse/transloco-schematics
 ng generate @jsverse/transloco-schematics:scope [name]
 ```
-
 {% endtab %}
 
 {% tab title="Nx 🐋" %}
-
 ```bash
 pnpm add @jsverse/transloco-schematics
 nx g @jsverse/transloco-schematics:scope [name]
 ```
-
 {% endtab %}
 {% endtabs %}
 
