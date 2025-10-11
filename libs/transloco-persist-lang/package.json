@@ -1,6 +1,6 @@
 {
   "name": "@jsverse/transloco-persist-lang",
-  "version": "8.0.0",
+  "version": "8.0.2",
   "description": "Transloco persist active language",
   "publishConfig": {
     "access": "public"
@@ -25,7 +25,7 @@
   "license": "MIT",
   "peerDependencies": {
     "@angular/core": ">=16.0.0",
-    "@jsverse/transloco": ">=7.0.0",
+    "@jsverse/transloco": ">=8.0.0",
     "@jsverse/utils": "1.0.0-beta.5"
   },
   "dependencies": {

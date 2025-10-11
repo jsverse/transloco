@@ -1,6 +1,6 @@
 {
   "name": "@jsverse/transloco",
-  "version": "8.0.0",
+  "version": "8.0.2",
   "description": "The internationalization (i18n) library for Angular",
   "schematics": "./schematics/collection.json",
   "publishConfig": {
@@ -26,12 +26,12 @@
   "license": "MIT",
   "peerDependencies": {
     "@angular/core": ">=16.0.0",
-    "rxjs": ">=6.0.0",
-    "@jsverse/utils": "1.0.0-beta.5",
-    "@jsverse/transloco-utils": "^7.0.0"
+    "rxjs": ">=6.0.0"
   },
   "dependencies": {
-    "tslib": "^2.2.0"
+    "tslib": "^2.2.0",
+    "@jsverse/utils": "1.0.0-beta.5",
+    "@jsverse/transloco-utils": "^8.0.2"
   },
   "sideEffects": false
 }

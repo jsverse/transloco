@@ -53,3 +53,4 @@ apps/transloco-playground-e2e/cypress/screenshots/*
 .nx/workspace-data
 
 .nx
+local-dev

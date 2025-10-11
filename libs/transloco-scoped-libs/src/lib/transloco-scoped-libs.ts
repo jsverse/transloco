@@ -96,10 +96,13 @@ export default function run({
 
     const outputs = lib.dist.map((o) => path.resolve(o));
     const input = path.dirname(pkg.path);
+    const isWindows = process.platform === 'win32';
     for (const scopeConfig of pkg.content.i18n) {
       const { scope, strategy } = scopeConfig;
 
-      glob(`${path.join(input, scopeConfig.path)}/**/*.json`)
+      glob(`${path.join(input, scopeConfig.path)}/**/*.json`, {
+        windowsPathsNoEscape: isWindows,
+      })
         .then((files) => {
           for (const output of outputs) {
             copyScopes({

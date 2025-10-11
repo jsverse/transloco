@@ -1,3 +1,27 @@
+## 8.0.2 (2025-09-26)
+
+
+### 🩹 Fixes
+
+- **transloco:** 🐛 expose TranslocoLoaderData ([7c5b19ad](https://github.com/jsverse/transloco/commit/7c5b19ad))
+
+
+### ❤️  Thank You
+
+- Shahar Kazaz @shaharkazaz
+
+## 8.0.1 (2025-09-26)
+
+
+### 🩹 Fixes
+
+- **transloco:** 🐛 add utils and transloco-utils as dependencies ([#872](https://github.com/jsverse/transloco/pull/872))
+
+
+### ❤️  Thank You
+
+- Cédric Exbrayat @cexbrayat
+
 # 8.0.0 (2025-09-14)
 
 ### 🩹 Fixes

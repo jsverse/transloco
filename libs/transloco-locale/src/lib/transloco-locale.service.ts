@@ -57,6 +57,10 @@ export class TranslocoLocaleService implements OnDestroy {
       .subscribe((locale: Locale) => this.setLocale(locale));
   }
 
+  getDefaultLocale() {
+    return this.defaultLocale;
+  }
+
   getLocale() {
     return this._locale;
   }

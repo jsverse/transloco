@@ -52,7 +52,7 @@ export function checkIfTranslationFilesExist(
 }
 
 export function createTranslateFilesFromOptions(
-  host: Tree,
+  _: Tree,
   options: { langs: string[]; translationFilePath: string },
 ) {
   const extension = '.json';
