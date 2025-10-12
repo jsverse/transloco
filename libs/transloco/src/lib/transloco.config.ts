@@ -21,6 +21,11 @@ export interface TranslocoConfig {
   scopes: {
     keepCasing?: boolean;
   };
+  /**
+   * @deprecated This option exists only for easing migration from the global `let service` pattern.
+   * It will be removed in a future version. Use Angular DI to inject TranslocoService instead.
+   */
+  exposeService?: boolean;
 }
 
 export const TRANSLOCO_CONFIG = new InjectionToken<TranslocoConfig>(
@@ -50,6 +55,7 @@ export const defaultConfig: TranslocoConfig = {
   scopes: {
     keepCasing: false,
   },
+  exposeService: true,
 };
 
 type DeepPartial<T> =
