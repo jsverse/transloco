@@ -47,11 +47,13 @@ Here, we have a **core** library with its own translation files located under `p
 
 {% stepper %}
 {% step %}
+
 ### Declare the Translation Scope
 
 In the `CoreModule`, provide the scope for the translations:
 
 {% code title="core.module.ts" %}
+
 ```typescript
 import { provideTranslocoScope } from './transloco.providers';
 
@@ -62,49 +64,59 @@ import { provideTranslocoScope } from './transloco.providers';
 })
 export class CoreModule {}
 ```
+
 {% endcode %}
 
 Then, in the `CoreComponent`, use the translations with the defined scope:
 
 {% code title="lib-core.component.html" %}
+
 ```html
-<ng-container *transloco="let t">
-  {{ t('core.title') }}
-</ng-container>
+<ng-container *transloco="let t"> {{ t('core.title') }} </ng-container>
 ```
+
 {% endcode %}
 {% endstep %}
 
 {% step %}
+
 ### Install the Scoped Library Extractor
 
 {% tabs %}
 {% tab title="pnpm" %}
+
 ```bash
 pnpm add @jsverse/transloco-scoped-libs --save-dev
 ```
+
 {% endtab %}
 
 {% tab title="yarn" %}
+
 ```bash
 yarn add @jsverse/transloco-scoped-libs --dev
 ```
+
 {% endtab %}
 
 {% tab title="npm" %}
+
 ```bash
 npm install @jsverse/transloco-scoped-libs --save-dev
 ```
+
 {% endtab %}
 {% endtabs %}
 {% endstep %}
 
 {% step %}
+
 ### Configure the Library's `package.json`
 
 In the `core` library’s `package.json`, add an `i18n` configuration that specifies the scope and translation path:
 
 {% code title="projects/core/package.json" %}
+
 ```json
 {
   "name": "@app/core",
@@ -116,53 +128,66 @@ In the `core` library’s `package.json`, add an `i18n` configuration that speci
   ]
 }
 ```
+
 {% endcode %}
 {% endstep %}
 
 {% step %}
+
 ### Configure the Global Transloco Config
 
-In your global `transloco.config.ts`, add the path to the library in the `scopedLibs` configuration:
+In your global `transloco.config.ts`, add the path to the library in the `scopedLibs` configuration. See the [Global Config](./global-config.md) documentation for more details.
 
 {% code title="transloco.config.ts" %}
+
 ```typescript
 const config: TranslocoGlobalConfig = {
+    ...
     scopedLibs: ['./projects/core/', '@lib/name']
 };
 ```
+
 {% endcode %}
+
+When using the simple string format, the extracted files will be copied to the location specified in `rootTranslationsPath` (defaults to `src/assets/i18n`).
 
 If you need to specify multiple destinations for the extracted files, you can also use an object configuration:
 
 {% code title="transloco.config.ts" %}
+
 ```typescript
 const config: TranslocoGlobalConfig = {
   scopedLibs: [
     {
       src: './projects/core',
-      dist: ['./projects/spa/src/assets/i18n', './src/assets/i18n/']
-    }
-  ]
+      dist: ['./projects/spa/src/assets/i18n', './src/assets/i18n/'],
+    },
+  ],
 };
 ```
+
 {% endcode %}
 {% endstep %}
 
 {% step %}
+
 ### Add the Extractor Script
 
-Finally, add a script to the main `package.json` to run the extractor, you  can also enable "watch mode" by adding the `--watch` flag:
+Finally, add a script to the main `package.json` to run the extractor, you can also enable "watch mode" by adding the `--watch` flag:
 
 {% code title="package.json" %}
+
 ```json
 "scripts": {
   "transloco:extract-scoped-libs": "transloco-scoped-libs --watch"
 }
 ```
+
 {% endcode %}
 {% endstep %}
 
 {% step %}
+
 ### Run the Script
 
 Now, run the script to extract the translation files from the library and copy them to the main project's translation folder:
@@ -173,11 +198,11 @@ pnpm transloco:extract-scoped-libs
 
 This script will:
 
-* Extract the translation files from the library.
-* Copy them to the main project's `src/assets/i18n` folder.
-* Add the library’s translation files to `.gitignore` (use the `--skip-gitignore` flag if you want to skip this step).
-{% endstep %}
-{% endstepper %}
+- Extract the translation files from the library.
+- Copy them to the configured destination(s) (or the `rootTranslationsPath` if using the simple string format).
+- Add the library’s translation files to `.gitignore` (use the `--skip-gitignore` flag if you want to skip this step).
+  {% endstep %}
+  {% endstepper %}
 
 ## Join Strategies
 
@@ -189,6 +214,7 @@ The tool supports two strategies for handling translations:
 To use the **Join Strategy**, modify the `package.json` of the library:
 
 {% code title="projects/core/package.json" %}
+
 ```json
 {
   "name": "@app/core",
@@ -201,6 +227,7 @@ To use the **Join Strategy**, modify the `package.json` of the library:
   ]
 }
 ```
+
 {% endcode %}
 
 Then, in your application loader, you can use the following setup to load both the main and vendor translations:
@@ -218,10 +245,7 @@ export class HttpLoader implements TranslocoLoader {
       return base;
     }
 
-    return forkJoin([
-      base,
-      this.http.get(`/assets/i18n/${lang}.vendor.json`),
-    ]).pipe(
+    return forkJoin([base, this.http.get(`/assets/i18n/${lang}.vendor.json`)]).pipe(
       map(([translation, vendor]) => {
         return { ...translation, ...vendor };
       }),
