@@ -7,7 +7,7 @@ icon: bolt
 {% hint style="info" %}
 💡 Tip
 
-If you already have i18n implemented in your project and are considering migrating to Transloco, check out our [Migration Guides](broken-reference).
+If you already have i18n implemented in your project and are considering migrating to Transloco, check out our [ngx-translate](../migration-guides/migrate-from-ngx-translate.md) & [Angular's i18n](../migration-guides/migrate-from-angulars-i18n.md) migrations.
 {% endhint %}
 
 The recommended way to add Transloco to your project is by running the add schematics:
