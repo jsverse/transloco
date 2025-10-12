@@ -48,7 +48,7 @@ export function getTranslocoModule(options: TranslocoTestingOptions = {}) {
 });
 </code></pre>
 
-You can find a full example [here](https://github.com/jsverse/transloco/blob/master/apps/transloco-playground/src/app/on-push/on-push.component.spec.ts).
+You can find a full example [here](https://github.com/jsverse/transloco/blob/master/apps/transloco-playground/src/app/home/home.component.spec.ts).
 
 ### Testing scopes
 

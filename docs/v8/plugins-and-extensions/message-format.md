@@ -170,9 +170,9 @@ export class TranslocoRootModule {}
 {% endtab %}
 {% endtabs %}
 
-## Caching v3+
+## Caching
 
-From version 3 onward, the compiled output of MessageFormat is cached by default to improve performance. If you wish to disable caching, you can set the `enableCache` option to `false`:
+The compiled output of MessageFormat is cached by default to improve performance. If you wish to disable caching, you can set the `enableCache` option to `false`:
 
 {% tabs %}
 {% tab title="Standalone" %}

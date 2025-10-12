@@ -103,31 +103,3 @@ It emits an error and exits the process if extra keys are found. Defaults to `fa
 #### **`--translationsPath -p`**
 
 Defines the root directory path for translation files. Defaults to `${sourceRoot}/assets/i18n`.
-
-
-
-## Transloco Config File
-
-If you installed transloco via the schematics, a `transloco.config.ts` should have been created. Otherwise, you can just create a `transloco.config.ts` in the project's root folder and add the configuration in it:
-
-```typescript
-import {TranslocoGlobalConfig} from "@jsverse/transloco-utils";
-
-const config: TranslocoGlobalConfig = {
-  rootTranslationsPath?: string;
-  langs?: string[];
-  keysManager: {
-    input?: string | string[];
-    output?: string;
-    fileFormat?: 'json' | 'pot';
-    marker?: string;
-    addMissingKeys?: boolean;
-    emitErrorOnExtraKeys?: boolean;
-    replace?: boolean;
-    defaultValue?: string | undefined;
-    unflat?: boolean;
-  }
-};
-
-export default config;
-```

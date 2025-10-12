@@ -60,6 +60,7 @@
 * [Optimize](developer-tools/optimize.md)
 * [Validator](developer-tools/validator.md)
 * [Scoped Library Extractor](developer-tools/scoped-library-extractor.md)
+* [Global Config](developer-tools/global-config.md)
 
 ## Migration Guides
 

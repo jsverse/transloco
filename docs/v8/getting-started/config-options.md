@@ -4,6 +4,50 @@ icon: gear-code
 
 # Config Options
 
+<details>
+
+<summary>Complete config example</summary>
+
+This is the default configuration that's being set via the ng-add schematic:
+
+```typescript
+translocoConfig({
+  availableLangs: ['en', 'es'],
+  defaultLang: 'en',
+  // Remove this option if your application doesn't support changing language in runtime.
+  reRenderOnLangChange: true,
+  prodMode: !isDevMode(),
+});
+```
+
+There are more advanced options you can use to fine-tune Transloco to your needs. Here is a complete example showcasing all these options—you can read more about each one on this page.
+
+```typescript
+translocoConfig({
+  availableLangs: ['en', 'es'],
+  defaultLang: 'en',
+  // Remove this option if your application doesn't support changing language in runtime.
+  reRenderOnLangChange: true,
+  prodMode: !isDevMode(),
+  fallbackLang: 'es', // ['en', 'ru'],
+  failedRetries: 1,
+  missingHandler: {
+    allowEmpty: true,
+    useFallbackTranslation: true,
+    logMissingKey: isDevMode(),
+  },
+  flatten: {
+    aot: !isDevMode(),
+  },
+  interpolation: ['<<<', '>>>'],
+  scopes: {
+    keepCasing: false,
+  },
+});
+```
+
+</details>
+
 ## **`reRenderOnLangChange`**
 
 For applications that don't allow users to change the language dynamically (e.g., via a dropdown), set this to `false`. This will save memory by rendering the view once and unsubscribing from the language change event. (Defaults to `false`.)
@@ -129,7 +173,7 @@ translocoConfig({
 });
 ```
 
-## **`scopes.keepCasing` v7.5.0+**
+## **`scopes.keepCasing`**&#x20;
 
 Ensures that the casing of the scope name is preserved unless an alias has been set. If no alias is set, this option will be ignored.
 

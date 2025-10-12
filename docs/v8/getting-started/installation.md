@@ -163,4 +163,6 @@ export default config;
 ```
 {% endcode %}
 
+You can read more about it [here](../developer-tools/global-config.md).
+
 And that's it! Now we are ready to use it in our project.

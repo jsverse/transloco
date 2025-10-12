@@ -20,7 +20,7 @@ This function is a proxy to the `TranslocoService.translate` method. It will not
 Ensure that the translation files are successfully loaded before calling this method.
 {% endhint %}
 
-
+***
 
 ## **`translateObject()`**
 

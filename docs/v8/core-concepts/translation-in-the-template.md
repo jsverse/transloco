@@ -49,7 +49,7 @@ This will use the Spanish translation file to translate the keys.
 **Using the `prefix` Input**
 
 {% hint style="warning" %}
-The `read` input was renamed to `prefix` starting with v7.1.0. The old `read` input is now deprecated and will be removed in v8.
+The `read` input was renamed to `prefix` starting with v7.1.0. The old `read` input is now deprecated and will be removed in v9.
 {% endhint %}
 
 You can use the `prefix` input in the structural directive to get translations for nested properties (including deeply nested ones). This eliminates the need to repeatedly specify the same parent key in your translations.
