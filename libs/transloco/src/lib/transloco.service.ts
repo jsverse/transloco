@@ -72,22 +72,58 @@ import {
   resolveInlineLoader,
 } from './utils/scope.utils';
 
-let service: TranslocoService;
+let _service: TranslocoService | undefined;
 
+/**
+ * Standalone version of {@link TranslocoService#translate} for use outside Angular's DI context.
+ * Requires {@link provideGlobalTranslateFn} in your providers. Returns `''` if not initialized.
+ *
+ * @example
+ *
+ * translate<string>('hello')
+ * translate('hello', { value: 'value' })
+ * translate('hello', { }, 'en')
+ */
 export function translate<T = string>(
   key: TranslateParams,
   params: HashMap = {},
   lang?: string,
 ): T {
-  return service.translate<T>(key, params, lang);
+  if (typeof ngDevMode !== 'undefined' && ngDevMode && !_service) {
+    console.warn(
+      '[Transloco] `translate()` was called but `provideGlobalTranslateFn()` has not run.\n' +
+        'Add `provideGlobalTranslateFn()` to your providers, or inject TranslocoService directly.',
+    );
+  }
+
+  return _service?.translate<T>(key, params, lang) ?? ('' as T);
 }
 
+/**
+ * Standalone version of {@link TranslocoService#translateObject} for use outside Angular's DI context.
+ * Requires {@link provideGlobalTranslateFn} in your providers. Returns `[]` if not initialized.
+ *
+ * @example
+ *
+ * translateObject('path.to.object', { subpath: { value: 'someValue' } })
+ */
 export function translateObject<T>(
   key: TranslateParams,
   params: HashMap = {},
   lang?: string,
 ): T | T[] {
-  return service.translateObject<T>(key, params, lang);
+  if (typeof ngDevMode !== 'undefined' && ngDevMode && !_service) {
+    console.warn(
+      '[Transloco] `translateObject()` was called but `provideGlobalTranslateFn()` has not run.\n' +
+        'Add `provideGlobalTranslateFn()` to your providers, or inject TranslocoService directly.',
+    );
+  }
+
+  return _service?.translateObject<T>(key, params, lang) ?? [];
+}
+
+export function setGlobalTranslateService(service: TranslocoService): void {
+  _service = service;
 }
 
 export class TranslationLoadError extends Error {
@@ -158,7 +194,6 @@ export class TranslocoService {
     if (!this.loader) {
       this.loader = new DefaultLoader(this.translations);
     }
-    service = this;
     this.config = JSON.parse(JSON.stringify(userConfig));
 
     this.setAvailableLangs(this.config.availableLangs || []);
