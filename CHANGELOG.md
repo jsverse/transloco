@@ -1,3 +1,21 @@
+## 8.1.0 (2025-10-11)
+
+
+### 🚀 Features
+
+- **locale:** 🎸 add getDefaultLocale ([a468a2fc](https://github.com/jsverse/transloco/commit/a468a2fc))
+- **transloco:** 🎸 auto-detect public folder in ng-add ([#879](https://github.com/jsverse/transloco/pull/879))
+
+### 🩹 Fixes
+
+- **scoped-libs:** 🐛 gracefully handle missing file ([cd8bb789](https://github.com/jsverse/transloco/commit/cd8bb789))
+- **scoped-libs:** 🐛 add Windows path support for glob patterns ([d462998d](https://github.com/jsverse/transloco/commit/d462998d))
+- **transloco:** 🐛 expose TranslocoLoaderData ([7c5b19ad](https://github.com/jsverse/transloco/commit/7c5b19ad))
+
+### ❤️  Thank You
+
+- Shahar Kazaz @shaharkazaz
+
 ## 8.0.2 (2025-09-26)
 
 ### 🩹 Fixes

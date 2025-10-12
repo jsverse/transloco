@@ -1,6 +1,6 @@
 {
   "name": "@jsverse/transloco-schematics",
-  "version": "8.0.2",
+  "version": "8.1.0",
   "description": "Transloco's Angular schematics",
   "schematics": "./src/collection.json",
   "publishConfig": {

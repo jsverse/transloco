@@ -1,3 +1,20 @@
+## 8.1.0 (2025-10-11)
+
+
+### 🚀 Features
+
+- **transloco:** 🎸 auto-detect public folder in ng-add ([#879](https://github.com/jsverse/transloco/pull/879))
+
+
+### 🩹 Fixes
+
+- **transloco:** 🐛 expose TranslocoLoaderData ([7c5b19ad](https://github.com/jsverse/transloco/commit/7c5b19ad))
+
+
+### ❤️  Thank You
+
+- Shahar Kazaz @shaharkazaz
+
 ## 8.0.2 (2025-09-26)
 
 

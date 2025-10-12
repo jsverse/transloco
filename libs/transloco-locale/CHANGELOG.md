@@ -1,3 +1,15 @@
+## 8.1.0 (2025-10-11)
+
+
+### 🚀 Features
+
+- **locale:** 🎸 add getDefaultLocale ([a468a2fc](https://github.com/jsverse/transloco/commit/a468a2fc))
+
+
+### ❤️  Thank You
+
+- Shahar Kazaz @shaharkazaz
+
 ## 8.0.2 (2025-09-26)
 
 This was a version bump only for transloco-locale to align it with other projects, there were no code changes.

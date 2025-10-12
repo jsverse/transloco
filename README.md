@@ -40,10 +40,10 @@ Transloco is your all-in-one solution for internationalizing Angular application
 <hr />
 
 - 🤓 &nbsp;Explore the (brand new ✨) [documentation](https://jsverse.gitbook.io/transloco) to learn more.
-- 🚀 &nbsp;Check out the [Sandbox & Examples](https://jsverse.gitbook.io/transloco) to see Transloco in action.
-- 😎 &nbsp;Leverage [Schematics](https://jsverse.gitbook.io/transloco/schematics) for streamlined setup and configuration.
-- 📖 &nbsp;Dive into insightful [blog posts](https://jsverse.gitbook.io/transloco/blog-posts).
-- ❓ &nbsp;Find answers to common questions in our [FAQs](https://jsverse.gitbook.io/transloco/faqs).
+- 🚀 &nbsp;Check out the [Sandbox & Examples](https://jsverse.gitbook.io/transloco/resources/sandbox-and-examples) to see Transloco in action.
+- 😎 &nbsp;Leverage [Schematics](https://jsverse.gitbook.io/transloco/developer-tools/schematics) for streamlined setup and configuration.
+- 📖 &nbsp;Dive into insightful [blog posts](https://jsverse.gitbook.io/transloco/resources/blog-posts).
+- ❓ &nbsp;Find answers to common questions in our [FAQs](https://jsverse.gitbook.io/transloco/resources/faqs).
 
 ## Contributors ✨
 

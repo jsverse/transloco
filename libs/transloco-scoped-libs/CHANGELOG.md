@@ -1,3 +1,17 @@
+## 8.1.0 (2025-10-11)
+
+
+### 🩹 Fixes
+
+- **scoped-libs:** 🐛 gracefully handle missing file ([cd8bb789](https://github.com/jsverse/transloco/commit/cd8bb789))
+
+- **scoped-libs:** 🐛 add Windows path support for glob patterns ([d462998d](https://github.com/jsverse/transloco/commit/d462998d))
+
+
+### ❤️  Thank You
+
+- Shahar Kazaz @shaharkazaz
+
 ## 8.0.2 (2025-09-26)
 
 This was a version bump only for transloco-scoped-libs to align it with other projects, there were no code changes.
