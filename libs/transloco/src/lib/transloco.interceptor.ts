@@ -2,9 +2,10 @@ import { Injectable, InjectionToken } from '@angular/core';
 
 import { Translation } from './transloco.types';
 
-export const TRANSLOCO_INTERCEPTOR = new InjectionToken<TranslocoInterceptor>(
-  ngDevMode ? 'TRANSLOCO_INTERCEPTOR' : '',
-);
+export const TRANSLOCO_INTERCEPTOR =
+  /* @__PURE__ */ new InjectionToken<TranslocoInterceptor>(
+    ngDevMode ? 'TRANSLOCO_INTERCEPTOR' : '',
+  );
 
 export interface TranslocoInterceptor {
   preSaveTranslation(translation: Translation, lang: string): Translation;
