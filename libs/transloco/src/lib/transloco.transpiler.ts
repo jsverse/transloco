@@ -184,7 +184,11 @@ export class FunctionalTranspiler
             const func: TranslocoTranspilerFunction =
               this.injector.get(functionName);
 
-            return func.transpile(...getFunctionArgs(args));
+            const transpiledArgs = this.transpile({
+              value: getFunctionArgs(args),
+              ...rest,
+            });
+            return func.transpile(...transpiledArgs);
           } catch (e: unknown) {
             let message = `There is an error in: '${value}'. 
                           Check that the you used the right syntax in your translation and that the implementation of ${functionName} is correct.`;

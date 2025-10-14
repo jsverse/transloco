@@ -114,6 +114,22 @@ describe('TranslocoTranspiler', () => {
       );
     });
 
+    it('should transpile the function params', () => {
+      const spy = spyOn(transpilerFunctions['upperCase'], 'transpile');
+      transpiler.transpile(getTranspilerParams('[[ upperCase(lowercase) ]]'));
+      expect(spy).toHaveBeenCalledWith('lowercase');
+      spy.calls.reset();
+      transpiler.transpile(
+        getTranspilerParams(
+          '[[ upperCase(lowercase, {{person}}, {{ anotherParson.name }}) ]]',
+          {
+            params: { person: 'Shahar', anotherParson: { name: 'Netanel' } },
+          },
+        ),
+      );
+      expect(spy as any).toHaveBeenCalledWith('lowercase', 'Shahar', 'Netanel');
+    });
+
     it('should work with interpolation params', () => {
       const parsed = transpiler.transpile(
         getTranspilerParams('[[ testParams(and {{anotherParson}}) ]]', {
