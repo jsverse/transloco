@@ -109,6 +109,7 @@ export class TranslocoService {
   };
 
   private destroyRef = inject(DestroyRef);
+  private destroyed = false;
 
   constructor(
     @Optional() @Inject(TRANSLOCO_LOADER) private loader: TranslocoLoader,
@@ -144,6 +145,7 @@ export class TranslocoService {
     });
 
     this.destroyRef.onDestroy(() => {
+      this.destroyed = true;
       // Complete subjects to release observers if users forget to unsubscribe manually.
       // This is important in server-side rendering.
       this.lang.complete();
@@ -193,6 +195,14 @@ export class TranslocoService {
   }
 
   load(path: string, options: LoadOptions = {}): Observable<Translation> {
+    // If the application has already been destroyed, return an empty observable.
+    // We use EMPTY instead of NEVER to ensure the observable completes.
+    // This is important for operators like switchMap, which rely on the inner observable completing
+    // before they can subscribe to the next one. NEVER would hang the chain indefinitely.
+    if (this.destroyed) {
+      return EMPTY;
+    }
+
     const cached = this.cache.get(path);
     if (cached) {
       return cached;
