@@ -17,7 +17,7 @@ import { BaseLocalePipe } from './base-locale.pipe';
   standalone: true,
 })
 export class TranslocoDecimalPipe
-  extends BaseLocalePipe
+  extends BaseLocalePipe<string | number, [numberFormatOptions?: NumberFormatOptions, locale?: Locale]>
   implements PipeTransform
 {
   private localeConfig: LocaleConfig = inject(TRANSLOCO_LOCALE_CONFIG);
@@ -31,7 +31,7 @@ export class TranslocoDecimalPipe
    * 1234567890 | translocoDecimal: {useGrouping: false}: en-US // 1234567890
    *
    */
-  transform(
+  protected override doTransform(
     value: string | number,
     numberFormatOptions: NumberFormatOptions = {},
     locale?: Locale,
