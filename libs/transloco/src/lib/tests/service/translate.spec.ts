@@ -94,40 +94,47 @@ describe('translate - scope auto prefix', () => {
       })),
   );
 
-  it('should support auto prefix when scoped language is provided', fakeAsync(() => {
+  it('should auto-prefix scope to simple keys when scope is provided', fakeAsync(() => {
     loadLang(service, 'lazy-page/en');
-    // should append the active lang by default
+    // 'title' becomes 'lazyPage.title' and resolves correctly
     expect(service.translate('title', {}, 'lazy-page')).toEqual(
       'Admin Lazy english',
     );
   }));
 
-  it('should auto prefix when scoped language is provided even when if the scope is already in the original', fakeAsync(() => {
+  it('should result in double-prefixed key when scope is manually included (current behavior)', fakeAsync(() => {
     loadLang(service, 'lazy-page/en');
-    // should append the active lang by default
+    // 'lazyPage.title' becomes 'lazyPage.lazyPage.title' which doesn't exist
+    // This demonstrates the problem that autoPrefixKeys: false solves
+    const doublePrefixedKey = 'lazyPage.lazyPage.title';
     expect(service.translate('lazyPage.title', {}, 'lazy-page')).toEqual(
-      'lazyPage.lazyPage.title',
+      doublePrefixedKey,
     );
   }));
 
-  it('should support auto prefix when is multi key translation and when scoped language is provided', fakeAsync(() => {
+  it('should auto-prefix scope to all keys in multi-key array', fakeAsync(() => {
     loadLang(service, 'lazy-page/en');
-    const expected = ['Admin Lazy english', 'lazyPage.notexists'];
+    // 'title' becomes 'lazyPage.title', 'notexists' becomes 'lazyPage.notexists'
+    const result = ['Admin Lazy english', 'lazyPage.notexists'];
     expect(service.translate(['title', 'notexists'], {}, 'lazy-page')).toEqual(
-      expected,
+      result,
     );
   }));
 
-  it('should not support auto prefix when is multi key translation and when scoped language is provided and the scope is also provided in the key', fakeAsync(() => {
+  it('should result in double-prefixed keys in array when scope is manually included', fakeAsync(() => {
     loadLang(service, 'lazy-page/en');
-    const expected = ['lazyPage.lazyPage.title', 'lazyPage.lazyPage.notexists'];
+    // Both keys get double-prefixed and don't exist, returning fallback keys
+    const doublePrefixedKeys = [
+      'lazyPage.lazyPage.title',
+      'lazyPage.lazyPage.notexists',
+    ];
     expect(
       service.translate(
         ['lazyPage.title', 'lazyPage.notexists'],
         {},
         'lazy-page',
       ),
-    ).toEqual(expected);
+    ).toEqual(doublePrefixedKeys);
   }));
 });
 
@@ -144,37 +151,42 @@ describe('translate - scope not auto prefix', () => {
       })),
   );
 
-  it('should keep the original key when scoped language is provided', fakeAsync(() => {
+  it('should not auto-prefix scope, returning original key when translation not found', fakeAsync(() => {
     loadLang(service, 'lazy-page/en');
-    // should append the active lang by default
-    expect(service.translate('title', {}, 'lazy-page')).toEqual('title');
+    // 'title' stays as 'title' (no auto-prefix), doesn't exist in root, returns key as fallback
+    const untranslatedKey = 'title';
+    expect(service.translate('title', {}, 'lazy-page')).toEqual(
+      untranslatedKey,
+    );
   }));
 
-  it('should support when scoped language is provided and the scope is provided in the key', fakeAsync(() => {
+  it('should resolve translation when scope is manually included in key', fakeAsync(() => {
     loadLang(service, 'lazy-page/en');
-    // should append the active lang by default
+    // 'lazyPage.title' stays as 'lazyPage.title' (no auto-prefix) and resolves correctly
     expect(service.translate('lazyPage.title', {}, 'lazy-page')).toEqual(
       'Admin Lazy english',
     );
   }));
 
-  it('should support to not auto prefix when is multi key translation and when scoped language is provided', fakeAsync(() => {
+  it('should not auto-prefix scope to keys in multi-key array', fakeAsync(() => {
     loadLang(service, 'lazy-page/en');
-    const expected = ['title', 'notexists'];
+    // Keys stay as-is without auto-prefix, returning fallback keys when not found
+    const untranslatedKeys = ['title', 'notexists'];
     expect(service.translate(['title', 'notexists'], {}, 'lazy-page')).toEqual(
-      expected,
+      untranslatedKeys,
     );
   }));
 
-  it('should support to not auto prefix when is multi key translation and when scoped language is provided and the scope is also provided in the key', fakeAsync(() => {
+  it('should resolve translations when scope is manually included in array keys', fakeAsync(() => {
     loadLang(service, 'lazy-page/en');
-    const expected = ['Admin Lazy english', 'lazyPage.notexists'];
+    // Keys with manual scope prefix resolve correctly without auto-prefix
+    const result = ['Admin Lazy english', 'lazyPage.notexists'];
     expect(
       service.translate(
         ['lazyPage.title', 'lazyPage.notexists'],
         {},
         'lazy-page',
       ),
-    ).toEqual(expected);
+    ).toEqual(result);
   }));
 });
