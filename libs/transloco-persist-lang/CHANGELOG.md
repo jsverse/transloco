@@ -1,3 +1,7 @@
+## 8.2.0 (2025-11-15)
+
+This was a version bump only for transloco-persist-lang to align it with other projects, there were no code changes.
+
 ## 8.1.0 (2025-10-11)
 
 This was a version bump only for transloco-persist-lang to align it with other projects, there were no code changes.

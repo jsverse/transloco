@@ -1,3 +1,15 @@
+## 8.2.0 (2025-11-15)
+
+
+### 🚀 Features
+
+- **transloco:** 🎸 Add config option for scope auto prefixing ([#868](https://github.com/jsverse/transloco/pull/868))
+
+
+### ❤️  Thank You
+
+- Baptiste Moreau @FU856BMO
+
 ## 8.1.0 (2025-10-11)
 
 
