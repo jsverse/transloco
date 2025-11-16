@@ -10,21 +10,27 @@ describe('setTranslationKey', () => {
 
   beforeEach(() => (service = createService()));
 
-  it('should override key', fakeAsync(() => {
+  it(`GIVEN service with loaded translations
+      WHEN setTranslationKey is called
+      THEN should override the key value`, fakeAsync(() => {
     loadLang(service);
     service.setTranslationKey('a', 'new value');
     const newTranslation = service.getTranslation('en');
     expect(newTranslation.a).toEqual('new value');
   }));
 
-  it('should deep override key', fakeAsync(() => {
+  it(`GIVEN service with loaded translations
+      WHEN setTranslationKey is called with nested key
+      THEN should override the nested key value`, fakeAsync(() => {
     loadLang(service);
     service.setTranslationKey('a.b.c', 'new value');
     const newTranslation = service.getTranslation('en');
     expect(newTranslation['a.b.c']).toEqual('new value');
   }));
 
-  it('should add it even if lang not exists', fakeAsync(() => {
+  it(`GIVEN service without specific lang loaded
+      WHEN setTranslationKey is called with lang option
+      THEN should create lang and add the key`, fakeAsync(() => {
     loadLang(service);
     service.setTranslationKey('a', 'new value', { lang: 'es' });
     expect((service as any).getTranslation('es')).toEqual({
@@ -32,7 +38,9 @@ describe('setTranslationKey', () => {
     });
   }));
 
-  it('should not emit the change if option is set', fakeAsync(() => {
+  it(`GIVEN service with loaded translations
+      WHEN setTranslationKey is called with emitChange false
+      THEN should not emit lang change event`, fakeAsync(() => {
     loadLang(service);
     spyOn(service, 'setActiveLang');
     service.setTranslationKey('a.b', 'newValue', {

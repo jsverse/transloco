@@ -15,7 +15,9 @@ describe('ng add', () => {
   const schematicRunner = new SchematicTestRunner('schematics', collectionPath);
 
   describe('Ng module', () => {
-    it('should add transloco to specified project', async () => {
+    it(`GIVEN an NgModule-based Angular project
+        WHEN ng-add schematic runs for project 'bar'
+        THEN transloco config, loader, and root module are created`, async () => {
       const options: SchemaOptions = { project: 'bar' } as SchemaOptions;
       const tree = await schematicRunner.runSchematic(
         'ng-add',
@@ -37,7 +39,9 @@ describe('ng add', () => {
   });
 
   describe('Standalone', () => {
-    it('should add transloco to specified standalone project', async () => {
+    it(`GIVEN a standalone Angular project
+        WHEN ng-add schematic runs for project 'bar'
+        THEN transloco config and loader are created and provideTransloco is added to app.config.ts`, async () => {
       const options: SchemaOptions = { project: 'bar' } as SchemaOptions;
       const tree = await schematicRunner.runSchematic(
         'ng-add',
@@ -54,7 +58,9 @@ describe('ng add', () => {
   });
 
   describe('Folder Detection', () => {
-    it('should use public/i18n for Angular 18+ projects with public folder', async () => {
+    it(`GIVEN an Angular 18+ project with public folder
+        WHEN ng-add schematic runs
+        THEN translation files are created in public/i18n and loader uses correct path`, async () => {
       const options: SchemaOptions = { project: 'bar' } as SchemaOptions;
       const initialTree = await createWorkspace(schematicRunner);
 
@@ -76,7 +82,9 @@ describe('ng add', () => {
       expect(loaderContent).not.toContain('/assets/i18n/');
     });
 
-    it('should use src/assets/i18n for projects with assets folder', async () => {
+    it(`GIVEN a project with assets folder structure
+        WHEN ng-add schematic runs
+        THEN translation files are created in src/assets/i18n and loader uses correct path`, async () => {
       const options: SchemaOptions = { project: 'bar' } as SchemaOptions;
       const initialTree = await createWorkspace(schematicRunner);
 
@@ -97,7 +105,9 @@ describe('ng add', () => {
       expect(loaderContent).toContain('/assets/i18n/${lang}.json');
     });
 
-    it('should respect custom path when specified', async () => {
+    it(`GIVEN ng-add schematic with custom path option
+        WHEN schematic runs
+        THEN translation files are created in custom path and loader uses correct path`, async () => {
       const options: SchemaOptions = {
         project: 'bar',
         path: 'custom/translations/',
@@ -121,7 +131,9 @@ describe('ng add', () => {
       expect(loaderContent).toContain('/custom/translations/${lang}.json');
     });
 
-    it('should fallback to package.json version detection when folders are ambiguous', async () => {
+    it(`GIVEN an Angular 18+ project without explicit folder indicators
+        WHEN ng-add schematic runs and checks package.json
+        THEN public/i18n is used based on Angular version detection`, async () => {
       const options: SchemaOptions = { project: 'bar' } as SchemaOptions;
       const initialTree = await createWorkspace(schematicRunner);
 
@@ -149,7 +161,9 @@ describe('ng add', () => {
       expect(loaderContent).toContain('/i18n/${lang}.json');
     });
 
-    it('should fallback to assets for Angular <18 when package.json indicates older version', async () => {
+    it(`GIVEN an Angular 17 project detected via package.json
+        WHEN ng-add schematic runs
+        THEN assets/i18n is used for pre-Angular 18 versions`, async () => {
       const options: SchemaOptions = { project: 'bar' } as SchemaOptions;
       const initialTree = await createWorkspace(schematicRunner);
 

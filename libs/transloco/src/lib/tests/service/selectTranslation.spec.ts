@@ -9,7 +9,9 @@ describe('selectTranslation', () => {
 
   beforeEach(() => (service = createService()));
 
-  it('should select the active translation scope', fakeAsync(() => {
+  it(`GIVEN service with scoped translation
+      WHEN selectTranslation is called with scope and lang changes
+      THEN should emit scoped translations for each lang`, fakeAsync(() => {
     const spy = jasmine.createSpy();
     service.selectTranslation('lazy-page').subscribe(spy);
     runLoader();
@@ -19,7 +21,9 @@ describe('selectTranslation', () => {
     expect(spy).toHaveBeenCalledWith(flatten(mockLangs['lazy-page/es']));
   }));
 
-  it('should select the active translation lang', fakeAsync(() => {
+  it(`GIVEN service with active lang
+      WHEN selectTranslation is called without lang and lang changes
+      THEN should emit active translation for each lang`, fakeAsync(() => {
     const spy = jasmine.createSpy();
     service.selectTranslation().subscribe(spy);
     runLoader();
@@ -29,7 +33,9 @@ describe('selectTranslation', () => {
     expect(spy).toHaveBeenCalledWith(flatten(mockLangs['es']));
   }));
 
-  it('should select the translation lang when passing one', fakeAsync(() => {
+  it(`GIVEN service with specific lang
+      WHEN selectTranslation is called with static lang
+      THEN should emit once and not react to lang changes`, fakeAsync(() => {
     const spy = jasmine.createSpy();
     service.selectTranslation('es').subscribe(spy);
     runLoader();
@@ -40,7 +46,9 @@ describe('selectTranslation', () => {
     expect(spy).toHaveBeenCalledTimes(1);
   }));
 
-  it('should select the translation scope when passing one', fakeAsync(() => {
+  it(`GIVEN service with scoped translation and static lang
+      WHEN selectTranslation is called with scope/lang
+      THEN should emit once and not react to lang changes`, fakeAsync(() => {
     const spy = jasmine.createSpy();
     service.selectTranslation('lazy-page/es').subscribe(spy);
     runLoader();

@@ -3,7 +3,9 @@ import { TranslocoService } from '../../transloco.service';
 import { createService } from '../mocks';
 
 describe('default loader', () => {
-  it('should not throw and use the default loader', () => {
+  it(`GIVEN no loader is provided
+      WHEN service is created
+      THEN should not throw and use the default loader`, () => {
     let service: TranslocoService;
 
     expect(function () {

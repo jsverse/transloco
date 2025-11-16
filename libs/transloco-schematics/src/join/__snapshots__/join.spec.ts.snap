@@ -1,6 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Join default strategy should merge scopes correctly 1`] = `
+exports[`Join default strategy GIVEN translation files with nested scopes
+        WHEN join schematic runs
+        THEN scoped translations are correctly merged into single files 1`] = `
 "{
   \\"hello\\": \\"hola\\",
   \\"scope\\": {
@@ -9,34 +11,40 @@ exports[`Join default strategy should merge scopes correctly 1`] = `
 }"
 `;
 
-exports[`Join scope map strategy should use multi projects scopes 1`] = `
-"{
-  \\"hello\\": \\"hola\\",
-  \\"libA\\": {
-    \\"hello\\": \\"hola scope\\"
-  },
-  \\"libB\\": {
-    \\"hello\\": \\"hola scope\\"
-  }
-}"
-`;
-
-exports[`Join scope map strategy should use scope map strategy 1`] = `
-"{
-  \\"hello\\": \\"hola\\",
-  \\"scope\\": {
-    \\"hello\\": \\"hola scope\\"
-  }
-}"
-`;
-
-exports[`Join scope map strategy should use scope map strategy multi scopes 1`] = `
+exports[`Join scope map strategy GIVEN global config with multiple scopes in scopePathMap
+        WHEN join schematic runs
+        THEN all scopes are merged correctly using scope map strategy 1`] = `
 "{
   \\"hello\\": \\"hola\\",
   \\"scopeA\\": {
     \\"hello\\": \\"hola scope\\"
   },
   \\"scopeB\\": {
+    \\"hello\\": \\"hola scope\\"
+  }
+}"
+`;
+
+exports[`Join scope map strategy GIVEN global config with scopePathMap configured
+        WHEN join schematic runs
+        THEN translations are merged using scope map strategy 1`] = `
+"{
+  \\"hello\\": \\"hola\\",
+  \\"scope\\": {
+    \\"hello\\": \\"hola scope\\"
+  }
+}"
+`;
+
+exports[`Join scope map strategy GIVEN global config with scopePathMap spanning multiple projects
+        WHEN join schematic runs
+        THEN translations from all projects are merged correctly 1`] = `
+"{
+  \\"hello\\": \\"hola\\",
+  \\"libA\\": {
+    \\"hello\\": \\"hola scope\\"
+  },
+  \\"libB\\": {
     \\"hello\\": \\"hola scope\\"
   }
 }"

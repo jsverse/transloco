@@ -67,11 +67,15 @@ describe('PersistLang', () => {
   });
 
   describe('Save lang to storage', () => {
-    it('should skip the initial lang', () => {
+    it(`GIVEN service initialized
+        WHEN no language change has occurred
+        THEN does not save initial language to storage`, () => {
       expect(saveSpy).not.toHaveBeenCalled();
     });
 
-    it('should save the lang in storage upon change', () => {
+    it(`GIVEN service initialized
+        WHEN active language is changed to 'es'
+        THEN saves new language to storage with correct key`, () => {
       const setItemSpy = spyOn(fakeStorage, 'setItem').and.callThrough();
       spectator.inject(TranslocoService).setActiveLang('es');
       expect(saveSpy).toHaveBeenCalledWith('es');
@@ -93,18 +97,24 @@ describe('PersistLang', () => {
       getItemSpy = spyOn(fakeStorage, 'getItem').and.callThrough();
     });
 
-    it('should get the lang from storage', () => {
+    it(`GIVEN language previously saved in storage
+        WHEN service initializes
+        THEN retrieves language from storage and sets it as active`, () => {
       expect(setActiveLangSpy).toHaveBeenCalled();
       expect(getItemSpy).toHaveBeenCalledWith('translocoLang');
       expect(spectator.inject(TranslocoService).getActiveLang()).toEqual('es');
     });
 
-    it('should return the cached lang', () => {
+    it(`GIVEN language stored in cache
+        WHEN getCachedLang is called
+        THEN returns the cached language value`, () => {
       expect(spectator.service.getCachedLang()).toEqual('es');
     });
   });
 
-  it('should clear the lang from storage', () => {
+  it(`GIVEN language stored in cache
+      WHEN clear is called
+      THEN removes language from storage and cache returns null`, () => {
     spectator.service.clear();
     expect(spectator.service.getCachedLang()).toEqual(null);
   });

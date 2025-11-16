@@ -19,7 +19,9 @@ describe('setTranslation', () => {
     ).and.callThrough();
   });
 
-  it('should add translation to the map after passing through the interceptor', () => {
+  it(`GIVEN a TranslocoService instance
+      WHEN setting a translation with setTranslation
+      THEN should add the translation to the map after passing through the interceptor`, () => {
     const interceptorSpy = spyOn(
       (service as any).interceptor,
       'preSaveTranslation',
@@ -32,7 +34,9 @@ describe('setTranslation', () => {
     expect(setTranslationsSpy).toHaveBeenCalledTimes(1);
   });
 
-  it('should merge the data by default', fakeAsync(() => {
+  it(`GIVEN a TranslocoService with loaded translations
+      WHEN setting a translation without the merge option
+      THEN should merge the new data with existing translations by default`, fakeAsync(() => {
     loadLang(service);
     const translation = { bar: 'bar' };
     service.setTranslation(translation);
@@ -42,7 +46,9 @@ describe('setTranslation', () => {
     expect(newTranslation.home).toEqual('home english');
   }));
 
-  it('should replace the current translation when merge is false', fakeAsync(() => {
+  it(`GIVEN a TranslocoService with loaded translations
+      WHEN setting a translation with merge: false
+      THEN should replace the current translation entirely with the new translation`, fakeAsync(() => {
     loadLang(service);
     const translation = { newKey: 'a', newKeyTwo: 'b' };
     service.setTranslation(translation, 'en', { merge: false });
@@ -50,7 +56,9 @@ describe('setTranslation', () => {
     expect(newTranslation).toEqual({ newKey: 'a', newKeyTwo: 'b' });
   }));
 
-  it('should not emit the change', fakeAsync(() => {
+  it(`GIVEN a TranslocoService with loaded translations
+      WHEN setting a translation with emitChange: false
+      THEN should not emit the language change event`, fakeAsync(() => {
     loadLang(service);
     spyOn(service, 'setActiveLang');
     const translation = { kazaz: 'blabla' };
@@ -58,7 +66,9 @@ describe('setTranslation', () => {
     expect(service.setActiveLang).not.toHaveBeenCalled();
   }));
 
-  it('should add the lang if it not exists', fakeAsync(() => {
+  it(`GIVEN a TranslocoService with existing translations
+      WHEN setting a translation for a language that doesn't exist yet
+      THEN should add the new language with its translation`, fakeAsync(() => {
     loadLang(service);
     service.setTranslation({ home: 'home es' }, 'es');
     expect(service.getTranslation('es').home).toEqual('home es');
@@ -74,7 +84,9 @@ describe('setTranslation', () => {
       translation = mockLangs[lang];
     });
 
-    it("should merge the scope with the scope's global lang", () => {
+    it(`GIVEN a TranslocoService with global language translations
+        WHEN setting a scoped translation
+        THEN should merge the scope with the scope's global language`, () => {
       service.setTranslation(translation, lang);
       const merged = {
         ...flatten(mockLangs.en),
@@ -83,7 +95,9 @@ describe('setTranslation', () => {
       expect(setTranslationsSpy).toHaveBeenCalledWith('en', merged);
     });
 
-    it("should map the scope's name in the merged translation", () => {
+    it(`GIVEN a TranslocoService with scopeMapping configured
+        WHEN setting a scoped translation with a mapped scope
+        THEN should map the scope's name in the merged translation`, () => {
       service.config.scopeMapping = { 'lazy-page': 'kazaz' };
       service.setTranslation(translation, lang);
       const merged = {
@@ -93,7 +107,9 @@ describe('setTranslation', () => {
       expect(setTranslationsSpy).toHaveBeenCalledWith('en', merged);
     });
 
-    it("should change scope's name based on alias", () => {
+    it(`GIVEN a TranslocoService with a scope alias configured
+        WHEN setting a scoped translation
+        THEN should change scope's name based on the alias`, () => {
       service._setScopeAlias('lazy-page', 'myScopeAlias');
       service.setTranslation(translation, lang);
       const merged = {
@@ -103,7 +119,9 @@ describe('setTranslation', () => {
       expect(setTranslationsSpy).toHaveBeenCalledWith('en', merged);
     });
 
-    it("should not change scope's name given scope.keepCasing is set to true", () => {
+    it(`GIVEN a TranslocoService with scope.keepCasing set to true
+        WHEN setting a scoped translation
+        THEN should not change scope's name casing and preserve it as-is`, () => {
       service.config.scopes.keepCasing = true;
       lang = 'LAZY-page/en';
       service.setTranslation(translation, lang);

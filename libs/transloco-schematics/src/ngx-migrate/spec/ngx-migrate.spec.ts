@@ -80,12 +80,17 @@ describe('ngx-translate migration', () => {
             `]="'Processing archive...'|translate"`,
           ],
         },
-      ])('Case: $testCase; Match: $match', ({ testCase, match }) => {
-        const regex = new RegExp(PIPE_IN_BINDING_REGEX, 'gm');
-        const result = testCase.match(regex);
+      ])(
+        `GIVEN test case with translate pipe in binding: $testCase
+          WHEN PIPE_IN_BINDING_REGEX is applied
+          THEN it matches: $match`,
+        ({ testCase, match }) => {
+          const regex = new RegExp(PIPE_IN_BINDING_REGEX, 'gm');
+          const result = testCase.match(regex);
 
-        expect(result).toMatchObject(match);
-      });
+          expect(result).toMatchObject(match);
+        },
+      );
     });
 
     describe('Pipe', () => {
@@ -120,12 +125,17 @@ describe('ngx-translate migration', () => {
           testCase: `{{"1" | translate}} {{errorCounter}} {{"2" | translate}}`,
           match: [`{{"1" | translate}}`, `{{"2" | translate}}`],
         },
-      ])('Case: $testCase; Match: $match', ({ testCase, match }) => {
-        const regex = new RegExp(PIPE_REGEX, 'gm');
-        const result = testCase.match(regex);
+      ])(
+        `GIVEN test case with translate pipe in interpolation: $testCase
+          WHEN PIPE_REGEX is applied
+          THEN it matches: $match`,
+        ({ testCase, match }) => {
+          const regex = new RegExp(PIPE_REGEX, 'gm');
+          const result = testCase.match(regex);
 
-        expect(result).toMatchObject(match);
-      });
+          expect(result).toMatchObject(match);
+        },
+      );
     });
   });
 
@@ -155,12 +165,17 @@ describe('ngx-translate migration', () => {
               | translate"
           </a>`,
         },
-      ])('Case: $testCase', ({ testCase }) => {
-        const regex = new RegExp(PIPE_IN_BINDING_REGEX, 'gm');
-        const result = testCase.match(regex);
+      ])(
+        `GIVEN test case without translate pipe in binding: $testCase
+          WHEN PIPE_IN_BINDING_REGEX is applied
+          THEN it does not match`,
+        ({ testCase }) => {
+          const regex = new RegExp(PIPE_IN_BINDING_REGEX, 'gm');
+          const result = testCase.match(regex);
 
-        expect(result).toBeNull();
-      });
+          expect(result).toBeNull();
+        },
+      );
     });
 
     describe('Pipe', () => {
@@ -183,17 +198,24 @@ describe('ngx-translate migration', () => {
         {
           testCase: `<compnent>{{ 'Hello, ' + ('mom' | transloco) | fooBar }}</compnent>`,
         },
-      ])('Case: $testCase', ({ testCase }) => {
-        const regex = new RegExp(PIPE_REGEX, 'gm');
-        const result = testCase.match(regex);
+      ])(
+        `GIVEN test case without translate pipe in interpolation: $testCase
+          WHEN PIPE_REGEX is applied
+          THEN it does not match`,
+        ({ testCase }) => {
+          const regex = new RegExp(PIPE_REGEX, 'gm');
+          const result = testCase.match(regex);
 
-        expect(result).toBeNull();
-      });
+          expect(result).toBeNull();
+        },
+      );
     });
   });
 
   describe('HTML template', () => {
-    it('should replace html template content', async () => {
+    it(`GIVEN HTML template files with ngx-translate pipes
+        WHEN migration runs
+        THEN all translate pipes are replaced with transloco pipes`, async () => {
       // Define the template directories
       const ngxTranslateDir = nodePath.join(
         __dirname,

@@ -16,7 +16,9 @@ describe('Structural directive', () => {
   let spectator: SpectatorHost<TranslocoDirective>;
   const createHost = createFactory();
 
-  it('should set the translation value', fakeAsync(() => {
+  it(`GIVEN structural directive with multiple keys
+      WHEN translations are loaded
+      THEN should display all translated values`, fakeAsync(() => {
     spectator = createHost(`
         <section *transloco="let t;">
            <div>{{t('home') }}</div>
@@ -34,7 +36,9 @@ describe('Structural directive', () => {
     expect(spectator.queryHost('h2')).toHaveText('a.b.c value english');
   }));
 
-  it('should set the translation value and listen to lang changes', fakeAsync(() => {
+  it(`GIVEN structural directive with reRenderOnLangChange enabled
+      WHEN active language changes
+      THEN should update all translations`, fakeAsync(() => {
     spectator = createHost(
       `
         <section *transloco="let t;">
@@ -65,7 +69,9 @@ describe('Structural directive', () => {
     expect(spectator.queryHost('h2')).toHaveText('a.b.c value spanish');
   }));
 
-  it('should create embedded view once', fakeAsync(() => {
+  it(`GIVEN directive with lang changes enabled
+      WHEN language changes multiple times
+      THEN should create embedded view only once`, fakeAsync(() => {
     spyOn(
       TranslocoDirective.prototype as any,
       'resolveLoadingContent',
@@ -85,7 +91,9 @@ describe('Structural directive', () => {
     ).toHaveBeenCalledTimes(1);
   }));
 
-  it('should unsubscribe after one emit when not in reRenderOnLangChange mode', fakeAsync(() => {
+  it(`GIVEN directive without reRenderOnLangChange mode
+      WHEN active language changes
+      THEN should not update translation`, fakeAsync(() => {
     spectator = createHost(`<div transloco="home"></div>`);
     runLoader();
     expect(spectator.queryHost('[transloco]')).toHaveText('home english');
@@ -96,7 +104,9 @@ describe('Structural directive', () => {
   }));
 
   describe('Scope', () => {
-    it('should load scoped translation', fakeAsync(() => {
+    it(`GIVEN structural directive with scope
+        WHEN scoped translations are loaded
+        THEN should display scoped translation`, fakeAsync(() => {
       spectator = createHost(
         `<section *transloco="let t; scope: 'lazy-page'"><div>{{t('lazyPage.title')}}</div></section>`,
         {
@@ -106,7 +116,9 @@ describe('Structural directive', () => {
       testScopedTranslation(spectator);
     }));
 
-    it("should load scoped translation even if global didn't load", fakeAsync(() => {
+    it(`GIVEN directive with scope and global keys
+        WHEN scoped translation loads before global
+        THEN should load scoped translation correctly`, fakeAsync(() => {
       spectator = createHost(
         `
         <section *transloco="let t; scope: 'lazy-page'">
@@ -120,7 +132,9 @@ describe('Structural directive', () => {
       testMergedScopedTranslation(spectator);
     }));
 
-    it('should expose both scoped and global translation', fakeAsync(() => {
+    it(`GIVEN directive with scope and global keys
+        WHEN both translations are loaded
+        THEN should expose both scoped and global translation`, fakeAsync(() => {
       spectator = createHost(
         `
         <section *transloco="let t; scope: 'lazy-page'">
@@ -136,7 +150,9 @@ describe('Structural directive', () => {
   });
 
   describe('Prefix', () => {
-    it('should get translation of a nested property using prefix', fakeAsync(() => {
+    it(`GIVEN directive with prefix
+        WHEN translations are loaded
+        THEN should get translation of nested property`, fakeAsync(() => {
       spectator = createHost(
         `<section *transloco="let t; prefix: 'nested'"><div>{{t('title')}}</div></section>`,
         {
@@ -163,12 +179,16 @@ describe('Structural directive', () => {
       runLoader();
     }));
 
-    it('should expose currentLang to the template', fakeAsync(() => {
+    it(`GIVEN directive with currentLang variable
+        WHEN translations are loaded
+        THEN should expose currentLang to the template`, fakeAsync(() => {
       spectator.detectChanges();
       expect(spectator.queryHost('div')).toHaveText('en');
     }));
 
-    it('should change on langChanges', fakeAsync(() => {
+    it(`GIVEN directive with currentLang variable
+        WHEN active language changes
+        THEN should update currentLang value`, fakeAsync(() => {
       spectator.inject(TranslocoService).setActiveLang('es');
       runLoader();
       spectator.detectChanges();

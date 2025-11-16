@@ -29,7 +29,9 @@ describe('Multiple fallbacks', () => {
       };
     });
 
-    it('should try load the fallbackLang when current lang failed', fakeAsync(() => {
+    it(`GIVEN failedRetries config and fallback lang
+        WHEN current lang fails to load
+        THEN should try fallback lang and set it as active`, fakeAsync(() => {
       const service = createService(
         {
           prodMode: true,
@@ -62,7 +64,9 @@ describe('Multiple fallbacks', () => {
       expect((service as any).cache.size).toEqual(1);
     }));
 
-    it('should load the fallbackLang only once', fakeAsync(() => {
+    it(`GIVEN multiple failing lang loads
+        WHEN fallback lang already loaded
+        THEN should not reload fallback lang`, fakeAsync(() => {
       const service = createService(
         {
           prodMode: true,
@@ -104,7 +108,9 @@ describe('Multiple fallbacks', () => {
       expect((service as any).cache.size).toEqual(1);
     }));
 
-    it('should should throw if the fallback lang is failed to load', fakeAsync(() => {
+    it(`GIVEN fallback lang that fails to load
+        WHEN all retries are exhausted
+        THEN should throw error`, fakeAsync(() => {
       const service = createService(
         {
           prodMode: true,
@@ -165,7 +171,9 @@ describe('Multiple fallbacks', () => {
       };
     });
 
-    it('should try load the it and gp then set en as the active', fakeAsync(() => {
+    it(`GIVEN custom fallback strategy with multiple fallback langs
+        WHEN lang fails and fallbacks fail
+        THEN should try all fallback langs until one succeeds`, fakeAsync(() => {
       const service = createService(
         {
           prodMode: true,

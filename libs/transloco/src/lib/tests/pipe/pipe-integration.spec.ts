@@ -40,7 +40,9 @@ describe('Transloco Pipe', () => {
       providers: providersMock,
     });
 
-    it('should translate', fakeAsync(() => {
+    it(`GIVEN pipe with various translation keys
+        WHEN translations are loaded
+        THEN should translate all keys including params and inline lang`, fakeAsync(() => {
       spectator = createComponent();
       runLoader();
       spectator.detectChanges();
@@ -52,7 +54,9 @@ describe('Transloco Pipe', () => {
       expect(spectator.query('h5')).toHaveText('home spanish');
     }));
 
-    it('should support dynamic params', fakeAsync(() => {
+    it(`GIVEN pipe with dynamic params
+        WHEN param values change
+        THEN should update translation with new params`, fakeAsync(() => {
       spectator = createComponent();
       runLoader();
       spectator.detectChanges();
@@ -62,7 +66,9 @@ describe('Transloco Pipe', () => {
       expect(spectator.query('h3')).toHaveText('alert changed english');
     }));
 
-    it('should translate and listen to lang changes', fakeAsync(() => {
+    it(`GIVEN pipe with reRenderOnLangChange enabled
+        WHEN active language changes
+        THEN should update all translations`, fakeAsync(() => {
       spectator = createComponent({
         detectChanges: false,
         providers: [listenToLangChangesProvider],
@@ -98,7 +104,9 @@ describe('Transloco Pipe', () => {
       ],
     });
 
-    it('should support provider lang', fakeAsync(() => {
+    it(`GIVEN pipe with provider lang
+        WHEN active language changes
+        THEN should update to active language`, fakeAsync(() => {
       spectator = createComponent();
       runLoader();
       spectator.detectChanges();
@@ -130,7 +138,9 @@ describe('Transloco Pipe', () => {
       ],
     });
 
-    it('should support provider lang static', fakeAsync(() => {
+    it(`GIVEN pipe with provider lang marked static
+        WHEN active language changes
+        THEN should keep static language unchanged`, fakeAsync(() => {
       spectator = createComponent();
       runLoader();
       spectator.detectChanges();
@@ -172,7 +182,9 @@ describe('Transloco Pipe', () => {
       ],
     });
 
-    it('should support scope', fakeAsync(() => {
+    it(`GIVEN pipe with scope provider
+        WHEN translations are loaded and language changes
+        THEN should use scoped translations`, fakeAsync(() => {
       spectator = createComponent();
       runLoader();
       spectator.detectChanges();

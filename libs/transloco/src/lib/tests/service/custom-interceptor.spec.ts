@@ -12,7 +12,9 @@ describe('Custom Interceptor', () => {
 
   beforeEach(() => (service = createService()));
 
-  it('should support', fakeAsync(() => {
+  it(`GIVEN custom interceptor for translations
+      WHEN translations are loaded and keys are set
+      THEN should apply interceptor transformations`, fakeAsync(() => {
     (service as any).interceptor = {
       preSaveTranslation(translation: Translation) {
         return Object.keys(translation).reduce((acc, key) => {

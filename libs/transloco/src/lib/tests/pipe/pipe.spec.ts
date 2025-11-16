@@ -24,12 +24,16 @@ describe('TranslocoPipe', () => {
     spyOn(pipe as any, 'updateValue').and.callThrough();
   });
 
-  it('should return empty string as default', () => {
+  it(`GIVEN pipe with provider lang
+      WHEN transform is called before translations load
+      THEN should return empty string as default`, () => {
     pipe = new TranslocoPipe(serviceMock, undefined, 'es', cdrMock);
     expect(pipe.transform('title', {})).toBe('');
   });
 
-  it('should use provided language', fakeAsync(() => {
+  it(`GIVEN pipe with provided language
+      WHEN transform is called
+      THEN should use provided language for translation`, fakeAsync(() => {
     spyOn(serviceMock, 'translate').and.callThrough();
     pipe = new TranslocoPipe(serviceMock, undefined, 'es', cdrMock);
     pipe.transform('title', {});
@@ -50,11 +54,15 @@ describe('TranslocoPipe', () => {
       expect(serviceMock.translate).toHaveBeenCalledWith('title', {}, 'es');
     }
 
-    it('should load scoped translation', fakeAsync(() => {
+    it(`GIVEN pipe with scope
+        WHEN language changes
+        THEN should load scoped translation`, fakeAsync(() => {
       assertScopedTranslation('lazy-page');
     }));
 
-    it('should load scoped translation with scope alias', fakeAsync(() => {
+    it(`GIVEN pipe with scope alias
+        WHEN language changes
+        THEN should load scoped translation using alias`, fakeAsync(() => {
       assertScopedTranslation({
         scope: 'lazy-scope-alias',
         alias: 'myScopeAlias',
@@ -62,7 +70,9 @@ describe('TranslocoPipe', () => {
     }));
   });
 
-  it('should load scope translation with multiple provided scopes', fakeAsync(() => {
+  it(`GIVEN pipe with multiple provided scopes
+      WHEN translating keys from different scopes
+      THEN should load scope translations correctly`, fakeAsync(() => {
     spyOn(serviceMock, 'translate').and.callThrough();
     pipe = new TranslocoPipe(
       serviceMock,
@@ -109,7 +119,9 @@ describe('TranslocoPipe', () => {
   }));
 
   describe('updateValue', () => {
-    it('should update the value, set the cache and mark for check', fakeAsync(() => {
+    it(`GIVEN pipe transform is called
+        WHEN translation is loaded
+        THEN should update value, cache it and mark for check`, fakeAsync(() => {
       const key = 'home';
       pipe.transform(key);
       expect((pipe as any).lastKey).toBe(key);
@@ -119,7 +131,9 @@ describe('TranslocoPipe', () => {
       expect(cdrMock.markForCheck).toHaveBeenCalled();
     }));
 
-    it('should set the value to the key if no translation exists', fakeAsync(() => {
+    it(`GIVEN pipe transform with non-existent key
+        WHEN translation is loaded
+        THEN should set value to key itself`, fakeAsync(() => {
       const key = 'kazaz';
       pipe.transform(key);
       runLoader();
@@ -129,31 +143,41 @@ describe('TranslocoPipe', () => {
   });
 
   describe('transform', () => {
-    it('should unsubscribe after one emit when not in reRenderOnLangChange mode', fakeAsync(() => {
+    it(`GIVEN pipe without reRenderOnLangChange mode
+        WHEN translation emits
+        THEN should unsubscribe after one emit`, fakeAsync(() => {
       pipe.transform('home');
       runLoader();
       expect((pipe as any).subscription.closed).toBe(true);
     }));
 
-    it('should return the key when the key is falsy', () => {
+    it(`GIVEN pipe transform with falsy key
+        WHEN transform is called
+        THEN should return the key as-is`, () => {
       expect(pipe.transform('')).toBe('');
       expect(pipe.transform(null)).toBeNull();
       expect(pipe.transform(undefined as any)).toBeUndefined();
     });
 
-    it('should perform translate', fakeAsync(() => {
+    it(`GIVEN pipe transform with valid key
+        WHEN translation is loaded
+        THEN should perform translation`, fakeAsync(() => {
       pipe.transform('home');
       runLoader();
       expect((pipe as any).lastValue).toBe('home english');
     }));
 
-    it('should perform translate with params', fakeAsync(() => {
+    it(`GIVEN pipe transform with params
+        WHEN translation is loaded
+        THEN should perform translation with interpolated params`, fakeAsync(() => {
       pipe.transform('alert', { value: 'value' });
       runLoader();
       expect((pipe as any).lastValue).toBe('alert value english');
     }));
 
-    it('should return the value from the cache', fakeAsync(() => {
+    it(`GIVEN pipe transform called with same key
+        WHEN transform is called multiple times
+        THEN should return cached value`, fakeAsync(() => {
       pipe.transform('home');
       runLoader();
       expect((pipe as any).updateValue).toHaveBeenCalledTimes(1);
@@ -163,7 +187,9 @@ describe('TranslocoPipe', () => {
       expect((pipe as any).updateValue).toHaveBeenCalledTimes(2);
     }));
 
-    it('should return the value from the cache with params', fakeAsync(() => {
+    it(`GIVEN pipe transform called with same key and params
+        WHEN transform is called multiple times
+        THEN should return cached value until params change`, fakeAsync(() => {
       pipe.transform('alert', { value: 'value' });
       runLoader();
       expect((pipe as any).updateValue).toHaveBeenCalledTimes(1);
@@ -174,7 +200,9 @@ describe('TranslocoPipe', () => {
     }));
   });
 
-  it('should unsubscribe on destroy', () => {
+  it(`GIVEN pipe with active subscription
+      WHEN pipe is destroyed
+      THEN should unsubscribe from observable`, () => {
     (pipe as any).subscription = of().subscribe();
     const spy = spyOn((pipe as any).subscription, 'unsubscribe');
     pipe.ngOnDestroy();

@@ -42,7 +42,9 @@ describe('MessageFormatTranspiler', () => {
 
   assertParser('Cache disabled', { enableCache: false });
 
-  it('should work with locales', () => {
+  it(`GIVEN transpiler configured with en-GB locale
+      WHEN transpiling plural messageformat with count=1
+      THEN returns correctly formatted singular form`, () => {
     const config = { locales: 'en-GB' };
     const parser = getTranspiler(config);
     const message =
@@ -54,7 +56,9 @@ describe('MessageFormatTranspiler', () => {
     expect(result).toBe('A word');
   });
 
-  it('should use passed-in formatters', () => {
+  it(`GIVEN transpiler with custom formatters (prop, upcase)
+      WHEN transpiling messages using custom formatters
+      THEN applies custom formatters correctly to params`, () => {
     const formatters: { [key: string]: CustomFormatter } = {
       prop: <T = Record<string, string>>(v: T, lc: any, p: string | null) =>
         v[p as keyof T],
@@ -84,7 +88,9 @@ describe('MessageFormatTranspiler', () => {
     ).toBe('Answer: 42');
   });
 
-  it('should switch locale in runtime', () => {
+  it(`GIVEN transpiler initialized with en locale
+      WHEN locale is switched to pl at runtime
+      THEN transpiles Polish plural rules correctly`, () => {
     const config = { locales: 'en' };
     const transpiler = getTranspiler(config);
     const polishKey =
@@ -111,7 +117,9 @@ function assertParser(description: string, config: MessageformatConfig) {
       );
     });
 
-    it('should translate simple param and interpolate params inside messageformat string using custom interpolation markers', () => {
+    it(`GIVEN transpiler with custom interpolation markers (<<< >>>)
+        WHEN transpiling params and messageformat select with male gender
+        THEN interpolates params and applies gender selection correctly`, () => {
       const parsedMale = transpiler.transpile(
         getTranspilerParams(
           'The <<< value >>> { gender, select, male {boy named <<< name >>> won his} female {girl named <<< name >>> won her} other {person named <<< name >>> won their}} race',
@@ -131,7 +139,9 @@ function assertParser(description: string, config: MessageformatConfig) {
       transpiler = getTranspiler(config);
     });
 
-    it('should translate simple SELECT messageformat string from params when first param given', () => {
+    it(`GIVEN SELECT messageformat string
+        WHEN transpiling with gender param set to 'male'
+        THEN returns male-specific text`, () => {
       const value =
         'The { gender, select, male {boy won his} female {girl won her} other {person won their}} race';
       const parsed = transpiler.transpile(
@@ -142,7 +152,9 @@ function assertParser(description: string, config: MessageformatConfig) {
       expect(parsed).toEqual('The boy won his race');
     });
 
-    it('should translate simple SELECT messageformat string from params when second param given', () => {
+    it(`GIVEN SELECT messageformat string
+        WHEN transpiling with gender param set to 'female'
+        THEN returns female-specific text`, () => {
       const value =
         'The { gender, select, male {boy won his} female {girl won her} other {person won their}} race';
       const parsed = transpiler.transpile(
@@ -153,7 +165,9 @@ function assertParser(description: string, config: MessageformatConfig) {
       expect(parsed).toEqual('The girl won her race');
     });
 
-    it('should translate simple SELECT messageformat string from params when no param given', () => {
+    it(`GIVEN SELECT messageformat string
+        WHEN transpiling with empty gender param
+        THEN returns 'other' case text`, () => {
       const value =
         'The { gender, select, male {boy won his} female {girl won her} other {person won their}} race';
       const parsed = transpiler.transpile(
@@ -164,7 +178,9 @@ function assertParser(description: string, config: MessageformatConfig) {
       expect(parsed).toEqual('The person won their race');
     });
 
-    it('should translate simple params and SELECT messageformat string from params when no param given', () => {
+    it(`GIVEN string with simple param interpolation and SELECT messageformat
+        WHEN transpiling with value param and empty gender param
+        THEN interpolates value and returns 'other' case text`, () => {
       const value =
         'The {{value}} { gender, select, male {boy won his} female {girl won her} other {person won their}} race';
       const parsed = transpiler.transpile(
@@ -175,7 +191,9 @@ function assertParser(description: string, config: MessageformatConfig) {
       expect(parsed).toEqual('The smart person won their race');
     });
 
-    it('should translate simple param and interpolate params inside messageformat string', () => {
+    it(`GIVEN string with params inside and outside messageformat SELECT
+        WHEN transpiling with value, male gender, and name params
+        THEN interpolates all params and applies gender selection`, () => {
       const value =
         'The {{ value }} { gender, select, male {boy named {{ name }} won his} female {girl named {{ name }} won her} other {person named {{ name }} won their}} race';
       const parsedMale = transpiler.transpile(
@@ -186,7 +204,9 @@ function assertParser(description: string, config: MessageformatConfig) {
       expect(parsedMale).toEqual('The smart boy named Henkie won his race');
     });
 
-    it('should translate simple string from params', () => {
+    it(`GIVEN simple string with single param placeholder
+        WHEN transpiling with value param
+        THEN interpolates param correctly`, () => {
       const parsed = transpiler.transpile(
         getTranspilerParams('Hello {{ value }}', {
           params: { value: 'World' },
@@ -195,7 +215,9 @@ function assertParser(description: string, config: MessageformatConfig) {
       expect(parsed).toEqual('Hello World');
     });
 
-    it('should translate simple string with multiple params', () => {
+    it(`GIVEN simple string with multiple param placeholders
+        WHEN transpiling with from and name params
+        THEN interpolates all params correctly`, () => {
       const parsed = transpiler.transpile(
         getTranspilerParams('Hello {{ from }} {{ name }}', {
           params: { from: 'from', name: 'Transloco' },
@@ -204,7 +226,9 @@ function assertParser(description: string, config: MessageformatConfig) {
       expect(parsed).toEqual('Hello from Transloco');
     });
 
-    it('should translate simple string with a key from lang', () => {
+    it(`GIVEN simple string with param placeholder
+        WHEN transpiling with key from translation object
+        THEN resolves value from translation object`, () => {
       const parsed = transpiler.transpile(
         getTranspilerParams('Hello {{ world }}', {
           translation: { world: 'World' },
@@ -213,7 +237,9 @@ function assertParser(description: string, config: MessageformatConfig) {
       expect(parsed).toEqual('Hello World');
     });
 
-    it('should translate simple string multiple keys from lang', () => {
+    it(`GIVEN string with multiple param placeholders including nested keys
+        WHEN transpiling with keys from translation object
+        THEN resolves all values including nested keys from translation object`, () => {
       const lang = {
         withKeys: 'with keys',
         from: 'from',
@@ -233,7 +259,9 @@ function assertParser(description: string, config: MessageformatConfig) {
       );
     });
 
-    it('should translate simple string with params and from lang', () => {
+    it(`GIVEN string with multiple param placeholders
+        WHEN transpiling with mixed params and translation object values
+        THEN resolves values from both params and translation object`, () => {
       const parsed = transpiler.transpile(
         getTranspilerParams('Hello {{ from }} {{ name }}', {
           params: { name: 'Transloco' },
@@ -243,7 +271,9 @@ function assertParser(description: string, config: MessageformatConfig) {
       expect(parsed).toEqual('Hello from Transloco');
     });
 
-    it('should return the given value when the value is falsy', () => {
+    it(`GIVEN falsy values (empty string, null, undefined)
+        WHEN transpiling
+        THEN returns the falsy value unchanged`, () => {
       expect(transpiler.transpile(getTranspilerParams(''))).toEqual('');
       expect(transpiler.transpile(getTranspilerParams(null))).toEqual(null);
       expect(transpiler.transpile(getTranspilerParams(undefined))).toEqual(
@@ -251,7 +281,9 @@ function assertParser(description: string, config: MessageformatConfig) {
       );
     });
 
-    it('should support params', () => {
+    it(`GIVEN nested translation object with messageformat strings
+        WHEN transpiling with params for each nested key
+        THEN transpiles all nested messageformat strings with their respective params`, () => {
       const translations = {
         nested: {
           messageFormatWithParams:

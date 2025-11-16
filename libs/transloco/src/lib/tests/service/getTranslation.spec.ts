@@ -11,23 +11,31 @@ describe('getTranslation', () => {
 
   beforeEach(() => (service = createService()));
 
-  it('should return an empty object when no translations loaded', () => {
+  it(`GIVEN service with no loaded translations
+      WHEN getTranslation is called
+      THEN should return an empty object`, () => {
     expect(service.getTranslation('en')).toEqual({});
     expect(service.getTranslation('es')).toEqual({});
   });
 
-  it('should return the translation flatten', fakeAsync(() => {
+  it(`GIVEN service with loaded translations
+      WHEN getTranslation is called for a lang
+      THEN should return flattened translation`, fakeAsync(() => {
     loadLang(service);
     expect(service.getTranslation('en')).toEqual(flatten(mockLangs['en']));
   }));
 
-  it('should return the scope translation flatten', fakeAsync(() => {
+  it(`GIVEN service with loaded scoped translations
+      WHEN getTranslation is called for scoped lang
+      THEN should return flattened scoped translation`, fakeAsync(() => {
     const lang = 'lazy-page/es';
     loadLang(service, lang);
     expect(service.getTranslation(lang)).toEqual(flatten(mockLangs[lang]));
   }));
 
-  it('should return the translations map', fakeAsync(() => {
+  it(`GIVEN service with multiple loaded translations
+      WHEN getTranslation is called without lang
+      THEN should return map of all translations`, fakeAsync(() => {
     loadLang(service);
     loadLang(service, 'es');
     const map = service.getTranslation();

@@ -3,7 +3,9 @@ import { getLangFromScope, getScopeFromLang } from '../utils/scope.utils';
 import { shouldListenToLangChanges } from '../utils/lang.utils';
 
 describe('getPipeValue', () => {
-  it('should work', () => {
+  it(`GIVEN various pipe value inputs
+      WHEN getPipeValue is called
+      THEN should parse static marker correctly`, () => {
     expect(getPipeValue(undefined, 'static')).toEqual([false, '']);
     expect(getPipeValue('en', 'static')).toEqual([false, 'en']);
     expect(getPipeValue('en|static', 'static')).toEqual([true, 'en']);
@@ -15,7 +17,9 @@ describe('getPipeValue', () => {
 });
 
 describe('getLangFromScope', () => {
-  it('should work', () => {
+  it(`GIVEN various scope/lang combinations
+      WHEN getLangFromScope is called
+      THEN should extract lang correctly`, () => {
     expect(getLangFromScope('en')).toEqual('en');
     expect(getLangFromScope('todos/en')).toEqual('en');
     expect(getLangFromScope('some/nested/es')).toEqual('es');
@@ -24,7 +28,9 @@ describe('getLangFromScope', () => {
 });
 
 describe('getScopeFromLang', () => {
-  it('should work', () => {
+  it(`GIVEN various scope/lang combinations
+      WHEN getScopeFromLang is called
+      THEN should extract scope correctly`, () => {
     expect(getScopeFromLang('en')).toEqual('');
     expect(getScopeFromLang('todos/en')).toEqual('todos');
     expect(getScopeFromLang('some/nested/es')).toEqual('some/nested');
@@ -33,7 +39,9 @@ describe('getScopeFromLang', () => {
 });
 
 describe('shouldListenToLangChanges', () => {
-  it('should return false when lang contains static', () => {
+  it(`GIVEN lang with static marker
+      WHEN shouldListenToLangChanges is called
+      THEN should return false`, () => {
     expect(
       shouldListenToLangChanges(
         {
@@ -46,7 +54,9 @@ describe('shouldListenToLangChanges', () => {
     ).toEqual(false);
   });
 
-  it('should return true when lang does not contains static and reRenderOnLangChange is true', () => {
+  it(`GIVEN lang without static and reRenderOnLangChange is true
+      WHEN shouldListenToLangChanges is called
+      THEN should return true`, () => {
     expect(
       shouldListenToLangChanges(
         {
@@ -59,7 +69,9 @@ describe('shouldListenToLangChanges', () => {
     ).toEqual(true);
   });
 
-  it('should return false when lang does not contains static and reRenderOnLangChange is false', () => {
+  it(`GIVEN lang without static but reRenderOnLangChange is false
+      WHEN shouldListenToLangChanges is called
+      THEN should return false`, () => {
     expect(
       shouldListenToLangChanges(
         {

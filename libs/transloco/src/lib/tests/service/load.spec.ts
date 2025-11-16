@@ -11,7 +11,9 @@ describe('load', () => {
 
   beforeEach(() => (service = createService()));
 
-  it('should trigger loaded event once loaded', fakeAsync(() => {
+  it(`GIVEN service loading translations
+      WHEN translations finish loading
+      THEN should trigger translationLoadSuccess event`, fakeAsync(() => {
     const spy = jasmine.createSpy();
     service.events$
       .pipe(
@@ -26,7 +28,9 @@ describe('load', () => {
     });
   }));
 
-  it('should trigger loaded event once loaded - scope', fakeAsync(() => {
+  it(`GIVEN service loading scoped translations
+      WHEN scoped translations finish loading
+      THEN should trigger translationLoadSuccess event with scope`, fakeAsync(() => {
     const spy = jasmine.createSpy();
     service.events$
       .pipe(
@@ -41,7 +45,9 @@ describe('load', () => {
     });
   }));
 
-  it('should trigger lang changed once loaded', fakeAsync(() => {
+  it(`GIVEN service loading translations
+      WHEN translations finish loading
+      THEN should trigger langChanged event`, fakeAsync(() => {
     service.events$
       .pipe(filter((e: any) => e.type === 'langChanged'))
       .subscribe((event) => {
@@ -50,7 +56,9 @@ describe('load', () => {
     loadLang(service, 'admin-page/en');
   }));
 
-  it('should load the translation using the loader', fakeAsync(() => {
+  it(`GIVEN service with configured loader
+      WHEN load is called
+      THEN should use loader to fetch translations`, fakeAsync(() => {
     const loaderSpy = spyOn(
       (service as any).loader,
       'getTranslation',
@@ -61,7 +69,9 @@ describe('load', () => {
     expect((service as any).translations.size).toEqual(1);
   }));
 
-  it('should load the translation from cache', fakeAsync(() => {
+  it(`GIVEN translations already loaded
+      WHEN load is called again
+      THEN should return cached translations without calling loader`, fakeAsync(() => {
     loadLang(service);
     spyOn((service as any).loader, 'getTranslation').and.callThrough();
     service.load('en');

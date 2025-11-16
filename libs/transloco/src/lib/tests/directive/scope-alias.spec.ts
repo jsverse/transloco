@@ -25,7 +25,9 @@ describe('Scope alias', () => {
     },
   ]);
 
-  it('should support scope alias', fakeAsync(() => {
+  it(`GIVEN directive with scope alias
+      WHEN translations are loaded
+      THEN should translate using the alias`, fakeAsync(() => {
     spectator = createHost(
       `<section *transloco="let t;"><div>{{t('lazy.title')}}</div></section>`,
     );
@@ -61,7 +63,9 @@ describe('Scope alias pipe', () => {
     ],
   });
 
-  it('should support scope alias', fakeAsync(() => {
+  it(`GIVEN pipe with scope alias
+      WHEN translations are loaded
+      THEN should translate using the alias`, fakeAsync(() => {
     spectator = createComponent();
     runLoader();
     runLoader();

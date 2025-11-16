@@ -59,21 +59,27 @@ describe('TranslocoPersistTranslations', () => {
     describe('Default config', () => {
       beforeEach(() => (spectator = serviceFactory()));
 
-      it('should save the translations object in the storage', () => {
+      it(`GIVEN translations loaded for 'en'
+          WHEN getTranslation is called
+          THEN saves translations object to storage`, () => {
         spectator.service.getTranslation('en').subscribe();
         const expected = JSON.stringify({ en: translationsMock });
         const cached = getStorageService().getItem(getConfig().storageKey);
         expect(cached).toEqual(expected);
       });
 
-      it('should not call loader after caching translations', () => {
+      it(`GIVEN translations already cached
+          WHEN getTranslation is called again for same language
+          THEN does not call loader again`, () => {
         const spy = spyOnGetTranslation();
         spectator.service.getTranslation('en').subscribe();
         spectator.service.getTranslation('en').subscribe();
         expect(spy).toHaveBeenCalledTimes(1);
       });
 
-      it('should call loader after clearing translations', () => {
+      it(`GIVEN translations cached then cleared
+          WHEN getTranslation is called after clearCache
+          THEN calls loader again`, () => {
         const spy = spyOnGetTranslation();
         spectator.service.getTranslation('en').subscribe();
         spectator.service.clearCache();
@@ -81,14 +87,18 @@ describe('TranslocoPersistTranslations', () => {
         expect(spy).toHaveBeenCalledTimes(2);
       });
 
-      it('should call loader foreach lang', () => {
+      it(`GIVEN multiple languages requested
+          WHEN getTranslation is called for different languages
+          THEN calls loader for each language`, () => {
         const spy = spyOnGetTranslation();
         spectator.service.getTranslation('en').subscribe();
         spectator.service.getTranslation('es').subscribe();
         expect(spy).toHaveBeenCalledTimes(2);
       });
 
-      it('should save translations for multiple langs', () => {
+      it(`GIVEN multiple languages loaded
+          WHEN getTranslation is called for en and es
+          THEN saves all translations to storage`, () => {
         spectator.service.getTranslation('en').subscribe();
         spectator.service.getTranslation('es').subscribe();
         const expected = JSON.stringify({
@@ -99,7 +109,9 @@ describe('TranslocoPersistTranslations', () => {
         expect(cached).toEqual(expected);
       });
 
-      it('should clear translations', () => {
+      it(`GIVEN translations in cache
+          WHEN clearCache is called
+          THEN removes translations and timestamp from storage`, () => {
         const spy = spyOn(getStorageService(), 'removeItem').and.callThrough();
         spectator.service.clearCache();
         const { storageKey } = getConfig();
@@ -124,7 +136,9 @@ describe('TranslocoPersistTranslations', () => {
       });
     }
 
-    it('should clear translations with ttl older than what specified in the config', fakeAsync(() => {
+    it(`GIVEN translations cached with ttl configured
+        WHEN ttl expires and service reinitializes
+        THEN clears expired translations from storage`, fakeAsync(() => {
       spectator = serviceFactory({
         providers: [provideTranslocoPersistTranslationsConfig({ ttl: 10 })],
       });
@@ -156,7 +170,9 @@ describe('TranslocoPersistTranslations', () => {
 
     beforeEach(() => (spectator = serviceFactory()));
 
-    it('should save the translations asynchronously in the storage', fakeAsync(() => {
+    it(`GIVEN async storage configured
+        WHEN getTranslation is called
+        THEN saves translations asynchronously to storage`, fakeAsync(() => {
       tick(DELAY);
       const spy = spyOn(getStorageService(), 'setItem').and.callThrough();
       let res;
@@ -170,7 +186,9 @@ describe('TranslocoPersistTranslations', () => {
       );
     }));
 
-    it('should not call loader after caching translations', fakeAsync(() => {
+    it(`GIVEN translations already cached in async storage
+        WHEN getTranslation is called again for same language
+        THEN does not call loader again`, fakeAsync(() => {
       const spy = spyOnGetTranslation();
       tick(DELAY);
       spectator.service.getTranslation('en').subscribe();
@@ -180,7 +198,9 @@ describe('TranslocoPersistTranslations', () => {
       expect(spy).toHaveBeenCalledTimes(1);
     }));
 
-    it('should call loader after clearing translations', fakeAsync(() => {
+    it(`GIVEN translations cached in async storage then cleared
+        WHEN getTranslation is called after clearCache
+        THEN calls loader again`, fakeAsync(() => {
       const spy = spyOnGetTranslation();
       tick(DELAY);
       spectator.service.getTranslation('en').subscribe();
@@ -190,7 +210,9 @@ describe('TranslocoPersistTranslations', () => {
       expect(spy).toHaveBeenCalledTimes(2);
     }));
 
-    it('should call loader foreach lang', fakeAsync(() => {
+    it(`GIVEN multiple languages requested with async storage
+        WHEN getTranslation is called for different languages
+        THEN calls loader for each language`, fakeAsync(() => {
       const spy = spyOnGetTranslation();
       tick(DELAY);
       spectator.service.getTranslation('en').subscribe();
@@ -199,7 +221,9 @@ describe('TranslocoPersistTranslations', () => {
       expect(spy).toHaveBeenCalledTimes(2);
     }));
 
-    it('should not override translations', fakeAsync(() => {
+    it(`GIVEN multiple languages loaded in async storage
+        WHEN checking storage after all async operations complete
+        THEN storage contains all languages without overriding`, fakeAsync(() => {
       tick(DELAY);
       spectator.service.getTranslation('en').subscribe();
       spectator.service.getTranslation('es').subscribe();
@@ -212,7 +236,9 @@ describe('TranslocoPersistTranslations', () => {
       tick(DELAY);
     }));
 
-    it('should add scope and lang to cache', fakeAsync(() => {
+    it(`GIVEN scoped and non-scoped translations requested
+        WHEN getTranslation is called for 'en/scope' and 'en'
+        THEN caches both scope and lang separately`, fakeAsync(() => {
       tick(DELAY);
       spectator.service.getTranslation('en/scope').subscribe();
       spectator.service.getTranslation('en').subscribe();

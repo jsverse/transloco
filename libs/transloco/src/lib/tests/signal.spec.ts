@@ -51,14 +51,18 @@ describe('translateSignal in component', () => {
     providers: providersMock,
   });
 
-  it('should translate a static key', fakeAsync(() => {
+  it(`GIVEN translateSignal with static key
+      WHEN translations are loaded
+      THEN should display translated text`, fakeAsync(() => {
     spectator = createComponent();
     runLoader();
     spectator.detectChanges();
     expect(spectator.query('#text')).toHaveText('home english');
   }));
 
-  it('should translate a dynamic key', fakeAsync(() => {
+  it(`GIVEN translateSignal with dynamic key
+      WHEN key changes
+      THEN should update translated text`, fakeAsync(() => {
     spectator = createComponent();
     runLoader();
     spectator.detectChanges();
@@ -67,7 +71,9 @@ describe('translateSignal in component', () => {
     expect(spectator.query('#dynamicKey')).toHaveText('from list');
   }));
 
-  it('should translate with params', fakeAsync(() => {
+  it(`GIVEN translateSignal with dynamic params
+      WHEN params change
+      THEN should update translation with new params`, fakeAsync(() => {
     spectator = createComponent();
     runLoader();
     spectator.detectChanges();
@@ -87,14 +93,18 @@ describe('translateObjectSignal in component', () => {
     providers: providersMock,
   });
 
-  it('should translate a static key to an object', fakeAsync(() => {
+  it(`GIVEN translateObjectSignal with static key
+      WHEN translations are loaded
+      THEN should return translation object`, fakeAsync(() => {
     spectator = createComponent();
     runLoader();
     spectator.detectChanges();
     expect(spectator.query('#textObject')).toHaveText('Title english');
   }));
 
-  it('should translate a dynamic key to an object', fakeAsync(() => {
+  it(`GIVEN translateObjectSignal with dynamic key
+      WHEN key changes
+      THEN should return updated translation object`, fakeAsync(() => {
     spectator = createComponent();
     runLoader();
     spectator.detectChanges();
@@ -105,7 +115,9 @@ describe('translateObjectSignal in component', () => {
     });
   }));
 
-  it('should translate with params to an object', fakeAsync(() => {
+  it(`GIVEN translateObjectSignal with dynamic params
+      WHEN key and params change
+      THEN should return translation object with interpolated params`, fakeAsync(() => {
     spectator = createComponent();
     runLoader();
     spectator.detectChanges();

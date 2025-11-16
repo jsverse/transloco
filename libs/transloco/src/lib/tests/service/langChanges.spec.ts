@@ -6,7 +6,9 @@ describe('translate', () => {
 
   beforeEach(() => (service = createService()));
 
-  it('should set the current lang', () => {
+  it(`GIVEN service with langChanges subscription
+      WHEN setActiveLang is called
+      THEN should emit new language`, () => {
     const langSpy = jasmine.createSpy();
     const newLang = 'es';
     service.langChanges$.subscribe(langSpy);

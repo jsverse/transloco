@@ -49,7 +49,9 @@ describe('Split', () => {
   }
 
   describe('default strategy', () => {
-    it('should split translated root content', async () => {
+    it(`GIVEN merged translation files in source directory
+        WHEN split schematic runs on root content
+        THEN translations are split into individual language files`, async () => {
       const translatedEn = { hello: 'hello translated' };
       const translatedEs = { hello: 'hola translated' };
       setupMerged(translatedEn, translatedEs);
@@ -68,7 +70,9 @@ describe('Split', () => {
       expect(resEn).toEqual(translatedEn);
     });
 
-    it('should split translated scope content', async () => {
+    it(`GIVEN merged translation files with nested scopes
+        WHEN split schematic runs
+        THEN translations are split into scoped directories preserving hierarchy`, async () => {
       const translatedEn = {
         scope: {
           hello: 'hello translated',
@@ -108,7 +112,9 @@ describe('Split', () => {
   });
 
   describe('scope map strategy', () => {
-    it('should use scope map strategy', async () => {
+    it(`GIVEN global config with scopePathMap and merged translations
+        WHEN split schematic runs
+        THEN translations are split using scope map strategy`, async () => {
       const translatedEn = { scope: { hello: 'hello translated' } };
       const translatedEs = { scope: { hello: 'hola translated' } };
       setupMerged(translatedEn, translatedEs);

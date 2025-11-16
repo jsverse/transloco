@@ -10,13 +10,17 @@ describe('translate', () => {
 
   beforeEach(() => (service = createService()));
 
-  it('should return the key when it is falsy', () => {
+  it(`GIVEN a TranslocoService instance
+      WHEN translating falsy values (empty string, null, undefined)
+      THEN should return the falsy value as-is`, () => {
     expect(service.translate('')).toEqual('');
     expect(service.translate(null as any)).toEqual(null as any);
     expect(service.translate(undefined as any)).toEqual(undefined as any);
   });
 
-  it('should return the value or the key based on the translation existing', fakeAsync(() => {
+  it(`GIVEN a TranslocoService instance
+      WHEN translating a key before and after loading translations
+      THEN should return the key when translation doesn't exist and the translated value when it exists`, fakeAsync(() => {
     expect(service.translate('home')).toEqual('home');
     loadLang(service);
     expect(service.translate('home')).toEqual(mockLangs['en'].home);
@@ -25,7 +29,9 @@ describe('translate', () => {
     expect(service.translate('home')).toEqual('home');
   }));
 
-  it('should call missing handler when there is no translation for the key', fakeAsync(() => {
+  it(`GIVEN a TranslocoService with loaded translations and a spied missing handler
+      WHEN translating non-existent keys
+      THEN should call the missing handler once for each missing translation`, fakeAsync(() => {
     spyOn((service as any).missingHandler, 'handle').and.callThrough();
     loadLang(service);
     service.translate('kazaz');
@@ -34,7 +40,9 @@ describe('translate', () => {
     expect((service as any).missingHandler.handle).toHaveBeenCalledTimes(3);
   }));
 
-  it('should translate', fakeAsync(() => {
+  it(`GIVEN a TranslocoService with English translations loaded
+      WHEN translating various keys (simple, with params, nested paths, arrays)
+      THEN should return correct translations for all key types`, fakeAsync(() => {
     loadLang(service);
     const eng = mockLangs['en'];
     expect(service.translate('home')).toEqual(eng.home);
@@ -46,13 +54,17 @@ describe('translate', () => {
     expect(service.translate('array')).toEqual(['hello-1', 'hello-2']);
   }));
 
-  it('should support multi key translation', fakeAsync(() => {
+  it(`GIVEN a TranslocoService with English translations loaded
+      WHEN translating an array of keys (some exist, some don't)
+      THEN should return an array with translated values for existing keys and original keys for missing ones`, fakeAsync(() => {
     loadLang(service);
     const expected = ['home english', 'a.b.c from list english', 'notexists'];
     expect(service.translate(['home', 'a.b.c', 'notexists'])).toEqual(expected);
   }));
 
-  it('should support multi key translation with dynamic values', fakeAsync(() => {
+  it(`GIVEN a TranslocoService with English translations loaded
+      WHEN translating an array of keys with dynamic parameter values
+      THEN should return an array with interpolated parameter values`, fakeAsync(() => {
     loadLang(service);
     const expected = [
       'home english',
@@ -64,7 +76,9 @@ describe('translate', () => {
     ).toEqual(expected);
   }));
 
-  it('should support scoped language', fakeAsync(() => {
+  it(`GIVEN a TranslocoService with a scoped language (lazy-page/en) loaded
+      WHEN translating a key with a scope parameter
+      THEN should return the translation from the scoped language file`, fakeAsync(() => {
     loadLang(service, 'lazy-page/en');
     // should append the active lang by default
     expect(service.translate('title', {}, 'lazy-page')).toEqual(
@@ -72,7 +86,9 @@ describe('translate', () => {
     );
   }));
 
-  it('should support scoped language with different lang', fakeAsync(() => {
+  it(`GIVEN a TranslocoService with multiple scoped languages loaded
+      WHEN translating a key with an explicit scope/language combination
+      THEN should return the translation from the specified scope and language`, fakeAsync(() => {
     loadLang(service, 'lazy-page/en');
     loadLang(service, 'lazy-page/es');
     expect(service.translate('title', {}, 'lazy-page/es')).toEqual(
@@ -94,7 +110,9 @@ describe('translate - scope auto prefix', () => {
       })),
   );
 
-  it('should auto-prefix scope to simple keys when scope is provided', fakeAsync(() => {
+  it(`GIVEN a TranslocoService with autoPrefixKeys enabled and lazy-page/en loaded
+      WHEN translating a simple key with a scope
+      THEN should automatically prefix the scope to the key and resolve correctly`, fakeAsync(() => {
     loadLang(service, 'lazy-page/en');
     // 'title' becomes 'lazyPage.title' and resolves correctly
     expect(service.translate('title', {}, 'lazy-page')).toEqual(
@@ -102,7 +120,9 @@ describe('translate - scope auto prefix', () => {
     );
   }));
 
-  it('should result in double-prefixed key when scope is manually included (current behavior)', fakeAsync(() => {
+  it(`GIVEN a TranslocoService with autoPrefixKeys enabled and lazy-page/en loaded
+      WHEN translating a key that already includes the scope prefix with a scope parameter
+      THEN should double-prefix the scope and return the malformed key`, fakeAsync(() => {
     loadLang(service, 'lazy-page/en');
     // 'lazyPage.title' becomes 'lazyPage.lazyPage.title' which doesn't exist
     // This demonstrates the problem that autoPrefixKeys: false solves
@@ -112,7 +132,9 @@ describe('translate - scope auto prefix', () => {
     );
   }));
 
-  it('should auto-prefix scope to all keys in multi-key array', fakeAsync(() => {
+  it(`GIVEN a TranslocoService with autoPrefixKeys enabled and lazy-page/en loaded
+      WHEN translating an array of simple keys with a scope
+      THEN should automatically prefix scope to all keys`, fakeAsync(() => {
     loadLang(service, 'lazy-page/en');
     // 'title' becomes 'lazyPage.title', 'notexists' becomes 'lazyPage.notexists'
     const result = ['Admin Lazy english', 'lazyPage.notexists'];
@@ -121,7 +143,9 @@ describe('translate - scope auto prefix', () => {
     );
   }));
 
-  it('should result in double-prefixed keys in array when scope is manually included', fakeAsync(() => {
+  it(`GIVEN a TranslocoService with autoPrefixKeys enabled and lazy-page/en loaded
+      WHEN translating an array of keys that already include the scope prefix
+      THEN should double-prefix scope to all keys and return malformed keys`, fakeAsync(() => {
     loadLang(service, 'lazy-page/en');
     // Both keys get double-prefixed and don't exist, returning fallback keys
     const doublePrefixedKeys = [
@@ -151,7 +175,9 @@ describe('translate - scope not auto prefix', () => {
       })),
   );
 
-  it('should not auto-prefix scope, returning original key when translation not found', fakeAsync(() => {
+  it(`GIVEN a TranslocoService with autoPrefixKeys disabled and lazy-page/en loaded
+      WHEN translating a simple key with a scope
+      THEN should not auto-prefix the key and return the original key as fallback`, fakeAsync(() => {
     loadLang(service, 'lazy-page/en');
     // 'title' stays as 'title' (no auto-prefix), doesn't exist in root, returns key as fallback
     const untranslatedKey = 'title';
@@ -160,7 +186,9 @@ describe('translate - scope not auto prefix', () => {
     );
   }));
 
-  it('should resolve translation when scope is manually included in key', fakeAsync(() => {
+  it(`GIVEN a TranslocoService with autoPrefixKeys disabled and lazy-page/en loaded
+      WHEN translating a key with manually included scope prefix
+      THEN should resolve the translation correctly without adding additional prefix`, fakeAsync(() => {
     loadLang(service, 'lazy-page/en');
     // 'lazyPage.title' stays as 'lazyPage.title' (no auto-prefix) and resolves correctly
     expect(service.translate('lazyPage.title', {}, 'lazy-page')).toEqual(
@@ -168,7 +196,9 @@ describe('translate - scope not auto prefix', () => {
     );
   }));
 
-  it('should not auto-prefix scope to keys in multi-key array', fakeAsync(() => {
+  it(`GIVEN a TranslocoService with autoPrefixKeys disabled and lazy-page/en loaded
+      WHEN translating an array of simple keys with a scope
+      THEN should not auto-prefix any keys and return original keys as fallback`, fakeAsync(() => {
     loadLang(service, 'lazy-page/en');
     // Keys stay as-is without auto-prefix, returning fallback keys when not found
     const untranslatedKeys = ['title', 'notexists'];
@@ -177,7 +207,9 @@ describe('translate - scope not auto prefix', () => {
     );
   }));
 
-  it('should resolve translations when scope is manually included in array keys', fakeAsync(() => {
+  it(`GIVEN a TranslocoService with autoPrefixKeys disabled and lazy-page/en loaded
+      WHEN translating an array of keys with manually included scope prefix
+      THEN should resolve existing translations correctly`, fakeAsync(() => {
     loadLang(service, 'lazy-page/en');
     // Keys with manual scope prefix resolve correctly without auto-prefix
     const result = ['Admin Lazy english', 'lazyPage.notexists'];

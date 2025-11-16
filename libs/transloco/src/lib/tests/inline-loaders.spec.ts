@@ -43,7 +43,9 @@ describe('Inline loaders: directive', () => {
 
   const createHost = createFactory([inlineLoaders]);
 
-  it('should support inline loaders', fakeAsync(() => {
+  it(`GIVEN directive with inline scope loaders
+      WHEN translations are loaded and language changes
+      THEN should use inline loaders for scoped translations`, fakeAsync(() => {
     spectator = createHost(
       `
       <ng-container *transloco="let t">
@@ -78,7 +80,9 @@ describe('Inline loaders: pipe', () => {
     providers: [providersMock, inlineLoaders, listenToLangChangesProvider],
   });
 
-  it('should support inline loaders', fakeAsync(() => {
+  it(`GIVEN pipe with inline scope loaders
+      WHEN translations are loaded and language changes
+      THEN should use inline loaders for scoped translations`, fakeAsync(() => {
     spectator = createComponent({ detectChanges: false });
 
     const service = spectator.inject(TranslocoService);

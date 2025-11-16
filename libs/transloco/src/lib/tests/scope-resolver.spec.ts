@@ -16,7 +16,9 @@ describe('ScopeResolver', () => {
     } as any);
   });
 
-  it('should return inline scope', () => {
+  it(`GIVEN inline scope is provided
+      WHEN resolver resolves scope
+      THEN should return inline scope`, () => {
     expect(
       resolver.resolve({
         inline: 'lazy-page',
@@ -25,7 +27,9 @@ describe('ScopeResolver', () => {
     ).toEqual('lazy-page');
   });
 
-  it('should return provider scope', () => {
+  it(`GIVEN provider scope is provided
+      WHEN resolver resolves scope
+      THEN should return provider scope`, () => {
     expect(
       resolver.resolve({
         inline: undefined,
@@ -34,7 +38,9 @@ describe('ScopeResolver', () => {
     ).toEqual('admin-page');
   });
 
-  it('should return undefined', () => {
+  it(`GIVEN no scope is provided
+      WHEN resolver resolves scope
+      THEN should return undefined`, () => {
     expect(
       resolver.resolve({
         inline: undefined,
@@ -43,7 +49,9 @@ describe('ScopeResolver', () => {
     ).toEqual(undefined);
   });
 
-  it('should return provider scope with object and set the alias', () => {
+  it(`GIVEN provider scope with object and alias
+      WHEN resolver resolves scope
+      THEN should return scope and set the alias`, () => {
     expect(
       resolver.resolve({
         inline: undefined,
@@ -57,7 +65,9 @@ describe('ScopeResolver', () => {
     expect(spy).toHaveBeenCalledWith('admin-page', 'admin');
   });
 
-  it('should return provider scope with object and set the alias as the scope name if not provided', () => {
+  it(`GIVEN provider scope without explicit alias
+      WHEN resolver resolves scope
+      THEN should use camelCased scope name as alias`, () => {
     expect(
       resolver.resolve({
         inline: undefined,
@@ -71,7 +81,9 @@ describe('ScopeResolver', () => {
     expect(spy).toHaveBeenCalledWith('admin-page', 'adminPage');
   });
 
-  it('should return provider scope with object and set the alias as the scope name if not provided', () => {
+  it(`GIVEN nested provider scope without explicit alias
+      WHEN resolver resolves scope
+      THEN should use camelCased full scope path as alias`, () => {
     expect(
       resolver.resolve({
         inline: undefined,
@@ -88,7 +100,9 @@ describe('ScopeResolver', () => {
     );
   });
 
-  it('should keep the original scope name', () => {
+  it(`GIVEN keepCasing config is true
+      WHEN resolver resolves scope
+      THEN should keep original scope name casing`, () => {
     resolver = new ScopeResolver({
       _setScopeAlias: spy,
       config: { scopes: { keepCasing: true } },

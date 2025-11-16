@@ -50,13 +50,17 @@ describe('Join', () => {
       );
     });
 
-    it('should merge translation files that are not the default language to dist', async () => {
+    it(`GIVEN translation files in default and non-default languages
+        WHEN join schematic runs without includeDefaultLang option
+        THEN only non-default language files are merged to dist`, async () => {
       const tree = await schematicRunner.runSchematic('join', options, appTree);
       expect(tree.files).toEqual(['/dist-i18n/es.json']);
       expect(tree.files).not.toEqual(['/dist-i18n/en.json']);
     });
 
-    it('should merge translation files including the default language to dist', async () => {
+    it(`GIVEN translation files in default and non-default languages
+        WHEN join schematic runs with includeDefaultLang option enabled
+        THEN all language files including default are merged to dist`, async () => {
       const tree = await schematicRunner.runSchematic(
         'join',
         { ...options, includeDefaultLang: true },
@@ -65,13 +69,17 @@ describe('Join', () => {
       expect(tree.files).toEqual(['/dist-i18n/es.json', '/dist-i18n/en.json']);
     });
 
-    it('should merge scopes correctly', async () => {
+    it(`GIVEN translation files with nested scopes
+        WHEN join schematic runs
+        THEN scoped translations are correctly merged into single files`, async () => {
       const tree = await schematicRunner.runSchematic('join', options, appTree);
 
       expect(tree.readContent('/dist-i18n/es.json')).toMatchSnapshot();
     });
 
-    it('should delete output file and pass on rerun', async () => {
+    it(`GIVEN join schematic has been run once
+        WHEN join schematic runs a second time
+        THEN output files are deleted and regenerated successfully`, async () => {
       // first run.
       await schematicRunner.runSchematic('join', options, appTree);
       // second run.
@@ -79,7 +87,9 @@ describe('Join', () => {
       expect(tree.files).toEqual(['/dist-i18n/es.json']);
     });
 
-    it(`should take default project's path`, async () => {
+    it(`GIVEN translation files in default project path
+        WHEN join schematic runs without project option
+        THEN translations are merged from default project path`, async () => {
       appTree.create(
         'projects/bar/src/assets/i18n/en.json',
         JSON.stringify(translationMocks.scopeEn),
@@ -93,7 +103,9 @@ describe('Join', () => {
       expect(tree.files).toEqual(['/dist-i18n/es.json']);
     });
 
-    it('should take specific project path', async () => {
+    it(`GIVEN translation files in specific project path
+        WHEN join schematic runs with project option set to 'baz'
+        THEN translations are merged from specified project path`, async () => {
       appTree.create(
         'projects/baz/src/assets/i18n/en.json',
         JSON.stringify(translationMocks.scopeEn),
@@ -131,13 +143,17 @@ describe('Join', () => {
       });
     }
 
-    it('should use scope map strategy', async () => {
+    it(`GIVEN global config with scopePathMap configured
+        WHEN join schematic runs
+        THEN translations are merged using scope map strategy`, async () => {
       setup();
       const tree = await schematicRunner.runSchematic('join', options, appTree);
       expect(tree.readContent('/dist-i18n/es.json')).toMatchSnapshot();
     });
 
-    it('should use scope map strategy multi scopes', async () => {
+    it(`GIVEN global config with multiple scopes in scopePathMap
+        WHEN join schematic runs
+        THEN all scopes are merged correctly using scope map strategy`, async () => {
       const scopePathMap = {
         scopeA: 'src/app/assets/i18n/scope1',
         scopeB: 'src/app/assets/i18n/scope2',
@@ -148,7 +164,9 @@ describe('Join', () => {
       expect(tree.readContent('/dist-i18n/es.json')).toMatchSnapshot();
     });
 
-    it('should use multi projects scopes', async () => {
+    it(`GIVEN global config with scopePathMap spanning multiple projects
+        WHEN join schematic runs
+        THEN translations from all projects are merged correctly`, async () => {
       const scopePathMap = {
         libA: 'projects/bar/src/assets/i18n',
         libB: 'projects/baz/src/assets/i18n',
