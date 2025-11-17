@@ -71,14 +71,22 @@ import {
   resolveInlineLoader,
 } from './utils/scope.utils';
 
-let service: TranslocoService;
+let service: TranslocoService | undefined;
 
 export function translate<T = string>(
   key: TranslateParams,
   params: HashMap = {},
   lang?: string,
 ): T {
-  return service.translate<T>(key, params, lang);
+  if (typeof ngDevMode !== 'undefined' && ngDevMode) {
+    console.warn(
+      '[Transloco] WARNING: `translate()` was called before the service was initialized or outside an Angular context.\n' +
+        'Avoid using global service references. This causes memory leaks and state retention in SSR.\n' +
+        'Prefer injecting TranslocoService.',
+    );
+  }
+
+  return service?.translate<T>(key, params, lang) ?? ('' as T);
 }
 
 export function translateObject<T>(
@@ -86,7 +94,15 @@ export function translateObject<T>(
   params: HashMap = {},
   lang?: string,
 ): T | T[] {
-  return service.translateObject<T>(key, params, lang);
+  if (typeof ngDevMode !== 'undefined' && ngDevMode) {
+    console.warn(
+      '[Transloco] WARNING: `translateObject()` was called before the service was initialized or outside an Angular context.\n' +
+        'Avoid using global service references. This causes memory leaks and state retention in SSR.\n' +
+        'Prefer injecting TranslocoService.',
+    );
+  }
+
+  return service?.translateObject<T>(key, params, lang) ?? [];
 }
 
 @Injectable({ providedIn: 'root' })
@@ -120,10 +136,13 @@ export class TranslocoService {
     @Inject(TRANSLOCO_FALLBACK_STRATEGY)
     private fallbackStrategy: TranslocoFallbackStrategy,
   ) {
+    if (userConfig.exposeService) {
+      service = this;
+    }
+
     if (!this.loader) {
       this.loader = new DefaultLoader(this.translations);
     }
-    service = this;
     this.config = JSON.parse(JSON.stringify(userConfig));
 
     this.setAvailableLangs(this.config.availableLangs || []);
