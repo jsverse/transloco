@@ -35,7 +35,9 @@ describe('Scope alias', () => {
     },
   ]);
 
-  it('should support multiple scopes with aliases', fakeAsync(() => {
+  it(`GIVEN multiple scopes with aliases configured
+      WHEN directive renders with aliased scope keys
+      THEN should translate using both scope aliases`, fakeAsync(() => {
     spectator = createHost(`
         <section *transloco="let t;">
           <div>
@@ -87,7 +89,9 @@ describe('Scope alias pipe', () => {
     ],
   });
 
-  it('should support multiple scope aliasses', fakeAsync(() => {
+  it(`GIVEN pipe with multiple scope aliases configured
+      WHEN component renders with aliased scope keys
+      THEN should translate using both scope aliases`, fakeAsync(() => {
     spectator = createComponent();
     runLoader();
     runLoader();

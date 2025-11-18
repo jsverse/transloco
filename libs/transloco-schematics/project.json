@@ -8,17 +8,12 @@
       "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/transloco/schematics",
+        "outputPath": "dist/libs/transloco-schematics",
         "main": "",
         "tsConfig": "libs/transloco-schematics/tsconfig.lib.json",
         "assets": [
           {
             "glob": "**/*.json",
-            "input": "libs/transloco-schematics/src",
-            "output": "./src"
-          },
-          {
-            "glob": "**/*.__ts__",
             "input": "libs/transloco-schematics/src",
             "output": "./src"
           }

@@ -17,15 +17,21 @@ describe('TranslocoMissingHandler', () => {
     expect(result).toEqual('myKey');
   }
 
-  it('should notify a warning message', () => {
+  it(`GIVEN default config
+      WHEN handling a missing key
+      THEN should notify a warning message`, () => {
     assertLog();
   });
 
-  it('should not notify a warning message for production mode', () => {
+  it(`GIVEN production mode is enabled
+      WHEN handling a missing key
+      THEN should not notify a warning message`, () => {
     assertLog({ prodMode: true }, false);
   });
 
-  it('should not notify a warning message when logMissingKey is false', () => {
+  it(`GIVEN logMissingKey is set to false
+      WHEN handling a missing key
+      THEN should not notify a warning message`, () => {
     assertLog(
       {
         missingHandler: {

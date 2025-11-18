@@ -1,6 +1,6 @@
-import * as kebabCase from 'lodash.kebabcase';
 import { sync as globSync } from 'glob';
 import { readFileSync, outputFileSync, outputJsonSync } from 'fs-extra';
+import { dasherize } from '@angular-devkit/core/src/utils/strings';
 
 const regex =
   /<([\w-]*)\s*(?=[^>]*i18n)[^>]*i18n(?:(?:=("|')(?<attrValue>[^>]*?)\2)|(?:-(?<propName>[\w-]*)[^>]*\4=("|')(?<propValue>[^>]*?)\5))?[^>]*(?:>(?<innerText>[^]*?)<\/\1)?/g;
@@ -38,7 +38,7 @@ export function run({ input, output, langs }) {
 function resolveKey(attrValue, value) {
   let key = value;
   if (!attrValue) {
-    return kebabCase(value);
+    return dasherize(value);
   }
 
   if (attrValue) {
@@ -47,7 +47,7 @@ function resolveKey(attrValue, value) {
     key = hasCustomId ? splitCustomId[1] : key;
   }
 
-  key = kebabCase(key);
+  key = dasherize(key);
   return key;
 }
 
@@ -79,7 +79,7 @@ function getTranslation(template) {
       }
     }
 
-    key = kebabCase(key);
+    key = dasherize(key);
     keyValue = keyValue.trim().replace(/(\r\n|\n|\r)/gm, '');
 
     if (context) {

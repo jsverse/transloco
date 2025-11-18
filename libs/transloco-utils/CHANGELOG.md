@@ -1,3 +1,34 @@
+## 8.2.0 (2025-11-15)
+
+This was a version bump only for transloco-utils to align it with other projects, there were no code changes.
+
+## 8.1.0 (2025-10-11)
+
+This was a version bump only for transloco-utils to align it with other projects, there were no code changes.
+
+## 8.0.2 (2025-09-26)
+
+This was a version bump only for transloco-utils to align it with other projects, there were no code changes.
+
+## 8.0.1 (2025-09-26)
+
+This was a version bump only for transloco-utils to align it with other projects, there were no code changes.
+
+# 8.0.0 (2025-09-14)
+
+### 💡 Refactor
+
+- **utils:** 💡 update node version ([a1f5b097](https://github.com/jsverse/transloco/commit/a1f5b097))
+
+### ⚠ BREAKING CHANGES
+
+- **utils:** 🧨 Minimum node version is now 18
+
+### ❤️ Thank You
+
+- chaitanay94
+- Shahar Kazaz
+
 ## 7.0.2 (2024-07-26)
 
 ### 🩹 Fixes

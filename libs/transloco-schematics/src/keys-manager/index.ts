@@ -1,14 +1,17 @@
-import { execSync } from 'child_process';
+import { execSync } from 'node:child_process';
 
 import { Rule, SchematicsException, Tree } from '@angular-devkit/schematics';
 import { getConfiguredPackageManager } from '@angular/cli/src/utilities/config';
 import { TranslocoGlobalConfig } from '@jsverse/transloco-utils';
 import { from, map } from 'rxjs';
 
-import { addScriptToPackageJson } from '../utils/package';
-import { getWorkspace, setWorkspace } from '../utils/projects';
-import { updateConfig } from '../utils/transloco';
-import { getConfig } from '../utils/config';
+import {
+  updateGlobalConfig,
+  getGlobalConfig,
+  getWorkspace,
+  setWorkspace,
+  addScriptToPackageJson,
+} from '../../schematics-core';
 
 import { SchemaOptions } from './schema';
 
@@ -80,7 +83,7 @@ function addKeysDetectiveScript(host: Tree, strategy: string) {
 }
 
 function updateTranslocoConfig(host, options) {
-  const config: TranslocoGlobalConfig = getConfig() || {};
+  const config: TranslocoGlobalConfig = getGlobalConfig() || {};
   let shouldUpdate = false;
   if (!config.rootTranslationsPath) {
     if (!options.translationPath) {
@@ -107,7 +110,7 @@ function updateTranslocoConfig(host, options) {
   }
 
   if (shouldUpdate) {
-    updateConfig(host, config);
+    updateGlobalConfig(host, config);
   }
 }
 

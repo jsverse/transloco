@@ -11,7 +11,9 @@ describe('Multi Langs', () => {
   let spectator: SpectatorHost<TranslocoDirective>;
   const createHost = createFactory();
 
-  it('should support multi langs', fakeAsync(() => {
+  it(`GIVEN directives with different lang inputs
+      WHEN translations are loaded and active lang changes
+      THEN should render correct translations per directive`, fakeAsync(() => {
     spectator = createHost(
       `
       <section *transloco="let t;">
@@ -41,7 +43,9 @@ describe('Multi Langs', () => {
     expect(spectator.queryHost('h2')).toHaveText('home spanish');
   }));
 
-  it('should respect scopes', fakeAsync(() => {
+  it(`GIVEN directives with different langs and scopes
+      WHEN translations are loaded and active lang changes
+      THEN should render correct scoped translations per directive`, fakeAsync(() => {
     spectator = createHost(
       `
       <section *transloco="let t;">
@@ -76,7 +80,9 @@ describe('Multi Langs', () => {
     expect(spectator.queryHost('h2')).toHaveText('Admin Lazy english');
   }));
 
-  it('should not change the static lang', fakeAsync(() => {
+  it(`GIVEN nested directives with static lang marker
+      WHEN active lang changes
+      THEN should keep static lang unchanged`, fakeAsync(() => {
     spectator = createHost(
       `
       <section *transloco="let t;">

@@ -7,7 +7,6 @@
     "prepare": "husky",
     "commit": "git-cz",
     "start": "nx run transloco-playground:serve",
-    "build": "node scripts/build.mjs",
     "build:playground": "nx build transloco-playground --configuration=docs",
     "ci:test": "nx run-many --target=test --all",
     "ci:build": "nx run-many --target=build --all",
@@ -15,7 +14,7 @@
     "ci:e2e": "nx run transloco-playground-e2e:e2e:ci",
     "e2e": "nx run transloco-playground-e2e:e2e",
     "pre-commit": "node scripts/pre-commit.js && lint-staged --allow-empty",
-    "release:pkg-pr-new": "npx pkg-pr-new@^0.0.30 publish --compact ./dist/libs/*"
+    "release:pkg-pr-new": "npx pkg-pr-new@0.0.54 publish './dist/libs/*'"
   },
   "dependencies": {
     "@angular/animations": "18.2.9",
@@ -26,6 +25,7 @@
     "@angular/platform-browser": "18.2.9",
     "@angular/platform-browser-dynamic": "18.2.9",
     "@angular/router": "18.2.9",
+    "@jsverse/utils": "1.0.0-beta.5",
     "@messageformat/core": "3.0.0",
     "bootstrap": "5.3.1",
     "chalk": "4.1.2",
@@ -36,8 +36,6 @@
     "flat": "6.0.1",
     "fs-extra": "11.1.1",
     "glob": "10.3.3",
-    "lodash.kebabcase": "4.1.1",
-    "replace-in-file": "^7.0.1",
     "rxjs": "7.8.0",
     "tslib": "2.3.1",
     "zone.js": "~0.14.10"
@@ -85,6 +83,7 @@
     "jasmine-spec-reporter": "7.0.0",
     "jest": "29.7.0",
     "jest-environment-jsdom": "29.7.0",
+    "jest-environment-node": "^29.7.0",
     "jest-preset-angular": "14.4.2",
     "karma": "6.4.3",
     "karma-chrome-launcher": "3.2.0",
@@ -93,12 +92,14 @@
     "karma-jasmine": "5.1.0",
     "karma-jasmine-html-reporter": "2.1.0",
     "lint-staged": "15.2.7",
+    "memfs": "4.17.0",
     "ng-packagr": "18.2.1",
     "nx": "19.8.9",
     "prettier": "3.3.2",
     "rimraf": "5.0.7",
     "ts-jest": "29.1.5",
     "ts-mocks": "3.0.1",
+    "ts-node": "10.9.1",
     "typescript": "5.5.4",
     "verdaccio": "5.31.1"
   },

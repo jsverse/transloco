@@ -3,7 +3,7 @@ import { Inject, Injectable, InjectionToken } from '@angular/core';
 import { TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 
 export const TRANSLOCO_FALLBACK_STRATEGY =
-  new InjectionToken<TranslocoFallbackStrategy>(
+  /* @__PURE__ */ new InjectionToken<TranslocoFallbackStrategy>(
     ngDevMode ? 'TRANSLOCO_FALLBACK_STRATEGY' : '',
   );
 

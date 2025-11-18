@@ -25,7 +25,9 @@ describe('TranslocoDatePipe', () => {
     intlSpy = spyOn(Intl, 'DateTimeFormat').and.callThrough();
   });
 
-  it('should transform date to locale formatted date', () => {
+  it(`GIVEN a date object
+      WHEN transforming to locale formatted date
+      THEN it should format according to current locale`, () => {
     spectator = pipeFactory(`{{ date | translocoDate }}`, {
       hostProps: {
         date,
@@ -34,7 +36,9 @@ describe('TranslocoDatePipe', () => {
     expect(spectator.element).toHaveText('10/7/2019');
   });
 
-  it('should consider a given format over the current locale', () => {
+  it(`GIVEN a custom format config
+      WHEN transforming date
+      THEN it should use the given format over current locale`, () => {
     spectator = pipeFactory(`{{ date | translocoDate:config }}`, {
       hostProps: {
         date,
@@ -46,7 +50,9 @@ describe('TranslocoDatePipe', () => {
     expect(timeStyle).toEqual('medium');
   });
 
-  it('should consider a global date config', () => {
+  it(`GIVEN a global date config
+      WHEN transforming date
+      THEN it should apply the global config`, () => {
     spectator = pipeFactory(`{{ date | translocoDate }}`, {
       hostProps: {
         date,
@@ -58,7 +64,9 @@ describe('TranslocoDatePipe', () => {
     expect(timeStyle).toEqual('medium');
   });
 
-  it('should consider a locale config over global', () => {
+  it(`GIVEN locale-specific config and es-ES locale
+      WHEN transforming date
+      THEN it should use locale config over global config`, () => {
     spectator = pipeFactory(`{{ date | translocoDate }}`, {
       hostProps: {
         date,
@@ -74,7 +82,9 @@ describe('TranslocoDatePipe', () => {
     expect(timeStyle).toEqual('long');
   });
 
-  it('should consider a given config over the global config', () => {
+  it(`GIVEN custom config and global config
+      WHEN transforming date
+      THEN it should use given config over global config`, () => {
     spectator = pipeFactory(`{{ date | translocoDate:config }}`, {
       hostProps: {
         date,
@@ -88,21 +98,29 @@ describe('TranslocoDatePipe', () => {
   });
 
   describe('None date values', () => {
-    it('should handle null', () => {
+    it(`GIVEN null value
+        WHEN transforming to date
+        THEN it should return empty string`, () => {
       spectator = pipeFactory(`{{ null | translocoDate }}`);
       expect(spectator.element).toHaveText('');
     });
-    it('should handle {}', () => {
+    it(`GIVEN empty object
+        WHEN transforming to date
+        THEN it should return empty string`, () => {
       spectator = pipeFactory(`{{ {} | translocoDate }}`);
       expect(spectator.element).toHaveText('');
     });
-    it('should handle none number string', () => {
+    it(`GIVEN non-numeric string
+        WHEN transforming to date
+        THEN it should return empty string`, () => {
       spectator = pipeFactory(`{{ 'none number string' | translocoDate }}`);
       expect(spectator.element).toHaveText('');
     });
   });
 
-  it('should transform number to date', () => {
+  it(`GIVEN a timestamp number (0) with UTC timezone
+      WHEN transforming to date
+      THEN it should format as epoch date`, () => {
     spectator = pipeFactory(`{{ date | translocoDate:config }}`, {
       hostProps: {
         date: 0,
@@ -112,7 +130,9 @@ describe('TranslocoDatePipe', () => {
     expect(spectator.element).toHaveText('1/1/1970');
   });
 
-  it('should transform string to date', () => {
+  it(`GIVEN a date string
+      WHEN transforming to date
+      THEN it should parse and format the date`, () => {
     spectator = pipeFactory(`{{ date | translocoDate:config }}`, {
       hostProps: {
         date: '2019-02-08',
@@ -121,7 +141,9 @@ describe('TranslocoDatePipe', () => {
     expect(spectator.element).toHaveText('2/8/2019');
   });
 
-  it('should transform an ISO 8601 string to date', () => {
+  it(`GIVEN an ISO 8601 string with UTC timezone
+      WHEN transforming to date with en-US locale
+      THEN it should format with locale and timezone applied`, () => {
     spectator = pipeFactory(`{{ date | translocoDate:config:locale }}`, {
       hostProps: {
         date: '2019-09-12T19:51:33Z',

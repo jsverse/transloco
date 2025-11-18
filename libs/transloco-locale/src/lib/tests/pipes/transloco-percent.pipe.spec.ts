@@ -20,32 +20,44 @@ describe('TranslocoPercentPipe', () => {
     intlSpy = spyOn(Intl, 'NumberFormat').and.callThrough();
   });
 
-  it('should transform number to locale format number', () => {
+  it(`GIVEN a number value
+      WHEN transforming to percent
+      THEN it should format as percentage`, () => {
     spectator = pipeFactory(getPipeTpl(1));
     expect(spectator.element).toHaveText('100%');
   });
 
-  it('should transform string to locale format number', () => {
+  it(`GIVEN a string number value
+      WHEN transforming to percent
+      THEN it should format as percentage`, () => {
     spectator = pipeFactory(getPipeTpl('1'));
     expect(spectator.element).toHaveText('100%');
   });
 
   describe('None transformable values', () => {
-    it('should handle null', () => {
+    it(`GIVEN null value
+        WHEN transforming to percent
+        THEN it should return empty string`, () => {
       spectator = pipeFactory(getPipeTpl(null));
       expect(spectator.element).toHaveText('');
     });
-    it('should handle {}', () => {
+    it(`GIVEN empty object
+        WHEN transforming to percent
+        THEN it should return empty string`, () => {
       spectator = pipeFactory(getPipeTpl({}));
       expect(spectator.element).toHaveText('');
     });
-    it('should handle none number string', () => {
+    it(`GIVEN non-numeric string
+        WHEN transforming to percent
+        THEN it should return empty string`, () => {
       spectator = pipeFactory(getPipeTpl('none number string'));
       expect(spectator.element).toHaveText('');
     });
   });
 
-  it('should use default config options', () => {
+  it(`GIVEN global config with default options
+      WHEN transforming to percent
+      THEN it should use default config options`, () => {
     spectator = pipeFactory(getPipeTpl('1'), {
       providers: [provideTranslocoLocaleConfigMock(LOCALE_CONFIG_MOCK)],
     });
@@ -54,7 +66,9 @@ describe('TranslocoPercentPipe', () => {
     expect(maximumFractionDigits).toEqual(2);
   });
 
-  it('should use passed digit options instead of default options', () => {
+  it(`GIVEN custom digit options
+      WHEN transforming to percent
+      THEN it should use passed options instead of defaults`, () => {
     spectator = pipeFactory(
       getPipeTpl('1', '{ useGrouping: true, maximumFractionDigits: 3 }'),
     );

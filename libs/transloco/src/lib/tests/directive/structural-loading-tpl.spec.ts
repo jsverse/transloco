@@ -11,7 +11,9 @@ describe('Loading Template', () => {
   let spectator: SpectatorHost<TranslocoDirective>;
   const createHost = createFactory();
 
-  it('should attach and detach view with inline loader template', fakeAsync(() => {
+  it(`GIVEN directive with inline loading template
+      WHEN scoped translations are loading
+      THEN should attach and detach loading view`, fakeAsync(() => {
     spyOn<TemplateHandler>(
       TemplateHandler.prototype,
       'attachView',
@@ -38,7 +40,9 @@ describe('Loading Template', () => {
     expect(TemplateHandler.prototype.detachView).toHaveBeenCalledTimes(1);
   }));
 
-  it('should not attachView if no inline loader template has provided', () => {
+  it(`GIVEN directive without loading template
+      WHEN scoped translations are loading
+      THEN should not attach loading view`, () => {
     spyOn<TemplateHandler>(
       TemplateHandler.prototype,
       'attachView',
@@ -52,7 +56,9 @@ describe('Loading Template', () => {
     expect(TemplateHandler.prototype.attachView).not.toHaveBeenCalled();
   });
 
-  it('should not attachView if the translation have already loaded', fakeAsync(() => {
+  it(`GIVEN directive with inline loading template
+      WHEN translations are already loaded
+      THEN should not attach loading view`, fakeAsync(() => {
     spyOn<TemplateHandler>(
       TemplateHandler.prototype,
       'attachView',
@@ -83,7 +89,9 @@ describe('Custom loading template', () => {
     providers: [...providersMock, loadingTemplateMock],
   });
 
-  it('should call attach view with provided template', fakeAsync(() => {
+  it(`GIVEN custom loading template configured
+      WHEN scoped translations are loading
+      THEN should attach and detach custom loading view`, fakeAsync(() => {
     spyOn<TemplateHandler>(
       TemplateHandler.prototype,
       'attachView',
@@ -109,7 +117,9 @@ describe('Custom loading template', () => {
     expect(TemplateHandler.prototype.detachView).toHaveBeenCalled();
   }));
 
-  it('should use the inline loader template instead of default', fakeAsync(() => {
+  it(`GIVEN custom loading template and inline template
+      WHEN scoped translations are loading
+      THEN should use inline template over default`, fakeAsync(() => {
     spectator = createHost(`
         <section *transloco="let t; scope: 'lazy-page'; loadingTpl: loading">
           <h1 data-cy="lazy-page">{{ t('title') }}</h1>

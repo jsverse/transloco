@@ -22,6 +22,7 @@ import {
   tap,
 } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { isEmpty, isNil, isString, size, toCamelCase } from '@jsverse/utils';
 
 import {
   DefaultLoader,
@@ -34,7 +35,6 @@ import {
 } from './transloco.transpiler';
 import {
   AvailableLangs,
-  HashMap,
   InlineLoader,
   LangDefinition,
   LoadOptions,
@@ -44,17 +44,7 @@ import {
   Translation,
   TranslocoEvents,
   TranslocoScope,
-} from './types';
-import {
-  flatten,
-  isEmpty,
-  isNil,
-  isScopeObject,
-  isString,
-  size,
-  toCamelCase,
-  unflatten,
-} from './helpers';
+} from './transloco.types';
 import { TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 import {
   TRANSLOCO_MISSING_HANDLER,
@@ -69,14 +59,17 @@ import {
   TRANSLOCO_FALLBACK_STRATEGY,
   TranslocoFallbackStrategy,
 } from './transloco-fallback-strategy';
+import { getFallbacksLoaders } from './get-fallbacks-loaders';
+import { resolveLoader } from './resolve-loader';
+import { flatten, unflatten } from './utils/flat.utils';
+import { HashMap } from './utils/type.utils';
 import {
   getEventPayload,
   getLangFromScope,
   getScopeFromLang,
+  isScopeObject,
   resolveInlineLoader,
-} from './shared';
-import { getFallbacksLoaders } from './get-fallbacks-loaders';
-import { resolveLoader } from './resolve-loader';
+} from './utils/scope.utils';
 
 let service: TranslocoService;
 
@@ -290,11 +283,15 @@ export class TranslocoService {
 
     if (Array.isArray(key)) {
       return key.map((k) =>
-        this.translate(scope ? `${scope}.${k}` : k, params, resolveLang),
+        this.translate(
+          this.config.scopes.autoPrefixKeys && scope ? `${scope}.${k}` : k,
+          params,
+          resolveLang,
+        ),
       ) as any;
     }
 
-    key = scope ? `${scope}.${key}` : key;
+    key = this.config.scopes.autoPrefixKeys && scope ? `${scope}.${key}` : key;
 
     const translation = this.getTranslation(resolveLang);
     const value = translation[key];
@@ -402,7 +399,7 @@ export class TranslocoService {
       if (Array.isArray(key)) {
         return key.map((k) =>
           this.translateObject(
-            scope ? `${scope}.${k}` : k,
+            this.config.scopes.autoPrefixKeys && scope ? `${scope}.${k}` : k,
             params!,
             resolveLang,
           ),
@@ -410,7 +407,8 @@ export class TranslocoService {
       }
 
       const translation = this.getTranslation(resolveLang);
-      key = scope ? `${scope}.${key}` : key;
+      key =
+        this.config.scopes.autoPrefixKeys && scope ? `${scope}.${key}` : key;
 
       const value = unflatten(this.getObjectByKey(translation, key));
       /* If an empty object was returned we want to try and translate the key as a string and not an object */

@@ -5,7 +5,9 @@ describe('LangResolver', () => {
 
   beforeEach(() => (resolver = new LangResolver()));
 
-  it('should return inline lang', () => {
+  it(`GIVEN inline lang is provided
+      WHEN resolver resolves language
+      THEN should return inline lang`, () => {
     expect(
       resolver.resolve({
         inline: 'es',
@@ -15,7 +17,9 @@ describe('LangResolver', () => {
     ).toEqual('es');
   });
 
-  it('should return provider lang', () => {
+  it(`GIVEN provider lang is provided
+      WHEN resolver resolves language
+      THEN should return provider lang`, () => {
     expect(
       resolver.resolve({
         inline: undefined,
@@ -25,7 +29,9 @@ describe('LangResolver', () => {
     ).toEqual('es');
   });
 
-  it('should return active lang', () => {
+  it(`GIVEN no inline or provider lang
+      WHEN resolver resolves language
+      THEN should return active lang`, () => {
     expect(
       resolver.resolve({
         inline: undefined,
@@ -35,7 +41,9 @@ describe('LangResolver', () => {
     ).toEqual('en');
   });
 
-  it('should support static pipe - inline', () => {
+  it(`GIVEN inline lang with static pipe
+      WHEN resolver resolves language
+      THEN should return lang without static marker`, () => {
     expect(
       resolver.resolve({
         inline: 'es|static',
@@ -45,7 +53,9 @@ describe('LangResolver', () => {
     ).toEqual('es');
   });
 
-  it('should support static pipe - provider', () => {
+  it(`GIVEN provider lang with static pipe
+      WHEN resolver resolves language
+      THEN should return lang without static marker`, () => {
     expect(
       resolver.resolve({
         inline: undefined,
@@ -55,7 +65,9 @@ describe('LangResolver', () => {
     ).toEqual('es');
   });
 
-  it('should always return the active lang on the second time - provider', () => {
+  it(`GIVEN provider lang is resolved
+      WHEN resolver is called second time
+      THEN should return active lang`, () => {
     expect(
       resolver.resolve({
         inline: undefined,
@@ -73,7 +85,9 @@ describe('LangResolver', () => {
     ).toEqual('en');
   });
 
-  it('should always return the active lang on the second time - inline', () => {
+  it(`GIVEN inline lang is resolved
+      WHEN resolver is called second time
+      THEN should return active lang`, () => {
     expect(
       resolver.resolve({
         inline: 'es',
@@ -91,14 +105,18 @@ describe('LangResolver', () => {
     ).toEqual('en');
   });
 
-  it('should resolve the lang based on the scope', () => {
+  it(`GIVEN various scope/lang combinations
+      WHEN resolving lang from scope
+      THEN should extract lang correctly`, () => {
     expect(resolver.resolveLangBasedOnScope('es')).toEqual('es');
     expect(resolver.resolveLangBasedOnScope('todos/es')).toEqual('es');
     expect(resolver.resolveLangBasedOnScope('todos/nested/en')).toEqual('en');
     expect(resolver.resolveLangBasedOnScope('')).toEqual('');
   });
 
-  it('should resolve full lang', () => {
+  it(`GIVEN lang and optional scope
+      WHEN resolving full lang path
+      THEN should construct correct path`, () => {
     expect(resolver.resolveLangPath('en', undefined)).toEqual('en');
     expect(resolver.resolveLangPath('en', 'todos')).toEqual('todos/en');
     expect(resolver.resolveLangPath('es', 'todos/nested')).toEqual(

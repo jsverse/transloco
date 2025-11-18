@@ -23,31 +23,41 @@ describe('TranslocoDecimalPipe', () => {
     intlSpy = spyOn(Intl, 'NumberFormat').and.callThrough();
   });
 
-  it('should transform number to locale format number', () => {
+  it(`GIVEN a number value
+      WHEN transforming to decimal
+      THEN it should format with locale grouping`, () => {
     spectator = pipeFactory(`{{ 123456 | translocoDecimal }}`);
     expect(spectator.element).toHaveText('123,456');
   });
 
-  it('should transform string to locale format number', () => {
+  it(`GIVEN a string number value
+      WHEN transforming to decimal
+      THEN it should format with locale grouping`, () => {
     spectator = pipeFactory(`{{ '123456' | translocoDecimal }}`);
     expect(spectator.element).toHaveText('123,456');
   });
 
-  it('should take the format from the locale', () => {
+  it(`GIVEN es-ES locale
+      WHEN transforming to decimal
+      THEN it should use locale-specific format`, () => {
     spectator = pipeFactory(`{{ 123456 | translocoDecimal }}`, {
       providers: [provideTranslocoServiceMock('es-ES')],
     });
     expect(spectator.element).toHaveText('123.456');
   });
 
-  it('should take the number from the locale', () => {
+  it(`GIVEN es-ES locale parameter
+      WHEN transforming to decimal
+      THEN it should use specified locale format`, () => {
     spectator = pipeFactory(`{{ 123456 | translocoDecimal:{}:'es-ES' }}`, {
       providers: [provideTranslocoServiceMock('es-ES')],
     });
     expect(spectator.element).toHaveText('123.456');
   });
 
-  it('should use default config options', () => {
+  it(`GIVEN global config with default options
+      WHEN transforming to decimal
+      THEN it should use default config options`, () => {
     spectator = pipeFactory(`{{ 123456 | translocoDecimal }}`, {
       providers: [provideTranslocoLocaleConfigMock(LOCALE_CONFIG_MOCK)],
     });
@@ -56,7 +66,9 @@ describe('TranslocoDecimalPipe', () => {
     expect(maximumFractionDigits).toEqual(2);
   });
 
-  it('should use passed digit options instead of default options', () => {
+  it(`GIVEN custom digit options
+      WHEN transforming to decimal
+      THEN it should use passed options instead of defaults`, () => {
     spectator = pipeFactory(
       `{{ 123456 | translocoDecimal:{ useGrouping: true, maximumFractionDigits: 3 } }}`,
     );
@@ -66,15 +78,21 @@ describe('TranslocoDecimalPipe', () => {
   });
 
   describe('None transformable values', () => {
-    it('should handle null', () => {
+    it(`GIVEN null value
+        WHEN transforming to decimal
+        THEN it should return empty string`, () => {
       spectator = pipeFactory(`{{ null | translocoDecimal }}`);
       expect(spectator.element).toHaveText('');
     });
-    it('should handle {}', () => {
+    it(`GIVEN empty object
+        WHEN transforming to decimal
+        THEN it should return empty string`, () => {
       spectator = pipeFactory(`{{ {} | translocoDecimal }}`);
       expect(spectator.element).toHaveText('');
     });
-    it('should handle none number string', () => {
+    it(`GIVEN non-numeric string
+        WHEN transforming to decimal
+        THEN it should return empty string`, () => {
       spectator = pipeFactory(`{{ 'none number string' | translocoDecimal }}`);
       expect(spectator.element).toHaveText('');
     });

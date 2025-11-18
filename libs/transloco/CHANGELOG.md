@@ -1,5 +1,93 @@
-## 7.6.1 (2025-03-24)
+## 8.2.0 (2025-11-15)
 
+
+### 🚀 Features
+
+- **transloco:** 🎸 Add config option for scope auto prefixing ([#868](https://github.com/jsverse/transloco/pull/868))
+
+
+### ❤️  Thank You
+
+- Baptiste Moreau @FU856BMO
+
+## 8.1.0 (2025-10-11)
+
+
+### 🚀 Features
+
+- **transloco:** 🎸 auto-detect public folder in ng-add ([#879](https://github.com/jsverse/transloco/pull/879))
+
+
+### 🩹 Fixes
+
+- **transloco:** 🐛 expose TranslocoLoaderData ([7c5b19ad](https://github.com/jsverse/transloco/commit/7c5b19ad))
+
+
+### ❤️  Thank You
+
+- Shahar Kazaz @shaharkazaz
+
+## 8.0.2 (2025-09-26)
+
+
+### 🩹 Fixes
+
+- **transloco:** 🐛 expose TranslocoLoaderData ([7c5b19ad](https://github.com/jsverse/transloco/commit/7c5b19ad))
+
+
+### ❤️  Thank You
+
+- Shahar Kazaz @shaharkazaz
+
+## 8.0.1 (2025-09-26)
+
+
+### 🩹 Fixes
+
+- **transloco:** 🐛 add utils and transloco-utils as dependencies ([#872](https://github.com/jsverse/transloco/pull/872))
+
+
+### ❤️  Thank You
+
+- Cédric Exbrayat @cexbrayat
+
+# 8.0.0 (2025-09-14)
+
+### 🩹 Fixes
+
+- **transloco:** 🐛 fix wrong import ([e65f9f28](https://github.com/jsverse/transloco/commit/e65f9f28))
+
+### 🤖 Chore
+
+- **transloco:** 🤖 move to @jsverse/utils ([aae425b6](https://github.com/jsverse/transloco/commit/aae425b6))
+- **transloco:** 🤖 Add package optimizations ([0fad5d06](https://github.com/jsverse/transloco/commit/0fad5d06))
+- **transloco:** 🤖 sync schematics-core ([50dd94ba](https://github.com/jsverse/transloco/commit/50dd94ba))
+
+### 💡 Refactor
+
+- **transloco:** 💡 Remove all the schematics but init ([6cd2f3e2](https://github.com/jsverse/transloco/commit/6cd2f3e2))
+- **transloco:** 💡 set tslib as dependency ([e76cb87a](https://github.com/jsverse/transloco/commit/e76cb87a))
+- **transloco:** 💡 remove flat from transloco's API ([1d241984](https://github.com/jsverse/transloco/commit/1d241984))
+
+### 💍 Tests
+
+- **transloco:** 💍 silent console errors in fallback specs ([8e27859a](https://github.com/jsverse/transloco/commit/8e27859a))
+
+### ✏️ Docs
+
+- **transloco:** ✏️ update breaking changes file ([5435da74](https://github.com/jsverse/transloco/commit/5435da74))
+
+### ⚠ BREAKING CHANGES
+
+- **transloco:** 🧨 ng-add is the only available schematic in @jsverse/transloco now
+- **transloco:** 🧨 Some utility functions are no longer part of Transloco's public API
+- **transloco:** 🧨 Minimum node version is now 18
+
+### ❤️ Thank You
+
+- shaharkazaz @shaharkazaz
+
+## 7.6.1 (2025-03-24)
 
 ### 🩹 Fixes
 
@@ -7,11 +95,9 @@
 
 ## 7.6.0 (2025-03-22)
 
-
 ### 🚀 Features
 
 - **transloco:** 🎸 Add a `translateSignal` ([#838](https://github.com/jsverse/transloco/pull/838))
-
 
 ### 🩹 Fixes
 
