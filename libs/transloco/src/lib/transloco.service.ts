@@ -38,6 +38,7 @@ import {
   InlineLoader,
   LangDefinition,
   LoadOptions,
+  ProviderScope,
   SetTranslationOptions,
   TranslateObjectParams,
   TranslateParams,
@@ -283,15 +284,11 @@ export class TranslocoService {
 
     if (Array.isArray(key)) {
       return key.map((k) =>
-        this.translate(
-          this.config.scopes.autoPrefixKeys && scope ? `${scope}.${k}` : k,
-          params,
-          resolveLang,
-        ),
+        this.translate(this.autoPrefixKey(k, scope), params, resolveLang),
       ) as any;
     }
 
-    key = this.config.scopes.autoPrefixKeys && scope ? `${scope}.${key}` : key;
+    key = this.autoPrefixKey(key, scope);
 
     const translation = this.getTranslation(resolveLang);
     const value = translation[key];
@@ -322,7 +319,7 @@ export class TranslocoService {
   selectTranslate<T = any>(
     key: TranslateParams,
     params?: HashMap,
-    lang?: string | TranslocoScope | TranslocoScope[],
+    lang?: TranslocoScope | TranslocoScope[],
     _isObject = false,
   ): Observable<T> {
     let inlineLoader: InlineLoader | undefined;
@@ -338,7 +335,10 @@ export class TranslocoService {
       return this.langChanges$.pipe(switchMap((lang) => load(lang)));
     }
 
-    lang = Array.isArray(lang) ? lang[0] : lang;
+    if (Array.isArray(lang)) {
+      lang = this.findBestScope(key, lang);
+    }
+
     if (isScopeObject(lang)) {
       // it's a scope object.
       const providerScope = lang;
@@ -367,6 +367,46 @@ export class TranslocoService {
    */
   private isScopeWithLang(lang: string) {
     return this.isLang(getLangFromScope(lang));
+  }
+
+  private autoPrefixKey(key: string, scope: string | undefined) {
+    return this.config.scopes.autoPrefixKeys && scope ? `${scope}.${key}` : key;
+  }
+
+  // Assume that all requested keys should have the same scope
+  private getRequestedScope(keys: TranslateParams) {
+    const key = Array.isArray(keys) ? keys[0] : keys;
+    return key.split('.')[0];
+  }
+
+  private isScopeObjectArray(
+    translocoScopes: TranslocoScope[],
+  ): translocoScopes is ProviderScope[] {
+    return translocoScopes.every((scope) => isScopeObject(scope));
+  }
+
+  private findBestScope(
+    params: TranslateParams,
+    translocoScopes: TranslocoScope[],
+  ) {
+    // If not using autoPrefixKeys, find the correct scope from the array
+    if (
+      !this.config.scopes.autoPrefixKeys &&
+      this.isScopeObjectArray(translocoScopes)
+    ) {
+      const requestedScope = this.getRequestedScope(params);
+      if (requestedScope) {
+        const matchingProviderScope = translocoScopes.find(
+          (providerScope) =>
+            this.getMappedScope(providerScope.scope) === requestedScope,
+        );
+        if (matchingProviderScope) {
+          return matchingProviderScope;
+        }
+      }
+    }
+
+    return translocoScopes[0];
   }
 
   /**
@@ -399,7 +439,7 @@ export class TranslocoService {
       if (Array.isArray(key)) {
         return key.map((k) =>
           this.translateObject(
-            this.config.scopes.autoPrefixKeys && scope ? `${scope}.${k}` : k,
+            this.autoPrefixKey(k, scope),
             params!,
             resolveLang,
           ),
@@ -407,8 +447,7 @@ export class TranslocoService {
       }
 
       const translation = this.getTranslation(resolveLang);
-      key =
-        this.config.scopes.autoPrefixKeys && scope ? `${scope}.${key}` : key;
+      key = this.autoPrefixKey(key, scope);
 
       const value = unflatten(this.getObjectByKey(translation, key));
       /* If an empty object was returned we want to try and translate the key as a string and not an object */
