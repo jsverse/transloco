@@ -1,4 +1,4 @@
-import { fakeAsync } from '@angular/core/testing';
+import { fakeAsync, TestBed } from '@angular/core/testing';
 
 import { createService, runLoader, inlineScope } from '../mocks';
 import { TranslocoService } from '../../transloco.service';
@@ -200,6 +200,39 @@ describe('selectTranslate', () => {
         expect(spy).toHaveBeenCalledWith(
           'Replaces standard Transloco - spanish',
         );
+      }));
+
+      it(`GIVEN a TranslocoService with autoPrefixKeys=false
+          WHEN subscribing to selectTranslate with an array of scope objects using inline loaders
+          THEN should resolve the correct translations and translate the scoped key`, fakeAsync(() => {
+        TestBed.resetTestingModule();
+        service = createService({
+          scopes: {
+            autoPrefixKeys: false,
+          },
+        });
+
+        const spy = jasmine.createSpy();
+        const desiredScope = {
+          scope: 'lazy-page',
+          loader: {
+            en: () => Promise.resolve({ message: 'lazy-message' }),
+          },
+        };
+        const otherScope = {
+          scope: 'other-page',
+          loader: {
+            en: () => Promise.resolve({ message: 'other-message' }),
+          },
+        };
+
+        service
+          .selectTranslate('lazyPage.message', {}, [otherScope, desiredScope])
+          .subscribe(spy);
+
+        runLoader();
+
+        expect(spy).toHaveBeenCalledWith('lazy-message');
       }));
     });
   });
