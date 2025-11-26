@@ -22,14 +22,15 @@ Assuming you've already added Transloco to your project, run the following schem
 {% tabs %}
 {% tab title="Angular CLI" %}
 ```bash
-ng g @jsverse/transloco:keys-manager
+pnpm add @jsverse/transloco-schematics
+ng g @jsverse/transloco-schematics:keys-manager
 ```
 {% endtab %}
 
 {% tab title="Nx 🐋" %}
 ```bash
-pnpm add @jsverse/transloco
-nx g @jsverse/transloco:keys-manager
+pnpm add @jsverse/transloco-schematics
+nx g @jsverse/transloco-schematics:keys-manager
 ```
 {% endtab %}
 {% endtabs %}
