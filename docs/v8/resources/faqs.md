@@ -37,9 +37,23 @@ const defaultLang = getBrowserLang() || 'en';
 
 ### Can I include HTML markup inside a translation?
 
-Yes, you can use HTML tags in your translations by binding the translated string to `innerHTML`.
+Yes, you can use HTML tags in your translations by binding the translated string to `innerHTML`. Here is a simple example:
 
-You can also check out ngx-transloco-markup.
+With key-value as:
+
+```json
+{ 
+  "contact": "Contact <a href=\"mailto:support@example.com\">support@example.com</a> for assistance." 
+}
+```
+
+And, in template:
+
+```angular-html
+<p [innerHTML]="t('contact')">
+```
+
+You can also check out [ngx-transloco-markup](https://github.com/dscheerens/ngx-transloco-markup).
 
 ***
 
