@@ -1,8 +1,9 @@
 import { Component, signal } from '@angular/core';
-import { fakeAsync } from '@angular/core/testing';
+import { fakeAsync, TestBed } from '@angular/core/testing';
 import { createComponentFactory, Spectator } from '@ngneat/spectator';
 
 import { TranslocoModule } from '../transloco.module';
+import { TranslocoTestingModule } from '../transloco-testing.module';
 import { translateSignal, translateObjectSignal } from '../transloco.signal';
 
 import { providersMock, runLoader } from './mocks';
@@ -129,4 +130,45 @@ describe('translateObjectSignal in component', () => {
       c: 'a.b.c Signal Changed english',
     });
   }));
+});
+
+describe('Synchronous translateSignal', () => {
+  @Component({
+    standalone: true,
+    imports: [TranslocoModule],
+    template: ` <div id="text">{{ translatedText() }}</div> `,
+  })
+  class TestComponentStatic {
+    translatedText = translateSignal('home');
+  }
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [
+        TestComponentStatic,
+        TranslocoTestingModule.forRoot({
+          translocoConfig: {
+            availableLangs: ['en'],
+            defaultLang: 'en',
+          },
+          langs: {
+            en: {
+              home: 'TranslatedHome',
+            },
+          },
+        }),
+      ],
+    }).compileComponents();
+  });
+
+  it(`GIVEN translateSignal with static key
+      WHEN translations are already loaded
+      THEN should syncronously render the translated text`, () => {
+    const fixture = TestBed.createComponent(TestComponentStatic);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('#text')?.textContent).toContain(
+      'TranslatedHome',
+    );
+  });
 });
