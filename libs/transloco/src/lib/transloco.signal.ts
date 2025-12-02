@@ -8,7 +8,7 @@ import {
   Signal,
 } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { switchMap } from 'rxjs';
+import { Observable, of, switchMap } from 'rxjs';
 
 import { TRANSLOCO_SCOPE } from './transloco-scope';
 import { TranslocoService } from './transloco.service';
@@ -58,7 +58,7 @@ export function translateSignal<T extends TranslateSignalKey>(
   const result = runInInjectionContext(injector, () => {
     const service = inject(TranslocoService);
     const scope = resolveScope(lang);
-    return toObservable(computerKeysAndParams(key, params)).pipe(
+    return computerKeysAndParams(key, params).pipe(
       switchMap((dynamic) =>
         service.selectTranslate(dynamic.key, dynamic.params, scope),
       ),
@@ -92,7 +92,7 @@ export function translateObjectSignal<T extends TranslateSignalKey>(
   const result = runInInjectionContext(injector, () => {
     const service = inject(TranslocoService);
     const scope = resolveScope(lang);
-    return toObservable(computerKeysAndParams(key, params)).pipe(
+    return computerKeysAndParams(key, params).pipe(
       switchMap((dynamic) =>
         service.selectTranslateObject(
           dynamic.key,
@@ -141,14 +141,26 @@ function isSignalParams(
 function computerKeysAndParams(
   key: TranslateSignalKey,
   params?: TranslateSignalParams,
-) {
+): Observable<{
+  key: string | string[];
+  params: HashMap | undefined;
+}> {
+  // Avoid async effect from toObservable for those that do not need it
+  if (!isSignalKey(key) && !isSignalParams(params)) {
+    return of({
+      key,
+      params,
+    });
+  }
   const computedKeys = isSignalKey(key)
     ? computerKeys(key)
     : computed(() => key);
   const computedParams = isSignalParams(params)
     ? computerParams(params)
     : computed(() => params);
-  return computed(() => ({ key: computedKeys(), params: computedParams() }));
+  return toObservable(
+    computed(() => ({ key: computedKeys(), params: computedParams() })),
+  );
 }
 
 function resolveScope(scope?: ScopeType) {
