@@ -1,6 +1,6 @@
 {
   "name": "@jsverse/transloco-optimize",
-  "version": "8.2.0",
+  "version": "8.2.1",
   "description": "Transloco optimization process for production environments",
   "main": "src/lib/transloco-optimize.js",
   "engines": {

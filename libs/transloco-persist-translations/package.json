@@ -1,6 +1,6 @@
 {
   "name": "@jsverse/transloco-persist-translations",
-  "version": "8.2.0",
+  "version": "8.2.1",
   "description": "Transloco persist translations",
   "publishConfig": {
     "access": "public"

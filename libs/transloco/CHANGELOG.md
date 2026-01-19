@@ -1,3 +1,15 @@
+## 8.2.1 (2026-01-19)
+
+
+### 🩹 Fixes
+
+- **transloco:** 🐛 Avoid toObservable on signal API + string key ([#895](https://github.com/jsverse/transloco/pull/895))
+
+
+### ❤️  Thank You
+
+- Andrew Steel
+
 ## 8.2.0 (2025-11-15)
 
 
