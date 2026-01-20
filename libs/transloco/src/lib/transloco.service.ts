@@ -338,7 +338,7 @@ export class TranslocoService {
       return this.langChanges$.pipe(switchMap((lang) => load(lang)));
     }
 
-    lang = Array.isArray(lang) ? lang[0] : lang;
+    lang = Array.isArray(lang) ? lang[lang.length - 1] : lang;
     if (isScopeObject(lang)) {
       // it's a scope object.
       const providerScope = lang;
