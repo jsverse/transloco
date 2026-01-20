@@ -22,6 +22,11 @@ export interface TranslocoConfig {
     keepCasing?: boolean;
     autoPrefixKeys?: boolean;
   };
+  /**
+   * @deprecated This option exists only for easing migration from the global `let service` pattern.
+   * It will be removed in a future version. Use Angular DI to inject TranslocoService instead.
+   */
+  exposeService?: boolean;
 }
 
 export const TRANSLOCO_CONFIG =
@@ -53,6 +58,7 @@ export const defaultConfig: TranslocoConfig = {
     keepCasing: false,
     autoPrefixKeys: true,
   },
+  exposeService: true,
 };
 
 type DeepPartial<T> =
