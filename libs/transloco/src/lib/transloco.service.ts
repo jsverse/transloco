@@ -103,9 +103,10 @@ export class TranslocoService {
   };
 
   private destroyRef = inject(DestroyRef);
-  private loader = inject<TranslocoLoader>(TRANSLOCO_LOADER, {
-    optional: true,
-  });
+  private loader =
+    inject<TranslocoLoader>(TRANSLOCO_LOADER, {
+      optional: true,
+    }) ?? new DefaultLoader(this.translations);
   private parser = inject<TranslocoTranspiler>(TRANSLOCO_TRANSPILER);
   private missingHandler = inject<TranslocoMissingHandler>(
     TRANSLOCO_MISSING_HANDLER,
@@ -117,9 +118,6 @@ export class TranslocoService {
 
   constructor() {
     const userConfig = inject<TranslocoConfig>(TRANSLOCO_CONFIG);
-    if (!this.loader) {
-      this.loader = new DefaultLoader(this.translations);
-    }
     service = this;
     this.config = JSON.parse(JSON.stringify(userConfig));
 
