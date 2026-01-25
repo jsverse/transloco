@@ -10,15 +10,14 @@
       "executor": "@nx/angular:package",
       "outputs": ["{workspaceRoot}/dist/libs/transloco-messageformat"],
       "options": {
-        "project": "libs/transloco-messageformat/ng-package.json"
+        "project": "libs/transloco-messageformat/ng-package.json",
+        "tsConfig": "libs/transloco-messageformat/tsconfig.lib.json"
       },
       "configurations": {
         "production": {
           "tsConfig": "libs/transloco-messageformat/tsconfig.lib.prod.json"
         },
-        "development": {
-          "tsConfig": "libs/transloco-messageformat/tsconfig.lib.json"
-        }
+        "development": {}
       },
       "defaultConfiguration": "production"
     },

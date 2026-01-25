@@ -14,18 +14,14 @@ import {
   createWorkspace,
   translationMocks,
 } from '../../schematics-core/testing';
-
 const collectionPath = path.join(__dirname, '../collection.json');
-
 describe('Split', () => {
   const schematicRunner = new SchematicTestRunner('schematics', collectionPath);
-
   let appTree: UnitTestTree;
   const options = {
     translationPath: 'src/assets/i18n',
     source: 'dist-i18n',
   };
-
   function readTranslation(
     tree: UnitTestTree,
     fileName: string,
@@ -33,21 +29,17 @@ describe('Split', () => {
   ) {
     return JSON.parse(tree.readContent(`${prefix}/${fileName}.json`));
   }
-
   function mockConfig(config: Partial<TranslocoGlobalConfig> = {}) {
     (getGlobalConfig as jest.Mock).mockReturnValue(config);
   }
-
   beforeEach(async () => {
     appTree = await createWorkspace(schematicRunner);
     mockConfig();
   });
-
   function setupMerged(enScopeMock, esScopeMock) {
     appTree.create(`${options.source}/es.json`, JSON.stringify(esScopeMock));
     appTree.create(`${options.source}/en.json`, JSON.stringify(enScopeMock));
   }
-
   describe('default strategy', () => {
     it(`GIVEN merged translation files in source directory
         WHEN split schematic runs on root content
@@ -57,19 +49,16 @@ describe('Split', () => {
       setupMerged(translatedEn, translatedEs);
       appTree.create(`${options.translationPath}/en.json`, '');
       appTree.create(`${options.translationPath}/es.json`, '');
-
       const tree = await schematicRunner.runSchematic(
         'split',
         options,
         appTree,
       );
-
       const resES = readTranslation(tree, 'es');
       const resEn = readTranslation(tree, 'en');
       expect(resES).toEqual(translatedEs);
       expect(resEn).toEqual(translatedEn);
     });
-
     it(`GIVEN merged translation files with nested scopes
         WHEN split schematic runs
         THEN translations are split into scoped directories preserving hierarchy`, async () => {
@@ -90,18 +79,15 @@ describe('Split', () => {
       appTree.create(`${options.translationPath}/scope/es.json`, '');
       appTree.create(`${options.translationPath}/scope/subscope/en.json`, '');
       appTree.create(`${options.translationPath}/scope/subscope/es.json`, '');
-
       const tree = await schematicRunner.runSchematic(
         'split',
         options,
         appTree,
       );
-
       const resES = readTranslation(tree, 'scope/es');
       const resEn = readTranslation(tree, 'scope/en');
       const resESSub = readTranslation(tree, 'scope/subscope/es');
       const resEnSub = readTranslation(tree, 'scope/subscope/en');
-
       expect(resESSub).toEqual(translatedEs.scope.subscope);
       expect(resEnSub).toEqual(translatedEn.scope.subscope);
       delete translatedEs.scope.subscope;
@@ -110,7 +96,6 @@ describe('Split', () => {
       expect(resEn).toEqual(translatedEn.scope);
     });
   });
-
   describe('scope map strategy', () => {
     it(`GIVEN global config with scopePathMap and merged translations
         WHEN split schematic runs
@@ -134,7 +119,6 @@ describe('Split', () => {
         options,
         appTree,
       );
-
       const resES = readTranslation(tree, 'es', scope);
       const resEn = readTranslation(tree, 'en', scope);
       expect(resES).toEqual(translatedEs.scope);

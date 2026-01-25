@@ -1,5 +1,4 @@
 // noinspection AngularUndefinedBinding
-
 import * as nodePath from 'node:path';
 
 import { vol } from 'memfs';
@@ -7,7 +6,6 @@ import { glob } from 'glob';
 
 import { run } from '../index';
 import { PIPE_IN_BINDING_REGEX, PIPE_REGEX } from '../migration-matchers';
-
 // Mock the fs module with memfs
 jest.mock('node:fs/promises', () => {
   const originalModule = jest.requireActual('node:fs/promises');
@@ -22,7 +20,6 @@ jest.mock('node:fs/promises', () => {
     }),
   };
 });
-
 jest.mock('glob', () => {
   const originalModule = jest.requireActual('glob');
   return {
@@ -30,20 +27,17 @@ jest.mock('glob', () => {
     sync: jest.fn().mockImplementation((pattern) => {
       // Get the directory from the pattern
       const [dir] = pattern.split('/**');
-
       return vol
         .readdirSync(dir, { recursive: true })
         .map((file) => nodePath.join(dir, file));
     }),
   };
 });
-
 describe('ngx-translate migration', () => {
   beforeEach(() => {
     // Reset the in-memory file system before each test
     vol.reset();
   });
-
   describe('Positive regex tests', () => {
     describe('Pipe in binding', () => {
       test.each([
@@ -87,12 +81,10 @@ describe('ngx-translate migration', () => {
         ({ testCase, match }) => {
           const regex = new RegExp(PIPE_IN_BINDING_REGEX, 'gm');
           const result = testCase.match(regex);
-
           expect(result).toMatchObject(match);
         },
       );
     });
-
     describe('Pipe', () => {
       test.each([
         {
@@ -132,13 +124,11 @@ describe('ngx-translate migration', () => {
         ({ testCase, match }) => {
           const regex = new RegExp(PIPE_REGEX, 'gm');
           const result = testCase.match(regex);
-
           expect(result).toMatchObject(match);
         },
       );
     });
   });
-
   describe('Negative regex tests', () => {
     describe('Pipe in binding', () => {
       test.each([
@@ -172,12 +162,10 @@ describe('ngx-translate migration', () => {
         ({ testCase }) => {
           const regex = new RegExp(PIPE_IN_BINDING_REGEX, 'gm');
           const result = testCase.match(regex);
-
           expect(result).toBeNull();
         },
       );
     });
-
     describe('Pipe', () => {
       test.each([
         {
@@ -205,13 +193,11 @@ describe('ngx-translate migration', () => {
         ({ testCase }) => {
           const regex = new RegExp(PIPE_REGEX, 'gm');
           const result = testCase.match(regex);
-
           expect(result).toBeNull();
         },
       );
     });
   });
-
   describe('HTML template', () => {
     it(`GIVEN HTML template files with ngx-translate pipes
         WHEN migration runs
@@ -225,14 +211,11 @@ describe('ngx-translate migration', () => {
         __dirname,
         'templates/pipes/transloco',
       );
-
       // Find all template files using glob
       const templateFiles = glob.sync('*.html', { cwd: ngxTranslateDir });
-
       // Create directories in memfs
       vol.mkdirSync(ngxTranslateDir, { recursive: true });
       vol.mkdirSync(translocoDir, { recursive: true });
-
       // Copy template files into memfs
       const fsReadFile = jest.requireActual('node:fs/promises').readFile;
       for (const file of templateFiles) {
@@ -241,7 +224,6 @@ describe('ngx-translate migration', () => {
           nodePath.join(ngxTranslateDir, file),
           'utf8',
         );
-
         // Write to memfs
         vol.writeFileSync(nodePath.join(ngxTranslateDir, file), sourceContent);
       }
@@ -251,7 +233,6 @@ describe('ngx-translate migration', () => {
       jest.spyOn(process, 'cwd').mockImplementation(() => __dirname);
       // Run the migration
       await run({ path: 'templates/pipes/ngx-translate' });
-
       // Verify that each file was updated correctly
       for (const file of templateFiles) {
         const updatedContent = vol.readFileSync(

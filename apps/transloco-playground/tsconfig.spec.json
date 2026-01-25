@@ -2,10 +2,12 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
-    "module": "commonjs",
+    "module": "preserve",
     "types": ["jasmine", "node"],
     "resolveJsonModule": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "moduleResolution": "bundler",
+    "isolatedModules": true
   },
   "files": ["src/test-setup.ts"],
   "include": ["**/*.spec.ts", "**/*.d.ts"]

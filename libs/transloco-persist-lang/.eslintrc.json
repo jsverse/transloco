@@ -24,7 +24,8 @@
             "prefix": "transloco-nx-shell",
             "style": "kebab-case"
           }
-        ]
+        ],
+        "@angular-eslint/prefer-standalone": "off"
       }
     },
     {
