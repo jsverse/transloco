@@ -1,10 +1,4 @@
-import {
-  DestroyRef,
-  inject,
-  Inject,
-  Injectable,
-  Optional,
-} from '@angular/core';
+import { DestroyRef, inject, Injectable } from '@angular/core';
 import {
   BehaviorSubject,
   catchError,
@@ -109,17 +103,20 @@ export class TranslocoService {
   };
 
   private destroyRef = inject(DestroyRef);
+  private loader = inject<TranslocoLoader>(TRANSLOCO_LOADER, {
+    optional: true,
+  });
+  private parser = inject<TranslocoTranspiler>(TRANSLOCO_TRANSPILER);
+  private missingHandler = inject<TranslocoMissingHandler>(
+    TRANSLOCO_MISSING_HANDLER,
+  );
+  private interceptor = inject<TranslocoInterceptor>(TRANSLOCO_INTERCEPTOR);
+  private fallbackStrategy = inject<TranslocoFallbackStrategy>(
+    TRANSLOCO_FALLBACK_STRATEGY,
+  );
 
-  constructor(
-    @Optional() @Inject(TRANSLOCO_LOADER) private loader: TranslocoLoader,
-    @Inject(TRANSLOCO_TRANSPILER) private parser: TranslocoTranspiler,
-    @Inject(TRANSLOCO_MISSING_HANDLER)
-    private missingHandler: TranslocoMissingHandler,
-    @Inject(TRANSLOCO_INTERCEPTOR) private interceptor: TranslocoInterceptor,
-    @Inject(TRANSLOCO_CONFIG) userConfig: TranslocoConfig,
-    @Inject(TRANSLOCO_FALLBACK_STRATEGY)
-    private fallbackStrategy: TranslocoFallbackStrategy,
-  ) {
+  constructor() {
+    const userConfig = inject<TranslocoConfig>(TRANSLOCO_CONFIG);
     if (!this.loader) {
       this.loader = new DefaultLoader(this.translations);
     }

@@ -1,4 +1,4 @@
-import { Inject, Injectable, Optional } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import {
   DefaultTranspiler,
   getValue,
@@ -25,12 +25,9 @@ export class MessageFormatTranspiler extends DefaultTranspiler {
   private readonly messageConfig: MessageFormatOptions<'string'>;
   private readonly mfFactory: MFFactory;
 
-  constructor(
-    @Optional()
-    @Inject(TRANSLOCO_MESSAGE_FORMAT_CONFIG)
-    config: MessageformatConfig,
-  ) {
+  constructor() {
     super();
+    const config = inject(TRANSLOCO_MESSAGE_FORMAT_CONFIG, { optional: true });
     const {
       locales,
       enableCache = true,

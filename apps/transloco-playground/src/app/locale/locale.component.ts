@@ -1,9 +1,8 @@
-import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { TranslocoModule } from '@jsverse/transloco';
 import {
   TRANSLOCO_LOCALE_CURRENCY_MAPPING,
-  LocaleToCurrencyMapping,
   TranslocoLocaleService,
   TranslocoLocaleModule,
 } from '@jsverse/transloco-locale';
@@ -20,11 +19,10 @@ export default class LocaleComponent {
   date = new Date(2019, 7, 14, 0, 0, 0, 0);
   localeList: string[];
 
-  constructor(
-    private localeService: TranslocoLocaleService,
-    @Inject(TRANSLOCO_LOCALE_CURRENCY_MAPPING)
-    localeMapping: LocaleToCurrencyMapping,
-  ) {
+  private localeService = inject(TranslocoLocaleService);
+
+  constructor() {
+    const localeMapping = inject(TRANSLOCO_LOCALE_CURRENCY_MAPPING);
     this.localeList = Object.keys(localeMapping);
   }
 

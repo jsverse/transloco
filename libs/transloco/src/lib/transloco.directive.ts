@@ -40,6 +40,7 @@ interface ViewContext {
 }
 
 @Directive({
+  // eslint-disable-next-line @angular-eslint/directive-selector
   selector: '[transloco]',
   standalone: true,
 })
