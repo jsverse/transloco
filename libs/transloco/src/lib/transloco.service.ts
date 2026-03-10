@@ -774,7 +774,7 @@ export class TranslocoService {
     if (!nextLang || isFallbackLang) {
       let msg = `Unable to load translation and all the fallback languages`;
       if (splitted.length > 1) {
-        msg += `, did you misspelled the scope name?`;
+        msg += `, did you misspell the scope name?`;
       }
 
       throw new Error(msg);
