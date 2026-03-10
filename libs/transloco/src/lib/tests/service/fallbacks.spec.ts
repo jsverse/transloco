@@ -153,7 +153,7 @@ describe('Multiple fallbacks', () => {
         .load('admin/notExists')
         .pipe(
           catchError((err) => {
-            expect(err.message).toContain('did you misspelled the scope name');
+            expect(err.message).toContain('did you misspell the scope name');
             return of('');
           }),
         )
