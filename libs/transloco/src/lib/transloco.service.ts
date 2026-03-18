@@ -89,6 +89,21 @@ export function translateObject<T>(
   return service.translateObject<T>(key, params, lang);
 }
 
+export class TranslationLoadError extends Error {
+  constructor(
+    readonly lang: string,
+    readonly fallbackLangs: string[],
+    readonly isScope: boolean,
+  ) {
+    let msg = `Unable to load translation and all the fallback languages`;
+    if (isScope) {
+      msg += `, did you misspell the scope name?`;
+    }
+    super(msg);
+    this.name = 'TranslationLoadError';
+  }
+}
+
 @Injectable({ providedIn: 'root' })
 export class TranslocoService {
   langChanges$: Observable<string>;
@@ -772,12 +787,11 @@ export class TranslocoService {
     const isFallbackLang = nextLang === splitted[splitted.length - 1];
 
     if (!nextLang || isFallbackLang) {
-      let msg = `Unable to load translation and all the fallback languages`;
-      if (splitted.length > 1) {
-        msg += `, did you misspelled the scope name?`;
-      }
-
-      throw new Error(msg);
+      throw new TranslationLoadError(
+        lang,
+        fallbacks ?? [],
+        splitted.length > 1,
+      );
     }
 
     let resolveLang = nextLang;
