@@ -76,6 +76,10 @@ export function provideTranslocoLoader(loader: Type<TranslocoLoader>) {
   ]);
 }
 
+/**
+ * See {@link ./SCOPE_MULTI_PROVIDER_INVESTIGATION.md} for the history and
+ * planned changes around the `multi: true` behavior on TRANSLOCO_SCOPE.
+ */
 export function provideTranslocoScope(...scopes: TranslocoScope[]) {
   return scopes.map((scope) => ({
     provide: TRANSLOCO_SCOPE,
