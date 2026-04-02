@@ -89,6 +89,21 @@ export function translateObject<T>(
   return service.translateObject<T>(key, params, lang);
 }
 
+export class TranslationLoadError extends Error {
+  constructor(
+    readonly lang: string,
+    readonly fallbackLangs: string[],
+    readonly isScope: boolean,
+  ) {
+    let msg = `Unable to load translation and all the fallback languages`;
+    if (isScope) {
+      msg += `, did you misspell the scope name?`;
+    }
+    super(msg);
+    this.name = 'TranslationLoadError';
+  }
+}
+
 @Injectable({ providedIn: 'root' })
 export class TranslocoService {
   langChanges$: Observable<string>;
@@ -109,6 +124,7 @@ export class TranslocoService {
   };
 
   private destroyRef = inject(DestroyRef);
+  private destroyed = false;
 
   constructor(
     @Optional() @Inject(TRANSLOCO_LOADER) private loader: TranslocoLoader,
@@ -144,6 +160,7 @@ export class TranslocoService {
     });
 
     this.destroyRef.onDestroy(() => {
+      this.destroyed = true;
       // Complete subjects to release observers if users forget to unsubscribe manually.
       // This is important in server-side rendering.
       this.lang.complete();
@@ -193,6 +210,14 @@ export class TranslocoService {
   }
 
   load(path: string, options: LoadOptions = {}): Observable<Translation> {
+    // If the application has already been destroyed, return an empty observable.
+    // We use EMPTY instead of NEVER to ensure the observable completes.
+    // This is important for operators like switchMap, which rely on the inner observable completing
+    // before they can subscribe to the next one. NEVER would hang the chain indefinitely.
+    if (this.destroyed) {
+      return EMPTY;
+    }
+
     const cached = this.cache.get(path);
     if (cached) {
       return cached;
@@ -772,12 +797,11 @@ export class TranslocoService {
     const isFallbackLang = nextLang === splitted[splitted.length - 1];
 
     if (!nextLang || isFallbackLang) {
-      let msg = `Unable to load translation and all the fallback languages`;
-      if (splitted.length > 1) {
-        msg += `, did you misspelled the scope name?`;
-      }
-
-      throw new Error(msg);
+      throw new TranslationLoadError(
+        lang,
+        fallbacks ?? [],
+        splitted.length > 1,
+      );
     }
 
     let resolveLang = nextLang;
