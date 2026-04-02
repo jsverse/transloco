@@ -137,6 +137,31 @@ describe('Multiple fallbacks', () => {
       runLoader(6);
       expect(service.load).toHaveBeenCalledTimes(2);
     }));
+
+    it(`GIVEN a scoped lang that fails to load AND all fallbacks fail
+    THEN the error should contain a scope misspelling hint`, fakeAsync(() => {
+      const service = createService(
+        {
+          prodMode: false, // Show error messages in thrown errors
+          fallbackLang: 'fallbackNotExists',
+          failedRetries: 0,
+        },
+        { loader },
+      );
+
+      service
+        .load('admin/notExists')
+        .pipe(
+          catchError((err) => {
+            expect(err.message).toContain('did you misspell the scope name');
+            return of('');
+          }),
+        )
+        .subscribe();
+
+      // admin/notExists will try 1 time then fallback 1 time
+      runLoader(2);
+    }));
   });
 
   describe('CustomFallbackStrategy', () => {
