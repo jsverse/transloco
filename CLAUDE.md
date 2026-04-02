@@ -1,0 +1,96 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Overview
+
+Transloco is an internationalization (i18n) library for Angular, published under the `@jsverse` npm scope. It's an Nx monorepo with 14 libraries and a playground app.
+
+## Common Commands
+
+```bash
+# Development
+npm start                          # Serve playground app
+npm run commit                     # Interactive conventional commit (git-cz)
+
+# Build
+npm run ci:build                   # Build all packages
+nx build <package-name>            # Build single package
+
+# Test
+npm run ci:test                    # Test all packages
+nx test <package-name>             # Test single package
+nx test-library transloco          # Core library tests (Karma)
+nx test-schematics transloco       # Core schematics tests (Jest)
+
+# Lint
+npm run ci:lint                    # Lint all packages
+nx lint <package-name>             # Lint single package
+
+# E2E
+npm run ci:e2e                     # Cypress E2E (CI mode)
+npm run e2e                        # Cypress E2E (watch mode)
+```
+
+## Architecture
+
+### Library Dependency Graph
+
+The core `transloco` library is the foundation. All plugin libraries depend on it:
+
+- **transloco** - Core i18n: service, directive, pipe, signal API, transpiler, loader, interceptor
+- **transloco-locale** - Number/date localization using native `Intl` APIs
+- **transloco-messageformat** - ICU message format via `@messageformat/core`
+- **transloco-persist-lang** - Persist active language (localStorage/cookie/custom)
+- **transloco-persist-translations** - Cache translations locally
+- **transloco-preload-langs** - Preload languages on app init
+- **transloco-scoped-libs** - Scoped translations for lazy-loaded features
+- **transloco-optimize** - Build-time optimization webpack plugin
+- **transloco-keys-manager** - CLI to extract/manage translation keys
+- **transloco-schematics** - `ng add`/`ng generate` schematics
+- **transloco-validator** - CLI to validate translation files
+- **transloco-utils** - Shared Node.js utilities (used by keys-manager, schematics)
+- **schematics-core** - Shared schematics utilities (internal, not published)
+
+### Core Library Structure (`libs/transloco/src/lib/`)
+
+- `transloco.service.ts` - Central service managing translations, language switching, lazy loading
+- `transloco.directive.ts` - Structural directive `*transloco` for template translations
+- `transloco.pipe.ts` - `transloco` pipe for inline template usage
+- `transloco.signal.ts` - Signal-based API for standalone components
+- `transloco.transpiler.ts` - Interpolation engine (default + custom transpilers)
+- `transloco.loader.ts` - Translation file loader interface
+- `transloco.interceptor.ts` - HTTP interceptor for adding language headers
+- `transloco.providers.ts` - Standalone provider functions (`provideTransloco`)
+- `transloco.module.ts` - NgModule-based setup (`TranslocoModule`)
+- `scope-resolver.ts` / `lang-resolver.ts` - Resolve scoped/inline language keys
+
+### Testing Setup
+
+The core `transloco` library uses **Karma/Jasmine** for its main tests and **Jest** for schematics tests. Most plugin libraries use **Jest** only. The playground uses **Cypress** for E2E.
+
+Test utility: `@ngneat/spectator` for Angular component testing.
+
+### TypeScript Path Aliases
+
+All libraries are mapped via `tsconfig.base.json` paths (e.g., `@jsverse/transloco` -> `libs/transloco/src/index.ts`), enabling cross-library imports during development.
+
+## Conventions
+
+### Commits
+
+Format: `type(scope): subject` (max 64 chars). Use `npm run commit` for interactive prompt.
+
+Scopes: `transloco`, `locale`, `messageformat`, `optimize`, `persist-lang`, `persist-translations`, `preload-langs`, `scoped-libs`, `utils`, `validator`, `schematics`
+
+### Pre-commit Checks
+
+Staged files are checked for: `debugger` statements in `.ts` files, `fit(`, `.skip(`, `.only(`, `fdescribe(` in `.spec.ts` files. Plus ESLint fix and Prettier formatting via lint-staged.
+
+### Test Format
+
+Tests follow given-when-then format (per recent commit convention).
+
+### Release
+
+All packages use fixed versioning (bump together). Conventional commits drive semantic version bumps. Tag pattern: `releases/{version}`.
