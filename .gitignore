@@ -58,3 +58,5 @@ local-dev
 # Claude Code
 /.claude/hooks.local/
 /.claude/settings.local.json
+
+.claude/worktrees
