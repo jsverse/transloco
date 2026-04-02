@@ -12,6 +12,9 @@ export default {
       },
     ],
   },
+  moduleNameMapper: {
+    '^ora$': '<rootDir>/__mocks__/ora.ts',
+  },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../coverage/libs/transloco-schematics',
   preset: '../../jest.preset.js',

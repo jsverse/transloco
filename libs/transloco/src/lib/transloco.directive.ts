@@ -31,7 +31,7 @@ import {
 import { resolveInlineLoader } from './utils/scope.utils';
 import { LangResolver } from './lang-resolver';
 import { ScopeResolver } from './scope-resolver';
-import { HashMap } from './utils/type.utils';
+import type { HashMap } from './utils/type.utils';
 
 type TranslateFn = (key: string, params?: HashMap) => any;
 interface ViewContext {

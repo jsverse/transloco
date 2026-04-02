@@ -16,6 +16,7 @@ export default {
   testMatch: ['<rootDir>/schematics/**/*.spec.ts'],
   moduleNameMapper: {
     '^@jsverse/transloco-utils$': '<rootDir>/../transloco-utils/src/index.ts',
+    '^ora$': '<rootDir>/schematics/__mocks__/ora.ts',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../coverage/libs/transloco-schematics',

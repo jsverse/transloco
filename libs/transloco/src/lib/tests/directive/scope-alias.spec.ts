@@ -8,6 +8,7 @@ import { Component } from '@angular/core';
 
 import { providersMock, runLoader } from '../mocks';
 import { TranslocoDirective } from '../../transloco.directive';
+import { TranslocoPipe } from '../../transloco.pipe';
 import { TRANSLOCO_SCOPE } from '../../transloco-scope';
 import { TranslocoModule } from '../../transloco.module';
 
@@ -39,6 +40,8 @@ describe('Scope alias', () => {
 });
 
 @Component({
+  standalone: true,
+  imports: [TranslocoPipe],
   template: `
     <p>{{ 'lazy.title' | transloco }}</p>
     <h1>{{ 'nested.title' | transloco }}</h1>

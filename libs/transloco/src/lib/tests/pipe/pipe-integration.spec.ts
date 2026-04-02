@@ -1,10 +1,11 @@
 import { createComponentFactory, Spectator } from '@ngneat/spectator';
 import { Component } from '@angular/core';
-import { fakeAsync } from '@angular/core/testing';
+import { fakeAsync, tick } from '@angular/core/testing';
 
 import { providersMock, runLoader } from '../mocks';
 import { defaultConfig, TRANSLOCO_CONFIG } from '../../transloco.config';
 import { TranslocoModule } from '../../transloco.module';
+import { TranslocoPipe } from '../../transloco.pipe';
 import { TranslocoService } from '../../transloco.service';
 import { TRANSLOCO_LANG } from '../../transloco-lang';
 import { TRANSLOCO_SCOPE } from '../../transloco-scope';
@@ -19,6 +20,8 @@ export const listenToLangChangesProvider = {
 };
 
 @Component({
+  standalone: true,
+  imports: [TranslocoPipe],
   template: `
     <p>{{ 'home' | transloco }}</p>
     <h1>{{ 'nested.title' | transloco }}</h1>
@@ -61,7 +64,9 @@ describe('Transloco Pipe', () => {
       runLoader();
       spectator.detectChanges();
       expect(spectator.query('h3')).toHaveText('alert hey english');
-      spectator.component.value = 'changed';
+      spectator.fixture.ngZone?.run(() => {
+        spectator.component.value = 'changed';
+      });
       spectator.detectChanges();
       expect(spectator.query('h3')).toHaveText('alert changed english');
     }));
@@ -158,6 +163,8 @@ describe('Transloco Pipe', () => {
   });
 
   @Component({
+    standalone: true,
+    imports: [TranslocoPipe],
     selector: 'transloco-scope-pipe',
     template: `
       <p>{{ 'lazyPage.title' | transloco }}</p>

@@ -1,0 +1,1783 @@
+
+> transloco-nx@0.0.0 ci:test
+> nx run-many --target=test --all
+
+
+ NX   Running target test for 13 projects and 2 tasks they depend on:
+
+- transloco-persist-translations
+- transloco-messageformat
+- transloco-preload-langs
+- transloco-persist-lang
+- transloco-scoped-libs
+- transloco-playground
+- transloco-schematics
+- transloco-validator
+- transloco-optimize
+- transloco-locale
+- schematics-core
+- transloco-utils
+- transloco
+
+
+
+> nx run transloco:test-schematics
+
+[0m[7m[1m[31m FAIL [39m[22m[27m[0m [0m[7m[37m transloco-schematics [39m[27m[0m [2mlibs/transloco/schematics/ng-add/[22m[1mng-add.spec.ts[22m
+  [1m● [22mTest suite failed to run
+
+    [1m[31mJest encountered an unexpected token[39m[22m
+
+    Jest failed to parse a file. This happens e.g. when your code or its dependencies use non-standard JavaScript syntax, or when Jest is not configured to support such syntax.
+
+    Out of the box Jest supports Babel, which will be used to transform your files into valid JS based on your Babel configuration.
+
+    By default "node_modules" folder is ignored by transformers.
+
+    Here's what you can do:
+     • If you are trying to use ECMAScript Modules, see [4mhttps://jestjs.io/docs/ecmascript-modules[24m for how to enable it.
+     • If you are trying to use TypeScript, see [4mhttps://jestjs.io/docs/getting-started#using-typescript[24m
+     • To have some of your "node_modules" files transformed, you can specify a custom [1m"transformIgnorePatterns"[22m in your config.
+     • If you need a custom transformation, specify a [1m"transform"[22m option in your config.
+     • If you simply want to mock your non-JS modules (e.g. binary assets) you can stub them out with the [1m"moduleNameMapper"[22m config option.
+
+    You'll find more details and examples of these config options in the docs:
+    [36mhttps://jestjs.io/docs/configuration[39m
+    For information about custom transformations, see:
+    [36mhttps://jestjs.io/docs/code-transformation[39m
+
+    [1m[31mDetails:[39m[22m
+
+    /Users/shahar.kazaz/WebstormProjects/transloco/node_modules/ora/index.js:1
+    import process from 'node:process';
+    ^^^^^^
+
+    SyntaxError: Cannot use import statement outside a module
+
+    [0m [90m 1 |[39m [36mimport[39m [33m*[39m [36mas[39m nodePath [36mfrom[39m [32m'node:path'[39m[33m;[39m
+     [90m 2 |[39m
+    [31m[1m>[22m[39m[90m 3 |[39m [36mimport[39m {
+     [90m   |[39m [31m[1m^[22m[39m
+     [90m 4 |[39m   [33mSchematicTestRunner[39m[33m,[39m
+     [90m 5 |[39m   [33mUnitTestTree[39m[33m,[39m
+     [90m 6 |[39m } [36mfrom[39m [32m'@angular-devkit/schematics/testing'[39m[33m;[39m[0m
+
+      [2mat Runtime.createScriptFromCode ([22m../../node_modules/jest-runtime/build/index.js[2m:1318:40)[22m
+      [2mat Object.<anonymous> ([22m../../node_modules/@angular-devkit/schematics/tasks/package-manager/executor.ts[2m:12:1)[22m
+      [2mat Object.<anonymous> ([22m../../node_modules/@angular-devkit/schematics/tasks/node/index.ts[2m:10:1)[22m
+      [2mat Object.<anonymous> ([22m../../node_modules/@angular-devkit/schematics/testing/schematic-test-runner.ts[2m:24:1)[22m
+      [2mat Object.<anonymous> ([22m../../node_modules/@angular-devkit/schematics/testing/index.ts[2m:9:1)[22m
+      [2mat Object.<anonymous> ([22m[0m[36mschematics/ng-add/ng-add.spec.ts[39m[0m[2m:3:1)[22m
+
+[1mTest Suites: [22m[1m[31m1 failed[39m[22m, 1 total
+[1mTests:       [22m0 total
+[1mSnapshots:   [22m0 total
+[1mTime:[22m        0.288 s
+[2mRan all test suites[22m[2m.[22m
+
+> nx run transloco-utils:test
+
+- Generating browser application bundles (phase: setup)...
+[32m✔[39m Browser application bundle generation complete.
+[32m25 01 2026 09:32:42.837:INFO [karma-server]: [39mKarma v6.4.3 server started at http://localhost:9876/
+[32m25 01 2026 09:32:42.837:INFO [launcher]: [39mLaunching browsers ChromeHeadless with concurrency unlimited
+[32m25 01 2026 09:32:42.840:INFO [launcher]: [39mStarting browser ChromeHeadless
+[32m25 01 2026 09:32:44.541:INFO [Chrome Headless 144.0.0.0 (Mac OS 10.15.7)]: [39mConnected on socket JvP-N2zD5zpIAaoHAAAB with id 78056706
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 0 of 0[32m SUCCESS[39m (0 secs / 0 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 0 of 0[32m SUCCESS[39m (0.003 secs / 0 secs)
+[32mTOTAL: 0 SUCCESS[39m
+TOTAL: 0 SUCCESS
+[32m✔[39m Browser application bundle generation complete.
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) ERROR[39m
+  Some of your tests did a full page reload!
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 0 of 0[31m ERROR[39m (0.003 secs / 0 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) ERROR
+  Some of your tests did a full page reload!
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 0 of 0[31m ERROR[39m (0.023 secs / 0 secs)
+[32m✔[39m Browser application bundle generation complete.
+
+> nx run transloco:test-library
+
+- Generating browser application bundles (phase: setup)...
+[1m[33m    TypeScript compiler options "target" and "useDefineForClassFields" are set to "ES2022" and "false" respectively by the Angular CLI. To control ECMA version and features use the Browserslist configuration. For more information, see https://angular.dev/tools/cli/build#configuring-browser-compatibility[39m[22m
+[1m[33m    NOTE: You can set the "target" to "ES2022" in the project's tsconfig to remove this warning.[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[32m25 01 2026 09:32:45.667:INFO [karma-server]: [39mKarma v6.4.3 server started at http://localhost:9877/
+[32m25 01 2026 09:32:45.668:INFO [launcher]: [39mLaunching browsers ChromeHeadless with concurrency unlimited
+[32m25 01 2026 09:32:45.670:INFO [launcher]: [39mStarting browser ChromeHeadless
+[32m25 01 2026 09:32:46.329:INFO [Chrome Headless 144.0.0.0 (Mac OS 10.15.7)]: [39mConnected on socket MivYjjPXUDmOvj8AAAAB with id 73001414
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) WARN: [36m'NG0912: Component ID generation collision detected. Components 'TestPipe' and 'TestPipe' with selector 'ng-component' generated the same component ID. To fix this, you can change the selector of one of those components or add an extra host attribute to force a different ID. Find more at https://v21.angular.dev/errors/NG0912'[39m
+
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) WARN: 'NG0912: Component ID generation collision detected. Components 'TestPipe' and 'TestPipe' with selector 'ng-component' generated the same component ID. To fix this, you can change the selector of one of those components or add an extra host attribute to force a different ID. Find more at https://v21.angular.dev/errors/NG0912'
+
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 0 of 233[32m SUCCESS[39m (0 secs / 0 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 1 of 233[32m SUCCESS[39m (0 secs / 0.007 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 2 of 233[32m SUCCESS[39m (0 secs / 0.009 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 3 of 233[32m SUCCESS[39m (0 secs / 0.01 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 4 of 233[32m SUCCESS[39m (0 secs / 0.01 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 5 of 233[32m SUCCESS[39m (0 secs / 0.01 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 6 of 233[32m SUCCESS[39m (0 secs / 0.011 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 7 of 233[32m SUCCESS[39m (0 secs / 0.012 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 8 of 233[32m SUCCESS[39m (0 secs / 0.012 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 9 of 233[32m SUCCESS[39m (0 secs / 0.013 secs)
+[1A[2KWARN: [36m'%c Missing translation for 'title'', 'font-size: 12px; color: red'[39m
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 9 of 233[32m SUCCESS[39m (0 secs / 0.013 secs)
+WARN: '%c Missing translation for 'title'', 'font-size: 12px; color: red'
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 10 of 233[32m SUCCESS[39m (0 secs / 0.014 secs)
+[1A[2KWARN: [36m'%c Missing translation for 'title'', 'font-size: 12px; color: red'[39m
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 10 of 233[32m SUCCESS[39m (0 secs / 0.014 secs)
+WARN: '%c Missing translation for 'title'', 'font-size: 12px; color: red'
+[1A[2KWARN: [36m'%c Missing translation for 'notexists'', 'font-size: 12px; color: red'[39m
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 10 of 233[32m SUCCESS[39m (0 secs / 0.014 secs)
+WARN: '%c Missing translation for 'notexists'', 'font-size: 12px; color: red'
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 11 of 233[32m SUCCESS[39m (0 secs / 0.015 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 12 of 233[32m SUCCESS[39m (0 secs / 0.016 secs)
+[1A[2KWARN: [36m'%c Missing translation for 'lazyPage.notexists'', 'font-size: 12px; color: red'[39m
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 12 of 233[32m SUCCESS[39m (0 secs / 0.016 secs)
+WARN: '%c Missing translation for 'lazyPage.notexists'', 'font-size: 12px; color: red'
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 13 of 233[32m SUCCESS[39m (0 secs / 0.016 secs)
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) Transloco Pipe Provider lang GIVEN pipe with provider lang
+        WHEN active language changes
+        THEN should update to active language FAILED[39m
+	Error: NG0302: The pipe 'transloco' could not be found in the 'TestPipe' component. Verify that it is included in the '@Component.imports' of this component. Find more at https://v21.angular.dev/errors/NG0302
+	error properties: Object({ code: -302 })
+	    at getPipeDef (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:17017:11)
+	    at ɵɵpipe (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:16973:15)
+	    at templateFn (ng:///TestPipe.js:10:9)
+	    at executeTemplate (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:4834:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5233:7)
+	    at renderComponent (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5212:5)
+	    at renderChildComponents (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5262:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5247:7)
+	    at ComponentFactory.create (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:8298:9)
+	    at initComponent (node_modules/@angular/core/fesm2022/testing.mjs:1475:45)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 14 of 233[31m (1 FAILED)[39m (0 secs / 0.023 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) Transloco Pipe Provider lang GIVEN pipe with provider lang
+        WHEN active language changes
+        THEN should update to active language FAILED
+	Error: NG0302: The pipe 'transloco' could not be found in the 'TestPipe' component. Verify that it is included in the '@Component.imports' of this component. Find more at https://v21.angular.dev/errors/NG0302
+	error properties: Object({ code: -302 })
+	    at getPipeDef (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:17017:11)
+	    at ɵɵpipe (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:16973:15)
+	    at templateFn (ng:///TestPipe.js:10:9)
+	    at executeTemplate (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:4834:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5233:7)
+	    at renderComponent (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5212:5)
+	    at renderChildComponents (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5262:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5247:7)
+	    at ComponentFactory.create (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:8298:9)
+	    at initComponent (node_modules/@angular/core/fesm2022/testing.mjs:1475:45)
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) Transloco Pipe Provider lang static GIVEN pipe with provider lang marked static
+        WHEN active language changes
+        THEN should keep static language unchanged FAILED[39m
+	Error: NG0302: The pipe 'transloco' could not be found in the 'TestPipe' component. Verify that it is included in the '@Component.imports' of this component. Find more at https://v21.angular.dev/errors/NG0302
+	error properties: Object({ code: -302 })
+	    at getPipeDef (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:17017:11)
+	    at ɵɵpipe (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:16973:15)
+	    at templateFn (ng:///TestPipe.js:10:9)
+	    at executeTemplate (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:4834:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5233:7)
+	    at renderComponent (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5212:5)
+	    at renderChildComponents (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5262:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5247:7)
+	    at ComponentFactory.create (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:8298:9)
+	    at initComponent (node_modules/@angular/core/fesm2022/testing.mjs:1475:45)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 15 of 233[31m (2 FAILED)[39m (0 secs / 0.024 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) Transloco Pipe Provider lang static GIVEN pipe with provider lang marked static
+        WHEN active language changes
+        THEN should keep static language unchanged FAILED
+	Error: NG0302: The pipe 'transloco' could not be found in the 'TestPipe' component. Verify that it is included in the '@Component.imports' of this component. Find more at https://v21.angular.dev/errors/NG0302
+	error properties: Object({ code: -302 })
+	    at getPipeDef (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:17017:11)
+	    at ɵɵpipe (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:16973:15)
+	    at templateFn (ng:///TestPipe.js:10:9)
+	    at executeTemplate (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:4834:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5233:7)
+	    at renderComponent (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5212:5)
+	    at renderChildComponents (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5262:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5247:7)
+	    at ComponentFactory.create (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:8298:9)
+	    at initComponent (node_modules/@angular/core/fesm2022/testing.mjs:1475:45)
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) Transloco Pipe Scope lang GIVEN pipe with scope provider
+        WHEN translations are loaded and language changes
+        THEN should use scoped translations FAILED[39m
+	Error: NG0302: The pipe 'transloco' could not be found in the 'TestScopePipe' component. Verify that it is included in the '@Component.imports' of this component. Find more at https://v21.angular.dev/errors/NG0302
+	error properties: Object({ code: -302 })
+	    at getPipeDef (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:17017:11)
+	    at ɵɵpipe (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:16973:15)
+	    at templateFn (ng:///TestScopePipe.js:9:9)
+	    at executeTemplate (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:4834:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5233:7)
+	    at renderComponent (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5212:5)
+	    at renderChildComponents (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5262:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5247:7)
+	    at ComponentFactory.create (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:8298:9)
+	    at initComponent (node_modules/@angular/core/fesm2022/testing.mjs:1475:45)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 16 of 233[31m (3 FAILED)[39m (0 secs / 0.026 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) Transloco Pipe Scope lang GIVEN pipe with scope provider
+        WHEN translations are loaded and language changes
+        THEN should use scoped translations FAILED
+	Error: NG0302: The pipe 'transloco' could not be found in the 'TestScopePipe' component. Verify that it is included in the '@Component.imports' of this component. Find more at https://v21.angular.dev/errors/NG0302
+	error properties: Object({ code: -302 })
+	    at getPipeDef (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:17017:11)
+	    at ɵɵpipe (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:16973:15)
+	    at templateFn (ng:///TestScopePipe.js:9:9)
+	    at executeTemplate (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:4834:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5233:7)
+	    at renderComponent (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5212:5)
+	    at renderChildComponents (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5262:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5247:7)
+	    at ComponentFactory.create (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:8298:9)
+	    at initComponent (node_modules/@angular/core/fesm2022/testing.mjs:1475:45)
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) Transloco Pipe Pipe basic GIVEN pipe with dynamic params
+        WHEN param values change
+        THEN should update translation with new params FAILED[39m
+	Error: NG0302: The pipe 'transloco' could not be found in the 'TestPipe' component. Verify that it is included in the '@Component.imports' of this component. Find more at https://v21.angular.dev/errors/NG0302
+	error properties: Object({ code: -302 })
+	    at getPipeDef (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:17017:11)
+	    at ɵɵpipe (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:16973:15)
+	    at templateFn (ng:///TestPipe.js:10:9)
+	    at executeTemplate (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:4834:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5233:7)
+	    at renderComponent (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5212:5)
+	    at renderChildComponents (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5262:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5247:7)
+	    at ComponentFactory.create (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:8298:9)
+	    at initComponent (node_modules/@angular/core/fesm2022/testing.mjs:1475:45)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 17 of 233[31m (4 FAILED)[39m (0 secs / 0.027 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) Transloco Pipe Pipe basic GIVEN pipe with dynamic params
+        WHEN param values change
+        THEN should update translation with new params FAILED
+	Error: NG0302: The pipe 'transloco' could not be found in the 'TestPipe' component. Verify that it is included in the '@Component.imports' of this component. Find more at https://v21.angular.dev/errors/NG0302
+	error properties: Object({ code: -302 })
+	    at getPipeDef (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:17017:11)
+	    at ɵɵpipe (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:16973:15)
+	    at templateFn (ng:///TestPipe.js:10:9)
+	    at executeTemplate (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:4834:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5233:7)
+	    at renderComponent (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5212:5)
+	    at renderChildComponents (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5262:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5247:7)
+	    at ComponentFactory.create (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:8298:9)
+	    at initComponent (node_modules/@angular/core/fesm2022/testing.mjs:1475:45)
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) Transloco Pipe Pipe basic GIVEN pipe with various translation keys
+        WHEN translations are loaded
+        THEN should translate all keys including params and inline lang FAILED[39m
+	Error: NG0302: The pipe 'transloco' could not be found in the 'TestPipe' component. Verify that it is included in the '@Component.imports' of this component. Find more at https://v21.angular.dev/errors/NG0302
+	error properties: Object({ code: -302 })
+	    at getPipeDef (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:17017:11)
+	    at ɵɵpipe (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:16973:15)
+	    at templateFn (ng:///TestPipe.js:10:9)
+	    at executeTemplate (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:4834:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5233:7)
+	    at renderComponent (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5212:5)
+	    at renderChildComponents (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5262:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5247:7)
+	    at ComponentFactory.create (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:8298:9)
+	    at initComponent (node_modules/@angular/core/fesm2022/testing.mjs:1475:45)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 18 of 233[31m (5 FAILED)[39m (0 secs / 0.028 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) Transloco Pipe Pipe basic GIVEN pipe with various translation keys
+        WHEN translations are loaded
+        THEN should translate all keys including params and inline lang FAILED
+	Error: NG0302: The pipe 'transloco' could not be found in the 'TestPipe' component. Verify that it is included in the '@Component.imports' of this component. Find more at https://v21.angular.dev/errors/NG0302
+	error properties: Object({ code: -302 })
+	    at getPipeDef (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:17017:11)
+	    at ɵɵpipe (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:16973:15)
+	    at templateFn (ng:///TestPipe.js:10:9)
+	    at executeTemplate (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:4834:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5233:7)
+	    at renderComponent (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5212:5)
+	    at renderChildComponents (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5262:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5247:7)
+	    at ComponentFactory.create (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:8298:9)
+	    at initComponent (node_modules/@angular/core/fesm2022/testing.mjs:1475:45)
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) Transloco Pipe Pipe basic GIVEN pipe with reRenderOnLangChange enabled
+        WHEN active language changes
+        THEN should update all translations FAILED[39m
+	Error: NG0302: The pipe 'transloco' could not be found in the 'TestPipe' component. Verify that it is included in the '@Component.imports' of this component. Find more at https://v21.angular.dev/errors/NG0302
+	error properties: Object({ code: -302 })
+	    at getPipeDef (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:17017:11)
+	    at ɵɵpipe (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:16973:15)
+	    at templateFn (ng:///TestPipe.js:10:9)
+	    at executeTemplate (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:4834:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5233:7)
+	    at renderComponent (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5212:5)
+	    at renderChildComponents (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5262:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5247:7)
+	    at ComponentFactory.create (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:8298:9)
+	    at initComponent (node_modules/@angular/core/fesm2022/testing.mjs:1475:45)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 19 of 233[31m (6 FAILED)[39m (0 secs / 0.029 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) Transloco Pipe Pipe basic GIVEN pipe with reRenderOnLangChange enabled
+        WHEN active language changes
+        THEN should update all translations FAILED
+	Error: NG0302: The pipe 'transloco' could not be found in the 'TestPipe' component. Verify that it is included in the '@Component.imports' of this component. Find more at https://v21.angular.dev/errors/NG0302
+	error properties: Object({ code: -302 })
+	    at getPipeDef (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:17017:11)
+	    at ɵɵpipe (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:16973:15)
+	    at templateFn (ng:///TestPipe.js:10:9)
+	    at executeTemplate (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:4834:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5233:7)
+	    at renderComponent (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5212:5)
+	    at renderChildComponents (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5262:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5247:7)
+	    at ComponentFactory.create (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:8298:9)
+	    at initComponent (node_modules/@angular/core/fesm2022/testing.mjs:1475:45)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 20 of 233[31m (6 FAILED)[39m (0 secs / 0.03 secs)
+[1A[2KWARN: [36m'%c Missing translation for 'lazyPage.lazyPage.title'', 'font-size: 12px; color: red'[39m
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 20 of 233[31m (6 FAILED)[39m (0 secs / 0.03 secs)
+WARN: '%c Missing translation for 'lazyPage.lazyPage.title'', 'font-size: 12px; color: red'
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 21 of 233[31m (6 FAILED)[39m (0 secs / 0.031 secs)
+[1A[2KWARN: [36m'%c Missing translation for 'lazyPage.notexists'', 'font-size: 12px; color: red'[39m
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 21 of 233[31m (6 FAILED)[39m (0 secs / 0.031 secs)
+WARN: '%c Missing translation for 'lazyPage.notexists'', 'font-size: 12px; color: red'
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 22 of 233[31m (6 FAILED)[39m (0 secs / 0.031 secs)
+[1A[2KWARN: [36m'%c Missing translation for 'lazyPage.lazyPage.title'', 'font-size: 12px; color: red'[39m
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 22 of 233[31m (6 FAILED)[39m (0 secs / 0.031 secs)
+WARN: '%c Missing translation for 'lazyPage.lazyPage.title'', 'font-size: 12px; color: red'
+[1A[2KWARN: [36m'%c Missing translation for 'lazyPage.lazyPage.notexists'', 'font-size: 12px; color: red'[39m
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 22 of 233[31m (6 FAILED)[39m (0 secs / 0.031 secs)
+WARN: '%c Missing translation for 'lazyPage.lazyPage.notexists'', 'font-size: 12px; color: red'
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 23 of 233[31m (6 FAILED)[39m (0 secs / 0.031 secs)
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) Inline loaders: pipe GIVEN pipe with inline scope loaders
+      WHEN translations are loaded and language changes
+      THEN should use inline loaders for scoped translations FAILED[39m
+	Error: NG0302: The pipe 'transloco' could not be found in the 'TestPipe' component. Verify that it is included in the '@Component.imports' of this component. Find more at https://v21.angular.dev/errors/NG0302
+	error properties: Object({ code: -302 })
+	    at getPipeDef (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:17017:11)
+	    at ɵɵpipe (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:16973:15)
+	    at templateFn (ng:///TestPipe.js:8:9)
+	    at executeTemplate (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:4834:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5233:7)
+	    at renderComponent (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5212:5)
+	    at renderChildComponents (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5262:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5247:7)
+	    at ComponentFactory.create (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:8298:9)
+	    at initComponent (node_modules/@angular/core/fesm2022/testing.mjs:1475:45)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 24 of 233[31m (7 FAILED)[39m (0 secs / 0.033 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) Inline loaders: pipe GIVEN pipe with inline scope loaders
+      WHEN translations are loaded and language changes
+      THEN should use inline loaders for scoped translations FAILED
+	Error: NG0302: The pipe 'transloco' could not be found in the 'TestPipe' component. Verify that it is included in the '@Component.imports' of this component. Find more at https://v21.angular.dev/errors/NG0302
+	error properties: Object({ code: -302 })
+	    at getPipeDef (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:17017:11)
+	    at ɵɵpipe (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:16973:15)
+	    at templateFn (ng:///TestPipe.js:8:9)
+	    at executeTemplate (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:4834:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5233:7)
+	    at renderComponent (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5212:5)
+	    at renderChildComponents (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5262:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5247:7)
+	    at ComponentFactory.create (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:8298:9)
+	    at initComponent (node_modules/@angular/core/fesm2022/testing.mjs:1475:45)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 25 of 233[31m (7 FAILED)[39m (0 secs / 0.034 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 26 of 233[31m (7 FAILED)[39m (0 secs / 0.035 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 27 of 233[31m (7 FAILED)[39m (0 secs / 0.035 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 28 of 233[31m (7 FAILED)[39m (0 secs / 0.035 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 29 of 233[31m (7 FAILED)[39m (0 secs / 0.035 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 30 of 233[31m (7 FAILED)[39m (0 secs / 0.035 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 31 of 233[31m (7 FAILED)[39m (0 secs / 0.035 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 32 of 233[31m (7 FAILED)[39m (0 secs / 0.035 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 33 of 233[31m (7 FAILED)[39m (0 secs / 0.035 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 34 of 233[31m (7 FAILED)[39m (0 secs / 0.035 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 35 of 233[31m (7 FAILED)[39m (0 secs / 0.035 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 36 of 233[31m (7 FAILED)[39m (0 secs / 0.043 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 37 of 233[31m (7 FAILED)[39m (0 secs / 0.048 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 38 of 233[31m (7 FAILED)[39m (0 secs / 0.052 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 39 of 233[31m (7 FAILED)[39m (0 secs / 0.053 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 40 of 233[31m (7 FAILED)[39m (0 secs / 0.053 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 41 of 233[31m (7 FAILED)[39m (0 secs / 0.054 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 42 of 233[31m (7 FAILED)[39m (0 secs / 0.055 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 43 of 233[31m (7 FAILED)[39m (0 secs / 0.056 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 44 of 233[31m (7 FAILED)[39m (0 secs / 0.056 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 45 of 233[31m (7 FAILED)[39m (0 secs / 0.057 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 46 of 233[31m (7 FAILED)[39m (0 secs / 0.057 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 47 of 233[31m (7 FAILED)[39m (0 secs / 0.057 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 48 of 233[31m (7 FAILED)[39m (0 secs / 0.058 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 49 of 233[31m (7 FAILED)[39m (0 secs / 0.058 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 50 of 233[31m (7 FAILED)[39m (0 secs / 0.058 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 51 of 233[31m (7 FAILED)[39m (0 secs / 0.059 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 52 of 233[31m (7 FAILED)[39m (0 secs / 0.059 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 53 of 233[31m (7 FAILED)[39m (0 secs / 0.059 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 54 of 233[31m (7 FAILED)[39m (0 secs / 0.06 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 55 of 233[31m (7 FAILED)[39m (0 secs / 0.06 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 56 of 233[31m (7 FAILED)[39m (0 secs / 0.061 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 57 of 233[31m (7 FAILED)[39m (0 secs / 0.061 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 58 of 233[31m (7 FAILED)[39m (0 secs / 0.062 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 59 of 233[31m (7 FAILED)[39m (0 secs / 0.062 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 60 of 233[31m (7 FAILED)[39m (0 secs / 0.062 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 61 of 233[31m (7 FAILED)[39m (0 secs / 0.063 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 62 of 233[31m (7 FAILED)[39m (0 secs / 0.063 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 63 of 233[31m (7 FAILED)[39m (0 secs / 0.067 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 64 of 233[31m (7 FAILED)[39m (0 secs / 0.067 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 65 of 233[31m (7 FAILED)[39m (0 secs / 0.067 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 66 of 233[31m (7 FAILED)[39m (0 secs / 0.067 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 67 of 233[31m (7 FAILED)[39m (0 secs / 0.07 secs)
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) Attribute directive GIVEN scoped directive with global and scoped keys
+      WHEN both translations are loaded
+      THEN should expose both scoped and global translation FAILED[39m
+	Expected element to have text 'home spanish', but had 'home english'
+	    at <Jasmine>
+	    at testMergedScopedTranslation (libs/transloco/src/lib/tests/directive/shared.ts:46:42)
+	    at UserContext.apply (libs/transloco/src/lib/tests/directive/attribute.spec.ts:109:32)
+	    at UserContext.apply (node_modules/zone.js/fesm2015/zone-testing.js:1664:18)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+	Expected element to have text 'Admin Lazy spanish', but had 'Admin Lazy english'
+	    at <Jasmine>
+	    at testMergedScopedTranslation (libs/transloco/src/lib/tests/directive/shared.ts:49:42)
+	    at UserContext.apply (libs/transloco/src/lib/tests/directive/attribute.spec.ts:109:32)
+	    at UserContext.apply (node_modules/zone.js/fesm2015/zone-testing.js:1664:18)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 68 of 233[31m (8 FAILED)[39m (0 secs / 0.074 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) Attribute directive GIVEN scoped directive with global and scoped keys
+      WHEN both translations are loaded
+      THEN should expose both scoped and global translation FAILED
+	Expected element to have text 'home spanish', but had 'home english'
+	    at <Jasmine>
+	    at testMergedScopedTranslation (libs/transloco/src/lib/tests/directive/shared.ts:46:42)
+	    at UserContext.apply (libs/transloco/src/lib/tests/directive/attribute.spec.ts:109:32)
+	    at UserContext.apply (node_modules/zone.js/fesm2015/zone-testing.js:1664:18)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+	Expected element to have text 'Admin Lazy spanish', but had 'Admin Lazy english'
+	    at <Jasmine>
+	    at testMergedScopedTranslation (libs/transloco/src/lib/tests/directive/shared.ts:49:42)
+	    at UserContext.apply (libs/transloco/src/lib/tests/directive/attribute.spec.ts:109:32)
+	    at UserContext.apply (node_modules/zone.js/fesm2015/zone-testing.js:1664:18)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 69 of 233[31m (8 FAILED)[39m (0 secs / 0.077 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 70 of 233[31m (8 FAILED)[39m (0 secs / 0.078 secs)
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) Attribute directive GIVEN attribute directive with dynamic params
+      WHEN params change
+      THEN should update interpolated translation FAILED[39m
+	Error: NG0100: ExpressionChangedAfterItHasBeenCheckedError: Expression has changed after it was checked. Previous value: 'netanel'. Current value: 'kazaz'. Expression location: HostComponent component. Find more at https://v21.angular.dev/errors/NG0100
+	error properties: Object({ code: -100 })
+	    at throwErrorIfNoChangesMode (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:3475:9)
+	    at bindingUpdated (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:7918:9)
+	    at pureFunction1Internal (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:16945:10)
+	    at ɵɵpureFunction1 (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:16900:10)
+	    at templateFn (ng:///HostComponent.js:8:56)
+	    at executeTemplate (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:4834:5)
+	    at refreshView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5504:7)
+	    at detectChangesInView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5644:5)
+	    at detectChangesInViewIfAttached (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5627:3)
+	    at detectChangesInComponent (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5618:5)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 71 of 233[31m (9 FAILED)[39m (0 secs / 0.081 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) Attribute directive GIVEN attribute directive with dynamic params
+      WHEN params change
+      THEN should update interpolated translation FAILED
+	Error: NG0100: ExpressionChangedAfterItHasBeenCheckedError: Expression has changed after it was checked. Previous value: 'netanel'. Current value: 'kazaz'. Expression location: HostComponent component. Find more at https://v21.angular.dev/errors/NG0100
+	error properties: Object({ code: -100 })
+	    at throwErrorIfNoChangesMode (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:3475:9)
+	    at bindingUpdated (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:7918:9)
+	    at pureFunction1Internal (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:16945:10)
+	    at ɵɵpureFunction1 (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:16900:10)
+	    at templateFn (ng:///HostComponent.js:8:56)
+	    at executeTemplate (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:4834:5)
+	    at refreshView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5504:7)
+	    at detectChangesInView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5644:5)
+	    at detectChangesInViewIfAttached (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5627:3)
+	    at detectChangesInComponent (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5618:5)
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) Attribute directive GIVEN attribute directive with dynamic key
+      WHEN key changes
+      THEN should update translation FAILED[39m
+	Error: NG0100: ExpressionChangedAfterItHasBeenCheckedError: Expression has changed after it was checked. Previous value: 'home'. Current value: 'fromList'. Expression location: HostComponent component. Find more at https://v21.angular.dev/errors/NG0100
+	error properties: Object({ code: -100 })
+	    at throwErrorIfNoChangesMode (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:3475:9)
+	    at bindingUpdated (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:7918:9)
+	    at ɵɵproperty (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:14300:7)
+	    at templateFn (ng:///HostComponent.js:7:21)
+	    at executeTemplate (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:4834:5)
+	    at refreshView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5504:7)
+	    at detectChangesInView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5644:5)
+	    at detectChangesInViewIfAttached (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5627:3)
+	    at detectChangesInComponent (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5618:5)
+	    at detectChangesInChildComponents (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5666:5)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 72 of 233[31m (10 FAILED)[39m (0 secs / 0.083 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) Attribute directive GIVEN attribute directive with dynamic key
+      WHEN key changes
+      THEN should update translation FAILED
+	Error: NG0100: ExpressionChangedAfterItHasBeenCheckedError: Expression has changed after it was checked. Previous value: 'home'. Current value: 'fromList'. Expression location: HostComponent component. Find more at https://v21.angular.dev/errors/NG0100
+	error properties: Object({ code: -100 })
+	    at throwErrorIfNoChangesMode (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:3475:9)
+	    at bindingUpdated (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:7918:9)
+	    at ɵɵproperty (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:14300:7)
+	    at templateFn (ng:///HostComponent.js:7:21)
+	    at executeTemplate (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:4834:5)
+	    at refreshView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5504:7)
+	    at detectChangesInView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5644:5)
+	    at detectChangesInViewIfAttached (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5627:3)
+	    at detectChangesInComponent (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5618:5)
+	    at detectChangesInChildComponents (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5666:5)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 73 of 233[31m (10 FAILED)[39m (0 secs / 0.085 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 74 of 233[31m (10 FAILED)[39m (0 secs / 0.086 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 75 of 233[31m (10 FAILED)[39m (0 secs / 0.088 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 76 of 233[31m (10 FAILED)[39m (0 secs / 0.09 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 77 of 233[31m (10 FAILED)[39m (0 secs / 0.092 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 78 of 233[31m (10 FAILED)[39m (0 secs / 0.093 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 79 of 233[31m (10 FAILED)[39m (0 secs / 0.094 secs)
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) Structural directive Scope GIVEN directive with scope and global keys
+        WHEN both translations are loaded
+        THEN should expose both scoped and global translation FAILED[39m
+	Expected element to have text 'home spanish', but had 'home english'
+	    at <Jasmine>
+	    at testMergedScopedTranslation (libs/transloco/src/lib/tests/directive/shared.ts:46:42)
+	    at UserContext.apply (libs/transloco/src/lib/tests/directive/structural.spec.ts:148:34)
+	    at UserContext.apply (node_modules/zone.js/fesm2015/zone-testing.js:1664:18)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+	Expected element to have text 'Admin Lazy spanish', but had 'Admin Lazy english'
+	    at <Jasmine>
+	    at testMergedScopedTranslation (libs/transloco/src/lib/tests/directive/shared.ts:49:42)
+	    at UserContext.apply (libs/transloco/src/lib/tests/directive/structural.spec.ts:148:34)
+	    at UserContext.apply (node_modules/zone.js/fesm2015/zone-testing.js:1664:18)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 80 of 233[31m (11 FAILED)[39m (0 secs / 0.096 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) Structural directive Scope GIVEN directive with scope and global keys
+        WHEN both translations are loaded
+        THEN should expose both scoped and global translation FAILED
+	Expected element to have text 'home spanish', but had 'home english'
+	    at <Jasmine>
+	    at testMergedScopedTranslation (libs/transloco/src/lib/tests/directive/shared.ts:46:42)
+	    at UserContext.apply (libs/transloco/src/lib/tests/directive/structural.spec.ts:148:34)
+	    at UserContext.apply (node_modules/zone.js/fesm2015/zone-testing.js:1664:18)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+	Expected element to have text 'Admin Lazy spanish', but had 'Admin Lazy english'
+	    at <Jasmine>
+	    at testMergedScopedTranslation (libs/transloco/src/lib/tests/directive/shared.ts:49:42)
+	    at UserContext.apply (libs/transloco/src/lib/tests/directive/structural.spec.ts:148:34)
+	    at UserContext.apply (node_modules/zone.js/fesm2015/zone-testing.js:1664:18)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 81 of 233[31m (11 FAILED)[39m (0 secs / 0.097 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 82 of 233[31m (11 FAILED)[39m (0 secs / 0.098 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 83 of 233[31m (11 FAILED)[39m (0 secs / 0.099 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 84 of 233[31m (11 FAILED)[39m (0 secs / 0.101 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 85 of 233[31m (11 FAILED)[39m (0 secs / 0.102 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 86 of 233[31m (11 FAILED)[39m (0 secs / 0.103 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 87 of 233[31m (11 FAILED)[39m (0 secs / 0.103 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 88 of 233[31m (11 FAILED)[39m (0 secs / 0.104 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 89 of 233[31m (11 FAILED)[39m (0 secs / 0.104 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 90 of 233[31m (11 FAILED)[39m (0 secs / 0.104 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 91 of 233[31m (11 FAILED)[39m (0 secs / 0.104 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 92 of 233[31m (11 FAILED)[39m (0 secs / 0.104 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 93 of 233[31m (11 FAILED)[39m (0 secs / 0.104 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 94 of 233[31m (11 FAILED)[39m (0 secs / 0.105 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 95 of 233[31m (11 FAILED)[39m (0 secs / 0.105 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 96 of 233[31m (11 FAILED)[39m (0 secs / 0.105 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 97 of 233[31m (11 FAILED)[39m (0 secs / 0.105 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 98 of 233[31m (11 FAILED)[39m (0 secs / 0.106 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 99 of 233[31m (11 FAILED)[39m (0 secs / 0.106 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 100 of 233[31m (11 FAILED)[39m (0 secs / 0.106 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 101 of 233[31m (11 FAILED)[39m (0 secs / 0.106 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 102 of 233[31m (11 FAILED)[39m (0 secs / 0.107 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 103 of 233[31m (11 FAILED)[39m (0 secs / 0.107 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 104 of 233[31m (11 FAILED)[39m (0 secs / 0.107 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 105 of 233[31m (11 FAILED)[39m (0 secs / 0.107 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 106 of 233[31m (11 FAILED)[39m (0 secs / 0.108 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 107 of 233[31m (11 FAILED)[39m (0 secs / 0.108 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 108 of 233[31m (11 FAILED)[39m (0 secs / 0.108 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 109 of 233[31m (11 FAILED)[39m (0 secs / 0.108 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 110 of 233[31m (11 FAILED)[39m (0 secs / 0.108 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 111 of 233[31m (11 FAILED)[39m (0 secs / 0.108 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 112 of 233[31m (11 FAILED)[39m (0 secs / 0.108 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 113 of 233[31m (11 FAILED)[39m (0 secs / 0.108 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 114 of 233[31m (11 FAILED)[39m (0 secs / 0.108 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 115 of 233[31m (11 FAILED)[39m (0 secs / 0.108 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 116 of 233[31m (11 FAILED)[39m (0 secs / 0.108 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 117 of 233[31m (11 FAILED)[39m (0 secs / 0.108 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 118 of 233[31m (11 FAILED)[39m (0 secs / 0.109 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 119 of 233[31m (11 FAILED)[39m (0 secs / 0.109 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 120 of 233[31m (11 FAILED)[39m (0 secs / 0.109 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 121 of 233[31m (11 FAILED)[39m (0 secs / 0.109 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 122 of 233[31m (11 FAILED)[39m (0 secs / 0.11 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 123 of 233[31m (11 FAILED)[39m (0 secs / 0.11 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 124 of 233[31m (11 FAILED)[39m (0 secs / 0.11 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 125 of 233[31m (11 FAILED)[39m (0 secs / 0.11 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 126 of 233[31m (11 FAILED)[39m (0 secs / 0.11 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 127 of 233[31m (11 FAILED)[39m (0 secs / 0.111 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 128 of 233[31m (11 FAILED)[39m (0 secs / 0.111 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 129 of 233[31m (11 FAILED)[39m (0 secs / 0.111 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 130 of 233[31m (11 FAILED)[39m (0 secs / 0.111 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 131 of 233[31m (11 FAILED)[39m (0 secs / 0.112 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 132 of 233[31m (11 FAILED)[39m (0 secs / 0.112 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 133 of 233[31m (11 FAILED)[39m (0 secs / 0.112 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 134 of 233[31m (11 FAILED)[39m (0 secs / 0.112 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 135 of 233[31m (11 FAILED)[39m (0 secs / 0.113 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 136 of 233[31m (11 FAILED)[39m (0 secs / 0.113 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 137 of 233[31m (11 FAILED)[39m (0 secs / 0.113 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 138 of 233[31m (11 FAILED)[39m (0 secs / 0.113 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 139 of 233[31m (11 FAILED)[39m (0 secs / 0.114 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 140 of 233[31m (11 FAILED)[39m (0 secs / 0.114 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 141 of 233[31m (11 FAILED)[39m (0 secs / 0.115 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 142 of 233[31m (11 FAILED)[39m (0 secs / 0.115 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 143 of 233[31m (11 FAILED)[39m (0 secs / 0.115 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 144 of 233[31m (11 FAILED)[39m (0 secs / 0.115 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 145 of 233[31m (11 FAILED)[39m (0 secs / 0.116 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 146 of 233[31m (11 FAILED)[39m (0 secs / 0.116 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 147 of 233[31m (11 FAILED)[39m (0 secs / 0.117 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 148 of 233[31m (11 FAILED)[39m (0 secs / 0.117 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 149 of 233[31m (11 FAILED)[39m (0 secs / 0.117 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 150 of 233[31m (11 FAILED)[39m (0 secs / 0.118 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 151 of 233[31m (11 FAILED)[39m (0 secs / 0.118 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 152 of 233[31m (11 FAILED)[39m (0 secs / 0.122 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 153 of 233[31m (11 FAILED)[39m (0 secs / 0.123 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 154 of 233[31m (11 FAILED)[39m (0 secs / 0.123 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 155 of 233[31m (11 FAILED)[39m (0 secs / 0.123 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 156 of 233[31m (11 FAILED)[39m (0 secs / 0.124 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 157 of 233[31m (11 FAILED)[39m (0 secs / 0.124 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 158 of 233[31m (11 FAILED)[39m (0 secs / 0.124 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 159 of 233[31m (11 FAILED)[39m (0 secs / 0.125 secs)
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) Scope alias pipe GIVEN pipe with multiple scope aliases configured
+      WHEN component renders with aliased scope keys
+      THEN should translate using both scope aliases FAILED[39m
+	Error: NG0302: The pipe 'transloco' could not be found in the 'TestPipe' component. Verify that it is included in the '@Component.imports' of this component. Find more at https://v21.angular.dev/errors/NG0302
+	error properties: Object({ code: -302 })
+	    at getPipeDef (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:17017:11)
+	    at ɵɵpipe (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:16973:15)
+	    at templateFn (ng:///TestPipe.js:8:9)
+	    at executeTemplate (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:4834:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5233:7)
+	    at renderComponent (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5212:5)
+	    at renderChildComponents (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5262:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5247:7)
+	    at ComponentFactory.create (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:8298:9)
+	    at initComponent (node_modules/@angular/core/fesm2022/testing.mjs:1475:45)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 160 of 233[31m (12 FAILED)[39m (0 secs / 0.126 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) Scope alias pipe GIVEN pipe with multiple scope aliases configured
+      WHEN component renders with aliased scope keys
+      THEN should translate using both scope aliases FAILED
+	Error: NG0302: The pipe 'transloco' could not be found in the 'TestPipe' component. Verify that it is included in the '@Component.imports' of this component. Find more at https://v21.angular.dev/errors/NG0302
+	error properties: Object({ code: -302 })
+	    at getPipeDef (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:17017:11)
+	    at ɵɵpipe (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:16973:15)
+	    at templateFn (ng:///TestPipe.js:8:9)
+	    at executeTemplate (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:4834:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5233:7)
+	    at renderComponent (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5212:5)
+	    at renderChildComponents (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5262:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5247:7)
+	    at ComponentFactory.create (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:8298:9)
+	    at initComponent (node_modules/@angular/core/fesm2022/testing.mjs:1475:45)
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) TranslocoPipe GIVEN pipe with active subscription
+      WHEN pipe is destroyed
+      THEN should unsubscribe from observable FAILED[39m
+	Error: Cannot configure the test module when the test module has already been instantiated. Make sure you are not using `inject` before `TestBed.configureTestingModule`.
+	    at TestBedImpl.assertNotInstantiated (node_modules/@angular/core/fesm2022/testing.mjs:1498:13)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1390:10)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1273:33)
+	    at createPipe (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:21:13)
+	    at UserContext.apply (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:40:12)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+	    at _ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:956:33)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:46)
+	    at _ZoneImpl.run (node_modules/zone.js/fesm2015/zone.js:127:35)
+	    at runInTestZone (node_modules/zone.js/fesm2015/zone-testing.js:192:30)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 161 of 233[31m (13 FAILED)[39m (0 secs / 0.127 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) TranslocoPipe GIVEN pipe with active subscription
+      WHEN pipe is destroyed
+      THEN should unsubscribe from observable FAILED
+	Error: Cannot configure the test module when the test module has already been instantiated. Make sure you are not using `inject` before `TestBed.configureTestingModule`.
+	    at TestBedImpl.assertNotInstantiated (node_modules/@angular/core/fesm2022/testing.mjs:1498:13)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1390:10)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1273:33)
+	    at createPipe (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:21:13)
+	    at UserContext.apply (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:40:12)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+	    at _ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:956:33)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:46)
+	    at _ZoneImpl.run (node_modules/zone.js/fesm2015/zone.js:127:35)
+	    at runInTestZone (node_modules/zone.js/fesm2015/zone-testing.js:192:30)
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) TranslocoPipe GIVEN pipe with multiple provided scopes
+      WHEN translating keys from different scopes
+      THEN should load scope translations correctly FAILED[39m
+	Error: Cannot configure the test module when the test module has already been instantiated. Make sure you are not using `inject` before `TestBed.configureTestingModule`.
+	    at TestBedImpl.assertNotInstantiated (node_modules/@angular/core/fesm2022/testing.mjs:1498:13)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1390:10)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1273:33)
+	    at createPipe (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:21:13)
+	    at UserContext.apply (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:40:12)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+	    at _ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:956:33)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:46)
+	    at _ZoneImpl.run (node_modules/zone.js/fesm2015/zone.js:127:35)
+	    at runInTestZone (node_modules/zone.js/fesm2015/zone-testing.js:192:30)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 162 of 233[31m (14 FAILED)[39m (0 secs / 0.127 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) TranslocoPipe GIVEN pipe with multiple provided scopes
+      WHEN translating keys from different scopes
+      THEN should load scope translations correctly FAILED
+	Error: Cannot configure the test module when the test module has already been instantiated. Make sure you are not using `inject` before `TestBed.configureTestingModule`.
+	    at TestBedImpl.assertNotInstantiated (node_modules/@angular/core/fesm2022/testing.mjs:1498:13)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1390:10)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1273:33)
+	    at createPipe (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:21:13)
+	    at UserContext.apply (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:40:12)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+	    at _ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:956:33)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:46)
+	    at _ZoneImpl.run (node_modules/zone.js/fesm2015/zone.js:127:35)
+	    at runInTestZone (node_modules/zone.js/fesm2015/zone-testing.js:192:30)
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) TranslocoPipe GIVEN pipe with provided language
+      WHEN transform is called
+      THEN should use provided language for translation FAILED[39m
+	Error: Cannot configure the test module when the test module has already been instantiated. Make sure you are not using `inject` before `TestBed.configureTestingModule`.
+	    at TestBedImpl.assertNotInstantiated (node_modules/@angular/core/fesm2022/testing.mjs:1498:13)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1390:10)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1273:33)
+	    at createPipe (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:21:13)
+	    at UserContext.apply (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:40:12)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+	    at _ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:956:33)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:46)
+	    at _ZoneImpl.run (node_modules/zone.js/fesm2015/zone.js:127:35)
+	    at runInTestZone (node_modules/zone.js/fesm2015/zone-testing.js:192:30)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 163 of 233[31m (15 FAILED)[39m (0 secs / 0.128 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) TranslocoPipe GIVEN pipe with provided language
+      WHEN transform is called
+      THEN should use provided language for translation FAILED
+	Error: Cannot configure the test module when the test module has already been instantiated. Make sure you are not using `inject` before `TestBed.configureTestingModule`.
+	    at TestBedImpl.assertNotInstantiated (node_modules/@angular/core/fesm2022/testing.mjs:1498:13)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1390:10)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1273:33)
+	    at createPipe (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:21:13)
+	    at UserContext.apply (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:40:12)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+	    at _ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:956:33)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:46)
+	    at _ZoneImpl.run (node_modules/zone.js/fesm2015/zone.js:127:35)
+	    at runInTestZone (node_modules/zone.js/fesm2015/zone-testing.js:192:30)
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) TranslocoPipe updateValue GIVEN pipe transform is called
+        WHEN translation is loaded
+        THEN should update value, cache it and mark for check FAILED[39m
+	Error: Cannot configure the test module when the test module has already been instantiated. Make sure you are not using `inject` before `TestBed.configureTestingModule`.
+	    at TestBedImpl.assertNotInstantiated (node_modules/@angular/core/fesm2022/testing.mjs:1498:13)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1390:10)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1273:33)
+	    at createPipe (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:21:13)
+	    at UserContext.apply (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:40:12)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+	    at _ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:956:33)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:46)
+	    at _ZoneImpl.run (node_modules/zone.js/fesm2015/zone.js:127:35)
+	    at runInTestZone (node_modules/zone.js/fesm2015/zone-testing.js:192:30)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 164 of 233[31m (16 FAILED)[39m (0 secs / 0.128 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) TranslocoPipe updateValue GIVEN pipe transform is called
+        WHEN translation is loaded
+        THEN should update value, cache it and mark for check FAILED
+	Error: Cannot configure the test module when the test module has already been instantiated. Make sure you are not using `inject` before `TestBed.configureTestingModule`.
+	    at TestBedImpl.assertNotInstantiated (node_modules/@angular/core/fesm2022/testing.mjs:1498:13)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1390:10)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1273:33)
+	    at createPipe (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:21:13)
+	    at UserContext.apply (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:40:12)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+	    at _ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:956:33)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:46)
+	    at _ZoneImpl.run (node_modules/zone.js/fesm2015/zone.js:127:35)
+	    at runInTestZone (node_modules/zone.js/fesm2015/zone-testing.js:192:30)
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) TranslocoPipe updateValue GIVEN pipe transform with non-existent key
+        WHEN translation is loaded
+        THEN should set value to key itself FAILED[39m
+	Error: Cannot configure the test module when the test module has already been instantiated. Make sure you are not using `inject` before `TestBed.configureTestingModule`.
+	    at TestBedImpl.assertNotInstantiated (node_modules/@angular/core/fesm2022/testing.mjs:1498:13)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1390:10)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1273:33)
+	    at createPipe (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:21:13)
+	    at UserContext.apply (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:40:12)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+	    at _ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:956:33)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:46)
+	    at _ZoneImpl.run (node_modules/zone.js/fesm2015/zone.js:127:35)
+	    at runInTestZone (node_modules/zone.js/fesm2015/zone-testing.js:192:30)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 165 of 233[31m (17 FAILED)[39m (0 secs / 0.13 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) TranslocoPipe updateValue GIVEN pipe transform with non-existent key
+        WHEN translation is loaded
+        THEN should set value to key itself FAILED
+	Error: Cannot configure the test module when the test module has already been instantiated. Make sure you are not using `inject` before `TestBed.configureTestingModule`.
+	    at TestBedImpl.assertNotInstantiated (node_modules/@angular/core/fesm2022/testing.mjs:1498:13)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1390:10)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1273:33)
+	    at createPipe (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:21:13)
+	    at UserContext.apply (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:40:12)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+	    at _ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:956:33)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:46)
+	    at _ZoneImpl.run (node_modules/zone.js/fesm2015/zone.js:127:35)
+	    at runInTestZone (node_modules/zone.js/fesm2015/zone-testing.js:192:30)
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) TranslocoPipe Scoped Translation GIVEN pipe with scope
+        WHEN language changes
+        THEN should load scoped translation FAILED[39m
+	Error: Cannot configure the test module when the test module has already been instantiated. Make sure you are not using `inject` before `TestBed.configureTestingModule`.
+	    at TestBedImpl.assertNotInstantiated (node_modules/@angular/core/fesm2022/testing.mjs:1498:13)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1390:10)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1273:33)
+	    at createPipe (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:21:13)
+	    at UserContext.apply (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:40:12)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+	    at _ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:956:33)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:46)
+	    at _ZoneImpl.run (node_modules/zone.js/fesm2015/zone.js:127:35)
+	    at runInTestZone (node_modules/zone.js/fesm2015/zone-testing.js:192:30)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 166 of 233[31m (18 FAILED)[39m (0 secs / 0.13 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) TranslocoPipe Scoped Translation GIVEN pipe with scope
+        WHEN language changes
+        THEN should load scoped translation FAILED
+	Error: Cannot configure the test module when the test module has already been instantiated. Make sure you are not using `inject` before `TestBed.configureTestingModule`.
+	    at TestBedImpl.assertNotInstantiated (node_modules/@angular/core/fesm2022/testing.mjs:1498:13)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1390:10)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1273:33)
+	    at createPipe (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:21:13)
+	    at UserContext.apply (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:40:12)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+	    at _ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:956:33)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:46)
+	    at _ZoneImpl.run (node_modules/zone.js/fesm2015/zone.js:127:35)
+	    at runInTestZone (node_modules/zone.js/fesm2015/zone-testing.js:192:30)
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) TranslocoPipe Scoped Translation GIVEN pipe with scope alias
+        WHEN language changes
+        THEN should load scoped translation using alias FAILED[39m
+	Error: Cannot configure the test module when the test module has already been instantiated. Make sure you are not using `inject` before `TestBed.configureTestingModule`.
+	    at TestBedImpl.assertNotInstantiated (node_modules/@angular/core/fesm2022/testing.mjs:1498:13)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1390:10)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1273:33)
+	    at createPipe (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:21:13)
+	    at UserContext.apply (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:40:12)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+	    at _ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:956:33)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:46)
+	    at _ZoneImpl.run (node_modules/zone.js/fesm2015/zone.js:127:35)
+	    at runInTestZone (node_modules/zone.js/fesm2015/zone-testing.js:192:30)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 167 of 233[31m (19 FAILED)[39m (0 secs / 0.13 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) TranslocoPipe Scoped Translation GIVEN pipe with scope alias
+        WHEN language changes
+        THEN should load scoped translation using alias FAILED
+	Error: Cannot configure the test module when the test module has already been instantiated. Make sure you are not using `inject` before `TestBed.configureTestingModule`.
+	    at TestBedImpl.assertNotInstantiated (node_modules/@angular/core/fesm2022/testing.mjs:1498:13)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1390:10)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1273:33)
+	    at createPipe (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:21:13)
+	    at UserContext.apply (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:40:12)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+	    at _ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:956:33)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:46)
+	    at _ZoneImpl.run (node_modules/zone.js/fesm2015/zone.js:127:35)
+	    at runInTestZone (node_modules/zone.js/fesm2015/zone-testing.js:192:30)
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) TranslocoPipe GIVEN pipe with provider lang
+      WHEN transform is called before translations load
+      THEN should return empty string as default FAILED[39m
+	Error: Cannot configure the test module when the test module has already been instantiated. Make sure you are not using `inject` before `TestBed.configureTestingModule`.
+	    at TestBedImpl.assertNotInstantiated (node_modules/@angular/core/fesm2022/testing.mjs:1498:13)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1390:10)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1273:33)
+	    at createPipe (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:21:13)
+	    at UserContext.apply (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:40:12)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+	    at _ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:956:33)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:46)
+	    at _ZoneImpl.run (node_modules/zone.js/fesm2015/zone.js:127:35)
+	    at runInTestZone (node_modules/zone.js/fesm2015/zone-testing.js:192:30)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 168 of 233[31m (20 FAILED)[39m (0 secs / 0.13 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) TranslocoPipe GIVEN pipe with provider lang
+      WHEN transform is called before translations load
+      THEN should return empty string as default FAILED
+	Error: Cannot configure the test module when the test module has already been instantiated. Make sure you are not using `inject` before `TestBed.configureTestingModule`.
+	    at TestBedImpl.assertNotInstantiated (node_modules/@angular/core/fesm2022/testing.mjs:1498:13)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1390:10)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1273:33)
+	    at createPipe (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:21:13)
+	    at UserContext.apply (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:40:12)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+	    at _ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:956:33)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:46)
+	    at _ZoneImpl.run (node_modules/zone.js/fesm2015/zone.js:127:35)
+	    at runInTestZone (node_modules/zone.js/fesm2015/zone-testing.js:192:30)
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) TranslocoPipe transform GIVEN pipe transform with valid key
+        WHEN translation is loaded
+        THEN should perform translation FAILED[39m
+	Error: Cannot configure the test module when the test module has already been instantiated. Make sure you are not using `inject` before `TestBed.configureTestingModule`.
+	    at TestBedImpl.assertNotInstantiated (node_modules/@angular/core/fesm2022/testing.mjs:1498:13)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1390:10)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1273:33)
+	    at createPipe (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:21:13)
+	    at UserContext.apply (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:40:12)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+	    at _ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:956:33)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:46)
+	    at _ZoneImpl.run (node_modules/zone.js/fesm2015/zone.js:127:35)
+	    at runInTestZone (node_modules/zone.js/fesm2015/zone-testing.js:192:30)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 169 of 233[31m (21 FAILED)[39m (0 secs / 0.13 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) TranslocoPipe transform GIVEN pipe transform with valid key
+        WHEN translation is loaded
+        THEN should perform translation FAILED
+	Error: Cannot configure the test module when the test module has already been instantiated. Make sure you are not using `inject` before `TestBed.configureTestingModule`.
+	    at TestBedImpl.assertNotInstantiated (node_modules/@angular/core/fesm2022/testing.mjs:1498:13)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1390:10)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1273:33)
+	    at createPipe (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:21:13)
+	    at UserContext.apply (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:40:12)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+	    at _ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:956:33)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:46)
+	    at _ZoneImpl.run (node_modules/zone.js/fesm2015/zone.js:127:35)
+	    at runInTestZone (node_modules/zone.js/fesm2015/zone-testing.js:192:30)
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) TranslocoPipe transform GIVEN pipe without reRenderOnLangChange mode
+        WHEN translation emits
+        THEN should unsubscribe after one emit FAILED[39m
+	Error: Cannot configure the test module when the test module has already been instantiated. Make sure you are not using `inject` before `TestBed.configureTestingModule`.
+	    at TestBedImpl.assertNotInstantiated (node_modules/@angular/core/fesm2022/testing.mjs:1498:13)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1390:10)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1273:33)
+	    at createPipe (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:21:13)
+	    at UserContext.apply (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:40:12)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+	    at _ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:956:33)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:46)
+	    at _ZoneImpl.run (node_modules/zone.js/fesm2015/zone.js:127:35)
+	    at runInTestZone (node_modules/zone.js/fesm2015/zone-testing.js:192:30)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 170 of 233[31m (22 FAILED)[39m (0 secs / 0.13 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) TranslocoPipe transform GIVEN pipe without reRenderOnLangChange mode
+        WHEN translation emits
+        THEN should unsubscribe after one emit FAILED
+	Error: Cannot configure the test module when the test module has already been instantiated. Make sure you are not using `inject` before `TestBed.configureTestingModule`.
+	    at TestBedImpl.assertNotInstantiated (node_modules/@angular/core/fesm2022/testing.mjs:1498:13)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1390:10)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1273:33)
+	    at createPipe (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:21:13)
+	    at UserContext.apply (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:40:12)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+	    at _ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:956:33)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:46)
+	    at _ZoneImpl.run (node_modules/zone.js/fesm2015/zone.js:127:35)
+	    at runInTestZone (node_modules/zone.js/fesm2015/zone-testing.js:192:30)
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) TranslocoPipe transform GIVEN pipe transform called with same key
+        WHEN transform is called multiple times
+        THEN should return cached value FAILED[39m
+	Error: Cannot configure the test module when the test module has already been instantiated. Make sure you are not using `inject` before `TestBed.configureTestingModule`.
+	    at TestBedImpl.assertNotInstantiated (node_modules/@angular/core/fesm2022/testing.mjs:1498:13)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1390:10)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1273:33)
+	    at createPipe (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:21:13)
+	    at UserContext.apply (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:40:12)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+	    at _ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:956:33)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:46)
+	    at _ZoneImpl.run (node_modules/zone.js/fesm2015/zone.js:127:35)
+	    at runInTestZone (node_modules/zone.js/fesm2015/zone-testing.js:192:30)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 171 of 233[31m (23 FAILED)[39m (0 secs / 0.131 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) TranslocoPipe transform GIVEN pipe transform called with same key
+        WHEN transform is called multiple times
+        THEN should return cached value FAILED
+	Error: Cannot configure the test module when the test module has already been instantiated. Make sure you are not using `inject` before `TestBed.configureTestingModule`.
+	    at TestBedImpl.assertNotInstantiated (node_modules/@angular/core/fesm2022/testing.mjs:1498:13)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1390:10)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1273:33)
+	    at createPipe (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:21:13)
+	    at UserContext.apply (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:40:12)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+	    at _ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:956:33)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:46)
+	    at _ZoneImpl.run (node_modules/zone.js/fesm2015/zone.js:127:35)
+	    at runInTestZone (node_modules/zone.js/fesm2015/zone-testing.js:192:30)
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) TranslocoPipe transform GIVEN pipe transform with falsy key
+        WHEN transform is called
+        THEN should return the key as-is FAILED[39m
+	Error: Cannot configure the test module when the test module has already been instantiated. Make sure you are not using `inject` before `TestBed.configureTestingModule`.
+	    at TestBedImpl.assertNotInstantiated (node_modules/@angular/core/fesm2022/testing.mjs:1498:13)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1390:10)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1273:33)
+	    at createPipe (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:21:13)
+	    at UserContext.apply (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:40:12)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+	    at _ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:956:33)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:46)
+	    at _ZoneImpl.run (node_modules/zone.js/fesm2015/zone.js:127:35)
+	    at runInTestZone (node_modules/zone.js/fesm2015/zone-testing.js:192:30)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 172 of 233[31m (24 FAILED)[39m (0 secs / 0.131 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) TranslocoPipe transform GIVEN pipe transform with falsy key
+        WHEN transform is called
+        THEN should return the key as-is FAILED
+	Error: Cannot configure the test module when the test module has already been instantiated. Make sure you are not using `inject` before `TestBed.configureTestingModule`.
+	    at TestBedImpl.assertNotInstantiated (node_modules/@angular/core/fesm2022/testing.mjs:1498:13)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1390:10)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1273:33)
+	    at createPipe (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:21:13)
+	    at UserContext.apply (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:40:12)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+	    at _ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:956:33)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:46)
+	    at _ZoneImpl.run (node_modules/zone.js/fesm2015/zone.js:127:35)
+	    at runInTestZone (node_modules/zone.js/fesm2015/zone-testing.js:192:30)
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) TranslocoPipe transform GIVEN pipe transform called with same key and params
+        WHEN transform is called multiple times
+        THEN should return cached value until params change FAILED[39m
+	Error: Cannot configure the test module when the test module has already been instantiated. Make sure you are not using `inject` before `TestBed.configureTestingModule`.
+	    at TestBedImpl.assertNotInstantiated (node_modules/@angular/core/fesm2022/testing.mjs:1498:13)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1390:10)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1273:33)
+	    at createPipe (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:21:13)
+	    at UserContext.apply (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:40:12)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+	    at _ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:956:33)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:46)
+	    at _ZoneImpl.run (node_modules/zone.js/fesm2015/zone.js:127:35)
+	    at runInTestZone (node_modules/zone.js/fesm2015/zone-testing.js:192:30)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 173 of 233[31m (25 FAILED)[39m (0 secs / 0.131 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) TranslocoPipe transform GIVEN pipe transform called with same key and params
+        WHEN transform is called multiple times
+        THEN should return cached value until params change FAILED
+	Error: Cannot configure the test module when the test module has already been instantiated. Make sure you are not using `inject` before `TestBed.configureTestingModule`.
+	    at TestBedImpl.assertNotInstantiated (node_modules/@angular/core/fesm2022/testing.mjs:1498:13)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1390:10)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1273:33)
+	    at createPipe (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:21:13)
+	    at UserContext.apply (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:40:12)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+	    at _ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:956:33)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:46)
+	    at _ZoneImpl.run (node_modules/zone.js/fesm2015/zone.js:127:35)
+	    at runInTestZone (node_modules/zone.js/fesm2015/zone-testing.js:192:30)
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) TranslocoPipe transform GIVEN pipe transform with params
+        WHEN translation is loaded
+        THEN should perform translation with interpolated params FAILED[39m
+	Error: Cannot configure the test module when the test module has already been instantiated. Make sure you are not using `inject` before `TestBed.configureTestingModule`.
+	    at TestBedImpl.assertNotInstantiated (node_modules/@angular/core/fesm2022/testing.mjs:1498:13)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1390:10)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1273:33)
+	    at createPipe (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:21:13)
+	    at UserContext.apply (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:40:12)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+	    at _ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:956:33)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:46)
+	    at _ZoneImpl.run (node_modules/zone.js/fesm2015/zone.js:127:35)
+	    at runInTestZone (node_modules/zone.js/fesm2015/zone-testing.js:192:30)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 174 of 233[31m (26 FAILED)[39m (0 secs / 0.132 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) TranslocoPipe transform GIVEN pipe transform with params
+        WHEN translation is loaded
+        THEN should perform translation with interpolated params FAILED
+	Error: Cannot configure the test module when the test module has already been instantiated. Make sure you are not using `inject` before `TestBed.configureTestingModule`.
+	    at TestBedImpl.assertNotInstantiated (node_modules/@angular/core/fesm2022/testing.mjs:1498:13)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1390:10)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1273:33)
+	    at createPipe (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:21:13)
+	    at UserContext.apply (libs/transloco/src/lib/tests/pipe/pipe.spec.ts:40:12)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+	    at _ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:956:33)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:46)
+	    at _ZoneImpl.run (node_modules/zone.js/fesm2015/zone.js:127:35)
+	    at runInTestZone (node_modules/zone.js/fesm2015/zone-testing.js:192:30)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 175 of 233[31m (26 FAILED)[39m (0 secs / 0.134 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 176 of 233[31m (26 FAILED)[39m (0 secs / 0.135 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 177 of 233[31m (26 FAILED)[39m (0 secs / 0.135 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 178 of 233[31m (26 FAILED)[39m (0 secs / 0.136 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 179 of 233[31m (26 FAILED)[39m (0 secs / 0.137 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 180 of 233[31m (26 FAILED)[39m (0 secs / 0.137 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 181 of 233[31m (26 FAILED)[39m (0 secs / 0.137 secs)
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) Scope alias pipe GIVEN pipe with scope alias
+      WHEN translations are loaded
+      THEN should translate using the alias FAILED[39m
+	Error: NG0302: The pipe 'transloco' could not be found in the 'TestPipe' component. Verify that it is included in the '@Component.imports' of this component. Find more at https://v21.angular.dev/errors/NG0302
+	error properties: Object({ code: -302 })
+	    at getPipeDef (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:17017:11)
+	    at ɵɵpipe (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:16973:15)
+	    at templateFn (ng:///TestPipe.js:8:9)
+	    at executeTemplate (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:4834:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5233:7)
+	    at renderComponent (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5212:5)
+	    at renderChildComponents (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5262:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5247:7)
+	    at ComponentFactory.create (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:8298:9)
+	    at initComponent (node_modules/@angular/core/fesm2022/testing.mjs:1475:45)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 182 of 233[31m (27 FAILED)[39m (0 secs / 0.138 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) Scope alias pipe GIVEN pipe with scope alias
+      WHEN translations are loaded
+      THEN should translate using the alias FAILED
+	Error: NG0302: The pipe 'transloco' could not be found in the 'TestPipe' component. Verify that it is included in the '@Component.imports' of this component. Find more at https://v21.angular.dev/errors/NG0302
+	error properties: Object({ code: -302 })
+	    at getPipeDef (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:17017:11)
+	    at ɵɵpipe (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:16973:15)
+	    at templateFn (ng:///TestPipe.js:8:9)
+	    at executeTemplate (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:4834:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5233:7)
+	    at renderComponent (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5212:5)
+	    at renderChildComponents (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5262:5)
+	    at renderView (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:5247:7)
+	    at ComponentFactory.create (node_modules/@angular/core/fesm2022/_debug_node-chunk.mjs:8298:9)
+	    at initComponent (node_modules/@angular/core/fesm2022/testing.mjs:1475:45)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 183 of 233[31m (27 FAILED)[39m (0 secs / 0.141 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 184 of 233[31m (27 FAILED)[39m (0 secs / 0.143 secs)
+[1A[2KWARN: [36m'%c Missing translation for 'title'', 'font-size: 12px; color: red'[39m
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 184 of 233[31m (27 FAILED)[39m (0 secs / 0.143 secs)
+WARN: '%c Missing translation for 'title'', 'font-size: 12px; color: red'
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 185 of 233[31m (27 FAILED)[39m (0 secs / 0.146 secs)
+[1A[2KWARN: [36m'%c Missing translation for 'title'', 'font-size: 12px; color: red'[39m
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 185 of 233[31m (27 FAILED)[39m (0 secs / 0.146 secs)
+WARN: '%c Missing translation for 'title'', 'font-size: 12px; color: red'
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) Loading Template GIVEN directive with inline loading template
+      WHEN translations are already loaded
+      THEN should not attach loading view FAILED[39m
+	Expected spy attachView not to have been called.
+	    at <Jasmine>
+	    at UserContext.apply (libs/transloco/src/lib/tests/directive/structural-loading-tpl.spec.ts:80:54)
+	    at UserContext.apply (node_modules/zone.js/fesm2015/zone-testing.js:1664:18)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+	    at _ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:956:33)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 186 of 233[31m (28 FAILED)[39m (0 secs / 0.148 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) Loading Template GIVEN directive with inline loading template
+      WHEN translations are already loaded
+      THEN should not attach loading view FAILED
+	Expected spy attachView not to have been called.
+	    at <Jasmine>
+	    at UserContext.apply (libs/transloco/src/lib/tests/directive/structural-loading-tpl.spec.ts:80:54)
+	    at UserContext.apply (node_modules/zone.js/fesm2015/zone-testing.js:1664:18)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:360:158)
+	    at _ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:956:33)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 187 of 233[31m (28 FAILED)[39m (0 secs / 0.148 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 188 of 233[31m (28 FAILED)[39m (0 secs / 0.148 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 189 of 233[31m (28 FAILED)[39m (0 secs / 0.148 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 190 of 233[31m (28 FAILED)[39m (0 secs / 0.148 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 191 of 233[31m (28 FAILED)[39m (0 secs / 0.148 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 192 of 233[31m (28 FAILED)[39m (0 secs / 0.148 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 193 of 233[31m (28 FAILED)[39m (0 secs / 0.148 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 194 of 233[31m (28 FAILED)[39m (0 secs / 0.148 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 195 of 233[31m (28 FAILED)[39m (0 secs / 0.148 secs)
+[1A[2KWARN: [36m'Spec 'load GIVEN service loading translations
+      WHEN translations finish loading
+      THEN should trigger langChanged event' has no expectations.'[39m
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 195 of 233[31m (28 FAILED)[39m (0 secs / 0.148 secs)
+WARN: 'Spec 'load GIVEN service loading translations
+      WHEN translations finish loading
+      THEN should trigger langChanged event' has no expectations.'
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 196 of 233[31m (28 FAILED)[39m (0 secs / 0.149 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 197 of 233[31m (28 FAILED)[39m (0 secs / 0.149 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 198 of 233[31m (28 FAILED)[39m (0 secs / 0.15 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 199 of 233[31m (28 FAILED)[39m (0 secs / 0.15 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 200 of 233[31m (28 FAILED)[39m (0 secs / 0.15 secs)
+[1A[2KWARN: [36m'%c Missing translation for 'title'', 'font-size: 12px; color: red'[39m
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 200 of 233[31m (28 FAILED)[39m (0 secs / 0.15 secs)
+WARN: '%c Missing translation for 'title'', 'font-size: 12px; color: red'
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 201 of 233[31m (28 FAILED)[39m (0 secs / 0.154 secs)
+[1A[2KWARN: [36m'%c Missing translation for 'title'', 'font-size: 12px; color: red'[39m
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 201 of 233[31m (28 FAILED)[39m (0 secs / 0.154 secs)
+WARN: '%c Missing translation for 'title'', 'font-size: 12px; color: red'
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 202 of 233[31m (28 FAILED)[39m (0 secs / 0.157 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 203 of 233[31m (28 FAILED)[39m (0 secs / 0.159 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 204 of 233[31m (28 FAILED)[39m (0 secs / 0.16 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 205 of 233[31m (28 FAILED)[39m (0 secs / 0.162 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 206 of 233[31m (28 FAILED)[39m (0 secs / 0.163 secs)
+[1A[2KWARN: [36m'%c Missing translation for 'kazaz'', 'font-size: 12px; color: red'[39m
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 206 of 233[31m (28 FAILED)[39m (0 secs / 0.163 secs)
+WARN: '%c Missing translation for 'kazaz'', 'font-size: 12px; color: red'
+[1A[2KWARN: [36m'%c Missing translation for 'netanel'', 'font-size: 12px; color: red'[39m
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 206 of 233[31m (28 FAILED)[39m (0 secs / 0.163 secs)
+WARN: '%c Missing translation for 'netanel'', 'font-size: 12px; color: red'
+[1A[2KWARN: [36m'%c Missing translation for 'itay'', 'font-size: 12px; color: red'[39m
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 206 of 233[31m (28 FAILED)[39m (0 secs / 0.163 secs)
+WARN: '%c Missing translation for 'itay'', 'font-size: 12px; color: red'
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 207 of 233[31m (28 FAILED)[39m (0 secs / 0.164 secs)
+[1A[2KWARN: [36m'%c Missing translation for 'home'', 'font-size: 12px; color: red'[39m
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 207 of 233[31m (28 FAILED)[39m (0 secs / 0.164 secs)
+WARN: '%c Missing translation for 'home'', 'font-size: 12px; color: red'
+[1A[2KWARN: [36m'%c Missing translation for 'home'', 'font-size: 12px; color: red'[39m
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 207 of 233[31m (28 FAILED)[39m (0 secs / 0.164 secs)
+WARN: '%c Missing translation for 'home'', 'font-size: 12px; color: red'
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 208 of 233[31m (28 FAILED)[39m (0 secs / 0.164 secs)
+[1A[2KWARN: [36m'%c Missing translation for 'notexists'', 'font-size: 12px; color: red'[39m
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 208 of 233[31m (28 FAILED)[39m (0 secs / 0.164 secs)
+WARN: '%c Missing translation for 'notexists'', 'font-size: 12px; color: red'
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 209 of 233[31m (28 FAILED)[39m (0 secs / 0.164 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 210 of 233[31m (28 FAILED)[39m (0 secs / 0.164 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 211 of 233[31m (28 FAILED)[39m (0 secs / 0.164 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 212 of 233[31m (28 FAILED)[39m (0 secs / 0.164 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 213 of 233[31m (28 FAILED)[39m (0 secs / 0.165 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 214 of 233[31m (28 FAILED)[39m (0 secs / 0.166 secs)
+[1A[2KWARN: [36m'%c Missing translation for 'key.is.like'', 'font-size: 12px; color: red'[39m
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 214 of 233[31m (28 FAILED)[39m (0 secs / 0.166 secs)
+WARN: '%c Missing translation for 'key.is.like'', 'font-size: 12px; color: red'
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 215 of 233[31m (28 FAILED)[39m (0 secs / 0.167 secs)
+[1A[2KWARN: [36m'%c Missing translation for 'a.b'', 'font-size: 12px; color: red'[39m
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 215 of 233[31m (28 FAILED)[39m (0 secs / 0.167 secs)
+WARN: '%c Missing translation for 'a.b'', 'font-size: 12px; color: red'
+[1A[2KLOG: [36mObject{c: 'a.b.c Signal Changed english'}[39m
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 215 of 233[31m (28 FAILED)[39m (0 secs / 0.167 secs)
+LOG: Object{c: 'a.b.c Signal Changed english'}
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 216 of 233[31m (28 FAILED)[39m (0 secs / 0.168 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 217 of 233[31m (28 FAILED)[39m (0 secs / 0.169 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 218 of 233[31m (28 FAILED)[39m (0 secs / 0.169 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 219 of 233[31m (28 FAILED)[39m (0 secs / 0.169 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 220 of 233[31m (28 FAILED)[39m (0 secs / 0.169 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 221 of 233[31m (28 FAILED)[39m (0 secs / 0.169 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 222 of 233[31m (28 FAILED)[39m (0 secs / 0.17 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 223 of 233[31m (28 FAILED)[39m (0 secs / 0.17 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 224 of 233[31m (28 FAILED)[39m (0 secs / 0.17 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 225 of 233[31m (28 FAILED)[39m (0 secs / 0.171 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 226 of 233[31m (28 FAILED)[39m (0 secs / 0.171 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 227 of 233[31m (28 FAILED)[39m (0 secs / 0.172 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 228 of 233[31m (28 FAILED)[39m (0 secs / 0.172 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 229 of 233[31m (28 FAILED)[39m (0 secs / 0.173 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 230 of 233[31m (28 FAILED)[39m (0 secs / 0.173 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 231 of 233[31m (28 FAILED)[39m (0 secs / 0.173 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 232 of 233[31m (28 FAILED)[39m (0 secs / 0.173 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 233 of 233[31m (28 FAILED)[39m (0 secs / 0.173 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 233 of 233[31m (28 FAILED)[39m (0.219 secs / 0.173 secs)
+[31mTOTAL: 28 FAILED, 205 SUCCESS[39m
+TOTAL: 28 FAILED, 205 SUCCESS
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) ERROR[39m
+  Some of your tests did a full page reload!
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 233 of 233[31m (28 FAILED)[39m[31m ERROR[39m (0.219 secs / 0.173 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) ERROR
+  Some of your tests did a full page reload!
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 233 of 233[31m (28 FAILED)[39m[31m ERROR[39m (0.248 secs / 0.173 secs)
+[32m✔[39m Browser application bundle generation complete.
+[32m✔[39m Browser application bundle generation complete.
+
+> nx run transloco-locale:test
+
+- Generating browser application bundles (phase: setup)...
+[1m[33m    TypeScript compiler options "target" and "useDefineForClassFields" are set to "ES2022" and "false" respectively by the Angular CLI. To control ECMA version and features use the Browserslist configuration. For more information, see https://angular.dev/tools/cli/build#configuring-browser-compatibility[39m[22m
+[1m[33m    NOTE: You can set the "target" to "ES2022" in the project's tsconfig to remove this warning.[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[32m25 01 2026 09:32:45.713:INFO [karma-server]: [39mKarma v6.4.3 server started at http://localhost:9878/
+[32m25 01 2026 09:32:45.714:INFO [launcher]: [39mLaunching browsers ChromeHeadless with concurrency unlimited
+[32m25 01 2026 09:32:45.715:INFO [launcher]: [39mStarting browser ChromeHeadless
+[32m25 01 2026 09:32:46.779:INFO [Chrome Headless 144.0.0.0 (Mac OS 10.15.7)]: [39mConnected on socket oRmYp0Z45HQukjRVAAAB with id 81791934
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 0 of 41[32m SUCCESS[39m (0 secs / 0 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 1 of 41[32m SUCCESS[39m (0 secs / 0.033 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 2 of 41[32m SUCCESS[39m (0 secs / 0.037 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 3 of 41[32m SUCCESS[39m (0 secs / 0.041 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 4 of 41[32m SUCCESS[39m (0 secs / 0.044 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 5 of 41[32m SUCCESS[39m (0 secs / 0.047 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 6 of 41[32m SUCCESS[39m (0 secs / 0.05 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 7 of 41[32m SUCCESS[39m (0 secs / 0.056 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 8 of 41[32m SUCCESS[39m (0 secs / 0.058 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 9 of 41[32m SUCCESS[39m (0 secs / 0.063 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 10 of 41[32m SUCCESS[39m (0 secs / 0.069 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 11 of 41[32m SUCCESS[39m (0 secs / 0.072 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 12 of 41[32m SUCCESS[39m (0 secs / 0.075 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 13 of 41[32m SUCCESS[39m (0 secs / 0.076 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 14 of 41[32m SUCCESS[39m (0 secs / 0.078 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 15 of 41[32m SUCCESS[39m (0 secs / 0.081 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 16 of 41[32m SUCCESS[39m (0 secs / 0.083 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 17 of 41[32m SUCCESS[39m (0 secs / 0.085 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 18 of 41[32m SUCCESS[39m (0 secs / 0.086 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 19 of 41[32m SUCCESS[39m (0 secs / 0.099 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 20 of 41[32m SUCCESS[39m (0 secs / 0.101 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 21 of 41[32m SUCCESS[39m (0 secs / 0.102 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 22 of 41[32m SUCCESS[39m (0 secs / 0.104 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 23 of 41[32m SUCCESS[39m (0 secs / 0.105 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 24 of 41[32m SUCCESS[39m (0 secs / 0.106 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 25 of 41[32m SUCCESS[39m (0 secs / 0.107 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 26 of 41[32m SUCCESS[39m (0 secs / 0.108 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 27 of 41[32m SUCCESS[39m (0 secs / 0.109 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 28 of 41[32m SUCCESS[39m (0 secs / 0.111 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 29 of 41[32m SUCCESS[39m (0 secs / 0.112 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 30 of 41[32m SUCCESS[39m (0 secs / 0.113 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 31 of 41[32m SUCCESS[39m (0 secs / 0.114 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 32 of 41[32m SUCCESS[39m (0 secs / 0.115 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 33 of 41[32m SUCCESS[39m (0 secs / 0.116 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 34 of 41[32m SUCCESS[39m (0 secs / 0.117 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 35 of 41[32m SUCCESS[39m (0 secs / 0.118 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 36 of 41[32m SUCCESS[39m (0 secs / 0.119 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 37 of 41[32m SUCCESS[39m (0 secs / 0.12 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 38 of 41[32m SUCCESS[39m (0 secs / 0.121 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 39 of 41[32m SUCCESS[39m (0 secs / 0.122 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 40 of 41[32m SUCCESS[39m (0 secs / 0.123 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 41 of 41[32m SUCCESS[39m (0 secs / 0.124 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 41 of 41[32m SUCCESS[39m (0.14 secs / 0.124 secs)
+[32mTOTAL: 41 SUCCESS[39m
+TOTAL: 41 SUCCESS
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) ERROR[39m
+  Some of your tests did a full page reload!
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 41 of 41[31m ERROR[39m (0.14 secs / 0.124 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) ERROR
+  Some of your tests did a full page reload!
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 41 of 41[31m ERROR[39m (0.148 secs / 0.124 secs)
+[32m✔[39m Browser application bundle generation complete.
+[32m✔[39m Browser application bundle generation complete.
+
+> nx run transloco-messageformat:test
+
+- Generating browser application bundles (phase: setup)...
+[1m[33m    TypeScript compiler options "target" and "useDefineForClassFields" are set to "ES2022" and "false" respectively by the Angular CLI. To control ECMA version and features use the Browserslist configuration. For more information, see https://angular.dev/tools/cli/build#configuring-browser-compatibility[39m[22m
+[1m[33m    NOTE: You can set the "target" to "ES2022" in the project's tsconfig to remove this warning.[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[32m25 01 2026 09:32:49.057:INFO [karma-server]: [39mKarma v6.4.3 server started at http://localhost:9876/
+[32m25 01 2026 09:32:49.058:INFO [launcher]: [39mLaunching browsers ChromeHeadless with concurrency unlimited
+[32m25 01 2026 09:32:49.060:INFO [launcher]: [39mStarting browser ChromeHeadless
+[32m25 01 2026 09:32:49.708:INFO [Chrome Headless 144.0.0.0 (Mac OS 10.15.7)]: [39mConnected on socket wZnJsfSIsfm5c_Q6AAAB with id 22967829
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 0 of 29[32m SUCCESS[39m (0 secs / 0 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 1 of 29[32m SUCCESS[39m (0 secs / 0.006 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 2 of 29[32m SUCCESS[39m (0 secs / 0.007 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 3 of 29[32m SUCCESS[39m (0 secs / 0.009 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 4 of 29[32m SUCCESS[39m (0 secs / 0.01 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 5 of 29[32m SUCCESS[39m (0 secs / 0.011 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 6 of 29[32m SUCCESS[39m (0 secs / 0.011 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 7 of 29[32m SUCCESS[39m (0 secs / 0.012 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 8 of 29[32m SUCCESS[39m (0 secs / 0.012 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 9 of 29[32m SUCCESS[39m (0 secs / 0.013 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 10 of 29[32m SUCCESS[39m (0 secs / 0.014 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 11 of 29[32m SUCCESS[39m (0 secs / 0.014 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 12 of 29[32m SUCCESS[39m (0 secs / 0.015 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 13 of 29[32m SUCCESS[39m (0 secs / 0.016 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 14 of 29[32m SUCCESS[39m (0 secs / 0.016 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 15 of 29[32m SUCCESS[39m (0 secs / 0.017 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 16 of 29[32m SUCCESS[39m (0 secs / 0.017 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 17 of 29[32m SUCCESS[39m (0 secs / 0.018 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 18 of 29[32m SUCCESS[39m (0 secs / 0.019 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 19 of 29[32m SUCCESS[39m (0 secs / 0.019 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 20 of 29[32m SUCCESS[39m (0 secs / 0.019 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 21 of 29[32m SUCCESS[39m (0 secs / 0.019 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 22 of 29[32m SUCCESS[39m (0 secs / 0.019 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 23 of 29[32m SUCCESS[39m (0 secs / 0.02 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 24 of 29[32m SUCCESS[39m (0 secs / 0.02 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 25 of 29[32m SUCCESS[39m (0 secs / 0.02 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 26 of 29[32m SUCCESS[39m (0 secs / 0.02 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 27 of 29[32m SUCCESS[39m (0 secs / 0.025 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 28 of 29[32m SUCCESS[39m (0 secs / 0.026 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 29 of 29[32m SUCCESS[39m (0 secs / 0.026 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 29 of 29[32m SUCCESS[39m (0.037 secs / 0.026 secs)
+[32mTOTAL: 29 SUCCESS[39m
+TOTAL: 29 SUCCESS
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) ERROR[39m
+  Some of your tests did a full page reload!
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 29 of 29[31m ERROR[39m (0.037 secs / 0.026 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) ERROR
+  Some of your tests did a full page reload!
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 29 of 29[31m ERROR[39m (0.057 secs / 0.026 secs)
+[32m✔[39m Browser application bundle generation complete.
+[32m✔[39m Browser application bundle generation complete.
+
+> nx run transloco-schematics:test
+
+[0m[7m[1m[32m PASS [39m[22m[27m[0m [0m[7m[37m transloco-schematics [39m[27m[0m [2mlibs/transloco-schematics/src/ngx-migrate/spec/[22m[1mngx-migrate.spec.ts[22m
+  [1m● [22mConsole
+
+    [2mconsole.log[22m
+      1.html 0 [ '1.html', '2.html', '3.html', '4.html', '5.html', '6.html' ]
+[2m[22m
+[2m          at Array.forEach (<anonymous>)[22m
+[2m      [2mat Object.<anonymous> ([22m[2m[0m[36msrc/ngx-migrate/spec/ngx-migrate.spec.ts[39m[0m[2m:232:10)[22m[2m[22m
+
+    [2mconsole.log[22m
+      2.html 1 [ '1.html', '2.html', '3.html', '4.html', '5.html', '6.html' ]
+[2m[22m
+[2m          at Array.forEach (<anonymous>)[22m
+[2m      [2mat Object.<anonymous> ([22m[2m[0m[36msrc/ngx-migrate/spec/ngx-migrate.spec.ts[39m[0m[2m:232:10)[22m[2m[22m
+
+    [2mconsole.log[22m
+      3.html 2 [ '1.html', '2.html', '3.html', '4.html', '5.html', '6.html' ]
+[2m[22m
+[2m          at Array.forEach (<anonymous>)[22m
+[2m      [2mat Object.<anonymous> ([22m[2m[0m[36msrc/ngx-migrate/spec/ngx-migrate.spec.ts[39m[0m[2m:232:10)[22m[2m[22m
+
+    [2mconsole.log[22m
+      4.html 3 [ '1.html', '2.html', '3.html', '4.html', '5.html', '6.html' ]
+[2m[22m
+[2m          at Array.forEach (<anonymous>)[22m
+[2m      [2mat Object.<anonymous> ([22m[2m[0m[36msrc/ngx-migrate/spec/ngx-migrate.spec.ts[39m[0m[2m:232:10)[22m[2m[22m
+
+    [2mconsole.log[22m
+      5.html 4 [ '1.html', '2.html', '3.html', '4.html', '5.html', '6.html' ]
+[2m[22m
+[2m          at Array.forEach (<anonymous>)[22m
+[2m      [2mat Object.<anonymous> ([22m[2m[0m[36msrc/ngx-migrate/spec/ngx-migrate.spec.ts[39m[0m[2m:232:10)[22m[2m[22m
+
+    [2mconsole.log[22m
+      6.html 5 [ '1.html', '2.html', '3.html', '4.html', '5.html', '6.html' ]
+[2m[22m
+[2m          at Array.forEach (<anonymous>)[22m
+[2m      [2mat Object.<anonymous> ([22m[2m[0m[36msrc/ngx-migrate/spec/ngx-migrate.spec.ts[39m[0m[2m:232:10)[22m[2m[22m
+
+    [2mconsole.log[22m
+      [4m
+      Starting migration script[0m
+[2m[22m
+[2m      [2mat run ([22m[2msrc/ngx-migrate/index.ts[2m:15:11)[22m[2m[22m
+
+    [2mconsole.log[22m
+      
+      Migrating HTML files 📜
+[2m[22m
+[2m      [2mat migrate ([22m[2msrc/ngx-migrate/index.ts[2m:22:13)[22m[2m[22m
+
+    [2mconsole.log[22m
+      ⏳ Step 1/2: Migrating directives
+[2m[22m
+[2m      [2mat migrate ([22m[2msrc/ngx-migrate/index.ts[2m:28:15)[22m[2m[22m
+
+    [2mconsole.log[22m
+      ✅ Step 1/2: Migrating directives
+[2m[22m
+[2m      [2mat migrate ([22m[2msrc/ngx-migrate/index.ts[2m:81:15)[22m[2m[22m
+
+    [2mconsole.log[22m
+      ⏳ Step 2/2: Migrating pipes
+[2m[22m
+[2m      [2mat migrate ([22m[2msrc/ngx-migrate/index.ts[2m:28:15)[22m[2m[22m
+
+    [2mconsole.log[22m
+      ✅ Step 2/2: Migrating pipes
+[2m[22m
+[2m      [2mat migrate ([22m[2msrc/ngx-migrate/index.ts[2m:81:15)[22m[2m[22m
+
+    [2mconsole.log[22m
+      
+      Migrating TS files 📜
+[2m[22m
+[2m      [2mat migrate ([22m[2msrc/ngx-migrate/index.ts[2m:22:13)[22m[2m[22m
+
+    [2mconsole.log[22m
+      ⏳ Step 1/5: Migrating modules
+[2m[22m
+[2m      [2mat migrate ([22m[2msrc/ngx-migrate/index.ts[2m:28:15)[22m[2m[22m
+
+    [2mconsole.log[22m
+      ✅ Step 1/5: Migrating modules
+[2m[22m
+[2m      [2mat migrate ([22m[2msrc/ngx-migrate/index.ts[2m:81:15)[22m[2m[22m
+
+    [2mconsole.log[22m
+      ⏳ Step 2/5: Migrating service imports
+[2m[22m
+[2m      [2mat migrate ([22m[2msrc/ngx-migrate/index.ts[2m:28:15)[22m[2m[22m
+
+    [2mconsole.log[22m
+      ✅ Step 2/5: Migrating service imports
+[2m[22m
+[2m      [2mat migrate ([22m[2msrc/ngx-migrate/index.ts[2m:81:15)[22m[2m[22m
+
+    [2mconsole.log[22m
+      ⏳ Step 3/5: Migrating constructor injections
+[2m[22m
+[2m      [2mat migrate ([22m[2msrc/ngx-migrate/index.ts[2m:28:15)[22m[2m[22m
+
+    [2mconsole.log[22m
+      ✅ Step 3/5: Migrating constructor injections
+[2m[22m
+[2m      [2mat migrate ([22m[2msrc/ngx-migrate/index.ts[2m:81:15)[22m[2m[22m
+
+    [2mconsole.log[22m
+      ⏳ Step 4/5: Migrating service usage
+[2m[22m
+[2m      [2mat migrate ([22m[2msrc/ngx-migrate/index.ts[2m:28:15)[22m[2m[22m
+
+    [2mconsole.log[22m
+      ✅ Step 4/5: Migrating service usage
+[2m[22m
+[2m      [2mat migrate ([22m[2msrc/ngx-migrate/index.ts[2m:81:15)[22m[2m[22m
+
+    [2mconsole.log[22m
+      ⏳ Step 5/5: Migrating specs
+[2m[22m
+[2m      [2mat migrate ([22m[2msrc/ngx-migrate/index.ts[2m:28:15)[22m[2m[22m
+
+    [2mconsole.log[22m
+      ✅ Step 5/5: Migrating specs
+[2m[22m
+[2m      [2mat migrate ([22m[2msrc/ngx-migrate/index.ts[2m:81:15)[22m[2m[22m
+
+    [2mconsole.log[22m
+      
+                    🌵 Done! 🌵
+[2m[22m
+[2m      [2mat run ([22m[2msrc/ngx-migrate/index.ts[2m:90:11)[22m[2m[22m
+
+    [2mconsole.log[22m
+      Welcome to a better translation experience 🌐
+[2m[22m
+[2m      [2mat run ([22m[2msrc/ngx-migrate/index.ts[2m:91:11)[22m[2m[22m
+
+    [2mconsole.log[22m
+      
+      For more information about this script please visit 👉 https://jsverse.github.io/transloco/docs/migration/ngx
+[2m[22m
+[2m      [2mat run ([22m[2msrc/ngx-migrate/index.ts[2m:92:11)[22m[2m[22m
+
+[0m[7m[1m[31m FAIL [39m[22m[27m[0m [0m[7m[37m transloco-schematics [39m[27m[0m [2mlibs/transloco-schematics/src/join/[22m[1mjoin.spec.ts[22m
+  [1m● [22mTest suite failed to run
+
+    [1m[31mJest encountered an unexpected token[39m[22m
+
+    Jest failed to parse a file. This happens e.g. when your code or its dependencies use non-standard JavaScript syntax, or when Jest is not configured to support such syntax.
+
+    Out of the box Jest supports Babel, which will be used to transform your files into valid JS based on your Babel configuration.
+
+    By default "node_modules" folder is ignored by transformers.
+
+    Here's what you can do:
+     • If you are trying to use ECMAScript Modules, see [4mhttps://jestjs.io/docs/ecmascript-modules[24m for how to enable it.
+     • If you are trying to use TypeScript, see [4mhttps://jestjs.io/docs/getting-started#using-typescript[24m
+     • To have some of your "node_modules" files transformed, you can specify a custom [1m"transformIgnorePatterns"[22m in your config.
+     • If you need a custom transformation, specify a [1m"transform"[22m option in your config.
+     • If you simply want to mock your non-JS modules (e.g. binary assets) you can stub them out with the [1m"moduleNameMapper"[22m config option.
+
+    You'll find more details and examples of these config options in the docs:
+    [36mhttps://jestjs.io/docs/configuration[39m
+    For information about custom transformations, see:
+    [36mhttps://jestjs.io/docs/code-transformation[39m
+
+    [1m[31mDetails:[39m[22m
+
+    /Users/shahar.kazaz/WebstormProjects/transloco/node_modules/ora/index.js:1
+    import process from 'node:process';
+    ^^^^^^
+
+    SyntaxError: Cannot use import statement outside a module
+
+    [0m [90m 1 |[39m [36mimport[39m [33m*[39m [36mas[39m path [36mfrom[39m [32m'node:path'[39m[33m;[39m
+     [90m 2 |[39m
+    [31m[1m>[22m[39m[90m 3 |[39m [36mimport[39m {
+     [90m   |[39m [31m[1m^[22m[39m
+     [90m 4 |[39m   [33mSchematicTestRunner[39m[33m,[39m
+     [90m 5 |[39m   [33mUnitTestTree[39m[33m,[39m
+     [90m 6 |[39m } [36mfrom[39m [32m'@angular-devkit/schematics/testing'[39m[33m;[39m[0m
+
+      [2mat Runtime.createScriptFromCode ([22m../../node_modules/jest-runtime/build/index.js[2m:1318:40)[22m
+      [2mat Object.<anonymous> ([22m../../node_modules/@angular-devkit/schematics/tasks/package-manager/executor.ts[2m:12:1)[22m
+      [2mat Object.<anonymous> ([22m../../node_modules/@angular-devkit/schematics/tasks/node/index.ts[2m:10:1)[22m
+      [2mat Object.<anonymous> ([22m../../node_modules/@angular-devkit/schematics/testing/schematic-test-runner.ts[2m:24:1)[22m
+      [2mat Object.<anonymous> ([22m../../node_modules/@angular-devkit/schematics/testing/index.ts[2m:9:1)[22m
+      [2mat Object.<anonymous> ([22m[0m[36msrc/join/join.spec.ts[39m[0m[2m:3:1)[22m
+
+[0m[7m[1m[31m FAIL [39m[22m[27m[0m [0m[7m[37m transloco-schematics [39m[27m[0m [2mlibs/transloco-schematics/src/split/[22m[1msplit.spec.ts[22m
+  [1m● [22mTest suite failed to run
+
+    [1m[31mJest encountered an unexpected token[39m[22m
+
+    Jest failed to parse a file. This happens e.g. when your code or its dependencies use non-standard JavaScript syntax, or when Jest is not configured to support such syntax.
+
+    Out of the box Jest supports Babel, which will be used to transform your files into valid JS based on your Babel configuration.
+
+    By default "node_modules" folder is ignored by transformers.
+
+    Here's what you can do:
+     • If you are trying to use ECMAScript Modules, see [4mhttps://jestjs.io/docs/ecmascript-modules[24m for how to enable it.
+     • If you are trying to use TypeScript, see [4mhttps://jestjs.io/docs/getting-started#using-typescript[24m
+     • To have some of your "node_modules" files transformed, you can specify a custom [1m"transformIgnorePatterns"[22m in your config.
+     • If you need a custom transformation, specify a [1m"transform"[22m option in your config.
+     • If you simply want to mock your non-JS modules (e.g. binary assets) you can stub them out with the [1m"moduleNameMapper"[22m config option.
+
+    You'll find more details and examples of these config options in the docs:
+    [36mhttps://jestjs.io/docs/configuration[39m
+    For information about custom transformations, see:
+    [36mhttps://jestjs.io/docs/code-transformation[39m
+
+    [1m[31mDetails:[39m[22m
+
+    /Users/shahar.kazaz/WebstormProjects/transloco/node_modules/ora/index.js:1
+    import process from 'node:process';
+    ^^^^^^
+
+    SyntaxError: Cannot use import statement outside a module
+
+    [0m [90m 1 |[39m [36mimport[39m [33m*[39m [36mas[39m path [36mfrom[39m [32m'node:path'[39m[33m;[39m
+     [90m 2 |[39m
+    [31m[1m>[22m[39m[90m 3 |[39m [36mimport[39m {
+     [90m   |[39m [31m[1m^[22m[39m
+     [90m 4 |[39m   [33mSchematicTestRunner[39m[33m,[39m
+     [90m 5 |[39m   [33mUnitTestTree[39m[33m,[39m
+     [90m 6 |[39m } [36mfrom[39m [32m'@angular-devkit/schematics/testing'[39m[33m;[39m[0m
+
+      [2mat Runtime.createScriptFromCode ([22m../../node_modules/jest-runtime/build/index.js[2m:1318:40)[22m
+      [2mat Object.<anonymous> ([22m../../node_modules/@angular-devkit/schematics/tasks/package-manager/executor.ts[2m:12:1)[22m
+      [2mat Object.<anonymous> ([22m../../node_modules/@angular-devkit/schematics/tasks/node/index.ts[2m:10:1)[22m
+      [2mat Object.<anonymous> ([22m../../node_modules/@angular-devkit/schematics/testing/schematic-test-runner.ts[2m:24:1)[22m
+      [2mat Object.<anonymous> ([22m../../node_modules/@angular-devkit/schematics/testing/index.ts[2m:9:1)[22m
+      [2mat Object.<anonymous> ([22m[0m[36msrc/split/split.spec.ts[39m[0m[2m:3:1)[22m
+
+[1mTest Suites: [22m[1m[31m2 failed[39m[22m, [1m[32m1 passed[39m[22m, 3 total
+[1mTests:       [22m[1m[32m28 passed[39m[22m, 28 total
+[1mSnapshots:   [22m0 total
+[1mTime:[22m        1.565 s, estimated 2 s
+[2mRan all test suites[22m[2m.[22m
+
+> nx run transloco-playground:test
+
+- Generating browser application bundles (phase: setup)...
+[32m✔[39m Browser application bundle generation complete.
+[32m25 01 2026 09:32:52.989:INFO [karma-server]: [39mKarma v6.4.3 server started at http://localhost:9878/
+[32m25 01 2026 09:32:52.989:INFO [launcher]: [39mLaunching browsers ChromeHeadless with concurrency unlimited
+[32m25 01 2026 09:32:52.995:INFO [launcher]: [39mStarting browser ChromeHeadless
+[32m25 01 2026 09:32:53.748:INFO [Chrome Headless 144.0.0.0 (Mac OS 10.15.7)]: [39mConnected on socket NTP9CEEp106pBAE7AAAB with id 48659921
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 0 of 3[32m SUCCESS[39m (0 secs / 0 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 1 of 3[32m SUCCESS[39m (0 secs / 0.02 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 2 of 3[32m SUCCESS[39m (0 secs / 0.023 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 3 of 3[32m SUCCESS[39m (0 secs / 0.033 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 3 of 3[32m SUCCESS[39m (0.063 secs / 0.033 secs)
+[32mTOTAL: 3 SUCCESS[39m
+TOTAL: 3 SUCCESS
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) ERROR[39m
+  Some of your tests did a full page reload!
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 3 of 3[31m ERROR[39m (0.063 secs / 0.033 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) ERROR
+  Some of your tests did a full page reload!
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 3 of 3[31m ERROR[39m (0.091 secs / 0.033 secs)
+[32m✔[39m Browser application bundle generation complete.
+[32m✔[39m Browser application bundle generation complete.
+
+> nx run transloco-persist-lang:test
+
+- Generating browser application bundles (phase: setup)...
+[1m[33m    TypeScript compiler options "target" and "useDefineForClassFields" are set to "ES2022" and "false" respectively by the Angular CLI. To control ECMA version and features use the Browserslist configuration. For more information, see https://angular.dev/tools/cli/build#configuring-browser-compatibility[39m[22m
+[1m[33m    NOTE: You can set the "target" to "ES2022" in the project's tsconfig to remove this warning.[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[32m25 01 2026 09:32:52.929:INFO [karma-server]: [39mKarma v6.4.3 server started at http://localhost:9877/
+[32m25 01 2026 09:32:52.930:INFO [launcher]: [39mLaunching browsers ChromeHeadless with concurrency unlimited
+[32m25 01 2026 09:32:52.936:INFO [launcher]: [39mStarting browser ChromeHeadless
+[32m25 01 2026 09:32:53.770:INFO [Chrome Headless 144.0.0.0 (Mac OS 10.15.7)]: [39mConnected on socket 2QhGApnoq7vqZfeEAAAB with id 6454587
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 0 of 5[32m SUCCESS[39m (0 secs / 0 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 1 of 5[32m SUCCESS[39m (0 secs / 0.006 secs)
+[1A[2KLOG: [36m'%c 🍻 Saving es to storage', 'background: #fff; color: #2196F3;'[39m
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 1 of 5[32m SUCCESS[39m (0 secs / 0.006 secs)
+LOG: '%c 🍻 Saving es to storage', 'background: #fff; color: #2196F3;'
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 2 of 5[32m SUCCESS[39m (0 secs / 0.008 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 3 of 5[32m SUCCESS[39m (0 secs / 0.009 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 4 of 5[32m SUCCESS[39m (0 secs / 0.009 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 5 of 5[32m SUCCESS[39m (0 secs / 0.01 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 5 of 5[32m SUCCESS[39m (0.029 secs / 0.01 secs)
+[32mTOTAL: 5 SUCCESS[39m
+TOTAL: 5 SUCCESS
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) ERROR[39m
+  Some of your tests did a full page reload!
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 5 of 5[31m ERROR[39m (0.029 secs / 0.01 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) ERROR
+  Some of your tests did a full page reload!
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 5 of 5[31m ERROR[39m (0.071 secs / 0.01 secs)
+[32m✔[39m Browser application bundle generation complete.
+[32m✔[39m Browser application bundle generation complete.
+
+> nx run transloco-scoped-libs:test
+
+- Generating browser application bundles (phase: setup)...
+[32m✔[39m Browser application bundle generation complete.
+[32m25 01 2026 09:32:56.762:INFO [karma-server]: [39mKarma v6.4.3 server started at http://localhost:9876/
+[32m25 01 2026 09:32:56.763:INFO [launcher]: [39mLaunching browsers ChromeHeadless with concurrency unlimited
+[32m25 01 2026 09:32:56.768:INFO [launcher]: [39mStarting browser ChromeHeadless
+[32m25 01 2026 09:32:57.440:INFO [Chrome Headless 144.0.0.0 (Mac OS 10.15.7)]: [39mConnected on socket j7y1mTlfN9CmfssqAAAB with id 19493528
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 0 of 0[32m SUCCESS[39m (0 secs / 0 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 0 of 0[32m SUCCESS[39m (0 secs / 0 secs)
+[32mTOTAL: 0 SUCCESS[39m
+TOTAL: 0 SUCCESS
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) ERROR[39m
+  Some of your tests did a full page reload!
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 0 of 0[31m ERROR[39m (0 secs / 0 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) ERROR
+  Some of your tests did a full page reload!
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 0 of 0[31m ERROR[39m (0.026 secs / 0 secs)
+[32m✔[39m Browser application bundle generation complete.
+[32m✔[39m Browser application bundle generation complete.
+
+> nx run transloco-optimize:test
+
+- Generating browser application bundles (phase: setup)...
+[32m✔[39m Browser application bundle generation complete.
+[32m25 01 2026 09:32:57.711:INFO [karma-server]: [39mKarma v6.4.3 server started at http://localhost:9878/
+[32m25 01 2026 09:32:57.711:INFO [launcher]: [39mLaunching browsers ChromeHeadless with concurrency unlimited
+[32m25 01 2026 09:32:57.714:INFO [launcher]: [39mStarting browser ChromeHeadless
+[32m25 01 2026 09:32:58.445:INFO [Chrome Headless 144.0.0.0 (Mac OS 10.15.7)]: [39mConnected on socket HjYgxsqu1TxXbWMKAAAB with id 69171967
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 0 of 0[32m SUCCESS[39m (0 secs / 0 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 0 of 0[32m SUCCESS[39m (0.001 secs / 0 secs)
+[32mTOTAL: 0 SUCCESS[39m
+TOTAL: 0 SUCCESS
+[32m✔[39m Browser application bundle generation complete.
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) ERROR[39m
+  Some of your tests did a full page reload!
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 0 of 0[31m ERROR[39m (0.001 secs / 0 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) ERROR
+  Some of your tests did a full page reload!
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 0 of 0[31m ERROR[39m (0.031 secs / 0 secs)
+[32m✔[39m Browser application bundle generation complete.
+
+> nx run transloco-persist-translations:test
+
+- Generating browser application bundles (phase: setup)...
+[1m[33m    TypeScript compiler options "target" and "useDefineForClassFields" are set to "ES2022" and "false" respectively by the Angular CLI. To control ECMA version and features use the Browserslist configuration. For more information, see https://angular.dev/tools/cli/build#configuring-browser-compatibility[39m[22m
+[1m[33m    NOTE: You can set the "target" to "ES2022" in the project's tsconfig to remove this warning.[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[32m25 01 2026 09:32:59.328:INFO [karma-server]: [39mKarma v6.4.3 server started at http://localhost:9877/
+[32m25 01 2026 09:32:59.329:INFO [launcher]: [39mLaunching browsers ChromeHeadless with concurrency unlimited
+[32m25 01 2026 09:32:59.331:INFO [launcher]: [39mStarting browser ChromeHeadless
+[32m25 01 2026 09:33:00.013:INFO [Chrome Headless 144.0.0.0 (Mac OS 10.15.7)]: [39mConnected on socket B5F8O_YEPMY-w3n5AAAB with id 69214926
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 0 of 13[32m SUCCESS[39m (0 secs / 0 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 1 of 13[32m SUCCESS[39m (0 secs / 0.006 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 2 of 13[32m SUCCESS[39m (0 secs / 0.007 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 3 of 13[32m SUCCESS[39m (0 secs / 0.008 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 4 of 13[32m SUCCESS[39m (0 secs / 0.009 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 5 of 13[32m SUCCESS[39m (0 secs / 0.01 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 6 of 13[32m SUCCESS[39m (0 secs / 0.01 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 7 of 13[32m SUCCESS[39m (0 secs / 0.011 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 8 of 13[32m SUCCESS[39m (0 secs / 0.013 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 9 of 13[32m SUCCESS[39m (0 secs / 0.014 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 10 of 13[32m SUCCESS[39m (0 secs / 0.015 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 11 of 13[32m SUCCESS[39m (0 secs / 0.03 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 12 of 13[32m SUCCESS[39m (0 secs / 0.031 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 13 of 13[32m SUCCESS[39m (0 secs / 0.032 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 13 of 13[32m SUCCESS[39m (0.001 secs / 0.032 secs)
+[32mTOTAL: 13 SUCCESS[39m
+TOTAL: 13 SUCCESS
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) ERROR[39m
+  Some of your tests did a full page reload!
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 13 of 13[31m ERROR[39m (0.001 secs / 0.032 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) ERROR
+  Some of your tests did a full page reload!
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 13 of 13[31m ERROR[39m (0.033 secs / 0.032 secs)
+[32m✔[39m Browser application bundle generation complete.
+[32m✔[39m Browser application bundle generation complete.
+
+> nx run schematics-core:test  [local cache]
+
+[1mNo tests found, exiting with code 0[22m
+
+> nx run transloco-preload-langs:test
+
+- Generating browser application bundles (phase: setup)...
+[1m[33m    TypeScript compiler options "target" and "useDefineForClassFields" are set to "ES2022" and "false" respectively by the Angular CLI. To control ECMA version and features use the Browserslist configuration. For more information, see https://angular.dev/tools/cli/build#configuring-browser-compatibility[39m[22m
+[1m[33m    NOTE: You can set the "target" to "ES2022" in the project's tsconfig to remove this warning.[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[32m25 01 2026 09:33:01.362:INFO [karma-server]: [39mKarma v6.4.3 server started at http://localhost:9876/
+[32m25 01 2026 09:33:01.363:INFO [launcher]: [39mLaunching browsers ChromeHeadless with concurrency unlimited
+[32m25 01 2026 09:33:01.364:INFO [launcher]: [39mStarting browser ChromeHeadless
+[32m25 01 2026 09:33:01.973:INFO [Chrome Headless 144.0.0.0 (Mac OS 10.15.7)]: [39mConnected on socket lSzEPoGtz73q-W-eAAAB with id 85002192
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 0 of 0[32m SUCCESS[39m (0 secs / 0 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 0 of 0[32m SUCCESS[39m (0.002 secs / 0 secs)
+[32mTOTAL: 0 SUCCESS[39m
+TOTAL: 0 SUCCESS
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) ERROR[39m
+  Some of your tests did a full page reload!
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 0 of 0[31m ERROR[39m (0.002 secs / 0 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) ERROR
+  Some of your tests did a full page reload!
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 0 of 0[31m ERROR[39m (0.022 secs / 0 secs)
+[32m✔[39m Browser application bundle generation complete.
+[32m✔[39m Browser application bundle generation complete.
+
+> nx run transloco-validator:test
+
+- Generating browser application bundles (phase: setup)...
+[32m✔[39m Browser application bundle generation complete.
+[32m25 01 2026 09:33:01.828:INFO [karma-server]: [39mKarma v6.4.3 server started at http://localhost:9878/
+[32m25 01 2026 09:33:01.828:INFO [launcher]: [39mLaunching browsers ChromeHeadless with concurrency unlimited
+[32m25 01 2026 09:33:01.831:INFO [launcher]: [39mStarting browser ChromeHeadless
+[32m25 01 2026 09:33:02.355:INFO [Chrome Headless 144.0.0.0 (Mac OS 10.15.7)]: [39mConnected on socket 1Lgy24qct1N-b7y1AAAB with id 5982240
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 0 of 0[32m SUCCESS[39m (0 secs / 0 secs)
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 0 of 0[32m SUCCESS[39m (0.001 secs / 0 secs)
+[32mTOTAL: 0 SUCCESS[39m
+TOTAL: 0 SUCCESS
+[1A[2K[31mChrome Headless 144.0.0.0 (Mac OS 10.15.7) ERROR[39m
+  Some of your tests did a full page reload!
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 0 of 0[31m ERROR[39m (0.001 secs / 0 secs)
+Chrome Headless 144.0.0.0 (Mac OS 10.15.7) ERROR
+  Some of your tests did a full page reload!
+[1A[2KChrome Headless 144.0.0.0 (Mac OS 10.15.7): Executed 0 of 0[31m ERROR[39m (0.017 secs / 0 secs)
+[32m✔[39m Browser application bundle generation complete.
+[32m✔[39m Browser application bundle generation complete.
+
+
+
+ NX   Running target test for 13 projects and 2 tasks they depend on failed
+
+Tasks not run because their dependencies failed or --nx-bail=true:
+
+- transloco:test
+
+Failed tasks:
+
+- transloco:test-schematics
+- transloco:test-library
+- transloco-schematics:test
+

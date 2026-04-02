@@ -6,24 +6,26 @@ export {
 export { TranslocoDirective } from './lib/transloco.directive';
 export { TranslocoPipe } from './lib/transloco.pipe';
 export { TranslocoModule } from './lib/transloco.module';
-export {
-  TRANSLOCO_LOADER,
+export { TRANSLOCO_LOADER } from './lib/transloco.loader';
+export type {
   TranslocoLoader,
   TranslocoLoaderData,
 } from './lib/transloco.loader';
 export {
-  TranslocoConfig,
   TRANSLOCO_CONFIG,
   defaultConfig,
   translocoConfig,
 } from './lib/transloco.config';
+export type { TranslocoConfig } from './lib/transloco.config';
 export {
-  TranspileParams,
   TRANSLOCO_TRANSPILER,
   DefaultTranspiler,
-  TranslocoTranspiler,
   FunctionalTranspiler,
   getFunctionArgs,
+} from './lib/transloco.transpiler';
+export type {
+  TranspileParams,
+  TranslocoTranspiler,
   TranslocoTranspilerFunction,
 } from './lib/transloco.transpiler';
 export { TRANSLOCO_SCOPE } from './lib/transloco-scope';
@@ -32,23 +34,25 @@ export { TRANSLOCO_LANG } from './lib/transloco-lang';
 export {
   TestingLoader,
   TranslocoTestingModule,
-  TranslocoTestingOptions,
 } from './lib/transloco-testing.module';
+export type { TranslocoTestingOptions } from './lib/transloco-testing.module';
 export {
   TRANSLOCO_INTERCEPTOR,
-  TranslocoInterceptor,
   DefaultInterceptor,
 } from './lib/transloco.interceptor';
+export type { TranslocoInterceptor } from './lib/transloco.interceptor';
 export {
   TRANSLOCO_FALLBACK_STRATEGY,
-  TranslocoFallbackStrategy,
   DefaultFallbackStrategy,
 } from './lib/transloco-fallback-strategy';
+export type { TranslocoFallbackStrategy } from './lib/transloco-fallback-strategy';
 export {
   TRANSLOCO_MISSING_HANDLER,
+  DefaultMissingHandler,
+} from './lib/transloco-missing-handler';
+export type {
   TranslocoMissingHandler,
   TranslocoMissingHandlerData,
-  DefaultMissingHandler,
 } from './lib/transloco-missing-handler';
 export {
   provideTranslocoFallbackStrategy,
@@ -61,8 +65,8 @@ export {
   provideTranslocoLoader,
   provideTranslocoScope,
   provideTranslocoLang,
-  TranslocoOptions,
 } from './lib/transloco.providers';
+export type { TranslocoOptions } from './lib/transloco.providers';
 export { translateSignal, translateObjectSignal } from './lib/transloco.signal';
 export {
   getBrowserLang,

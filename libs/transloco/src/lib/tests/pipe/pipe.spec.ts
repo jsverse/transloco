@@ -1,17 +1,42 @@
 import { Mock } from 'ts-mocks';
 import { ChangeDetectorRef } from '@angular/core';
-import { fakeAsync } from '@angular/core/testing';
+import { fakeAsync, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 
 import { createService, runLoader } from '../mocks';
 import { TranslocoService } from '../../transloco.service';
 import { TranslocoPipe } from '../../transloco.pipe';
 import { TranslocoScope } from '../../transloco.types';
+import { TRANSLOCO_SCOPE } from '../../transloco-scope';
+import { TRANSLOCO_LANG } from '../../transloco-lang';
 
 describe('TranslocoPipe', () => {
   let serviceMock: TranslocoService;
   let cdrMock: ChangeDetectorRef;
   let pipe: TranslocoPipe;
+
+  function createPipe(
+    options: {
+      scope?: TranslocoScope | TranslocoScope[];
+      lang?: string;
+    } = {},
+  ): TranslocoPipe {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [
+        TranslocoPipe,
+        { provide: TranslocoService, useValue: serviceMock },
+        { provide: ChangeDetectorRef, useValue: cdrMock },
+        ...(options.scope !== undefined
+          ? [{ provide: TRANSLOCO_SCOPE, useValue: options.scope }]
+          : []),
+        ...(options.lang !== undefined
+          ? [{ provide: TRANSLOCO_LANG, useValue: options.lang }]
+          : []),
+      ],
+    });
+    return TestBed.inject(TranslocoPipe);
+  }
 
   beforeEach(() => {
     serviceMock = new Mock<TranslocoService>(createService()).Object;
@@ -20,14 +45,14 @@ describe('TranslocoPipe', () => {
       markForCheck: () => {},
     }).Object;
 
-    pipe = new TranslocoPipe(serviceMock, undefined, undefined, cdrMock);
+    pipe = createPipe();
     spyOn(pipe as any, 'updateValue').and.callThrough();
   });
 
   it(`GIVEN pipe with provider lang
       WHEN transform is called before translations load
       THEN should return empty string as default`, () => {
-    pipe = new TranslocoPipe(serviceMock, undefined, 'es', cdrMock);
+    pipe = createPipe({ lang: 'es' });
     expect(pipe.transform('title', {})).toBe('');
   });
 
@@ -35,7 +60,7 @@ describe('TranslocoPipe', () => {
       WHEN transform is called
       THEN should use provided language for translation`, fakeAsync(() => {
     spyOn(serviceMock, 'translate').and.callThrough();
-    pipe = new TranslocoPipe(serviceMock, undefined, 'es', cdrMock);
+    pipe = createPipe({ lang: 'es' });
     pipe.transform('title', {});
     runLoader();
     expect(serviceMock.translate).toHaveBeenCalledWith('title', {}, 'es');
@@ -44,7 +69,7 @@ describe('TranslocoPipe', () => {
   describe('Scoped Translation', () => {
     function assertScopedTranslation(scope: TranslocoScope) {
       spyOn(serviceMock, 'translate').and.callThrough();
-      pipe = new TranslocoPipe(serviceMock, scope, undefined, cdrMock);
+      pipe = createPipe({ scope });
       serviceMock.config.reRenderOnLangChange = true;
       pipe.transform('title', {});
       runLoader();
@@ -74,15 +99,12 @@ describe('TranslocoPipe', () => {
       WHEN translating keys from different scopes
       THEN should load scope translations correctly`, fakeAsync(() => {
     spyOn(serviceMock, 'translate').and.callThrough();
-    pipe = new TranslocoPipe(
-      serviceMock,
-      [
+    pipe = createPipe({
+      scope: [
         { scope: 'lazy-page', alias: 'lazyPageAlias' },
         { scope: 'admin-page', alias: 'adminPageAlias' },
       ],
-      undefined,
-      cdrMock,
-    );
+    });
     (pipe as any).listenToLangChange = true;
     pipe.transform('lazyPageAlias.title', {});
     runLoader();

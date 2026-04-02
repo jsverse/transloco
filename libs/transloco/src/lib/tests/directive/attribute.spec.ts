@@ -1,4 +1,4 @@
-import { fakeAsync } from '@angular/core/testing';
+import { fakeAsync, tick } from '@angular/core/testing';
 import { SpectatorHost } from '@ngneat/spectator';
 
 import { runLoader } from '../mocks';
@@ -42,7 +42,9 @@ describe('Attribute directive', () => {
     });
     runLoader();
     expect(spectator.queryHost('div')).toHaveText('home english');
-    (spectator.hostComponent as any).key = 'fromList';
+    spectator.fixture.ngZone?.run(() => {
+      (spectator.hostComponent as any).key = 'fromList';
+    });
     spectator.detectChanges();
     expect(spectator.queryHost('div')).toHaveText('from list');
   }));
@@ -62,7 +64,9 @@ describe('Attribute directive', () => {
     expect(spectator.queryHost('[transloco]')).toHaveText(
       'alert netanel english',
     );
-    (spectator.hostComponent as any).dynamic = 'kazaz';
+    spectator.fixture.ngZone?.run(() => {
+      (spectator.hostComponent as any).dynamic = 'kazaz';
+    });
     spectator.detectChanges();
     expect(spectator.queryHost('[transloco]')).toHaveText(
       'alert kazaz english',

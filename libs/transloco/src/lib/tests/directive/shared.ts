@@ -43,6 +43,7 @@ export function testMergedScopedTranslation(
   service.setActiveLang('es');
   runLoader();
   spectator.detectChanges();
+  spectator.detectChanges();
   expect(spectator.queryHost('.global')).toHaveText(
     preload ? 'home spanish' : '',
   );
