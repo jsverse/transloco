@@ -8,3 +8,9 @@
  * This declaration makes it available globally for type checking.
  */
 declare const ngDevMode: boolean;
+
+/**
+ * ngServerMode is used by Angular to determine if the application is running in server-side rendering mode.
+ * This declaration makes it available globally for type checking.
+ */
+declare const ngServerMode: boolean;
