@@ -60,3 +60,6 @@ local-dev
 /.claude/settings.local.json
 
 .claude/worktrees
+
+# Investigations
+investigations
