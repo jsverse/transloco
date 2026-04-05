@@ -4,6 +4,7 @@ import {
   Inject,
   Injectable,
   Optional,
+  type Signal,
 } from '@angular/core';
 import {
   BehaviorSubject,
@@ -21,7 +22,7 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { isEmpty, isNil, isString, size, toCamelCase } from '@jsverse/utils';
 
 import {
@@ -123,6 +124,17 @@ export class TranslocoService {
     scopeMapping?: HashMap<string>;
   };
 
+  /**
+   * A signal that reflects the currently active language.
+   *
+   * @example
+   *
+   * const upper = computed(() => this.transloco.activeLang().toUpperCase());
+   *
+   * const lang = linkedSignal(() => this.transloco.activeLang());
+   */
+  readonly activeLang: Signal<string>;
+
   private destroyRef = inject(DestroyRef);
   private destroyed = false;
 
@@ -149,6 +161,8 @@ export class TranslocoService {
     // Don't use distinctUntilChanged as we need the ability to update
     // the value when using setTranslation or setTranslationKeys
     this.langChanges$ = this.lang.asObservable();
+
+    this.activeLang = toSignal(this.lang, { requireSync: true });
 
     /**
      * When we have a failure, we want to define the next language that succeeded as the active
