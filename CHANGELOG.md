@@ -1,3 +1,26 @@
+## 8.3.0 (2026-04-05)
+
+### 🚀 Features
+
+- **transloco:** add TranslationLoadError class for translation load failures
+- **transloco:** expose activeLang signal on TranslocoService
+
+### 🩹 Fixes
+
+- **transloco:** 🐛 grammar fix misspelled scope hint error message
+- **transloco:** correct TRANSLOCO_MISSING_HANDLER token generic type
+- **transloco:** prevent loading translations when injector is destroyed
+- **transloco:** take the last provided scope selecting a translation
+- **transloco-locale:** complete subject when root injector is destroyed
+- **transloco-locale:** fix isLocaleFormat to correctly validate BCP 47 tags
+
+### ❤️ Thank You
+
+- Artur
+- Mateo Tibaquirá
+- Michael Benz
+- Shahar Kazaz
+
 ## 8.2.1 (2026-01-19)
 
 
