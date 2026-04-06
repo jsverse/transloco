@@ -20,11 +20,10 @@
       "outputs": ["{options.outputFile}"]
     },
     "test": {
-      "executor": "@angular-devkit/build-angular:karma",
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/transloco-optimize"],
       "options": {
-        "main": "libs/transloco-optimize/src/test-setup.ts",
-        "tsConfig": "libs/transloco-optimize/tsconfig.spec.json",
-        "karmaConfig": "libs/transloco-optimize/karma.conf.js"
+        "jestConfig": "libs/transloco-optimize/jest.config.ts"
       }
     }
   }
