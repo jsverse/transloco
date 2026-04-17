@@ -21,18 +21,33 @@ export const defaultConfig: Required<TranslocoLocaleConfig> = {
   langToLocaleMapping: {},
 };
 
-export const TRANSLOCO_LOCALE_DEFAULT_LOCALE = new InjectionToken<Locale>(
-  'TRANSLOCO_LOCALE_DEFAULT_LOCALE',
-);
-export const TRANSLOCO_LOCALE_DEFAULT_CURRENCY = new InjectionToken<Currency>(
-  'TRANSLOCO_LOCALE_DEFAULT_CURRENCY',
-);
+export const TRANSLOCO_LOCALE_DEFAULT_LOCALE =
+  /* @__PURE__ */ new InjectionToken<Locale>(
+    typeof ngDevMode !== 'undefined' && ngDevMode
+      ? 'TRANSLOCO_LOCALE_DEFAULT_LOCALE'
+      : '',
+  );
+export const TRANSLOCO_LOCALE_DEFAULT_CURRENCY =
+  /* @__PURE__ */ new InjectionToken<Currency>(
+    typeof ngDevMode !== 'undefined' && ngDevMode
+      ? 'TRANSLOCO_LOCALE_DEFAULT_CURRENCY'
+      : '',
+  );
 export const TRANSLOCO_LOCALE_LANG_MAPPING =
-  new InjectionToken<LangToLocaleMapping>('TRANSLOCO_LOCALE_LANG_MAPPING');
-export const TRANSLOCO_LOCALE_CONFIG = new InjectionToken<LocaleConfigMapping>(
-  'TRANSLOCO_LOCALE_CONFIG',
-);
+  /* @__PURE__ */ new InjectionToken<LangToLocaleMapping>(
+    typeof ngDevMode !== 'undefined' && ngDevMode
+      ? 'TRANSLOCO_LOCALE_LANG_MAPPING'
+      : '',
+  );
+export const TRANSLOCO_LOCALE_CONFIG =
+  /* @__PURE__ */ new InjectionToken<LocaleConfigMapping>(
+    typeof ngDevMode !== 'undefined' && ngDevMode
+      ? 'TRANSLOCO_LOCALE_CONFIG'
+      : '',
+  );
 export const TRANSLOCO_LOCALE_CURRENCY_MAPPING =
-  new InjectionToken<LocaleToCurrencyMapping>(
-    'TRANSLOCO_LOCALE_CURRENCY_MAPPING',
+  /* @__PURE__ */ new InjectionToken<LocaleToCurrencyMapping>(
+    typeof ngDevMode !== 'undefined' && ngDevMode
+      ? 'TRANSLOCO_LOCALE_CURRENCY_MAPPING'
+      : '',
   );

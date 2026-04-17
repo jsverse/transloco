@@ -33,12 +33,22 @@ export const defaultConfig: StorageConfig = {
 };
 
 export const TRANSLOCO_PERSIST_TRANSLATIONS_LOADER =
-  new InjectionToken<TranslocoLoader>('TRANSLOCO_PERSIST_TRANSLATIONS_LOADER');
+  /* @__PURE__ */ new InjectionToken<TranslocoLoader>(
+    typeof ngDevMode !== 'undefined' && ngDevMode
+      ? 'TRANSLOCO_PERSIST_TRANSLATIONS_LOADER'
+      : '',
+  );
 
 export const TRANSLOCO_PERSIST_TRANSLATIONS_STORAGE =
-  new InjectionToken<MaybeAsyncStorage>(
-    'The storage to use for the persistance behavior',
+  /* @__PURE__ */ new InjectionToken<MaybeAsyncStorage>(
+    typeof ngDevMode !== 'undefined' && ngDevMode
+      ? 'The storage to use for the persistance behavior'
+      : '',
   );
 
 export const TRANSLOCO_PERSIST_TRANSLATIONS_STORAGE_CONFIG =
-  new InjectionToken<StorageConfig>('Configuration for the storage behavior');
+  /* @__PURE__ */ new InjectionToken<StorageConfig>(
+    typeof ngDevMode !== 'undefined' && ngDevMode
+      ? 'Configuration for the storage behavior'
+      : '',
+  );

@@ -91,17 +91,24 @@ export function translateObject<T>(
 }
 
 export class TranslationLoadError extends Error {
+  override readonly name = 'TranslationLoadError';
+
   constructor(
     readonly lang: string,
     readonly fallbackLangs: string[],
     readonly isScope: boolean,
   ) {
-    let msg = `Unable to load translation and all the fallback languages`;
-    if (isScope) {
-      msg += `, did you misspell the scope name?`;
+    let message = '';
+    if (typeof ngDevMode !== 'undefined' && ngDevMode) {
+      message = `Unable to load translation and all the fallback languages`;
+      if (isScope) {
+        message += `, did you misspell the scope name?`;
+      }
     }
-    super(msg);
-    this.name = 'TranslationLoadError';
+
+    super(message);
+
+    Object.setPrototypeOf(this, TranslationLoadError.prototype);
   }
 }
 
@@ -285,7 +292,7 @@ export class TranslocoService {
         this.handleSuccess(path, translation);
       }),
       catchError((error) => {
-        if (!this.config.prodMode) {
+        if (typeof ngDevMode !== 'undefined' && ngDevMode) {
           console.error(`Error while trying to load "${path}"`, error);
         }
 
