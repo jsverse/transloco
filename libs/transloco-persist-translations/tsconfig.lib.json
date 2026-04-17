@@ -7,7 +7,8 @@
     "declarationMap": true,
     "inlineSources": true,
     "types": [],
-    "lib": ["dom", "es2020"]
+    "lib": ["dom", "es2020"],
+    "moduleResolution": "bundler"
   },
   "exclude": ["src/test-setup.ts", "**/*.spec.ts", "src/lib/tests/mocks.ts"],
   "include": ["**/*.ts"]

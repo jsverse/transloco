@@ -4,6 +4,7 @@
   "projectType": "application",
   "sourceRoot": "apps/transloco-playground/src",
   "prefix": "transloco-nx-shell",
+  "tags": [],
   "targets": {
     "build": {
       "executor": "@nx/angular:webpack-browser",
@@ -67,7 +68,8 @@
           "buildTarget": "transloco-playground:build:development"
         }
       },
-      "defaultConfiguration": "development"
+      "defaultConfiguration": "development",
+      "continuous": true
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
@@ -87,6 +89,5 @@
         "karmaConfig": "apps/transloco-playground/karma.conf.js"
       }
     }
-  },
-  "tags": []
+  }
 }

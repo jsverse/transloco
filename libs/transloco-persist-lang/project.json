@@ -10,15 +10,14 @@
       "executor": "@nx/angular:package",
       "outputs": ["{workspaceRoot}/dist/libs/transloco-persist-lang"],
       "options": {
-        "project": "libs/transloco-persist-lang/ng-package.json"
+        "project": "libs/transloco-persist-lang/ng-package.json",
+        "tsConfig": "libs/transloco-persist-lang/tsconfig.lib.json"
       },
       "configurations": {
         "production": {
           "tsConfig": "libs/transloco-persist-lang/tsconfig.lib.prod.json"
         },
-        "development": {
-          "tsConfig": "libs/transloco-persist-lang/tsconfig.lib.json"
-        }
+        "development": {}
       },
       "defaultConfiguration": "production"
     },
