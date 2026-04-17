@@ -1,10 +1,11 @@
 import {
-  APP_INITIALIZER,
   Inject,
   Injectable,
   InjectionToken,
   ModuleWithProviders,
   NgModule,
+  inject,
+  provideAppInitializer,
 } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
@@ -85,16 +86,14 @@ export class TranslocoTestingModule {
           provide: TRANSLOCO_TEST_OPTIONS,
           useValue: options,
         },
-        {
-          provide: APP_INITIALIZER,
-          useFactory: initTranslocoService,
-          deps: [
-            TranslocoService,
-            TRANSLOCO_TEST_LANGS,
-            TRANSLOCO_TEST_OPTIONS,
-          ],
-          multi: true,
-        },
+        provideAppInitializer(() => {
+          const preloadLangs = initTranslocoService(
+            inject(TranslocoService),
+            inject(TRANSLOCO_TEST_LANGS),
+            inject(TRANSLOCO_TEST_OPTIONS),
+          );
+          return preloadLangs();
+        }),
       ],
     };
   }

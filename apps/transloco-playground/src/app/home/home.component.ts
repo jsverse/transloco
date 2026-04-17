@@ -11,7 +11,6 @@ import {
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [TranslocoModule],
 })
 export class HomeComponent {

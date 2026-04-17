@@ -5,6 +5,7 @@ import { fakeAsync } from '@angular/core/testing';
 import { providersMock, runLoader } from '../mocks';
 import { defaultConfig, TRANSLOCO_CONFIG } from '../../transloco.config';
 import { TranslocoModule } from '../../transloco.module';
+import { TranslocoPipe } from '../../transloco.pipe';
 import { TranslocoService } from '../../transloco.service';
 import { TRANSLOCO_LANG } from '../../transloco-lang';
 import { TRANSLOCO_SCOPE } from '../../transloco-scope';
@@ -19,6 +20,7 @@ export const listenToLangChangesProvider = {
 };
 
 @Component({
+  imports: [TranslocoPipe],
   template: `
     <p>{{ 'home' | transloco }}</p>
     <h1>{{ 'nested.title' | transloco }}</h1>
@@ -158,6 +160,7 @@ describe('Transloco Pipe', () => {
   });
 
   @Component({
+    imports: [TranslocoPipe],
     selector: 'transloco-scope-pipe',
     template: `
       <p>{{ 'lazyPage.title' | transloco }}</p>
