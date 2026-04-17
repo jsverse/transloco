@@ -1,18 +1,20 @@
 import { fakeAsync } from '@angular/core/testing';
+import { isString } from '@jsverse/utils';
 
 import { TranslocoService } from '../../transloco.service';
-import { Translation } from '../../types';
-import { isString } from '../../helpers';
+import { Translation } from '../../transloco.types';
 import { createService, runLoader } from '../mocks';
 
-import { loadLang } from './utils';
+import { loadLang } from './service-spec-utils';
 
 describe('Custom Interceptor', () => {
   let service: TranslocoService;
 
   beforeEach(() => (service = createService()));
 
-  it('should support', fakeAsync(() => {
+  it(`GIVEN custom interceptor for translations
+      WHEN translations are loaded and keys are set
+      THEN should apply interceptor transformations`, fakeAsync(() => {
     (service as any).interceptor = {
       preSaveTranslation(translation: Translation) {
         return Object.keys(translation).reduce((acc, key) => {

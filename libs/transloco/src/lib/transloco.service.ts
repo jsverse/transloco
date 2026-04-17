@@ -4,6 +4,7 @@ import {
   Inject,
   Injectable,
   Optional,
+  type Signal,
 } from '@angular/core';
 import {
   BehaviorSubject,
@@ -21,7 +22,8 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { isEmpty, isNil, isString, size, toCamelCase } from '@jsverse/utils';
 
 import {
   DefaultLoader,
@@ -34,7 +36,6 @@ import {
 } from './transloco.transpiler';
 import {
   AvailableLangs,
-  HashMap,
   InlineLoader,
   LangDefinition,
   LoadOptions,
@@ -44,17 +45,7 @@ import {
   Translation,
   TranslocoEvents,
   TranslocoScope,
-} from './types';
-import {
-  flatten,
-  isEmpty,
-  isNil,
-  isScopeObject,
-  isString,
-  size,
-  toCamelCase,
-  unflatten,
-} from './helpers';
+} from './transloco.types';
 import { TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 import {
   TRANSLOCO_MISSING_HANDLER,
@@ -69,14 +60,17 @@ import {
   TRANSLOCO_FALLBACK_STRATEGY,
   TranslocoFallbackStrategy,
 } from './transloco-fallback-strategy';
+import { getFallbacksLoaders } from './get-fallbacks-loaders';
+import { resolveLoader } from './resolve-loader';
+import { flatten, unflatten } from './utils/flat.utils';
+import { HashMap } from './utils/type.utils';
 import {
   getEventPayload,
   getLangFromScope,
   getScopeFromLang,
+  isScopeObject,
   resolveInlineLoader,
-} from './shared';
-import { getFallbacksLoaders } from './get-fallbacks-loaders';
-import { resolveLoader } from './resolve-loader';
+} from './utils/scope.utils';
 
 let service: TranslocoService;
 
@@ -94,6 +88,28 @@ export function translateObject<T>(
   lang?: string,
 ): T | T[] {
   return service.translateObject<T>(key, params, lang);
+}
+
+export class TranslationLoadError extends Error {
+  override readonly name = 'TranslationLoadError';
+
+  constructor(
+    readonly lang: string,
+    readonly fallbackLangs: string[],
+    readonly isScope: boolean,
+  ) {
+    let message = '';
+    if (typeof ngDevMode !== 'undefined' && ngDevMode) {
+      message = `Unable to load translation and all the fallback languages`;
+      if (isScope) {
+        message += `, did you misspell the scope name?`;
+      }
+    }
+
+    super(message);
+
+    Object.setPrototypeOf(this, TranslationLoadError.prototype);
+  }
 }
 
 @Injectable({ providedIn: 'root' })
@@ -115,7 +131,19 @@ export class TranslocoService {
     scopeMapping?: HashMap<string>;
   };
 
+  /**
+   * A signal that reflects the currently active language.
+   *
+   * @example
+   *
+   * const upper = computed(() => this.transloco.activeLang().toUpperCase());
+   *
+   * const lang = linkedSignal(() => this.transloco.activeLang());
+   */
+  readonly activeLang: Signal<string>;
+
   private destroyRef = inject(DestroyRef);
+  private destroyed = false;
 
   constructor(
     @Optional() @Inject(TRANSLOCO_LOADER) private loader: TranslocoLoader,
@@ -141,6 +169,8 @@ export class TranslocoService {
     // the value when using setTranslation or setTranslationKeys
     this.langChanges$ = this.lang.asObservable();
 
+    this.activeLang = toSignal(this.lang, { requireSync: true });
+
     /**
      * When we have a failure, we want to define the next language that succeeded as the active
      */
@@ -151,6 +181,7 @@ export class TranslocoService {
     });
 
     this.destroyRef.onDestroy(() => {
+      this.destroyed = true;
       // Complete subjects to release observers if users forget to unsubscribe manually.
       // This is important in server-side rendering.
       this.lang.complete();
@@ -200,6 +231,14 @@ export class TranslocoService {
   }
 
   load(path: string, options: LoadOptions = {}): Observable<Translation> {
+    // If the application has already been destroyed, return an empty observable.
+    // We use EMPTY instead of NEVER to ensure the observable completes.
+    // This is important for operators like switchMap, which rely on the inner observable completing
+    // before they can subscribe to the next one. NEVER would hang the chain indefinitely.
+    if (this.destroyed) {
+      return EMPTY;
+    }
+
     const cached = this.cache.get(path);
     if (cached) {
       return cached;
@@ -253,7 +292,7 @@ export class TranslocoService {
         this.handleSuccess(path, translation);
       }),
       catchError((error) => {
-        if (!this.config.prodMode) {
+        if (typeof ngDevMode !== 'undefined' && ngDevMode) {
           console.error(`Error while trying to load "${path}"`, error);
         }
 
@@ -290,11 +329,15 @@ export class TranslocoService {
 
     if (Array.isArray(key)) {
       return key.map((k) =>
-        this.translate(scope ? `${scope}.${k}` : k, params, resolveLang),
+        this.translate(
+          this.config.scopes.autoPrefixKeys && scope ? `${scope}.${k}` : k,
+          params,
+          resolveLang,
+        ),
       ) as any;
     }
 
-    key = scope ? `${scope}.${key}` : key;
+    key = this.config.scopes.autoPrefixKeys && scope ? `${scope}.${key}` : key;
 
     const translation = this.getTranslation(resolveLang);
     const value = translation[key];
@@ -341,7 +384,7 @@ export class TranslocoService {
       return this.langChanges$.pipe(switchMap((lang) => load(lang)));
     }
 
-    lang = Array.isArray(lang) ? lang[0] : lang;
+    lang = Array.isArray(lang) ? lang[lang.length - 1] : lang;
     if (isScopeObject(lang)) {
       // it's a scope object.
       const providerScope = lang;
@@ -402,7 +445,7 @@ export class TranslocoService {
       if (Array.isArray(key)) {
         return key.map((k) =>
           this.translateObject(
-            scope ? `${scope}.${k}` : k,
+            this.config.scopes.autoPrefixKeys && scope ? `${scope}.${k}` : k,
             params!,
             resolveLang,
           ),
@@ -410,7 +453,8 @@ export class TranslocoService {
       }
 
       const translation = this.getTranslation(resolveLang);
-      key = scope ? `${scope}.${key}` : key;
+      key =
+        this.config.scopes.autoPrefixKeys && scope ? `${scope}.${key}` : key;
 
       const value = unflatten(this.getObjectByKey(translation, key));
       /* If an empty object was returned we want to try and translate the key as a string and not an object */
@@ -774,12 +818,11 @@ export class TranslocoService {
     const isFallbackLang = nextLang === splitted[splitted.length - 1];
 
     if (!nextLang || isFallbackLang) {
-      let msg = `Unable to load translation and all the fallback languages`;
-      if (splitted.length > 1) {
-        msg += `, did you misspelled the scope name?`;
-      }
-
-      throw new Error(msg);
+      throw new TranslationLoadError(
+        lang,
+        fallbacks ?? [],
+        splitted.length > 1,
+      );
     }
 
     let resolveLang = nextLang;

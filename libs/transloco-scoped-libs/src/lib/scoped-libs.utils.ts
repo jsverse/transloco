@@ -38,7 +38,7 @@ export function insertPathToGitIgnore(route) {
 
 export function readJson(path: string) {
   try {
-    return readJSONSync(path, { encoding: 'utf8' });
+    return fs.existsSync(path) ? readJSONSync(path, { encoding: 'utf8' }) : {};
   } catch (e) {
     console.log(chalk.red(e));
 

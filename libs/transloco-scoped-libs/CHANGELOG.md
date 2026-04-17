@@ -1,3 +1,52 @@
+## 8.3.0 (2026-04-05)
+
+This was a version bump only for transloco-scoped-libs to align it with other projects, there were no code changes.
+
+## 8.2.1 (2026-01-19)
+
+This was a version bump only for transloco-scoped-libs to align it with other projects, there were no code changes.
+
+## 8.2.0 (2025-11-15)
+
+This was a version bump only for transloco-scoped-libs to align it with other projects, there were no code changes.
+
+## 8.1.0 (2025-10-11)
+
+
+### 🩹 Fixes
+
+- **scoped-libs:** 🐛 gracefully handle missing file ([cd8bb789](https://github.com/jsverse/transloco/commit/cd8bb789))
+
+- **scoped-libs:** 🐛 add Windows path support for glob patterns ([d462998d](https://github.com/jsverse/transloco/commit/d462998d))
+
+
+### ❤️  Thank You
+
+- Shahar Kazaz @shaharkazaz
+
+## 8.0.2 (2025-09-26)
+
+This was a version bump only for transloco-scoped-libs to align it with other projects, there were no code changes.
+
+## 8.0.1 (2025-09-26)
+
+This was a version bump only for transloco-scoped-libs to align it with other projects, there were no code changes.
+
+# 8.0.0 (2025-09-14)
+
+### 💡 Refactor
+
+- **scoped-libs:** 💡 update node version ([a9f6bc24](https://github.com/jsverse/transloco/commit/a9f6bc24))
+
+### ⚠ BREAKING CHANGES
+
+- **scoped-libs:** 🧨 Minimum node version is now 18
+
+### ❤️ Thank You
+
+- chaitanay94
+- Shahar Kazaz
+
 ## [7.0.1](https://github.com/jsverse/transloco/compare/transloco-scoped-libs-7.0.0...transloco-scoped-libs-7.0.1) (2024-05-31)
 
 # [7.0.0](https://github.com/jsverse/transloco/compare/transloco-scoped-libs-6.0.0...transloco-scoped-libs-7.0.0) (2024-03-23)

@@ -1,3 +1,41 @@
+## 8.3.0 (2026-04-05)
+
+This was a version bump only for transloco-preload-langs to align it with other projects, there were no code changes.
+
+## 8.2.1 (2026-01-19)
+
+This was a version bump only for transloco-preload-langs to align it with other projects, there were no code changes.
+
+## 8.2.0 (2025-11-15)
+
+This was a version bump only for transloco-preload-langs to align it with other projects, there were no code changes.
+
+## 8.1.0 (2025-10-11)
+
+This was a version bump only for transloco-preload-langs to align it with other projects, there were no code changes.
+
+## 8.0.2 (2025-09-26)
+
+This was a version bump only for transloco-preload-langs to align it with other projects, there were no code changes.
+
+## 8.0.1 (2025-09-26)
+
+This was a version bump only for transloco-preload-langs to align it with other projects, there were no code changes.
+
+# 8.0.0 (2025-09-14)
+
+### 💡 Refactor
+
+- **preload-langs:** 💡 Add package optimizations ([5069fa48](https://github.com/jsverse/transloco/commit/5069fa48))
+
+### ⚠ BREAKING CHANGES
+
+- **preload-langs:** 🧨 Minimum node version is now 18
+
+### ❤️ Thank You
+
+- shaharkazaz @shaharkazaz
+
 ## [7.0.1](https://github.com/jsverse/transloco/compare/transloco-preload-langs-7.0.0...transloco-preload-langs-7.0.1) (2024-05-31)
 
 # [7.0.0](https://github.com/jsverse/transloco/compare/transloco-preload-langs-6.0.0...transloco-preload-langs-7.0.0) (2024-03-23)

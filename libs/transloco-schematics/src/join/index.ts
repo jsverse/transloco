@@ -7,9 +7,8 @@ import {
 import { normalize } from '@angular-devkit/core';
 import { existsSync, removeSync } from 'fs-extra';
 
-import { TranslationFileFormat } from '../types';
 import {
-  getDefaultLang,
+  getGlobalConfig,
   getJsonFileContent,
   getTranslationEntryPaths,
   getTranslationFiles,
@@ -17,20 +16,18 @@ import {
   getTranslationsRoot,
   hasFiles,
   hasSubdirs,
-} from '../utils/transloco';
+} from '../../schematics-core';
 
 import { SchemaOptions } from './schema';
 
-type Builder = (
-  tree: Tree,
-  path: string,
-  content: Record<string, unknown>,
-) => void;
+function getDefaultLang(options: SchemaOptions) {
+  return options.defaultLang || getGlobalConfig().defaultLang;
+}
 
 function reduceTranslations(
   host: Tree,
   dirPath: string,
-  translationJson,
+  translationJson: Record<string, unknown>,
   lang: string,
   key = '',
 ) {
@@ -52,7 +49,7 @@ function reduceTranslations(
       const nestedKey = getTranslationKey(key, subDirName);
       reduceTranslations(
         host,
-        normalize(subDir.path).substr(1),
+        normalize(subDir.path).slice(1),
         translationJson,
         lang,
         nestedKey,
@@ -75,21 +72,6 @@ function jsonBuilder(
   content: Record<string, unknown>,
 ) {
   tree.create(`${path}.json`, JSON.stringify(content, null, 2));
-}
-
-function builderFactory(format: TranslationFileFormat): Builder {
-  switch (format) {
-    case TranslationFileFormat.JSON:
-      return jsonBuilder;
-    case TranslationFileFormat.PO:
-      // TODO:
-      return jsonBuilder;
-    case TranslationFileFormat.XLIFF:
-      // TODO:
-      return jsonBuilder;
-    default:
-      return jsonBuilder;
-  }
 }
 
 export default function (options: SchemaOptions): Rule {
@@ -123,9 +105,8 @@ export default function (options: SchemaOptions): Rule {
     }));
 
     const treeSource = new EmptyTree();
-    const builder = builderFactory(options.format);
     output.forEach((o) => {
-      builder(treeSource, `${options.outDir}/${o.lang}`, o.translation);
+      jsonBuilder(treeSource, `${options.outDir}/${o.lang}`, o.translation);
     });
 
     return treeSource;

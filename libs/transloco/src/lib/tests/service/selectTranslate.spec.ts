@@ -8,14 +8,18 @@ describe('selectTranslate', () => {
 
   beforeEach(() => (service = createService()));
 
-  it('should return an observable with the translation value', fakeAsync(() => {
+  it(`GIVEN a TranslocoService instance with English translations
+      WHEN subscribing to selectTranslate for a translation key
+      THEN should emit an observable with the translated value`, fakeAsync(() => {
     const spy = jasmine.createSpy();
     service.selectTranslate('home').subscribe(spy);
     runLoader();
     expect(spy).toHaveBeenCalledWith('home english');
   }));
 
-  it('should support lang changes', fakeAsync(() => {
+  it(`GIVEN a TranslocoService with an active subscription to a translation key
+      WHEN the active language is changed
+      THEN should emit the new translated value in the new language`, fakeAsync(() => {
     const spy = jasmine.createSpy();
     service.selectTranslate('home').subscribe(spy);
     runLoader();
@@ -25,14 +29,18 @@ describe('selectTranslate', () => {
     expect(spy).toHaveBeenCalledWith('home spanish');
   }));
 
-  it('should return an observable with the translation value with param', fakeAsync(() => {
+  it(`GIVEN a TranslocoService instance with English translations
+      WHEN subscribing to selectTranslate with a key and dynamic parameters
+      THEN should emit the translation with interpolated parameter values`, fakeAsync(() => {
     const spy = jasmine.createSpy();
     service.selectTranslate('alert', { value: 'val' }).subscribe(spy);
     runLoader();
     expect(spy).toHaveBeenCalledWith('alert val english');
   }));
 
-  it('should support different lang', fakeAsync(() => {
+  it(`GIVEN a TranslocoService instance
+      WHEN subscribing to selectTranslate with an explicit language parameter
+      THEN should emit the translation in the specified language and not respond to language changes`, fakeAsync(() => {
     const spy = jasmine.createSpy();
     service.selectTranslate('alert', { value: 'val' }, 'es').subscribe(spy);
     runLoader();
@@ -43,21 +51,27 @@ describe('selectTranslate', () => {
     expect(spy).toHaveBeenCalledTimes(1);
   }));
 
-  it('should support scope', fakeAsync(() => {
+  it(`GIVEN a TranslocoService with a scoped language loaded
+      WHEN subscribing to selectTranslate with a scope parameter
+      THEN should emit the translation from the scoped language file`, fakeAsync(() => {
     const spy = jasmine.createSpy();
     service.selectTranslate('title', {}, 'lazy-page').subscribe(spy);
     runLoader();
     expect(spy).toHaveBeenCalledWith('Admin Lazy english');
   }));
 
-  it('should support scope with lang', fakeAsync(() => {
+  it(`GIVEN a TranslocoService with scoped languages loaded
+      WHEN subscribing to selectTranslate with an explicit scope/language combination
+      THEN should emit the translation from the specified scope and language`, fakeAsync(() => {
     const spy = jasmine.createSpy();
     service.selectTranslate('title', {}, 'lazy-page/es').subscribe(spy);
     runLoader();
     expect(spy).toHaveBeenCalledWith('Admin Lazy spanish');
   }));
 
-  it('should listen to lang change when passing just the scope', fakeAsync(() => {
+  it(`GIVEN a TranslocoService with an active subscription to a scoped translation
+      WHEN the active language is changed and only scope is provided
+      THEN should emit the updated translation in the new language`, fakeAsync(() => {
     const spy = jasmine.createSpy();
     service.selectTranslate('title', {}, 'lazy-page').subscribe(spy);
     runLoader();
@@ -66,7 +80,9 @@ describe('selectTranslate', () => {
     expect(spy).toHaveBeenCalledTimes(2);
   }));
 
-  it('should not listen to lang change when passing scope with lang', fakeAsync(() => {
+  it(`GIVEN a TranslocoService with an active subscription to a scoped translation
+      WHEN the active language is changed and explicit scope/language is provided
+      THEN should not emit new values and remain locked to the specified language`, fakeAsync(() => {
     const spy = jasmine.createSpy();
     service.selectTranslate('title', {}, 'lazy-page/es').subscribe(spy);
     runLoader();
@@ -76,7 +92,9 @@ describe('selectTranslate', () => {
     expect(spy).toHaveBeenCalledWith('Admin Lazy spanish');
   }));
 
-  it('should support scope with param', fakeAsync(() => {
+  it(`GIVEN a TranslocoService with scoped translations loaded
+      WHEN subscribing to selectTranslate with a scope and dynamic parameters
+      THEN should emit the scoped translation with interpolated parameter values`, fakeAsync(() => {
     const spy = jasmine.createSpy();
     service
       .selectTranslate('withParam', { param: 'Transloco' }, 'lazy-page')
@@ -85,7 +103,9 @@ describe('selectTranslate', () => {
     expect(spy).toHaveBeenCalledWith('Admin Lazy english Transloco');
   }));
 
-  it('should support scope with lang and params', fakeAsync(() => {
+  it(`GIVEN a TranslocoService with scoped translations loaded
+      WHEN subscribing to selectTranslate with explicit scope/language and dynamic parameters
+      THEN should emit the translation from the specified scope and language with interpolated values`, fakeAsync(() => {
     const spy = jasmine.createSpy();
     service
       .selectTranslate('withParam', { param: 'Transloco' }, 'lazy-page/es')
@@ -94,7 +114,9 @@ describe('selectTranslate', () => {
     expect(spy).toHaveBeenCalledWith('Admin Lazy spanish Transloco');
   }));
 
-  it('should support nested scope with params', fakeAsync(() => {
+  it(`GIVEN a TranslocoService with nested scoped translations loaded
+      WHEN subscribing to selectTranslate with a nested scope and dynamic parameters
+      THEN should emit the translation from the nested scope with interpolated values`, fakeAsync(() => {
     const spy = jasmine.createSpy();
     service
       .selectTranslate(
@@ -107,7 +129,9 @@ describe('selectTranslate', () => {
     expect(spy).toHaveBeenCalledWith('Replaces standard Transloco - english');
   }));
 
-  it('should support nested scope with lang and params', fakeAsync(() => {
+  it(`GIVEN a TranslocoService with nested scoped translations loaded
+      WHEN subscribing to selectTranslate with a nested scope, explicit language, and parameters
+      THEN should emit the translation from the specified nested scope and language with interpolated values`, fakeAsync(() => {
     const spy = jasmine.createSpy();
     service
       .selectTranslate(
@@ -121,13 +145,17 @@ describe('selectTranslate', () => {
   }));
 
   describe('inline loader', () => {
-    it('select translate with inline loader', fakeAsync(() => {
+    it(`GIVEN a TranslocoService with an inline loader configured
+        WHEN subscribing to selectTranslate with the inline scope object
+        THEN should emit the translation loaded from the inline loader`, fakeAsync(() => {
       const spy = jasmine.createSpy();
       service.selectTranslate('title', {}, inlineScope).subscribe(spy);
       runLoader();
       expect(spy).toHaveBeenCalledWith('Todos Title English');
     }));
-    it('should support scope with lang and params', fakeAsync(() => {
+    it(`GIVEN a TranslocoService with scoped translations loaded
+        WHEN subscribing to selectTranslate with a scope object and dynamic parameters
+        THEN should emit the scoped translation with interpolated parameter values`, fakeAsync(() => {
       const spy = jasmine.createSpy();
       service
         .selectTranslate(
@@ -141,7 +169,9 @@ describe('selectTranslate', () => {
     }));
 
     describe('Scope/lang arrays', () => {
-      it('should support scope object array', fakeAsync(() => {
+      it(`GIVEN a TranslocoService with scoped translations loaded
+          WHEN subscribing to selectTranslate with an array of scope objects and parameters
+          THEN should emit the scoped translation with interpolated parameter values`, fakeAsync(() => {
         const spy = jasmine.createSpy();
         service
           .selectTranslate('withParam', { param: 'Transloco' }, [
@@ -152,7 +182,9 @@ describe('selectTranslate', () => {
         expect(spy).toHaveBeenCalledWith('Admin Lazy english Transloco');
       }));
 
-      it('should support string array', fakeAsync(() => {
+      it(`GIVEN a TranslocoService with scoped translations loaded
+          WHEN subscribing to selectTranslate with an array of scope strings and parameters
+          THEN should emit the scoped translation with interpolated parameter values`, fakeAsync(() => {
         const spy = jasmine.createSpy();
         service
           .selectTranslate('withParam', { param: 'Transloco' }, ['lazy-page'])

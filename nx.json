@@ -1,5 +1,5 @@
 {
-  "defaultProject": "transloco-playground",
+  "defaultProject": "transloco",
   "generators": {
     "@nx/angular": {
       "application": {
@@ -67,11 +67,10 @@
       "!{projectRoot}/src/test-setup.[jt]s"
     ]
   },
-  "parallel": 1,
   "useInferencePlugins": false,
   "defaultBase": "master",
   "release": {
-    "releaseTagPattern": "{projectName}-{version}",
+    "releaseTagPattern": "releases/{version}",
     "projects": [
       "transloco",
       "transloco-locale",
@@ -82,9 +81,10 @@
       "transloco-preload-langs",
       "transloco-scoped-libs",
       "transloco-utils",
-      "transloco-validator"
+      "transloco-validator",
+      "transloco-schematics"
     ],
-    "projectsRelationship": "independent",
+    "projectsRelationship": "fixed",
     "version": {
       "conventionalCommits": true
     },
@@ -97,7 +97,9 @@
       "projectChangelogs": {
         "createRelease": false,
         "renderOptions": {
-          "authors": false
+          "authors": true,
+          "mapAuthorsToGitHubUsernames": true,
+          "commitReferences": true
         }
       }
     }

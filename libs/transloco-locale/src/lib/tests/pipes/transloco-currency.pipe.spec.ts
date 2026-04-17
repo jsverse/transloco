@@ -22,53 +22,71 @@ describe('TranslocoCurrencyPipe', () => {
     intlSpy = spyOn(Intl, 'NumberFormat').and.callThrough();
   });
 
-  it('should transform number to currency', () => {
+  it(`GIVEN a number value
+      WHEN transforming to currency
+      THEN it should format as currency with symbol`, () => {
     spectator = pipeFactory(`{{ 123 | translocoCurrency }}`);
     expect(spectator.element).toHaveText('$123.00');
   });
 
-  it('should transform string number to currency', () => {
+  it(`GIVEN a string number value
+      WHEN transforming to currency
+      THEN it should format as currency with symbol`, () => {
     spectator = pipeFactory(`{{ '123' | translocoCurrency }}`);
     expect(spectator.element).toHaveText('$123.00');
   });
 
-  it('should take the currency from the locale', () => {
+  it(`GIVEN es-ES locale
+      WHEN transforming to currency
+      THEN it should use the locale's currency symbol`, () => {
     spectator = pipeFactory(`{{ '123' | translocoCurrency }}`, {
       providers: [provideTranslocoServiceMock('es-ES')],
     });
     expect(spectator.element).toContainText('€');
   });
 
-  it('should take the currency given currency', () => {
+  it(`GIVEN EUR as currency parameter
+      WHEN transforming to currency
+      THEN it should use the specified currency symbol`, () => {
     spectator = pipeFactory(
       `{{ '123' | translocoCurrency:'symbol':{}:'EUR' }}`,
     );
     expect(spectator.element).toContainText('€');
   });
 
-  it('should format the currency given narrowSymbol as display argument', () => {
+  it(`GIVEN narrowSymbol as display argument and CAD currency
+      WHEN transforming to currency
+      THEN it should format with narrow symbol`, () => {
     spectator = pipeFactory(
       `{{ '123' | translocoCurrency:'narrowSymbol':{}:'CAD' }}`,
     );
     expect(spectator.element).toContainText('$');
   });
 
-  it('should use given display', () => {
+  it(`GIVEN code as display parameter
+      WHEN transforming to currency
+      THEN it should use code display format`, () => {
     spectator = pipeFactory(`{{ '123' | translocoCurrency:'code' }}`);
     const [, { currencyDisplay }] = getIntlCallArgs();
     expect(currencyDisplay).toEqual('code');
   });
 
   describe('None transformable values', () => {
-    it('should handle null', () => {
+    it(`GIVEN null value
+        WHEN transforming to currency
+        THEN it should return empty string`, () => {
       spectator = pipeFactory(`{{ null | translocoCurrency }}`);
       expect(spectator.element).toHaveText('');
     });
-    it('should handle {}', () => {
+    it(`GIVEN empty object
+        WHEN transforming to currency
+        THEN it should return empty string`, () => {
       spectator = pipeFactory(`{{ {} | translocoCurrency }}`);
       expect(spectator.element).toHaveText('');
     });
-    it('should handle none number string', () => {
+    it(`GIVEN non-numeric string
+        WHEN transforming to currency
+        THEN it should return empty string`, () => {
       spectator = pipeFactory(`{{ 'none number string' | translocoCurrency }}`);
       expect(spectator.element).toHaveText('');
     });
@@ -77,7 +95,9 @@ describe('TranslocoCurrencyPipe', () => {
   describe('config options', () => {
     const defaultOptions = LOCALE_CONFIG_MOCK.global!.currency!;
 
-    it('should use default config options', () => {
+    it(`GIVEN no custom config
+        WHEN transforming to currency
+        THEN it should use default config options`, () => {
       spectator = pipeFactory(`{{ '123' | translocoCurrency }}`);
       const [, { useGrouping, maximumFractionDigits }] = getIntlCallArgs();
       expect(useGrouping).toEqual(defaultOptions.useGrouping);
@@ -86,7 +106,9 @@ describe('TranslocoCurrencyPipe', () => {
       );
     });
 
-    it('should use passed digit options instead of default options', () => {
+    it(`GIVEN custom digit options
+        WHEN transforming to currency
+        THEN it should use passed options instead of defaults`, () => {
       const config: NumberFormatOptions = {
         useGrouping: true,
         maximumFractionDigits: 4,
@@ -104,7 +126,9 @@ describe('TranslocoCurrencyPipe', () => {
       expect(maximumFractionDigits).toEqual(4);
     });
 
-    it('should take number options from locale settings', () => {
+    it(`GIVEN es-ES locale with locale-specific settings
+        WHEN transforming to currency
+        THEN it should use number options from locale settings`, () => {
       spectator = pipeFactory(`{{ '123' | translocoCurrency }}`, {
         providers: [provideTranslocoServiceMock('es-ES')],
       });
@@ -113,7 +137,9 @@ describe('TranslocoCurrencyPipe', () => {
       expect(maximumFractionDigits).toEqual(3);
     });
 
-    it('should take passed transform config options', () => {
+    it(`GIVEN custom config and es-ES locale
+        WHEN transforming to currency
+        THEN it should use passed config over locale settings`, () => {
       const config = { useGrouping: false, maximumFractionDigits: 4 };
       spectator = pipeFactory(
         `{{ '123' | translocoCurrency:'symbol':config }}`,
@@ -129,7 +155,9 @@ describe('TranslocoCurrencyPipe', () => {
       expect(maximumFractionDigits).toEqual(4);
     });
 
-    it('should fallback to default config when there are no settings for the current locale', () => {
+    it(`GIVEN en-US locale with no specific settings
+        WHEN transforming to currency
+        THEN it should fallback to default config`, () => {
       spectator = pipeFactory(
         `{{ '123' | translocoCurrency:'symbol':config }}`,
         { providers: [provideTranslocoServiceMock('en-US')] },

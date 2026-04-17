@@ -1,3 +1,61 @@
+## 8.3.0 (2026-04-05)
+
+### 🩹 Fixes
+
+- **transloco-locale:** fix isLocaleFormat to correctly validate BCP 47 tags
+- **transloco-locale:** complete subject when root injector is destroyed
+
+### ❤️ Thank You
+
+- Artur
+
+## 8.2.1 (2026-01-19)
+
+This was a version bump only for transloco-locale to align it with other projects, there were no code changes.
+
+## 8.2.0 (2025-11-15)
+
+This was a version bump only for transloco-locale to align it with other projects, there were no code changes.
+
+## 8.1.0 (2025-10-11)
+
+
+### 🚀 Features
+
+- **locale:** 🎸 add getDefaultLocale ([a468a2fc](https://github.com/jsverse/transloco/commit/a468a2fc))
+
+
+### ❤️  Thank You
+
+- Shahar Kazaz @shaharkazaz
+
+## 8.0.2 (2025-09-26)
+
+This was a version bump only for transloco-locale to align it with other projects, there were no code changes.
+
+## 8.0.1 (2025-09-26)
+
+This was a version bump only for transloco-locale to align it with other projects, there were no code changes.
+
+# 8.0.0 (2025-09-14)
+
+### 🚀 Features
+
+- **locale:** 🎸 improve locale detection logic in locale service ([73d21aa0](https://github.com/jsverse/transloco/commit/73d21aa0))
+
+### 🤖 Chore
+
+- **locale:** 🤖 Add package optimizations ([2bc8485c](https://github.com/jsverse/transloco/commit/2bc8485c))
+
+### ⚠ BREAKING CHANGES
+
+- **locale:** 🧨 Minimum node version is now 18
+
+### ❤️ Thank You
+
+- chaitanay94 @chaitanay94
+- shaharkazaz @shaharkazaz
+
 ## [7.0.1](https://github.com/jsverse/transloco/compare/transloco-locale-7.0.0...transloco-locale-7.0.1) (2024-05-31)
 
 # [7.0.0](https://github.com/jsverse/transloco/compare/transloco-locale-6.0.0...transloco-locale-7.0.0) (2024-03-23)

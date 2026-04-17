@@ -5,6 +5,7 @@ import { Type } from '@angular/core';
 import { createService, mockLangs, runLoader } from '../mocks';
 import { TranslocoLoader } from '../../transloco.loader';
 import { TranslocoFallbackStrategy } from '../../transloco-fallback-strategy';
+import { TranslationLoadError } from '../../transloco.service';
 
 describe('Multiple fallbacks', () => {
   describe('DefaultFallbackStrategy', () => {
@@ -29,9 +30,12 @@ describe('Multiple fallbacks', () => {
       };
     });
 
-    it('should try load the fallbackLang when current lang failed', fakeAsync(() => {
+    it(`GIVEN failedRetries config and fallback lang
+        WHEN current lang fails to load
+        THEN should try fallback lang and set it as active`, fakeAsync(() => {
       const service = createService(
         {
+          prodMode: true,
           fallbackLang: 'es',
           failedRetries: 2,
         },
@@ -61,9 +65,12 @@ describe('Multiple fallbacks', () => {
       expect((service as any).cache.size).toEqual(1);
     }));
 
-    it('should load the fallbackLang only once', fakeAsync(() => {
+    it(`GIVEN multiple failing lang loads
+        WHEN fallback lang already loaded
+        THEN should not reload fallback lang`, fakeAsync(() => {
       const service = createService(
         {
+          prodMode: true,
           fallbackLang: 'es',
           failedRetries: 2,
         },
@@ -102,9 +109,12 @@ describe('Multiple fallbacks', () => {
       expect((service as any).cache.size).toEqual(1);
     }));
 
-    it('should should throw if the fallback lang is failed to load', fakeAsync(() => {
+    it(`GIVEN fallback lang that fails to load
+        WHEN all retries are exhausted
+        THEN should throw error`, fakeAsync(() => {
       const service = createService(
         {
+          prodMode: true,
           fallbackLang: 'fallbackNotExists',
           failedRetries: 2,
         },
@@ -116,6 +126,7 @@ describe('Multiple fallbacks', () => {
         .load('notExists')
         .pipe(
           catchError((e) => {
+            expect(e).toBeInstanceOf(TranslationLoadError);
             expect(e.message).toEqual(
               'Unable to load translation and all the fallback languages',
             );
@@ -127,6 +138,31 @@ describe('Multiple fallbacks', () => {
       // notExists will try 3 times then the fallback 3 times
       runLoader(6);
       expect(service.load).toHaveBeenCalledTimes(2);
+    }));
+
+    it(`GIVEN a scoped lang that fails to load AND all fallbacks fail
+    THEN the error should contain a scope misspelling hint`, fakeAsync(() => {
+      const service = createService(
+        {
+          prodMode: false, // Show error messages in thrown errors
+          fallbackLang: 'fallbackNotExists',
+          failedRetries: 0,
+        },
+        { loader },
+      );
+
+      service
+        .load('admin/notExists')
+        .pipe(
+          catchError((err) => {
+            expect(err.message).toContain('did you misspell the scope name');
+            return of('');
+          }),
+        )
+        .subscribe();
+
+      // admin/notExists will try 1 time then fallback 1 time
+      runLoader(2);
     }));
   });
 
@@ -162,9 +198,12 @@ describe('Multiple fallbacks', () => {
       };
     });
 
-    it('should try load the it and gp then set en as the active', fakeAsync(() => {
+    it(`GIVEN custom fallback strategy with multiple fallback langs
+        WHEN lang fails and fallbacks fail
+        THEN should try all fallback langs until one succeeds`, fakeAsync(() => {
       const service = createService(
         {
+          prodMode: true,
           defaultLang: 'es',
         },
         { loader, fallback: StrategyTest },

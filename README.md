@@ -17,6 +17,8 @@
 ![Downloads](https://img.shields.io/npm/dm/@jsverse/transloco)
 [![Build Status](https://github.com/jsverse/transloco/actions/workflows/ci.yml/badge.svg)]()
 [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/jsverse/transloco/blob/master/CONTRIBUTING.md)
+[![GitBook](https://img.shields.io/static/v1?message=Documented%20on%20GitBook&logo=gitbook&logoColor=ffffff&label=%20&labelColor=5c5c5c&color=3F89A1)](https://jsverse.gitbook.io/transloco)
+[![pkg.pr.new](https://pkg.pr.new/badge/jsverse/transloco)](https://pkg.pr.new/~/jsverse/transloco)
 
 Transloco enables you to define translations for your content in multiple languages and seamlessly switch between them at runtime. With its robust API, managing translations becomes efficient and maintainable. Additionally, Transloco offers an array of plugins designed to enhance your development experience. Here's a quick look at its powerful features:
 
@@ -38,10 +40,10 @@ Transloco is your all-in-one solution for internationalizing Angular application
 <hr />
 
 - 🤓 &nbsp;Explore the (brand new ✨) [documentation](https://jsverse.gitbook.io/transloco) to learn more.
-- 🚀 &nbsp;Check out the [Sandbox & Examples](https://jsverse.gitbook.io/transloco) to see Transloco in action.
-- 😎 &nbsp;Leverage [Schematics](https://jsverse.gitbook.io/transloco/schematics) for streamlined setup and configuration.
-- 📖 &nbsp;Dive into insightful [blog posts](https://jsverse.gitbook.io/transloco/blog-posts).
-- ❓ &nbsp;Find answers to common questions in our [FAQs](https://jsverse.gitbook.io/transloco/faqs).
+- 🚀 &nbsp;Check out the [Sandbox & Examples](https://jsverse.gitbook.io/transloco/resources/sandbox-and-examples) to see Transloco in action.
+- 😎 &nbsp;Leverage [Schematics](https://jsverse.gitbook.io/transloco/developer-tools/schematics) for streamlined setup and configuration.
+- 📖 &nbsp;Dive into insightful [blog posts](https://jsverse.gitbook.io/transloco/resources/blog-posts).
+- ❓ &nbsp;Find answers to common questions in our [FAQs](https://jsverse.gitbook.io/transloco/resources/faqs).
 
 ## Contributors ✨
 

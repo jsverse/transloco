@@ -1,24 +1,53 @@
-import { toNumber } from '@jsverse/transloco';
+import { toNumber } from '@jsverse/utils';
 
-import { Locale, DateFormatOptions } from './transloco-locale.types';
+import { DateFormatOptions, Locale } from './transloco-locale.types';
 
 export const ISO8601_DATE_REGEX =
   /^(\d{4})-?(\d\d)-?(\d\d)(?:T(\d\d)(?::?(\d\d)(?::?(\d\d)(?:\.(\d+))?)?)?(Z|([+-])(\d\d):?(\d\d))?)?$/;
+
 /**
- * check if a given value is in BCP 47 language tag.
+ * Checks if a given value is a valid BCP 47 language tag.
  *
- * isLocaleFormat('en') // false,
- * isLocaleFormat('En-us') // false
+ * Validation is delegated to `Intl.getCanonicalLocales`, which means all
+ * formats accepted by the platform are accepted here — including single
+ * subtags, case-insensitive region codes, and script subtags. This is
+ * intentionally more permissive than a hand-rolled regex so
+ * that values coming directly from `navigator.language` (e.g. `"de"` on
+ * Firefox or `"de-de"` on Safari) are treated as valid.
+ *
+ * @param value - The value to check.
+ * @returns `true` if `value` is a valid BCP 47 language tag, `false` otherwise.
+ *
+ * @example
+ * // Single primary language subtag (e.g. Firefox)
+ * isLocaleFormat('de') // true
+ *
+ * @example
+ * // Standard language-REGION tag
  * isLocaleFormat('en-US') // true
+ *
+ * @example
+ * // Case-insensitive region (e.g. Safari)
+ * isLocaleFormat('de-de') // true
+ *
+ * @example
+ * // Script subtag
+ * isLocaleFormat('zh-Hant-TW') // true
+ *
+ * @example
+ * // Invalid tag
+ * isLocaleFormat('not valid') // false
+ * isLocaleFormat('') // false
+ * isLocaleFormat(null) // false
  */
-export function isLocaleFormat(val: any): val is Locale {
-  const irregulars = `en-GB-oed|i-ami|i-bnn|i-default|i-enochian|i-hak|i-klingon|i-lux|i-mingo|i-navajo|i-pwn|i-tao|i-tay|i-tsu|sgn-BE-FR|sgn-BE-NL|sgn-CH-DE|art-lojban|cel-gaulish|no-bok|no-nyn|zh-guoyu|zh-hakka|zh-min|zh-min-nan|zh-xiang|es-419`;
-  const BCPFormat = `[a-z]{2}-[A-Z]{2}`;
-  const scriptFormat = `[a-z]{2}-[A-Za-z]{4}`;
-  return (
-    typeof val === 'string' &&
-    !!val.match(RegExp(`(${irregulars})|(${BCPFormat})|(${scriptFormat})`))
-  );
+export function isLocaleFormat(value: any): value is Locale {
+  try {
+    return (
+      typeof value === 'string' && Intl.getCanonicalLocales(value).length > 0
+    );
+  } catch {
+    return false;
+  }
 }
 
 export function localizeNumber(

@@ -1,6 +1,7 @@
-import { inject, Injectable, OnDestroy } from '@angular/core';
-import { TranslocoService } from '@jsverse/transloco';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { DestroyRef, inject, Injectable } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { getBrowserCultureLang, TranslocoService } from '@jsverse/transloco';
+import { BehaviorSubject } from 'rxjs';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 
 import { isLocaleFormat, toDate } from './helpers';
@@ -24,10 +25,8 @@ import {
   ValidDate,
 } from './transloco-locale.types';
 
-@Injectable({
-  providedIn: 'root',
-})
-export class TranslocoLocaleService implements OnDestroy {
+@Injectable({ providedIn: 'root' })
+export class TranslocoLocaleService {
   private translocoService = inject(TranslocoService);
   private langLocaleMapping = inject(TRANSLOCO_LOCALE_LANG_MAPPING);
   private defaultLocale = inject(TRANSLOCO_LOCALE_DEFAULT_LOCALE);
@@ -36,18 +35,37 @@ export class TranslocoLocaleService implements OnDestroy {
   private numberTransformer = inject(TRANSLOCO_NUMBER_TRANSFORMER);
   private dateTransformer = inject(TRANSLOCO_DATE_TRANSFORMER);
   private localeConfig: LocaleConfig = inject(TRANSLOCO_LOCALE_CONFIG);
+  private browserLocale = getBrowserCultureLang() || this.defaultLocale;
 
-  private _locale =
-    this.defaultLocale || this.toLocale(this.translocoService.getActiveLang());
-  private locale: BehaviorSubject<Locale> = new BehaviorSubject(this._locale);
-  private subscription: Subscription | null = this.translocoService.langChanges$
-    .pipe(
-      map((lang) => this.toLocale(lang)),
-      filter(Boolean),
-    )
-    .subscribe((locale: Locale) => this.setLocale(locale));
+  private _locale = '';
+  private locale = new BehaviorSubject<Locale>(this._locale);
 
-  localeChanges$ = this.locale.asObservable().pipe(distinctUntilChanged());
+  readonly localeChanges$ = this.locale.pipe(distinctUntilChanged());
+
+  constructor() {
+    inject(DestroyRef).onDestroy(() => {
+      // Complete subjects to release observers if users forget to unsubscribe manually.
+      // This is important in server-side rendering.
+      this.locale.complete();
+      this.locale.unsubscribe();
+    });
+
+    // Initialize locale with fallback chain
+    this.setLocale(this.initializeLocale());
+
+    // Subscribe to language changes
+    this.translocoService.langChanges$
+      .pipe(
+        map((lang) => this.toLocale(lang)),
+        filter(Boolean),
+        takeUntilDestroyed(),
+      )
+      .subscribe((locale: Locale) => this.setLocale(locale));
+  }
+
+  getDefaultLocale() {
+    return this.defaultLocale;
+  }
 
   getLocale() {
     return this._locale;
@@ -143,13 +161,6 @@ export class TranslocoLocaleService implements OnDestroy {
     return this.localeCurrencyMapping[locale] || this.defaultCurrency;
   }
 
-  ngOnDestroy() {
-    this.subscription?.unsubscribe();
-    // Caretaker note: it's important to clean up references to subscriptions since they save the `next`
-    // callback within its `destination` property, preventing classes from being GC'd.
-    this.subscription = null;
-  }
-
   private toLocale(val: string | Locale): Locale {
     if (this.langLocaleMapping[val]) {
       return this.langLocaleMapping[val];
@@ -160,5 +171,28 @@ export class TranslocoLocaleService implements OnDestroy {
     }
 
     return '';
+  }
+
+  /*
+   * Get the browser's language and validate.
+   * If the browser's language is not set, it will fall back to the active language from TranslocoService.
+   * If active language from TranslocoService is not valid, it will fall back to the default locale.
+   * If the default locale is not valid, it will return the default locale as a string
+   */
+
+  private initializeLocale(): Locale {
+    const browserLocale = this.toLocale(this.browserLocale);
+    if (browserLocale) return browserLocale;
+
+    const activeLang = this.translocoService.getActiveLang();
+    if (activeLang) {
+      const locale = this.toLocale(activeLang);
+      if (locale) return locale;
+    }
+
+    const defaultLocaleResolved = this.toLocale(this.defaultLocale);
+    if (defaultLocaleResolved) return defaultLocaleResolved;
+
+    return this.defaultLocale; // Fallback to a default locale
   }
 }

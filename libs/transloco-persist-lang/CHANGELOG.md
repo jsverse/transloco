@@ -1,3 +1,45 @@
+## 8.3.0 (2026-04-05)
+
+This was a version bump only for transloco-persist-lang to align it with other projects, there were no code changes.
+
+## 8.2.1 (2026-01-19)
+
+This was a version bump only for transloco-persist-lang to align it with other projects, there were no code changes.
+
+## 8.2.0 (2025-11-15)
+
+This was a version bump only for transloco-persist-lang to align it with other projects, there were no code changes.
+
+## 8.1.0 (2025-10-11)
+
+This was a version bump only for transloco-persist-lang to align it with other projects, there were no code changes.
+
+## 8.0.2 (2025-09-26)
+
+This was a version bump only for transloco-persist-lang to align it with other projects, there were no code changes.
+
+## 8.0.1 (2025-09-26)
+
+This was a version bump only for transloco-persist-lang to align it with other projects, there were no code changes.
+
+# 8.0.0 (2025-09-14)
+
+### 💡 Refactor
+
+- **persist-lang:** 💡 Add package optimizations ([d82c4bd5](https://github.com/jsverse/transloco/commit/d82c4bd5))
+
+### 🤖 Chore
+
+- **persist-lang:** 🤖 update persist-lang to correct utils version ([e435e9b3](https://github.com/jsverse/transloco/commit/e435e9b3))
+
+### ⚠ BREAKING CHANGES
+
+- **persist-lang:** 🧨 Minimum node version is now 18
+
+### ❤️ Thank You
+
+- shaharkazaz @shaharkazaz
+
 ## 7.0.2 (2024-09-19)
 
 ### 🩹 Fixes

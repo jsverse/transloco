@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "$id": "transloco-join",
+  "$id": "SchematicsTranslocoJoin",
   "title": "Merge all of the project's translation files into one.",
   "type": "object",
   "properties": {
@@ -23,13 +23,6 @@
       "type": "boolean",
       "description": "Determine rather join also the default language",
       "default": false
-    },
-    "format": {
-      "description": "The output translation files format.",
-      "type": "string",
-      "default": "JSON",
-      "enum": ["JSON", "xliff", "po"],
-      "alias": "f"
     },
     "project": {
       "type": "string",

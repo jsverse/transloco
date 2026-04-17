@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "$id": "transloco-split",
+  "$id": "SchematicsTranslocoSplit",
   "title": "Split translated files between the project's translation files.",
   "type": "object",
   "properties": {
@@ -15,13 +15,6 @@
       "description": "The path of the source directory that contain the translated files.",
       "default": "dist-i18n",
       "alias": "o"
-    },
-    "format": {
-      "description": "The translated files format.",
-      "type": "string",
-      "default": "JSON",
-      "enum": ["JSON", "xliff", "po"],
-      "alias": "f"
     },
     "project": {
       "type": "string",

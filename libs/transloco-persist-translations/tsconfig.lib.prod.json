@@ -4,6 +4,8 @@
     "declarationMap": false
   },
   "angularCompilerOptions": {
-    "compilationMode": "partial"
+    "compilationMode": "partial",
+    "flatModuleOutFile": "index.js",
+    "flatModuleId": "@jsverse/transloco-persist-translations"
   }
 }

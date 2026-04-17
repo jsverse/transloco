@@ -9,24 +9,33 @@ import {
 import { Observable, of } from 'rxjs';
 
 import { TranslocoLoader } from './transloco.loader';
-import { HashMap, Translation } from './types';
+import { Translation } from './transloco.types';
 import { TranslocoModule } from './transloco.module';
 import { provideTransloco } from './transloco.providers';
-import { TranslocoConfig } from './transloco.config';
+import { PartialTranslocoConfig } from './transloco.config';
 import { TranslocoService } from './transloco.service';
+import { HashMap } from './utils/type.utils';
 
 export interface TranslocoTestingOptions {
-  translocoConfig?: Partial<TranslocoConfig>;
+  translocoConfig?: PartialTranslocoConfig;
   preloadLangs?: boolean;
   langs?: HashMap<Translation>;
 }
 
-const TRANSLOCO_TEST_LANGS = new InjectionToken<HashMap<Translation>>(
-  'TRANSLOCO_TEST_LANGS - Available testing languages',
+const TRANSLOCO_TEST_LANGS = /* @__PURE__ */ new InjectionToken<
+  HashMap<Translation>
+>(
+  typeof ngDevMode !== 'undefined' && ngDevMode
+    ? 'TRANSLOCO_TEST_LANGS - Available testing languages'
+    : '',
 );
-const TRANSLOCO_TEST_OPTIONS = new InjectionToken<TranslocoTestingOptions>(
-  'TRANSLOCO_TEST_OPTIONS - Testing options',
-);
+
+const TRANSLOCO_TEST_OPTIONS =
+  /* @__PURE__ */ new InjectionToken<TranslocoTestingOptions>(
+    typeof ngDevMode !== 'undefined' && ngDevMode
+      ? 'TRANSLOCO_TEST_OPTIONS - Testing options'
+      : '',
+  );
 
 @Injectable()
 export class TestingLoader implements TranslocoLoader {
@@ -68,8 +77,11 @@ export class TranslocoTestingModule {
           loader: TestingLoader,
           config: {
             prodMode: true,
-            missingHandler: { logMissingKey: false },
             ...options.translocoConfig,
+            missingHandler: {
+              logMissingKey: false,
+              ...options.translocoConfig?.missingHandler,
+            },
           },
         }),
         {

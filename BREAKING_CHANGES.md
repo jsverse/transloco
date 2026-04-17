@@ -1,3 +1,67 @@
+# Transloco v8
+
+## Transloco
+
+### Removed Utility Functions from Public API
+
+**Commit**: `aae425b6` - "chore(transloco): 🤖 move to @jsverse/utils"
+
+Many utility functions have been removed from `@jsverse/transloco`. some were moved to `@jsverse/utils` and some were internal only:
+
+#### Moved to `@jsverse/utils`
+
+- `isFunction()`, `isString()`, `isNumber()`, `isObject()`, `isNil()`, `isDefined()`
+- `size()`, `isEmpty()` - Collection utilities
+- `coerceArray()`, `toCamelCase()`, `toNumber()` - Conversion utilities
+
+#### Internal Utilities - Removed from public API
+
+- `shouldListenToLangChanges()`, `listenOrNotOperator()`, `resolveInlineLoader()`
+- `getEventPayload()`, `isScopeObject()`, `hasInlineLoader()`
+- `getPipeValue()`, `getLangFromScope()`, `getScopeFromLang()`
+- `flatten()`, `unflatten()`
+
+### Angular Schematics Updates
+
+**Commit**: `6cd2f3e2` - "refactor(transloco): 💡 Remove all the schematics but init"
+
+Removed schematics from `@jsverse/transloco`:
+
+- `component` (alias: `c`) - Component generation
+- `migrate` (alias: `m`) - Migration utilities
+- `scope` (alias: `s`) - Scope generation
+- `upgrade` (alias: `up`) - Upgrade utilities
+- `keys-manager` (alias: `km`) - Keys manager
+- `join` (alias: `build`) - Join translation files
+- `split` (alias: `sp`) - Split translation files
+- `ng-migrate` - Angular i18n migration
+
+Only `ng-add` remains in the main package.
+
+**Migration**: Install `@jsverse/transloco-schematics` for the moved schematics:
+
+```bash
+npm install @jsverse/transloco-schematics --save-dev
+ng generate @jsverse/transloco-schematics:scope my-scope
+```
+
+## Transloco Locale
+
+### Service Initialization Changes
+
+**Commit**: `73d21aa0` - "feat(locale): improve locale detection logic in locale service (#862)"  
+**File**: `libs/transloco-locale/src/lib/transloco-locale.service.ts`
+
+The `TranslocoLocaleService` constructor now includes initialization logic that changes locale detection:
+
+- Service now proactively detects locale in this order:
+  1. Browser locale (via `getBrowserCultureLang()`)
+  2. Active language from TranslocoService
+  3. Default locale
+- Locale is set during service construction rather than lazily
+
+**Migration**: If you were setting locale immediately after service injection, review your initialization logic.
+
 # Transloco v7
 
 Packages were moved to the jsverse scope, the versioning continues from the last version of the previous scope.

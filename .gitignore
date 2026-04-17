@@ -18,6 +18,12 @@ node_modules
 *.sublime-workspace
 .idx/
 
+# IDE - Cursor
+.cursor/*
+!.cursor/mcp.json
+!.cursor/rules
+
+
 # IDE - VSCode
 .vscode
 !.vscode/settings.json
@@ -47,3 +53,13 @@ apps/transloco-playground-e2e/cypress/screenshots/*
 .nx/workspace-data
 
 .nx
+local-dev
+
+# Claude Code
+/.claude/hooks.local/
+/.claude/settings.local.json
+
+.claude/worktrees
+
+# Investigations
+investigations

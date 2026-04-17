@@ -3,8 +3,12 @@ import { TranslocoService } from '@jsverse/transloco';
 import { tap } from 'rxjs/operators';
 import { forkJoin, Subscription } from 'rxjs';
 
-export const TRANSLOCO_PRELOAD_LANGUAGES = new InjectionToken<string[]>(
-  'Languages to be preloaded',
+export const TRANSLOCO_PRELOAD_LANGUAGES = /* @__PURE__ */ new InjectionToken<
+  string[]
+>(
+  typeof ngDevMode !== 'undefined' && ngDevMode
+    ? 'Languages to be preloaded'
+    : '',
 );
 
 @Injectable({ providedIn: 'root' })
@@ -22,16 +26,20 @@ export class TranslocoPreloadLangsService implements OnDestroy {
       const preloads = langs.map((currentLangOrScope) => {
         const lang = service._completeScopeWithLang(currentLangOrScope);
 
-        return service.load(lang).pipe(
-          tap(() => {
-            if (!service.config.prodMode) {
+        let load$ = service.load(lang);
+
+        if (typeof ngDevMode !== 'undefined' && ngDevMode) {
+          load$ = load$.pipe(
+            tap(() => {
               console.log(
                 `%c 👁 Preloaded ${lang}`,
                 'background: #fff; color: #607D8B;',
               );
-            }
-          }),
-        );
+            }),
+          );
+        }
+
+        return load$;
       });
       this.subscription = forkJoin(preloads).subscribe();
     });

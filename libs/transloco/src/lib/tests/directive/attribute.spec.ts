@@ -14,13 +14,17 @@ describe('Attribute directive', () => {
   let spectator: SpectatorHost<TranslocoDirective>;
   const createHost = createFactory();
 
-  it('should set the translation value inside the element', fakeAsync(() => {
+  it(`GIVEN attribute directive with static key
+      WHEN translations are loaded
+      THEN should set the translation value inside the element`, fakeAsync(() => {
     spectator = createHost(`<div transloco="home"></div>`);
     runLoader();
     expect(spectator.queryHost('[transloco]')).toHaveText('home english');
   }));
 
-  it('should support params', fakeAsync(() => {
+  it(`GIVEN attribute directive with params
+      WHEN translations are loaded
+      THEN should interpolate params in translation`, fakeAsync(() => {
     spectator = createHost(
       `<div transloco="alert" [translocoParams]="{ value: 'netanel' }"></div>`,
     );
@@ -30,7 +34,9 @@ describe('Attribute directive', () => {
     );
   }));
 
-  it('should support dynamic key', fakeAsync(() => {
+  it(`GIVEN attribute directive with dynamic key
+      WHEN key changes
+      THEN should update translation`, fakeAsync(() => {
     spectator = createHost(`<div [transloco]="key"></div>`, {
       hostProps: { key: 'home' },
     });
@@ -41,7 +47,9 @@ describe('Attribute directive', () => {
     expect(spectator.queryHost('div')).toHaveText('from list');
   }));
 
-  it('should support dynamic params', fakeAsync(() => {
+  it(`GIVEN attribute directive with dynamic params
+      WHEN params change
+      THEN should update interpolated translation`, fakeAsync(() => {
     spectator = createHost(
       `<div transloco="alert" [translocoParams]="{ value: dynamic }"></div>`,
       {
@@ -61,7 +69,9 @@ describe('Attribute directive', () => {
     );
   }));
 
-  it('should load scoped translation', fakeAsync(() => {
+  it(`GIVEN attribute directive with scope
+      WHEN scoped translations are loaded
+      THEN should display scoped translation`, fakeAsync(() => {
     spectator = createHost(
       `<div transloco="lazyPage.title" translocoScope="lazy-page"></div>`,
       {
@@ -71,7 +81,9 @@ describe('Attribute directive', () => {
     testScopedTranslation(spectator);
   }));
 
-  it("should load scoped translation even if global didn't load", fakeAsync(() => {
+  it(`GIVEN scoped directive with global and scoped keys
+      WHEN scoped translation loads before global
+      THEN should load scoped translation correctly`, fakeAsync(() => {
     spectator = createHost(
       `
         <div class="global" transloco="home" translocoScope="lazy-page"></div>
@@ -83,7 +95,9 @@ describe('Attribute directive', () => {
     testMergedScopedTranslation(spectator);
   }));
 
-  it('should expose both scoped and global translation', fakeAsync(() => {
+  it(`GIVEN scoped directive with global and scoped keys
+      WHEN both translations are loaded
+      THEN should expose both scoped and global translation`, fakeAsync(() => {
     spectator = createHost(
       `
         <div class="global" transloco="home" translocoScope="lazy-page"></div>

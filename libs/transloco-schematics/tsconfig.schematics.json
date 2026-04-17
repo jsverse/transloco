@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "rootDir": ".",
+    "stripInternal": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "downlevelIteration": true,
+    "outDir": "../../dist/libs/transloco",
+    "sourceMap": true,
+    "inlineSources": true,
+    "lib": ["ES2022", "dom"],
+    "skipLibCheck": true,
+    "strict": true,
+    "paths": {
+      "@jsverse/transloco-utils": ["../../libs/transloco-utils/src/index.ts"]
+    }
+  },
+  "include": ["schematics/**/*.ts"],
+  "exclude": ["**/*.spec.ts"],
+  "angularCompilerOptions": {
+    "skipMetadataEmit": true,
+    "enableSummariesForJit": false,
+    "enableIvy": false
+  }
+}

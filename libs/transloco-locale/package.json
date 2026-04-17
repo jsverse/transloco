@@ -1,6 +1,6 @@
 {
   "name": "@jsverse/transloco-locale",
-  "version": "7.0.1",
+  "version": "8.3.0",
   "description": "The localization (l10n) library plugin for Transloco",
   "publishConfig": {
     "access": "public"
@@ -14,22 +14,22 @@
     "url": "https://github.com/jsverse/transloco"
   },
   "keywords": [
-    "angular",
-    "angular 2",
+    "Angular",
     "i18n",
-    "localization",
-    "l10n",
-    "angular translate",
-    "angular i18n",
-    "transloco"
+    "Translate",
+    "Angular Translate",
+    "Transloco",
+    "Localization",
+    "l10n"
   ],
   "license": "MIT",
   "peerDependencies": {
     "@angular/core": ">=16.0.0",
-    "@jsverse/transloco": ">=7.0.0",
+    "@jsverse/transloco": ">=8.0.0",
     "rxjs": ">=6.0.0"
   },
   "dependencies": {
     "tslib": "^2.2.0"
-  }
+  },
+  "sideEffects": false
 }

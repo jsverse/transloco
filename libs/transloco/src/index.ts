@@ -2,11 +2,16 @@ export {
   translate,
   translateObject,
   TranslocoService,
+  TranslationLoadError,
 } from './lib/transloco.service';
 export { TranslocoDirective } from './lib/transloco.directive';
 export { TranslocoPipe } from './lib/transloco.pipe';
 export { TranslocoModule } from './lib/transloco.module';
-export { TRANSLOCO_LOADER, TranslocoLoader } from './lib/transloco.loader';
+export {
+  TRANSLOCO_LOADER,
+  TranslocoLoader,
+  TranslocoLoaderData,
+} from './lib/transloco.loader';
 export {
   TranslocoConfig,
   TRANSLOCO_CONFIG,
@@ -46,10 +51,6 @@ export {
   TranslocoMissingHandlerData,
   DefaultMissingHandler,
 } from './lib/transloco-missing-handler';
-export { getBrowserCultureLang, getBrowserLang } from './lib/browser-lang';
-export { getPipeValue, getLangFromScope, getScopeFromLang } from './lib/shared';
-export * from './lib/types';
-export * from './lib/helpers';
 export {
   provideTranslocoFallbackStrategy,
   provideTranslocoInterceptor,
@@ -64,3 +65,10 @@ export {
   TranslocoOptions,
 } from './lib/transloco.providers';
 export { translateSignal, translateObjectSignal } from './lib/transloco.signal';
+export {
+  getBrowserLang,
+  getBrowserCultureLang,
+  isBrowser,
+} from './lib/utils/browser.utils';
+export { setValue, getValue } from './lib/utils/object.utils';
+export * from './lib/transloco.types';

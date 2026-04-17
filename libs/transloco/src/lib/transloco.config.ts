@@ -1,6 +1,6 @@
 import { InjectionToken } from '@angular/core';
 
-import { AvailableLangs } from './types';
+import { AvailableLangs } from './transloco.types';
 
 export interface TranslocoConfig {
   defaultLang: string;
@@ -20,16 +20,17 @@ export interface TranslocoConfig {
   interpolation: [string, string];
   scopes: {
     keepCasing?: boolean;
+    autoPrefixKeys?: boolean;
   };
 }
 
-export const TRANSLOCO_CONFIG = new InjectionToken<TranslocoConfig>(
-  ngDevMode ? 'TRANSLOCO_CONFIG' : '',
-  {
-    providedIn: 'root',
-    factory: () => defaultConfig,
-  },
-);
+export const TRANSLOCO_CONFIG =
+  /* @__PURE__ */ new InjectionToken<TranslocoConfig>(
+    typeof ngDevMode !== 'undefined' && ngDevMode ? 'TRANSLOCO_CONFIG' : '',
+    {
+      factory: () => defaultConfig,
+    },
+  );
 
 export const defaultConfig: TranslocoConfig = {
   defaultLang: 'en',
@@ -49,6 +50,7 @@ export const defaultConfig: TranslocoConfig = {
   interpolation: ['{{', '}}'],
   scopes: {
     keepCasing: false,
+    autoPrefixKeys: true,
   },
 };
 
