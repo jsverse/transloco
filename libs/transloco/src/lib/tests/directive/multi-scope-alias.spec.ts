@@ -10,6 +10,7 @@ import { providersMock, runLoader } from '../mocks';
 import { TranslocoDirective } from '../../transloco.directive';
 import { TRANSLOCO_SCOPE } from '../../transloco-scope';
 import { TranslocoModule } from '../../transloco.module';
+import { TranslocoPipe } from '../../transloco.pipe';
 
 import { createFactory } from './shared';
 
@@ -55,6 +56,7 @@ describe('Scope alias', () => {
 });
 
 @Component({
+  imports: [TranslocoPipe],
   template: `
     <p>{{ 'lazy.title' | transloco }}</p>
     <span>{{ 'admin.title' | transloco }}</span>

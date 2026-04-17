@@ -9,6 +9,7 @@ import { Component } from '@angular/core';
 import { TranslocoService } from '../transloco.service';
 import { TranslocoDirective } from '../transloco.directive';
 import { TranslocoModule } from '../transloco.module';
+import { TranslocoPipe } from '../transloco.pipe';
 import { provideTranslocoScope } from '../transloco.providers';
 
 import { listenToLangChangesProvider } from './pipe/pipe-integration.spec';
@@ -64,6 +65,7 @@ describe('Inline loaders: directive', () => {
 });
 
 @Component({
+  imports: [TranslocoPipe],
   template: `
     <span>{{ 'todos.title' | transloco }}</span>
     <h1>{{ 'home' | transloco }}</h1>

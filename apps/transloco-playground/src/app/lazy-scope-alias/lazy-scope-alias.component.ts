@@ -9,7 +9,6 @@ import { TranslocoModule, provideTranslocoScope } from '@jsverse/transloco';
   providers: [
     provideTranslocoScope({ scope: 'lazy-scope-alias', alias: 'myScopeAlias' }),
   ],
-  standalone: true,
   imports: [TranslocoModule],
 })
 export default class LazyScopeAliasComponent {}

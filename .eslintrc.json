@@ -36,6 +36,7 @@
         "plugin:import/typescript"
       ],
       "rules": {
+        "@angular-eslint/prefer-inject": "off",
         "import/order": [
           "error",
           {

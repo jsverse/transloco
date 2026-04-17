@@ -13,7 +13,6 @@ import {
   selector: 'app-inline',
   templateUrl: './inline-loaders.component.html',
   styleUrls: ['./inline-loaders.component.scss'],
-  standalone: true,
   imports: [TranslocoModule, AsyncPipe],
 })
 export default class InlineLoadersComponent implements OnInit {

@@ -3,7 +3,8 @@
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
     "module": "ES2015",
-    "types": ["jasmine", "node"]
+    "types": ["jasmine", "node"],
+    "moduleResolution": "bundler"
   },
   "files": ["src/test-setup.ts"],
   "include": ["**/*.spec.ts", "**/*.d.ts"]

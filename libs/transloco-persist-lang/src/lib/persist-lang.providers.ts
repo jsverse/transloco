@@ -1,10 +1,11 @@
 import {
-  APP_INITIALIZER,
   ClassProvider,
   ExistingProvider,
   FactoryProvider,
   makeEnvironmentProviders,
   ValueProvider,
+  inject,
+  provideAppInitializer,
 } from '@angular/core';
 
 import {
@@ -32,12 +33,9 @@ export function provideTranslocoPersistLang({
       useValue: config ?? {},
     },
     // Initialize the service
-    {
-      provide: APP_INITIALIZER,
-      useFactory: () => noop,
-      multi: true,
-      deps: [TranslocoPersistLangService],
-    },
+    provideAppInitializer(() => {
+      inject(TranslocoPersistLangService);
+    }),
     {
       provide: TRANSLOCO_PERSIST_LANG_STORAGE,
       ...storage,

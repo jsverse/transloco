@@ -51,9 +51,9 @@ export const LOCALE_CONFIG_MOCK: LocaleConfig = {
   },
 };
 
-export function provideTranslocoServiceMock(locale?: Locale) {
+export function provideTranslocoServiceMock(locale: Locale = 'en-US') {
   return mockProvider(TranslocoService, {
-    langChanges$: locale ? of(locale) : of(),
+    langChanges$: of(locale),
   });
 }
 

@@ -10,15 +10,14 @@
       "executor": "@nx/angular:package",
       "outputs": ["{workspaceRoot}/dist/libs/transloco-preload-langs"],
       "options": {
-        "project": "libs/transloco-preload-langs/ng-package.json"
+        "project": "libs/transloco-preload-langs/ng-package.json",
+        "tsConfig": "libs/transloco-preload-langs/tsconfig.lib.json"
       },
       "configurations": {
         "production": {
           "tsConfig": "libs/transloco-preload-langs/tsconfig.lib.prod.json"
         },
-        "development": {
-          "tsConfig": "libs/transloco-preload-langs/tsconfig.lib.json"
-        }
+        "development": {}
       },
       "defaultConfiguration": "production"
     },

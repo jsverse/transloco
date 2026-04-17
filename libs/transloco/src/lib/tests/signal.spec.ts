@@ -9,7 +9,6 @@ import { translateSignal, translateObjectSignal } from '../transloco.signal';
 import { providersMock, runLoader } from './mocks';
 
 @Component({
-  imports: [TranslocoModule],
   template: `
     <div id="text">{{ translatedText() }}</div>
     <div id="textObject">{{ translatedObject().title }}</div>
