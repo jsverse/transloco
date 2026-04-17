@@ -120,6 +120,22 @@ describe('TranslocoTranspiler', () => {
       );
     });
 
+    it('should transpile the function params', () => {
+      const spy = spyOn(transpilerFunctions['upperCase'], 'transpile');
+      transpiler.transpile(getTranspilerParams('[[ upperCase(lowercase) ]]'));
+      expect(spy).toHaveBeenCalledWith('lowercase');
+      spy.calls.reset();
+      transpiler.transpile(
+        getTranspilerParams(
+          '[[ upperCase(lowercase, {{person}}, {{ anotherParson.name }}) ]]',
+          {
+            params: { person: 'Shahar', anotherParson: { name: 'Netanel' } },
+          },
+        ),
+      );
+      expect(spy as any).toHaveBeenCalledWith('lowercase', 'Shahar', 'Netanel');
+    });
+
     it(`GIVEN a FunctionalTranspiler instance
         WHEN transpiling with function calls and interpolation parameters
         THEN should combine function results with interpolated parameter values`, () => {

@@ -190,7 +190,11 @@ export class FunctionalTranspiler
             const func: TranslocoTranspilerFunction =
               this.injector.get(functionName);
 
-            return func.transpile(...getFunctionArgs(args));
+            const transpiledArgs = this.transpile({
+              value: getFunctionArgs(args),
+              ...rest,
+            });
+            return func.transpile(...transpiledArgs);
           } catch (e: unknown) {
             let message: string;
             if (typeof ngDevMode !== 'undefined' && ngDevMode) {
