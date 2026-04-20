@@ -19,8 +19,5 @@ module.exports = defineConfig({
     specPattern: './src/integration/**/*.spec.ts',
     supportFile: './src/support/index.ts',
     baseUrl: 'http://localhost:4200',
-    // Please ensure you use `cy.origin()` when navigating between domains and remove this option.
-    // See https://docs.cypress.io/app/references/migration-guide#Changes-to-cyorigin
-    injectDocumentDomain: true,
   },
 });
