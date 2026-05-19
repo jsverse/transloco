@@ -104,8 +104,20 @@ export class TranslocoHttpLoader implements TranslocoLoader {
 
 When a key is requested in the active language **and** the active
 language equals the default (reference) language, push the key to
-Locize so translators can fill it in. Guard the apiKey on `isDevMode()`
-so production builds never carry the write-enabled credential.
+Locize so translators can fill it in. `locizer.init` is called once
+from the handler's constructor (after Angular bootstrap) and the
+apiKey is gated on `isDevMode()` so production builds never carry the
+write-enabled credential.
+
+{% hint style="warning" %}
+**Never commit a Locize write apiKey to your repository.** Even with
+the `isDevMode()` guard, a hardcoded string literal still ends up in
+the dev bundle and (worse) in source control. Source it from a
+git-ignored env file (`.env.development`, `environment.ts` excluded
+from VCS, or a runtime config endpoint) and read it via your build
+tool's env-var injection (e.g. `import.meta.env.VITE_LOCIZE_APIKEY`
+for Vite-based builds, or a build-replaced constant).
+{% endhint %}
 
 ```typescript
 import { Injectable, isDevMode } from '@angular/core';
@@ -118,15 +130,21 @@ import locizer from 'locizer';
 const projectId = '<your locize project id>';
 const namespace = 'translation';
 
-locizer.init({
-  projectId,
-  apiKey: isDevMode() ? '<your dev apiKey>' : undefined,
-  version: 'latest',
-  cdnType: 'standard', // or 'pro'
-});
+// Sourced from a git-ignored env file, not hardcoded.
+const devApiKey = import.meta.env.VITE_LOCIZE_APIKEY as string | undefined;
 
 @Injectable({ providedIn: 'root' })
 export class LocizeMissingTranslationHandler implements TranslocoMissingHandler {
+  constructor() {
+    // Init once after Angular bootstrap so isDevMode() is reliable.
+    locizer.init({
+      projectId,
+      apiKey: isDevMode() ? devApiKey : undefined,
+      version: 'latest',
+      cdnType: 'standard', // or 'pro'
+    });
+  }
+
   handle(key: string, data: TranslocoMissingHandlerData): string {
     if (data.activeLang === data.defaultLang) {
       locizer.add(namespace, key, key);
@@ -174,7 +192,7 @@ export const appConfig: ApplicationConfig = {
 {% tab title="NgModule" %}
 ```typescript
 import { NgModule, isDevMode } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import {
   provideTransloco,
   provideTranslocoMissingHandler,
@@ -184,9 +202,9 @@ import { TranslocoHttpLoader } from './transloco-http-loader';
 import { LocizeMissingTranslationHandler } from './transloco-missing-translation-handler';
 
 @NgModule({
-  imports: [HttpClientModule],
   exports: [TranslocoModule],
   providers: [
+    provideHttpClient(),
     provideTransloco({
       config: {
         availableLangs: ['en', 'de'],
