@@ -113,10 +113,18 @@ write-enabled credential.
 **Never commit a Locize write apiKey to your repository.** Even with
 the `isDevMode()` guard, a hardcoded string literal still ends up in
 the dev bundle and (worse) in source control. Source it from a
-git-ignored env file (`.env.development`, `environment.ts` excluded
-from VCS, or a runtime config endpoint) and read it via your build
-tool's env-var injection (e.g. `import.meta.env.VITE_LOCIZE_APIKEY`
-for Vite-based builds, or a build-replaced constant).
+git-ignored env file or a build-replaced constant. How you wire that
+in depends on your Angular build:
+
+- **@angular/build (Vite-based, the Angular 17+ default):**
+  `import.meta.env.VITE_LOCIZE_APIKEY` after adding the key to a
+  git-ignored `.env.development` file.
+- **Webpack-based `@angular-devkit/build-angular:browser`:** the
+  classic `environments/environment.ts` file-replacement pattern,
+  with the real key in a git-ignored `environment.development.ts`
+  (or equivalent) that's only used by the dev configuration.
+- **Runtime fetch:** load `/api/config` from your own server at app
+  boot and pass the result into the handler.
 {% endhint %}
 
 ```typescript
@@ -130,8 +138,9 @@ import locizer from 'locizer';
 const projectId = '<your locize project id>';
 const namespace = 'translation';
 
-// Sourced from a git-ignored env file, not hardcoded.
-const devApiKey = import.meta.env.VITE_LOCIZE_APIKEY as string | undefined;
+// Source this from your build's env-var injection — see the warning
+// above for the per-bundler patterns. Never hardcode a real key here.
+const devApiKey: string | undefined = undefined;
 
 @Injectable({ providedIn: 'root' })
 export class LocizeMissingTranslationHandler implements TranslocoMissingHandler {
