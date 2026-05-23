@@ -17,4 +17,4 @@ run({
   skipGitIgnoreUpdate,
   rootTranslationsPath,
   scopedLibs,
-}).catch((err) => console.error(err));
+});

@@ -99,8 +99,11 @@ export default async function run({
     const isWindows = process.platform === 'win32';
 
     // Sort scopes: narrow paths first, then wide paths (so wide paths include all data)
+    const getDepth = (scopePath: string) =>
+      scopePath.split(/[\\/]+/).filter(Boolean).length;
+
     const sortedScopes = [...pkg.content.i18n].sort((a, b) => {
-      return b.path.split('/').length - a.path.split('/').length;
+      return getDepth(b.path) - getDepth(a.path);
     });
 
     for (const scopeConfig of sortedScopes) {
