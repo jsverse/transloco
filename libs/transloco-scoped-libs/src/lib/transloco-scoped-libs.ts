@@ -50,7 +50,7 @@ const packageJsoni18nExample = `
  * rootTranslationsPath - the root directory of the translation files.
  * scopedLibs - list of all translation scoped project paths.
  */
-export default function run({
+export default async function run({
   watch,
   skipGitIgnoreUpdate,
   rootTranslationsPath,
@@ -97,39 +97,46 @@ export default function run({
     const outputs = lib.dist.map((o) => path.resolve(o));
     const input = path.dirname(pkg.path);
     const isWindows = process.platform === 'win32';
-    for (const scopeConfig of pkg.content.i18n) {
+
+    // Sort scopes: narrow paths first, then wide paths (so wide paths include all data)
+    const sortedScopes = [...pkg.content.i18n].sort((a, b) => {
+      return b.path.split('/').length - a.path.split('/').length;
+    });
+
+    for (const scopeConfig of sortedScopes) {
       const { scope, strategy } = scopeConfig;
 
-      glob(`${path.join(input, scopeConfig.path)}/**/*.json`, {
-        windowsPathsNoEscape: isWindows,
-      })
-        .then((files) => {
+      const files = await glob(
+        `${path.join(input, scopeConfig.path)}/**/*.json`,
+        {
+          windowsPathsNoEscape: isWindows,
+        },
+      );
+
+      for (const output of outputs) {
+        copyScopes({
+          outputDir: output,
+          strategy,
+          files,
+          skipGitIgnoreUpdate,
+          scope,
+        });
+      }
+
+      if (watch) {
+        chokidar.watch(files).on('change', (file) => {
           for (const output of outputs) {
+            // TODO should we skip the git ignore update here?
             copyScopes({
               outputDir: output,
               strategy,
-              files,
+              files: [file],
               skipGitIgnoreUpdate,
               scope,
             });
           }
-
-          if (watch) {
-            chokidar.watch(files).on('change', (file) => {
-              for (const output of outputs) {
-                // TODO should we skip the git ignore update here?
-                copyScopes({
-                  outputDir: output,
-                  strategy,
-                  files: [file],
-                  skipGitIgnoreUpdate,
-                  scope,
-                });
-              }
-            });
-          }
-        })
-        .catch((err) => console.log(chalk.red(err)));
+        });
+      }
     }
   }
 }
@@ -226,7 +233,14 @@ function setTranslationFile({
   }
 
   if (strategy === 'join') {
-    content = { ...readJson(outputFilePath), [scope]: content };
+    // Read existing file first to avoid losing data
+    const existingContent = readJson(outputFilePath) || {};
+    // Merge with existing scope data (if any) to handle multiple files per scope
+    const existingScopeData = existingContent[scope] || {};
+    content = {
+      ...existingContent,
+      [scope]: { ...existingScopeData, ...content },
+    };
   }
 
   writeJson(outputFilePath, content);
