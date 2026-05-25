@@ -4,12 +4,12 @@ on:
   workflow_dispatch:
     inputs:
       bump:
-        description: 'Version bump (leave empty to auto-infer from conventional commits)'
+        description: 'Version bump (auto = infer from conventional commits)'
         required: false
         type: choice
-        default: ''
+        default: auto
         options:
-          - ''
+          - auto
           - patch
           - minor
           - major
@@ -66,25 +66,31 @@ jobs:
         run: npm run ci:build
 
       - name: Version
+        env:
+          BUMP: ${{ inputs.bump }}
+          DRY_RUN: ${{ inputs.dry-run }}
         run: |
           DRY=""
-          if [[ "${{ inputs.dry-run }}" == "true" ]]; then DRY="--dry-run"; fi
-          if [[ -n "${{ inputs.bump }}" ]]; then
-            npx nx release version ${{ inputs.bump }} --verbose $DRY
-          else
+          if [[ "$DRY_RUN" == "true" ]]; then DRY="--dry-run"; fi
+          if [[ "$BUMP" == "auto" ]]; then
             npx nx release version --verbose $DRY
+          else
+            npx nx release version "$BUMP" --verbose $DRY
           fi
 
       - name: Read version
         id: version
-        run: echo "value=$(node -p \"require('./libs/transloco/package.json').version\")" >> "$GITHUB_OUTPUT"
+        run: |
+          VERSION=$(node -p "require('./libs/transloco/package.json').version")
+          echo "value=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Publish to npm (OIDC trusted publishing + provenance)
         env:
           NPM_CONFIG_PROVENANCE: 'true'
+          DRY_RUN: ${{ inputs.dry-run }}
         run: |
           DRY=""
-          if [[ "${{ inputs.dry-run }}" == "true" ]]; then DRY="--dry-run"; fi
+          if [[ "$DRY_RUN" == "true" ]]; then DRY="--dry-run"; fi
           npx nx release publish --access public --verbose $DRY
 
       - name: Push commit and tag
@@ -99,13 +105,19 @@ jobs:
 
       - name: Summary
         if: always()
+        env:
+          OUT_VERSION: ${{ steps.version.outputs.value }}
+          BUMP: ${{ inputs.bump }}
+          DRY_RUN: ${{ inputs.dry-run }}
+          REF: ${{ github.ref }}
+          ACTOR: ${{ github.actor }}
         run: |
           {
             echo "## Release run"
             echo ""
-            echo "- Version: \`${{ steps.version.outputs.value || 'n/a' }}\`"
-            echo "- Bump input: \`${{ inputs.bump || 'auto (conventional commits)' }}\`"
-            echo "- Dry run: \`${{ inputs.dry-run }}\`"
-            echo "- Ref: \`${{ github.ref }}\`"
-            echo "- Triggered by: @${{ github.actor }}"
+            echo "- Version: \`${OUT_VERSION:-n/a}\`"
+            echo "- Bump input: \`${BUMP}\`"
+            echo "- Dry run: \`${DRY_RUN}\`"
+            echo "- Ref: \`${REF}\`"
+            echo "- Triggered by: @${ACTOR}"
           } >> "$GITHUB_STEP_SUMMARY"
