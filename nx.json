@@ -94,6 +94,10 @@
     },
     "changelog": {
       "automaticFromRef": true,
+      "workspaceChangelog": {
+        "file": "CHANGELOG.md",
+        "createRelease": "github"
+      },
       "projectChangelogs": {
         "createRelease": false,
         "renderOptions": {

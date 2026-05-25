@@ -1,0 +1,111 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: 'Version bump (leave empty to auto-infer from conventional commits)'
+        required: false
+        type: choice
+        default: ''
+        options:
+          - ''
+          - patch
+          - minor
+          - major
+          - prerelease
+      dry-run:
+        description: 'Dry run (preview only — no commits, tags, or publish)'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  id-token: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Lint
+        run: npm run ci:lint
+
+      - name: Test
+        run: npm run ci:test
+
+      - name: Build
+        run: npm run ci:build
+
+      - name: Version
+        run: |
+          DRY=""
+          if [[ "${{ inputs.dry-run }}" == "true" ]]; then DRY="--dry-run"; fi
+          if [[ -n "${{ inputs.bump }}" ]]; then
+            npx nx release version ${{ inputs.bump }} --verbose $DRY
+          else
+            npx nx release version --verbose $DRY
+          fi
+
+      - name: Read version
+        id: version
+        run: echo "value=$(node -p \"require('./libs/transloco/package.json').version\")" >> "$GITHUB_OUTPUT"
+
+      - name: Publish to npm (OIDC trusted publishing + provenance)
+        env:
+          NPM_CONFIG_PROVENANCE: 'true'
+        run: |
+          DRY=""
+          if [[ "${{ inputs.dry-run }}" == "true" ]]; then DRY="--dry-run"; fi
+          npx nx release publish --access public --verbose $DRY
+
+      - name: Push commit and tag
+        if: ${{ inputs.dry-run != 'true' }}
+        run: git push --follow-tags origin HEAD:master
+
+      - name: Changelog and GitHub release
+        if: ${{ inputs.dry-run != 'true' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx nx release changelog ${{ steps.version.outputs.value }} --verbose
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "## Release run"
+            echo ""
+            echo "- Version: \`${{ steps.version.outputs.value || 'n/a' }}\`"
+            echo "- Bump input: \`${{ inputs.bump || 'auto (conventional commits)' }}\`"
+            echo "- Dry run: \`${{ inputs.dry-run }}\`"
+            echo "- Ref: \`${{ github.ref }}\`"
+            echo "- Triggered by: @${{ github.actor }}"
+          } >> "$GITHUB_STEP_SUMMARY"
