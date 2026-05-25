@@ -7,4 +7,5 @@ module.exports = {
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
   coverageDirectory: '../../coverage/libs/transloco-scoped-libs',
+  setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
 };

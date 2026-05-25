@@ -79,7 +79,9 @@ describe('Multi-scope i18n with join strategy', () => {
     }
   });
 
-  it('should merge all scopes from the same library into vendor.json', async () => {
+  it(`GIVEN a library with multiple scopes using the join strategy
+      WHEN running transloco-scoped-libs
+      THEN it should merge all scope data into a single vendor.json without loss`, async () => {
     // Change to test directory
     const originalCwd = process.cwd();
     process.chdir(TEST_DIR);
@@ -124,7 +126,9 @@ describe('Multi-scope i18n with join strategy', () => {
     }
   });
 
-  it('should process scopes in correct order (narrow paths first)', async () => {
+  it(`GIVEN scopes with different path depths
+      WHEN processed
+      THEN narrower paths should be written first and wider scopes should include all data`, async () => {
     const originalCwd = process.cwd();
     process.chdir(TEST_DIR);
 
