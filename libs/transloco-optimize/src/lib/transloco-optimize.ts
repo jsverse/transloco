@@ -4,21 +4,13 @@ import path from 'node:path';
 import { glob } from 'glob';
 import { flatten } from 'flat';
 
+import { removeComments } from './remove-comments';
+
 type Translation = Record<string, string>;
 
 const isWindows = process.platform === 'win32';
 
-function removeComments(translation: Translation, commentsKey = 'comment') {
-  return Object.keys(translation).reduce((acc, key) => {
-    const lastKey = key.split('.').pop();
-
-    if (lastKey !== commentsKey) {
-      acc[key] = translation[key];
-    }
-
-    return acc;
-  }, {} as Translation);
-}
+export { removeComments };
 
 export function getTranslationsFolder(dist: string) {
   return path.resolve(process.cwd(), dist);
