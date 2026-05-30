@@ -22,6 +22,13 @@ export interface TranslocoConfig {
     keepCasing?: boolean;
     autoPrefixKeys?: boolean;
   };
+  /**
+   * @deprecated This option will be removed in Transloco v9 with no config-level replacement.
+   * For MFE setups where @jsverse/transloco is a shared singleton, avoid relying on the global
+   * translate function — refer to the documentation for recommended patterns instead.
+   * SSR opt-out will be handled automatically via `ngServerMode`.
+   */
+  enableGlobalTranslateFn?: boolean;
 }
 
 export const TRANSLOCO_CONFIG =
@@ -52,6 +59,7 @@ export const defaultConfig: TranslocoConfig = {
     keepCasing: false,
     autoPrefixKeys: true,
   },
+  enableGlobalTranslateFn: true,
 };
 
 type DeepPartial<T> =
