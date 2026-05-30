@@ -1,13 +1,19 @@
 import {
+  inject,
+  Injectable,
+  Injector,
+  OnDestroy,
+  PLATFORM_ID,
+} from '@angular/core';
+import { isPlatformServer } from '@angular/common';
+import {
   getBrowserCultureLang,
   getBrowserLang,
-  isBrowser,
   TranslocoService,
 } from '@jsverse/transloco';
 import { isFunction } from '@jsverse/utils';
 import { Subscription } from 'rxjs';
 import { skip } from 'rxjs/operators';
-import { inject, Injectable, OnDestroy } from '@angular/core';
 
 import {
   TRANSLOCO_PERSIST_LANG_CONFIG,
@@ -16,6 +22,7 @@ import {
 
 @Injectable({ providedIn: 'root' })
 export class TranslocoPersistLangService implements OnDestroy {
+  private injector = inject(Injector);
   private service = inject(TranslocoService);
   private storage = inject(TRANSLOCO_PERSIST_LANG_STORAGE);
   private config = inject(TRANSLOCO_PERSIST_LANG_CONFIG);
@@ -24,17 +31,41 @@ export class TranslocoPersistLangService implements OnDestroy {
   private storageKey = this.config.storageKey || 'translocoLang';
 
   constructor() {
-    if (isBrowser()) {
-      this.init();
+    // Prefer `ngServerMode` (Angular v17+) for SSR detection, falling back to `isPlatformServer` for
+    // older Angular versions and MFE scenarios where `ngServerMode` may not be available.
+    // This lets bundlers tree-shake `isPlatformServer` and `PLATFORM_ID` when `ngServerMode` is always defined.
+    if (
+      (typeof ngServerMode !== 'undefined' && ngServerMode) ||
+      isPlatformServer(inject(PLATFORM_ID))
+    ) {
+      return;
     }
+
+    this.init();
   }
 
   getCachedLang(): string | null {
-    return isBrowser() ? this.storage.getItem(this.storageKey) : null;
+    // See SSR guard in the constructor.
+    if (
+      (typeof ngServerMode !== 'undefined' && ngServerMode) ||
+      isPlatformServer(this.injector.get(PLATFORM_ID))
+    ) {
+      return null;
+    } else {
+      return this.storage.getItem(this.storageKey);
+    }
   }
 
   clear() {
-    isBrowser() && this.storage.removeItem(this.storageKey);
+    // See SSR guard in the constructor.
+    if (
+      (typeof ngServerMode !== 'undefined' && ngServerMode) ||
+      isPlatformServer(this.injector.get(PLATFORM_ID))
+    ) {
+      return;
+    }
+
+    this.storage.removeItem(this.storageKey);
   }
 
   private updateStorageOnLangChange(): Subscription {
