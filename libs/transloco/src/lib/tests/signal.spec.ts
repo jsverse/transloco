@@ -1,4 +1,11 @@
-import { Component, signal } from '@angular/core';
+import {
+  Component,
+  inject,
+  Injector,
+  OnInit,
+  Signal,
+  signal,
+} from '@angular/core';
 import { fakeAsync, TestBed } from '@angular/core/testing';
 import { createComponentFactory, Spectator } from '@ngneat/spectator';
 
@@ -15,9 +22,13 @@ import { providersMock, runLoader } from './mocks';
     <div id="textObject">{{ translatedObject().title }}</div>
     <div id="dynamicKey">{{ translatedDynamicKey() }}</div>
     <div id="dynamicParam">{{ translatedDynamicParam() }}</div>
+    <div id="outsideInjectionContextText">
+      {{ outsideInjectionContextTranslatedText() }}
+    </div>
   `,
 })
-class TestComponent {
+class TestComponent implements OnInit {
+  private readonly injector = inject(Injector);
   translatedText = translateSignal('home');
   translatedObject = translateObjectSignal('nested');
 
@@ -34,6 +45,17 @@ class TestComponent {
     this.dynamicKey,
     this.dynamicParam,
   );
+
+  outsideInjectionContextTranslatedText: Signal<string> = signal('UNDEFINED');
+
+  ngOnInit(): void {
+    this.outsideInjectionContextTranslatedText = translateSignal(
+      'home',
+      undefined,
+      undefined,
+      this.injector,
+    );
+  }
 
   changeKey(key: string) {
     this.dynamicKey.set(key);
@@ -59,6 +81,18 @@ describe('translateSignal in component', () => {
     runLoader();
     spectator.detectChanges();
     expect(spectator.query('#text')).toHaveText('home english');
+  }));
+
+  it(`GIVEN translateSignal with static key
+      OUTSIDE OF INJECTION CONTEXT
+      WHEN translations are loaded
+      THEN should display translated text`, fakeAsync(() => {
+    spectator = createComponent();
+    runLoader();
+    spectator.detectChanges();
+    expect(spectator.query('#outsideInjectionContextText')).toHaveText(
+      'home english',
+    );
   }));
 
   it(`GIVEN translateSignal with dynamic key

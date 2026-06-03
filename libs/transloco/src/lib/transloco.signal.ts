@@ -64,7 +64,10 @@ export function translateSignal<T extends TranslateSignalKey>(
       ),
     );
   });
-  return toSignal(result, { initialValue: Array.isArray(key) ? [''] : '' });
+  return toSignal(result, {
+    initialValue: Array.isArray(key) ? [''] : '',
+    injector,
+  });
 }
 
 /**
