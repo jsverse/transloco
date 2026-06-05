@@ -94,11 +94,11 @@ jobs:
           npx nx release publish --access public --verbose $DRY
 
       - name: Push commit and tag
-        if: ${{ inputs.dry-run != 'true' }}
+        if: ${{ !inputs.dry-run }}
         run: git push --follow-tags origin HEAD:master
 
       - name: Changelog and GitHub release
-        if: ${{ inputs.dry-run != 'true' }}
+        if: ${{ !inputs.dry-run }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx nx release changelog ${{ steps.version.outputs.value }} --verbose
