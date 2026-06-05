@@ -80,7 +80,13 @@ jobs:
 
       - name: Read version
         id: version
+        env:
+          DRY_RUN: ${{ inputs.dry-run }}
         run: |
+          if [[ "$DRY_RUN" == "true" ]]; then
+            echo "value=n/a (dry-run)" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           VERSION=$(node -p "require('./libs/transloco/package.json').version")
           echo "value=$VERSION" >> "$GITHUB_OUTPUT"
 
