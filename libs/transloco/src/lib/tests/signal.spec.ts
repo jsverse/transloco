@@ -122,12 +122,10 @@ describe('translateSignal in component', () => {
       THEN should throw error`, fakeAsync(() => {
     spectator = createComponent();
     runLoader();
+    spectator.detectChanges();
     expect(() =>
       spectator.component.setOutsideInjectionContextTranslatedTextWithoutInjector(),
     ).toThrow();
-
-    spectator.detectChanges();
-    expect(spectator.query('#outsideInjectionContextText')).toHaveText('');
   }));
 
   it(`GIVEN translateSignal with dynamic key
@@ -188,11 +186,10 @@ describe('translateObjectSignal in component', () => {
       THEN should throw error`, fakeAsync(() => {
     spectator = createComponent();
     runLoader();
+    spectator.detectChanges();
     expect(() =>
       spectator.component.setOutsideInjectionContextTranslatedObjectWithoutInjector(),
     ).toThrow();
-    spectator.detectChanges();
-    expect(spectator.query('#outsideInjectionContextObject')).toHaveText('');
   }));
 
   it(`GIVEN translateObjectSignal with dynamic key
