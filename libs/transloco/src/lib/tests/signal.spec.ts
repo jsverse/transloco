@@ -9,6 +9,7 @@ import {
 import { fakeAsync, TestBed } from '@angular/core/testing';
 import { createComponentFactory, Spectator } from '@ngneat/spectator';
 
+import { Translation } from '../transloco.types';
 import { TranslocoModule } from '../transloco.module';
 import { TranslocoTestingModule } from '../transloco-testing.module';
 import { translateSignal, translateObjectSignal } from '../transloco.signal';
@@ -25,6 +26,11 @@ import { providersMock, runLoader } from './mocks';
     <div id="outsideInjectionContextText">
       {{ outsideInjectionContextTranslatedText() }}
     </div>
+    @if (outsideInjectionContextTranslatedObject(); as object) {
+      <div id="outsideInjectionContextObject">
+        {{ object.title }}
+      </div>
+    }
   `,
 })
 class TestComponent implements OnInit {
@@ -47,6 +53,8 @@ class TestComponent implements OnInit {
   );
 
   outsideInjectionContextTranslatedText: Signal<string> = signal('UNDEFINED');
+  outsideInjectionContextTranslatedObject: Signal<Translation | undefined> =
+    signal(undefined);
 
   ngOnInit(): void {
     this.outsideInjectionContextTranslatedText = translateSignal(
@@ -55,6 +63,21 @@ class TestComponent implements OnInit {
       undefined,
       this.injector,
     );
+    this.outsideInjectionContextTranslatedObject = translateObjectSignal(
+      'nested',
+      undefined,
+      undefined,
+      this.injector,
+    );
+  }
+
+  setOutsideInjectionContextTranslatedTextWithoutInjector(): void {
+    this.outsideInjectionContextTranslatedText = translateSignal('home');
+  }
+
+  setOutsideInjectionContextTranslatedObjectWithoutInjector(): void {
+    this.outsideInjectionContextTranslatedObject =
+      translateObjectSignal('nested');
   }
 
   changeKey(key: string) {
@@ -83,9 +106,8 @@ describe('translateSignal in component', () => {
     expect(spectator.query('#text')).toHaveText('home english');
   }));
 
-  it(`GIVEN translateSignal with static key
-      OUTSIDE OF INJECTION CONTEXT
-      WHEN translations are loaded
+  it(`GIVEN translateSignal with static key outside of an injection context
+      WHEN translations are loaded with injector
       THEN should display translated text`, fakeAsync(() => {
     spectator = createComponent();
     runLoader();
@@ -93,6 +115,19 @@ describe('translateSignal in component', () => {
     expect(spectator.query('#outsideInjectionContextText')).toHaveText(
       'home english',
     );
+  }));
+
+  it(`GIVEN translateSignal with static key outside of an injection context
+      WHEN translations are loaded without injector
+      THEN should throw error`, fakeAsync(() => {
+    spectator = createComponent();
+    runLoader();
+    expect(() =>
+      spectator.component.setOutsideInjectionContextTranslatedTextWithoutInjector(),
+    ).toThrow();
+
+    spectator.detectChanges();
+    expect(spectator.query('#outsideInjectionContextText')).toHaveText('');
   }));
 
   it(`GIVEN translateSignal with dynamic key
@@ -135,6 +170,29 @@ describe('translateObjectSignal in component', () => {
     runLoader();
     spectator.detectChanges();
     expect(spectator.query('#textObject')).toHaveText('Title english');
+  }));
+
+  it(`GIVEN translateObjectSignal with static key outside of an injection context
+      WHEN translations are loaded with injector
+      THEN should return translation object`, fakeAsync(() => {
+    spectator = createComponent();
+    runLoader();
+    spectator.detectChanges();
+    expect(spectator.query('#outsideInjectionContextObject')).toHaveText(
+      'Title english',
+    );
+  }));
+
+  it(`GIVEN translateObjectSignal with static key outside of an injection context
+      WHEN translations are loaded without injector
+      THEN should throw error`, fakeAsync(() => {
+    spectator = createComponent();
+    runLoader();
+    expect(() =>
+      spectator.component.setOutsideInjectionContextTranslatedObjectWithoutInjector(),
+    ).toThrow();
+    spectator.detectChanges();
+    expect(spectator.query('#outsideInjectionContextObject')).toHaveText('');
   }));
 
   it(`GIVEN translateObjectSignal with dynamic key

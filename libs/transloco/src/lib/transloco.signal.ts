@@ -105,7 +105,10 @@ export function translateObjectSignal<T extends TranslateSignalKey>(
       ),
     );
   });
-  return toSignal(result, { initialValue: Array.isArray(key) ? [] : {} });
+  return toSignal(result, {
+    initialValue: Array.isArray(key) ? [] : {},
+    injector,
+  });
 }
 
 function computerParams(params: HashMap<Signal<string>> | Signal<HashMap>) {
