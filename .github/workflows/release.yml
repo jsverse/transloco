@@ -69,12 +69,20 @@ jobs:
           fetch-tags: true
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      # Node >= 22.14 and npm >= 11.5.1 are required for npm OIDC trusted
+      # publishing (node 22 still bundles npm 10); node 24 is not yet
+      # supported by Angular 18.
+      # No registry-url on purpose: it writes an _authToken=${NODE_AUTH_TOKEN}
+      # line into .npmrc which can shadow OIDC auth — npmjs is the default
+      # registry, and trusted publishing needs no token config at all
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
-          registry-url: 'https://registry.npmjs.org'
+
+      - name: Upgrade npm for OIDC trusted publishing
+        run: npm install -g npm@11
 
       - name: Install dependencies
         run: npm ci
@@ -116,11 +124,12 @@ jobs:
       # Skipped on dry-run: the version on disk is unchanged, so `npm publish
       # --dry-run` would always collide with the already-published version
       # Prereleases go to the `next` dist-tag so `npm i @jsverse/transloco`
-      # (latest) never resolves to a prerelease version
+      # (latest) never resolves to a prerelease version. Provenance
+      # attestations are generated automatically with trusted publishing —
+      # no --provenance flag needed
       - name: Publish to npm (OIDC trusted publishing + provenance)
         if: ${{ !inputs.dry-run }}
         env:
-          NPM_CONFIG_PROVENANCE: 'true'
           BUMP: ${{ inputs.bump }}
         run: |
           TAG="latest"
