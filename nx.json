@@ -91,14 +91,19 @@
     ],
     "projectsRelationship": "fixed",
     "version": {
-      "conventionalCommits": true
-    },
-    "git": {
-      "commit": true,
-      "commitArgs": "--no-verify"
+      "conventionalCommits": true,
+      "git": {
+        "commit": true,
+        "tag": true,
+        "commitArgs": "--no-verify"
+      }
     },
     "changelog": {
       "automaticFromRef": true,
+      "git": {
+        "commit": true,
+        "commitArgs": "--no-verify"
+      },
       "workspaceChangelog": {
         "file": "CHANGELOG.md",
         "createRelease": "github"

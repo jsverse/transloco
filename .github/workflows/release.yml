@@ -116,6 +116,9 @@ jobs:
           NPM_CONFIG_PROVENANCE: 'true'
         run: npx nx release publish --access public --verbose
 
+      # The releases/{version} tag must be on the remote BEFORE the changelog
+      # step creates the GitHub release, otherwise the API invents the tag at
+      # the old master HEAD
       - name: Push commit and tag
         if: ${{ !inputs.dry-run }}
         run: git push --follow-tags origin HEAD:master
@@ -125,6 +128,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx nx release changelog ${{ steps.version.outputs.value }} --verbose
+
+      # The changelog step commits CHANGELOG.md locally — push it too
+      - name: Push changelog commit
+        if: ${{ !inputs.dry-run }}
+        run: git push origin HEAD:master
 
       - name: Summary
         if: always()
