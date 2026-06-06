@@ -29,7 +29,30 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  gate:
+    if: github.ref == 'refs/heads/master'
+    name: ${{ matrix.target }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: true
+      matrix:
+        target: ['ci:lint', 'ci:test', 'ci:e2e']
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Setup
+        uses: ./.github/actions/step-setup
+
+      - name: Run ${{ matrix.target }}
+        env:
+          TARGET: ${{ matrix.target }}
+        run: npm run "$TARGET"
+
   release:
+    needs: gate
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -56,18 +79,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Lint
-        run: npm run ci:lint
-
-      - name: Test
-        run: npm run ci:test
-
-      - name: E2E
-        run: npm run ci:e2e
-
-      - name: Build
-        run: npm run ci:build
-
       - name: Version
         env:
           BUMP: ${{ inputs.bump }}
@@ -81,6 +92,10 @@ jobs:
             npx nx release version "$BUMP" --verbose $DRY
           fi
 
+      # Build AFTER version so dist/ package.json files carry the bumped version
+      - name: Build
+        run: npm run ci:build
+
       - name: Read version
         id: version
         env:
@@ -93,14 +108,13 @@ jobs:
           VERSION=$(node -p "require('./libs/transloco/package.json').version")
           echo "value=$VERSION" >> "$GITHUB_OUTPUT"
 
+      # Skipped on dry-run: the version on disk is unchanged, so `npm publish
+      # --dry-run` would always collide with the already-published version
       - name: Publish to npm (OIDC trusted publishing + provenance)
+        if: ${{ !inputs.dry-run }}
         env:
           NPM_CONFIG_PROVENANCE: 'true'
-          DRY_RUN: ${{ inputs.dry-run }}
-        run: |
-          DRY=""
-          if [[ "$DRY_RUN" == "true" ]]; then DRY="--dry-run"; fi
-          npx nx release publish --access public --verbose $DRY
+        run: npx nx release publish --access public --verbose
 
       - name: Push commit and tag
         if: ${{ !inputs.dry-run }}
