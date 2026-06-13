@@ -1,3 +1,15 @@
+## 8.4.0 (2026-06-13)
+
+
+### 🩹 Fixes
+
+- **transloco-scoped-libs:** multi-scope i18n with join strategy
+
+
+### ❤️  Thank You
+
+- Ilshat Khamitov
+
 ## 8.3.0 (2026-04-05)
 
 This was a version bump only for transloco-scoped-libs to align it with other projects, there were no code changes.

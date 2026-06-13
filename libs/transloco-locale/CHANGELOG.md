@@ -1,3 +1,7 @@
+## 8.4.0 (2026-06-13)
+
+This was a version bump only for transloco-locale to align it with other projects, there were no code changes.
+
 ## 8.3.0 (2026-04-05)
 
 ### 🩹 Fixes

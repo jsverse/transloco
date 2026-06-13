@@ -1,3 +1,21 @@
+## 8.4.0 (2026-06-13)
+
+
+### 🚀 Features
+
+- **transloco:** transpile function arguments in FunctionalTranspiler
+
+### 🩹 Fixes
+
+- translateSignal utility missing injector for toSignal
+- **transloco-scoped-libs:** multi-scope i18n with join strategy
+
+### ❤️  Thank You
+
+- Dafnik
+- f-aubert
+- Ilshat Khamitov
+
 ## 8.3.0 (2026-04-05)
 
 ### 🚀 Features

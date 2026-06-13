@@ -1,3 +1,15 @@
+## 8.4.0 (2026-06-13)
+
+
+### 🩹 Fixes
+
+- translateSignal utility missing injector for toSignal
+
+
+### ❤️  Thank You
+
+- Dafnik
+
 ## 8.3.0 (2026-04-05)
 
 ### 🚀 Features
