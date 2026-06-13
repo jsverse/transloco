@@ -72,13 +72,20 @@ import {
   resolveInlineLoader,
 } from './utils/scope.utils';
 
-let service: TranslocoService;
+let service: TranslocoService | undefined;
 
 export function translate<T = string>(
   key: TranslateParams,
   params: HashMap = {},
   lang?: string,
 ): T {
+  if (!service) {
+    if (typeof ngDevMode !== 'undefined' && ngDevMode) {
+      console.warn('No active TranslocoService found');
+    }
+    return '' as T;
+  }
+
   return service.translate<T>(key, params, lang);
 }
 
@@ -87,6 +94,13 @@ export function translateObject<T>(
   params: HashMap = {},
   lang?: string,
 ): T | T[] {
+  if (!service) {
+    if (typeof ngDevMode !== 'undefined' && ngDevMode) {
+      console.warn('No active TranslocoService found');
+    }
+    return [];
+  }
+
   return service.translateObject<T>(key, params, lang);
 }
 
@@ -190,6 +204,11 @@ export class TranslocoService {
       // Cached values retain `this`, causing circular references that block garbage collection,
       // leading to memory leaks during server-side rendering.
       this.cache.clear();
+
+      // Cleanup global service reference to prevent memory leaks.
+      if (service === this) {
+        service = undefined;
+      }
     });
   }
 
