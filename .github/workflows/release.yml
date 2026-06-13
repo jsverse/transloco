@@ -1,0 +1,174 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: 'Version bump (auto = infer from conventional commits)'
+        required: false
+        type: choice
+        default: auto
+        options:
+          - auto
+          - patch
+          - minor
+          - major
+          - prerelease
+      dry-run:
+        description: 'Dry run (preview only — no commits, tags, or publish)'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  id-token: write
+
+# Per-ref group: real releases (master-only) still serialize, while a
+# dry-run dispatched from a branch never queue-blocks a real release
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  # Real releases are master-only; dry-runs are side-effect-free by
+  # construction (every mutating step is gated on !inputs.dry-run), so they
+  # may be dispatched from any branch to test the pipeline
+  gate:
+    if: ${{ github.ref == 'refs/heads/master' || inputs.dry-run }}
+    name: ${{ matrix.target }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: true
+      matrix:
+        target: ['ci:lint', 'ci:test', 'ci:e2e']
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Setup
+        uses: ./.github/actions/step-setup
+
+      - name: Run ${{ matrix.target }}
+        env:
+          TARGET: ${{ matrix.target }}
+        run: npm run "$TARGET"
+
+  release:
+    needs: gate
+    if: ${{ github.ref == 'refs/heads/master' || inputs.dry-run }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # Node >= 22.14 and npm >= 11.5.1 are required for npm OIDC trusted
+      # publishing (node 22 still bundles npm 10); node 24 is not yet
+      # supported by Angular 18.
+      # No registry-url on purpose: it writes an _authToken=${NODE_AUTH_TOKEN}
+      # line into .npmrc which can shadow OIDC auth — npmjs is the default
+      # registry, and trusted publishing needs no token config at all
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Upgrade npm for OIDC trusted publishing
+        run: npm install -g npm@11
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Version
+        env:
+          BUMP: ${{ inputs.bump }}
+          DRY_RUN: ${{ inputs.dry-run }}
+        run: |
+          DRY=""
+          if [[ "$DRY_RUN" == "true" ]]; then DRY="--dry-run"; fi
+          if [[ "$BUMP" == "auto" ]]; then
+            npx nx release version --verbose $DRY
+          else
+            npx nx release version "$BUMP" --verbose $DRY
+          fi
+
+      # Build AFTER version so dist/ package.json files carry the bumped version
+      - name: Build
+        run: npm run ci:build
+
+      - name: Read version
+        id: version
+        env:
+          DRY_RUN: ${{ inputs.dry-run }}
+        run: |
+          if [[ "$DRY_RUN" == "true" ]]; then
+            echo "value=n/a (dry-run)" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          VERSION=$(node -p "require('./libs/transloco/package.json').version")
+          echo "value=$VERSION" >> "$GITHUB_OUTPUT"
+
+      # Skipped on dry-run: the version on disk is unchanged, so `npm publish
+      # --dry-run` would always collide with the already-published version
+      # Prereleases go to the `next` dist-tag so `npm i @jsverse/transloco`
+      # (latest) never resolves to a prerelease version. Provenance
+      # attestations are generated automatically with trusted publishing —
+      # no --provenance flag needed
+      - name: Publish to npm (OIDC trusted publishing + provenance)
+        if: ${{ !inputs.dry-run }}
+        env:
+          BUMP: ${{ inputs.bump }}
+        run: |
+          TAG="latest"
+          if [[ "$BUMP" == "prerelease" ]]; then TAG="next"; fi
+          npx nx release publish --access public --tag "$TAG" --verbose
+
+      # The releases/{version} tag must be on the remote BEFORE the changelog
+      # step creates the GitHub release, otherwise the API invents the tag at
+      # the old master HEAD
+      - name: Push commit and tag
+        if: ${{ !inputs.dry-run }}
+        run: git push --follow-tags origin HEAD:master
+
+      - name: Changelog and GitHub release
+        if: ${{ !inputs.dry-run }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx nx release changelog ${{ steps.version.outputs.value }} --verbose
+
+      # The changelog step commits CHANGELOG.md locally — push it too
+      - name: Push changelog commit
+        if: ${{ !inputs.dry-run }}
+        run: git push origin HEAD:master
+
+      - name: Summary
+        if: always()
+        env:
+          OUT_VERSION: ${{ steps.version.outputs.value }}
+          BUMP: ${{ inputs.bump }}
+          DRY_RUN: ${{ inputs.dry-run }}
+          REF: ${{ github.ref }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          {
+            echo "## Release run"
+            echo ""
+            echo "- Version: \`${OUT_VERSION:-n/a}\`"
+            echo "- Bump input: \`${BUMP}\`"
+            echo "- Dry run: \`${DRY_RUN}\`"
+            echo "- Ref: \`${REF}\`"
+            echo "- Triggered by: @${ACTOR}"
+          } >> "$GITHUB_STEP_SUMMARY"

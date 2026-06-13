@@ -32,6 +32,11 @@
       "inputs": ["production", "^production"],
       "cache": true
     },
+    "nx-release-publish": {
+      "options": {
+        "packageRoot": "dist/{projectRoot}"
+      }
+    },
     "e2e": {
       "inputs": ["default", "^production"],
       "cache": true
@@ -86,14 +91,23 @@
     ],
     "projectsRelationship": "fixed",
     "version": {
-      "conventionalCommits": true
-    },
-    "git": {
-      "commit": true,
-      "commitArgs": "--no-verify"
+      "conventionalCommits": true,
+      "git": {
+        "commit": true,
+        "tag": true,
+        "commitArgs": "--no-verify"
+      }
     },
     "changelog": {
       "automaticFromRef": true,
+      "git": {
+        "commit": true,
+        "commitArgs": "--no-verify"
+      },
+      "workspaceChangelog": {
+        "file": "CHANGELOG.md",
+        "createRelease": "github"
+      },
       "projectChangelogs": {
         "createRelease": false,
         "renderOptions": {

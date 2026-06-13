@@ -1,0 +1,48 @@
+name: actionlint
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - '.github/workflows/**'
+      - '.github/actions/**'
+  pull_request:
+    paths:
+      - '.github/workflows/**'
+      - '.github/actions/**'
+
+permissions:
+  contents: read
+
+jobs:
+  actionlint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Cache actionlint
+        id: cache-actionlint
+        uses: actions/cache@v5
+        with:
+          path: ~/bin/actionlint
+          key: ${{ runner.os }}-actionlint-v1.7.12
+          restore-keys: |
+            ${{ runner.os }}-actionlint-
+
+      - name: Install actionlint
+        if: steps.cache-actionlint.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/bin
+          curl -fsSL https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz \
+            | tar xz -C ~/bin actionlint
+          chmod +x ~/bin/actionlint
+
+      - name: Add actionlint to PATH
+        run: echo "${HOME}/bin" >> "$GITHUB_PATH"
+
+      - name: Run actionlint
+        run: actionlint -color
