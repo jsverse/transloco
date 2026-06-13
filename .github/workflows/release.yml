@@ -15,10 +15,10 @@ on:
           - major
           - prerelease
       dry-run:
-        description: 'Dry run (preview only — no commits, tags, or publish)'
+        description: 'Dry run (builds + packs + publish --dry-run; no real publish, commit, tag, or push)'
         required: false
         type: boolean
-        default: false
+        default: true
 
 permissions:
   contents: write
@@ -31,9 +31,9 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Real releases are master-only; dry-runs are side-effect-free by
-  # construction (every mutating step is gated on !inputs.dry-run), so they
-  # may be dispatched from any branch to test the pipeline
+  # Real releases are master-only; dry-runs touch nothing remote (publish runs
+  # with --dry-run; push/changelog are gated on !inputs.dry-run), so they may
+  # be dispatched from any branch to test the pipeline
   gate:
     if: ${{ github.ref == 'refs/heads/master' || inputs.dry-run }}
     name: ${{ matrix.target }}
@@ -62,12 +62,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
+      # checkout defaults its token to github.token (GITHUB_TOKEN) and persists
+      # it, which the later git push relies on — no need to pass it explicitly
       - name: Checkout
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
           fetch-tags: true
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       # Node >= 22.14 and npm >= 11.5.1 are required for npm OIDC trusted
       # publishing (node 22 still bundles npm 10); node 24 is not yet
@@ -92,13 +93,12 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      # `id: version` exposes the resolved version via
-      # steps.version.outputs.value (drives the changelog + GitHub release tag).
-      # Real run: read the bumped package.json — the authoritative source for
-      # what gets built/published/tagged, and a stable JSON contract.
-      # Dry run: package.json is left untouched, so parse nx's "New version
-      # X.Y.Z written to ..." line instead (preview only; consuming steps are
-      # all skipped, so a parse miss here is harmless)
+      # Always bump the manifests for real so the version is on disk for the
+      # build + publish steps. On a dry run we pass --git-commit=false
+      # --git-tag=false: the files are written (never pushed) so the publish
+      # dry-run can pack a non-colliding version, but no commit or tag is made.
+      # package.json is therefore the authoritative version source in both
+      # modes (a stable JSON contract; drives the changelog + GitHub release).
       - name: Version
         id: version
         env:
@@ -106,38 +106,37 @@ jobs:
           DRY_RUN: ${{ inputs.dry-run }}
         run: |
           set -o pipefail
-          DRY=""
-          if [[ "$DRY_RUN" == "true" ]]; then DRY="--dry-run"; fi
+          GIT_FLAGS=()
+          if [[ "$DRY_RUN" == "true" ]]; then GIT_FLAGS=(--git-commit=false --git-tag=false); fi
           if [[ "$BUMP" == "auto" ]]; then
-            npx nx release version --verbose $DRY | tee /tmp/nx-version.log
+            npx nx release version --verbose "${GIT_FLAGS[@]}"
           else
-            npx nx release version "$BUMP" --verbose $DRY | tee /tmp/nx-version.log
+            npx nx release version "$BUMP" --verbose "${GIT_FLAGS[@]}"
           fi
-          if [[ "$DRY_RUN" == "true" ]]; then
-            VERSION=$(grep -oiE 'New version [0-9]+\.[0-9]+\.[0-9]+[0-9A-Za-z.+-]*' /tmp/nx-version.log | head -1 | awk '{print $3}')
-          else
-            VERSION=$(node -p "require('./libs/transloco/package.json').version")
-          fi
-          echo "value=${VERSION:-unknown}" >> "$GITHUB_OUTPUT"
+          VERSION=$(node -p "require('./libs/transloco/package.json').version")
+          echo "value=$VERSION" >> "$GITHUB_OUTPUT"
 
       # Build AFTER version so dist/ package.json files carry the bumped version
       - name: Build
         run: npm run ci:build
 
-      # Skipped on dry-run: the version on disk is unchanged, so `npm publish
-      # --dry-run` would always collide with the already-published version
+      # Always runs. On a dry run, --dry-run packs the tarballs and exercises
+      # the publish path (version, packageRoot, tag, access) without uploading
+      # — note this does NOT exercise OIDC auth, which only a real publish does.
       # Prereleases go to the `next` dist-tag so `npm i @jsverse/transloco`
       # (latest) never resolves to a prerelease version. Provenance
       # attestations are generated automatically with trusted publishing —
       # no --provenance flag needed
       - name: Publish to npm (OIDC trusted publishing + provenance)
-        if: ${{ !inputs.dry-run }}
         env:
           BUMP: ${{ inputs.bump }}
+          DRY_RUN: ${{ inputs.dry-run }}
         run: |
           TAG="latest"
           if [[ "$BUMP" == "prerelease" ]]; then TAG="next"; fi
-          npx nx release publish --access public --tag "$TAG" --verbose
+          DRY=()
+          if [[ "$DRY_RUN" == "true" ]]; then DRY=(--dry-run); fi
+          npx nx release publish --access public --tag "$TAG" --verbose "${DRY[@]}"
 
       # The releases/{version} tag must be on the remote BEFORE the changelog
       # step creates the GitHub release, otherwise the API invents the tag at
