@@ -92,34 +92,30 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
+      # `id: version` exposes the resolved version via
+      # steps.version.outputs.value. nx prints "New version X.Y.Z written to
+      # ..." in BOTH real and dry-run modes, so parsing it surfaces a useful
+      # preview even on a dry-run where package.json is left untouched
       - name: Version
+        id: version
         env:
           BUMP: ${{ inputs.bump }}
           DRY_RUN: ${{ inputs.dry-run }}
         run: |
+          set -o pipefail
           DRY=""
           if [[ "$DRY_RUN" == "true" ]]; then DRY="--dry-run"; fi
           if [[ "$BUMP" == "auto" ]]; then
-            npx nx release version --verbose $DRY
+            npx nx release version --verbose $DRY | tee /tmp/nx-version.log
           else
-            npx nx release version "$BUMP" --verbose $DRY
+            npx nx release version "$BUMP" --verbose $DRY | tee /tmp/nx-version.log
           fi
+          VERSION=$(grep -oiE 'New version [0-9]+\.[0-9]+\.[0-9]+[0-9A-Za-z.+-]*' /tmp/nx-version.log | head -1 | awk '{print $3}')
+          echo "value=${VERSION:-unknown}" >> "$GITHUB_OUTPUT"
 
       # Build AFTER version so dist/ package.json files carry the bumped version
       - name: Build
         run: npm run ci:build
-
-      - name: Read version
-        id: version
-        env:
-          DRY_RUN: ${{ inputs.dry-run }}
-        run: |
-          if [[ "$DRY_RUN" == "true" ]]; then
-            echo "value=n/a (dry-run)" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          VERSION=$(node -p "require('./libs/transloco/package.json').version")
-          echo "value=$VERSION" >> "$GITHUB_OUTPUT"
 
       # Skipped on dry-run: the version on disk is unchanged, so `npm publish
       # --dry-run` would always collide with the already-published version
