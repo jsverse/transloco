@@ -134,24 +134,6 @@ jobs:
       - name: Build
         run: npm run ci:build
 
-      # Always runs. On a dry run, --dry-run packs the tarballs and exercises
-      # the publish path (version, packageRoot, tag, access) without uploading
-      # — note this does NOT exercise OIDC auth, which only a real publish does.
-      # Prereleases go to the `next` dist-tag so `npm i @jsverse/transloco`
-      # (latest) never resolves to a prerelease version. Provenance
-      # attestations are generated automatically with trusted publishing —
-      # no --provenance flag needed
-      - name: Publish to npm (OIDC trusted publishing + provenance)
-        env:
-          BUMP: ${{ inputs.bump }}
-          DRY_RUN: ${{ inputs.dry-run }}
-        run: |
-          TAG="latest"
-          if [[ "$BUMP" == "prerelease" ]]; then TAG="next"; fi
-          DRY=()
-          if [[ "$DRY_RUN" == "true" ]]; then DRY=(--dry-run); fi
-          npx nx release publish --access public --tag "$TAG" --verbose "${DRY[@]}"
-
       # The releases/{version} tag must be on the remote BEFORE the changelog
       # step creates the GitHub release, otherwise the API invents the tag at
       # the old master HEAD
@@ -172,6 +154,28 @@ jobs:
       - name: Push changelog commit
         if: ${{ !inputs.dry-run }}
         run: git push origin HEAD:master
+
+      # Publish LAST: npm publish is irreversible, so it runs only after every
+      # fallible git step (push to protected master, changelog, tag push) has
+      # succeeded — preventing the npm-ahead-of-git split-brain that left 8.4.0
+      # published while master stayed un-updated. Re-running is safe: nx skips
+      # versions already on the registry. Always runs; on a dry run, --dry-run
+      # packs the tarballs and exercises the publish path (version, packageRoot,
+      # tag, access) without uploading — note this does NOT exercise OIDC auth,
+      # which only a real publish does. Prereleases go to the `next` dist-tag so
+      # `npm i @jsverse/transloco` (latest) never resolves to a prerelease.
+      # Provenance attestations are generated automatically with trusted
+      # publishing — no --provenance flag needed.
+      - name: Publish to npm (OIDC trusted publishing + provenance)
+        env:
+          BUMP: ${{ inputs.bump }}
+          DRY_RUN: ${{ inputs.dry-run }}
+        run: |
+          TAG="latest"
+          if [[ "$BUMP" == "prerelease" ]]; then TAG="next"; fi
+          DRY=()
+          if [[ "$DRY_RUN" == "true" ]]; then DRY=(--dry-run); fi
+          npx nx release publish --access public --tag "$TAG" --verbose "${DRY[@]}"
 
       - name: Summary
         if: always()
