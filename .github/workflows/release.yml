@@ -62,13 +62,27 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      # checkout defaults its token to github.token (GITHUB_TOKEN) and persists
-      # it, which the later git push relies on — no need to pass it explicitly
+      # Mint a short-lived GitHub App installation token. The app is a bypass
+      # actor on the master branch ruleset, so the release commit/tag push below
+      # is authorized while humans still go through PRs + status checks. The
+      # token is auto-revoked when the job ends (effective lifetime ≈ job run)
+      # and is scoped to repo Contents only.
+      - name: Generate app token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+
+      # Persist the app token so the later `git push HEAD:master` authenticates
+      # as the bypass-capable app — the default GITHUB_TOKEN cannot push to the
+      # protected branch (rejected with GH006)
       - name: Checkout
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
           fetch-tags: true
+          token: ${{ steps.app-token.outputs.token }}
 
       # Node >= 22.14 and npm >= 11.5.1 are required for npm OIDC trusted
       # publishing (node 22 still bundles npm 10); node 24 is not yet
@@ -145,10 +159,13 @@ jobs:
         if: ${{ !inputs.dry-run }}
         run: git push --follow-tags origin HEAD:master
 
+      # Use the app token (not the default GITHUB_TOKEN): nx release changelog
+      # both creates the GitHub Release and may push the changelog commit, so it
+      # needs the bypass-capable identity for the push to protected master.
       - name: Changelog and GitHub release
         if: ${{ !inputs.dry-run }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         run: npx nx release changelog ${{ steps.version.outputs.value }} --verbose
 
       # The changelog step commits CHANGELOG.md locally — push it too

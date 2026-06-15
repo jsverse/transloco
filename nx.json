@@ -102,6 +102,7 @@
       "automaticFromRef": true,
       "git": {
         "commit": true,
+        "tag": false,
         "commitArgs": "--no-verify"
       },
       "workspaceChangelog": {
