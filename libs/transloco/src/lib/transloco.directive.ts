@@ -1,5 +1,4 @@
 import {
-  ChangeDetectorRef,
   DestroyRef,
   Directive,
   ElementRef,
@@ -55,7 +54,6 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   private providedLoadingTpl = inject(TRANSLOCO_LOADING_TEMPLATE, {
     optional: true,
   });
-  private cdr = inject(ChangeDetectorRef);
   private host = inject(ElementRef);
   private vcr = inject(ViewContainerRef);
   private renderer = inject(Renderer2);
@@ -125,7 +123,6 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
               this.currentLang,
               this.prefix || this.inlineRead,
             );
-        this.cdr.markForCheck();
         this.initialized = true;
       });
 
@@ -164,6 +161,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
       // when the lang changes we need to change the reference so Angular will update the view
       this.view.context['$implicit'] = translateFn;
       this.view.context['currentLang'] = this.currentLang!;
+      this.view.detectChanges();
     } else {
       this.detachLoader();
       this.view = this.vcr.createEmbeddedView(this.tpl!, {
