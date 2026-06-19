@@ -7,7 +7,7 @@
     "declarationMap": true,
     "inlineSources": true,
     "types": ["../../@types/angular-globals"],
-    "lib": ["dom", "ES2020"],
+    "lib": ["dom", "es2022"],
     "moduleResolution": "bundler"
   },
   "exclude": ["src/test-setup.ts", "**/*.spec.ts"],

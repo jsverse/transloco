@@ -56,6 +56,12 @@
       }
     },
     {
+      "files": ["**/karma.conf.js"],
+      "rules": {
+        "@nx/enforce-module-boundaries": "off"
+      }
+    },
+    {
       "files": ["**/*.spec.ts", "**/mocks.ts", "**/test-setup.ts"],
       "rules": {
         "@typescript-eslint/no-explicit-any": "off",

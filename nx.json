@@ -110,7 +110,12 @@
       }
     },
     "@nx/eslint:lint": {
-      "inputs": ["default", "{workspaceRoot}/.eslintrc.json"],
+      "inputs": [
+        "default",
+        "^default",
+        "{workspaceRoot}/.eslintrc.json",
+        "{workspaceRoot}/tools/eslint-rules/**/*"
+      ],
       "cache": true
     }
   },
@@ -127,7 +132,6 @@
   "useInferencePlugins": false,
   "defaultBase": "master",
   "release": {
-    "releaseTagPattern": "releases/{version}",
     "projects": [
       "transloco",
       "transloco-locale",
@@ -168,6 +172,9 @@
           "applyUsernameToAuthors": true
         }
       }
+    },
+    "releaseTag": {
+      "pattern": "releases/{version}"
     }
   }
 }

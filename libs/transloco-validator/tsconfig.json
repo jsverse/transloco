@@ -9,5 +9,9 @@
     {
       "path": "./tsconfig.spec.json"
     }
-  ]
+  ],
+  "compilerOptions": {
+    "module": "commonjs",
+    "lib": ["dom", "es2022"]
+  }
 }
