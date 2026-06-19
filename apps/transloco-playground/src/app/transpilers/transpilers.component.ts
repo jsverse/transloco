@@ -6,7 +6,6 @@ import { provideTranslocoScope, TranslocoModule } from '@jsverse/transloco';
   selector: 'app-transpilers',
   templateUrl: './transpilers.component.html',
   styleUrls: ['./transpilers.component.scss'],
-  standalone: true,
   providers: [
     provideTranslocoScope({
       scope: 'transpilers/messageformat',

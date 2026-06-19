@@ -13,7 +13,6 @@ import {
   templateUrl: './locale.component.html',
   styleUrls: ['./locale.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [TranslocoModule, TranslocoLocaleModule],
 })
 export default class LocaleComponent {

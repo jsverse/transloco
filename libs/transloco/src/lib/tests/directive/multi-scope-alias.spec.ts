@@ -60,6 +60,7 @@ describe('Scope alias', () => {
     <span>{{ 'admin.title' | transloco }}</span>
     <h1>{{ 'nested.title' | transloco }}</h1>
   `,
+  imports: [TranslocoModule],
 })
 class TestPipe {}
 

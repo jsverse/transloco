@@ -26,6 +26,7 @@ export const listenToLangChangesProvider = {
     <h3>{{ 'alert' | transloco: { value: value } }}</h3>
     <h5>{{ 'home' | transloco: null : 'es' }}</h5>
   `,
+  imports: [TranslocoModule],
 })
 class TestPipe {
   value = 'hey';
@@ -164,6 +165,7 @@ describe('Transloco Pipe', () => {
       <h1>{{ 'nested.title' | transloco }}</h1>
       <span>{{ 'alert' | transloco: { value: 'netanel' } }}</span>
     `,
+    imports: [TranslocoModule],
   })
   class TestScopePipe {}
 

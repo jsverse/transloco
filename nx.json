@@ -117,5 +117,6 @@
         }
       }
     }
-  }
+  },
+  "useLegacyCache": true
 }
