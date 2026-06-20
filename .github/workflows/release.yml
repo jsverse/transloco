@@ -70,18 +70,10 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
 
-      # No registry-url on purpose: it writes an _authToken=${NODE_AUTH_TOKEN}
-      # line into .npmrc which can shadow OIDC auth — npmjs is the default
-      # registry, and trusted publishing needs no token config at all.
-      # Node 24 bundles npm >= 11.5.1, which OIDC trusted publishing requires.
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: 24
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
+      # Shared setup: Node 24 + npm ci. It deliberately sets no registry-url,
+      # which OIDC trusted publishing (below) depends on — see step-setup.
+      - name: Setup
+        uses: ./.github/actions/step-setup
 
       - name: Configure Git
         run: |
