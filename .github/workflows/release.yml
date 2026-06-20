@@ -70,20 +70,15 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
 
-      # Node >= 22.14 and npm >= 11.5.1 are required for npm OIDC trusted
-      # publishing (node 22 still bundles npm 10); node 24 is not yet
-      # supported by Angular 18.
       # No registry-url on purpose: it writes an _authToken=${NODE_AUTH_TOKEN}
       # line into .npmrc which can shadow OIDC auth — npmjs is the default
-      # registry, and trusted publishing needs no token config at all
+      # registry, and trusted publishing needs no token config at all.
+      # Node 24 bundles npm >= 11.5.1, which OIDC trusted publishing requires.
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: npm
-
-      - name: Upgrade npm for OIDC trusted publishing
-        run: npm install -g npm@11
 
       - name: Install dependencies
         run: npm ci

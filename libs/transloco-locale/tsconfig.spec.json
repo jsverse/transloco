@@ -2,8 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
-    "types": ["jasmine", "node"],
-    "moduleResolution": "bundler"
+    "types": ["jasmine", "node"]
   },
   "files": ["src/test-setup.ts"],
   "include": [

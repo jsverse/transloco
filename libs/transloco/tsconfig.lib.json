@@ -6,9 +6,7 @@
     "declaration": true,
     "declarationMap": true,
     "inlineSources": true,
-    "typeRoots": ["../../@types"],
-    "lib": ["dom", "es2022"],
-    "moduleResolution": "bundler"
+    "typeRoots": ["../../@types"]
   },
   "exclude": ["src/test-setup.ts", "**/*.spec.ts"],
   "include": ["**/*.ts"]
