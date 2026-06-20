@@ -223,7 +223,6 @@ describe('translateObjectSignal in component', () => {
 
 describe('Synchronous translateSignal', () => {
   @Component({
-    standalone: true,
     imports: [TranslocoModule],
     template: ` <div id="text">{{ translatedText() }}</div> `,
   })

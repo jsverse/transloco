@@ -15,7 +15,6 @@ import { BaseLocalePipe } from './base-locale.pipe';
 @Pipe({
   name: 'translocoCurrency',
   pure: false,
-  standalone: true,
 })
 export class TranslocoCurrencyPipe
   extends BaseLocalePipe

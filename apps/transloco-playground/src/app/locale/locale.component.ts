@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { TranslocoModule } from '@jsverse/transloco';
 import {
@@ -16,16 +16,12 @@ import {
   imports: [TranslocoModule, TranslocoLocaleModule],
 })
 export default class LocaleComponent {
-  date = new Date(2019, 7, 14, 0, 0, 0, 0);
-  localeList: string[];
+  private localeService = inject(TranslocoLocaleService);
 
-  constructor(
-    private localeService: TranslocoLocaleService,
-    @Inject(TRANSLOCO_LOCALE_CURRENCY_MAPPING)
-    localeMapping: LocaleToCurrencyMapping,
-  ) {
-    this.localeList = Object.keys(localeMapping);
-  }
+  date = new Date(2019, 7, 14, 0, 0, 0, 0);
+  localeList = Object.keys(
+    inject<LocaleToCurrencyMapping>(TRANSLOCO_LOCALE_CURRENCY_MAPPING),
+  );
 
   setLocale(event: Event) {
     this.localeService.setLocale((event.target as HTMLSelectElement).value);
