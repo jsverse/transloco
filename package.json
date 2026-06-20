@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "license": "MIT",
   "homepage": "https://jsverse.gitbook.io/transloco/",
+  "engines": {
+    "node": ">=24.0.0"
+  },
   "scripts": {
     "prepare": "husky",
     "commit": "git-cz",
