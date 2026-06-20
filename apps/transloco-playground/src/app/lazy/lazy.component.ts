@@ -6,7 +6,6 @@ import { TranslocoDirective } from '@jsverse/transloco';
   selector: 'app-lazy',
   templateUrl: './lazy.component.html',
   styleUrls: ['./lazy.component.scss'],
-  standalone: true,
   imports: [TranslocoDirective],
 })
 export default class LazyComponent {}

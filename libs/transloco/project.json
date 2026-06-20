@@ -11,15 +11,14 @@
       "executor": "@nx/angular:package",
       "outputs": ["{workspaceRoot}/dist/libs/transloco"],
       "options": {
-        "project": "libs/transloco/ng-package.json"
+        "project": "libs/transloco/ng-package.json",
+        "tsConfig": "libs/transloco/tsconfig.lib.json"
       },
       "configurations": {
         "production": {
           "tsConfig": "libs/transloco/tsconfig.lib.prod.json"
         },
-        "development": {
-          "tsConfig": "libs/transloco/tsconfig.lib.json"
-        }
+        "development": {}
       },
       "defaultConfiguration": "production"
     },
@@ -55,7 +54,8 @@
       "outputs": ["{options.outputFile}"],
       "options": {
         "jestConfig": "libs/transloco/jest.config.schematics.ts",
-        "passWithNoTests": true
+        "passWithNoTests": true,
+        "tsConfig": "libs/transloco/tsconfig.spec.json"
       }
     },
     "lint": {

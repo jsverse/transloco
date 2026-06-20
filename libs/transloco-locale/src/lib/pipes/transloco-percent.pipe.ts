@@ -14,7 +14,6 @@ import { BaseLocalePipe } from './base-locale.pipe';
 @Pipe({
   name: 'translocoPercent',
   pure: false,
-  standalone: true,
 })
 export class TranslocoPercentPipe
   extends BaseLocalePipe

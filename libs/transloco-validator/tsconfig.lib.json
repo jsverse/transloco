@@ -5,11 +5,11 @@
     "outDir": "../../dist/out-tsc",
     "sourceMap": false,
     "declaration": false,
-    "lib": ["ES2021"],
+    "lib": ["es2022"],
     "module": "commonjs",
     "target": "ES2021",
     "allowSyntheticDefaultImports": true
   },
   "include": ["**/*.ts"],
-  "exclude": ["**/*.spec.ts"]
+  "exclude": ["**/*.spec.ts", "src/test-setup.ts"]
 }

@@ -6,8 +6,7 @@
     "declaration": true,
     "declarationMap": true,
     "inlineSources": true,
-    "types": ["../../@types/angular-globals"],
-    "lib": ["dom", "es2020"]
+    "types": ["../../@types/angular-globals"]
   },
   "exclude": ["src/test-setup.ts", "**/*.spec.ts", "src/lib/tests/mocks.ts"],
   "include": ["**/*.ts"]

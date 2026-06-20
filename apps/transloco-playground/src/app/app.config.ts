@@ -2,6 +2,7 @@ import {
   ApplicationConfig,
   importProvidersFrom,
   isDevMode,
+  provideZoneChangeDetection,
 } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { provideHttpClient } from '@angular/common/http';
@@ -16,6 +17,7 @@ import { ROUTES } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideZoneChangeDetection(),
     importProvidersFrom(BrowserModule),
     provideHttpClient(),
     provideTransloco({
