@@ -24,9 +24,31 @@ jobs:
       - name: Setup
         uses: ./.github/actions/step-setup
 
-      - name: Install Playwright browsers
+      # Cache the browser binaries keyed on the Playwright version so the e2e
+      # leg only downloads Chromium when the version changes. On a cache hit we
+      # still refresh the OS-level deps, which live outside ~/.cache/ms-playwright.
+      - name: Resolve Playwright version
         if: ${{ matrix.target == 'e2e' }}
+        id: pw
+        run: echo "version=$(node -p 'require("@playwright/test/package.json").version')" >> "$GITHUB_OUTPUT"
+        shell: bash
+
+      - name: Cache Playwright browsers
+        if: ${{ matrix.target == 'e2e' }}
+        id: pw-cache
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.pw.outputs.version }}
+
+      - name: Install Playwright browsers (with OS deps)
+        if: ${{ matrix.target == 'e2e' && steps.pw-cache.outputs.cache-hit != 'true' }}
         run: npx playwright install --with-deps chromium
+        shell: bash
+
+      - name: Install Playwright OS deps (cached browser)
+        if: ${{ matrix.target == 'e2e' && steps.pw-cache.outputs.cache-hit == 'true' }}
+        run: npx playwright install-deps chromium
         shell: bash
 
       - name: Run ci:${{ matrix.target }}
