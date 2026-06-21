@@ -20,6 +20,11 @@ jobs:
       - name: Setup
         uses: ./.github/actions/step-setup
 
+      - name: Install Playwright browsers
+        if: ${{ matrix.target == 'ci:e2e' }}
+        run: npx playwright install --with-deps chromium
+        shell: bash
+
       - name: Run ${{ matrix.target }}
         run: npm run ${{ matrix.target }}
         shell: bash
