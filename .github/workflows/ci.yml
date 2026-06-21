@@ -69,10 +69,17 @@ jobs:
 
       - name: Install actionlint
         if: steps.cache-actionlint.outputs.cache-hit != 'true'
+        # Pinned SHA256 (from actionlint_1.7.12_checksums.txt) verifies the
+        # download before extraction — `set -e` ensures a checksum mismatch
+        # aborts the step rather than falling through to tar/chmod. Update the
+        # checksum alongside the version in the cache key above.
         run: |
+          set -euo pipefail
           mkdir -p ~/bin
           curl -fsSL https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz \
-            | tar xz -C ~/bin actionlint
+            -o /tmp/actionlint.tar.gz
+          echo "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8  /tmp/actionlint.tar.gz" | sha256sum --check
+          tar xz -C ~/bin actionlint < /tmp/actionlint.tar.gz
           chmod +x ~/bin/actionlint
 
       - name: Add actionlint to PATH
