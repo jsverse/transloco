@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: ['ci:build', 'ci:test', 'ci:lint', 'ci:e2e']
+        target: ['build', 'test', 'lint', 'e2e']
     runs-on: ubuntu-latest
     name: ${{ matrix.target }}
     steps:
@@ -24,12 +24,12 @@ jobs:
       - name: Setup
         uses: ./.github/actions/step-setup
 
-      - name: Run ${{ matrix.target }}
-        run: npm run ${{ matrix.target }}
+      - name: Run ci:${{ matrix.target }}
+        run: npm run ci:${{ matrix.target }}
         shell: bash
 
       - name: Publish any commit / build for testing
-        if: ${{ matrix.target == 'ci:build' && github.ref != 'refs/heads/master' }}
+        if: ${{ matrix.target == 'build' && github.ref != 'refs/heads/master' }}
         run: npm run release:pkg-pr-new
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
