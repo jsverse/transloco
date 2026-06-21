@@ -6,6 +6,10 @@ on:
     branches:
       - master
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref == 'refs/heads/master' && github.sha || github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
+
 jobs:
   ci-step:
     strategy:
@@ -43,3 +47,30 @@ jobs:
 
       - name: Validate PR commits with commitlint
         run: npx commitlint --from ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }} --to ${{ github.event.pull_request.head.sha }} --verbose
+
+  # Single required status check. Branch protection should require only this
+  # job; the matrix targets and jobs above can change freely without editing
+  # branch-protection rules.
+  ci-passed:
+    if: always()
+    needs:
+      - ci-step
+      - commitlint
+    runs-on: ubuntu-latest
+    name: CI Passed
+    steps:
+      - name: Verify all CI jobs passed
+        # Derive pass/fail from the whole `needs` object rather than a
+        # hand-maintained list of `<job>.result` lines. `skipped` and
+        # `success` both pass; only `failure` / `cancelled` fail the gate.
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+        run: |
+          echo "$NEEDS_JSON"
+          failed=$(echo "$NEEDS_JSON" | jq -r 'to_entries[] | select(.value.result == "failure" or .value.result == "cancelled") | .key')
+          if [ -n "$failed" ]; then
+            echo "Failed or cancelled jobs:"
+            echo "$failed"
+            exit 1
+          fi
+          echo "All required jobs passed (or were skipped)."
