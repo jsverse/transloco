@@ -73,6 +73,11 @@ jobs:
         with:
           app-id: ${{ secrets.RELEASE_APP_ID }}
           private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+          # Least-privilege: the token only needs Contents (push release
+          # commit/tag to master + create the GitHub Release). Declaring it
+          # here enforces the scope at the workflow level instead of relying
+          # solely on the app installation's configured permissions.
+          permission-contents: write
 
       # Persist the app token so the later `git push HEAD:master` authenticates
       # as the bypass-capable app — the default GITHUB_TOKEN cannot push to the
