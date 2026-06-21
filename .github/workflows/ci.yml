@@ -6,26 +6,30 @@ on:
     branches:
       - master
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref == 'refs/heads/master' && github.sha || github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
+
 jobs:
   ci-step:
     strategy:
       fail-fast: false
       matrix:
-        target: ['ci:build', 'ci:test', 'ci:lint', 'ci:e2e']
+        target: ['build', 'test', 'lint', 'e2e']
     runs-on: ubuntu-latest
     name: ${{ matrix.target }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Setup
         uses: ./.github/actions/step-setup
 
-      - name: Run ${{ matrix.target }}
-        run: npm run ${{ matrix.target }}
+      - name: Run ci:${{ matrix.target }}
+        run: npm run ci:${{ matrix.target }}
         shell: bash
 
       - name: Publish any commit / build for testing
-        if: ${{ matrix.target == 'ci:build' && github.ref != 'refs/heads/master' }}
+        if: ${{ matrix.target == 'build' && github.ref != 'refs/heads/master' }}
         run: npm run release:pkg-pr-new
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -34,8 +38,9 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
+          persist-credentials: false
           fetch-depth: 0
 
       - name: Setup
@@ -43,3 +48,71 @@ jobs:
 
       - name: Validate PR commits with commitlint
         run: npx commitlint --from ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }} --to ${{ github.event.pull_request.head.sha }} --verbose
+
+  actionlint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Cache actionlint
+        id: cache-actionlint
+        uses: actions/cache@v5
+        with:
+          path: ~/bin/actionlint
+          key: ${{ runner.os }}-actionlint-v1.7.12
+          restore-keys: |
+            ${{ runner.os }}-actionlint-
+
+      - name: Install actionlint
+        if: steps.cache-actionlint.outputs.cache-hit != 'true'
+        # Pinned SHA256 (from actionlint_1.7.12_checksums.txt) verifies the
+        # download before extraction — `set -e` ensures a checksum mismatch
+        # aborts the step rather than falling through to tar/chmod. Update the
+        # checksum alongside the version in the cache key above.
+        run: |
+          set -euo pipefail
+          mkdir -p ~/bin
+          curl -fsSL https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz \
+            -o /tmp/actionlint.tar.gz
+          echo "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8  /tmp/actionlint.tar.gz" | sha256sum --check
+          tar xz -C ~/bin actionlint < /tmp/actionlint.tar.gz
+          chmod +x ~/bin/actionlint
+
+      - name: Add actionlint to PATH
+        run: echo "${HOME}/bin" >> "$GITHUB_PATH"
+
+      - name: Run actionlint
+        run: actionlint -color
+
+  # Single required status check. Branch protection should require only this
+  # job; the matrix targets and jobs above can change freely without editing
+  # branch-protection rules.
+  ci-passed:
+    if: always()
+    needs:
+      - ci-step
+      - commitlint
+      - actionlint
+    runs-on: ubuntu-latest
+    name: CI Passed
+    steps:
+      - name: Verify all CI jobs passed
+        # Derive pass/fail from the whole `needs` object rather than a
+        # hand-maintained list of `<job>.result` lines. `skipped` and
+        # `success` both pass; only `failure` / `cancelled` fail the gate.
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+        run: |
+          echo "$NEEDS_JSON"
+          failed=$(echo "$NEEDS_JSON" | jq -r 'to_entries[] | select(.value.result == "failure" or .value.result == "cancelled") | .key')
+          if [ -n "$failed" ]; then
+            echo "Failed or cancelled jobs:"
+            echo "$failed"
+            exit 1
+          fi
+          echo "All required jobs passed (or were skipped)."
