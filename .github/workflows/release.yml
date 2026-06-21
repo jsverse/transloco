@@ -44,7 +44,7 @@ jobs:
       matrix:
         target: ['ci:lint', 'ci:test', 'ci:e2e']
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
 
@@ -73,16 +73,21 @@ jobs:
       # and is scoped to repo Contents only.
       - name: Generate app token
         id: app-token
-        uses: actions/create-github-app-token@v2
+        uses: actions/create-github-app-token@v3
         with:
           app-id: ${{ secrets.RELEASE_APP_ID }}
           private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+          # Least-privilege: the token only needs Contents (push release
+          # commit/tag to master + create the GitHub Release). Declaring it
+          # here enforces the scope at the workflow level instead of relying
+          # solely on the app installation's configured permissions.
+          permission-contents: write
 
       # Persist the app token so the later `git push HEAD:master` authenticates
       # as the bypass-capable app — the default GITHUB_TOKEN cannot push to the
       # protected branch (rejected with GH006)
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
           fetch-tags: true
