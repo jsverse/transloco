@@ -28,8 +28,8 @@ npm run ci:lint                    # Lint all packages
 nx lint <package-name>             # Lint single package
 
 # E2E
-npm run ci:e2e                     # Cypress E2E (CI mode)
-npm run e2e                        # Cypress E2E (watch mode)
+npm run ci:e2e                     # Playwright E2E (CI mode, production serve)
+npm run e2e                        # Playwright E2E (local, dev serve)
 ```
 
 ## Architecture
@@ -67,7 +67,7 @@ The core `transloco` library is the foundation. All plugin libraries depend on i
 
 ### Testing Setup
 
-The core `transloco` library uses **Karma/Jasmine** for its main tests and **Jest** for schematics tests. Most plugin libraries use **Jest** only. The playground uses **Cypress** for E2E.
+The core `transloco` library uses **Karma/Jasmine** for its main tests and **Jest** for schematics tests. Most plugin libraries use **Jest** only. The playground uses **Playwright** for E2E.
 
 Test utility: `@ngneat/spectator` for Angular component testing.
 
