@@ -2,7 +2,9 @@ import { workspaceRoot } from '@nx/devkit';
 import { nxE2EPreset } from '@nx/playwright/preset';
 import { defineConfig, devices } from '@playwright/test';
 
-const baseURL = process.env['BASE_URL'] || 'http://localhost:4200';
+// The suite always runs against the locally served playground; webServer below
+// starts it on this exact URL, so keep baseURL and the server URL in lockstep.
+const baseURL = 'http://localhost:4200';
 
 // CI serves the production build; local development serves the dev build and
 // reuses an already-running dev server when present.

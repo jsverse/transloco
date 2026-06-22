@@ -51,7 +51,7 @@ test.describe('Transloco Full Cycle', () => {
     await generateContentWithoutLoader(page);
   });
   test('Scope sharing page', async ({ page }) => {
-    await page.goto('scope-sharing');
+    await page.goto('/scope-sharing');
     await testScopeSharingContent(page);
     await changeLang(page, 'es');
     await testScopeSharingContent(page, 'spanish');
