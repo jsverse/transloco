@@ -22,7 +22,7 @@ export interface TranslocoConfig {
     keepCasing?: boolean;
     autoPrefixKeys?: boolean;
   };
-  useSignalTracking: boolean;
+  useSignalTracking?: boolean;
 }
 
 export const TRANSLOCO_CONFIG =
