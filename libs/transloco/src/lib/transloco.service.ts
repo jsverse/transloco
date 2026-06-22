@@ -23,7 +23,7 @@ import {
   tap,
 } from 'rxjs';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { isEmpty, isNil, isString, size, toCamelCase } from '@jsverse/utils';
+import { isDefined, isEmpty, isNil, isString, size, toCamelCase } from '@jsverse/utils';
 
 import {
   DefaultLoader,
@@ -342,7 +342,7 @@ export class TranslocoService {
     const translation = this.getTranslation(resolveLang);
     const value = translation[key];
 
-    if (!value) {
+    if (!isDefined(value)) {
       return this._handleMissingKey(key, value, params);
     }
 
