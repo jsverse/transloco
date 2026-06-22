@@ -20,6 +20,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { OrArray } from '@jsverse/utils';
 
 import { Content, TemplateHandler } from './template-handler';
+import { TRANSLOCO_CONFIG } from './transloco.config';
 import { TRANSLOCO_LANG } from './transloco-lang';
 import { TRANSLOCO_LOADING_TEMPLATE } from './transloco-loading-template';
 import { TRANSLOCO_SCOPE } from './transloco-scope';
