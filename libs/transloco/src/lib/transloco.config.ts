@@ -22,15 +22,16 @@ export interface TranslocoConfig {
     keepCasing?: boolean;
     autoPrefixKeys?: boolean;
   };
+  useSignalTracking?: boolean;
 }
 
 export const TRANSLOCO_CONFIG =
   /* @__PURE__ */ new InjectionToken<TranslocoConfig>(
     typeof ngDevMode !== 'undefined' && ngDevMode ? 'TRANSLOCO_CONFIG' : '',
-    {
-      factory: () => defaultConfig,
-    },
-  );
+  {
+    factory: () => defaultConfig,
+  },
+);
 
 export const defaultConfig: TranslocoConfig = {
   defaultLang: 'en',
@@ -52,6 +53,7 @@ export const defaultConfig: TranslocoConfig = {
     keepCasing: false,
     autoPrefixKeys: true,
   },
+  useSignalTracking: false,
 };
 
 type DeepPartial<T> =

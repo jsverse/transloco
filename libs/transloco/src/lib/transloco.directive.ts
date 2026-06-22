@@ -10,6 +10,7 @@ import {
   OnDestroy,
   OnInit,
   Renderer2,
+  signal,
   SimpleChanges,
   TemplateRef,
   ViewContainerRef,
@@ -19,6 +20,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { OrArray } from '@jsverse/utils';
 
 import { Content, TemplateHandler } from './template-handler';
+import { TRANSLOCO_CONFIG } from './transloco.config';
 import { TRANSLOCO_LANG } from './transloco-lang';
 import { TRANSLOCO_LOADING_TEMPLATE } from './transloco-loading-template';
 import { TRANSLOCO_SCOPE } from './transloco-scope';
@@ -47,6 +49,7 @@ interface ViewContext {
 export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   private destroyRef = inject(DestroyRef);
   private service = inject(TranslocoService);
+  private config = inject(TRANSLOCO_CONFIG);
   private tpl = inject<TemplateRef<ViewContext>>(TemplateRef, {
     optional: true,
   });
@@ -66,6 +69,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   view: EmbeddedViewRef<ViewContext> | undefined;
 
   private memo = new Map<string, any>();
+  private translationsVersion = signal(0);
 
   @Input('transloco') key: string | undefined;
   @Input('translocoParams') params: HashMap = {};
@@ -128,7 +132,10 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
               this.currentLang,
               this.prefix || this.inlineRead,
             );
-        this.cdr.markForCheck();
+        this.translationsVersion.update(v => v + 1);
+        if (!this.config.useSignalTracking) {
+          this.cdr.markForCheck();
+        }
         this.initialized = true;
       });
 
@@ -181,6 +188,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     prefix: string | undefined,
   ): TranslateFn {
     return (key: string, params?: HashMap) => {
+      this.translationsVersion(); // tracked read: triggers re-render when translations are loaded
       const withPrefix = prefix ? `${prefix}.${key}` : key;
       const memoKey = params
         ? `${withPrefix}${JSON.stringify(params)}`
