@@ -20,6 +20,8 @@ jobs:
     name: ${{ matrix.target }}
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Setup
         uses: ./.github/actions/step-setup
