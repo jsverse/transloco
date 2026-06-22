@@ -102,4 +102,34 @@ describe('missingHandler', () => {
       expect(service.translate('empty', { value: 'hello' })).toEqual('');
     }));
   });
+
+  describe('useFallbackTranslation - no duplicate request', () => {
+    it(`GIVEN fallback lang is already cached
+        WHEN loading another lang with useFallbackTranslation
+        THEN should not make a duplicate request for the fallback lang`, fakeAsync(() => {
+      const service = createService({
+        // fallbackLang defaults to 'en' in createService, same as defaultLang
+        missingHandler: {
+          useFallbackTranslation: true,
+        },
+      });
+
+      const loaderSpy = spyOn(
+        (service as any).loader,
+        'getTranslation',
+      ).and.callThrough();
+
+      service.load('en').subscribe();
+      runLoader();
+
+      service.load('es').subscribe();
+      runLoader();
+
+      expect(loaderSpy).toHaveBeenCalledTimes(2);
+      expect(loaderSpy.calls.allArgs()).toEqual([
+        ['en', undefined],
+        ['es', undefined],
+      ]);
+    }));
+  });
 });

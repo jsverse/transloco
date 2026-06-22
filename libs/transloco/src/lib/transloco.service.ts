@@ -266,11 +266,43 @@ export class TranslocoService {
         ? `${scope!}/${this.firstFallbackLang}`
         : this.firstFallbackLang;
 
-      const loaders = getFallbacksLoaders({
-        ...loadersOptions,
-        fallbackPath: fallback!,
-      });
-      loadTranslation = forkJoin(loaders);
+      const cachedFallback = this.cache.get(fallback!);
+      if (cachedFallback) {
+        /**
+         * The fallback lang is already in the cache — either currently being fetched
+         * or fully loaded. Reuse it instead of calling the loader again.
+         *
+         * Without this guard, `getFallbacksLoaders` would call `resolveLoader`
+         * directly (bypassing the service cache) and issue a duplicate HTTP request.
+         *
+         * Example:
+         *   defaultLang: 'en', fallbackLang: 'en', useFallbackTranslation: true
+         *   A template contains both the active lang ('en') and a static 'es' lang.
+         *
+         *   1. load('en') — cache miss → HTTP GET /assets/i18n/en.json  (stored in cache)
+         *   2. load('es') — useFallbackTranslation('es') is true, fallback = 'en'
+         *                 → without this check, getFallbacksLoaders would HTTP GET
+         *                   /assets/i18n/en.json a second time despite it being cached.
+         *                 → with this check, the cached 'en' observable is reused and
+         *                   only /assets/i18n/es.json is fetched.
+         */
+        const primaryLoader = from(resolveLoader(loadersOptions)).pipe(
+          map((translation) => ({ translation, lang: path })),
+        );
+        const fallbackLoader = cachedFallback.pipe(
+          map(() => ({
+            translation: this.getTranslation(fallback!),
+            lang: fallback!,
+          })),
+        );
+        loadTranslation = forkJoin([primaryLoader, fallbackLoader]);
+      } else {
+        const loaders = getFallbacksLoaders({
+          ...loadersOptions,
+          fallbackPath: fallback!,
+        });
+        loadTranslation = forkJoin(loaders);
+      }
     } else {
       const loader = resolveLoader(loadersOptions);
       loadTranslation = from(loader);
