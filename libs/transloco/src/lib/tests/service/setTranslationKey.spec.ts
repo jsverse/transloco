@@ -42,7 +42,7 @@ describe('setTranslationKey', () => {
       WHEN setTranslationKey is called with emitChange false
       THEN should not emit lang change event`, fakeAsync(() => {
     loadLang(service);
-    spyOn(service, 'setActiveLang');
+    vi.spyOn(service, 'setActiveLang');
     service.setTranslationKey('a.b', 'newValue', {
       emitChange: false,
       lang: 'en',

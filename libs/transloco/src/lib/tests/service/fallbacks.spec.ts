@@ -42,15 +42,13 @@ describe('Multiple fallbacks', () => {
         { loader },
       );
 
-      spyOn(service, 'load').and.callThrough();
+      vi.spyOn(service, 'load');
       service.load('notExists').subscribe();
 
       // notExists will try 3 times then the fallback
-      expect((service.load as jasmine.Spy).calls.argsFor(0)).toEqual([
-        'notExists',
-      ]);
+      expect(vi.mocked(service.load).mock.calls[0]).toEqual(['notExists']);
       runLoader(3);
-      expect((service.load as jasmine.Spy).calls.argsFor(1)).toEqual([
+      expect(vi.mocked(service.load).mock.calls[1]).toEqual([
         'es',
         { failedCounter: 1, fallbackLangs: ['es'] },
       ]);
@@ -77,15 +75,13 @@ describe('Multiple fallbacks', () => {
         { loader },
       );
 
-      spyOn(service, 'load').and.callThrough();
+      vi.spyOn(service, 'load');
       service.load('notExists').subscribe();
 
       // notExists will try 3 times then the fallback
-      expect((service.load as jasmine.Spy).calls.argsFor(0)).toEqual([
-        'notExists',
-      ]);
+      expect(vi.mocked(service.load).mock.calls[0]).toEqual(['notExists']);
       runLoader(3);
-      expect((service.load as jasmine.Spy).calls.argsFor(1)).toEqual([
+      expect(vi.mocked(service.load).mock.calls[1]).toEqual([
         'es',
         { failedCounter: 1, fallbackLangs: ['es'] },
       ]);
@@ -99,11 +95,9 @@ describe('Multiple fallbacks', () => {
       service.load('notExists2').subscribe();
       // notExists2 will try 3 times then the fallback
       runLoader(4);
-      expect((service.load as jasmine.Spy).calls.argsFor(2)).toEqual([
-        'notExists2',
-      ]);
+      expect(vi.mocked(service.load).mock.calls[2]).toEqual(['notExists2']);
       // Ensure that we don't call es again
-      expect((service.load as jasmine.Spy).calls.argsFor(3)).toEqual([]);
+      expect(vi.mocked(service.load).mock.calls[3]).toEqual(undefined);
       expect(service.getActiveLang()).toEqual('es');
       // clear the cache
       expect((service as any).cache.size).toEqual(1);
@@ -121,7 +115,7 @@ describe('Multiple fallbacks', () => {
         { loader },
       );
 
-      spyOn(service, 'load').and.callThrough();
+      vi.spyOn(service, 'load');
       service
         .load('notExists')
         .pipe(
@@ -209,25 +203,23 @@ describe('Multiple fallbacks', () => {
         { loader, fallback: StrategyTest },
       );
 
-      spyOn(service, 'load').and.callThrough();
+      vi.spyOn(service, 'load');
       service.load('notExists').subscribe();
 
       // 3 notExists / 3 it / 3 gp / 1 en = 10
-      expect((service.load as jasmine.Spy).calls.argsFor(0)).toEqual([
-        'notExists',
-      ]);
+      expect(vi.mocked(service.load).mock.calls[0]).toEqual(['notExists']);
       runLoader(3);
-      expect((service.load as jasmine.Spy).calls.argsFor(1)).toEqual([
+      expect(vi.mocked(service.load).mock.calls[1]).toEqual([
         'it',
         { failedCounter: 1, fallbackLangs: ['it', 'gp', 'en'] },
       ]);
       runLoader(3);
-      expect((service.load as jasmine.Spy).calls.argsFor(2)).toEqual([
+      expect(vi.mocked(service.load).mock.calls[2]).toEqual([
         'gp',
         { failedCounter: 2, fallbackLangs: ['it', 'gp', 'en'] },
       ]);
       runLoader(3);
-      expect((service.load as jasmine.Spy).calls.argsFor(3)).toEqual([
+      expect(vi.mocked(service.load).mock.calls[3]).toEqual([
         'en',
         { failedCounter: 3, fallbackLangs: ['it', 'gp', 'en'] },
       ]);

@@ -1,4 +1,4 @@
-import { createHostFactory, SpectatorHost } from '@ngneat/spectator';
+import { createHostFactory, SpectatorHost } from '@ngneat/spectator/vitest';
 import { Provider } from '@angular/core';
 
 import { providersMock, runLoader, setlistenToLangChange } from '../mocks';

@@ -42,11 +42,10 @@
       "executor": "nx:noop"
     },
     "test-library": {
-      "executor": "@angular-devkit/build-angular:karma",
+      "executor": "@nx/vitest:test",
+      "outputs": ["{workspaceRoot}/coverage/libs/transloco"],
       "options": {
-        "main": "libs/transloco/src/test-setup.ts",
-        "tsConfig": "libs/transloco/tsconfig.spec.json",
-        "karmaConfig": "libs/transloco/karma.conf.js"
+        "configFile": "libs/transloco/vitest.config.ts"
       }
     },
     "test-schematics": {

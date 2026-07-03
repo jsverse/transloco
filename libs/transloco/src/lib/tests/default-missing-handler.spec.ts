@@ -9,7 +9,7 @@ describe('TranslocoMissingHandler', () => {
   };
 
   function assertLog(config?: Partial<TranslocoConfig>, shouldLog = true) {
-    spyOn(console, 'warn');
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
     const result = parser.handle('myKey', { ..._defaultConfig, ...config });
     shouldLog
       ? expect(console.warn).toHaveBeenCalled()

@@ -1,5 +1,5 @@
 import { fakeAsync } from '@angular/core/testing';
-import { SpectatorHost } from '@ngneat/spectator';
+import { SpectatorHost } from '@ngneat/spectator/vitest';
 
 import { runLoader } from '../mocks';
 import { TranslocoDirective } from '../../transloco.directive';
@@ -34,8 +34,12 @@ describe('Attribute directive', () => {
     );
   }));
 
-  // TODO(nx-upgrade): flaky on deprecated @angular-devkit/build-angular:karma builder under Angular 21 (NG0100 / scope-load timing). Re-enable after the Vitest migration.
-  xit(`GIVEN attribute directive with dynamic key
+  // Skipped: fails under Angular 21 dev-mode change detection with NG0100
+  // (ExpressionChangedAfterItHasBeenChecked) — the directive updates the key's
+  // rendered value mid-CD after the host prop changes. Pre-existing Angular 21
+  // issue not resolved by the Karma->Vitest migration; fixing it requires a
+  // production change to TranslocoDirective, which is out of scope here.
+  it.skip(`GIVEN attribute directive with dynamic key
       WHEN key changes
       THEN should update translation`, fakeAsync(() => {
     spectator = createHost(`<div [transloco]="key"></div>`, {
@@ -48,8 +52,12 @@ describe('Attribute directive', () => {
     expect(spectator.queryHost('div')).toHaveText('from list');
   }));
 
-  // TODO(nx-upgrade): flaky on deprecated @angular-devkit/build-angular:karma builder under Angular 21 (NG0100 / scope-load timing). Re-enable after the Vitest migration.
-  xit(`GIVEN attribute directive with dynamic params
+  // Skipped: fails under Angular 21 dev-mode change detection with NG0100
+  // (ExpressionChangedAfterItHasBeenChecked) — the directive updates the
+  // interpolated value mid-CD after the host params change. Pre-existing
+  // Angular 21 issue not resolved by the Karma->Vitest migration; fixing it
+  // requires a production change to TranslocoDirective, which is out of scope.
+  it.skip(`GIVEN attribute directive with dynamic params
       WHEN params change
       THEN should update interpolated translation`, fakeAsync(() => {
     spectator = createHost(
@@ -97,8 +105,12 @@ describe('Attribute directive', () => {
     testMergedScopedTranslation(spectator);
   }));
 
-  // TODO(nx-upgrade): flaky on deprecated @angular-devkit/build-angular:karma builder under Angular 21 (NG0100 / scope-load timing). Re-enable after the Vitest migration.
-  xit(`GIVEN scoped directive with global and scoped keys
+  // Skipped: fails due to scope-load timing — after switching to 'es' the merged
+  // global key ('home') still resolves from the previous language while the scoped
+  // key updates, so '.global' shows 'home english' instead of 'home spanish'.
+  // Pre-existing Angular 21 timing issue not resolved by the Karma->Vitest
+  // migration; fixing it requires a production change, which is out of scope.
+  it.skip(`GIVEN scoped directive with global and scoped keys
       WHEN both translations are loaded
       THEN should expose both scoped and global translation`, fakeAsync(() => {
     spectator = createHost(

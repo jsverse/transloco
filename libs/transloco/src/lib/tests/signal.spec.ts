@@ -7,7 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { fakeAsync, TestBed } from '@angular/core/testing';
-import { createComponentFactory, Spectator } from '@ngneat/spectator';
+import { createComponentFactory, Spectator } from '@ngneat/spectator/vitest';
 
 import { Translation } from '../transloco.types';
 import { TranslocoModule } from '../transloco.module';

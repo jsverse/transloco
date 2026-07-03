@@ -12,7 +12,7 @@ describe('selectTranslation', () => {
   it(`GIVEN service with scoped translation
       WHEN selectTranslation is called with scope and lang changes
       THEN should emit scoped translations for each lang`, fakeAsync(() => {
-    const spy = jasmine.createSpy();
+    const spy = vi.fn();
     service.selectTranslation('lazy-page').subscribe(spy);
     runLoader();
     expect(spy).toHaveBeenCalledWith(flatten(mockLangs['lazy-page/en']));
@@ -24,7 +24,7 @@ describe('selectTranslation', () => {
   it(`GIVEN service with active lang
       WHEN selectTranslation is called without lang and lang changes
       THEN should emit active translation for each lang`, fakeAsync(() => {
-    const spy = jasmine.createSpy();
+    const spy = vi.fn();
     service.selectTranslation().subscribe(spy);
     runLoader();
     expect(spy).toHaveBeenCalledWith(flatten(mockLangs['en']));
@@ -36,7 +36,7 @@ describe('selectTranslation', () => {
   it(`GIVEN service with specific lang
       WHEN selectTranslation is called with static lang
       THEN should emit once and not react to lang changes`, fakeAsync(() => {
-    const spy = jasmine.createSpy();
+    const spy = vi.fn();
     service.selectTranslation('es').subscribe(spy);
     runLoader();
     expect(spy).toHaveBeenCalledWith(flatten(mockLangs['es']));
@@ -49,7 +49,7 @@ describe('selectTranslation', () => {
   it(`GIVEN service with scoped translation and static lang
       WHEN selectTranslation is called with scope/lang
       THEN should emit once and not react to lang changes`, fakeAsync(() => {
-    const spy = jasmine.createSpy();
+    const spy = vi.fn();
     service.selectTranslation('lazy-page/es').subscribe(spy);
     runLoader();
     expect(spy).toHaveBeenCalledWith(flatten(mockLangs['lazy-page/es']));

@@ -1,4 +1,4 @@
-import { createComponentFactory, Spectator } from '@ngneat/spectator';
+import { createComponentFactory, Spectator } from '@ngneat/spectator/vitest';
 import { Component } from '@angular/core';
 import { fakeAsync } from '@angular/core/testing';
 
@@ -55,8 +55,12 @@ describe('Transloco Pipe', () => {
       expect(spectator.query('h5')).toHaveText('home spanish');
     }));
 
-    // TODO(nx-upgrade): flaky on deprecated @angular-devkit/build-angular:karma builder under Angular 21 (NG0100 / scope-load timing). Re-enable after the Vitest migration.
-    xit(`GIVEN pipe with dynamic params
+    // Skipped: fails under Angular 21 dev-mode change detection with NG0100
+    // (ExpressionChangedAfterItHasBeenChecked) — the transloco pipe updates its
+    // rendered value mid-CD after the bound params change. Pre-existing Angular 21
+    // issue not resolved by the Karma->Vitest migration; fixing it requires a
+    // production change to the pipe, which is out of scope here.
+    it.skip(`GIVEN pipe with dynamic params
         WHEN param values change
         THEN should update translation with new params`, fakeAsync(() => {
       spectator = createComponent();
