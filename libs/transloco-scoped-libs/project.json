@@ -20,11 +20,10 @@
       "outputs": ["{options.outputFile}"]
     },
     "test": {
-      "executor": "@nx/jest:jest",
+      "executor": "@nx/vitest:test",
       "outputs": ["{workspaceRoot}/coverage/libs/transloco-scoped-libs"],
       "options": {
-        "jestConfig": "libs/transloco-scoped-libs/jest.config.js",
-        "passWithNoTests": true
+        "configFile": "libs/transloco-scoped-libs/vitest.config.ts"
       }
     }
   }
