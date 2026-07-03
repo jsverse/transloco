@@ -44,7 +44,7 @@
  * `test-schematics` target, which uses the same runner and the same
  * `@jsverse/transloco-utils` alias.
  */
-import { createRequire } from 'node:module';
+import Module, { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -71,3 +71,27 @@ const compilerOptions = readDefaultTsConfig(tsConfigPath);
 // Installs the pirates require-hook. `register` forces CommonJS output so the
 // transpiled modules are loadable by Node's `require`.
 register(compilerOptions);
+
+// Make TypeScript extensions resolve BEFORE `.json`/`.js` for extensionless
+// requires. `@swc-node/register` appends `.ts`/`.tsx` to `Module._extensions`,
+// but Node's resolver tries them in insertion order (`.js`, `.json`, `.node`,
+// then `.ts`, ...). A schematic factory that does `require('./schema')` next to
+// both `schema.ts` (the source) and `schema.json` (the schematic's JSON schema)
+// would therefore load `schema.json` and miss the `.ts` module's runtime
+// exports (e.g. an `enum` value would come back `undefined`). Reordering so TS
+// wins mirrors the ts-jest `moduleFileExtensions` order the specs relied on
+// under Jest. Explicit-extension requires (`./foo.json`) are unaffected.
+const extensions = (
+  Module as unknown as { _extensions: Record<string, unknown> }
+)._extensions;
+const tsFirst = ['.ts', '.tsx', '.mts', '.cts'];
+const originalHandlers = { ...extensions };
+for (const key of Object.keys(extensions)) {
+  delete extensions[key];
+}
+for (const key of tsFirst) {
+  if (originalHandlers[key]) extensions[key] = originalHandlers[key];
+}
+for (const key of Object.keys(originalHandlers)) {
+  if (!tsFirst.includes(key)) extensions[key] = originalHandlers[key];
+}

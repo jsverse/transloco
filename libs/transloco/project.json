@@ -50,12 +50,10 @@
       }
     },
     "test-schematics": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{options.outputFile}"],
+      "executor": "@nx/vitest:test",
+      "outputs": ["{workspaceRoot}/coverage/libs/transloco"],
       "options": {
-        "jestConfig": "libs/transloco/jest.config.schematics.ts",
-        "passWithNoTests": true,
-        "tsConfig": "libs/transloco/tsconfig.spec.json"
+        "configFile": "libs/transloco/vitest.config.schematics.ts"
       }
     },
     "lint": {
