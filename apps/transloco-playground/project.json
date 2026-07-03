@@ -82,11 +82,10 @@
       "outputs": ["{options.outputFile}"]
     },
     "test": {
-      "executor": "@angular-devkit/build-angular:karma",
+      "executor": "@nx/vitest:test",
+      "outputs": ["{workspaceRoot}/coverage/apps/transloco-playground"],
       "options": {
-        "main": "apps/transloco-playground/src/test-setup.ts",
-        "tsConfig": "apps/transloco-playground/tsconfig.spec.json",
-        "karmaConfig": "apps/transloco-playground/karma.conf.js"
+        "configFile": "apps/transloco-playground/vitest.config.ts"
       }
     }
   }
