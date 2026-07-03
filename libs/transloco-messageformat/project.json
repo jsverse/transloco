@@ -22,11 +22,10 @@
       "defaultConfiguration": "production"
     },
     "test": {
-      "executor": "@angular-devkit/build-angular:karma",
+      "executor": "@nx/vitest:test",
+      "outputs": ["{workspaceRoot}/coverage/libs/transloco-messageformat"],
       "options": {
-        "main": "libs/transloco-messageformat/src/test-setup.ts",
-        "tsConfig": "libs/transloco-messageformat/tsconfig.spec.json",
-        "karmaConfig": "libs/transloco-messageformat/karma.conf.js"
+        "configFile": "libs/transloco-messageformat/vitest.config.ts"
       }
     },
     "lint": {
