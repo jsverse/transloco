@@ -1,23 +1,32 @@
-import { SpectatorPipe } from '@ngneat/spectator';
+import { SpectatorPipe } from '@ngneat/spectator/vitest';
+import type { MockInstance } from 'vitest';
 
 import { TranslocoPercentPipe } from '../../pipes';
 import { LOCALE_CONFIG_MOCK, provideTranslocoLocaleConfigMock } from '../mocks';
 import { createLocalePipeFactory, pipeTplFactory } from '../utils';
 
 describe('TranslocoPercentPipe', () => {
-  let intlSpy: jasmine.Spy<(typeof Intl)['NumberFormat']>;
+  let intlSpy: MockInstance;
   let spectator: SpectatorPipe<TranslocoPercentPipe>;
   const getPipeTpl = pipeTplFactory('translocoPercent');
   const pipeFactory = createLocalePipeFactory(TranslocoPercentPipe);
 
   function getIntlCallArgs() {
-    const [locale, options] = intlSpy.calls.argsFor(0);
+    const [locale, options] = intlSpy.mock.calls[0];
 
     return [locale!, options!] as const;
   }
 
   beforeEach(() => {
-    intlSpy = spyOn(Intl, 'NumberFormat').and.callThrough();
+    // vi.spyOn calls through for plain methods, but not when the spied target
+    // is used as a constructor (`new Intl.NumberFormat(...)`). Reconstruct the
+    // original so `.format(...)` still works while recording the ctor args.
+    const OriginalNumberFormat = Intl.NumberFormat;
+    intlSpy = vi.spyOn(Intl, 'NumberFormat').mockImplementation(function (
+      ...args: ConstructorParameters<typeof Intl.NumberFormat>
+    ) {
+      return new OriginalNumberFormat(...args);
+    });
   });
 
   it(`GIVEN a number value
@@ -62,7 +71,7 @@ describe('TranslocoPercentPipe', () => {
       providers: [provideTranslocoLocaleConfigMock(LOCALE_CONFIG_MOCK)],
     });
     const [, { useGrouping, maximumFractionDigits }] = getIntlCallArgs();
-    expect(useGrouping).toBeFalse();
+    expect(useGrouping).toBe(false);
     expect(maximumFractionDigits).toEqual(2);
   });
 
@@ -73,7 +82,7 @@ describe('TranslocoPercentPipe', () => {
       getPipeTpl('1', '{ useGrouping: true, maximumFractionDigits: 3 }'),
     );
     const [, { useGrouping, maximumFractionDigits }] = getIntlCallArgs();
-    expect(useGrouping).toBeTrue();
+    expect(useGrouping).toBe(true);
     expect(maximumFractionDigits).toEqual(3);
   });
 });

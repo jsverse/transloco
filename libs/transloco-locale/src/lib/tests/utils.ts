@@ -1,5 +1,5 @@
 import { coerceArray, isObject, isString, OrArray } from '@jsverse/utils';
-import { createPipeFactory } from '@ngneat/spectator';
+import { createPipeFactory } from '@ngneat/spectator/vitest';
 import { Type } from '@angular/core';
 
 import { BaseLocalePipe } from '../pipes';

@@ -1,4 +1,5 @@
-import { SpectatorPipe } from '@ngneat/spectator';
+import { SpectatorPipe } from '@ngneat/spectator/vitest';
+import type { MockInstance } from 'vitest';
 
 import { TranslocoCurrencyPipe } from '../../pipes/transloco-currency.pipe';
 import { LOCALE_CONFIG_MOCK, provideTranslocoServiceMock } from '../mocks';
@@ -6,20 +7,28 @@ import { NumberFormatOptions } from '../../transloco-locale.types';
 import { createLocalePipeFactory } from '../utils';
 
 describe('TranslocoCurrencyPipe', () => {
-  let intlSpy: jasmine.Spy<(typeof Intl)['NumberFormat']>;
+  let intlSpy: MockInstance;
   let spectator: SpectatorPipe<TranslocoCurrencyPipe>;
   const pipeFactory = createLocalePipeFactory(TranslocoCurrencyPipe, {
     localeConfig: LOCALE_CONFIG_MOCK,
   });
 
   function getIntlCallArgs() {
-    const [locale, options] = intlSpy.calls.argsFor(0);
+    const [locale, options] = intlSpy.mock.calls[0];
 
     return [locale!, options!] as const;
   }
 
   beforeEach(() => {
-    intlSpy = spyOn(Intl, 'NumberFormat').and.callThrough();
+    // vi.spyOn calls through for plain methods, but not when the spied target
+    // is used as a constructor (`new Intl.NumberFormat(...)`). Reconstruct the
+    // original so `.format(...)` still works while recording the ctor args.
+    const OriginalNumberFormat = Intl.NumberFormat;
+    intlSpy = vi.spyOn(Intl, 'NumberFormat').mockImplementation(function (
+      ...args: ConstructorParameters<typeof Intl.NumberFormat>
+    ) {
+      return new OriginalNumberFormat(...args);
+    });
   });
 
   it(`GIVEN a number value

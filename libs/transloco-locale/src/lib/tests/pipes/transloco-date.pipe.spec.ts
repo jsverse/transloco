@@ -1,4 +1,5 @@
-import { SpectatorPipe } from '@ngneat/spectator';
+import { SpectatorPipe } from '@ngneat/spectator/vitest';
+import type { MockInstance } from 'vitest';
 
 import { TranslocoDatePipe } from '../../pipes';
 import {
@@ -9,20 +10,28 @@ import {
 import { createLocalePipeFactory } from '../utils';
 
 describe('TranslocoDatePipe', () => {
-  let intlSpy: jasmine.Spy<(typeof Intl)['DateTimeFormat']>;
+  let intlSpy: MockInstance;
   let spectator: SpectatorPipe<TranslocoDatePipe>;
   const pipeFactory = createLocalePipeFactory(TranslocoDatePipe);
 
   const date = new Date(2019, 9, 7, 12, 0, 0);
 
   function getIntlCallArgs() {
-    const [locale, options] = intlSpy.calls.argsFor(0);
+    const [locale, options] = intlSpy.mock.calls[0];
 
     return [locale!, options!] as const;
   }
 
   beforeEach(() => {
-    intlSpy = spyOn(Intl, 'DateTimeFormat').and.callThrough();
+    // vi.spyOn calls through for plain methods, but not when the spied target
+    // is used as a constructor (`new Intl.DateTimeFormat(...)`). Reconstruct the
+    // original so `.format(...)` still works while recording the ctor args.
+    const OriginalDateTimeFormat = Intl.DateTimeFormat;
+    intlSpy = vi.spyOn(Intl, 'DateTimeFormat').mockImplementation(function (
+      ...args: ConstructorParameters<typeof Intl.DateTimeFormat>
+    ) {
+      return new OriginalDateTimeFormat(...args);
+    });
   });
 
   it(`GIVEN a date object
