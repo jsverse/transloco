@@ -4,7 +4,7 @@ import {
   SchematicTestRunner,
   UnitTestTree,
 } from '@angular-devkit/schematics/testing';
-jest.mock('@jsverse/transloco-utils');
+vi.mock('@jsverse/transloco-utils');
 import {
   getGlobalConfig,
   TranslocoGlobalConfig,
@@ -35,7 +35,7 @@ describe('Split', () => {
   }
 
   function mockConfig(config: Partial<TranslocoGlobalConfig> = {}) {
-    (getGlobalConfig as jest.Mock).mockReturnValue(config);
+    vi.mocked(getGlobalConfig).mockReturnValue(config);
   }
 
   beforeEach(async () => {

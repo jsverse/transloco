@@ -8,32 +8,42 @@ import { glob } from 'glob';
 import { run } from '../index';
 import { PIPE_IN_BINDING_REGEX, PIPE_REGEX } from '../migration-matchers';
 
-// Mock the fs module with memfs
-jest.mock('node:fs/promises', () => {
-  const originalModule = jest.requireActual('node:fs/promises');
+// Mock the fs module with memfs.
+// vi.mock is hoisted above imports, so memfs must be imported inside the factory
+// (the top-level `vol` binding isn't initialized yet at hoist time). memfs's `vol`
+// is a singleton, so this is the same volume the test bodies read/write.
+vi.mock('node:fs/promises', async () => {
+  const actual =
+    await vi.importActual<typeof import('node:fs/promises')>(
+      'node:fs/promises',
+    );
+  const { vol } = await import('memfs');
   return {
-    ...originalModule,
-    readFile: jest.fn().mockImplementation((path, options) => {
-      return Promise.resolve(vol.readFileSync(path, options));
+    ...actual,
+    default: actual,
+    readFile: vi.fn((path: string, options: unknown) => {
+      return Promise.resolve(vol.readFileSync(path, options as never));
     }),
-    writeFile: jest.fn().mockImplementation((path, content, options) => {
-      vol.writeFileSync(path, content, options);
+    writeFile: vi.fn((path: string, content: unknown, options: unknown) => {
+      vol.writeFileSync(path, content as never, options as never);
       return Promise.resolve();
     }),
   };
 });
 
-jest.mock('glob', () => {
-  const originalModule = jest.requireActual('glob');
+vi.mock('glob', async () => {
+  const actual = await vi.importActual<typeof import('glob')>('glob');
+  const { vol } = await import('memfs');
+  const nodePath = await import('node:path');
   return {
-    ...originalModule,
-    sync: jest.fn().mockImplementation((pattern) => {
+    ...actual,
+    sync: vi.fn((pattern: string) => {
       // Get the directory from the pattern
       const [dir] = pattern.split('/**');
 
       return vol
         .readdirSync(dir, { recursive: true })
-        .map((file) => nodePath.join(dir, file));
+        .map((file: unknown) => nodePath.join(dir, file as string));
     }),
   };
 });
@@ -234,7 +244,11 @@ describe('ngx-translate migration', () => {
       vol.mkdirSync(translocoDir, { recursive: true });
 
       // Copy template files into memfs
-      const fsReadFile = jest.requireActual('node:fs/promises').readFile;
+      const fsReadFile = (
+        await vi.importActual<typeof import('node:fs/promises')>(
+          'node:fs/promises',
+        )
+      ).readFile;
       for (const file of templateFiles) {
         // Read the original files using the real fs module
         const sourceContent = await fsReadFile(
@@ -248,7 +262,7 @@ describe('ngx-translate migration', () => {
       vol
         .readdirSync(ngxTranslateDir, { recursive: true })
         .forEach(console.log);
-      jest.spyOn(process, 'cwd').mockImplementation(() => __dirname);
+      vi.spyOn(process, 'cwd').mockImplementation(() => __dirname);
       // Run the migration
       await run({ path: 'templates/pipes/ngx-translate' });
 
