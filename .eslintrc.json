@@ -56,12 +56,6 @@
       }
     },
     {
-      "files": ["**/karma.conf.js"],
-      "rules": {
-        "@nx/enforce-module-boundaries": "off"
-      }
-    },
-    {
       "files": [
         "**/vitest.config.ts",
         "**/vitest.config.*.ts",
