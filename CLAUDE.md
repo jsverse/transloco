@@ -20,8 +20,8 @@ nx build <package-name>            # Build single package
 # Test
 npm run ci:test                    # Test all packages
 nx test <package-name>             # Test single package
-nx test-library transloco          # Core library tests (Karma)
-nx test-schematics transloco       # Core schematics tests (Jest)
+nx test-library transloco          # Core library tests (Vitest)
+nx test-schematics transloco       # Core schematics tests (Vitest)
 
 # Lint
 npm run ci:lint                    # Lint all packages
@@ -67,9 +67,9 @@ The core `transloco` library is the foundation. All plugin libraries depend on i
 
 ### Testing Setup
 
-The core `transloco` library uses **Karma/Jasmine** for its main tests and **Jest** for schematics tests. Most plugin libraries use **Jest** only. The playground uses **Cypress** for E2E.
+All libraries and the playground use **Vitest** for unit tests, via the `@nx/vitest:test` executor and per-project `vitest.config.ts` files that merge a shared base (`tools/vitest/vitest.base.ts`). Angular libs compile through `@analogjs/vite-plugin-angular` in a `jsdom` environment; Node/CLI libs use the `node` environment. The playground also uses **Cypress** for E2E.
 
-Test utility: `@ngneat/spectator` for Angular component testing.
+Test utility: `@ngneat/spectator` (imported from `@ngneat/spectator/vitest`) for Angular component testing. Schematic tests (`SchematicTestRunner`) load `.ts` factories through a `@swc-node/register` require hook in `tools/vitest/setup-schematics.ts`.
 
 ### TypeScript Path Aliases
 

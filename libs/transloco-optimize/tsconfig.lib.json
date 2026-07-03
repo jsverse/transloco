@@ -11,5 +11,10 @@
     "allowSyntheticDefaultImports": true
   },
   "include": ["**/*.ts"],
-  "exclude": ["**/*.spec.ts", "jest.config.js", "src/test-setup.ts"]
+  "exclude": [
+    "**/*.spec.ts",
+    "jest.config.js",
+    "src/test-setup.ts",
+    "vitest.config*.ts"
+  ]
 }

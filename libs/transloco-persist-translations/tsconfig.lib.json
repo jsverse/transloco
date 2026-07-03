@@ -8,6 +8,11 @@
     "inlineSources": true,
     "types": ["../../@types/angular-globals"]
   },
-  "exclude": ["src/test-setup.ts", "**/*.spec.ts", "src/lib/tests/mocks.ts"],
+  "exclude": [
+    "src/test-setup.ts",
+    "**/*.spec.ts",
+    "src/lib/tests/mocks.ts",
+    "vitest.config*.ts"
+  ],
   "include": ["**/*.ts"]
 }
