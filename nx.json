@@ -109,6 +109,14 @@
         }
       }
     },
+    "@nx/vitest:test": {
+      "cache": true,
+      "inputs": [
+        "default",
+        "^production",
+        "{workspaceRoot}/tools/vitest/vitest.base.ts"
+      ]
+    },
     "@nx/eslint:lint": {
       "inputs": [
         "default",

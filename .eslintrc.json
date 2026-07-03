@@ -62,6 +62,17 @@
       }
     },
     {
+      "files": [
+        "**/vitest.config.ts",
+        "**/vitest.config.*.ts",
+        "**/vite.config.ts",
+        "tools/vitest/**/*.ts"
+      ],
+      "rules": {
+        "@nx/enforce-module-boundaries": "off"
+      }
+    },
+    {
       "files": ["**/*.spec.ts", "**/mocks.ts", "**/test-setup.ts"],
       "rules": {
         "@typescript-eslint/no-explicit-any": "off",

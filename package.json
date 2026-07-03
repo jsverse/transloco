@@ -44,6 +44,8 @@
     "zone.js": "0.16.2"
   },
   "devDependencies": {
+    "@analogjs/vite-plugin-angular": "^2.6.2",
+    "@analogjs/vitest-angular": "^2.6.2",
     "@angular-devkit/build-angular": "21.2.9",
     "@angular-eslint/eslint-plugin": "21.4.0",
     "@angular-eslint/eslint-plugin-template": "21.4.0",
@@ -61,6 +63,7 @@
     "@nx/jest": "22.7.5",
     "@nx/js": "22.7.5",
     "@nx/module-federation": "22.7.5",
+    "@nx/vitest": "^22.7.5",
     "@nx/workspace": "22.7.5",
     "@swc-node/core": "1.13.1",
     "@swc-node/register": "1.11.1",
@@ -74,6 +77,7 @@
     "@typescript-eslint/eslint-plugin": "7.18.0",
     "@typescript-eslint/parser": "7.18.0",
     "@typescript-eslint/utils": "7.18.0",
+    "@vitest/coverage-v8": "^4.1.9",
     "autoprefixer": "^10.4.0",
     "cheerio": "^1.0.0-rc.12",
     "cypress": "15.9.0",
@@ -90,6 +94,7 @@
     "jest-environment-jsdom": "30.4.1",
     "jest-environment-node": "30.4.1",
     "jest-preset-angular": "16.0.0",
+    "jsdom": "^29.1.1",
     "karma": "6.4.3",
     "karma-chrome-launcher": "3.2.0",
     "karma-coverage": "2.2.1",
@@ -106,7 +111,10 @@
     "ts-mocks": "3.0.1",
     "ts-node": "10.9.1",
     "typescript": "5.9.3",
-    "verdaccio": "6.7.2"
+    "verdaccio": "6.7.2",
+    "vite": "^7.3.6",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^4.1.9"
   },
   "config": {
     "commitizen": {
