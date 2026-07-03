@@ -4,7 +4,7 @@
     "outDir": "../../dist/out-tsc",
     "module": "preserve",
     "moduleResolution": "bundler",
-    "types": ["jasmine", "node"]
+    "types": ["vitest/globals", "node"]
   },
   "files": ["src/test-setup.ts"],
   "include": ["**/*.spec.ts", "**/*.d.ts"]

@@ -20,11 +20,10 @@
       "outputs": ["{options.outputFile}"]
     },
     "test": {
-      "executor": "@angular-devkit/build-angular:karma",
+      "executor": "@nx/vitest:test",
+      "outputs": ["{workspaceRoot}/coverage/libs/transloco-validator"],
       "options": {
-        "main": "libs/transloco-validator/src/test-setup.ts",
-        "tsConfig": "libs/transloco-validator/tsconfig.spec.json",
-        "karmaConfig": "libs/transloco-validator/karma.conf.js"
+        "configFile": "libs/transloco-validator/vitest.config.ts"
       }
     }
   }
