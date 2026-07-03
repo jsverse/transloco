@@ -15,8 +15,14 @@ export const baseConfig = defineConfig({
     pool: 'forks',
     passWithNoTests: true,
     // Mirror Jasmine's per-spec spy reset — critical for the Intl.* spies in
-    // transloco-locale that would otherwise leak across tests.
+    // transloco-locale that would otherwise leak across tests. Libs that install
+    // spies in beforeAll (e.g. transloco-persist-lang) override this to false.
     restoreMocks: true,
     reporters: ['default'],
+    // @ngneat/spectator ships a prebuilt fesm bundle; without inlining it, its
+    // `@angular/core/testing` import resolves to a different module instance
+    // than the test setup initializes, so TestBed appears uninitialized.
+    // Harmless for node-env libs that don't import spectator.
+    server: { deps: { inline: [/@ngneat\/spectator/] } },
   },
 });

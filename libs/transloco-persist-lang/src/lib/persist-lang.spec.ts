@@ -2,7 +2,8 @@ import {
   createServiceFactory,
   mockProvider,
   SpectatorService,
-} from '@ngneat/spectator';
+} from '@ngneat/spectator/vitest';
+import type { MockInstance } from 'vitest';
 import { TranslocoService } from '@jsverse/transloco';
 import { BehaviorSubject } from 'rxjs';
 
@@ -54,16 +55,13 @@ describe('PersistLang', () => {
     ],
   });
 
-  let saveSpy: jasmine.Spy<
+  let saveSpy: MockInstance<
     (typeof TranslocoPersistLangService.prototype)['save']
   >;
 
   beforeEach(() => {
     spectator = serviceFactory();
-    saveSpy = spyOn(
-      TranslocoPersistLangService.prototype as any,
-      'save',
-    ).and.callThrough();
+    saveSpy = vi.spyOn(TranslocoPersistLangService.prototype as any, 'save');
   });
 
   describe('Save lang to storage', () => {
@@ -76,7 +74,7 @@ describe('PersistLang', () => {
     it(`GIVEN service initialized
         WHEN active language is changed to 'es'
         THEN saves new language to storage with correct key`, () => {
-      const setItemSpy = spyOn(fakeStorage, 'setItem').and.callThrough();
+      const setItemSpy = vi.spyOn(fakeStorage, 'setItem');
       spectator.inject(TranslocoService).setActiveLang('es');
       expect(saveSpy).toHaveBeenCalledWith('es');
       expect(setItemSpy).toHaveBeenCalledWith('translocoLang', 'es');
@@ -84,17 +82,17 @@ describe('PersistLang', () => {
   });
 
   describe('Get lang from storage', () => {
-    let setActiveLangSpy: jasmine.Spy<
+    let setActiveLangSpy: MockInstance<
       (typeof TranslocoPersistLangService.prototype)['setActiveLang']
     >;
-    let getItemSpy: jasmine.Spy<PersistStorage['getItem']>;
+    let getItemSpy: MockInstance<PersistStorage['getItem']>;
 
     beforeAll(() => {
-      setActiveLangSpy = spyOn(
+      setActiveLangSpy = vi.spyOn(
         TranslocoPersistLangService.prototype as any,
         'setActiveLang',
-      ).and.callThrough();
-      getItemSpy = spyOn(fakeStorage, 'getItem').and.callThrough();
+      );
+      getItemSpy = vi.spyOn(fakeStorage, 'getItem');
     });
 
     it(`GIVEN language previously saved in storage

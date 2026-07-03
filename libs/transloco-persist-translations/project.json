@@ -22,11 +22,12 @@
       "defaultConfiguration": "production"
     },
     "test": {
-      "executor": "@angular-devkit/build-angular:karma",
+      "executor": "@nx/vitest:test",
+      "outputs": [
+        "{workspaceRoot}/coverage/libs/transloco-persist-translations"
+      ],
       "options": {
-        "main": "libs/transloco-persist-translations/src/test-setup.ts",
-        "tsConfig": "libs/transloco-persist-translations/tsconfig.spec.json",
-        "karmaConfig": "libs/transloco-persist-translations/karma.conf.js"
+        "configFile": "libs/transloco-persist-translations/vitest.config.ts"
       }
     },
     "lint": {

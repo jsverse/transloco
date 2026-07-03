@@ -1,4 +1,7 @@
-import { createServiceFactory, SpectatorService } from '@ngneat/spectator';
+import {
+  createServiceFactory,
+  SpectatorService,
+} from '@ngneat/spectator/vitest';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import {
@@ -37,10 +40,10 @@ describe('TranslocoPersistTranslations', () => {
   }
 
   function spyOnGetTranslation() {
-    return spyOn(
+    return vi.spyOn(
       spectator.inject(TRANSLOCO_PERSIST_TRANSLATIONS_LOADER),
       'getTranslation',
-    ).and.callThrough();
+    );
   }
 
   describe('Sync Storage', () => {
@@ -112,7 +115,7 @@ describe('TranslocoPersistTranslations', () => {
       it(`GIVEN translations in cache
           WHEN clearCache is called
           THEN removes translations and timestamp from storage`, () => {
-        const spy = spyOn(getStorageService(), 'removeItem').and.callThrough();
+        const spy = vi.spyOn(getStorageService(), 'removeItem');
         spectator.service.clearCache();
         const { storageKey } = getConfig();
         expect(spy).toHaveBeenCalledWith(getTimestampKey(storageKey));
@@ -143,7 +146,7 @@ describe('TranslocoPersistTranslations', () => {
         providers: [provideTranslocoPersistTranslationsConfig({ ttl: 10 })],
       });
       const storageService = getStorageService();
-      const spy = spyOn(storageService, 'removeItem').and.callThrough();
+      const spy = vi.spyOn(storageService, 'removeItem');
       spectator.service.getTranslation('en').subscribe();
       tick(10);
       resetService(storageService);
@@ -174,7 +177,7 @@ describe('TranslocoPersistTranslations', () => {
         WHEN getTranslation is called
         THEN saves translations asynchronously to storage`, fakeAsync(() => {
       tick(DELAY);
-      const spy = spyOn(getStorageService(), 'setItem').and.callThrough();
+      const spy = vi.spyOn(getStorageService(), 'setItem');
       let res;
       spectator.service.getTranslation('en').subscribe((translations) => {
         res = translations;
