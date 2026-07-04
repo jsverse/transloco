@@ -8,6 +8,5 @@
     "esModuleInterop": true,
     "moduleResolution": "bundler"
   },
-  "files": ["src/test-setup.ts"],
   "include": ["**/*.spec.ts", "**/*.d.ts"]
 }

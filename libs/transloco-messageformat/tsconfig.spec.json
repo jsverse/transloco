@@ -5,6 +5,5 @@
     "module": "preserve",
     "types": ["vitest/globals", "node"]
   },
-  "files": ["src/test-setup.ts"],
   "include": ["**/*.spec.ts", "**/*.d.ts"]
 }

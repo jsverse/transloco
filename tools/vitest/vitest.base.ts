@@ -1,4 +1,10 @@
+import { resolve } from 'node:path';
 import { defineConfig } from 'vitest/config';
+import tsconfigPaths from 'vite-tsconfig-paths';
+
+// Workspace root (this file lives at <root>/tools/vitest). Each project sets its
+// own `root`, so shared setup files two levels up need it in `server.fs.allow`.
+const workspaceRoot = resolve(__dirname, '../..');
 
 /**
  * Shared Vitest base config, merged into every project's vitest.config.ts via
@@ -6,6 +12,12 @@ import { defineConfig } from 'vitest/config';
  * each project owns its `name`, `include`, `environment`, and coverage dir.
  */
 export const baseConfig = defineConfig({
+  // Resolve workspace `@jsverse/*` aliases from tsconfig.base for every project.
+  // Paths resolve relative to each merged project's `root` (its own dir).
+  plugins: [tsconfigPaths({ projects: ['../../tsconfig.base.json'] })],
+  // Let jsdom projects load shared setup files from tools/vitest, which sit
+  // outside each project's `root` (Vite blocks out-of-root fs access by default).
+  server: { fs: { allow: [workspaceRoot] } },
   test: {
     // Specs call describe/it/expect/beforeEach with no imports (Jasmine legacy),
     // so keep the test APIs ambient. `vi` is also exposed globally.
@@ -24,5 +36,8 @@ export const baseConfig = defineConfig({
     // than the test setup initializes, so TestBed appears uninitialized.
     // Harmless for node-env libs that don't import spectator.
     server: { deps: { inline: [/@ngneat\/spectator/] } },
+    // v8 is Vitest's default provider; pinned here so each project's coverage
+    // block only needs its own reportsDirectory.
+    coverage: { provider: 'v8' },
   },
 });
