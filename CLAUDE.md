@@ -67,7 +67,7 @@ The core `transloco` library is the foundation. All plugin libraries depend on i
 
 ### Testing Setup
 
-All libraries and the playground use **Vitest** for unit tests, via the `@nx/vitest:test` executor and per-project `vitest.config.ts` files that merge a shared base (`tools/vitest/vitest.base.ts`). Angular libs compile through `@analogjs/vite-plugin-angular` in a `jsdom` environment; Node/CLI libs use the `node` environment. The playground uses **Playwright** for E2E.
+All libraries and the playground use **Vitest** for unit tests, via the `@nx/vitest:test` executor. Each project's `vitest.config.ts` calls the `defineAngularProject`/`defineNodeProject` factory in `tools/vitest/define-project.ts` (which merges the shared `tools/vitest/vitest.base.ts`) and passes only what it owns (`name`, `root`, `coverageDir`, `include`, `setupFiles`). Angular libs compile through `@analogjs/vite-plugin-angular` in a `jsdom` environment; Node/CLI libs use the `node` environment. The playground uses **Playwright** for E2E.
 
 Test utility: `@ngneat/spectator` (imported from `@ngneat/spectator/vitest`) for Angular component testing. Schematic tests (`SchematicTestRunner`) load `.ts` factories through a `@swc-node/register` require hook in `tools/vitest/setup-schematics.ts`.
 
