@@ -173,5 +173,6 @@
     "releaseTag": {
       "pattern": "releases/{version}"
     }
-  }
+  },
+  "analytics": false
 }
