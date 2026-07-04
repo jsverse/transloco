@@ -101,7 +101,8 @@
       "inputs": [
         "default",
         "^production",
-        "{workspaceRoot}/tools/vitest/vitest.base.ts"
+        "{workspaceRoot}/tools/vitest/**/*",
+        { "env": "CI" }
       ]
     },
     "@nx/eslint:lint": {

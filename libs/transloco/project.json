@@ -50,7 +50,7 @@
     },
     "test-schematics": {
       "executor": "@nx/vitest:test",
-      "outputs": ["{workspaceRoot}/coverage/libs/transloco"],
+      "outputs": ["{workspaceRoot}/coverage/libs/transloco-schematics-spec"],
       "options": {
         "configFile": "libs/transloco/vitest.config.schematics.ts"
       }

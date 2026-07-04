@@ -37,7 +37,11 @@ export const baseConfig = defineConfig({
     // Harmless for node-env libs that don't import spectator.
     server: { deps: { inline: [/@ngneat\/spectator/] } },
     // v8 is Vitest's default provider; pinned here so each project's coverage
-    // block only needs its own reportsDirectory.
-    coverage: { provider: 'v8' },
+    // block only needs its own reportsDirectory. Enabled in CI (where `CI` is
+    // set) so the coverage `outputs` declared in each project.json are actually
+    // produced; skipped locally to keep interactive runs fast. The `test`
+    // target lists `CI` as an input so Nx never serves a no-coverage cache hit
+    // for a CI run.
+    coverage: { provider: 'v8', enabled: !!process.env['CI'] },
   },
 });
