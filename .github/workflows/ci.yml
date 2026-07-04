@@ -20,9 +20,15 @@ jobs:
     name: ${{ matrix.target }}
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Setup
         uses: ./.github/actions/step-setup
+
+      - name: Setup Playwright
+        if: ${{ matrix.target == 'e2e' }}
+        uses: ./.github/actions/setup-playwright
 
       - name: Run ci:${{ matrix.target }}
         run: npm run ci:${{ matrix.target }}

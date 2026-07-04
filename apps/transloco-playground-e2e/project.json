@@ -5,17 +5,15 @@
   "projectType": "application",
   "targets": {
     "e2e": {
-      "executor": "@nx/cypress:cypress",
+      "executor": "@nx/playwright:playwright",
+      "outputs": [
+        "{workspaceRoot}/dist/.playwright/apps/transloco-playground-e2e"
+      ],
       "options": {
-        "cypressConfig": "apps/transloco-playground-e2e/cypress.config.ts",
-        "devServerTarget": "transloco-playground:serve:development",
-        "watch": true
+        "config": "apps/transloco-playground-e2e/playwright.config.ts"
       },
       "configurations": {
-        "ci": {
-          "watch": false,
-          "devServerTarget": "transloco-playground:serve:production"
-        }
+        "ci": {}
       }
     },
     "lint": {

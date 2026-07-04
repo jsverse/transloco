@@ -28,8 +28,8 @@ npm run ci:lint                    # Lint all packages
 nx lint <package-name>             # Lint single package
 
 # E2E
-npm run ci:e2e                     # Cypress E2E (CI mode)
-npm run e2e                        # Cypress E2E (watch mode)
+npm run ci:e2e                     # Playwright E2E (CI mode, production serve)
+npm run e2e                        # Playwright E2E (local, dev serve)
 ```
 
 ## Architecture
@@ -67,7 +67,7 @@ The core `transloco` library is the foundation. All plugin libraries depend on i
 
 ### Testing Setup
 
-All libraries and the playground use **Vitest** for unit tests, via the `@nx/vitest:test` executor and per-project `vitest.config.ts` files that merge a shared base (`tools/vitest/vitest.base.ts`). Angular libs compile through `@analogjs/vite-plugin-angular` in a `jsdom` environment; Node/CLI libs use the `node` environment. The playground also uses **Cypress** for E2E.
+All libraries and the playground use **Vitest** for unit tests, via the `@nx/vitest:test` executor and per-project `vitest.config.ts` files that merge a shared base (`tools/vitest/vitest.base.ts`). Angular libs compile through `@analogjs/vite-plugin-angular` in a `jsdom` environment; Node/CLI libs use the `node` environment. The playground uses **Playwright** for E2E.
 
 Test utility: `@ngneat/spectator` (imported from `@ngneat/spectator/vitest`) for Angular component testing. Schematic tests (`SchematicTestRunner`) load `.ts` factories through a `@swc-node/register` require hook in `tools/vitest/setup-schematics.ts`.
 

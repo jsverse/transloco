@@ -46,8 +46,11 @@ testem.log
 .DS_Store
 Thumbs.db
 
-# Cypress
-apps/transloco-playground-e2e/cypress/screenshots/*
+# Playwright
+test-results/
+playwright-report/
+blob-report/
+**/playwright/.cache/
 
 .nx/cache
 .nx/workspace-data
