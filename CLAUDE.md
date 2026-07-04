@@ -85,7 +85,7 @@ Scopes: `transloco`, `locale`, `messageformat`, `optimize`, `persist-lang`, `per
 
 ### Pre-commit Checks
 
-Staged files are checked for: `debugger` statements in `.ts` files, `fit(`, `.skip(`, `.only(`, `fdescribe(` in `.spec.ts` files. Plus ESLint fix and Prettier formatting via lint-staged.
+Staged files are checked for: `debugger` statements in `.ts` files, `fit(`, `.only(`, `fdescribe(` in `.spec.ts` files. Plus ESLint fix and Prettier formatting via lint-staged. (`.skip(` is intentionally not blocked — since Vitest has no `xit` alias, `it.skip(` is the only idiom for intentional, documented skips.)
 
 ### Test Format
 
