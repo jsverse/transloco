@@ -3,7 +3,12 @@ import type { MockInstance } from 'vitest';
 
 import { TranslocoPercentPipe } from '../../pipes';
 import { LOCALE_CONFIG_MOCK, provideTranslocoLocaleConfigMock } from '../mocks';
-import { createLocalePipeFactory, pipeTplFactory } from '../utils';
+import {
+  createLocalePipeFactory,
+  getIntlCallArgs,
+  pipeTplFactory,
+  spyOnIntl,
+} from '../utils';
 
 describe('TranslocoPercentPipe', () => {
   let intlSpy: MockInstance;
@@ -11,22 +16,8 @@ describe('TranslocoPercentPipe', () => {
   const getPipeTpl = pipeTplFactory('translocoPercent');
   const pipeFactory = createLocalePipeFactory(TranslocoPercentPipe);
 
-  function getIntlCallArgs() {
-    const [locale, options] = intlSpy.mock.calls[0];
-
-    return [locale!, options!] as const;
-  }
-
   beforeEach(() => {
-    // vi.spyOn calls through for plain methods, but not when the spied target
-    // is used as a constructor (`new Intl.NumberFormat(...)`). Reconstruct the
-    // original so `.format(...)` still works while recording the ctor args.
-    const OriginalNumberFormat = Intl.NumberFormat;
-    intlSpy = vi.spyOn(Intl, 'NumberFormat').mockImplementation(function (
-      ...args: ConstructorParameters<typeof Intl.NumberFormat>
-    ) {
-      return new OriginalNumberFormat(...args);
-    });
+    intlSpy = spyOnIntl('NumberFormat');
   });
 
   it(`GIVEN a number value
@@ -70,7 +61,7 @@ describe('TranslocoPercentPipe', () => {
     spectator = pipeFactory(getPipeTpl('1'), {
       providers: [provideTranslocoLocaleConfigMock(LOCALE_CONFIG_MOCK)],
     });
-    const [, { useGrouping, maximumFractionDigits }] = getIntlCallArgs();
+    const [, { useGrouping, maximumFractionDigits }] = getIntlCallArgs(intlSpy);
     expect(useGrouping).toBe(false);
     expect(maximumFractionDigits).toEqual(2);
   });
@@ -81,7 +72,7 @@ describe('TranslocoPercentPipe', () => {
     spectator = pipeFactory(
       getPipeTpl('1', '{ useGrouping: true, maximumFractionDigits: 3 }'),
     );
-    const [, { useGrouping, maximumFractionDigits }] = getIntlCallArgs();
+    const [, { useGrouping, maximumFractionDigits }] = getIntlCallArgs(intlSpy);
     expect(useGrouping).toBe(true);
     expect(maximumFractionDigits).toEqual(3);
   });

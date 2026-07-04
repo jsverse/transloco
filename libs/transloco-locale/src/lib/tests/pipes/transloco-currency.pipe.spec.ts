@@ -4,7 +4,7 @@ import type { MockInstance } from 'vitest';
 import { TranslocoCurrencyPipe } from '../../pipes/transloco-currency.pipe';
 import { LOCALE_CONFIG_MOCK, provideTranslocoServiceMock } from '../mocks';
 import { NumberFormatOptions } from '../../transloco-locale.types';
-import { createLocalePipeFactory } from '../utils';
+import { createLocalePipeFactory, getIntlCallArgs, spyOnIntl } from '../utils';
 
 describe('TranslocoCurrencyPipe', () => {
   let intlSpy: MockInstance;
@@ -13,22 +13,8 @@ describe('TranslocoCurrencyPipe', () => {
     localeConfig: LOCALE_CONFIG_MOCK,
   });
 
-  function getIntlCallArgs() {
-    const [locale, options] = intlSpy.mock.calls[0];
-
-    return [locale!, options!] as const;
-  }
-
   beforeEach(() => {
-    // vi.spyOn calls through for plain methods, but not when the spied target
-    // is used as a constructor (`new Intl.NumberFormat(...)`). Reconstruct the
-    // original so `.format(...)` still works while recording the ctor args.
-    const OriginalNumberFormat = Intl.NumberFormat;
-    intlSpy = vi.spyOn(Intl, 'NumberFormat').mockImplementation(function (
-      ...args: ConstructorParameters<typeof Intl.NumberFormat>
-    ) {
-      return new OriginalNumberFormat(...args);
-    });
+    intlSpy = spyOnIntl('NumberFormat');
   });
 
   it(`GIVEN a number value
@@ -76,7 +62,7 @@ describe('TranslocoCurrencyPipe', () => {
       WHEN transforming to currency
       THEN it should use code display format`, () => {
     spectator = pipeFactory(`{{ '123' | translocoCurrency:'code' }}`);
-    const [, { currencyDisplay }] = getIntlCallArgs();
+    const [, { currencyDisplay }] = getIntlCallArgs(intlSpy);
     expect(currencyDisplay).toEqual('code');
   });
 
@@ -108,7 +94,8 @@ describe('TranslocoCurrencyPipe', () => {
         WHEN transforming to currency
         THEN it should use default config options`, () => {
       spectator = pipeFactory(`{{ '123' | translocoCurrency }}`);
-      const [, { useGrouping, maximumFractionDigits }] = getIntlCallArgs();
+      const [, { useGrouping, maximumFractionDigits }] =
+        getIntlCallArgs(intlSpy);
       expect(useGrouping).toEqual(defaultOptions.useGrouping);
       expect(maximumFractionDigits).toEqual(
         defaultOptions.maximumFractionDigits,
@@ -130,7 +117,8 @@ describe('TranslocoCurrencyPipe', () => {
           },
         },
       );
-      const [, { useGrouping, maximumFractionDigits }] = getIntlCallArgs();
+      const [, { useGrouping, maximumFractionDigits }] =
+        getIntlCallArgs(intlSpy);
       expect(useGrouping).toBeTruthy();
       expect(maximumFractionDigits).toEqual(4);
     });
@@ -141,7 +129,8 @@ describe('TranslocoCurrencyPipe', () => {
       spectator = pipeFactory(`{{ '123' | translocoCurrency }}`, {
         providers: [provideTranslocoServiceMock('es-ES')],
       });
-      const [, { useGrouping, maximumFractionDigits }] = getIntlCallArgs();
+      const [, { useGrouping, maximumFractionDigits }] =
+        getIntlCallArgs(intlSpy);
       expect(useGrouping).toBeTruthy();
       expect(maximumFractionDigits).toEqual(3);
     });
@@ -159,7 +148,8 @@ describe('TranslocoCurrencyPipe', () => {
           },
         },
       );
-      const [, { useGrouping, maximumFractionDigits }] = getIntlCallArgs();
+      const [, { useGrouping, maximumFractionDigits }] =
+        getIntlCallArgs(intlSpy);
       expect(useGrouping).toBeFalsy();
       expect(maximumFractionDigits).toEqual(4);
     });
@@ -171,7 +161,8 @@ describe('TranslocoCurrencyPipe', () => {
         `{{ '123' | translocoCurrency:'symbol':config }}`,
         { providers: [provideTranslocoServiceMock('en-US')] },
       );
-      const [, { useGrouping, maximumFractionDigits }] = getIntlCallArgs();
+      const [, { useGrouping, maximumFractionDigits }] =
+        getIntlCallArgs(intlSpy);
       expect(useGrouping).toEqual(defaultOptions.useGrouping);
       expect(maximumFractionDigits).toEqual(
         defaultOptions.maximumFractionDigits,

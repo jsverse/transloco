@@ -7,7 +7,7 @@ import {
   provideTranslocoLocaleConfigMock,
   provideTranslocoServiceMock,
 } from '../mocks';
-import { createLocalePipeFactory } from '../utils';
+import { createLocalePipeFactory, getIntlCallArgs, spyOnIntl } from '../utils';
 
 describe('TranslocoDatePipe', () => {
   let intlSpy: MockInstance;
@@ -16,22 +16,8 @@ describe('TranslocoDatePipe', () => {
 
   const date = new Date(2019, 9, 7, 12, 0, 0);
 
-  function getIntlCallArgs() {
-    const [locale, options] = intlSpy.mock.calls[0];
-
-    return [locale!, options!] as const;
-  }
-
   beforeEach(() => {
-    // vi.spyOn calls through for plain methods, but not when the spied target
-    // is used as a constructor (`new Intl.DateTimeFormat(...)`). Reconstruct the
-    // original so `.format(...)` still works while recording the ctor args.
-    const OriginalDateTimeFormat = Intl.DateTimeFormat;
-    intlSpy = vi.spyOn(Intl, 'DateTimeFormat').mockImplementation(function (
-      ...args: ConstructorParameters<typeof Intl.DateTimeFormat>
-    ) {
-      return new OriginalDateTimeFormat(...args);
-    });
+    intlSpy = spyOnIntl('DateTimeFormat');
   });
 
   it(`GIVEN a date object
@@ -54,7 +40,7 @@ describe('TranslocoDatePipe', () => {
         config: { dateStyle: 'medium', timeStyle: 'medium' },
       },
     });
-    const [, { dateStyle, timeStyle }] = getIntlCallArgs();
+    const [, { dateStyle, timeStyle }] = getIntlCallArgs(intlSpy);
     expect(dateStyle).toEqual('medium');
     expect(timeStyle).toEqual('medium');
   });
@@ -68,7 +54,7 @@ describe('TranslocoDatePipe', () => {
       },
       providers: [provideTranslocoLocaleConfigMock(LOCALE_CONFIG_MOCK)],
     });
-    const [, { dateStyle, timeStyle }] = getIntlCallArgs();
+    const [, { dateStyle, timeStyle }] = getIntlCallArgs(intlSpy);
     expect(dateStyle).toEqual('medium');
     expect(timeStyle).toEqual('medium');
   });
@@ -85,7 +71,7 @@ describe('TranslocoDatePipe', () => {
         provideTranslocoServiceMock('es-ES'),
       ],
     });
-    const [locale, { dateStyle, timeStyle }] = getIntlCallArgs();
+    const [locale, { dateStyle, timeStyle }] = getIntlCallArgs(intlSpy);
     expect(locale).toEqual('es-ES');
     expect(dateStyle).toEqual('long');
     expect(timeStyle).toEqual('long');
@@ -101,7 +87,7 @@ describe('TranslocoDatePipe', () => {
       },
       providers: [provideTranslocoLocaleConfigMock(LOCALE_CONFIG_MOCK)],
     });
-    const [, { dateStyle, timeStyle }] = getIntlCallArgs();
+    const [, { dateStyle, timeStyle }] = getIntlCallArgs(intlSpy);
     expect(dateStyle).toEqual('full');
     expect(timeStyle).toEqual('medium');
   });
