@@ -1,18 +1,7 @@
-import { defineConfig, mergeConfig } from 'vitest/config';
+import { defineNodeProject } from '../../tools/vitest/define-project';
 
-import { baseConfig } from '../../tools/vitest/vitest.base';
-
-export default mergeConfig(
-  baseConfig,
-  defineConfig({
-    root: __dirname,
-    test: {
-      name: 'transloco-utils',
-      environment: 'node',
-      include: ['src/**/*.spec.ts'],
-      coverage: {
-        reportsDirectory: '../../coverage/libs/transloco-utils',
-      },
-    },
-  }),
-);
+export default defineNodeProject({
+  name: 'transloco-utils',
+  root: __dirname,
+  coverageDir: '../../coverage/libs/transloco-utils',
+});

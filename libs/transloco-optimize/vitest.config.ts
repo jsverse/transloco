@@ -1,18 +1,7 @@
-import { defineConfig, mergeConfig } from 'vitest/config';
+import { defineNodeProject } from '../../tools/vitest/define-project';
 
-import { baseConfig } from '../../tools/vitest/vitest.base';
-
-export default mergeConfig(
-  baseConfig,
-  defineConfig({
-    root: __dirname,
-    test: {
-      name: 'transloco-optimize',
-      environment: 'node',
-      include: ['src/**/*.spec.ts'],
-      coverage: {
-        reportsDirectory: '../../coverage/libs/transloco-optimize',
-      },
-    },
-  }),
-);
+export default defineNodeProject({
+  name: 'transloco-optimize',
+  root: __dirname,
+  coverageDir: '../../coverage/libs/transloco-optimize',
+});

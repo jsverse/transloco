@@ -1,22 +1,8 @@
-/// <reference types="vitest" />
-import { defineConfig, mergeConfig } from 'vitest/config';
-import angular from '@analogjs/vite-plugin-angular';
+import { defineAngularProject } from '../../tools/vitest/define-project';
 
-import { baseConfig } from '../../tools/vitest/vitest.base';
-
-export default mergeConfig(
-  baseConfig,
-  defineConfig({
-    root: __dirname,
-    plugins: [angular()],
-    test: {
-      name: 'transloco',
-      environment: 'jsdom',
-      include: ['src/lib/**/*.spec.ts'],
-      setupFiles: ['../../tools/vitest/setup-angular.ts'],
-      coverage: {
-        reportsDirectory: '../../coverage/libs/transloco',
-      },
-    },
-  }),
-);
+export default defineAngularProject({
+  name: 'transloco',
+  root: __dirname,
+  include: ['src/lib/**/*.spec.ts'],
+  coverageDir: '../../coverage/libs/transloco',
+});
