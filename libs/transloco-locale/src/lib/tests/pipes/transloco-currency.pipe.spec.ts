@@ -63,6 +63,24 @@ describe('TranslocoCurrencyPipe', () => {
     expect(spectator.element).toContainText('$');
   });
 
+  it(`GIVEN EUR as the currency field on numberFormatOptions
+      WHEN transforming to currency without the currencyCode argument
+      THEN it should use the currency from numberFormatOptions`, () => {
+    spectator = pipeFactory(
+      `{{ '123' | translocoCurrency:'symbol':{currency:'EUR'} }}`,
+    );
+    expect(spectator.element).toContainText('€');
+  });
+
+  it(`GIVEN a currencyCode argument and a different currency on numberFormatOptions
+      WHEN transforming to currency
+      THEN the currencyCode argument should take precedence`, () => {
+    spectator = pipeFactory(
+      `{{ '123' | translocoCurrency:'symbol':{currency:'EUR'}:'CAD' }}`,
+    );
+    expect(spectator.element).toContainText('CA$');
+  });
+
   it(`GIVEN code as display parameter
       WHEN transforming to currency
       THEN it should use code display format`, () => {

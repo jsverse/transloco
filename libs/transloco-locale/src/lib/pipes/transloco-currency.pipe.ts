@@ -48,7 +48,10 @@ export class TranslocoCurrencyPipe
       ...getDefaultOptions(locale, 'currency', this.localeConfig),
       ...numberFormatOptions,
       currencyDisplay: display,
-      currency: currencyCode || this.localeService._resolveCurrencyCode(),
+      currency:
+        currencyCode ||
+        numberFormatOptions.currency ||
+        this.localeService._resolveCurrencyCode(),
     };
 
     return this.localeService.localizeNumber(
