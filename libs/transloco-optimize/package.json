@@ -4,7 +4,7 @@
   "description": "Transloco optimization process for production environments",
   "main": "src/lib/transloco-optimize.js",
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
   },
   "bin": {
     "transloco-optimize": "src/index.js"

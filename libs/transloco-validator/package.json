@@ -4,7 +4,7 @@
   "description": "Transloco translation files validator",
   "main": "src/lib/transloco-validator.js",
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
   },
   "bin": {
     "transloco-validator": "src/index.js"
