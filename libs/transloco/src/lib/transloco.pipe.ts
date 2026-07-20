@@ -25,7 +25,6 @@ import { resolveInlineLoader } from './utils/scope.utils';
 @Pipe({
   name: 'transloco',
   pure: false,
-  standalone: true,
 })
 export class TranslocoPipe implements PipeTransform, OnDestroy {
   private subscription: Subscription | null = null;

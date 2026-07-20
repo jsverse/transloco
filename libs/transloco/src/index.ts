@@ -2,6 +2,7 @@ export {
   translate,
   translateObject,
   TranslocoService,
+  TranslationLoadError,
 } from './lib/transloco.service';
 export { TranslocoDirective } from './lib/transloco.directive';
 export { TranslocoPipe } from './lib/transloco.pipe';
@@ -61,6 +62,7 @@ export {
   provideTranslocoLoader,
   provideTranslocoScope,
   provideTranslocoLang,
+  provideGlobalTranslateFn,
   TranslocoOptions,
 } from './lib/transloco.providers';
 export { translateSignal, translateObjectSignal } from './lib/transloco.signal';

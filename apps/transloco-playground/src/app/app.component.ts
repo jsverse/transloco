@@ -11,7 +11,6 @@ import { AppSrcDirective } from './app-src.directive';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  standalone: true,
   imports: [RouterModule, AppSrcDirective],
 })
 export class AppComponent {

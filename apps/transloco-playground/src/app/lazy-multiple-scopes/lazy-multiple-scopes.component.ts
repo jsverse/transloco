@@ -12,7 +12,6 @@ import { TranslocoModule, provideTranslocoScope } from '@jsverse/transloco';
       { scope: 'lazy-page', alias: 'LazyPageAlias' },
     ),
   ],
-  standalone: true,
   imports: [TranslocoModule],
 })
 export default class LazyMultipleScopesComponent {}

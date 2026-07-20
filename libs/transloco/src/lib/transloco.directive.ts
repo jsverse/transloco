@@ -40,8 +40,9 @@ interface ViewContext {
 }
 
 @Directive({
+  // The `transloco` selector has no suffix by design — it is the library's public structural-directive API (`*transloco`).
+  // eslint-disable-next-line @angular-eslint/directive-selector
   selector: '[transloco]',
-  standalone: true,
 })
 export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   private destroyRef = inject(DestroyRef);

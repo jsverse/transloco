@@ -6,7 +6,6 @@ import { TranslocoModule } from '@jsverse/transloco';
   selector: 'app-scope-sharing',
   templateUrl: './scope-sharing.component.html',
   styleUrls: ['./scope-sharing.component.scss'],
-  standalone: true,
   imports: [TranslocoModule],
 })
 export default class ScopeSharingComponent {}

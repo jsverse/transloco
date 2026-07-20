@@ -1,10 +1,11 @@
 import {
-  APP_INITIALIZER,
   Inject,
   Injectable,
   InjectionToken,
   ModuleWithProviders,
   NgModule,
+  inject,
+  provideAppInitializer,
 } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
@@ -12,22 +13,29 @@ import { TranslocoLoader } from './transloco.loader';
 import { Translation } from './transloco.types';
 import { TranslocoModule } from './transloco.module';
 import { provideTransloco } from './transloco.providers';
-import { TranslocoConfig } from './transloco.config';
+import { PartialTranslocoConfig } from './transloco.config';
 import { TranslocoService } from './transloco.service';
 import { HashMap } from './utils/type.utils';
 
 export interface TranslocoTestingOptions {
-  translocoConfig?: Partial<TranslocoConfig>;
+  translocoConfig?: PartialTranslocoConfig;
   preloadLangs?: boolean;
   langs?: HashMap<Translation>;
 }
 
 const TRANSLOCO_TEST_LANGS = /* @__PURE__ */ new InjectionToken<
   HashMap<Translation>
->('TRANSLOCO_TEST_LANGS - Available testing languages');
+>(
+  typeof ngDevMode !== 'undefined' && ngDevMode
+    ? 'TRANSLOCO_TEST_LANGS - Available testing languages'
+    : '',
+);
+
 const TRANSLOCO_TEST_OPTIONS =
   /* @__PURE__ */ new InjectionToken<TranslocoTestingOptions>(
-    'TRANSLOCO_TEST_OPTIONS - Testing options',
+    typeof ngDevMode !== 'undefined' && ngDevMode
+      ? 'TRANSLOCO_TEST_OPTIONS - Testing options'
+      : '',
   );
 
 @Injectable()
@@ -70,8 +78,11 @@ export class TranslocoTestingModule {
           loader: TestingLoader,
           config: {
             prodMode: true,
-            missingHandler: { logMissingKey: false },
             ...options.translocoConfig,
+            missingHandler: {
+              logMissingKey: false,
+              ...options.translocoConfig?.missingHandler,
+            },
           },
         }),
         {
@@ -82,16 +93,14 @@ export class TranslocoTestingModule {
           provide: TRANSLOCO_TEST_OPTIONS,
           useValue: options,
         },
-        {
-          provide: APP_INITIALIZER,
-          useFactory: initTranslocoService,
-          deps: [
-            TranslocoService,
-            TRANSLOCO_TEST_LANGS,
-            TRANSLOCO_TEST_OPTIONS,
-          ],
-          multi: true,
-        },
+        provideAppInitializer(() => {
+          const initializerFn = initTranslocoService(
+            inject(TranslocoService),
+            inject(TRANSLOCO_TEST_LANGS),
+            inject(TRANSLOCO_TEST_OPTIONS),
+          );
+          return initializerFn();
+        }),
       ],
     };
   }

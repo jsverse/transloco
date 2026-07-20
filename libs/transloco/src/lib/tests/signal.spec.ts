@@ -1,8 +1,17 @@
-import { Component, signal } from '@angular/core';
-import { fakeAsync } from '@angular/core/testing';
+import {
+  Component,
+  inject,
+  Injector,
+  OnInit,
+  Signal,
+  signal,
+} from '@angular/core';
+import { fakeAsync, TestBed } from '@angular/core/testing';
 import { createComponentFactory, Spectator } from '@ngneat/spectator';
 
+import { Translation } from '../transloco.types';
 import { TranslocoModule } from '../transloco.module';
+import { TranslocoTestingModule } from '../transloco-testing.module';
 import { translateSignal, translateObjectSignal } from '../transloco.signal';
 
 import { providersMock, runLoader } from './mocks';
@@ -14,9 +23,18 @@ import { providersMock, runLoader } from './mocks';
     <div id="textObject">{{ translatedObject().title }}</div>
     <div id="dynamicKey">{{ translatedDynamicKey() }}</div>
     <div id="dynamicParam">{{ translatedDynamicParam() }}</div>
+    <div id="outsideInjectionContextText">
+      {{ outsideInjectionContextTranslatedText() }}
+    </div>
+    @if (outsideInjectionContextTranslatedObject(); as object) {
+      <div id="outsideInjectionContextObject">
+        {{ object.title }}
+      </div>
+    }
   `,
 })
-class TestComponent {
+class TestComponent implements OnInit {
+  private readonly injector = inject(Injector);
   translatedText = translateSignal('home');
   translatedObject = translateObjectSignal('nested');
 
@@ -33,6 +51,34 @@ class TestComponent {
     this.dynamicKey,
     this.dynamicParam,
   );
+
+  outsideInjectionContextTranslatedText: Signal<string> = signal('UNDEFINED');
+  outsideInjectionContextTranslatedObject: Signal<Translation | undefined> =
+    signal(undefined);
+
+  ngOnInit(): void {
+    this.outsideInjectionContextTranslatedText = translateSignal(
+      'home',
+      undefined,
+      undefined,
+      this.injector,
+    );
+    this.outsideInjectionContextTranslatedObject = translateObjectSignal(
+      'nested',
+      undefined,
+      undefined,
+      this.injector,
+    );
+  }
+
+  setOutsideInjectionContextTranslatedTextWithoutInjector(): void {
+    this.outsideInjectionContextTranslatedText = translateSignal('home');
+  }
+
+  setOutsideInjectionContextTranslatedObjectWithoutInjector(): void {
+    this.outsideInjectionContextTranslatedObject =
+      translateObjectSignal('nested');
+  }
 
   changeKey(key: string) {
     this.dynamicKey.set(key);
@@ -58,6 +104,28 @@ describe('translateSignal in component', () => {
     runLoader();
     spectator.detectChanges();
     expect(spectator.query('#text')).toHaveText('home english');
+  }));
+
+  it(`GIVEN translateSignal with static key outside of an injection context
+      WHEN translations are loaded with injector
+      THEN should display translated text`, fakeAsync(() => {
+    spectator = createComponent();
+    runLoader();
+    spectator.detectChanges();
+    expect(spectator.query('#outsideInjectionContextText')).toHaveText(
+      'home english',
+    );
+  }));
+
+  it(`GIVEN translateSignal with static key outside of an injection context
+      WHEN translations are loaded without injector
+      THEN should throw error`, fakeAsync(() => {
+    spectator = createComponent();
+    runLoader();
+    spectator.detectChanges();
+    expect(() =>
+      spectator.component.setOutsideInjectionContextTranslatedTextWithoutInjector(),
+    ).toThrow();
   }));
 
   it(`GIVEN translateSignal with dynamic key
@@ -102,6 +170,28 @@ describe('translateObjectSignal in component', () => {
     expect(spectator.query('#textObject')).toHaveText('Title english');
   }));
 
+  it(`GIVEN translateObjectSignal with static key outside of an injection context
+      WHEN translations are loaded with injector
+      THEN should return translation object`, fakeAsync(() => {
+    spectator = createComponent();
+    runLoader();
+    spectator.detectChanges();
+    expect(spectator.query('#outsideInjectionContextObject')).toHaveText(
+      'Title english',
+    );
+  }));
+
+  it(`GIVEN translateObjectSignal with static key outside of an injection context
+      WHEN translations are loaded without injector
+      THEN should throw error`, fakeAsync(() => {
+    spectator = createComponent();
+    runLoader();
+    spectator.detectChanges();
+    expect(() =>
+      spectator.component.setOutsideInjectionContextTranslatedObjectWithoutInjector(),
+    ).toThrow();
+  }));
+
   it(`GIVEN translateObjectSignal with dynamic key
       WHEN key changes
       THEN should return updated translation object`, fakeAsync(() => {
@@ -129,4 +219,44 @@ describe('translateObjectSignal in component', () => {
       c: 'a.b.c Signal Changed english',
     });
   }));
+});
+
+describe('Synchronous translateSignal', () => {
+  @Component({
+    imports: [TranslocoModule],
+    template: ` <div id="text">{{ translatedText() }}</div> `,
+  })
+  class TestComponentStatic {
+    translatedText = translateSignal('home');
+  }
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [
+        TestComponentStatic,
+        TranslocoTestingModule.forRoot({
+          translocoConfig: {
+            availableLangs: ['en'],
+            defaultLang: 'en',
+          },
+          langs: {
+            en: {
+              home: 'TranslatedHome',
+            },
+          },
+        }),
+      ],
+    }).compileComponents();
+  });
+
+  it(`GIVEN translateSignal with static key
+      WHEN translations are already loaded
+      THEN should syncronously render the translated text`, () => {
+    const fixture = TestBed.createComponent(TestComponentStatic);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('#text')?.textContent).toContain(
+      'TranslatedHome',
+    );
+  });
 });

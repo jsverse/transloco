@@ -1,6 +1,7 @@
-import { inject, Injectable, OnDestroy } from '@angular/core';
+import { DestroyRef, inject, Injectable } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { getBrowserCultureLang, TranslocoService } from '@jsverse/transloco';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 
 import { isLocaleFormat, toDate } from './helpers';
@@ -24,10 +25,8 @@ import {
   ValidDate,
 } from './transloco-locale.types';
 
-@Injectable({
-  providedIn: 'root',
-})
-export class TranslocoLocaleService implements OnDestroy {
+@Injectable({ providedIn: 'root' })
+export class TranslocoLocaleService {
   private translocoService = inject(TranslocoService);
   private langLocaleMapping = inject(TRANSLOCO_LOCALE_LANG_MAPPING);
   private defaultLocale = inject(TRANSLOCO_LOCALE_DEFAULT_LOCALE);
@@ -39,20 +38,27 @@ export class TranslocoLocaleService implements OnDestroy {
   private browserLocale = getBrowserCultureLang() || this.defaultLocale;
 
   private _locale = '';
-  private locale: BehaviorSubject<Locale> = new BehaviorSubject(this._locale);
-  private subscription: Subscription | null = null;
+  private locale = new BehaviorSubject<Locale>(this._locale);
 
-  localeChanges$ = this.locale.asObservable().pipe(distinctUntilChanged());
+  readonly localeChanges$ = this.locale.pipe(distinctUntilChanged());
 
   constructor() {
+    inject(DestroyRef).onDestroy(() => {
+      // Complete subjects to release observers if users forget to unsubscribe manually.
+      // This is important in server-side rendering.
+      this.locale.complete();
+      this.locale.unsubscribe();
+    });
+
     // Initialize locale with fallback chain
     this.setLocale(this.initializeLocale());
 
     // Subscribe to language changes
-    this.subscription = this.translocoService.langChanges$
+    this.translocoService.langChanges$
       .pipe(
         map((lang) => this.toLocale(lang)),
         filter(Boolean),
+        takeUntilDestroyed(),
       )
       .subscribe((locale: Locale) => this.setLocale(locale));
   }
@@ -153,13 +159,6 @@ export class TranslocoLocaleService implements OnDestroy {
    */
   _resolveCurrencyCode(locale: Locale = this.getLocale()) {
     return this.localeCurrencyMapping[locale] || this.defaultCurrency;
-  }
-
-  ngOnDestroy() {
-    this.subscription?.unsubscribe();
-    // Caretaker note: it's important to clean up references to subscriptions since they save the `next`
-    // callback within its `destination` property, preventing classes from being GC'd.
-    this.subscription = null;
   }
 
   private toLocale(val: string | Locale): Locale {

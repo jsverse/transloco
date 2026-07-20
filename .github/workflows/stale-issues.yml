@@ -6,7 +6,7 @@ jobs:
   stale:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/stale@v9
+      - uses: actions/stale@v10
         with:
           stale-issue-message: 'This issue is missing information/reproduction for 3 weeks with no activity. Please provide the required information/reproduction or this issue will be closed in 7 days.'
           days-before-stale: 21

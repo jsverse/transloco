@@ -1,0 +1,32 @@
+name: 'Setup Playwright'
+description: 'Cache and install the Playwright Chromium browser, keyed on the installed Playwright version'
+
+# Assumes dependencies are already installed (run ./.github/actions/step-setup
+# first). The browser binary is cached under ~/.cache/ms-playwright and keyed on
+# the Playwright version, so Chromium is only downloaded when the version
+# changes. The OS-level system deps live outside that cache, so on a cache hit
+# we still refresh them via `install-deps`.
+runs:
+  using: composite
+  steps:
+    - name: Resolve Playwright version
+      id: pw
+      run: echo "version=$(node -p 'require("@playwright/test/package.json").version')" >> "$GITHUB_OUTPUT"
+      shell: bash
+
+    - name: Cache Playwright browsers
+      id: pw-cache
+      uses: actions/cache@v5
+      with:
+        path: ~/.cache/ms-playwright
+        key: ${{ runner.os }}-playwright-${{ steps.pw.outputs.version }}
+
+    - name: Install Playwright browsers (with OS deps)
+      if: steps.pw-cache.outputs.cache-hit != 'true'
+      run: npx playwright install --with-deps chromium
+      shell: bash
+
+    - name: Install Playwright OS deps (cached browser)
+      if: steps.pw-cache.outputs.cache-hit == 'true'
+      run: npx playwright install-deps chromium
+      shell: bash

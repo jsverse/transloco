@@ -20,10 +20,16 @@ export interface TranslocoNumberTransformer {
 }
 
 export const TRANSLOCO_DATE_TRANSFORMER =
-  new InjectionToken<TranslocoDateTransformer>('TRANSLOCO_DATE_TRANSFORMER');
+  /* @__PURE__ */ new InjectionToken<TranslocoDateTransformer>(
+    typeof ngDevMode !== 'undefined' && ngDevMode
+      ? 'TRANSLOCO_DATE_TRANSFORMER'
+      : '',
+  );
 export const TRANSLOCO_NUMBER_TRANSFORMER =
-  new InjectionToken<TranslocoNumberTransformer>(
-    'TRANSLOCO_NUMBER_TRANSFORMER',
+  /* @__PURE__ */ new InjectionToken<TranslocoNumberTransformer>(
+    typeof ngDevMode !== 'undefined' && ngDevMode
+      ? 'TRANSLOCO_NUMBER_TRANSFORMER'
+      : '',
   );
 
 export class DefaultDateTransformer implements TranslocoDateTransformer {

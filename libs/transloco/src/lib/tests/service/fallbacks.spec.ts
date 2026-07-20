@@ -5,6 +5,7 @@ import { Type } from '@angular/core';
 import { createService, mockLangs, runLoader } from '../mocks';
 import { TranslocoLoader } from '../../transloco.loader';
 import { TranslocoFallbackStrategy } from '../../transloco-fallback-strategy';
+import { TranslationLoadError } from '../../transloco.service';
 
 describe('Multiple fallbacks', () => {
   describe('DefaultFallbackStrategy', () => {
@@ -125,6 +126,7 @@ describe('Multiple fallbacks', () => {
         .load('notExists')
         .pipe(
           catchError((e) => {
+            expect(e).toBeInstanceOf(TranslationLoadError);
             expect(e.message).toEqual(
               'Unable to load translation and all the fallback languages',
             );
@@ -136,6 +138,31 @@ describe('Multiple fallbacks', () => {
       // notExists will try 3 times then the fallback 3 times
       runLoader(6);
       expect(service.load).toHaveBeenCalledTimes(2);
+    }));
+
+    it(`GIVEN a scoped lang that fails to load AND all fallbacks fail
+    THEN the error should contain a scope misspelling hint`, fakeAsync(() => {
+      const service = createService(
+        {
+          prodMode: false, // Show error messages in thrown errors
+          fallbackLang: 'fallbackNotExists',
+          failedRetries: 0,
+        },
+        { loader },
+      );
+
+      service
+        .load('admin/notExists')
+        .pipe(
+          catchError((err) => {
+            expect(err.message).toContain('did you misspell the scope name');
+            return of('');
+          }),
+        )
+        .subscribe();
+
+      // admin/notExists will try 1 time then fallback 1 time
+      runLoader(2);
     }));
   });
 

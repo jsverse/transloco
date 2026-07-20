@@ -1,3 +1,48 @@
+## 8.4.0 (2026-06-13)
+
+
+### 🩹 Fixes
+
+- translateSignal utility missing injector for toSignal
+
+
+### ❤️  Thank You
+
+- Dafnik
+
+## 8.3.0 (2026-04-05)
+
+### 🚀 Features
+
+- **transloco:** expose activeLang signal on TranslocoService
+- **transloco:** add TranslationLoadError class for translation load failures
+
+### 🩹 Fixes
+
+- **transloco:** take the last provided scope selecting a translation
+- **transloco:** prevent loading translations when injector is destroyed
+- **transloco:** correct TRANSLOCO_MISSING_HANDLER token generic type
+- **transloco:** 🐛 grammar fix misspelled scope hint error message
+
+### ❤️ Thank You
+
+- Artur
+- Mateo Tibaquirá
+- Michael Benz
+- Shahar Kazaz
+
+## 8.2.1 (2026-01-19)
+
+
+### 🩹 Fixes
+
+- **transloco:** 🐛 Avoid toObservable on signal API + string key ([#895](https://github.com/jsverse/transloco/pull/895))
+
+
+### ❤️  Thank You
+
+- Andrew Steel
+
 ## 8.2.0 (2025-11-15)
 
 

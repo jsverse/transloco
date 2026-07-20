@@ -20,11 +20,11 @@
       "outputs": ["{options.outputFile}"]
     },
     "test": {
-      "executor": "@angular-devkit/build-angular:karma",
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/transloco-scoped-libs"],
       "options": {
-        "main": "libs/transloco-scoped-libs/src/test-setup.ts",
-        "tsConfig": "libs/transloco-scoped-libs/tsconfig.spec.json",
-        "karmaConfig": "libs/transloco-scoped-libs/karma.conf.js"
+        "jestConfig": "libs/transloco-scoped-libs/jest.config.js",
+        "passWithNoTests": true
       }
     }
   }

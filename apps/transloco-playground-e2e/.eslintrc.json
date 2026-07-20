@@ -1,9 +1,9 @@
 {
-  "extends": ["plugin:cypress/recommended", "../../.eslintrc.json"],
+  "extends": ["../../.eslintrc.json"],
   "ignorePatterns": ["!**/*"],
   "overrides": [
     {
-      "files": ["src/integration/**/*.ts"],
+      "files": ["src/**/*.ts"],
       "rules": {
         "@typescript-eslint/no-explicit-any": "off"
       }
@@ -11,13 +11,6 @@
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
       "rules": {}
-    },
-    {
-      "files": ["src/plugins/index.js"],
-      "rules": {
-        "@typescript-eslint/no-var-requires": "off",
-        "no-undef": "off"
-      }
     }
   ]
 }

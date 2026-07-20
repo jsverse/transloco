@@ -8,7 +8,6 @@ import { ProviderLangComponent } from './provider-lang/provider-lang.component';
   selector: 'app-multilangs',
   templateUrl: './multi-langs.component.html',
   styleUrls: ['./multi-langs.component.scss'],
-  standalone: true,
   imports: [TranslocoModule, ProviderLangComponent],
 })
 export default class MultilangsComponent {}

@@ -4,11 +4,14 @@ description: 'Setup Node and install dependencies'
 runs:
   using: composite
   steps:
-    - uses: actions/setup-node@v4
+    # Do NOT add registry-url here: it writes an _authToken=${NODE_AUTH_TOKEN}
+    # line into .npmrc that shadows OIDC trusted publishing in release.yml.
+    # Node 24 bundles npm >= 11.5.1, which OIDC trusted publishing requires.
+    - uses: actions/setup-node@v6
       with:
-        node-version: 20
+        node-version: 24
         cache: npm
 
     - name: Install dependencies
-      run: npm i
+      run: npm ci
       shell: bash

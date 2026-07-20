@@ -72,7 +72,7 @@ export class TranslocoPersistLangService implements OnDestroy {
   }
 
   private save(lang: string) {
-    if (!this.service.config.prodMode) {
+    if (typeof ngDevMode !== 'undefined' && ngDevMode) {
       console.log(
         `%c 🍻 Saving ${lang} to storage`,
         'background: #fff; color: #2196F3;',

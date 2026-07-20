@@ -1,10 +1,16 @@
 import {
   EnvironmentProviders,
+  inject,
   makeEnvironmentProviders,
+  provideEnvironmentInitializer,
   Provider,
   Type,
 } from '@angular/core';
 
+import {
+  TranslocoService,
+  setGlobalTranslateService,
+} from './transloco.service';
 import { TRANSLOCO_LOADER, TranslocoLoader } from './transloco.loader';
 import {
   PartialTranslocoConfig,
@@ -42,6 +48,30 @@ export interface TranslocoOptions {
   loader?: Type<TranslocoLoader>;
 }
 
+/**
+ * Wires the standalone {@link translate} and {@link translateObject} functions to the
+ * `TranslocoService` instance, enabling their use outside Angular's DI context
+ * (e.g. class constructors, utility functions, third-party integrations).
+ *
+ * **Omit in SSR** — the module-level reference persists across requests, causing
+ * state leakage between users. In SSR or MFE environments, inject `TranslocoService` directly.
+ *
+ * @example
+ * // app.config.ts
+ * export const appConfig: ApplicationConfig = {
+ *   providers: [
+ *     provideTransloco({ ... }),
+ *     provideGlobalTranslateFn(),
+ *   ],
+ * };
+ */
+export function provideGlobalTranslateFn(): EnvironmentProviders {
+  return provideEnvironmentInitializer(() => {
+    if (typeof ngServerMode !== 'undefined' && ngServerMode) return;
+    setGlobalTranslateService(inject(TranslocoService));
+  });
+}
+
 export function provideTransloco(options: TranslocoOptions) {
   const providers: EnvironmentProviders[] = [
     provideTranslocoTranspiler(DefaultTranspiler),
@@ -76,6 +106,10 @@ export function provideTranslocoLoader(loader: Type<TranslocoLoader>) {
   ]);
 }
 
+/**
+ * See {@link ./SCOPE_MULTI_PROVIDER_INVESTIGATION.md} for the history and
+ * planned changes around the `multi: true` behavior on TRANSLOCO_SCOPE.
+ */
 export function provideTranslocoScope(...scopes: TranslocoScope[]) {
   return scopes.map((scope) => ({
     provide: TRANSLOCO_SCOPE,

@@ -15,7 +15,6 @@ import { BaseLocalePipe } from './base-locale.pipe';
 @Pipe({
   name: 'translocoDate',
   pure: false,
-  standalone: true,
 })
 export class TranslocoDatePipe extends BaseLocalePipe implements PipeTransform {
   private localeConfig: LocaleConfig = inject(TRANSLOCO_LOCALE_CONFIG);

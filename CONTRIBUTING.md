@@ -29,7 +29,7 @@ Packages:
 Apps:
 
 - transloco-playground
-- transloco-playground-e2e (cypress)
+- transloco-playground-e2e (playwright)
 
 Run the tests:
 

@@ -10,15 +10,14 @@
       "executor": "@nx/angular:package",
       "outputs": ["{workspaceRoot}/dist/libs/transloco-locale"],
       "options": {
-        "project": "libs/transloco-locale/ng-package.json"
+        "project": "libs/transloco-locale/ng-package.json",
+        "tsConfig": "libs/transloco-locale/tsconfig.lib.json"
       },
       "configurations": {
         "production": {
           "tsConfig": "libs/transloco-locale/tsconfig.lib.prod.json"
         },
-        "development": {
-          "tsConfig": "libs/transloco-locale/tsconfig.lib.json"
-        }
+        "development": {}
       },
       "defaultConfiguration": "production"
     },

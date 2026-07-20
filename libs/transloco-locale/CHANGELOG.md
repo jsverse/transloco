@@ -1,3 +1,22 @@
+## 8.4.0 (2026-06-13)
+
+This was a version bump only for transloco-locale to align it with other projects, there were no code changes.
+
+## 8.3.0 (2026-04-05)
+
+### 🩹 Fixes
+
+- **transloco-locale:** fix isLocaleFormat to correctly validate BCP 47 tags
+- **transloco-locale:** complete subject when root injector is destroyed
+
+### ❤️ Thank You
+
+- Artur
+
+## 8.2.1 (2026-01-19)
+
+This was a version bump only for transloco-locale to align it with other projects, there were no code changes.
+
 ## 8.2.0 (2025-11-15)
 
 This was a version bump only for transloco-locale to align it with other projects, there were no code changes.

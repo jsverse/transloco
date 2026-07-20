@@ -4,7 +4,6 @@ import { environment } from '../environments/environment';
 
 @Directive({
   selector: 'img[appSrc]',
-  standalone: true,
 })
 export class AppSrcDirective implements OnInit {
   host = inject(ElementRef).nativeElement as HTMLImageElement;

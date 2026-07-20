@@ -1,10 +1,11 @@
 import {
-  APP_INITIALIZER,
   ClassProvider,
   ExistingProvider,
   FactoryProvider,
   makeEnvironmentProviders,
   ValueProvider,
+  inject,
+  provideAppInitializer,
 } from '@angular/core';
 
 import {
@@ -13,9 +14,6 @@ import {
   TRANSLOCO_PERSIST_LANG_STORAGE,
 } from './persist-lang.config';
 import { TranslocoPersistLangService } from './persist-lang.service';
-
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-function noop() {}
 
 type providerValue =
   | Pick<ValueProvider, 'useValue'>
@@ -32,12 +30,9 @@ export function provideTranslocoPersistLang({
       useValue: config ?? {},
     },
     // Initialize the service
-    {
-      provide: APP_INITIALIZER,
-      useFactory: () => noop,
-      multi: true,
-      deps: [TranslocoPersistLangService],
-    },
+    provideAppInitializer(() => {
+      inject(TranslocoPersistLangService);
+    }),
     {
       provide: TRANSLOCO_PERSIST_LANG_STORAGE,
       ...storage,

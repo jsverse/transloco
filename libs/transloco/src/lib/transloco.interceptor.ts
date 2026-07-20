@@ -4,7 +4,9 @@ import { Translation } from './transloco.types';
 
 export const TRANSLOCO_INTERCEPTOR =
   /* @__PURE__ */ new InjectionToken<TranslocoInterceptor>(
-    ngDevMode ? 'TRANSLOCO_INTERCEPTOR' : '',
+    typeof ngDevMode !== 'undefined' && ngDevMode
+      ? 'TRANSLOCO_INTERCEPTOR'
+      : '',
   );
 
 export interface TranslocoInterceptor {

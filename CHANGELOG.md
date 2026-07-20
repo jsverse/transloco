@@ -1,3 +1,55 @@
+## 8.4.0 (2026-06-13)
+
+
+### 🚀 Features
+
+- **transloco:** transpile function arguments in FunctionalTranspiler
+
+### 🩹 Fixes
+
+- translateSignal utility missing injector for toSignal
+- **transloco-scoped-libs:** multi-scope i18n with join strategy
+
+### ❤️  Thank You
+
+- Dafnik
+- f-aubert
+- Ilshat Khamitov
+
+## 8.3.0 (2026-04-05)
+
+### 🚀 Features
+
+- **transloco:** add TranslationLoadError class for translation load failures
+- **transloco:** expose activeLang signal on TranslocoService
+
+### 🩹 Fixes
+
+- **transloco:** 🐛 grammar fix misspelled scope hint error message
+- **transloco:** correct TRANSLOCO_MISSING_HANDLER token generic type
+- **transloco:** prevent loading translations when injector is destroyed
+- **transloco:** take the last provided scope selecting a translation
+- **transloco-locale:** complete subject when root injector is destroyed
+- **transloco-locale:** fix isLocaleFormat to correctly validate BCP 47 tags
+
+### ❤️ Thank You
+
+- Artur
+- Mateo Tibaquirá
+- Michael Benz
+- Shahar Kazaz
+
+## 8.2.1 (2026-01-19)
+
+
+### 🩹 Fixes
+
+- **transloco:** 🐛 Avoid toObservable on signal API + string key ([#895](https://github.com/jsverse/transloco/pull/895))
+
+### ❤️  Thank You
+
+- Andrew Steel
+
 ## 8.2.0 (2025-11-15)
 
 

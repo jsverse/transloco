@@ -68,6 +68,7 @@ describe('Inline loaders: directive', () => {
     <span>{{ 'todos.title' | transloco }}</span>
     <h1>{{ 'home' | transloco }}</h1>
   `,
+  imports: [TranslocoModule],
 })
 class TestPipe {}
 

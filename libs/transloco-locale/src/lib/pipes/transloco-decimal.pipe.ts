@@ -14,7 +14,6 @@ import { BaseLocalePipe } from './base-locale.pipe';
 @Pipe({
   name: 'translocoDecimal',
   pure: false,
-  standalone: true,
 })
 export class TranslocoDecimalPipe
   extends BaseLocalePipe

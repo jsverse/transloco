@@ -1,6 +1,6 @@
 import type { Config } from 'jest';
 
-export default {
+module.exports = {
   displayName: 'transloco-schematics',
   testEnvironment: 'node',
   globals: {},
@@ -13,6 +13,9 @@ export default {
     ],
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
+  moduleNameMapper: {
+    '^ora$': '<rootDir>/../../tools/jest/ora-mock.js',
+  },
   coverageDirectory: '../../coverage/libs/transloco-schematics',
   preset: '../../jest.preset.js',
 } as Config;

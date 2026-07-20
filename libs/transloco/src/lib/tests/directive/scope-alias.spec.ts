@@ -43,6 +43,7 @@ describe('Scope alias', () => {
     <p>{{ 'lazy.title' | transloco }}</p>
     <h1>{{ 'nested.title' | transloco }}</h1>
   `,
+  imports: [TranslocoModule],
 })
 class TestPipe {}
 

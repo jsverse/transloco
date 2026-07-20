@@ -7,7 +7,6 @@ import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
   templateUrl: './dynamic-translation.component.html',
   styleUrls: ['./dynamic-translation.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [TranslocoModule],
 })
 export default class DynamicTranslationComponent {
