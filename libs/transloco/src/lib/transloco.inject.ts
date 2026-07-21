@@ -13,16 +13,57 @@ import { Translation } from './transloco.types';
 import { HashMap } from './utils/type.utils';
 
 export interface InjectTranslocoOptions {
+  /** The scope to load and translate against, e.g. `'todos'`. Defaults to the ambient
+   * `TRANSLOCO_SCOPE` provider, if any. */
   scope?: string;
+  /** The language to translate into, e.g. `'es'`. Defaults to the ambient `TRANSLOCO_LANG`
+   * provider if set, otherwise the active language. */
   lang?: string;
+  /** Lets `injectTransloco` be called outside an injection context (e.g. in `ngOnInit`),
+   * mirroring `translateSignal`/`translateObjectSignal`'s `injector` parameter. */
   injector?: Injector;
 }
 
+/**
+ * A reactive, signal-based translation reference returned by {@link injectTransloco}.
+ */
 export interface TranslocoRef {
+  /** Same as {@link TranslocoRef.translate | translate} - `t(key, params)` and
+   * `t.translate(key, params)` are interchangeable. */
   (key: string, params?: HashMap): string;
+  /**
+   * Gets the translated value of `key`, memoized and reactive - it re-evaluates when the
+   * active language, the resolved scope, or `params` change. Returns `''` while the
+   * translation hasn't loaded yet.
+   *
+   * @example
+   * t = injectTransloco();
+   * // in the template:
+   * {{ t.translate('hello') }}
+   */
   translate(key: string, params?: HashMap): string;
+  /**
+   * Same as {@link TranslocoRef.translate | translate}, but for a key that resolves to an
+   * object.
+   *
+   * @example
+   * t = injectTransloco();
+   * title = t.translateObject('nested').title;
+   */
   translateObject(key: string, params?: HashMap): Record<string, string>;
+  /** The currently active language - a direct passthrough of {@link TranslocoService.activeLang}. */
   activeLang: Signal<string>;
+  /**
+   * Derives a new, independent `TranslocoRef` that prefixes every key with `prefix`. It's a
+   * pure key prefix - it never loads a new scope - and it doesn't mutate the instance it's
+   * called on, so the original ref keeps working unprefixed.
+   *
+   * @example
+   * t = injectTransloco({ scope: 'todos' });
+   * header = t.read('header');
+   * // in the template:
+   * {{ header('title') }} <!-- reads the 'header.title' key -->
+   */
   read(prefix: string): TranslocoRef;
 }
 
