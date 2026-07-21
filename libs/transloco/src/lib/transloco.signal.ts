@@ -114,12 +114,21 @@ interface InlineScopeOrLang {
   lang?: string;
 }
 
+/** Everything `resolveTranslation$` can resolve to, across both `translate`/`translateObject`
+ * and both singular/array key input. */
+type TranslationValue = string | string[] | Translation | Translation[];
+
 /**
  * The engine behind `translateSignal`/`translateObjectSignal`, taking an already-split
  * `{ scope, lang }` pair instead of guessing from a single argument. Exported so
  * `injectTransloco` - which already knows its scope and lang separately - can reuse it
  * directly, without joining them into a single string just to have `splitInlineScopeOrLang`
  * immediately split it back apart.
+ *
+ * Overloaded on `options.isObject` (a literal `true`/`false`, not `boolean`) purely so callers
+ * get back `TranslateSignalRef<T>`/`TranslateObjectSignalRef<T>` precisely - the implementation
+ * itself can only prove it returns the broader `TranslationValue`, since that choice is a runtime
+ * value.
  *
  * @internal
  */
@@ -128,8 +137,22 @@ export function createTranslationSignal<T extends TranslateSignalKey>(
   params: TranslateSignalParams | undefined,
   inline: InlineScopeOrLang,
   injector: Injector,
+  options: { isObject: false },
+): TranslateSignalRef<T>;
+export function createTranslationSignal<T extends TranslateSignalKey>(
+  key: T,
+  params: TranslateSignalParams | undefined,
+  inline: InlineScopeOrLang,
+  injector: Injector,
+  options: { isObject: true },
+): TranslateObjectSignalRef<T>;
+export function createTranslationSignal<T extends TranslateSignalKey>(
+  key: T,
+  params: TranslateSignalParams | undefined,
+  inline: InlineScopeOrLang,
+  injector: Injector,
   options: { isObject: boolean },
-): Signal<any> {
+): TranslateSignalRef<T> | TranslateObjectSignalRef<T> {
   const result = runInInjectionContext(injector, () => {
     const service = inject(TranslocoService);
     return resolveTranslation$(service, key, params, inline, options.isObject);
@@ -137,10 +160,13 @@ export function createTranslationSignal<T extends TranslateSignalKey>(
   return toSignal(result, {
     initialValue: resolveInitialValue(key, options.isObject),
     injector,
-  });
+  }) as TranslateSignalRef<T> | TranslateObjectSignalRef<T>;
 }
 
-function resolveInitialValue(key: TranslateSignalKey, isObject: boolean) {
+function resolveInitialValue(
+  key: TranslateSignalKey,
+  isObject: boolean,
+): TranslationValue {
   if (isObject) {
     return Array.isArray(key) ? [] : {};
   }
@@ -167,7 +193,7 @@ function resolveTranslation$(
   params: TranslateSignalParams | undefined,
   inline: InlineScopeOrLang,
   isObject: boolean,
-): Observable<any> {
+): Observable<TranslationValue> {
   const providerLang = inject(TRANSLOCO_LANG, { optional: true });
   const providerScope: OrArray<TranslocoScope> | null = inject(
     TRANSLOCO_SCOPE,
@@ -217,12 +243,16 @@ function resolveTranslation$(
   );
 
   return combineLatest([path$, keysAndParams$]).pipe(
-    map(([path, dynamic]) => {
+    map(([path, dynamic]): TranslationValue => {
       const currentLang = langResolver.resolveLangBasedOnScope(path);
 
       return isObject
-        ? service.translateObject(dynamic.key, dynamic.params, currentLang)
-        : service.translate(dynamic.key, dynamic.params, currentLang);
+        ? service.translateObject<Translation>(
+            dynamic.key,
+            dynamic.params,
+            currentLang,
+          )
+        : service.translate<string>(dynamic.key, dynamic.params, currentLang);
     }),
   );
 }
