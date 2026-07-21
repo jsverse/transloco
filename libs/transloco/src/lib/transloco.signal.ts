@@ -234,6 +234,10 @@ function resolveTranslation$(
         active: activeLang,
       });
 
+      // With multiple `multi: true` TRANSLOCO_SCOPE providers, load every scope but resolve
+      // against the last one - same fix as the directive/pipe already have, and the same
+      // approach jsverse/transloco#866 applied to `selectTranslate`. This doesn't let a single
+      // key reach more than one of the loaded scopes (jsverse/transloco#875).
       return Array.isArray(providerScope)
         ? forkJoin(
             providerScope.map((scope) => resolvePath$(resolvedLang, scope)),
