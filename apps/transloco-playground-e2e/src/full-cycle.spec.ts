@@ -2,6 +2,7 @@ import { Page, test } from '@playwright/test';
 
 import { testDynamicContent } from './dynamic-translation';
 import { testHomeContent } from './home';
+import { testInlineLoadersContent } from './inline-loaders';
 import {
   generateLazyContent,
   generateContentWithoutLoader,
@@ -83,6 +84,14 @@ test.describe('Transloco Full Cycle', () => {
     await testLocaleContentUS(page);
     await changeLang(page, 'es');
     await testLocaleContentES(page);
+  });
+  test('Inline loaders page', async ({ page }) => {
+    await page.goto('/inline-loaders');
+    await testInlineLoadersContent(page);
+    await changeLang(page, 'es');
+    await testInlineLoadersContent(page, 'spanish');
+    await changeLang(page, 'en');
+    await testInlineLoadersContent(page);
   });
 });
 
