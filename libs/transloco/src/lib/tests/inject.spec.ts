@@ -6,8 +6,10 @@ import { TranslocoService } from '../transloco.service';
 import { TRANSLOCO_SCOPE } from '../transloco-scope';
 import { TRANSLOCO_LANG } from '../transloco-lang';
 import { injectTransloco, TranslocoRef } from '../transloco.inject';
+import { translocoConfig } from '../transloco.config';
+import { provideTransloco } from '../transloco.providers';
 
-import { providersMock, runLoader } from './mocks';
+import { MockedLoader, providersMock, runLoader } from './mocks';
 
 @Component({
   template: `
@@ -217,5 +219,52 @@ describe('injectTransloco respects TRANSLOCO_SCOPE', () => {
     runLoader();
     spectator.detectChanges();
     expect(spectator.query('#providedScope')).toHaveText('Admin Lazy english');
+  }));
+});
+
+@Component({
+  template: `
+    <div id="bare">{{ t('title') }}</div>
+    <div id="qualified">{{ t('lazyPage.title') }}</div>
+    <div id="viaRead">{{ readT('title') }}</div>
+  `,
+})
+class TestNoAutoPrefixComponent {
+  t = injectTransloco({ scope: 'lazy-page' });
+  // read() is a plain key prefix, independent of scopes.autoPrefixKeys - it's
+  // the ergonomic replacement for auto-prefixing when that config is off.
+  readT = this.t.read('lazyPage');
+}
+
+describe('injectTransloco with scopes.autoPrefixKeys disabled', () => {
+  // injectTransloco never decides on its own whether to prefix a key - it hands the
+  // resolved (possibly scope-embedded) path straight to service.translate()/
+  // translateObject(), which is the only place scopes.autoPrefixKeys is honored. So
+  // disabling that config is a supported migration path with no changes needed here:
+  // callers just switch from relying on auto-prefixing to writing the fully-qualified
+  // key themselves, optionally via t.read(prefix) instead of repeating it per call.
+  let spectator: Spectator<TestNoAutoPrefixComponent>;
+  const createComponent = createComponentFactory({
+    component: TestNoAutoPrefixComponent,
+    providers: provideTransloco({
+      config: translocoConfig({
+        availableLangs: ['en', 'es'],
+        scopes: { autoPrefixKeys: false },
+      }),
+      loader: MockedLoader,
+    }),
+  });
+
+  it(`GIVEN injectTransloco with a scope and scopes.autoPrefixKeys disabled
+      WHEN the scope loads
+      THEN an unprefixed key should not resolve, but a fully-qualified one should -
+      whether written by hand or produced via read(prefix)`, fakeAsync(() => {
+    spectator = createComponent();
+    runLoader();
+    spectator.detectChanges();
+    // Falls back to the missing-key handler's default (returns the key as-is).
+    expect(spectator.query('#bare')).toHaveText('title');
+    expect(spectator.query('#qualified')).toHaveText('Admin Lazy english');
+    expect(spectator.query('#viaRead')).toHaveText('Admin Lazy english');
   }));
 });
