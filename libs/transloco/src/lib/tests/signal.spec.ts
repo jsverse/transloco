@@ -13,8 +13,10 @@ import { Translation } from '../transloco.types';
 import { TranslocoModule } from '../transloco.module';
 import { TranslocoTestingModule } from '../transloco-testing.module';
 import { translateSignal, translateObjectSignal } from '../transloco.signal';
+import { translocoConfig } from '../transloco.config';
+import { provideTransloco } from '../transloco.providers';
 
-import { providersMock, runLoader } from './mocks';
+import { MockedLoader, providersMock, runLoader } from './mocks';
 
 @Component({
   imports: [TranslocoModule],
@@ -296,5 +298,54 @@ describe('translateSignal/translateObjectSignal with scope', () => {
     spectator.detectChanges();
     expect(spectator.query('#text')).toHaveText('Admin Lazy english');
     expect(spectator.query('#object')).toHaveText('a.b english');
+  }));
+});
+
+describe('translateSignal with scopes.autoPrefixKeys disabled', () => {
+  // Covers the other branch of the auto-prefix behavior above: with
+  // config.scopes.autoPrefixKeys: false, translateSignal must NOT prefix an
+  // unprefixed key with the active scope - the caller has to spell out the
+  // full key themselves, same as translate()/translateObject() already do
+  // for the directive/pipe regardless of this flag.
+  @Component({
+    imports: [TranslocoModule],
+    template: `
+      <div id="unprefixed">{{ unprefixed() }}</div>
+      <div id="manuallyPrefixed">{{ manuallyPrefixed() }}</div>
+    `,
+  })
+  class TestNoAutoPrefixComponent {
+    unprefixed = translateSignal('title', undefined, 'lazy-page');
+    manuallyPrefixed = translateSignal(
+      'lazyPage.title',
+      undefined,
+      'lazy-page',
+    );
+  }
+
+  let spectator: Spectator<TestNoAutoPrefixComponent>;
+  const createComponent = createComponentFactory({
+    component: TestNoAutoPrefixComponent,
+    imports: [TranslocoModule],
+    providers: provideTransloco({
+      config: translocoConfig({
+        availableLangs: ['en', 'es'],
+        scopes: { autoPrefixKeys: false },
+      }),
+      loader: MockedLoader,
+    }),
+  });
+
+  it(`GIVEN translateSignal with a scope and scopes.autoPrefixKeys disabled
+      WHEN the scope loads
+      THEN an unprefixed key should not resolve, but a manually-prefixed one should`, fakeAsync(() => {
+    spectator = createComponent();
+    runLoader();
+    spectator.detectChanges();
+    // Falls back to the missing-key handler's default (returns the key as-is).
+    expect(spectator.query('#unprefixed')).toHaveText('title');
+    expect(spectator.query('#manuallyPrefixed')).toHaveText(
+      'Admin Lazy english',
+    );
   }));
 });

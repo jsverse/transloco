@@ -16,3 +16,9 @@
 <ng-template #loading>
   <p data-cy="lazy-page-loading">Loading...</p>
 </ng-template>
+
+<h4>Signal: read from the default scope `admin-page`</h4>
+<p data-cy="s-regular">{{ adminTitle() }}</p>
+
+<h4>Signal: scope set to `lazy-page` inline</h4>
+<p data-cy="s-lazy-page">{{ lazyPageTitle() }}</p>
