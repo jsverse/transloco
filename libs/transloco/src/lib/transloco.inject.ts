@@ -7,7 +7,7 @@ import {
   untracked,
 } from '@angular/core';
 
-import { translateObjectSignal, translateSignal } from './transloco.signal';
+import { createTranslationSignal } from './transloco.signal';
 import { TranslocoService } from './transloco.service';
 import { Translation } from './transloco.types';
 import { HashMap } from './utils/type.utils';
@@ -55,7 +55,8 @@ export function injectTransloco(
     injector,
     service: injector.get(TranslocoService),
     destroyRef: injector.get(DestroyRef),
-    scopeOrLang: combineScopeAndLang(options?.scope, options?.lang),
+    scope: options?.scope,
+    lang: options?.lang,
     prefix: undefined,
   });
 }
@@ -64,7 +65,8 @@ interface TranslocoRefContext {
   injector: Injector;
   service: TranslocoService;
   destroyRef: DestroyRef;
-  scopeOrLang: string | undefined;
+  scope: string | undefined;
+  lang: string | undefined;
   prefix: string | undefined;
 }
 
@@ -78,47 +80,57 @@ function createTranslocoRef(ctx: TranslocoRefContext): TranslocoRef {
 
   const withPrefix = (key: string) =>
     ctx.prefix ? `${ctx.prefix}.${key}` : key;
-  const memoKeyFor = (key: string, params?: HashMap) =>
-    params ? `${key}${JSON.stringify(params)}` : key;
 
-  const translate = (key: string, params?: HashMap): string => {
+  /**
+   * Gets-or-creates the memoized signal for `key`/`params` and returns its current
+   * value. `create` only runs on a cache miss, and always `untracked` - `createTranslationSignal`
+   * calls `toSignal` internally, which refuses to run inside a reactive context (e.g. the first
+   * time `t(key)` is evaluated from within a template binding). Creating the signal is a one-off
+   * side effect, not a reactive read, so it must happen untracked; reading it back (`signal()`)
+   * stays tracked so callers in a template still subscribe to future changes.
+   */
+  const readMemoized = <T>(
+    memo: Map<string, Signal<T>>,
+    key: string,
+    params: HashMap | undefined,
+    create: (prefixedKey: string) => Signal<T>,
+  ): T => {
     const prefixedKey = withPrefix(key);
-    const memoKey = memoKeyFor(prefixedKey, params);
-    let signal = translateMemo.get(memoKey);
+    const memoKey = params
+      ? `${prefixedKey}${JSON.stringify(params)}`
+      : prefixedKey;
+    let signal = memo.get(memoKey);
     if (!signal) {
-      // `translateSignal` calls `toSignal` internally, which refuses to run
-      // inside a reactive context (e.g. the first time `t(key)` is evaluated
-      // from within a template binding). Creating it is a one-off side
-      // effect, not a reactive read, so it must happen untracked; the actual
-      // `signal()` read below stays tracked.
-      signal = untracked(() =>
-        translateSignal(prefixedKey, params, ctx.scopeOrLang, ctx.injector),
-      );
-      translateMemo.set(memoKey, signal);
+      signal = untracked(() => create(prefixedKey));
+      memo.set(memoKey, signal);
     }
     return signal();
   };
+
+  const translate = (key: string, params?: HashMap): string =>
+    readMemoized(translateMemo, key, params, (prefixedKey) =>
+      createTranslationSignal(
+        prefixedKey,
+        params,
+        { scope: ctx.scope, lang: ctx.lang },
+        ctx.injector,
+        { isObject: false },
+      ),
+    );
 
   const translateObject = (
     key: string,
     params?: HashMap,
-  ): Record<string, string> => {
-    const prefixedKey = withPrefix(key);
-    const memoKey = memoKeyFor(prefixedKey, params);
-    let signal = translateObjectMemo.get(memoKey);
-    if (!signal) {
-      signal = untracked(() =>
-        translateObjectSignal(
-          prefixedKey,
-          params,
-          ctx.scopeOrLang,
-          ctx.injector,
-        ),
-      );
-      translateObjectMemo.set(memoKey, signal);
-    }
-    return signal();
-  };
+  ): Record<string, string> =>
+    readMemoized(translateObjectMemo, key, params, (prefixedKey) =>
+      createTranslationSignal(
+        prefixedKey,
+        params,
+        { scope: ctx.scope, lang: ctx.lang },
+        ctx.injector,
+        { isObject: true },
+      ),
+    );
 
   return Object.assign(translate, {
     translate,
@@ -130,14 +142,4 @@ function createTranslocoRef(ctx: TranslocoRefContext): TranslocoRef {
         prefix: withPrefix(prefix),
       }),
   }) as TranslocoRef;
-}
-
-function combineScopeAndLang(
-  scope?: string,
-  lang?: string,
-): string | undefined {
-  if (scope && lang) {
-    return `${scope}/${lang}`;
-  }
-  return scope ?? lang;
 }

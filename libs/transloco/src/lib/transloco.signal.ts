@@ -69,13 +69,10 @@ export function translateSignal<T extends TranslateSignalKey>(
     assertInInjectionContext(translateSignal);
   }
   injector ??= inject(Injector);
-  const result = runInInjectionContext(injector, () => {
-    const service = inject(TranslocoService);
-    return resolveTranslation$(service, key, params, lang, false);
-  });
-  return toSignal(result, {
-    initialValue: Array.isArray(key) ? [''] : '',
-    injector,
+  const inline = splitInlineScopeOrLang(lang, injector.get(TranslocoService));
+
+  return createTranslationSignal(key, params, inline, injector, {
+    isObject: false,
   });
 }
 
@@ -101,14 +98,53 @@ export function translateObjectSignal<T extends TranslateSignalKey>(
     assertInInjectionContext(translateObjectSignal);
   }
   injector ??= inject(Injector);
+  const inline = splitInlineScopeOrLang(lang, injector.get(TranslocoService));
+
+  return createTranslationSignal(key, params, inline, injector, {
+    isObject: true,
+  });
+}
+
+/**
+ * An already-disambiguated scope/lang pair, as opposed to the single conflated
+ * `ScopeType` argument `translateSignal`/`translateObjectSignal` accept.
+ */
+interface InlineScopeOrLang {
+  scope?: TranslocoScope;
+  lang?: string;
+}
+
+/**
+ * The engine behind `translateSignal`/`translateObjectSignal`, taking an already-split
+ * `{ scope, lang }` pair instead of guessing from a single argument. Exported so
+ * `injectTransloco` - which already knows its scope and lang separately - can reuse it
+ * directly, without joining them into a single string just to have `splitInlineScopeOrLang`
+ * immediately split it back apart.
+ *
+ * @internal
+ */
+export function createTranslationSignal<T extends TranslateSignalKey>(
+  key: T,
+  params: TranslateSignalParams | undefined,
+  inline: InlineScopeOrLang,
+  injector: Injector,
+  options: { isObject: boolean },
+): Signal<any> {
   const result = runInInjectionContext(injector, () => {
     const service = inject(TranslocoService);
-    return resolveTranslation$(service, key, params, lang, true);
+    return resolveTranslation$(service, key, params, inline, options.isObject);
   });
   return toSignal(result, {
-    initialValue: Array.isArray(key) ? [] : {},
+    initialValue: resolveInitialValue(key, options.isObject),
     injector,
   });
+}
+
+function resolveInitialValue(key: TranslateSignalKey, isObject: boolean) {
+  if (isObject) {
+    return Array.isArray(key) ? [] : {};
+  }
+  return Array.isArray(key) ? [''] : '';
 }
 
 /**
@@ -117,12 +153,19 @@ export function translateObjectSignal<T extends TranslateSignalKey>(
  * Mirrors the structural directive/pipe resolution order (inline > provider > active for lang,
  * inline > provider for scope) and loads through `_loadDependencies` so the global lang is always
  * loaded alongside a scope, exactly like `TranslocoDirective`/`TranslocoPipe` already do.
+ *
+ * Known duplication: this re-implements the same resolution shape `TranslocoDirective`/
+ * `TranslocoPipe` already have, rather than sharing one engine - the directive/pipe resolve
+ * imperatively (mutating instance fields as a side effect), while this is a pure Observable
+ * pipeline (appropriate for a stateless composable). Unifying them would mean either making the
+ * directive/pipe stateless or making this stateful, so it's left as known tech debt rather than
+ * forced into a shared abstraction here.
  */
 function resolveTranslation$(
   service: TranslocoService,
   key: TranslateSignalKey,
   params: TranslateSignalParams | undefined,
-  lang: ScopeType | undefined,
+  inline: InlineScopeOrLang,
   isObject: boolean,
 ): Observable<any> {
   const providerLang = inject(TRANSLOCO_LANG, { optional: true });
@@ -130,7 +173,7 @@ function resolveTranslation$(
     TRANSLOCO_SCOPE,
     { optional: true },
   );
-  const { inlineScope, inlineLang } = splitInlineScopeOrLang(lang, service);
+  const { scope: inlineScope, lang: inlineLang } = inline;
   const langResolver = new LangResolver();
   const scopeResolver = new ScopeResolver(service);
   const listenToLangChange = shouldListenToLangChanges(
@@ -193,7 +236,7 @@ function resolveTranslation$(
 function splitInlineScopeOrLang(
   value: ScopeType | undefined,
   service: TranslocoService,
-): { inlineScope?: TranslocoScope; inlineLang?: string } {
+): InlineScopeOrLang {
   if (value === undefined || value === '') {
     return {};
   }
@@ -203,20 +246,20 @@ function splitInlineScopeOrLang(
   }
 
   if (isScopeObject(value)) {
-    return { inlineScope: value };
+    return { scope: value };
   }
 
   if (service.isLang(value)) {
-    return { inlineLang: value };
+    return { lang: value };
   }
 
   const langFromScope = getLangFromScope(value);
   if (service.isLang(langFromScope)) {
     // Fully resolved `scope/lang` combo, e.g. `todos/es`.
-    return { inlineScope: getScopeFromLang(value), inlineLang: langFromScope };
+    return { scope: getScopeFromLang(value), lang: langFromScope };
   }
 
-  return { inlineScope: value };
+  return { scope: value };
 }
 
 function computerParams(params: HashMap<Signal<string>> | Signal<HashMap>) {
