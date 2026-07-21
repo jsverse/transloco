@@ -260,3 +260,41 @@ describe('Synchronous translateSignal', () => {
     );
   });
 });
+
+describe('translateSignal/translateObjectSignal with scope', () => {
+  // Regression test: translateSignal/translateObjectSignal have always auto-prefixed keys
+  // with the active scope (config.scopes.autoPrefixKeys, default true) - unlike the
+  // *transloco directive/pipe, which require the caller to prefix the key manually
+  // (translocoPrefix or writing the scope into the key by hand). 'title'/'obj' below are
+  // deliberately left unprefixed - a rewrite of the scope/lang resolution engine once
+  // silently broke this by passing a scope-stripped lang to service.translate/translateObject
+  // instead of the scope-embedded path.
+  @Component({
+    imports: [TranslocoModule],
+    template: `
+      <div id="text">{{ translatedText() }}</div>
+      <div id="object">{{ translatedObject().a?.b }}</div>
+    `,
+  })
+  class TestScopedComponent {
+    translatedText = translateSignal('title', undefined, 'lazy-page');
+    translatedObject = translateObjectSignal('obj', undefined, 'lazy-page');
+  }
+
+  let spectator: Spectator<TestScopedComponent>;
+  const createComponent = createComponentFactory({
+    component: TestScopedComponent,
+    imports: [TranslocoModule],
+    providers: providersMock,
+  });
+
+  it(`GIVEN translateSignal/translateObjectSignal with a scope and an unprefixed key
+      WHEN the scope loads
+      THEN they should auto-prefix the key with the scope and display the translated value`, fakeAsync(() => {
+    spectator = createComponent();
+    runLoader();
+    spectator.detectChanges();
+    expect(spectator.query('#text')).toHaveText('Admin Lazy english');
+    expect(spectator.query('#object')).toHaveText('a.b english');
+  }));
+});

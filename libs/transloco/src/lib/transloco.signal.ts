@@ -183,9 +183,10 @@ function resolveInitialValue(
  * Known duplication: this re-implements the same resolution shape `TranslocoDirective`/
  * `TranslocoPipe` already have, rather than sharing one engine - the directive/pipe resolve
  * imperatively (mutating instance fields as a side effect), while this is a pure Observable
- * pipeline (appropriate for a stateless composable). Unifying them would mean either making the
- * directive/pipe stateless or making this stateful, so it's left as known tech debt rather than
- * forced into a shared abstraction here.
+ * pipeline (appropriate for a stateless composable). There's an opportunity to later extract a
+ * single, well-tested resolution engine that the directive/pipe could also adopt (they don't
+ * need the imperative/mutable style either). Left out of this PR's scope since it touches
+ * transloco.directive.ts/transloco.pipe.ts - core, heavily-tested code beyond what's needed here.
  */
 function resolveTranslation$(
   service: TranslocoService,
@@ -243,17 +244,21 @@ function resolveTranslation$(
   );
 
   return combineLatest([path$, keysAndParams$]).pipe(
-    map(([path, dynamic]): TranslationValue => {
-      const currentLang = langResolver.resolveLangBasedOnScope(path);
-
-      return isObject
-        ? service.translateObject<Translation>(
-            dynamic.key,
-            dynamic.params,
-            currentLang,
-          )
-        : service.translate<string>(dynamic.key, dynamic.params, currentLang);
-    }),
+    map(
+      ([path, dynamic]): TranslationValue =>
+        // Pass the scope-embedded `path` (e.g. `'todos/en'`), not a stripped plain lang -
+        // `service.translate`/`translateObject` auto-prefix the key with the scope
+        // (`config.scopes.autoPrefixKeys`) only when the lang argument still carries it.
+        // `translateSignal` has always auto-prefixed this way, unlike the directive/pipe,
+        // which require the caller to prefix explicitly (`translocoPrefix`/manual key).
+        isObject
+          ? service.translateObject<Translation>(
+              dynamic.key,
+              dynamic.params,
+              path,
+            )
+          : service.translate<string>(dynamic.key, dynamic.params, path),
+    ),
   );
 }
 

@@ -131,7 +131,10 @@ describe('injectTransloco', () => {
 });
 
 @Component({
-  template: `<div id="scoped">{{ t('lazyPage.title') }}</div>`,
+  // 'title' is deliberately unprefixed - injectTransloco/translateSignal auto-prefix keys
+  // with the active scope (config.scopes.autoPrefixKeys), unlike the directive/pipe, which
+  // require the caller to prefix manually.
+  template: `<div id="scoped">{{ t('title') }}</div>`,
 })
 class TestScopedComponent {
   t = injectTransloco({ scope: 'lazy-page' });
@@ -193,7 +196,7 @@ describe('injectTransloco respects TRANSLOCO_LANG', () => {
 });
 
 @Component({
-  template: `<div id="providedScope">{{ t('lazyPage.title') }}</div>`,
+  template: `<div id="providedScope">{{ t('title') }}</div>`,
   providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'lazy-page' }],
 })
 class TestProvidedScopeComponent {
