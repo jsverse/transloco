@@ -8,11 +8,25 @@ import {
   Signal,
 } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { Observable, of, switchMap } from 'rxjs';
+import { combineLatest, forkJoin, map, Observable, of, switchMap } from 'rxjs';
+import { OrArray } from '@jsverse/utils';
 
+import { LangResolver } from './lang-resolver';
+import { ScopeResolver } from './scope-resolver';
+import { TRANSLOCO_LANG } from './transloco-lang';
 import { TRANSLOCO_SCOPE } from './transloco-scope';
 import { TranslocoService } from './transloco.service';
 import { Translation, TranslocoScope } from './transloco.types';
+import {
+  listenOrNotOperator,
+  shouldListenToLangChanges,
+} from './utils/lang.utils';
+import {
+  getLangFromScope,
+  getScopeFromLang,
+  isScopeObject,
+  resolveInlineLoader,
+} from './utils/scope.utils';
 import { HashMap } from './utils/type.utils';
 
 type ScopeType = string | TranslocoScope | TranslocoScope[];
@@ -57,12 +71,7 @@ export function translateSignal<T extends TranslateSignalKey>(
   injector ??= inject(Injector);
   const result = runInInjectionContext(injector, () => {
     const service = inject(TranslocoService);
-    const scope = resolveScope(lang);
-    return computerKeysAndParams(key, params).pipe(
-      switchMap((dynamic) =>
-        service.selectTranslate(dynamic.key, dynamic.params, scope),
-      ),
-    );
+    return resolveTranslation$(service, key, params, lang, false);
   });
   return toSignal(result, {
     initialValue: Array.isArray(key) ? [''] : '',
@@ -94,21 +103,120 @@ export function translateObjectSignal<T extends TranslateSignalKey>(
   injector ??= inject(Injector);
   const result = runInInjectionContext(injector, () => {
     const service = inject(TranslocoService);
-    const scope = resolveScope(lang);
-    return computerKeysAndParams(key, params).pipe(
-      switchMap((dynamic) =>
-        service.selectTranslateObject(
-          dynamic.key,
-          dynamic.params,
-          scope as string,
-        ),
-      ),
-    );
+    return resolveTranslation$(service, key, params, lang, true);
   });
   return toSignal(result, {
     initialValue: Array.isArray(key) ? [] : {},
     injector,
   });
+}
+
+/**
+ * Builds the reactive pipeline shared by `translateSignal`/`translateObjectSignal`.
+ *
+ * Mirrors the structural directive/pipe resolution order (inline > provider > active for lang,
+ * inline > provider for scope) and loads through `_loadDependencies` so the global lang is always
+ * loaded alongside a scope, exactly like `TranslocoDirective`/`TranslocoPipe` already do.
+ */
+function resolveTranslation$(
+  service: TranslocoService,
+  key: TranslateSignalKey,
+  params: TranslateSignalParams | undefined,
+  lang: ScopeType | undefined,
+  isObject: boolean,
+): Observable<any> {
+  const providerLang = inject(TRANSLOCO_LANG, { optional: true });
+  const providerScope: OrArray<TranslocoScope> | null = inject(
+    TRANSLOCO_SCOPE,
+    { optional: true },
+  );
+  const { inlineScope, inlineLang } = splitInlineScopeOrLang(lang, service);
+  const langResolver = new LangResolver();
+  const scopeResolver = new ScopeResolver(service);
+  const listenToLangChange = shouldListenToLangChanges(
+    service,
+    providerLang || inlineLang,
+  );
+  // Must be called synchronously, in injection context - it internally uses `toObservable`.
+  const keysAndParams$ = computerKeysAndParams(key, params);
+
+  const resolvePath$ = (
+    resolvedLang: string,
+    scope: TranslocoScope | null,
+  ): Observable<string> => {
+    const resolvedScope = isScopeObject(inlineScope)
+      ? scopeResolver.resolve({ inline: undefined, provider: inlineScope })
+      : scopeResolver.resolve({ inline: inlineScope, provider: scope });
+    const path = langResolver.resolveLangPath(resolvedLang, resolvedScope);
+    const inlineLoader = resolveInlineLoader(
+      isScopeObject(inlineScope) ? inlineScope : scope,
+      resolvedScope,
+    );
+
+    return service._loadDependencies(path, inlineLoader).pipe(map(() => path));
+  };
+
+  const path$ = service.langChanges$.pipe(
+    switchMap((activeLang) => {
+      const resolvedLang = langResolver.resolve({
+        inline: inlineLang,
+        provider: providerLang,
+        active: activeLang,
+      });
+
+      return Array.isArray(providerScope)
+        ? forkJoin(
+            providerScope.map((scope) => resolvePath$(resolvedLang, scope)),
+          ).pipe(map((paths) => paths[paths.length - 1]))
+        : resolvePath$(resolvedLang, providerScope);
+    }),
+    listenOrNotOperator(listenToLangChange),
+  );
+
+  return combineLatest([path$, keysAndParams$]).pipe(
+    map(([path, dynamic]) => {
+      const currentLang = langResolver.resolveLangBasedOnScope(path);
+
+      return isObject
+        ? service.translateObject(dynamic.key, dynamic.params, currentLang)
+        : service.translate(dynamic.key, dynamic.params, currentLang);
+    }),
+  );
+}
+
+/**
+ * Splits the single `lang` argument accepted by `translateSignal`/`translateObjectSignal` into an
+ * inline lang and/or inline scope, so both can be resolved independently against `TRANSLOCO_LANG`/
+ * `TRANSLOCO_SCOPE` providers - the same precedence `LangResolver`/`ScopeResolver` already apply
+ * for the directive/pipe.
+ */
+function splitInlineScopeOrLang(
+  value: ScopeType | undefined,
+  service: TranslocoService,
+): { inlineScope?: TranslocoScope; inlineLang?: string } {
+  if (value === undefined || value === '') {
+    return {};
+  }
+
+  if (Array.isArray(value)) {
+    return splitInlineScopeOrLang(value[value.length - 1], service);
+  }
+
+  if (isScopeObject(value)) {
+    return { inlineScope: value };
+  }
+
+  if (service.isLang(value)) {
+    return { inlineLang: value };
+  }
+
+  const langFromScope = getLangFromScope(value);
+  if (service.isLang(langFromScope)) {
+    // Fully resolved `scope/lang` combo, e.g. `todos/es`.
+    return { inlineScope: getScopeFromLang(value), inlineLang: langFromScope };
+  }
+
+  return { inlineScope: value };
 }
 
 function computerParams(params: HashMap<Signal<string>> | Signal<HashMap>) {
@@ -167,12 +275,4 @@ function computerKeysAndParams(
   return toObservable(
     computed(() => ({ key: computedKeys(), params: computedParams() })),
   );
-}
-
-function resolveScope(scope?: ScopeType) {
-  if (typeof scope === 'undefined' || scope === '') {
-    const translocoScope = inject(TRANSLOCO_SCOPE, { optional: true });
-    return translocoScope ?? undefined;
-  }
-  return scope;
 }
