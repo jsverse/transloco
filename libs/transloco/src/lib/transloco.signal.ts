@@ -170,7 +170,7 @@ function resolveInitialValue(
   if (isObject) {
     return Array.isArray(key) ? [] : {};
   }
-  return Array.isArray(key) ? [''] : '';
+  return Array.isArray(key) ? key.map(() => '') : '';
 }
 
 /**

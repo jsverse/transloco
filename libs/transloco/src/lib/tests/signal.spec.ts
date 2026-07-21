@@ -39,6 +39,7 @@ class TestComponent implements OnInit {
   private readonly injector = inject(Injector);
   translatedText = translateSignal('home');
   translatedObject = translateObjectSignal('nested');
+  translatedArrayKeys = translateSignal(['home', 'b']);
 
   dynamicKey = signal('home');
   dynamicParam = signal('Signal');
@@ -106,6 +107,26 @@ describe('translateSignal in component', () => {
     runLoader();
     spectator.detectChanges();
     expect(spectator.query('#text')).toHaveText('home english');
+  }));
+
+  it(`GIVEN translateSignal with an array of static keys
+      WHEN translations haven't loaded yet
+      THEN the initial value should have one empty string per key`, fakeAsync(() => {
+    spectator = createComponent();
+    spectator.detectChanges();
+    expect(spectator.component.translatedArrayKeys()).toEqual(['', '']);
+  }));
+
+  it(`GIVEN translateSignal with an array of static keys
+      WHEN translations are loaded
+      THEN should resolve each key in order`, fakeAsync(() => {
+    spectator = createComponent();
+    runLoader();
+    spectator.detectChanges();
+    expect(spectator.component.translatedArrayKeys()).toEqual([
+      'home english',
+      'b english',
+    ]);
   }));
 
   it(`GIVEN translateSignal with static key outside of an injection context
