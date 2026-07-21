@@ -146,6 +146,36 @@
     </ul>
   </div>
   <div>
+    <h3 class="my-6">Inject</h3>
+    <ul class="list-group">
+      <li class="list-group-item" data-cy="i-regular">
+        <b>Regular:</b> {{ t('home') }}
+      </li>
+      <li class="list-group-item" data-cy="i-object">
+        <b>Object:</b> {{ t.translateObject('nested').title }}
+      </li>
+      <li
+        class="list-group-item"
+        data-cy="i-with-params"
+        (click)="changeParam()"
+      >
+        <b>(click) Dynamic params:</b> {{ t('alert', { value: dynamic() }) }}
+      </li>
+      <li class="list-group-item" (click)="changeKey()" data-cy="i-dynamic-key">
+        <b>(click) Dynamic key: </b> {{ t(key()) }}
+      </li>
+      <li class="list-group-item" data-cy="i-with-translation-reuse">
+        <b>With translation reuse: </b> {{ t('a.b.c') }}
+      </li>
+      <li class="list-group-item" data-cy="i-read-prefix">
+        <b>t.read('nested'): </b> {{ nested('title') }}
+      </li>
+      <li class="list-group-item" data-cy="i-current-lang">
+        <b>Active Lang: </b>{{ t.activeLang() }}
+      </li>
+    </ul>
+  </div>
+  <div>
     <h3 class="my-6">Translation in {{ '@for' }}</h3>
     <ul class="list-group">
       @for (key of translateList; track key; let index = $index) {
