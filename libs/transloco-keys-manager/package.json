@@ -3,6 +3,18 @@
   "version": "8.4.0",
   "description": "Extract translatable keys from projects that uses Transloco",
   "main": "src/lib/transloco-keys-manager.js",
+  "types": "src/lib/transloco-keys-manager.d.ts",
+  "exports": {
+    ".": {
+      "types": "./src/lib/transloco-keys-manager.d.ts",
+      "default": "./src/lib/transloco-keys-manager.js"
+    },
+    "./marker": {
+      "types": "./src/lib/marker.d.ts",
+      "default": "./src/lib/marker.js"
+    },
+    "./package.json": "./package.json"
+  },
   "engines": {
     "node": "^20.19.0 || ^22.12.0 || ^24.0.0"
   },
@@ -51,6 +63,6 @@
     "gettext-parser": "8.0.0",
     "glob": "10.3.3",
     "jsonc-parser": "3.3.1",
-    "ora": "9.3.0"
+    "ora": "5.4.1"
   }
 }
