@@ -72,7 +72,13 @@ function buildProject(
  */
 export function defineAngularProject(opts: ProjectOptions) {
   return buildProject(
-    { setupFiles: ['../../tools/vitest/setup-angular.ts'], ...opts },
+    {
+      ...opts,
+      setupFiles: [
+        '../../tools/vitest/setup-angular.ts',
+        ...(opts.setupFiles ?? []),
+      ],
+    },
     { environment: 'jsdom', plugins: [angular()] },
   );
 }
