@@ -29,4 +29,4 @@ Read the full documentation on the [official Transloco documentation site](https
 
 ## Contributors ✨
 
-Thank goes to all these wonderful [people who contributed](https://github.com/jsverse/transloco-keys-manager/graphs/contributors) ❤️
+Thank go to all these wonderful [people who contributed](https://github.com/jsverse/transloco-keys-manager/graphs/contributors) ❤️
