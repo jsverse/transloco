@@ -1,4 +1,5 @@
 import { fakeAsync } from '@angular/core/testing';
+import type { MockInstance } from 'vitest';
 
 import { Translation } from '../../transloco.types';
 import { TranslocoService } from '../../transloco.service';
@@ -9,23 +10,20 @@ import { loadLang } from './service-spec-utils';
 
 describe('setTranslation', () => {
   let service: TranslocoService;
-  let setTranslationsSpy: jasmine.Spy;
+  let setTranslationsSpy: MockInstance;
 
   beforeEach(() => {
     service = createService();
-    setTranslationsSpy = spyOn(
-      (service as any).translations,
-      'set',
-    ).and.callThrough();
+    setTranslationsSpy = vi.spyOn((service as any).translations, 'set');
   });
 
   it(`GIVEN a TranslocoService instance
       WHEN setting a translation with setTranslation
       THEN should add the translation to the map after passing through the interceptor`, () => {
-    const interceptorSpy = spyOn(
+    const interceptorSpy = vi.spyOn(
       (service as any).interceptor,
       'preSaveTranslation',
-    ).and.callThrough();
+    );
     const lang = 'en';
     const translation = flatten(mockLangs[lang]);
     service.setTranslation(translation, lang);
@@ -60,7 +58,7 @@ describe('setTranslation', () => {
       WHEN setting a translation with emitChange: false
       THEN should not emit the language change event`, fakeAsync(() => {
     loadLang(service);
-    spyOn(service, 'setActiveLang');
+    vi.spyOn(service, 'setActiveLang');
     const translation = { kazaz: 'blabla' };
     service.setTranslation(translation, 'en', { emitChange: false });
     expect(service.setActiveLang).not.toHaveBeenCalled();

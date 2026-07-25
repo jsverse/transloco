@@ -18,11 +18,11 @@
     "sourceMap": true,
     "strictNullChecks": true,
     "target": "es6",
-    "types": ["jasmine", "node"],
+    "types": ["node"],
     "paths": {
       "@jsverse/transloco-utils": ["../../libs/transloco-utils/src/index.ts"]
     }
   },
   "include": ["schematics/**/*"],
-  "exclude": ["schematics/*/files/**/*"]
+  "exclude": ["schematics/*/files/**/*", "schematics/**/*.spec.ts"]
 }

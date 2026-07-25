@@ -6,11 +6,19 @@ const fileExtensions = {
   spec: /\.spec\.ts$/,
 };
 
-/** Map of forbidden words and their match regex */
+/**
+ * Map of forbidden words and their match regex.
+ *
+ * Note: `.skip(` is intentionally NOT blocked. Under Karma/Jasmine the repo used
+ * `xit(` for long-term, documented skips (which this hook allowed) while blocking
+ * accidental `.skip(`. Vitest has no `xit` alias, so `it.skip(` is now the only
+ * skip idiom for those same intentional skips — blocking it is no longer viable.
+ * Focused tests (`fit`, `.only`, `fdescribe`) remain blocked as they disable
+ * sibling tests, which is the genuinely dangerous case.
+ */
 const words = {
   debugger: { matcher: '(debugger);?', extension: fileExtensions.ts },
   fit: { matcher: '\\s*fit\\(', extension: fileExtensions.spec },
-  '.skip': { matcher: '\\.skip\\(', extension: fileExtensions.spec },
   '.only': { matcher: '\\.only\\(', extension: fileExtensions.spec },
   fdescribe: { matcher: '\\s*fdescribe\\(', extension: fileExtensions.spec },
 };

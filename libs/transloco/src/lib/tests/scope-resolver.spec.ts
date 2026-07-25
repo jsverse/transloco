@@ -1,11 +1,13 @@
+import type { Mock } from 'vitest';
+
 import { ScopeResolver } from '../scope-resolver';
 
 describe('ScopeResolver', () => {
   let resolver: ScopeResolver;
-  let spy: jasmine.Spy<jasmine.Func>;
+  let spy: Mock;
 
   beforeEach(() => {
-    spy = jasmine.createSpy('setScopeAlias');
+    spy = vi.fn();
     resolver = new ScopeResolver({
       _setScopeAlias: spy,
       config: {

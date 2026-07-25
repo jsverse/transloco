@@ -20,8 +20,8 @@ nx build <package-name>            # Build single package
 # Test
 npm run ci:test                    # Test all packages
 nx test <package-name>             # Test single package
-nx test-library transloco          # Core library tests (Karma)
-nx test-schematics transloco       # Core schematics tests (Jest)
+nx test-library transloco          # Core library tests (Vitest)
+nx test-schematics transloco       # Core schematics tests (Vitest)
 
 # Lint
 npm run ci:lint                    # Lint all packages
@@ -67,9 +67,9 @@ The core `transloco` library is the foundation. All plugin libraries depend on i
 
 ### Testing Setup
 
-The core `transloco` library uses **Karma/Jasmine** for its main tests and **Jest** for schematics tests. Most plugin libraries use **Jest** only. The playground uses **Playwright** for E2E.
+All libraries and the playground use **Vitest** for unit tests, via the `@nx/vitest:test` executor. Each project's `vitest.config.ts` calls the `defineAngularProject`/`defineNodeProject` factory in `tools/vitest/define-project.ts` (which merges the shared `tools/vitest/vitest.base.ts`) and passes only what it owns (`name`, `root`, `coverageDir`, `include`, `setupFiles`). Angular libs compile through `@analogjs/vite-plugin-angular` in a `jsdom` environment; Node/CLI libs use the `node` environment. The playground uses **Playwright** for E2E.
 
-Test utility: `@ngneat/spectator` for Angular component testing.
+Test utility: `@ngneat/spectator` (imported from `@ngneat/spectator/vitest`) for Angular component testing. Schematic tests (`SchematicTestRunner`) load `.ts` factories through a `@swc-node/register` require hook in `tools/vitest/setup-schematics.ts`.
 
 ### TypeScript Path Aliases
 
@@ -85,7 +85,7 @@ Scopes: `transloco`, `locale`, `messageformat`, `optimize`, `persist-lang`, `per
 
 ### Pre-commit Checks
 
-Staged files are checked for: `debugger` statements in `.ts` files, `fit(`, `.skip(`, `.only(`, `fdescribe(` in `.spec.ts` files. Plus ESLint fix and Prettier formatting via lint-staged.
+Staged files are checked for: `debugger` statements in `.ts` files, `fit(`, `.only(`, `fdescribe(` in `.spec.ts` files. Plus ESLint fix and Prettier formatting via lint-staged. (`.skip(` is intentionally not blocked — since Vitest has no `xit` alias, `it.skip(` is the only idiom for intentional, documented skips.)
 
 ### Test Format
 

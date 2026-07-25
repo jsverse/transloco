@@ -3,7 +3,7 @@ import {
   createComponentFactory,
   Spectator,
   SpectatorHost,
-} from '@ngneat/spectator';
+} from '@ngneat/spectator/vitest';
 import { Component } from '@angular/core';
 
 import { providersMock, runLoader } from '../mocks';

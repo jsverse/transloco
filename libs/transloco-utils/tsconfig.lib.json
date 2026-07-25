@@ -9,5 +9,5 @@
     "target": "ES2021"
   },
   "include": ["**/*.ts"],
-  "exclude": ["**/*.spec.ts", "src/test-setup.ts"]
+  "exclude": ["**/*.spec.ts", "src/test-setup.ts", "vitest.config*.ts"]
 }

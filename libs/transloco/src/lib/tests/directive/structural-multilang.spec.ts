@@ -1,5 +1,5 @@
 import { fakeAsync } from '@angular/core/testing';
-import { SpectatorHost } from '@ngneat/spectator';
+import { SpectatorHost } from '@ngneat/spectator/vitest';
 
 import { runLoader, setlistenToLangChange } from '../mocks';
 import { TranslocoDirective } from '../../transloco.directive';

@@ -1,5 +1,5 @@
 import { fakeAsync } from '@angular/core/testing';
-import { SpectatorHost } from '@ngneat/spectator';
+import { SpectatorHost } from '@ngneat/spectator/vitest';
 
 import { runLoader, setlistenToLangChange } from '../mocks';
 import { TranslocoDirective } from '../../transloco.directive';
@@ -72,10 +72,7 @@ describe('Structural directive', () => {
   it(`GIVEN directive with lang changes enabled
       WHEN language changes multiple times
       THEN should create embedded view only once`, fakeAsync(() => {
-    spyOn(
-      TranslocoDirective.prototype as any,
-      'resolveLoadingContent',
-    ).and.callThrough();
+    vi.spyOn(TranslocoDirective.prototype as any, 'resolveLoadingContent');
     spectator = createHost(`<section *transloco="let t"></section>`, {
       detectChanges: false,
     });
@@ -132,8 +129,12 @@ describe('Structural directive', () => {
       testMergedScopedTranslation(spectator);
     }));
 
-    // TODO(nx-upgrade): flaky on deprecated @angular-devkit/build-angular:karma builder under Angular 21 (NG0100 / scope-load timing). Re-enable after the Vitest migration.
-    xit(`GIVEN directive with scope and global keys
+    // Skipped: fails due to scope-load timing — after switching to 'es' the merged
+    // global key ('home') still resolves from the previous language while the
+    // scoped key updates, so '.global' shows 'home english' instead of
+    // 'home spanish'. Pre-existing Angular 21 timing issue not resolved by the
+    // Karma->Vitest migration; fixing it requires a production change, out of scope.
+    it.skip(`GIVEN directive with scope and global keys
         WHEN both translations are loaded
         THEN should expose both scoped and global translation`, fakeAsync(() => {
       spectator = createHost(

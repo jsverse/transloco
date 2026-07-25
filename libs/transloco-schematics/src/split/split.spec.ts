@@ -1,19 +1,45 @@
+import { createRequire } from 'node:module';
 import * as path from 'node:path';
 
 import {
   SchematicTestRunner,
   UnitTestTree,
 } from '@angular-devkit/schematics/testing';
-jest.mock('@jsverse/transloco-utils');
-import {
-  getGlobalConfig,
-  TranslocoGlobalConfig,
-} from '@jsverse/transloco-utils';
+import type { TranslocoGlobalConfig } from '@jsverse/transloco-utils';
 
 import {
   createWorkspace,
   translationMocks,
 } from '../../schematics-core/testing';
+
+// SchematicTestRunner loads schematic factories with @angular-devkit's own raw
+// Node `require`, i.e. OUTSIDE Vitest's module registry. `vi.mock(...)` only
+// intercepts modules loaded through Vitest, so it cannot reach the
+// `getGlobalConfig` that the schematic itself calls. Instead we reach into the
+// exact same Node-cached wrapper module the schematic uses (the schematics
+// Vitest setup file, `tools/vitest/setup-schematics.ts`, registers an SWC
+// `require` hook that makes requiring this `.ts` module work) and stub
+// `getGlobalConfig` on it.
+//
+// We can't `vi.spyOn` it: SWC compiles the wrapper's named exports to
+// non-configurable getters, so the property can't be redefined. Instead we swap
+// the cached module's whole `exports` object for a writable copy whose
+// `getGlobalConfig` delegates to a mutable value. The schematic requires this
+// same cached module, so it picks up the stub.
+const nodeRequire = createRequire(__filename);
+const translocoPath = nodeRequire.resolve(
+  '../../schematics-core/utils/transloco',
+);
+// Ensure the real module is loaded & cached before we swap its exports.
+nodeRequire(translocoPath);
+const translocoModule = nodeRequire.cache[translocoPath]!;
+
+let mockedConfig: Partial<TranslocoGlobalConfig> = {};
+translocoModule.exports = {
+  ...translocoModule.exports,
+  __esModule: true,
+  getGlobalConfig: () => mockedConfig,
+};
 
 const collectionPath = path.join(__dirname, '../collection.json');
 
@@ -35,7 +61,7 @@ describe('Split', () => {
   }
 
   function mockConfig(config: Partial<TranslocoGlobalConfig> = {}) {
-    (getGlobalConfig as jest.Mock).mockReturnValue(config);
+    mockedConfig = config;
   }
 
   beforeEach(async () => {

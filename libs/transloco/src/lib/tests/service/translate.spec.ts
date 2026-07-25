@@ -32,7 +32,7 @@ describe('translate', () => {
   it(`GIVEN a TranslocoService with loaded translations and a spied missing handler
       WHEN translating non-existent keys
       THEN should call the missing handler once for each missing translation`, fakeAsync(() => {
-    spyOn((service as any).missingHandler, 'handle').and.callThrough();
+    vi.spyOn((service as any).missingHandler, 'handle');
     loadLang(service);
     service.translate('kazaz');
     service.translate('netanel');

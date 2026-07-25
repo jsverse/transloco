@@ -9,7 +9,7 @@ describe('translate', () => {
   it(`GIVEN service with langChanges subscription
       WHEN setActiveLang is called
       THEN should emit new language`, () => {
-    const langSpy = jasmine.createSpy();
+    const langSpy = vi.fn();
     const newLang = 'es';
     service.langChanges$.subscribe(langSpy);
     service.setActiveLang(newLang);

@@ -14,7 +14,7 @@ describe('load', () => {
   it(`GIVEN service loading translations
       WHEN translations finish loading
       THEN should trigger translationLoadSuccess event`, fakeAsync(() => {
-    const spy = jasmine.createSpy();
+    const spy = vi.fn();
     service.events$
       .pipe(
         filter((e: any) => e.type === 'translationLoadSuccess'),
@@ -31,7 +31,7 @@ describe('load', () => {
   it(`GIVEN service loading scoped translations
       WHEN scoped translations finish loading
       THEN should trigger translationLoadSuccess event with scope`, fakeAsync(() => {
-    const spy = jasmine.createSpy();
+    const spy = vi.fn();
     service.events$
       .pipe(
         filter((e: any) => e.type === 'translationLoadSuccess'),
@@ -59,10 +59,7 @@ describe('load', () => {
   it(`GIVEN service with configured loader
       WHEN load is called
       THEN should use loader to fetch translations`, fakeAsync(() => {
-    const loaderSpy = spyOn(
-      (service as any).loader,
-      'getTranslation',
-    ).and.callThrough();
+    const loaderSpy = vi.spyOn((service as any).loader, 'getTranslation');
     service.load('en').subscribe();
     runLoader();
     expect(loaderSpy).toHaveBeenCalledWith('en', undefined);
@@ -73,7 +70,7 @@ describe('load', () => {
       WHEN load is called again
       THEN should return cached translations without calling loader`, fakeAsync(() => {
     loadLang(service);
-    spyOn((service as any).loader, 'getTranslation').and.callThrough();
+    vi.spyOn((service as any).loader, 'getTranslation');
     service.load('en');
     expect((service as any).loader.getTranslation).not.toHaveBeenCalled();
   }));

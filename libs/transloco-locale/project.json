@@ -22,11 +22,10 @@
       "defaultConfiguration": "production"
     },
     "test": {
-      "executor": "@angular-devkit/build-angular:karma",
+      "executor": "@nx/vitest:test",
+      "outputs": ["{workspaceRoot}/coverage/libs/transloco-locale"],
       "options": {
-        "main": "libs/transloco-locale/src/test-setup.ts",
-        "tsConfig": "libs/transloco-locale/tsconfig.spec.json",
-        "karmaConfig": "libs/transloco-locale/karma.conf.js"
+        "configFile": "libs/transloco-locale/vitest.config.ts"
       }
     },
     "lint": {

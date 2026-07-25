@@ -1,5 +1,5 @@
 import { fakeAsync } from '@angular/core/testing';
-import { createHostFactory, SpectatorHost } from '@ngneat/spectator';
+import { createHostFactory, SpectatorHost } from '@ngneat/spectator/vitest';
 
 import { loadingTemplateMock, providersMock, runLoader } from '../mocks';
 import { TranslocoDirective } from '../../transloco.directive';
@@ -14,14 +14,8 @@ describe('Loading Template', () => {
   it(`GIVEN directive with inline loading template
       WHEN scoped translations are loading
       THEN should attach and detach loading view`, fakeAsync(() => {
-    spyOn<TemplateHandler>(
-      TemplateHandler.prototype,
-      'attachView',
-    ).and.callThrough();
-    spyOn<TemplateHandler>(
-      TemplateHandler.prototype,
-      'detachView',
-    ).and.callThrough();
+    vi.spyOn(TemplateHandler.prototype, 'attachView');
+    vi.spyOn(TemplateHandler.prototype, 'detachView');
     spectator = createHost(`
         <section *transloco="let t; scope: 'lazy-page'; loadingTpl: loading">
           <h1 data-cy="lazy-page">{{ t('title') }}</h1>
@@ -43,10 +37,7 @@ describe('Loading Template', () => {
   it(`GIVEN directive without loading template
       WHEN scoped translations are loading
       THEN should not attach loading view`, () => {
-    spyOn<TemplateHandler>(
-      TemplateHandler.prototype,
-      'attachView',
-    ).and.callThrough();
+    vi.spyOn(TemplateHandler.prototype, 'attachView');
     spectator = createHost(`
         <section *transloco="let t; scope: 'lazy-page';">
           <h1 data-cy="lazy-page">{{ t('title') }}</h1>
@@ -56,14 +47,15 @@ describe('Loading Template', () => {
     expect(TemplateHandler.prototype.attachView).not.toHaveBeenCalled();
   });
 
-  // TODO(nx-upgrade): flaky on deprecated @angular-devkit/build-angular:karma builder under Angular 21 (NG0100 / scope-load timing). Re-enable after the Vitest migration.
-  xit(`GIVEN directive with inline loading template
+  // Skipped: fails due to scope-load timing — the directive briefly enters its
+  // loading state and attaches the loader before the preloaded translation
+  // resolves, so attachView is called once. Pre-existing Angular 21 timing issue
+  // not resolved by the Karma->Vitest migration; fixing it requires a production
+  // change to TranslocoDirective, which is out of scope here.
+  it.skip(`GIVEN directive with inline loading template
       WHEN translations are already loaded
       THEN should not attach loading view`, fakeAsync(() => {
-    spyOn<TemplateHandler>(
-      TemplateHandler.prototype,
-      'attachView',
-    ).and.callThrough();
+    vi.spyOn(TemplateHandler.prototype, 'attachView');
     spectator = createHost(
       `
         <section *transloco="let t; scope: 'lazy-page'; loadingTpl: loading">
@@ -93,14 +85,8 @@ describe('Custom loading template', () => {
   it(`GIVEN custom loading template configured
       WHEN scoped translations are loading
       THEN should attach and detach custom loading view`, fakeAsync(() => {
-    spyOn<TemplateHandler>(
-      TemplateHandler.prototype,
-      'attachView',
-    ).and.callThrough();
-    spyOn<TemplateHandler>(
-      TemplateHandler.prototype,
-      'detachView',
-    ).and.callThrough();
+    vi.spyOn(TemplateHandler.prototype, 'attachView');
+    vi.spyOn(TemplateHandler.prototype, 'detachView');
 
     spectator = createHost(`
         <section *transloco="let t; scope: 'lazy-page';">

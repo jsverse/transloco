@@ -1,4 +1,5 @@
 import { fakeAsync } from '@angular/core/testing';
+import type { Mock } from 'vitest';
 
 import { createService, runLoader } from '../mocks';
 import { TranslocoService } from '../../transloco.service';
@@ -6,11 +7,11 @@ import { HashMap } from '../../utils/type.utils';
 
 describe('selectTranslateObject', () => {
   let service: TranslocoService;
-  let spy: jasmine.Spy<jasmine.Func>;
+  let spy: Mock;
 
   beforeEach(() => {
     service = createService();
-    spy = jasmine.createSpy('translate subscription').and.callThrough();
+    spy = vi.fn();
   });
 
   describe('The translation value is an object', () => {

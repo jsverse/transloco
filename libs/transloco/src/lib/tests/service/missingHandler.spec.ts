@@ -18,7 +18,7 @@ describe('missingHandler', () => {
         'en',
       );
 
-      spyOn((service as any).missingHandler, 'handle').and.callThrough();
+      vi.spyOn((service as any).missingHandler, 'handle');
       const value = service.translate('empty');
 
       expect(value).toEqual('');
@@ -40,14 +40,11 @@ describe('missingHandler', () => {
     it(`GIVEN useFallbackTranslation is enabled
         WHEN loading translations
         THEN should load both active and fallback lang`, fakeAsync(() => {
-      const loaderSpy = spyOn(
-        (service as any).loader,
-        'getTranslation',
-      ).and.callThrough();
+      const loaderSpy = vi.spyOn((service as any).loader, 'getTranslation');
       service.load('en').subscribe();
       runLoader();
       expect(loaderSpy).toHaveBeenCalledTimes(2);
-      expect(loaderSpy.calls.allArgs()).toEqual([
+      expect(loaderSpy.mock.calls).toEqual([
         ['en', undefined],
         ['es', undefined],
       ]);
@@ -56,7 +53,7 @@ describe('missingHandler', () => {
     it(`GIVEN missing key in active lang
         WHEN translating
         THEN should get translation from fallback lang`, fakeAsync(() => {
-      spyOn((service as any).loader, 'getTranslation').and.callThrough();
+      vi.spyOn((service as any).loader, 'getTranslation');
       service.load('en').subscribe();
       runLoader(2000);
       const result = service.translate('fallback');
@@ -66,7 +63,7 @@ describe('missingHandler', () => {
     it(`GIVEN empty value in active lang
         WHEN translating with params
         THEN should get translation from fallback lang`, fakeAsync(() => {
-      spyOn((service as any).loader, 'getTranslation').and.callThrough();
+      vi.spyOn((service as any).loader, 'getTranslation');
       service.load('en').subscribe();
       runLoader(2000);
       expect(service.translate('empty', { value: 'hello' })).toEqual(
@@ -77,13 +74,10 @@ describe('missingHandler', () => {
     it(`GIVEN scoped translations with fallback
         WHEN loading scoped translations
         THEN should load scope fallback lang`, fakeAsync(() => {
-      const loaderSpy = spyOn(
-        (service as any).loader,
-        'getTranslation',
-      ).and.callThrough();
+      const loaderSpy = vi.spyOn((service as any).loader, 'getTranslation');
       service.load('lazy-page/en').subscribe();
       runLoader(2000);
-      expect(loaderSpy.calls.allArgs()).toEqual([
+      expect(loaderSpy.mock.calls).toEqual([
         ['lazy-page/en', { scope: 'lazy-page' }],
         ['lazy-page/es', { scope: 'lazy-page' }],
       ]);
@@ -96,7 +90,7 @@ describe('missingHandler', () => {
         WHEN translating empty value
         THEN should return empty string not fallback`, fakeAsync(() => {
       service.config.missingHandler.allowEmpty = true;
-      spyOn((service as any).loader, 'getTranslation').and.callThrough();
+      vi.spyOn((service as any).loader, 'getTranslation');
       service.load('en').subscribe();
       runLoader(2000);
       expect(service.translate('empty', { value: 'hello' })).toEqual('');

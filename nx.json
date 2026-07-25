@@ -42,12 +42,12 @@
     "@nx/angular:application": {
       "style": "scss",
       "linter": "eslint",
-      "unitTestRunner": "jest",
+      "unitTestRunner": "vitest",
       "e2eTestRunner": "playwright"
     },
     "@nx/angular:library": {
       "linter": "eslint",
-      "unitTestRunner": "jest"
+      "unitTestRunner": "vitest"
     },
     "@nx/angular:component": {
       "style": "scss",
@@ -96,18 +96,14 @@
     "test": {
       "cache": true
     },
-    "@nx/jest:jest": {
+    "@nx/vitest:test": {
       "cache": true,
-      "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],
-      "options": {
-        "passWithNoTests": true
-      },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
-        }
-      }
+      "inputs": [
+        "default",
+        "^production",
+        "{workspaceRoot}/tools/vitest/**/*",
+        { "env": "CI" }
+      ]
     },
     "@nx/eslint:lint": {
       "inputs": [

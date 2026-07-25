@@ -3,11 +3,10 @@
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
     "module": "preserve",
-    "types": ["jasmine", "node"],
+    "types": ["vitest/globals", "node"],
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "moduleResolution": "bundler"
   },
-  "files": ["src/test-setup.ts"],
   "include": ["**/*.spec.ts", "**/*.d.ts"]
 }

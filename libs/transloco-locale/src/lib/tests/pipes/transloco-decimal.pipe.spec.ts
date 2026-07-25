@@ -1,4 +1,5 @@
-import { SpectatorPipe } from '@ngneat/spectator';
+import { SpectatorPipe } from '@ngneat/spectator/vitest';
+import type { MockInstance } from 'vitest';
 
 import { TranslocoDecimalPipe } from '../../pipes';
 import {
@@ -6,21 +7,15 @@ import {
   provideTranslocoLocaleConfigMock,
   provideTranslocoServiceMock,
 } from '../mocks';
-import { createLocalePipeFactory } from '../utils';
+import { createLocalePipeFactory, getIntlCallArgs, spyOnIntl } from '../utils';
 
 describe('TranslocoDecimalPipe', () => {
-  let intlSpy: jasmine.Spy<(typeof Intl)['NumberFormat']>;
+  let intlSpy: MockInstance;
   let spectator: SpectatorPipe<TranslocoDecimalPipe>;
   const pipeFactory = createLocalePipeFactory(TranslocoDecimalPipe);
 
-  function getIntlCallArgs() {
-    const [locale, options] = intlSpy.calls.argsFor(0);
-
-    return [locale!, options!] as const;
-  }
-
   beforeEach(() => {
-    intlSpy = spyOn(Intl, 'NumberFormat').and.callThrough();
+    intlSpy = spyOnIntl('NumberFormat');
   });
 
   it(`GIVEN a number value
@@ -61,7 +56,7 @@ describe('TranslocoDecimalPipe', () => {
     spectator = pipeFactory(`{{ 123456 | translocoDecimal }}`, {
       providers: [provideTranslocoLocaleConfigMock(LOCALE_CONFIG_MOCK)],
     });
-    const [, { useGrouping, maximumFractionDigits }] = getIntlCallArgs();
+    const [, { useGrouping, maximumFractionDigits }] = getIntlCallArgs(intlSpy);
     expect(useGrouping).toEqual(false);
     expect(maximumFractionDigits).toEqual(2);
   });
@@ -72,7 +67,7 @@ describe('TranslocoDecimalPipe', () => {
     spectator = pipeFactory(
       `{{ 123456 | translocoDecimal:{ useGrouping: true, maximumFractionDigits: 3 } }}`,
     );
-    const [, { useGrouping, maximumFractionDigits }] = getIntlCallArgs();
+    const [, { useGrouping, maximumFractionDigits }] = getIntlCallArgs(intlSpy);
     expect(useGrouping).toEqual(true);
     expect(maximumFractionDigits).toEqual(3);
   });

@@ -104,10 +104,10 @@ describe('TranslocoTranspiler', () => {
     it(`GIVEN a FunctionalTranspiler instance
         WHEN transpiling with function parameters
         THEN should pass the function parameters correctly to the transpiler function`, () => {
-      const spy = spyOn(transpilerFunctions['upperCase'], 'transpile');
+      const spy = vi.spyOn(transpilerFunctions['upperCase'], 'transpile');
       transpiler.transpile(getTranspilerParams('[[ upperCase(lowercase) ]]'));
       expect(spy).toHaveBeenCalledWith('lowercase');
-      spy.calls.reset();
+      spy.mockClear();
       transpiler.transpile(
         getTranspilerParams(
           '[[ upperCase(lowercase, another one, many more) ]]',
@@ -121,10 +121,10 @@ describe('TranslocoTranspiler', () => {
     });
 
     it('should transpile the function params', () => {
-      const spy = spyOn(transpilerFunctions['upperCase'], 'transpile');
+      const spy = vi.spyOn(transpilerFunctions['upperCase'], 'transpile');
       transpiler.transpile(getTranspilerParams('[[ upperCase(lowercase) ]]'));
       expect(spy).toHaveBeenCalledWith('lowercase');
-      spy.calls.reset();
+      spy.mockClear();
       transpiler.transpile(
         getTranspilerParams(
           '[[ upperCase(lowercase, {{person}}, {{ anotherParson.name }}) ]]',

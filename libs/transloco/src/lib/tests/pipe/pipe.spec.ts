@@ -1,4 +1,3 @@
-import { Mock } from 'ts-mocks';
 import { ChangeDetectorRef } from '@angular/core';
 import { fakeAsync } from '@angular/core/testing';
 import { of } from 'rxjs';
@@ -14,14 +13,12 @@ describe('TranslocoPipe', () => {
   let pipe: TranslocoPipe;
 
   beforeEach(() => {
-    serviceMock = new Mock<TranslocoService>(createService()).Object;
+    serviceMock = createService();
 
-    cdrMock = new Mock<ChangeDetectorRef>({
-      markForCheck: () => {},
-    }).Object;
+    cdrMock = { markForCheck: vi.fn() } as unknown as ChangeDetectorRef;
 
     pipe = new TranslocoPipe(serviceMock, undefined, undefined, cdrMock);
-    spyOn(pipe as any, 'updateValue').and.callThrough();
+    vi.spyOn(pipe as any, 'updateValue');
   });
 
   it(`GIVEN pipe with provider lang
@@ -34,7 +31,7 @@ describe('TranslocoPipe', () => {
   it(`GIVEN pipe with provided language
       WHEN transform is called
       THEN should use provided language for translation`, fakeAsync(() => {
-    spyOn(serviceMock, 'translate').and.callThrough();
+    vi.spyOn(serviceMock, 'translate');
     pipe = new TranslocoPipe(serviceMock, undefined, 'es', cdrMock);
     pipe.transform('title', {});
     runLoader();
@@ -43,7 +40,7 @@ describe('TranslocoPipe', () => {
 
   describe('Scoped Translation', () => {
     function assertScopedTranslation(scope: TranslocoScope) {
-      spyOn(serviceMock, 'translate').and.callThrough();
+      vi.spyOn(serviceMock, 'translate');
       pipe = new TranslocoPipe(serviceMock, scope, undefined, cdrMock);
       serviceMock.config.reRenderOnLangChange = true;
       pipe.transform('title', {});
@@ -73,7 +70,7 @@ describe('TranslocoPipe', () => {
   it(`GIVEN pipe with multiple provided scopes
       WHEN translating keys from different scopes
       THEN should load scope translations correctly`, fakeAsync(() => {
-    spyOn(serviceMock, 'translate').and.callThrough();
+    vi.spyOn(serviceMock, 'translate');
     pipe = new TranslocoPipe(
       serviceMock,
       [
@@ -204,7 +201,7 @@ describe('TranslocoPipe', () => {
       WHEN pipe is destroyed
       THEN should unsubscribe from observable`, () => {
     (pipe as any).subscription = of().subscribe();
-    const spy = spyOn((pipe as any).subscription, 'unsubscribe');
+    const spy = vi.spyOn((pipe as any).subscription, 'unsubscribe');
     pipe.ngOnDestroy();
     expect(spy).toHaveBeenCalled();
     expect((pipe as any).subscription).toEqual(null);

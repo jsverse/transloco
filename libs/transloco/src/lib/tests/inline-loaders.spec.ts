@@ -2,7 +2,7 @@ import {
   createComponentFactory,
   Spectator,
   SpectatorHost,
-} from '@ngneat/spectator';
+} from '@ngneat/spectator/vitest';
 import { fakeAsync } from '@angular/core/testing';
 import { Component } from '@angular/core';
 
