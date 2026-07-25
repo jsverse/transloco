@@ -130,6 +130,7 @@
   "release": {
     "projects": [
       "transloco",
+      "transloco-keys-manager",
       "transloco-locale",
       "transloco-messageformat",
       "transloco-optimize",
