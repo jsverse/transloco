@@ -9,10 +9,6 @@ Discover more about this tool in the [official Transloco documentation](https://
 > [!IMPORTANT]
 > The Transloco packages are now published under the **@jsverse** scope, update your dependencies to get the latest features 🚀
 
-<p align="center">
- <img width="50%" height="50%" src="./logo.png">
-</p>
-
 > 🦄 The Key to a Better Translation Experience
 
 ![Build Status](https://github.com/jsverse/transloco-keys-manager/actions/workflows/ci.yml/badge.svg)
