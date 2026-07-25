@@ -1,0 +1,30 @@
+{
+  "name": "transloco-keys-manager",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/transloco-keys-manager/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/transloco-keys-manager",
+        "main": "libs/transloco-keys-manager/src/index.ts",
+        "tsConfig": "libs/transloco-keys-manager/tsconfig.lib.json",
+        "assets": ["libs/transloco-keys-manager/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
+    },
+    "test": {
+      "executor": "@nx/vitest:test",
+      "outputs": ["{workspaceRoot}/coverage/libs/transloco-keys-manager"],
+      "options": {
+        "configFile": "libs/transloco-keys-manager/vitest.config.ts"
+      }
+    }
+  }
+}
