@@ -218,6 +218,10 @@ describe('Performance Benchmarks', () => {
     expect(totalKeys).toBe(COMPONENT_COUNT * keysPerTemplate);
   });
 
+  // The exact iteration count isn't load-bearing — only that the early-exit
+  // path is called zero times and the real-parse path is called exactly
+  // `iterations` times. Kept small so real (unmocked) Angular template
+  // parsing stays fast and doesn't flake under CI's coverage instrumentation.
   it('should skip non-transloco templates without parsing them', () => {
     const scopes: Scopes = { aliasToScope: {}, scopeToAlias: {} };
     const content =
@@ -226,7 +230,7 @@ describe('Performance Benchmarks', () => {
       );
     const translocoContent =
       `<div><p>{{ 'feature.title' | transloco }}</p></div>`.repeat(50);
-    const iterations = 1000;
+    const iterations = 30;
 
     const skipScopeToKeys: ScopeMap = { __global: {} };
     for (let i = 0; i < iterations; i++) {
@@ -315,9 +319,14 @@ describe('Performance Benchmarks', () => {
     astSpy.mockRestore();
   });
 
+  // Same rationale as the skip-test above: ~400 real template parses, which
+  // is comfortably fast uninstrumented but can approach the default timeout
+  // under CI's v8 coverage instrumentation plus runner variance.
+  // As above: a small iteration count is sufficient to prove "1 parse per
+  // call" vs. "N parses per call" — it doesn't need to be large to be valid.
   it('should parse each template exactly once and share the result across extractors', () => {
     const largeTemplate = generateTemplate(999, 50);
-    const iterations = 100;
+    const iterations = 10;
     const scopes: Scopes = { aliasToScope: {}, scopeToAlias: {} };
 
     // Old behavior: each extractor parses the template independently.
