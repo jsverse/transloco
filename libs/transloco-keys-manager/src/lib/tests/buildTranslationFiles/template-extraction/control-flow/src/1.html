@@ -1,0 +1,72 @@
+@let myVar = '27' | transloco;
+<span>{{ '1' | transloco }}</span>
+<span transloco="2"></span>
+<ng-container *transloco="let t">
+  <span>{{ t('3') }}</span>
+</ng-container>
+<ng-template transloco let-t>
+  <span>{{ t('4') }}</span>
+</ng-template>
+
+@if (a > b) {
+<span>{{ '5' | transloco }}</span>
+<span transloco="6"> </span>
+<ng-container *transloco="let t">
+  <span>{{ t('7') }}</span>
+</ng-container>
+<ng-template transloco let-t>
+  <span>{{ t('8') }}</span>
+</ng-template>
+} @else if (b > a) {
+<span>{{ '9' | transloco }}</span>
+} @else {
+<span [innerHtml]="'10' | transloco"></span>
+} @for (item of items; track item.id) { {{ '11' | transloco }} } @empty {
+<span>{{ '12' | transloco }}</span>
+} @switch (condition) { @case (caseA) {
+<span>{{ '13' | transloco }}</span>
+} @default {
+<span>{{ '14' | transloco }}</span>
+} } @defer {
+<span>{{ '15' | transloco }}</span>
+} @error {
+<span>{{ '16' | transloco }}</span>
+} @placeholder {
+<span>{{ '17' | transloco }}</span>
+} @loading {
+<span>{{ '18' | transloco }}</span>
+}
+
+<ng-container *transloco="let t">
+  @if (a > b) {
+  <span>{{ t('19') }}</span>
+  } @else if (b > a) {
+  <span [innerHtml]="t('20')"></span>
+  } @else { @for (item of items; track item.id) {
+  <span>{{ t('21') }}</span>
+  } @empty { @switch (condition) { @case (caseA) {
+  <span>{{ t('22') }}</span>
+  } @default { @defer {
+  <span>{{ '23' | transloco }}</span>
+  } @error {
+  <span transloco="24"></span>
+  } @placeholder {
+  <span>{{ t('25') }}</span>
+  } @loading {
+  <span>{{ t('26') }}</span>
+  } } } } }
+</ng-container>
+
+@switch (condition) { @case (caseA) @case (caseB) {
+<span>{{ '27' | transloco }}</span>
+} @default {
+<span>{{ '28' | transloco }}</span>
+} }
+
+<ng-container *transloco="let t">
+  @switch (condition) { @case (caseA) @case (caseB) {
+  <span>{{ t('29') }}</span>
+  } @default {
+  <span>{{ t('30') }}</span>
+  } }
+</ng-container>

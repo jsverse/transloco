@@ -1,0 +1,6 @@
+<ng-container *transloco="let t">
+  {{ t('2') }}             <!-- 1 has been removed -->
+  {{ t('group1.2') }}      <!-- group1.1 has been removed -->
+                           <!-- no group2 at all anymore -->
+  {{ t('group3.2') }}      <!-- added new group3 -->
+</ng-container>

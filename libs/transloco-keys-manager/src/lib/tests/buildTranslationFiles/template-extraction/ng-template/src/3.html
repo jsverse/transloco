@@ -1,0 +1,14 @@
+<ng-template transloco let-t>
+  <h1>ddsds</h1>
+  {{ t('32') }}
+  <ng-template blabla>
+    <h3>dsds</h3>
+    <ng-container *trans> dsds </ng-container>
+    <ng-template transloco let-b>
+      {{ b('33') }}
+      <my-comp [aa]="b('34')">
+        <comp a="{{b('35')}}"></comp>
+      </my-comp>
+    </ng-template>
+  </ng-template>
+</ng-template>

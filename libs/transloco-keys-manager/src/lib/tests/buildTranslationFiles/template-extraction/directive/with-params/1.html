@@ -1,0 +1,53 @@
+<div class="bot-setup-container width-100 d-flex">
+  <form class="da-form d-flex-column width-100" [formGroup]="bot" novalidate>
+    <!-- Bot name -->
+    <div class="bot-setup-header allow-full-line d-flex">
+      <da-editable-input-text
+        [value]="botSetupStore.bot.controls.name.value"
+        [entity]="'bot'"
+        (onChange)="onNameChange($event)"
+      ></da-editable-input-text>
+    </div>
+
+    <edge-wizard-step
+      transloco="admin.key"
+      [translocoParams]="{a: '123', b: {c: 123, d: {e: ''}, f:''}}"
+      [validate]="simulateRestore"
+      [useFormCtrlValidation]="profile"
+    >
+      <ui-view [transloco]="'1'" [translocoParams]="{'1': '123'}"></ui-view>
+
+      <!-- Footer error message -->
+      <div
+        transloco="5"
+        translocoParams="dontTake2"
+        class="footer-error-message d-flex"
+        *ngIf="errorCounter > 0"
+        [transloco]="dontTake"
+      >
+        asasd
+      </div>
+      <div
+        transloco="4"
+        [translocoParams]="dontTake"
+        class="allow-full-line footer-buttons d-flex align-end-center"
+      >
+        <div class="setup-buttons d-flex">
+          <button
+            transloco="2"
+            [translocoParams]="{'2': asd}"
+            class="da-btn secondary save-button"
+            *ngIf="isEditState && !isDuplicate as bla"
+            (click)="onSubmit(false)"
+          ></button>
+          <button
+            class="da-btn primary save-run-button"
+            (click)="onSubmit(true)"
+            transloco="{{'3'}}"
+            [translocoParams]="{'3': 123}"
+          ></button>
+        </div>
+      </div>
+    </edge-wizard-step>
+  </form>
+</div>

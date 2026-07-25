@@ -1,0 +1,196 @@
+<ng-container *transloco="let t">
+  <dato-dialog-header class="py-22">
+    <div class="d-flex-row">
+      <dato-icon
+        datoIcon="filter"
+        class="mr-10"
+        datoColor="primary-200"
+        width="22px"
+        height="22px"
+      ></dato-icon>
+      <div datoFont="sub-headline" datoColor="primary-600">{{title}}</div>
+    </div>
+  </dato-dialog-header>
+  <dato-dialog-content>
+    <div class="d-flex content-wrapper">
+      <div class="left py-15 px-10">
+        <div class="ml-5 d-flex-row align-space-between-center">
+          <div>{{ t('d' + 4)}}</div>
+          <div datoColor="primary-400" datoFont="note-bold">{{ t('1') }}</div>
+          <div *ngIf="isGroupMode" class="d-flex">
+            <dato-icon-button
+              datoType="secondary"
+              datoSize="md"
+              datoIcon="x"
+              class="mr-5 exit-group-icon"
+              (click)="onExitGroupModeClick()"
+            ></dato-icon-button>
+
+            <dato-button
+              datoType="secondary"
+              datoSize="sm"
+              [disabled]="applyGroupButtonDisabled"
+              (click)="applyGroupFilters()"
+            >
+              <dato-icon
+                class="mr-5"
+                datoIcon="group"
+                width="15px"
+                height="14px"
+              ></dato-icon>
+              {{t('2')}}
+            </dato-button>
+            <!--            <dato-button datoType="secondary" datoSize="sm" [disabled]="applyGroupButtonDisabled"-->
+            <!--                         (click)="applyGroupFilters()">-->
+            <!--              <dato-icon class="mr-5" datoIcon="group" width="15px" height="14px"></dato-icon>-->
+            <!--              {{t('4444')}}-->
+            <!--            </dato-button>-->
+            <button
+              class="menu-trigger"
+              daMenuHandler
+              [matMenuTriggerFor]="expandMenu"
+            >
+              <dato-icon
+                datoIcon="more-vertical"
+                datoColor="primary-300"
+                width="3px"
+                height="18px"
+              ></dato-icon>
+            </button>
+          </div>
+        </div>
+        <mat-menu
+          #expandMenu="matMenu"
+          xPosition="after"
+          yPosition="below"
+          class="widget-actions"
+        >
+          <button mat-menu-item (click)="expandAll()">
+            <span class="icon-wrapper">
+              <dato-icon
+                datoIcon="expand"
+                width="11px"
+                height="17px"
+              ></dato-icon>
+            </span>
+            {{t('3', {id: 1} )}}
+          </button>
+          <button mat-menu-item (click)="collapseAll()">
+            <span class="icon-wrapper">
+              <dato-icon
+                datoIcon="collapse"
+                width="11px"
+                height="17px"
+              ></dato-icon>
+            </span>
+            {{t('4')}}
+          </button>
+          <!--          <button mat-menu-item (click)="collapseAll()">
+                        <span class="icon-wrapper">
+                            <dato-icon datoIcon="collapse" width="11px" height="17px"></dato-icon>
+                        </span>
+            {{t('39394')}}
+          </button>
+          -->
+        </mat-menu>
+        <div
+          *ngIf="!hasFilter; else filtersView"
+          class="mt-15"
+          datoFont="note"
+          datoColor="primary-400"
+        >
+          {{t("5", {name: "avo"})}}
+        </div>
+        <ng-template #filtersView>
+          <div>
+            <div class="my-15">
+              <da-composite-filter
+                class="composite-root"
+                [filterParams]="{filter: savedFilter, filterCompositeContext: context}"
+                (deleteFieldFilter)="deleteFieldFilter($event)"
+                (openEditPanel)="editExistingFilter($event)"
+                (operatorChange)="changeOperator($event)"
+              ></da-composite-filter>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+      <div class="right px-10">
+        <da-edit-filter-manager
+          [filter]="selectedFieldFilter"
+          [brandFields]="brandFields"
+          [activeDate]="activeDate"
+          [fieldDataType]="fieldDataType"
+          (fieldChanged)="onFieldSelect($event)"
+          (filterChanged)="onFilterChanged($event)"
+          (isFilterValid)="setValidFilter($event)"
+          (addedCondition)="onAddedCondition($event)"
+        ></da-edit-filter-manager>
+      </div>
+    </div>
+  </dato-dialog-content>
+  <dato-dialog-footer class="py-17">
+    <dato-link class="px-15" datoType="secondary" datoDialogDismiss>
+      {{t("6")}}</dato-link
+    >
+    <dato-button
+      width="134px"
+      datoType="secondary"
+      (click)="saveFilter()"
+      [disabled]="!activateSaveButton"
+    >
+      <dato-icon
+        datoIcon="plus"
+        class="mr-4"
+        width="10px"
+        height="10px"
+      ></dato-icon>
+      {{t("7", {id: 3, name: 'cc', 'dd': 'ddsds'})}}
+    </dato-button>
+    <dato-button width="80px" datoType="primary" (click)="saveAndClose()">
+      {{t('8')}}</dato-button
+    >
+  </dato-dialog-footer>
+
+  <div class="d-flex">
+    <div
+      class="d-flex align-space-between"
+      *daPermission="{except: 'ACCOUNT_ADMIN'}"
+    >
+      <p style="line-height: 30px">
+        <b>{{ t('9')}}</b>
+        <br />
+        {{ t('10') }}
+        <br />
+        {{ t('11')}}
+        <br />
+        <a href="javascript:void(0);" (click)="openSupport()">{{ t('12')}}</a>
+      </p>
+      <ng-container></ng-container>
+    </div>
+
+    <div class="d-flex" *daPermission="'ACCOUNT_ADMIN'" [a.b]="t('13')">
+      <p>
+        <b>{{ t('14')}}</b>
+        <br /><br />
+        {{ t("15")}}
+        <br />
+        <a uiSref="account-setup.add-brand" ds="{{   t('16')  }}"
+          >{{ t('17', {id: 'ds'}) }}</a
+        >
+        {{ t('18')}}
+        <a
+          uiSref="account-setup.add-brand"
+          ds="{{   t('19', {value: 'dsds'})  }}"
+          >{{ t('20', {id: "ds"}) }}</a
+        >
+      </p>
+    </div>
+
+    <div
+      class="d-flex"
+      *daPermission="'ACCOUNT_ADMIN'"
+      [a.b]='t("21", {value: "dsds"})'
+    ></div>
+  </div>
+</ng-container>

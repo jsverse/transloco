@@ -1,0 +1,12 @@
+<ng-template transloco let-t>
+  <ng-container
+    *ngTemplateOutlet="test; context: { text: t('2', {'2': ''}), some: { nested: t('3', {'3': 'ad'}) } }"
+  ></ng-container>
+  <ng-template [someAttr]="t('4', {'4': 123})"></ng-template>
+  <my-comp [aa]="t('5', {'5': 123}) + 'a'">
+    <comp a="{{t('6', {'6': 'asd'}) + 'a'}}">{{t('7') + 'a'}}</comp>
+  </my-comp>
+  <ng-template>
+    <self-closing [value]="t('8')" />
+  </ng-template>
+</ng-template>

@@ -1,0 +1,46 @@
+<ng-container *transloco="let t; read: 'right-pane.actions'">
+  <app-hero
+    [title]="'Albi Eco Race'"
+    [subTitle]="t('1')"
+    [buttonText]="t('2')"
+    buttonUrl="/register"
+    [text]="t('3')"
+  ></app-hero>
+
+  <app-promo [isSmallText]="true"></app-promo>
+
+  <app-block [title]="'What people say'" theme="primary"
+    ><app-what-people-say> {{t("4")}} </app-what-people-say></app-block
+  >
+
+  <app-block class="register-block">
+    <button mat-raised-button color="accent" routerLink="register">
+      {{ t('5') }}
+    </button>
+  </app-block>
+</ng-container>
+
+<ng-container
+  dsds
+  *transloco="let translate; scope: 'ds'; lang: 'es'; read: 'site-header.navigation'"
+>
+  <app-hero
+    [title]="'Albi Eco Race'"
+    [subTitle]="translate('1')"
+    [buttonText]="translate('2')"
+    buttonUrl="/register"
+    [text]="translate('3')"
+  ></app-hero>
+
+  <app-promo [isSmallText]="true"></app-promo>
+
+  <app-block [title]="'What people say'" theme="primary"
+    ><app-what-people-say> {{translate("4")}} </app-what-people-say></app-block
+  >
+
+  <app-block class="register-block">
+    <button mat-raised-button color="accent" routerLink="register">
+      {{ translate('5') }}
+    </button>
+  </app-block>
+</ng-container>

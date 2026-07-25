@@ -1,0 +1,15 @@
+<!-- t(c.some.key) -->
+<h2>{{ 'need.transloco' | transloco }}</h2>
+<div>
+  <h1>{{title}}</h1>
+
+  <ng-container *transloco="let t; read: 'b'">
+    <!-- t(some.key) -->
+    <p>{{ t(title) }}</p>
+  </ng-container>
+
+  <ng-container *transloco="let t; prefix: 'prefix_c'">
+    <!-- t(some.key) -->
+    <p>{{ t(title) }}</p>
+  </ng-container>
+</div>
