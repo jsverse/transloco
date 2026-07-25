@@ -1,3 +1,4 @@
+import os from 'os';
 import path from 'path';
 
 import fs from 'fs-extra';
@@ -9,11 +10,23 @@ import {
   describe,
   expect,
   it,
+  vi,
 } from 'vitest';
 
 import { resolveProjectBasePath } from '../utils/resolve-project-base-path';
 
 import { spyOnConsole } from './spec-utils';
+
+// `resolveProjectBasePath` (and the fixture helpers below) resolve paths
+// against `process.cwd()`. Under `nx test` that's the workspace root, so
+// running these fs read/write/remove calls against the *real* cwd would read
+// and delete real repository files/folders (e.g. a project path fixture of
+// 'apps/myProject' would `fs.removeSync` the real `apps/` directory). Sandbox
+// everything in an isolated temp dir instead.
+const TEST_DIR = path.join(
+  os.tmpdir(),
+  'transloco-keys-manager-resolve-base-path',
+);
 
 const supportedConfigs = ['angular', 'workspace', 'project'] as const;
 const myProjectConfig = { projectType: 'library', sourceRoot: 'myRoot' };
@@ -26,6 +39,16 @@ const defaultConfig = {
 };
 
 describe('resolveProjectBasePath', () => {
+  beforeAll(() => {
+    fs.ensureDirSync(TEST_DIR);
+    vi.spyOn(process, 'cwd').mockReturnValue(TEST_DIR);
+  });
+
+  afterAll(() => {
+    vi.restoreAllMocks();
+    fs.removeSync(TEST_DIR);
+  });
+
   it('should return the default "src"', () => {
     const spy = spyOnConsole('log');
     expect(resolveProjectBasePath().projectBasePath).toBe('src');
