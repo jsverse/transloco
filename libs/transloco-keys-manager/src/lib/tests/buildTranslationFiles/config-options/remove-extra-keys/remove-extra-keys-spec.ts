@@ -1,7 +1,7 @@
 import nodePath from 'node:path';
 
 import fs from 'fs-extra';
-import { afterEach, beforeEach, describe, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import {
   assertTranslation,
@@ -11,6 +11,7 @@ import {
   TranslationTestCase,
 } from '../../build-translation-utils';
 import { mockResolveProjectBasePath } from '../../../spec-utils';
+import { getCurrentTranslation } from '../../../../keys-builder/utils/get-current-translation';
 import { Config, Translation } from '../../../../types';
 
 mockResolveProjectBasePath(sourceRoot);
@@ -133,5 +134,53 @@ export function testRemoveExtraKeysConfig(fileFormat: Config['fileFormat']) {
         },
       });
     });
+
+    /**
+     * A nested file on disk with `unflat = false` means the extracted keys are
+     * flat while the current translation is not. The extra keys cleanup used to
+     * read every nested key as extra and wipe the whole file, translations of
+     * keys that are still in use included.
+     */
+    describe.runIf(fileFormat === 'json')(
+      'with a nested translation file and unflat = false',
+      () => {
+        const enPath = nodePath.join(
+          sourceRoot,
+          type,
+          'i18n',
+          `en.${fileFormat}`,
+        );
+
+        it('should drop only the extra keys and keep the existing translations', () => {
+          fs.copyFileSync(missingKeyTpl, testHtmlFile);
+          fs.outputJsonSync(enPath, {
+            '1': 'translated 1',
+            '2': 'translated 2',
+            group1: { '2': 'translated group1.2' },
+            group2: { '1': 'translated group2.1' },
+            group3: { '2': 'translated group3.2' },
+          });
+
+          buildTranslationFiles({
+            ...buildConfig({ type, config: { unflat: false, fileFormat } }),
+            removeExtraKeys: true,
+          });
+
+          const translation = getCurrentTranslation({
+            path: enPath,
+            fileFormat,
+          });
+
+          expect(translation).toMatchObject({
+            '2': 'translated 2',
+            group1: { '2': 'translated group1.2' },
+            group3: { '2': 'translated group3.2' },
+          });
+          // `1` and the whole `group2` are no longer used
+          expect(translation).not.toHaveProperty('1');
+          expect(translation).not.toHaveProperty('group2');
+        });
+      },
+    );
   });
 }
