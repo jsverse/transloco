@@ -14,6 +14,7 @@ import {
 } from 'vitest';
 
 import { resolveProjectBasePath } from '../utils/resolve-project-base-path';
+import { isString } from '../utils/validators.utils';
 
 import { spyOnConsole } from './spec-utils';
 
@@ -127,6 +128,208 @@ describe('resolveProjectBasePath', () => {
     });
   });
 
+  describe('Project level config with a name', () => {
+    const bookingButton = 'libs/booking/ui/button';
+    const invoicingButton = 'libs/invoicing/ui/button';
+    const sharedUtils = 'libs/shared/utils';
+
+    beforeEach(() => {
+      addProjectConfig({
+        path: bookingButton,
+        config: { ...myProjectConfig, name: 'booking-ui-button' },
+      });
+      addProjectConfig({
+        path: invoicingButton,
+        config: {
+          name: 'invoicing-ui-button',
+          projectType: 'application',
+          sourceRoot: 'invoicingRoot',
+        },
+      });
+      // relies on the project name being inferred from the directory
+      addProjectConfig({
+        path: sharedUtils,
+        config: { projectType: 'library', sourceRoot: 'sharedRoot' },
+      });
+    });
+
+    afterEach(() => {
+      // all three projects live under `libs`, which is removed as a whole
+      removeProjectConfig(bookingButton);
+    });
+
+    it('should resolve a project whose name differs from its directory', () => {
+      const { projectBasePath, projectType } =
+        resolveProjectBasePath('booking-ui-button');
+      expect(projectBasePath).toBe('myRoot');
+      expect(projectType).toBe('library');
+    });
+
+    it('should tell apart projects sharing the same directory name', () => {
+      const { projectBasePath, projectType } = resolveProjectBasePath(
+        'invoicing-ui-button',
+      );
+      expect(projectBasePath).toBe('invoicingRoot');
+      expect(projectType).toBe('application');
+    });
+
+    it('should fall back to the directory name when the config has none', () => {
+      const { projectBasePath, projectType } = resolveProjectBasePath('utils');
+      expect(projectBasePath).toBe('sharedRoot');
+      expect(projectType).toBe('library');
+    });
+
+    it('should match a name regardless of how the config is formatted', () => {
+      addProjectConfig({
+        path: 'libs/pretty',
+        config: `{
+  "name" : "pretty-printed-lib",
+  "projectType": "library",
+  "sourceRoot": "prettyRoot"
+}`,
+      });
+
+      expect(resolveProjectBasePath('pretty-printed-lib').projectBasePath).toBe(
+        'prettyRoot',
+      );
+    });
+  });
+
+  describe('Directory name matches', () => {
+    afterEach(() => {
+      // every fixture below lives under `libs`, which is removed as a whole
+      removeProjectConfig('libs/a');
+    });
+
+    it('should match on the directory even when the config is named otherwise', () => {
+      addProjectConfig({
+        path: 'libs/a/button',
+        config: { ...myProjectConfig, name: 'booking-ui-button' },
+      });
+
+      // the directory is all we have to go on, same as before the name lookup
+      expect(resolveProjectBasePath('button').projectBasePath).toBe('myRoot');
+    });
+
+    // covered from both sides so the ranking is what resolves the tie, rather
+    // than the nameless config merely happening to be looked at first
+    it.each([
+      ['libs/a/button', 'libs/b/button'],
+      ['libs/b/button', 'libs/a/button'],
+    ])(
+      'should prefer a nameless config over one named otherwise (%s)',
+      (namelessPath, namedPath) => {
+        addProjectConfig({
+          path: namedPath,
+          config: { name: 'named-otherwise', sourceRoot: 'namedRoot' },
+        });
+        addProjectConfig({
+          path: namelessPath,
+          config: { ...myProjectConfig, sourceRoot: 'namelessRoot' },
+        });
+
+        expect(resolveProjectBasePath('button').projectBasePath).toBe(
+          'namelessRoot',
+        );
+      },
+    );
+
+    // nothing distinguishes two renamed configs sharing a directory, so the only
+    // thing to guarantee is that the same one wins on every machine
+    it.each([
+      ['libs/a/button', 'libs/b/button'],
+      ['libs/b/button', 'libs/a/button'],
+    ])(
+      'should break a tie between renamed configs the same way (%s first)',
+      (first, second) => {
+        for (const projectPath of [first, second]) {
+          addProjectConfig({
+            path: projectPath,
+            config: { name: `${projectPath}-name`, sourceRoot: projectPath },
+          });
+        }
+
+        expect(resolveProjectBasePath('button').projectBasePath).toBe(
+          'libs/a/button',
+        );
+      },
+    );
+  });
+
+  describe('Malformed configs', () => {
+    const healthy = 'libs/healthy';
+    const broken = 'libs/broken';
+
+    afterEach(() => {
+      removeProjectConfig(healthy);
+    });
+
+    it('should skip a malformed config belonging to another project', () => {
+      // resolved through the directory fallback, which visits every config,
+      // so the malformed one below is reached no matter the traversal order
+      addProjectConfig({ path: healthy, config: myProjectConfig });
+      // mentions the name we are after, so it is never filtered out before parsing
+      addProjectConfig({ path: broken, config: '{ "name": "healthy" oops' });
+      const spy = spyOnConsole('warn');
+
+      const { projectBasePath, projectType } =
+        resolveProjectBasePath('healthy');
+      expect(projectBasePath).toBe('myRoot');
+      expect(projectType).toBe('library');
+      expect(spy).toHaveBeenCalled();
+      spy.mockRestore();
+    });
+
+    it('should warn instead of throwing when the config is malformed', () => {
+      addProjectConfig({ path: healthy, config: '{ "name": oops' });
+      const warn = spyOnConsole('warn');
+      const log = spyOnConsole('log');
+
+      expect(resolveProjectBasePath('healthy').projectBasePath).toBe('src');
+      expect(warn).toHaveBeenCalledWith(
+        expect.stringContaining('Skipping the config at'),
+        expect.stringContaining('project.json'),
+        expect.stringContaining('Failed to parse'),
+      );
+      warn.mockRestore();
+      log.mockRestore();
+    });
+  });
+
+  describe('Resolving from within a project directory', () => {
+    const projectPath = 'libs/foo';
+    // captured lazily: the outer `beforeAll` mocks `process.cwd()` to the
+    // sandboxed `TEST_DIR`, but that only runs after this describe body
+    // (and its `process.cwd()` at module-eval time would be the real cwd)
+    let cwd: string;
+
+    beforeEach(() => {
+      cwd = process.cwd();
+      addProjectConfig({
+        path: projectPath,
+        config: { projectType: 'library', sourceRoot: 'fooRoot' },
+      });
+      process.chdir(path.resolve(cwd, projectPath));
+    });
+
+    afterEach(() => {
+      process.chdir(cwd);
+      removeProjectConfig(projectPath);
+    });
+
+    it('should resolve a nameless config sitting at the cwd by its directory', () => {
+      const { projectBasePath, projectType } = resolveProjectBasePath('foo');
+      expect(projectBasePath).toBe('fooRoot');
+      expect(projectType).toBe('library');
+    });
+
+    it('should not resolve an unknown project to the nearest config', () => {
+      const spy = spyOnConsole('log');
+      expect(resolveProjectBasePath('unknown').projectBasePath).toBe('src');
+      spy.mockRestore();
+    });
+  });
+
   supportedConfigs.forEach((configType) => {
     describe(`${configType} config`, () => {
       beforeAll(() => {
@@ -167,7 +370,8 @@ function addProjectConfig({
   fs.mkdirsSync(resolvePath(path));
   fs.writeFileSync(
     jsonFile('project', path),
-    '// comment\n' + JSON.stringify(config),
+    // a raw string lets a spec control the exact formatting written to disk
+    '// comment\n' + (isString(config) ? config : JSON.stringify(config)),
   );
 }
 
