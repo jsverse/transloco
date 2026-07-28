@@ -9,6 +9,7 @@ function noop() {}
 const isProd = process.env.PRODUCTION;
 const defaultLogger = {
   log: (...msg: string[]) => (isProd ? noop : console.log(...msg)),
+  warn: (msg: string) => (isProd ? noop : console.warn(`⚠️  ${msg}`)),
   success: (msg: string) => (isProd ? noop : spinner.succeed(msg)),
   startSpinner: (msg: string) => (isProd ? noop : (spinner = ora().start(msg))),
 };

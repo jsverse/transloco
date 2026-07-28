@@ -18,12 +18,24 @@ describe('logger', () => {
   });
 
   describe('getLogger', () => {
-    it('should return a logger with log, success, and startSpinner methods', async () => {
+    it('should return a logger with log, warn, success, and startSpinner methods', async () => {
       const { getLogger } = await import('../utils/logger');
       const logger = getLogger();
       expect(logger).toHaveProperty('log');
+      expect(logger).toHaveProperty('warn');
       expect(logger).toHaveProperty('success');
       expect(logger).toHaveProperty('startSpinner');
+    });
+
+    it('should write warnings to stderr through console.warn', async () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+      const { getLogger } = await import('../utils/logger');
+      getLogger().warn('something is off');
+
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('something is off'),
+      );
     });
   });
 

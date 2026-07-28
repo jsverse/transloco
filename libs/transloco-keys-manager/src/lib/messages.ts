@@ -20,6 +20,12 @@ export const messages = {
   addMissing: 'Add missing keys automatically?',
   missingValue: 'Missing value for',
   done: 'Done!',
+  unsupportedOptions: (command: string, flags: string[]) =>
+    `${flags.join(', ')} ${
+      flags.length > 1 ? 'are' : 'is'
+    } not supported by the "${command}" command and ${
+      flags.length > 1 ? 'were' : 'was'
+    } ignored. This will throw an error in the next major version.`,
   problematicKeysForUnflat: (keys: string[]) =>
     `The following keys won't be accessible when unflatting the object:\n ${keys
       .map((k) => `"${k}"`)

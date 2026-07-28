@@ -31,6 +31,21 @@ describe('messages', () => {
     );
   });
 
+  it('should use singular wording for a single unsupported option', () => {
+    expect(messages.unsupportedOptions('extract', ['--output'])).toBe(
+      '--output is not supported by the "extract" command and was ignored. This will throw an error in the next major version.',
+    );
+  });
+
+  it('should use plural wording for several unsupported options', () => {
+    const result = messages.unsupportedOptions('find', [
+      '--output',
+      '--replace',
+    ]);
+    expect(result).toContain('--output, --replace are not supported');
+    expect(result).toContain('were ignored');
+  });
+
   it('should format problematic keys for unflat', () => {
     const result = messages.problematicKeysForUnflat(['a.b', 'a.b.c']);
     expect(result).toContain('"a.b"');

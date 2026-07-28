@@ -1,3 +1,5 @@
+import { Config } from './types';
+
 export const optionDefinitions = [
   {
     name: 'project',
@@ -96,6 +98,22 @@ export const optionDefinitions = [
   },
   { name: 'help', alias: 'h', type: Boolean, description: 'Help me, please!' },
 ];
+
+/**
+ * The options only one of the commands reads, keyed by the camelCased name
+ * `commandLineArgs` produces. Anything missing here is shared.
+ *
+ * Note that `default-value` and `sort` look like extractor options but are not:
+ * both commands run the same extraction pipeline, so they change what `find`
+ * writes with `--add-missing-keys`.
+ */
+export const commandSpecificOptions: Record<string, Config['command']> = {
+  output: 'extract',
+  replace: 'extract',
+  removeExtraKeys: 'extract',
+  addMissingKeys: 'find',
+  emitErrorOnExtraKeys: 'find',
+};
 
 export const sections = [
   {
