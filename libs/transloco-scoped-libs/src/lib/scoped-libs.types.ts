@@ -2,6 +2,11 @@ import { TranslocoGlobalConfig } from '@jsverse/transloco-utils';
 
 type ScopeStrategy = 'join' | 'default';
 
+export interface ScopedLib {
+  src: string;
+  dist: string[];
+}
+
 export interface ScopedLibsOptions
   extends Pick<TranslocoGlobalConfig, 'rootTranslationsPath' | 'scopedLibs'> {
   watch: boolean;

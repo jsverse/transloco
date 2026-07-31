@@ -21,7 +21,7 @@ export function getPackageJson(lib: string) {
   return { path: pkgPath, content: readJson(pkgPath) };
 }
 
-export function insertPathToGitIgnore(route) {
+export function insertPathToGitIgnore(route: string) {
   const gitIgnorePath = path.resolve('.gitignore');
 
   if (!fs.existsSync(gitIgnorePath)) {

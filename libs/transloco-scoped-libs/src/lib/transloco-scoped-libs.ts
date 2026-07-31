@@ -7,7 +7,6 @@ import { mkdirsSync } from 'fs-extra';
 import { TranslocoGlobalConfig } from '@jsverse/transloco-utils';
 
 import {
-  coerceArray,
   cutPath,
   getPackageJson,
   insertPathToGitIgnore,
@@ -18,6 +17,7 @@ import {
 import {
   CopyScopeOptions,
   CopyScopeTranslationsOptions,
+  ScopedLib,
   ScopedLibsOptions,
   SetTranslationOptions,
 } from './scoped-libs.types';
@@ -147,7 +147,7 @@ export default async function run({
 function coerceScopedLibs(
   scopedLibs: TranslocoGlobalConfig['scopedLibs'],
   defaultPath: TranslocoGlobalConfig['rootTranslationsPath'],
-) {
+): ScopedLib[] {
   if (!scopedLibs?.length) {
     console.log(
       chalk.red(
@@ -159,10 +159,10 @@ function coerceScopedLibs(
     return [];
   }
 
-  return scopedLibs.map((lib) => {
+  return scopedLibs.map((lib): ScopedLib => {
     return isString(lib)
-      ? { src: lib, dist: [defaultPath] }
-      : { ...lib, dist: coerceArray(lib.dist) };
+      ? { src: lib, dist: defaultPath ? [defaultPath] : [] }
+      : lib;
   });
 }
 
