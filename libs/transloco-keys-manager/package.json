@@ -46,12 +46,14 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "@angular/compiler": ">= 21.1.0 < 23.0.0"
+    "@angular/compiler": ">= 21.1.0 < 23.0.0",
+    "typescript": ">= 5.9.0 < 7.0.0"
   },
   "dependencies": {
     "@jsverse/angular-utils": "1.0.0-beta.6",
     "@jsverse/transloco-utils": "8.4.0",
     "@phenomnomnominal/tsquery": "6.2.0",
+    "typescript": "5.9.3",
     "chalk": "5.6.2",
     "cheerio": "1.2.0",
     "cli-table3": "0.6.1",
