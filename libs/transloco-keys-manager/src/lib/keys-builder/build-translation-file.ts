@@ -24,6 +24,7 @@ export function buildTranslationFile({
   removeExtraKeys = false,
   fileFormat,
 }: BuildTranslationOptions): FileAction {
+  const fileExists = fs.existsSync(path);
   const currentTranslation = getCurrentTranslation({ path, fileFormat });
 
   fs.outputFileSync(
@@ -37,5 +38,5 @@ export function buildTranslationFile({
     }),
   );
 
-  return { type: currentTranslation ? 'modified' : 'new', path };
+  return { type: fileExists ? 'modified' : 'new', path };
 }
