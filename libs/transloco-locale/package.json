@@ -24,7 +24,7 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "@angular/core": ">=16.0.0",
+    "@angular/core": ">=20.0.0",
     "@jsverse/transloco": ">=8.0.0",
     "rxjs": ">=6.0.0"
   },
