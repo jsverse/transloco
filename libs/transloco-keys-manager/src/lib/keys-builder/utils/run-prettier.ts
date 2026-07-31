@@ -16,7 +16,7 @@ export async function runPrettier(filePaths: string[]) {
       }
     }
   } catch (e: any) {
-    if (e.code !== 'MODULE_NOT_FOUND') {
+    if (e.code !== 'MODULE_NOT_FOUND' && e.code !== 'ERR_MODULE_NOT_FOUND') {
       console.warn('Failed to run prettier', e.message);
     }
   }

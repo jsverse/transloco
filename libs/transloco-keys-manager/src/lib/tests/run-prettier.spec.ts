@@ -2,9 +2,13 @@ import { writeFileSync } from 'node:fs';
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
-vi.mock('node:fs', () => ({
-  writeFileSync: vi.fn(),
-}));
+vi.mock('node:fs', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('node:fs')>();
+  return {
+    ...actual,
+    writeFileSync: vi.fn(),
+  };
+});
 
 vi.mock('../utils/file.utils', () => ({
   readFile: vi.fn(() => '{"key": "value"}'),
