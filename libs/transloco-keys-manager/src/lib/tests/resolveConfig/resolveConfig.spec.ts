@@ -20,13 +20,10 @@ import { resolveProjectBasePath } from '../../utils/resolve-project-base-path';
 const sourceRoot = 'libs/transloco-keys-manager/src/lib/tests/resolveConfig';
 let mockedGlobalConfig = {};
 
-vi.mock('../../utils/resolve-project-base-path.ts', () => ({
-  resolveProjectBasePath: vi
-    .fn()
-    .mockReturnValue({
-      projectBasePath:
-        'libs/transloco-keys-manager/src/lib/tests/resolveConfig',
-    }),
+vi.mock('../../utils/resolve-project-base-path', () => ({
+  resolveProjectBasePath: vi.fn().mockReturnValue({
+    projectBasePath: 'libs/transloco-keys-manager/src/lib/tests/resolveConfig',
+  }),
 }));
 
 vi.mock('@jsverse/transloco-utils', () => ({
