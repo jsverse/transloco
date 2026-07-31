@@ -6,7 +6,8 @@
     "declaration": true,
     "lib": ["es2022"],
     "module": "commonjs",
-    "target": "ES2021"
+    "target": "ES2021",
+    "types": ["node"]
   },
   "include": ["**/*.ts"],
   "exclude": ["**/*.spec.ts", "src/test-setup.ts", "vitest.config*.ts"]
