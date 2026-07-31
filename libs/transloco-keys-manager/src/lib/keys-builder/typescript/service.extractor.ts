@@ -14,7 +14,7 @@ export function serviceExtractor(ast: SourceFile): TSExtractorResult {
   const injectFunction = ['PropertyDeclaration', 'VariableDeclaration'].map(
     buildInjectFunctionQuery,
   );
-  const serviceNameQuery = [constructorInjection, injectFunction].join(',');
+  const serviceNameQuery = [constructorInjection, ...injectFunction].join(',');
   const serviceNameNodes = tsquery(ast, serviceNameQuery);
 
   let result: TSExtractorResult = [];

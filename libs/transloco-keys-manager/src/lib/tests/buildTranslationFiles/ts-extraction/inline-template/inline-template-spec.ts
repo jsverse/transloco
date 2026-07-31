@@ -31,7 +31,7 @@ export function testInlineTemplateExtraction(fileFormat: Config['fileFormat']) {
     beforeEach(() => removeI18nFolder(type));
 
     it('should work with inline templates', () => {
-      const expected = generateKeys({ end: 23 });
+      const expected = generateKeys({ end: 25 });
       ['Processing archive...', 'Restore Options'].forEach((nonNumericKey) => {
         expected[nonNumericKey] = defaultValue;
       });

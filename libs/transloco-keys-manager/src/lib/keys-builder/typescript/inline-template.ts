@@ -8,12 +8,12 @@ export function inlineTemplateExtractor(
   ast: SourceFile,
   config: ExtractorConfig,
 ) {
-  const [inlineTemplate] = tsquery(
+  const inlineTemplates = tsquery(
     ast,
     'ClassDeclaration Decorator CallExpression:has([name=Component]) ObjectLiteralExpression PropertyAssignment:has([name=template]) NoSubstitutionTemplateLiteral',
   );
 
-  if (inlineTemplate) {
+  for (const inlineTemplate of inlineTemplates) {
     templateExtractor({ ...config, content: inlineTemplate.getText() });
   }
 }
