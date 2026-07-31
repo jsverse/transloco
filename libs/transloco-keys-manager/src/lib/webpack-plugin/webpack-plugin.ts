@@ -11,10 +11,9 @@ import { updateScopesMap } from '../utils/update-scopes-map';
 
 import { generateKeys } from './generate-keys';
 
-let init = true;
-
 export class TranslocoExtractKeysWebpackPlugin {
   config: Config;
+  private init = true;
 
   constructor(inlineConfig: Partial<Config> = {}) {
     this.config = resolveConfig(inlineConfig);
@@ -24,8 +23,8 @@ export class TranslocoExtractKeysWebpackPlugin {
     compiler.hooks.watchRun.tapPromise(
       'TranslocoExtractKeysPlugin',
       async (comp: any) => {
-        if (init) {
-          init = false;
+        if (this.init) {
+          this.init = false;
           return buildTranslationFiles(this.config);
         }
 
