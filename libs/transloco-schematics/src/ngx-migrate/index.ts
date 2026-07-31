@@ -71,8 +71,9 @@ export async function run(options: SchemaOptions) {
             await fs.writeFile(file, newContent, 'utf8');
           }
         } catch (e) {
-          if (e.message.includes('No files match the pattern')) {
-            noFilesFound.push(e.message);
+          const message = e instanceof Error ? e.message : String(e);
+          if (message.includes('No files match the pattern')) {
+            noFilesFound.push(message);
           } else {
             throw e;
           }

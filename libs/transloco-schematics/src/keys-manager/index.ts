@@ -27,7 +27,7 @@ async function installKeysManager() {
   }
 }
 
-export function updateAngularJson(host: Tree, options) {
+export function updateAngularJson(host: Tree, options: SchemaOptions) {
   const angularJson = getWorkspace(host);
   if (angularJson) {
     const project = angularJson.projects[options.project];
@@ -82,7 +82,7 @@ function addKeysDetectiveScript(host: Tree, strategy: string) {
   addScriptToPackageJson(host, 'i18n:find', 'transloco-keys-manager find');
 }
 
-function updateTranslocoConfig(host, options) {
+function updateTranslocoConfig(host: Tree, options: SchemaOptions) {
   const config: TranslocoGlobalConfig = getGlobalConfig() || {};
   let shouldUpdate = false;
   if (!config.rootTranslationsPath) {
@@ -101,7 +101,7 @@ function updateTranslocoConfig(host, options) {
       );
     }
 
-    config.langs = options.langs.split(',').map((l) => l.trim());
+    config.langs = options.langs.split(',').map((l: string) => l.trim());
     shouldUpdate = true;
   }
   if (!config.keysManager) {

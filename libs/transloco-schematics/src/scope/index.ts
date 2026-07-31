@@ -10,6 +10,7 @@ import {
   empty,
   chain,
 } from '@angular-devkit/schematics';
+import { PathFragment } from '@angular-devkit/core';
 import { ScriptTarget, createSourceFile } from 'typescript';
 import {
   addProviderToModule,
@@ -44,13 +45,21 @@ function addScopeToModule(
   options: SchemaOptions,
 ) {
   const module = tree.read(modulePath);
+  if (!module) {
+    throw new Error(`Could not read module file at ${modulePath}`);
+  }
 
+  // `createSourceFile` here uses the workspace's own `typescript` package,
+  // while `@schematics/angular`'s ast-utils vendors its own internal copy of
+  // the TypeScript compiler API types (third_party/.../TypeScript). The AST
+  // shapes are compatible at runtime, but structurally distinct to the type
+  // checker, so an explicit cast is required at this interop boundary.
   const moduleSource = createSourceFile(
     modulePath,
     module.toString('utf-8'),
     ScriptTarget.Latest,
     true,
-  );
+  ) as unknown as Parameters<typeof addProviderToModule>[0];
   const provider = `provideTranslocoScope(${getProviderValue(options)})`;
   const changes: Change[] = [];
   changes.push(
@@ -81,16 +90,27 @@ function addScopeToModule(
   applyChangesToFile(tree, modulePath, changes);
 }
 
-function getTranslationFilesFromAssets(host, translationsPath) {
-  const langFiles = host.root.dir(translationsPath as any).subfiles;
-  return Array.from(new Set(langFiles.map((file) => file.split('.')[0])));
+function getTranslationFilesFromAssets(
+  host: Tree,
+  translationsPath: string,
+): string[] {
+  const langFiles = host.root.dir(
+    translationsPath as unknown as PathFragment,
+  ).subfiles;
+  return Array.from(
+    new Set(langFiles.map((file: string) => file.split('.')[0])),
+  );
 }
 
-function getTranslationFiles(options, host, translationsPath): string[] {
-  return (
+function getTranslationFiles(
+  options: SchemaOptions,
+  host: Tree,
+  translationsPath: string,
+): string[] {
+  return coerceArray(
     options.langs ||
-    getGlobalConfig().langs ||
-    getTranslationFilesFromAssets(host, translationsPath)
+      getGlobalConfig().langs ||
+      getTranslationFilesFromAssets(host, translationsPath),
   );
 }
 
@@ -112,7 +132,12 @@ function addInlineLoader(
   tree.create(path, loader);
 }
 
-function createTranslationFiles(options, rootPath, modulePath, host: Tree) {
+function createTranslationFiles(
+  options: SchemaOptions,
+  rootPath: string,
+  modulePath: string,
+  host: Tree,
+) {
   if (options.skipCreation) {
     return empty();
   }
@@ -125,7 +150,8 @@ function createTranslationFiles(options, rootPath, modulePath, host: Tree) {
 
   return createTranslateFilesFromOptions(host, {
     ...options,
-    translationsPath,
+    langs: coerceArray(options.langs),
+    translationFilePath: translationsPath,
   });
 }
 
@@ -148,10 +174,10 @@ export default function (options: SchemaOptions): Rule {
     if (options.module) {
       const projectPath = getProjectPath(host, project, options);
       const modulePath = findModuleFromOptions(host, options, projectPath);
-      if (options.inlineLoader) {
-        addInlineLoader(host, modulePath, options.name, options.langs);
-      }
       if (modulePath) {
+        if (options.inlineLoader) {
+          addInlineLoader(host, modulePath, options.name, options.langs);
+        }
         addScopeToModule(host, modulePath, options);
         return mergeWith(
           createTranslationFiles(options, rootPath, modulePath, host),
@@ -166,11 +192,15 @@ export default function (options: SchemaOptions): Rule {
         extractModuleOptions(options),
       ),
       (tree) => {
-        const modulePath = tree.actions.find(
+        const moduleAction = tree.actions.find(
           (action) =>
             !!action.path.match(/\.module\.ts/) &&
             !action.path.match(/-routing\.module\.ts/),
-        ).path;
+        );
+        if (!moduleAction) {
+          throw new Error('Could not find the generated module file.');
+        }
+        const modulePath = moduleAction.path;
         addScopeToModule(tree, modulePath, options);
         if (options.inlineLoader) {
           addInlineLoader(tree, modulePath, options.name, options.langs);

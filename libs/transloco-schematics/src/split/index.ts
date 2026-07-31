@@ -15,7 +15,7 @@ import { SchemaOptions } from './schema';
 function reduceTranslations(
   host: Tree,
   dirPath: string,
-  translationJson,
+  translationJson: Record<string, any>,
   lang: string,
   key = '',
 ) {
@@ -26,7 +26,7 @@ function reduceTranslations(
     dir.subdirs.forEach((subDirName) => {
       const subDir = dir.dir(subDirName);
       const nestedKeyPath = getTranslationKey(key, subDirName);
-      const nestedKey = nestedKeyPath.split('.').at(-1);
+      const nestedKey = nestedKeyPath.split('.').at(-1) ?? nestedKeyPath;
       const subTranslationJson = translationJson[key];
       if (subTranslationJson) {
         reduceTranslations(
@@ -61,7 +61,7 @@ export default function (options: SchemaOptions): Rule {
     const translatedFiles = getTranslationFiles(host, options.source);
     const translationEntryPaths = getTranslationEntryPaths(host, root);
 
-    const newTranslation = {};
+    const newTranslation: Record<string, unknown> = {};
     for (const { lang, translation } of translatedFiles) {
       newTranslation[lang] = translationEntryPaths.reduce(
         (acc, { scope, path }) => {
