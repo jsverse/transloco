@@ -181,9 +181,14 @@ function resolveMetadata(node: TmplAstTemplate): ContainerMetaData[] {
 
     metadata = implicitVars.map(({ name }) => ({ name, read }));
   } else {
-    const { name } = node.variables.find(
+    const implicitVar = node.variables.find(
       (variable) => variable.value === '$implicit',
-    )!;
+    );
+    if (!implicitVar) {
+      return [];
+    }
+
+    const { name } = implicitVar;
     const read = node.templateAttrs.find(isPrefixAttr)?.value as ASTWithSource;
     metadata =
       isLiteralExpression(read?.ast) && isString(read?.ast.value)
