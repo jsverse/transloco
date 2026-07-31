@@ -51,7 +51,10 @@ vi.mock('@angular/compiler', async (importOriginal) => {
   };
 });
 
-const PERF_TMP = path.join(os.tmpdir(), 'transloco-perf-test');
+const PERF_TMP = path.join(
+  os.tmpdir(),
+  `transloco-perf-test-${process.pid}-${Date.now()}`,
+);
 
 function generateTemplate(
   componentIndex: number,
@@ -215,6 +218,7 @@ describe('Performance Benchmarks', () => {
       scopeToKeys: sampleScopeToKeys,
     });
     const keysPerTemplate = Object.keys(sampleScopeToKeys.__global).length;
+    expect(keysPerTemplate).toBeGreaterThan(0);
     expect(totalKeys).toBe(COMPONENT_COUNT * keysPerTemplate);
   });
 
