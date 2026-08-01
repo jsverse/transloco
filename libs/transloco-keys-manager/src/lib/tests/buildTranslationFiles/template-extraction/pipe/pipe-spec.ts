@@ -33,7 +33,7 @@ export function testPipeExtraction(fileFormat: Config['fileFormat']) {
     beforeEach(() => removeI18nFolder(type));
 
     it('should work with pipe', () => {
-      const expected = {
+      const expected: Record<string, string> = {
         ...generateKeys({ end: 48 }),
         '49.50.51.52': defaultValue,
         ...generateKeys({ start: 53, end: 62 }),
