@@ -19,7 +19,7 @@ export function spyOnProcess(method: 'exit') {
 }
 
 export function mockResolveProjectBasePath(projectBasePath: string) {
-  vi.mock('src/lib/utils/resolve-project-base-path.ts', () => ({
+  vi.doMock('../utils/resolve-project-base-path', () => ({
     resolveProjectBasePath: vi.fn().mockReturnValue({ projectBasePath }),
   }));
 }
