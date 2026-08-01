@@ -25,6 +25,7 @@ body:
         - Persist Translations
         - Preload Langs
         - Scoped Libs
+        - Keys Manager
         - Validator
         - Don't know / other
       multiple: true
