@@ -25,6 +25,7 @@ body:
         - Persist Translations
         - Preload Langs
         - Scoped Libs
+        - Keys Manager
         - Validator
         - Don't know / other
       multiple: true
@@ -71,12 +72,20 @@ body:
       placeholder: Provide the Transloco configuration if relevant to the issue
 
   - type: textarea
+    id: debug-logs
+    attributes:
+      label: Debug Logs
+      render: markdown
+      placeholder: If this bug is related to the Keys Manager, run it in debug mode and add any relevant information
+
+  - type: textarea
     id: environment
     attributes:
       label: Please provide the environment you discovered this bug in
       render: markdown
       value: |
         Transloco: 
+        Transloco Keys Manager: 
         Angular: 
         Node: 
         Package Manager: 

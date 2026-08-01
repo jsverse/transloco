@@ -1,0 +1,4 @@
+# Translation files written by the buildTranslationFiles/findMissingKeys
+# tests during a test run. These are generated fixtures, not source files
+# (mirrors the `**/i18n` ignore rule from the original standalone repo).
+src/lib/tests/**/i18n

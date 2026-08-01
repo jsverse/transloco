@@ -1,0 +1,20 @@
+<!-- Shouldn't take any keys - start -->
+<ng-template transloco let-t>
+  <h1>ddsds</h1>
+  <button (click)="test('36.1')" (blur)="t('36')">{{ test('37.1') }}</button>
+  {{test('38.1')}} {{ test('39.1') }}
+</ng-template>
+<!-- Shouldn't take any keys - end -->
+
+<ng-container *transloco="let t">
+  <ng-container
+    *ngTemplateOutlet="test; context: { text: t('36'), some: { nested: t('37') } }"
+  ></ng-container>
+  <ng-template [someAttr]="t('38')"></ng-template>
+  <my-comp [aa]="t('39') + 'a'">
+    <comp a="{{t('40') + 'a'}}">{{t('41') + 'a'}}</comp>
+  </my-comp>
+  <ng-template>
+    <self-closing [value]="t('42')" />
+  </ng-template>
+</ng-container>

@@ -1,0 +1,32 @@
+<ng-container *transloco="let t">
+  <h1>ddsds</h1>
+  {{ t('1', {'1': 'asd'}) }}
+  <ng-container blabla>
+    <h3>dsds</h3>
+    <ng-container *trans> dsds </ng-container>
+    <comp [a]="dsds">
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad aperiam
+      consequatur facilis ipsa maxime non optio qui reiciendis velit voluptate.
+      Atque deserunt dignissimos explicabo natus placeat sunt veniam voluptates?
+      Itaque.
+    </comp>
+    <ng-template #tpl></ng-template>
+    <ng-container *transloco="let b; lang: 'es'; loadingTpl: tpl">
+      {{ b('2', {'2': 'asd'}) }}
+      <my-comp [aa]="b('3', {'3': 234})">
+        <comp a="{{b('4', {'4': 1})}}"></comp>
+        {{ t('5', {'5': 'asd'}) }}
+      </my-comp>
+
+      <ul>
+        <li>{{ variable | another : t('6', {'6': 123}) }}</li>
+        <li>{{ variable | another : t('7', {'7': 12 }) | lowercase }}</li>
+        <li>{{ variable | another : {a: t('8', {'8': {} })} | lowercase }}</li>
+        <li>{{ t('10') | another: t('9') }}</li>
+        <li>{{ t('11') | another: ('asd') }}</li>
+        {{ b('nested', {a: '', b: {c: {d: ''} } }) }} {{ t('skip.params',
+        someVariable) }}
+      </ul>
+    </ng-container>
+  </ng-container>
+</ng-container>

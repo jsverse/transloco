@@ -1,0 +1,121 @@
+<ng-container *transloco="let t;">
+  <div class="header d-flex-0-0-auto">
+    <span datoFont="headline">{{ 'delete-data.deleteData' | translate }}</span>
+  </div>
+  <form
+    [formGroup]="form"
+    class="content d-flex-1-1-auto d-flex-column mt-25 overflow-auto"
+  >
+    <span datoFont="sub-headline" datoColor="primary-600" class="mb-5"
+      >{{ 'delete-data.dataStreams' | translate }}</span
+    >
+    <dato-radio
+      class="d-flex-0-1-auto"
+      formControlName="allStreams"
+      name="allStreams"
+      [value]="false"
+      >{{ 'delete-data.selectDataStreams' | translate }}
+    </dato-radio>
+    <span class="ml-36 d-flex-0-0-auto" datoFont="note" datoColor="primary-300"
+      >{{ 'delete-data.onlyDelete' | translate }}</span
+    >
+    <dato-select
+      formControlName="streamsOptions"
+      class="ml-36 mt-5 d-flex-0-0-auto"
+      [dataSet]="streamsOptions$ | async"
+      #datoSelectMulti
+      type="multi"
+      idKey="value"
+      labelKey="name"
+      [internalSearch]="false"
+      (search)="searchStreams($event)"
+      [allowSelectAll]="true"
+    >
+      <dato-option
+        *ngFor="let option of datoSelectMulti.data; trackBy: trackByFn"
+        [option]="option"
+        multi
+      >
+        {{ t('adminPage.1') }}
+      </dato-option>
+    </dato-select>
+    <dato-radio
+      class="d-flex-0-1-auto"
+      formControlName="allStreams"
+      name="allStreams"
+      [value]="true"
+      >{{ 'delete-data.allDataStreams' | translate }}
+    </dato-radio>
+    <span
+      class="ml-36 mb-20 d-flex-0-0-auto"
+      datoFont="note"
+      datoColor="primary-300"
+      >{{ 'delete-data.deleteDataFromAll' | translate }}</span
+    >
+    <div class="lower-content pt-10 d-flex-0-0-auto">
+      <span datoFont="sub-headline" datoColor="primary-600" class="mt-20 mb-5"
+        >{{ 'delete-data.dateRange' | translate }}</span
+      >
+      <dato-radio
+        formControlName="dateRange"
+        name="dateRange"
+        [value]="dateRangeBetween"
+        class="d-flex"
+        >{{ 'delete-data.datesBetween' | translate }}
+      </dato-radio>
+      <span class="ml-36" datoFont="note" datoColor="primary-300"
+        >{{ 'delete-data.deleteDataWithin' | translate }}</span
+      >
+      <da-date-picker
+        [maxCalendars]="2"
+        [selectedRange]="selectedRange"
+        [selectedDateType]="CUSTOM"
+        [showHeader]="false"
+        [showDateType]="true"
+        [showRangeDropdown]="false"
+        (onChange)="onSelectedRangeChange($event)"
+        class="ml-36 mt-5 mb-20"
+        *ngIf="isDateRangeBetween"
+      ></da-date-picker>
+      <dato-radio
+        formControlName="dateRange"
+        class="mt-15 d-flex"
+        name="dateRange"
+        [value]="dateRangeUntil"
+        d="{{ t('adminPage.3.1') }}"
+        >{{ 'delete-data.datesUntil' | translate }}
+      </dato-radio>
+      <span class="ml-36 mb-5" datoFont="note" datoColor="primary-300"
+        >{{ 'delete-data.deleteUntilSelected' | translate }}</span
+      >
+      <da-date-picker
+        [maxCalendars]="t('adminPage.4', {id: 1})"
+        [selectedRange]="selectedRange"
+        [selectedDateType]="CUSTOM_ON_GOING"
+        [showHeader]="false"
+        [showDateType]="true"
+        [showRangeDropdown]="false"
+        [showFromInput]="false"
+        (onChange)="onSelectedRangeChange($event)"
+        class="ml-36"
+        *ngIf="isDateRangeUntil"
+      ></da-date-picker>
+    </div>
+  </form>
+  <div
+    class="footer d-flex-0-0-auto d-flex-row items-center justify-end"
+    arr.t='{{t("adminPage.5", {ad: "dsds", dsds: "ds"})}}'
+  >
+    <dato-link
+      class="mr-30 cursor-pointer"
+      datoType="secondary"
+      (click)="closeDeleteData()"
+      >{{ 'general.cancel' | translate }}
+    </dato-link>
+    {{ t('') }}
+    <dato-button class="mr-10" (click)="onSubmit()" [disabled]="form.invalid"
+      >{{ 'delete-data.deleteSelectedData' | translate }}
+    </dato-button>
+  </div>
+  {{ t('adminPage.2.1') }}
+</ng-container>

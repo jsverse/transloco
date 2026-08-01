@@ -1,0 +1,35 @@
+<ng-template transloco let-t translocoRead="templates.translations">
+  <h1>ddsds</h1>
+  {{ t('1') }}
+  <ng-template blabla>
+    <h3>dsds</h3>
+    <ng-container *trans> dsds </ng-container>
+    <ng-template transloco let-b [translocoRead]="'nested.translation'">
+      {{ b('1') }}
+      <my-comp [aa]="b('2')">
+        <comp a="{{b('3')}}"></comp>
+      </my-comp>
+    </ng-template>
+    <ng-container *transloco="let c; read: 'right-pane.actions'">
+      <app-hero
+        [title]="'Albi Eco Race'"
+        [subTitle]="c('6')"
+        [buttonText]="c('7')"
+        buttonUrl="/register"
+        [text]="c('8')"
+      ></app-hero>
+
+      <app-promo [isSmallText]="true"></app-promo>
+
+      <app-block [title]="'What people say'" theme="primary"
+        ><app-what-people-say> {{c("9")}} </app-what-people-say></app-block
+      >
+
+      <app-block class="register-block">
+        <button mat-raised-button color="accent" routerLink="register">
+          {{ c('10') }}
+        </button>
+      </app-block>
+    </ng-container>
+  </ng-template>
+</ng-template>
