@@ -1,7 +1,6 @@
-import { Target } from '@angular-devkit/architect';
 import * as cheerio from 'cheerio';
 
-export default (_: Target, indexHtml: string) => {
+export default async (indexHtml: string) => {
   if (!process.env.ORIGIN) {
     return indexHtml;
   }
