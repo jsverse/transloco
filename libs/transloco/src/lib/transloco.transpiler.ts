@@ -209,7 +209,7 @@ export class FunctionalTranspiler
               );
             }
 
-            throw new Error(message);
+            throw new Error(message, { cause: e });
           }
         },
       );

@@ -5,7 +5,7 @@ import { isObject } from './validators.utils';
 
 export function countKeys(obj: Record<string, any>): number {
   return Object.keys(obj).reduce(
-    (acc, curr) => (isObject(obj[curr]) ? acc + countKeys(obj[curr]) : ++acc),
+    (acc, curr) => (isObject(obj[curr]) ? acc + countKeys(obj[curr]) : acc + 1),
     0,
   );
 }
@@ -15,7 +15,7 @@ export function checkForProblematicUnflatKeys(obj: object) {
   const problematicKeys = [];
   const lastKeyIndex = sortedKeys.length - 1;
 
-  for (let i = 0; i < lastKeyIndex; ) {
+  for (let i = 0; i < lastKeyIndex;) {
     const key = sortedKeys[i];
     const prefix = `${key}.`;
     let isChildKey = sortedKeys[++i].startsWith(prefix);

@@ -109,7 +109,7 @@
       "inputs": [
         "default",
         "^default",
-        "{workspaceRoot}/.eslintrc.json",
+        "{workspaceRoot}/eslint.config.mjs",
         "{workspaceRoot}/tools/eslint-rules/**/*"
       ],
       "cache": true
@@ -121,7 +121,7 @@
     "sharedGlobals": [],
     "production": [
       "default",
-      "!{projectRoot}/.eslintrc.json",
+      "!{projectRoot}/eslint.config.mjs",
       "!{projectRoot}/src/test-setup.[jt]s"
     ]
   },
