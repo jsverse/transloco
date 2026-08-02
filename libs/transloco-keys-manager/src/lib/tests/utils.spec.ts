@@ -129,6 +129,22 @@ describe('object.utils', () => {
       const result = mergeDeep(target);
       expect(result).toBe(target);
     });
+
+    it('should not pollute Object.prototype when a source has a __proto__ key', async () => {
+      const { mergeDeep } = await import('../utils/object.utils');
+      // `readJsonSync` keeps `__proto__` as an own key on the parsed translation
+      const source = JSON.parse(
+        '{"__proto__": {"polluted": "yes"}, "prototype": "Prototyp", "hello": "Hallo"}',
+      );
+
+      const result = mergeDeep({}, source);
+
+      const polluted = ({} as any).polluted;
+      delete (Object.prototype as any).polluted;
+      expect(polluted).toBeUndefined();
+      // every other key, including one named `prototype`, still merges
+      expect(result).toEqual({ prototype: 'Prototyp', hello: 'Hallo' });
+    });
   });
 
   describe('stringify', () => {
