@@ -15,6 +15,7 @@ import {
   buildKeysFromParams,
   paramsTestConfig,
 } from '../../../spec-utils';
+// eslint-disable-next-line import/order -- import/order misclassifies this 4-level-deep relative import
 import { Config } from '../../../../types';
 
 mockResolveProjectBasePath(sourceRoot);
