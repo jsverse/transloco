@@ -177,15 +177,19 @@ describe('TranslocoTranspiler', () => {
           throw sentinel;
         });
 
-      expect(() =>
-        transpiler.transpile(getTranspilerParams('[[ upperCase(lowercase) ]]')),
-      ).toThrowError(
-        expect.objectContaining({
-          cause: sentinel,
-        }),
-      );
-
-      spy.mockRestore();
+      try {
+        expect(() =>
+          transpiler.transpile(
+            getTranspilerParams('[[ upperCase(lowercase) ]]'),
+          ),
+        ).toThrowError(
+          expect.objectContaining({
+            cause: sentinel,
+          }),
+        );
+      } finally {
+        spy.mockRestore();
+      }
     });
 
     describe('getFunctionArgs', () => {
