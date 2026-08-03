@@ -83,7 +83,10 @@
       </li>
       <li
         class="list-group-item"
+        role="button"
+        tabindex="0"
         (click)="changeParam()"
+        (keydown.enter)="changeParam()"
         data-cy="d-with-params"
       >
         <b>(click) With params: </b
@@ -95,7 +98,14 @@
       <li class="list-group-item" data-cy="d-with-translation-reuse">
         <b>With translation reuse: </b> <span transloco="a.b.c"></span>
       </li>
-      <li class="list-group-item" (click)="changeKey()" data-cy="d-dynamic-key">
+      <li
+        class="list-group-item"
+        role="button"
+        tabindex="0"
+        (click)="changeKey()"
+        (keydown.enter)="changeKey()"
+        data-cy="d-dynamic-key"
+      >
         <b>(click) Dynamic key: </b> <span [transloco]="key()"></span>
       </li>
       <li class="list-group-item" data-cy="d-static-lang-es">
@@ -113,7 +123,14 @@
       <li class="list-group-item" data-cy="p-with-params">
         <b>With params: </b>{{ 'alert' | transloco: { value: dynamic() } }}
       </li>
-      <li class="list-group-item" (click)="changeKey()" data-cy="p-dynamic-key">
+      <li
+        class="list-group-item"
+        role="button"
+        tabindex="0"
+        (click)="changeKey()"
+        (keydown.enter)="changeKey()"
+        data-cy="p-dynamic-key"
+      >
         <b>(click) Dynamic key: </b> <span> {{ key() | transloco }}</span>
       </li>
       <li class="list-group-item" data-cy="p-with-translation-reuse">
@@ -136,11 +153,21 @@
       <li
         class="list-group-item"
         data-cy="s-with-params"
+        role="button"
+        tabindex="0"
         (click)="changeParam()"
+        (keydown.enter)="changeParam()"
       >
         <b>(click) Dynamic params:</b> {{ translocoParams() }}
       </li>
-      <li class="list-group-item" (click)="changeKey()" data-cy="s-dynamic-key">
+      <li
+        class="list-group-item"
+        role="button"
+        tabindex="0"
+        (click)="changeKey()"
+        (keydown.enter)="changeKey()"
+        data-cy="s-dynamic-key"
+      >
         <b>(click) Dynamic key: </b> {{ translocoKeys() }}
       </li>
     </ul>
