@@ -36,10 +36,10 @@ The `TranslateService` imports will be replaced with `TranslocoService`.
 
 ##### Examples:
 
-1. `import {TranslateService} from '@ngx-translate/core';` will be replaced with `import { TranslocoService } from '@jsverse/transloco';`
-2. `import {TranslateModule, TranslateLoader} from '@ngx-translate/core';` will be replaced with  
-   `import {TranslateLoader} from '@ngx-translate/core';`
-   `import { TranslocoService } from '@jsverse/transloco';`
+1. `import { TranslateService } from '@ngx-translate/core';` will be replaced with `import { TranslocoService } from '@jsverse/transloco';`
+2. `import { TranslateModule, TranslateLoader } from '@ngx-translate/core';` will be replaced with  
+   `import { TranslateLoader } from '@ngx-translate/core';`
+   `import { TranslocoModule } from '@jsverse/transloco';`
 
 ### Constructor Injections
 
