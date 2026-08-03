@@ -20,15 +20,14 @@ interface Result {
   baseFilesPath: string;
 }
 
-interface CompareKeysOptions
-  extends Pick<
-    Config,
-    | 'unflat'
-    | 'fileFormat'
-    | 'addMissingKeys'
-    | 'emitErrorOnExtraKeys'
-    | 'translationsPath'
-  > {
+interface CompareKeysOptions extends Pick<
+  Config,
+  | 'unflat'
+  | 'fileFormat'
+  | 'addMissingKeys'
+  | 'emitErrorOnExtraKeys'
+  | 'translationsPath'
+> {
   scopeToKeys: ScopeMap;
 }
 

@@ -54,18 +54,16 @@ describe('findMissingKeys', () => {
   });
 
   it('should forward the built keys and resolved config to compareKeysToFiles when translation files exist', async () => {
-    const { getTranslationFilesPath } = await import(
-      '../keys-detective/get-translation-files-path'
-    );
+    const { getTranslationFilesPath } =
+      await import('../keys-detective/get-translation-files-path');
     (getTranslationFilesPath as any).mockReturnValue(['/tmp/i18n/en.json']);
 
     const { buildKeys } = await import('../keys-builder/build-keys');
     const scopeToKeys = { __global: { 'some.key': 'missing' } };
     (buildKeys as any).mockReturnValue({ scopeToKeys });
 
-    const { compareKeysToFiles } = await import(
-      '../keys-detective/compare-keys-to-files'
-    );
+    const { compareKeysToFiles } =
+      await import('../keys-detective/compare-keys-to-files');
 
     findMissingKeys({} as Config);
 
