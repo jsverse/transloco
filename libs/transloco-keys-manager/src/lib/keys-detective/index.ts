@@ -21,7 +21,7 @@ export function findMissingKeys(inlineConfig: Config) {
 
   if (translationFiles.length === 0) {
     console.log('No translation files found.');
-    return;
+    return { hasMissingKeys: false, hasExtraKeys: false };
   }
 
   logger.log('\n 🕵 🔎', `\x1b[4m${messages.startSearch}\x1b[0m`, '🔍 🕵\n');
@@ -31,7 +31,7 @@ export function findMissingKeys(inlineConfig: Config) {
   logger.success(`${messages.extract} 🗝`);
 
   const { addMissingKeys, emitErrorOnExtraKeys, unflat } = config;
-  compareKeysToFiles({
+  return compareKeysToFiles({
     scopeToKeys: result.scopeToKeys,
     translationsPath,
     addMissingKeys,

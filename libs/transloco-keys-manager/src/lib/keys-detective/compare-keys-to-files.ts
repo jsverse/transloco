@@ -1,11 +1,14 @@
 import { getGlobalConfig } from '@jsverse/transloco-utils';
 import type { DiffDeleted, DiffNew } from 'deep-diff';
 import df from 'deep-diff';
+import fs from 'fs-extra';
 import { flatten, unflatten } from 'flat';
 
 import { messages } from '../messages';
 import { Config, ScopeMap } from '../types';
-import { readFile, writeFile } from '../utils/file.utils';
+import { writeFile } from '../utils/file.utils';
+import { getCurrentTranslation } from '../keys-builder/utils/get-current-translation';
+import { createTranslation } from '../keys-builder/utils/create-translation';
 import { getLogger } from '../utils/logger';
 import { getScopeAndLangFromPath } from '../utils/path.utils';
 import { normalizedGlob } from '../utils/normalize-glob-path';
@@ -59,8 +62,10 @@ export function compareKeysToFiles({
 
   const result: Result[] = [];
   const scopePaths = getGlobalConfig().scopePathMap || {};
+  const cache: Record<string, boolean> = {};
   for (const [scope, path] of Object.entries(scopePaths)) {
     const keys = scopeToKeys[scope];
+    cache[scope] = true;
     if (keys) {
       const res: Omit<Result, 'files'> = {
         keys,
@@ -73,7 +78,6 @@ export function compareKeysToFiles({
       });
     }
   }
-  const cache: Record<string, boolean> = {};
 
   for (const filePath of translationFiles) {
     const { scope = '__global' } = getScopeAndLangFromPath({
@@ -110,7 +114,17 @@ export function compareKeysToFiles({
         translationsPath: baseFilesPath,
         fileFormat,
       });
-      const translation = readFile(filePath, { parse: true });
+      // We always keep the working translation flat, matching the on-disk
+      // POT format and the pre-unflatten shape of JSON files, so that diffs
+      // and mutations below operate on a consistent structure.
+      const rawTranslation = getCurrentTranslation({
+        path: filePath,
+        fileFormat,
+      });
+      const translation: Record<string, any> =
+        fileFormat === 'pot'
+          ? flatten<Record<string, any>, Record<string, any>>(rawTranslation)
+          : rawTranslation;
       // We always build the keys flatten, so we need to make sure we compare to a flat file
       const flat = flatten<Record<string, any>, Record<string, string>>(
         translation,
@@ -144,7 +158,20 @@ export function compareKeysToFiles({
         }
 
         if (addMissingKeys) {
-          writeFile(filePath, unflat ? unflatten(translation) : translation);
+          if (fileFormat === 'pot') {
+            fs.outputFileSync(
+              filePath,
+              createTranslation({
+                currentTranslation: {},
+                translation,
+                replace: true,
+                removeExtraKeys: false,
+                fileFormat,
+              }),
+            );
+          } else {
+            writeFile(filePath, unflat ? unflatten(translation) : translation);
+          }
         }
       }
     }
@@ -157,7 +184,7 @@ export function compareKeysToFiles({
     return missing.length || extra.length;
   });
 
-  buildTable({
+  return buildTable({
     langs,
     diffsPerLang,
     addMissingKeys,

@@ -1,3 +1,4 @@
+import type { DiffDeleted, DiffNew } from 'deep-diff';
 import chalk from 'chalk';
 import Table from 'cli-table3';
 
@@ -12,23 +13,29 @@ type Params = {
   langs: string[];
   diffsPerLang: {
     [lang: string]: {
-      missing: any[];
-      extra: any[];
+      missing: DiffNew<any>[];
+      extra: DiffDeleted<any>[];
     };
   };
 };
+
+export interface BuildTableResult {
+  hasMissingKeys: boolean;
+  hasExtraKeys: boolean;
+}
 
 export function buildTable({
   langs,
   diffsPerLang,
   addMissingKeys,
   emitErrorOnExtraKeys,
-}: Params) {
+}: Params): BuildTableResult {
   const logger = getLogger();
-  if (langs.length > 0) {
-    let displayAddedMsg = false;
-    let hasExtraKeys = false;
+  let displayAddedMsg = false;
+  let hasExtraKeys = false;
+  let hasMissingKeys = false;
 
+  if (langs.length > 0) {
     logger.success(`\x1b[4m${messages.summary}\x1b[0m\n`);
     const table = new Table({
       style: {
@@ -52,6 +59,7 @@ export function buildTable({
       if (hasMissing) {
         row.push(mapDiffToKeys(missing, 'rhs'));
         displayAddedMsg = true;
+        hasMissingKeys = true;
       } else {
         row.push('--');
       }
@@ -69,17 +77,17 @@ export function buildTable({
     if (displayAddedMsg) {
       if (addMissingKeys) {
         logger.success(`Added all missing keys\n`);
-      } else {
-        process.exit(1);
+        hasMissingKeys = false;
       }
-    }
-
-    if (hasExtraKeys && emitErrorOnExtraKeys) {
-      process.exit(2);
     }
   } else {
     logger.log(`\n🎉 ${messages.noMissing} 🎉\n`);
   }
 
   logger.log('\n');
+
+  return {
+    hasMissingKeys: hasMissingKeys && !addMissingKeys,
+    hasExtraKeys: hasExtraKeys && emitErrorOnExtraKeys,
+  };
 }

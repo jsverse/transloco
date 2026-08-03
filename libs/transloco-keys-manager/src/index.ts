@@ -28,18 +28,41 @@ if (help) {
   process.exit();
 }
 
+const input = config.input
+  ?.split(',')
+  .map((path: string) => path.trim())
+  .filter((path: string) => path.length > 0);
+
+if (config.input && (!input || input.length === 0)) {
+  console.error('Please provide at least one valid input path.');
+  process.exit(1);
+}
+
 const resolvedConfig = {
   ...config,
   command: mainOptions.command,
-  ...(config.input ? { input: config.input.split(',') } : {}),
+  ...(input ? { input } : {}),
 } as Config;
 
-if (resolvedConfig.command === 'extract') {
-  warnUnsupportedOptions('extract', config);
-  buildTranslationFiles(resolvedConfig);
-} else if (resolvedConfig.command === 'find') {
-  warnUnsupportedOptions('find', config);
-  findMissingKeys(resolvedConfig);
-} else {
-  console.log(`Please provide an action...`);
+async function main() {
+  if (resolvedConfig.command === 'extract') {
+    warnUnsupportedOptions('extract', config);
+    await buildTranslationFiles(resolvedConfig);
+  } else if (resolvedConfig.command === 'find') {
+    warnUnsupportedOptions('find', config);
+    const { hasMissingKeys, hasExtraKeys } = findMissingKeys(resolvedConfig);
+    if (hasMissingKeys) {
+      process.exitCode = 1;
+    } else if (hasExtraKeys) {
+      process.exitCode = 2;
+    }
+  } else {
+    console.log(`Please provide an action...`);
+    process.exitCode = 1;
+  }
 }
+
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});

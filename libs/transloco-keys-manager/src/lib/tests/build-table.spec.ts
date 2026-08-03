@@ -80,7 +80,7 @@ describe('buildTable', () => {
   });
 
   it('should call process.exit(1) when missing keys exist and addMissingKeys is false', () => {
-    buildTable({
+    const result = buildTable({
       langs: ['en'],
       diffsPerLang: {
         en: {
@@ -92,7 +92,7 @@ describe('buildTable', () => {
       emitErrorOnExtraKeys: false,
     });
 
-    expect(process.exit).toHaveBeenCalledWith(1);
+    expect(result).toEqual({ hasMissingKeys: true, hasExtraKeys: false });
   });
 
   it('should log success when missing keys exist and addMissingKeys is true', () => {
@@ -121,11 +121,7 @@ describe('buildTable', () => {
   });
 
   it('should call process.exit(2) when extra keys exist and emitErrorOnExtraKeys is true', () => {
-    const exitSpy = vi
-      .spyOn(process, 'exit')
-      .mockImplementation((() => {}) as any);
-
-    buildTable({
+    const result = buildTable({
       langs: ['en'],
       diffsPerLang: {
         en: {
@@ -137,8 +133,7 @@ describe('buildTable', () => {
       emitErrorOnExtraKeys: true,
     });
 
-    expect(exitSpy).toHaveBeenCalledWith(2);
-    exitSpy.mockRestore();
+    expect(result).toEqual({ hasMissingKeys: false, hasExtraKeys: true });
   });
 
   it('should skip langs with no missing and no extra keys', () => {
