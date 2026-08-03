@@ -20,8 +20,7 @@ type providerValue =
   | Pick<ClassProvider, 'useClass'>
   | Pick<ExistingProvider, 'useExisting'>
   | Pick<FactoryProvider, 'useFactory' | 'deps'>;
-export interface TranslocoPersistTranslationsConfig
-  extends Partial<StorageConfig> {
+export interface TranslocoPersistTranslationsConfig extends Partial<StorageConfig> {
   loader: Type<TranslocoLoader>;
   storage: providerValue;
 }
