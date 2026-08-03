@@ -29,9 +29,11 @@ export function generateKeys({ translationPath, scopeToKeys, config }: Params) {
   const scopePaths = config.scopePathMap || {};
 
   const result = [];
+  const processedScopes = new Set<string>();
 
   for (const [scope, path] of Object.entries(scopePaths)) {
     const keys = scopeToKeys[scope];
+    processedScopes.add(scope);
     if (keys) {
       result.push({
         keys,
@@ -43,7 +45,7 @@ export function generateKeys({ translationPath, scopeToKeys, config }: Params) {
   }
 
   for (const [scope, keys] of Object.entries(scopeToKeys)) {
-    if (keys) {
+    if (keys && !processedScopes.has(scope)) {
       const isGlobal = scope === '__global';
 
       result.push({
