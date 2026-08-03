@@ -27,6 +27,11 @@ nx test-schematics transloco       # Core schematics tests (Vitest)
 npm run ci:lint                    # Lint all packages
 nx lint <package-name>             # Lint single package
 
+# Format (Prettier, via Nx's built-in formatter)
+npm run format                     # Format files affected vs. base branch
+npm run format:check               # Check formatting of files affected vs. base branch
+npm run ci:format                  # Check formatting of the whole repo (used in CI)
+
 # E2E
 npm run ci:e2e                     # Playwright E2E (CI mode, production serve)
 npm run e2e                        # Playwright E2E (local, dev serve)
