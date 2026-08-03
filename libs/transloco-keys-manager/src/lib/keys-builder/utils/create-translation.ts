@@ -46,8 +46,14 @@ function createJson(config: CreateTranslationOptions) {
 }
 
 function createPot(config: CreateTranslationOptions) {
-  const resolved: Translation = getConfig().unflat
-    ? flatten(resolveTranslation(config))
+  const { unflat } = getConfig();
+  const resolved: Translation = unflat
+    ? flatten(
+        resolveTranslation({
+          ...config,
+          translation: unflatten(config.translation, { object: true }),
+        }),
+      )
     : resolveTranslation(config);
 
   return po
