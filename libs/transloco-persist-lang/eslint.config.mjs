@@ -8,24 +8,7 @@ export default [
   {
     files: ['**/*.ts'],
     processor: angularEslint.processInlineTemplates,
-    rules: {
-      '@angular-eslint/directive-selector': [
-        'error',
-        {
-          type: 'attribute',
-          prefix: 'translocoNxShell',
-          style: 'camelCase',
-        },
-      ],
-      '@angular-eslint/component-selector': [
-        'error',
-        {
-          type: 'element',
-          prefix: 'transloco-nx-shell',
-          style: 'kebab-case',
-        },
-      ],
-    },
+    rules: {},
   },
   ...nx.configs['flat/angular-template'],
 ];

@@ -10,22 +10,6 @@ export default [
     processor: angularEslint.processInlineTemplates,
     rules: {
       '@typescript-eslint/no-explicit-any': 'warn',
-      '@angular-eslint/directive-selector': [
-        'error',
-        {
-          type: 'attribute',
-          prefix: 'translocoNxShell',
-          style: 'camelCase',
-        },
-      ],
-      '@angular-eslint/component-selector': [
-        'error',
-        {
-          type: 'element',
-          prefix: 'transloco-nx-shell',
-          style: 'kebab-case',
-        },
-      ],
     },
   },
   ...nx.configs['flat/angular-template'],
