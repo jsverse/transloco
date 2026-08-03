@@ -1,5 +1,6 @@
 import { LiteralPrimitive } from '@angular/compiler';
 
+import { getConfig } from '../../config';
 import { Scopes } from '../../types';
 import { isString } from '../../utils/validators.utils';
 
@@ -51,6 +52,13 @@ export function resolveScopeAlias({
 
   // Otherwise we're probably have a language in the scope: some/nested/en
   const splitted = scopePath.split('/');
+  const lastSegment = splitted[splitted.length - 1];
+
+  // Only remove the last segment if it's actually a configured language,
+  // otherwise it's part of the scope path itself.
+  if (!getConfig().langs.includes(lastSegment)) {
+    return undefined;
+  }
 
   // Remove the lang
   splitted.pop();
