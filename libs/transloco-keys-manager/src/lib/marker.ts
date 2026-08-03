@@ -9,7 +9,7 @@
  */
 export function marker<T extends string | string[]>(
   key: T,
-  params?: undefined,
+  params?: Record<string, unknown>,
   scope?: string,
 ): T {
   return key;
