@@ -11,7 +11,8 @@
       "outputs": ["{options.outputPath.base}"],
       "options": {
         "outputPath": {
-          "base": "dist/apps/transloco-playground"
+          "base": "dist/apps/transloco-playground",
+          "browser": ""
         },
         "index": "apps/transloco-playground/src/index.html",
         "polyfills": ["apps/transloco-playground/src/polyfills.ts"],
