@@ -33,18 +33,19 @@ const input = config.input
   .map((path: string) => path.trim())
   .filter((path: string) => path.length > 0);
 
-if (config.input && (!input || input.length === 0)) {
-  console.error('Please provide at least one valid input path.');
-  process.exit(1);
-}
-
-const resolvedConfig = {
-  ...config,
-  command: mainOptions.command,
-  ...(input ? { input } : {}),
-} as Config;
-
 async function main() {
+  if (config.input !== undefined && (!input || input.length === 0)) {
+    console.error('Please provide at least one valid input path.');
+    process.exitCode = 1;
+    return;
+  }
+
+  const resolvedConfig = {
+    ...config,
+    command: mainOptions.command,
+    ...(input ? { input } : {}),
+  } as Config;
+
   if (resolvedConfig.command === 'extract') {
     warnUnsupportedOptions('extract', config);
     await buildTranslationFiles(resolvedConfig);

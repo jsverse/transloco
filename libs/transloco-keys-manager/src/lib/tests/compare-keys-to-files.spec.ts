@@ -1,4 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { po } from 'gettext-parser';
+import fs from 'fs-extra';
 
 import { compareKeysToFiles } from '../keys-detective/compare-keys-to-files';
 import { buildTable } from '../keys-detective/build-table';
@@ -6,6 +8,7 @@ import { normalizedGlob } from '../utils/normalize-glob-path';
 import { writeFile } from '../utils/file.utils';
 import { getCurrentTranslation } from '../keys-builder/utils/get-current-translation';
 import { getTranslationFilesPath } from '../keys-detective/get-translation-files-path';
+import { setConfig } from '../config';
 
 vi.mock('../utils/logger', () => ({
   getLogger: () => ({
@@ -30,6 +33,12 @@ vi.mock('../keys-detective/get-translation-files-path', () => ({
 vi.mock('../utils/file.utils', () => ({
   readFile: vi.fn(() => ({})),
   writeFile: vi.fn(),
+}));
+
+vi.mock('fs-extra', () => ({
+  default: {
+    outputFileSync: vi.fn(),
+  },
 }));
 
 vi.mock('../keys-builder/utils/get-current-translation', () => ({
@@ -190,5 +199,38 @@ describe('compareKeysToFiles', () => {
       '/tmp/i18n/en.json',
       expect.objectContaining({ a: { b: 'value' } }),
     );
+  });
+
+  it('should retain existing entries and add missing keys when writing a POT file', () => {
+    setConfig({ unflat: false } as any);
+    mockGetTranslationFilesPath.mockReturnValue(['/tmp/i18n/en.pot']);
+    mockGetCurrentTranslation.mockReturnValue({
+      parent: { existing: 'existing value' },
+    });
+    mockNormalizedGlob.mockReturnValue(['/tmp/i18n/en.pot']);
+
+    compareKeysToFiles({
+      scopeToKeys: {
+        __global: {
+          'parent.existing': 'existing value',
+          'parent.newKey': 'new value',
+        },
+      },
+      translationsPath: '/tmp/i18n',
+      addMissingKeys: true,
+      emitErrorOnExtraKeys: false,
+      fileFormat: 'pot',
+      unflat: false,
+    });
+
+    const mockOutputFileSync = vi.mocked(fs.outputFileSync);
+    expect(mockOutputFileSync).toHaveBeenCalledTimes(1);
+    const [writtenPath, writtenContent] = mockOutputFileSync.mock.calls[0];
+    expect(writtenPath).toBe('/tmp/i18n/en.pot');
+
+    const parsed = po.parse(writtenContent as string, 'utf8');
+    const entries = parsed.translations[''];
+    expect(entries['parent.existing'].msgstr).toEqual(['existing value']);
+    expect(entries['parent.newKey'].msgstr).toEqual(['new value']);
   });
 });
