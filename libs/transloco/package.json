@@ -3,6 +3,10 @@
   "version": "8.4.0",
   "description": "The internationalization (i18n) library for Angular",
   "schematics": "./schematics/collection.json",
+  "exports": {
+    "./schematics/*": "./schematics/*",
+    "./schematics-core/*": "./schematics-core/*"
+  },
   "publishConfig": {
     "access": "public"
   },

@@ -5,6 +5,7 @@
     "README.md",
     "CHANGELOG.md",
     "schematics/**/*.json",
+    "schematics-core/**/*.json",
     "**/files/**/*"
   ],
   "lib": {
