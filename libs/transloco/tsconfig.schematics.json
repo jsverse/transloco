@@ -18,8 +18,15 @@
     "strictNullChecks": true,
     "target": "es6",
     "types": ["node"],
+    // Resolve to the built declarations, not the sources. Mapping to `.ts`
+    // pulls transloco-utils into this program, and because those files sit
+    // outside `rootDir` their output lands next to the sources
+    // (`libs/transloco-utils/src/*.js|.d.ts`) instead of in `outDir`.
+    // `nx build transloco` builds transloco-utils first via `^build`.
     "paths": {
-      "@jsverse/transloco-utils": ["../../libs/transloco-utils/src/index.ts"]
+      "@jsverse/transloco-utils": [
+        "../../dist/libs/transloco-utils/src/index.d.ts"
+      ]
     }
   },
   "include": ["schematics/**/*"],
