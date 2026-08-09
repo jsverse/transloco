@@ -34,7 +34,7 @@
             "command": "npx tsc -p libs/transloco/tsconfig.schematics.json"
           },
           {
-            "command": "printf '\\n!schematics/package.json\\n!schematics-core/package.json\\n' >> dist/libs/transloco/.npmignore"
+            "command": "node tools/scripts/append-schematics-npmignore.mts"
           }
         ]
       },
