@@ -27,14 +27,14 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "@angular/core": ">=16.0.0",
+    "@angular/core": ">=20.0.0",
     "@jsverse/transloco": ">=8.0.0",
     "@jsverse/utils": "1.0.0-beta.5",
-    "rxjs": ">=6.0.0"
+    "rxjs": "^6.5.3 || ^7.4.0"
   },
   "dependencies": {
-    "@messageformat/core": "^3.4.0",
-    "tslib": "^2.2.0"
+    "@messageformat/core": "3.4.0",
+    "tslib": "^2.8.1"
   },
   "sideEffects": false
 }

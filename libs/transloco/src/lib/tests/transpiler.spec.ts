@@ -167,6 +167,31 @@ describe('TranslocoTranspiler', () => {
       expect(parsed).toEqual('one, two');
     });
 
+    it(`GIVEN a FunctionalTranspiler instance
+        WHEN the underlying transpiler function throws
+        THEN should rethrow an Error whose cause is the original thrown value`, () => {
+      const sentinel = new Error('boom');
+      const spy = vi
+        .spyOn(transpilerFunctions['upperCase'], 'transpile')
+        .mockImplementation(() => {
+          throw sentinel;
+        });
+
+      try {
+        expect(() =>
+          transpiler.transpile(
+            getTranspilerParams('[[ upperCase(lowercase) ]]'),
+          ),
+        ).toThrowError(
+          expect.objectContaining({
+            cause: sentinel,
+          }),
+        );
+      } finally {
+        spy.mockRestore();
+      }
+    });
+
     describe('getFunctionArgs', () => {
       it(`GIVEN an empty string of raw arguments
           WHEN parsing the function arguments

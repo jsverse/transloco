@@ -2,6 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "moduleResolution": "bundler",
+    "strict": true,
     "lib": ["es2022", "dom"],
     "types": ["vitest/globals", "node"],
     "noEmit": true

@@ -4,7 +4,7 @@
     "rootDir": ".",
     "sourceMap": true,
     "declaration": false,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
@@ -13,34 +13,35 @@
     "lib": ["es2022", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
-    "baseUrl": ".",
     "paths": {
-      "@jsverse/transloco": ["libs/transloco/src/index.ts"],
+      "@jsverse/transloco": ["./libs/transloco/src/index.ts"],
       "@jsverse/transloco-keys-manager": [
-        "libs/transloco-keys-manager/src/index.ts"
+        "./libs/transloco-keys-manager/src/index.ts"
       ],
-      "@jsverse/transloco-locale": ["libs/transloco-locale/src/index.ts"],
+      "@jsverse/transloco-locale": ["./libs/transloco-locale/src/index.ts"],
       "@jsverse/transloco-messageformat": [
-        "libs/transloco-messageformat/src/index.ts"
+        "./libs/transloco-messageformat/src/index.ts"
       ],
-      "@jsverse/transloco-optimize": ["libs/transloco-optimize/src/index.ts"],
+      "@jsverse/transloco-optimize": ["./libs/transloco-optimize/src/index.ts"],
       "@jsverse/transloco-persist-lang": [
-        "libs/transloco-persist-lang/src/index.ts"
+        "./libs/transloco-persist-lang/src/index.ts"
       ],
       "@jsverse/transloco-persist-translations": [
-        "libs/transloco-persist-translations/src/index.ts"
+        "./libs/transloco-persist-translations/src/index.ts"
       ],
       "@jsverse/transloco-preload-langs": [
-        "libs/transloco-preload-langs/src/index.ts"
+        "./libs/transloco-preload-langs/src/index.ts"
       ],
       "@jsverse/transloco-schematics": [
-        "libs/transloco-schematics/src/index.ts"
+        "./libs/transloco-schematics/src/index.ts"
       ],
       "@jsverse/transloco-scoped-libs": [
-        "libs/transloco-scoped-libs/src/index.ts"
+        "./libs/transloco-scoped-libs/src/index.ts"
       ],
-      "@jsverse/transloco-utils": ["libs/transloco-utils/src/index.ts"],
-      "@jsverse/transloco-validator": ["libs/transloco-validator/src/index.ts"]
+      "@jsverse/transloco-utils": ["./libs/transloco-utils/src/index.ts"],
+      "@jsverse/transloco-validator": [
+        "./libs/transloco-validator/src/index.ts"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]

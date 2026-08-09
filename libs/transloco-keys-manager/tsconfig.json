@@ -11,7 +11,9 @@
     }
   ],
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "strict": true,
     "lib": ["dom", "es2022"]
   }
 }

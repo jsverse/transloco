@@ -24,13 +24,13 @@ export function generateMatchers(path: string) {
   ].map((regex) => ({
     files: `${path}.html`,
     from: regex,
-    to: (match) => match.replace(/translate/g, 'transloco'),
+    to: (match: string) => match.replace(/translate/g, 'transloco'),
   }));
 
   const moduleMultiImport = {
     files: `${path}.ts`,
     from: /import\s*{((([^,}]*,)+\s*(TranslateModule)\s*(,[^}]*)*)|(([^,{}]*,)*\s*(TranslateModule)\s*,\s*[a-zA-Z0-9]+(,[^}]*)*))\s*}\s*from\s*('|").?ngx-translate(\/[^'"]+)?('|");?/g,
-    to: (match) =>
+    to: (match: string) =>
       match
         .replace('TranslateModule', '')
         .replace(/,\s*,/, ',')
@@ -54,7 +54,7 @@ export function generateMatchers(path: string) {
   const serviceMultiImport = {
     files: `${path}.ts`,
     from: /import\s*{((([^,}]*,)+\s*(TranslateService)\s*(,[^}]*)*)|(([^,{}]*,)*\s*(TranslateService)\s*,\s*[a-zA-Z0-9]+(,[^}]*)*))\s*}\s*from\s*('|").?ngx-translate(\/[^'"]+)?('|");?/g,
-    to: (match) =>
+    to: (match: string) =>
       match
         .replace('TranslateService', '')
         .replace(/,\s*,/, ',')
@@ -75,19 +75,19 @@ export function generateMatchers(path: string) {
   const constructorInjection = {
     ...noSpecFiles,
     from: /(?:private|protected|public)\s+(.*?)\s*:\s*(?:TranslateService|TranslatePipe\s*(?:,|\)))/g,
-    to: (match) =>
+    to: (match: string) =>
       match.replace(/TranslateService|TranslatePipe/g, 'TranslocoService'),
   };
 
   const serviceUsage = {
     ...noSpecFiles,
     from: /(?=([^]+(?:private|protected|public)\s+([^,:()]+)\s*:\s*(?:TranslocoService\s*(?:,|\)))))\1[^]*/gm,
-    to: (match, _, serviceName) => {
+    to: (match: string, _: string, serviceName: string) => {
       const sanitizedName = serviceName
         .split('')
-        .map((char) => (['$', '^'].includes(char) ? `\\${char}` : char))
+        .map((char: string) => (['$', '^'].includes(char) ? `\\${char}` : char))
         .join('');
-      const functionsMap = {
+      const functionsMap: Record<string, string> = {
         instant: 'translate',
         transform: 'translate',
         get: 'selectTranslate',
@@ -95,26 +95,32 @@ export function generateMatchers(path: string) {
         use: 'setActiveLang',
         set: 'setTranslation',
       };
-      const propsMap = {
+      const propsMap: Record<string, string> = {
         currentLang: 'getActiveLang()',
         onLangChange: 'langChanges$',
       };
-      const serviceCallRgx = ({ map, func }) =>
+      const getTarget = (t: Record<string, string>) => Object.keys(t).join('|');
+      const serviceCallRgx = ({
+        map,
+        func,
+      }: {
+        map: Record<string, string>;
+        func: boolean;
+      }) =>
         new RegExp(
           `(?:(?:\\s*|this\\.)${sanitizedName})(?:\\s*\\t*\\r*\\n*)*\\.(?:\\s*\\t*\\r*\\n*)*(${getTarget(
             map,
           )})[\\r\\t\\n\\s]*${func ? '\\(' : '(?!\\()'}`,
           'g',
         );
-      const getTarget = (t) => Object.keys(t).join('|');
       return [
         { func: true, map: functionsMap },
         { func: false, map: propsMap },
       ].reduce((acc, curr) => {
-        return acc.replace(serviceCallRgx(curr), (str) =>
+        return acc.replace(serviceCallRgx(curr), (str: string) =>
           str.replace(
             new RegExp(getTarget(curr.map)),
-            (func) => curr.map[func],
+            (func: string) => curr.map[func],
           ),
         );
       }, match);

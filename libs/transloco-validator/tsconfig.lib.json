@@ -6,9 +6,10 @@
     "sourceMap": false,
     "declaration": false,
     "lib": ["es2022"],
-    "module": "commonjs",
+    "module": "nodenext",
     "target": "ES2021",
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "types": ["node"]
   },
   "include": ["**/*.ts"],
   "exclude": ["**/*.spec.ts", "src/test-setup.ts", "vitest.config*.ts"]

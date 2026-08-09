@@ -5,9 +5,15 @@ import { dasherize } from '@angular-devkit/core/src/utils/strings';
 const regex =
   /<([\w-]*)\s*(?=[^>]*i18n)[^>]*i18n(?:(?:=("|')(?<attrValue>[^>]*?)\2)|(?:-(?<propName>[\w-]*)[^>]*\4=("|')(?<propValue>[^>]*?)\5))?[^>]*(?:>(?<innerText>[^]*?)<\/\1)?/g;
 
-export function run({ input, output, langs }) {
+interface RunOptions {
+  input: string;
+  output: string;
+  langs: string[];
+}
+
+export function run({ input, output, langs }: RunOptions) {
   const files = globSync(`${process.cwd()}/${input}/**/*.html`);
-  let translation = {};
+  let translation: Record<string, unknown> = {};
   for (const filePath of files) {
     const tpl = readFileSync(filePath, { encoding: 'utf-8' });
     translation = { ...translation, ...getTranslation(tpl) };
@@ -19,7 +25,7 @@ export function run({ input, output, langs }) {
   for (const lang of langs) {
     const sorted = Object.keys(translation)
       .sort()
-      .reduce((acc, key) => {
+      .reduce((acc: Record<string, unknown>, key) => {
         acc[key] = translation[key];
         return acc;
       }, {});
@@ -35,7 +41,7 @@ export function run({ input, output, langs }) {
   );
 }
 
-function resolveKey(attrValue, value) {
+function resolveKey(attrValue: string | undefined, value: string): string {
   let key = value;
   if (!attrValue) {
     return dasherize(value);
@@ -51,14 +57,14 @@ function resolveKey(attrValue, value) {
   return key;
 }
 
-function getTranslation(template) {
+function getTranslation(template: string): Record<string, unknown> {
   let result = regex.exec(template);
-  const translation = {};
+  const translation: Record<string, unknown> = {};
 
   while (result) {
-    const { attrValue, innerText, propValue } = result.groups;
-    let context;
-    let comment;
+    const { attrValue, innerText, propValue } = result.groups ?? {};
+    let context: string | undefined;
+    let comment: string | undefined;
     let keyValue = propValue ? propValue : innerText;
     let key = keyValue;
 
@@ -83,10 +89,14 @@ function getTranslation(template) {
     keyValue = keyValue.trim().replace(/(\r\n|\n|\r)/gm, '');
 
     if (context) {
-      translation[context] = translation[context] || {};
-      translation[context][key] = keyValue;
+      const contextTranslation = (translation[context] ?? {}) as Record<
+        string,
+        unknown
+      >;
+      translation[context] = contextTranslation;
+      contextTranslation[key] = keyValue;
       if (comment) {
-        translation[context][`${key}.comment`] = comment;
+        contextTranslation[`${key}.comment`] = comment;
       }
     } else {
       translation[key] = keyValue;
@@ -101,18 +111,18 @@ function getTranslation(template) {
   return translation;
 }
 
-function getNewTemplate(template) {
+function getNewTemplate(template: string): string {
   return template.replace(
     regex,
     function (
-      match,
-      tag,
-      mark,
-      attrValue,
-      propName,
-      propMark,
-      propValue,
-      innerText,
+      match: string,
+      tag: string,
+      mark: string,
+      attrValue: string,
+      propName: string,
+      propMark: string,
+      propValue: string,
+      innerText: string,
     ) {
       let replace = ' i18n';
       const key = resolveKey(attrValue, propValue || innerText);

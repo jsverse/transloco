@@ -31,10 +31,10 @@
   "license": "MIT",
   "dependencies": {
     "@jsverse/transloco-utils": "^8.4.0",
-    "chalk": "^4.1.2",
+    "chalk": "6.0.0",
     "chokidar": "^5.0.0",
-    "command-line-args": "^5.1.1",
-    "glob": "^10.3.3",
-    "fs-extra": "^11.1.1"
+    "command-line-args": "6.0.2",
+    "glob": "13.0.6",
+    "fs-extra": "11.4.0"
   }
 }

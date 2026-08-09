@@ -9,5 +9,9 @@
     {
       "path": "./tsconfig.spec.json"
     }
-  ]
+  ],
+  "compilerOptions": {
+    "moduleResolution": "nodenext",
+    "strict": true
+  }
 }

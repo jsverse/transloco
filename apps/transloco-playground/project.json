@@ -7,13 +7,15 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@nx/angular:webpack-browser",
-      "outputs": ["{options.outputPath}"],
+      "executor": "@nx/angular:application",
+      "outputs": ["{options.outputPath.base}"],
       "options": {
-        "outputPath": "dist/apps/transloco-playground",
+        "outputPath": {
+          "base": "dist/apps/transloco-playground",
+          "browser": ""
+        },
         "index": "apps/transloco-playground/src/index.html",
-        "main": "apps/transloco-playground/src/main.ts",
-        "polyfills": "apps/transloco-playground/src/polyfills.ts",
+        "polyfills": ["apps/transloco-playground/src/polyfills.ts"],
         "tsConfig": "apps/transloco-playground/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
@@ -25,7 +27,8 @@
           "node_modules/bootstrap/dist/css/bootstrap.min.css"
         ],
         "allowedCommonJsDependencies": ["@messageformat/core"],
-        "scripts": ["node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"]
+        "scripts": ["node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"],
+        "browser": "apps/transloco-playground/src/main.ts"
       },
       "configurations": {
         "production": {
@@ -48,9 +51,7 @@
           "outputHashing": "all"
         },
         "development": {
-          "buildOptimizer": false,
           "optimization": false,
-          "vendorChunk": true,
           "extractLicenses": false,
           "sourceMap": true,
           "namedChunks": true
@@ -59,7 +60,7 @@
       "defaultConfiguration": "production"
     },
     "serve": {
-      "executor": "@nx/angular:dev-server",
+      "executor": "@angular/build:dev-server",
       "configurations": {
         "production": {
           "buildTarget": "transloco-playground:build:production"
@@ -72,7 +73,7 @@
       "continuous": true
     },
     "extract-i18n": {
-      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "executor": "@angular/build:extract-i18n",
       "options": {
         "buildTarget": "transloco-playground:build"
       }

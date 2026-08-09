@@ -32,6 +32,6 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "find-duplicated-property-keys": "^1.2.9"
+    "find-duplicated-property-keys": "1.2.9"
   }
 }

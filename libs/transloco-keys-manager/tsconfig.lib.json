@@ -6,7 +6,7 @@
     "sourceMap": false,
     "declaration": true,
     "lib": ["es2022"],
-    "module": "commonjs",
+    "module": "nodenext",
     "target": "ES2021",
     "allowSyntheticDefaultImports": true
   },

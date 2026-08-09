@@ -6,16 +6,16 @@
 import '@analogjs/vite-plugin-angular/setup-vitest';
 import { getTestBed } from '@angular/core/testing';
 import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting,
-} from '@angular/platform-browser-dynamic/testing';
+  BrowserTestingModule,
+  platformBrowserTesting,
+} from '@angular/platform-browser/testing';
 
 // Initialize the Angular testing environment. Kept explicit (rather than using
 // Analog's setupTestBed, which defaults to zoneless + destroyAfterEach:true) to
 // preserve the zone-based, destroyAfterEach:false behavior these suites rely on.
 getTestBed().initTestEnvironment(
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting(),
+  BrowserTestingModule,
+  platformBrowserTesting(),
   {
     teardown: { destroyAfterEach: false },
   },

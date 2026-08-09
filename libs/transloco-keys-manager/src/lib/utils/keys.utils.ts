@@ -15,7 +15,7 @@ export function checkForProblematicUnflatKeys(obj: object) {
   const problematicKeys = [];
   const lastKeyIndex = sortedKeys.length - 1;
 
-  for (let i = 0; i < lastKeyIndex; ) {
+  for (let i = 0; i < lastKeyIndex;) {
     const key = sortedKeys[i];
     const prefix = `${key}.`;
     let isChildKey = sortedKeys[++i].startsWith(prefix);

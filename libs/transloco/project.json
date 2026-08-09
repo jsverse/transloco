@@ -32,6 +32,9 @@
           },
           {
             "command": "npx tsc -p libs/transloco/tsconfig.schematics.json"
+          },
+          {
+            "command": "node tools/scripts/append-schematics-npmignore.mts"
           }
         ]
       },
