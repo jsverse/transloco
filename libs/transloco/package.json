@@ -3,9 +3,27 @@
   "version": "8.4.0",
   "description": "The internationalization (i18n) library for Angular",
   "schematics": "./schematics/collection.json",
+  "ng-update": {
+    "migrations": "./migrations/migration.json",
+    "packageGroup": [
+      "@jsverse/transloco",
+      "@jsverse/transloco-locale",
+      "@jsverse/transloco-messageformat",
+      "@jsverse/transloco-persist-lang",
+      "@jsverse/transloco-persist-translations",
+      "@jsverse/transloco-preload-langs",
+      "@jsverse/transloco-schematics",
+      "@jsverse/transloco-scoped-libs",
+      "@jsverse/transloco-utils",
+      "@jsverse/transloco-optimize",
+      "@jsverse/transloco-validator",
+      "@jsverse/transloco-keys-manager"
+    ]
+  },
   "exports": {
     "./schematics/*": "./schematics/*",
-    "./schematics-core/*": "./schematics-core/*"
+    "./schematics-core/*": "./schematics-core/*",
+    "./migrations/*": "./migrations/*"
   },
   "publishConfig": {
     "access": "public"

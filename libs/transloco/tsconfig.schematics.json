@@ -22,6 +22,10 @@
       "@jsverse/transloco-utils": ["../../libs/transloco-utils/src/index.ts"]
     }
   },
-  "include": ["schematics/**/*"],
-  "exclude": ["schematics/*/files/**/*", "schematics/**/*.spec.ts"]
+  "include": ["schematics/**/*", "migrations/**/*"],
+  "exclude": [
+    "schematics/*/files/**/*",
+    "schematics/**/*.spec.ts",
+    "migrations/**/*.spec.ts"
+  ]
 }
