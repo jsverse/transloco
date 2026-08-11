@@ -10,6 +10,7 @@ import { SCOPE_SHARING_ROUTES } from './scope-sharing/scope-sharing.routes';
 import { TRANSPILERS_ROUTES } from './transpilers/transpilers.routes';
 import { MULTI_LANGS_ROUTES } from './multi-langs/multi-langs.routes';
 import { LOCALE_ROUTES } from './locale/locale.routes';
+import { SIGNAL_TRACKING_ROUTES } from './signal-tracking/signal-tracking.routes';
 
 export const ROUTES: Routes = [
   {
@@ -30,4 +31,5 @@ export const ROUTES: Routes = [
   SCOPE_SHARING_ROUTES,
   MULTI_LANGS_ROUTES,
   LOCALE_ROUTES,
+  SIGNAL_TRACKING_ROUTES
 ];
