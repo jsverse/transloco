@@ -15,15 +15,23 @@ import { hasDescendant, isNamed, nameText } from '../../utils/ts-ast.utils';
 export interface SourceFileScan {
   imports: ImportDeclaration[];
   calls: CallExpression[];
-  // Local names bound to a `TranslocoService` instance, e.g. `transloco` in
-  // `constructor(private transloco: TranslocoService)` or
-  // `transloco = inject(TranslocoService)`.
+  // Local names bound to a `TranslocoService` (or configured wrapper service)
+  // instance, e.g. `transloco` in `constructor(private transloco: TranslocoService)`
+  // or `transloco = inject(TranslocoService)`.
   serviceNames: Set<string>;
   // `template: \`...\`` literals of `@Component` decorators.
   inlineTemplates: NoSubstitutionTemplateLiteral[];
 }
 
-export function scanSourceFile(ast: SourceFile): SourceFileScan {
+/**
+ * @param customServiceNames Class names of services wrapping `TranslocoService`
+ * whose instances are treated like `TranslocoService` itself.
+ */
+export function scanSourceFile(
+  ast: SourceFile,
+  customServiceNames: string[] = [],
+): SourceFileScan {
+  const serviceClasses = new Set(['TranslocoService', ...customServiceNames]);
   const scan: SourceFileScan = {
     imports: [],
     calls: [],
@@ -36,11 +44,11 @@ export function scanSourceFile(ast: SourceFile): SourceFileScan {
       scan.imports.push(node);
     } else if (ts.isCallExpression(node)) {
       scan.calls.push(node);
-      if (isInjectTranslocoService(node)) {
+      if (isInjectService(node, serviceClasses)) {
         const name = nameText(resolveInjectTarget(node)?.name);
         if (name) scan.serviceNames.add(name);
       }
-    } else if (ts.isParameter(node) && isTranslocoServiceParam(node)) {
+    } else if (ts.isParameter(node) && isServiceParam(node, serviceClasses)) {
       const name = nameText(node.name);
       if (name) scan.serviceNames.add(name);
     } else if (ts.isDecorator(node)) {
@@ -54,7 +62,10 @@ export function scanSourceFile(ast: SourceFile): SourceFileScan {
 }
 
 // `constructor(private transloco: TranslocoService)`
-function isTranslocoServiceParam(param: ts.ParameterDeclaration) {
+function isServiceParam(
+  param: ts.ParameterDeclaration,
+  serviceClasses: Set<string>,
+) {
   return (
     !!param.type &&
     ts.isConstructorDeclaration(param.parent) &&
@@ -62,18 +73,24 @@ function isTranslocoServiceParam(param: ts.ParameterDeclaration) {
       param,
       (node) =>
         ts.isTypeReferenceNode(node) &&
-        (isNamed(node.typeName, 'TranslocoService') ||
-          hasDescendant(node, (n) => isNamed(n, 'TranslocoService'))),
+        (isServiceClass(node.typeName, serviceClasses) ||
+          hasDescendant(node, (n) => isServiceClass(n, serviceClasses))),
     )
   );
 }
 
 // `inject(TranslocoService)`, with or without extra options
-function isInjectTranslocoService(call: CallExpression) {
+function isInjectService(call: CallExpression, serviceClasses: Set<string>) {
   return (
     isNamed(call.expression, 'inject') &&
-    hasDescendant(call, (node) => isNamed(node, 'TranslocoService'))
+    hasDescendant(call, (node) => isServiceClass(node, serviceClasses))
   );
+}
+
+function isServiceClass(node: Node, serviceClasses: Set<string>) {
+  const name = nameText(node);
+
+  return !!name && serviceClasses.has(name);
 }
 
 // The property or variable an `inject(...)` call initializes, if any.

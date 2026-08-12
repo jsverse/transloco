@@ -24,9 +24,20 @@ interface ScopeDef {
   alias?: Alias;
 }
 
-type Options = { input?: string[]; files?: string[] };
+type Options = {
+  input?: string[];
+  files?: string[];
+  scopeProviderFunctions?: string[];
+};
 
-const translocoProvider = /(TRANSLOCO_SCOPE|provideTranslocoScope)/;
+function buildProviderRegex(scopeProviderFunctions: string[] = []) {
+  const names = [
+    'TRANSLOCO_SCOPE',
+    'provideTranslocoScope',
+    ...scopeProviderFunctions,
+  ];
+  return new RegExp(`(${names.join('|')})`);
+}
 
 export function updateScopesMap(
   options: Omit<Options, 'input'>,
@@ -37,11 +48,18 @@ export function updateScopesMap(
 export function updateScopesMap({
   input,
   files,
+  scopeProviderFunctions,
 }: Options): Scopes['aliasToScope'] {
   const tsFiles =
     files || input!.map((path) => normalizedGlob(`${path}/**/*.ts`)).flat();
   // Return only the new scopes (for the plugin)
   const aliasToScope: Record<Alias, Scope> = {};
+
+  const translocoProvider = buildProviderRegex(scopeProviderFunctions);
+  const providerFunctions = new Set([
+    'provideTranslocoScope',
+    ...(scopeProviderFunctions ?? []),
+  ]);
 
   for (const file of tsFiles) {
     const content = readFile(file);
@@ -63,9 +81,10 @@ export function updateScopesMap({
         }
       } else if (
         ts.isCallExpression(node) &&
-        isNamed(node.expression, 'provideTranslocoScope')
+        isProviderFunctionCall(node, providerFunctions)
       ) {
-        // `provideTranslocoScope('a')`, `provideTranslocoScope(['a', { scope: 'b' }])`
+        // `provideTranslocoScope('a')`, `provideTranslocoScope(['a', { scope: 'b' }])`,
+        // or the same through a custom scope provider function
         const providersArray = findDescendant(
           node,
           ts.isArrayLiteralExpression,
@@ -84,6 +103,15 @@ export function updateScopesMap({
   }
 
   return aliasToScope;
+}
+
+function isProviderFunctionCall(
+  call: ts.CallExpression,
+  providerFunctions: Set<string>,
+) {
+  const name = nameText(call.expression);
+
+  return !!name && providerFunctions.has(name);
 }
 
 function isScopeProvider(node: ObjectLiteralExpression) {
