@@ -47,7 +47,10 @@ export function resolveConfig(inlineConfig: Partial<Config>): Config {
 
   validateDirectories(mergedConfig);
 
-  updateScopesMap({ input: mergedConfig.input });
+  updateScopesMap({
+    input: mergedConfig.input,
+    scopeProviderFunctions: mergedConfig.scopeProviderFunctions,
+  });
 
   devlog('scopes', 'Scopes', {
     'Scopes map': getScopes().scopeToAlias,
