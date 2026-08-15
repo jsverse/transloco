@@ -19,7 +19,9 @@
     "target": "es6",
     "types": ["node"],
     "paths": {
-      "@jsverse/transloco-utils": ["../../libs/transloco-utils/src/index.ts"]
+      "@jsverse/transloco-utils": [
+        "../../dist/libs/transloco-utils/src/index.d.ts"
+      ]
     }
   },
   "include": ["schematics/**/*"],
