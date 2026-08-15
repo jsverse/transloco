@@ -28,7 +28,7 @@ nx migrate @jsverse/transloco  # Nx
 - The package moved into the main repo and joined the shared version line, so it jumps from `8.1.1` to `9.0.0`.
 - `@angular/compiler` peer dependency is now `>=v20` and `typescript` is now `>=5.8`.
 
-## Transloco Optimize, Scoped Libs, Utils & Validator
+## Transloco Keys Manager, Optimize, Scoped Libs, Utils & Validator
 
 - Node.js `>=22` is now required.
 - Transloco Scoped Libs bumped `chokidar` to v5, which is ESM-only.
