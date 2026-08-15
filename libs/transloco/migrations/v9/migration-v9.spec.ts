@@ -9,7 +9,10 @@ import {
 import { createWorkspace } from '../../schematics-core/testing';
 
 import { migrateInlineTemplates, migrateTemplate } from './template-utils';
-import { usesGlobalTranslateFn } from './global-translate-fn';
+import {
+  providesGlobalTranslateFn,
+  usesGlobalTranslateFn,
+} from './global-translate-fn';
 
 const collectionPath = nodePath.join(__dirname, '../migration.json');
 
@@ -177,6 +180,204 @@ describe('migrateTemplate', () => {
       THEN null is returned so the file is not rewritten`, () => {
     expect(migrateTemplate(`<div translocoPrefix="a"></div>`)).toBeNull();
   });
+
+  it(`GIVEN microsyntax separated by commas
+      WHEN the template is migrated
+      THEN the read key is still renamed`, () => {
+    // Angular's microsyntax accepts `,` wherever it accepts `;`.
+    expect(
+      migrateTemplate(`<div *transloco="let t, read: 'a', lang: 'es'"></div>`)
+        ?.content,
+    ).toBe(`<div *transloco="let t, prefix: 'a', lang: 'es'"></div>`);
+  });
+
+  it(`GIVEN comma-separated microsyntax carrying both read and prefix
+      WHEN the template is migrated
+      THEN the read segment is dropped with its separator`, () => {
+    expect(
+      migrateTemplate(`<div *transloco="let t, read: 'a', prefix: 'b'"></div>`)
+        ?.content,
+    ).toBe(`<div *transloco="let t, prefix: 'b'"></div>`);
+  });
+
+  it(`GIVEN a read value containing a semicolon
+      WHEN the template is migrated
+      THEN the quoted value survives the rename`, () => {
+    expect(
+      migrateTemplate(`<div *transloco="let t; read: 'a;b'; lang: 'es'"></div>`)
+        ?.content,
+    ).toBe(`<div *transloco="let t; prefix: 'a;b'; lang: 'es'"></div>`);
+  });
+
+  it(`GIVEN a read value containing a semicolon alongside a prefix
+      WHEN the template is migrated
+      THEN the whole read segment is dropped, not a slice of it`, () => {
+    expect(
+      migrateTemplate(
+        `<div *transloco="let t; read: 'a;b'; prefix: 'c'"></div>`,
+      )?.content,
+    ).toBe(`<div *transloco="let t; prefix: 'c'"></div>`);
+  });
+
+  it(`GIVEN a read expression containing a semicolon and the word prefix
+      WHEN the template is migrated
+      THEN the expression is left intact`, () => {
+    expect(
+      migrateTemplate(
+        `<div *transloco="let t; read: format('; prefix:')"></div>`,
+      )?.content,
+    ).toBe(`<div *transloco="let t; prefix: format('; prefix:')"></div>`);
+  });
+
+  it(`GIVEN the read key sitting last in the microsyntax
+      WHEN the template is migrated
+      THEN no dangling separator is left behind`, () => {
+    expect(
+      migrateTemplate(`<div *transloco="let t; prefix: 'b'; read: 'a'"></div>`)
+        ?.content,
+    ).toBe(`<div *transloco="let t; prefix: 'b'"></div>`);
+  });
+
+  it(`GIVEN an unrelated attribute whose value contains the word translocoRead
+      WHEN the template is migrated
+      THEN the value is left untouched`, () => {
+    expect(migrateTemplate(`<div title="foo translocoRead bar"></div>`)).toBe(
+      null,
+    );
+  });
+
+  it(`GIVEN a binding expression referencing a variable named translocoRead
+      WHEN the template is migrated
+      THEN the expression is left untouched`, () => {
+    expect(
+      migrateTemplate(`<my-cmp [label]="translocoRead + suffix"></my-cmp>`),
+    ).toBeNull();
+  });
+
+  it(`GIVEN an attribute value mentioning translocoPrefix next to a real read
+      WHEN the template is migrated
+      THEN the read is renamed rather than silently deleted`, () => {
+    // The value is not a prefix binding, so nothing suppresses the rename.
+    expect(
+      migrateTemplate(
+        `<div data-doc="use translocoPrefix= instead" translocoRead="a"></div>`,
+      )?.content,
+    ).toBe(
+      `<div data-doc="use translocoPrefix= instead" translocoPrefix="a"></div>`,
+    );
+  });
+
+  it(`GIVEN the canonical bind- attribute form
+      WHEN the template is migrated
+      THEN only the input name is rewritten`, () => {
+    expect(
+      migrateTemplate(
+        `<ng-template transloco bind-translocoRead="a"></ng-template>`,
+      )?.content,
+    ).toBe(`<ng-template transloco bind-translocoPrefix="a"></ng-template>`);
+  });
+
+  it(`GIVEN a valueless translocoRead attribute
+      WHEN the template is migrated
+      THEN it is renamed`, () => {
+    expect(
+      migrateTemplate(`<ng-template transloco translocoRead></ng-template>`)
+        ?.content,
+    ).toBe(`<ng-template transloco translocoPrefix></ng-template>`);
+  });
+
+  it(`GIVEN a self-closing element
+      WHEN the template is migrated
+      THEN it is renamed`, () => {
+    expect(
+      migrateTemplate(`<ng-template transloco translocoRead="a" />`)?.content,
+    ).toBe(`<ng-template transloco translocoPrefix="a" />`);
+  });
+
+  it(`GIVEN both inputs bound on one element
+      WHEN the template is migrated
+      THEN only the prefix binding survives`, () => {
+    expect(
+      migrateTemplate(
+        `<ng-template transloco [translocoRead]="a" [translocoPrefix]="b"></ng-template>`,
+      )?.content,
+    ).toBe(`<ng-template transloco [translocoPrefix]="b"></ng-template>`);
+  });
+
+  it(`GIVEN an empty static prefix next to a read
+      WHEN the template is migrated
+      THEN the read wins, as it did in v8`, () => {
+    // v8 resolved `this.prefix || this.inlineRead`, so an empty prefix fell
+    // through to the read rather than suppressing it.
+    const result = migrateTemplate(
+      `<div translocoPrefix="" translocoRead="root"></div>`,
+    );
+
+    expect(result?.content).toBe(`<div translocoPrefix="root"></div>`);
+    expect(result?.renamed).toBe(1);
+    expect(result?.ambiguous).toBe(0);
+  });
+
+  it(`GIVEN an empty prefix key in the microsyntax
+      WHEN the template is migrated
+      THEN the read wins, as it did in v8`, () => {
+    expect(
+      migrateTemplate(
+        `<div *transloco="let t; prefix: ''; read: 'root'"></div>`,
+      )?.content,
+    ).toBe(`<div *transloco="let t; prefix: 'root'"></div>`);
+  });
+
+  it(`GIVEN a prefix bound to an expression next to a read
+      WHEN the template is migrated
+      THEN the read is dropped and the case is reported as ambiguous`, () => {
+    // Only the running app knows whether the expression is empty, so this one
+    // cannot be decided statically.
+    const result = migrateTemplate(
+      `<div [translocoPrefix]="maybeUndefined" translocoRead="fallback"></div>`,
+    );
+
+    expect(result?.content).toBe(
+      `<div [translocoPrefix]="maybeUndefined"></div>`,
+    );
+    expect(result?.ambiguous).toBe(1);
+  });
+
+  it(`GIVEN a template that cannot be parsed
+      WHEN the template is migrated
+      THEN it is reported as skipped rather than rewritten`, () => {
+    const source = `<div [translocoRead]="a b c ]]]"></div>`;
+    const result = migrateTemplate(source);
+
+    expect(result?.content).toBe(source);
+    expect(result?.skipped).toBe(1);
+    expect(result?.renamed).toBe(0);
+  });
+
+  it(`GIVEN an unparseable template with no hint of a read
+      WHEN the template is migrated
+      THEN it is passed over in silence`, () => {
+    expect(
+      migrateTemplate(`<div *transloco="let t; ]]]"></div>`)?.skipped ?? 0,
+    ).toBe(0);
+  });
+
+  it(`GIVEN a read binding inside a control-flow block
+      WHEN the template is migrated
+      THEN it is still found`, () => {
+    expect(
+      migrateTemplate(`@if (x) {\n  <p translocoRead="a"></p>\n}`)?.content,
+    ).toBe(`@if (x) {\n  <p translocoPrefix="a"></p>\n}`);
+  });
+
+  it(`GIVEN a template using CRLF line endings
+      WHEN the template is migrated
+      THEN the offsets still line up`, () => {
+    expect(
+      migrateTemplate(`<div>\r\n  <p translocoRead="a"></p>\r\n</div>`)
+        ?.content,
+    ).toBe(`<div>\r\n  <p translocoPrefix="a"></p>\r\n</div>`);
+  });
 });
 
 describe('migrateInlineTemplates', () => {
@@ -230,6 +431,81 @@ describe('migrateInlineTemplates', () => {
       '@Component({ template: `<div *transloco="let t; prefix: \'a\'"></div>` })',
     );
   });
+
+  it(`GIVEN an interpolation containing a brace inside a string
+      WHEN the source is migrated
+      THEN a later binding is still migrated`, () => {
+    // Counting braces in raw text ends the literal at the inner backtick and
+    // loses everything after it.
+    const source =
+      '@Component({ template: `<div>${format("}") ? `a` : `b`}</div><p translocoRead="x"></p>` })';
+
+    const result = migrateInlineTemplates(source);
+
+    expect(result?.content).toBe(
+      '@Component({ template: `<div>${format("}") ? `a` : `b`}</div><p translocoPrefix="x"></p>` })',
+    );
+    expect(result?.renamed).toBe(1);
+  });
+
+  it(`GIVEN the word template inside an unrelated string
+      WHEN the source is migrated
+      THEN the string is left untouched`, () => {
+    const source = `const note = "template: '<div translocoRead=\\"x\\"></div>'";`;
+
+    expect(migrateInlineTemplates(source)).toBeNull();
+  });
+
+  it(`GIVEN the word template inside a comment
+      WHEN the source is migrated
+      THEN the comment is left untouched`, () => {
+    const source = `// template: '<div translocoRead="x"></div>'\nconst a = 1;`;
+
+    expect(migrateInlineTemplates(source)).toBeNull();
+  });
+
+  it(`GIVEN a plain object property named template
+      WHEN the source is migrated
+      THEN only decorator metadata is rewritten`, () => {
+    const source = [
+      `const config = { template: '<div translocoRead="x"></div>' };`,
+      `@Component({ template: '<div translocoRead="y"></div>' })`,
+      `export class Foo {}`,
+    ].join('\n');
+
+    const result = migrateInlineTemplates(source);
+
+    expect(result?.content).toContain(
+      `const config = { template: '<div translocoRead="x"></div>' };`,
+    );
+    expect(result?.content).toContain(`translocoPrefix="y"`);
+    expect(result?.renamed).toBe(1);
+  });
+
+  it(`GIVEN a decorator whose earlier template needs no change
+      WHEN the source is migrated
+      THEN a nested template mention is not rescanned`, () => {
+    // The scan used to resume inside a literal it had already examined.
+    const source = [
+      `@Component({ template: '<p>no read here</p>' })`,
+      `export class A {}`,
+      `const doc = "template: '<div translocoRead=\\"y\\"></div>'";`,
+    ].join('\n');
+
+    expect(migrateInlineTemplates(source)).toBeNull();
+  });
+
+  it(`GIVEN an inline template that cannot be parsed
+      WHEN the source is migrated
+      THEN it is reported as skipped rather than rewritten`, () => {
+    const source =
+      '@Component({ template: `<div [translocoRead]="a b c ]]]"></div>` })';
+
+    const result = migrateInlineTemplates(source);
+
+    expect(result?.content).toBe(source);
+    expect(result?.skipped).toBe(1);
+  });
 });
 
 describe('usesGlobalTranslateFn', () => {
@@ -260,6 +536,104 @@ describe('usesGlobalTranslateFn', () => {
           `import { TranslocoService } from '@jsverse/transloco';`,
           `function translate(key: string) { return key; }`,
         ].join('\n'),
+      ),
+    ).toBe(false);
+  });
+
+  it(`GIVEN a type-only import of translate
+      WHEN it is inspected
+      THEN it does not report usage`, () => {
+    // Erased before the app runs, so no provider is needed - this is what
+    // keeps the documented SSR/MFE opt-out working.
+    expect(
+      usesGlobalTranslateFn(
+        `import type { translate } from '@jsverse/transloco';`,
+      ),
+    ).toBe(false);
+  });
+
+  it(`GIVEN an inline type specifier for translate
+      WHEN it is inspected
+      THEN it does not report usage`, () => {
+    expect(
+      usesGlobalTranslateFn(
+        `import { type translate, TranslocoService } from '@jsverse/transloco';`,
+      ),
+    ).toBe(false);
+  });
+
+  it(`GIVEN a namespace import whose translate is called
+      WHEN it is inspected
+      THEN it reports usage`, () => {
+    expect(
+      usesGlobalTranslateFn(
+        [
+          `import * as transloco from '@jsverse/transloco';`,
+          `export const greet = () => transloco.translate('hello');`,
+        ].join('\n'),
+      ),
+    ).toBe(true);
+  });
+
+  it(`GIVEN a namespace import that never calls the global functions
+      WHEN it is inspected
+      THEN it does not report usage`, () => {
+    expect(
+      usesGlobalTranslateFn(
+        [
+          `import * as transloco from '@jsverse/transloco';`,
+          `export const service = transloco.TranslocoService;`,
+        ].join('\n'),
+      ),
+    ).toBe(false);
+  });
+
+  it(`GIVEN translate imported from another package
+      WHEN it is inspected
+      THEN it does not report usage`, () => {
+    expect(
+      usesGlobalTranslateFn(`import { translate } from 'other-package';`),
+    ).toBe(false);
+  });
+});
+
+describe('providesGlobalTranslateFn', () => {
+  it(`GIVEN a file calling the provider
+      WHEN it is inspected
+      THEN it reports the project as wired`, () => {
+    expect(
+      providesGlobalTranslateFn(
+        `export const providers = [provideGlobalTranslateFn()];`,
+      ),
+    ).toBe(true);
+  });
+
+  it(`GIVEN the provider named only in a comment
+      WHEN it is inspected
+      THEN it does not report the project as wired`, () => {
+    // A mention must not make the migration believe the app is already set up
+    // and skip it - that would leave translate() returning ''.
+    expect(
+      providesGlobalTranslateFn(
+        `// remember to add provideGlobalTranslateFn() one day\nexport const x = 1;`,
+      ),
+    ).toBe(false);
+  });
+
+  it(`GIVEN the provider named only in a string
+      WHEN it is inspected
+      THEN it does not report the project as wired`, () => {
+    expect(
+      providesGlobalTranslateFn(`const doc = 'provideGlobalTranslateFn()';`),
+    ).toBe(false);
+  });
+
+  it(`GIVEN the provider imported but never called
+      WHEN it is inspected
+      THEN it does not report the project as wired`, () => {
+    expect(
+      providesGlobalTranslateFn(
+        `import { provideGlobalTranslateFn } from '@jsverse/transloco';`,
       ),
     ).toBe(false);
   });
@@ -329,25 +703,57 @@ describe('migration-v9', () => {
     ).not.toContain('provideGlobalTranslateFn');
   });
 
-  it(`GIVEN an application that already provides the global translate fn
+  it(`GIVEN an application that already registers the provider in its config
       WHEN the migration runs
-      THEN the provider is not added twice`, async () => {
+      THEN the provider is not added a second time`, async () => {
+    // `addRootProvider` inserts unconditionally, so a second call here would
+    // really produce two of them.
+    const tree = await run((host) => {
+      host.create(
+        '/projects/bar/src/app/greeter.ts',
+        [
+          `import { translate } from '@jsverse/transloco';`,
+          `export const greet = () => translate('hello');`,
+        ].join('\n'),
+      );
+      host.overwrite(
+        '/projects/bar/src/app/app.config.ts',
+        [
+          `import { ApplicationConfig } from '@angular/core';`,
+          `import { provideGlobalTranslateFn } from '@jsverse/transloco';`,
+          `export const appConfig: ApplicationConfig = {`,
+          `  providers: [provideGlobalTranslateFn()],`,
+          `};`,
+        ].join('\n'),
+      );
+    });
+
+    const occurrences = tree
+      .readContent('/projects/bar/src/app/app.config.ts')
+      .match(/provideGlobalTranslateFn\(\)/g);
+
+    expect(occurrences).toHaveLength(1);
+  });
+
+  it(`GIVEN an application that only mentions the provider in a comment
+      WHEN the migration runs
+      THEN the provider is still added to the config`, async () => {
+    // The old substring guard treated any mention as "already wired", which
+    // silently left such applications without a provider.
     const tree = await run((host) =>
       host.create(
         '/projects/bar/src/app/greeter.ts',
         [
-          `import { translate, provideGlobalTranslateFn } from '@jsverse/transloco';`,
-          `export const providers = [provideGlobalTranslateFn()];`,
+          `import { translate } from '@jsverse/transloco';`,
+          `// TODO: call provideGlobalTranslateFn() at some point`,
           `export const greet = () => translate('hello');`,
         ].join('\n'),
       ),
     );
 
-    const occurrences = tree
-      .readContent('/projects/bar/src/app/app.config.ts')
-      .match(/provideGlobalTranslateFn/g);
-
-    expect(occurrences).toBeNull();
+    expect(tree.readContent('/projects/bar/src/app/app.config.ts')).toContain(
+      'provideGlobalTranslateFn()',
+    );
   });
 });
 

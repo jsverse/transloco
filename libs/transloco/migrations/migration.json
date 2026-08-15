@@ -2,6 +2,7 @@
   "schematics": {
     "migration-v9": {
       "version": "9.0.0",
+      "requires": { "@angular/core": ">=20.0.0" },
       "description": "Migrates a Transloco v8 workspace to v9: replaces the removed `translocoRead` input with `translocoPrefix`, adds `provideGlobalTranslateFn()` where the standalone `translate()`/`translateObject()` functions are used, and reports the breaking changes that cannot be fixed automatically.",
       "factory": "./v9/index#migrateToV9"
     }

@@ -19,33 +19,37 @@ function migrateTranslocoRead(): Rule {
     let renamed = 0;
     let removed = 0;
     let skipped = 0;
+    let ambiguous = 0;
 
     // One walk for both extensions; visiting the tree is the expensive part.
     for (const path of collectFiles(tree, '', ['.html', '.ts'])) {
       const source = tree.read(path)?.toString();
       if (!source) continue;
 
-      if (path.endsWith('.html')) {
-        const result = migrateTemplate(source);
-        if (!result) continue;
-
-        tree.overwrite(path, result.content);
-        renamed += result.renamed;
-        removed += result.removed;
-        continue;
-      }
-
-      const result = migrateInlineTemplates(source);
+      const result = path.endsWith('.html')
+        ? migrateTemplate(source)
+        : migrateInlineTemplates(source);
       if (!result) continue;
 
       if (result.content !== source) tree.overwrite(path, result.content);
       renamed += result.renamed;
       removed += result.removed;
 
+      // A template that doesn't parse is already broken, so there is nothing
+      // worth migrating in it - but say so rather than passing over it quietly.
       if (result.skipped) {
         skipped += result.skipped;
         context.logger.warn(
-          `  ↳ Could not parse an inline template in ${path}. Rename translocoRead to translocoPrefix by hand.`,
+          `  ↳ Unable to parse ${path}, skipping. Rename translocoRead to translocoPrefix by hand.`,
+        );
+      }
+
+      if (result.ambiguous) {
+        ambiguous += result.ambiguous;
+        context.logger.warn(
+          `  ↳ ${path} binds translocoPrefix to an expression alongside translocoRead.\n` +
+            `    v8 fell back to the read whenever that expression was empty, which only the\n` +
+            `    running app can decide - the read was dropped, so check this one by hand.`,
         );
       }
     }
@@ -62,7 +66,7 @@ function migrateTranslocoRead(): Rule {
       );
     }
 
-    if (!renamed && !removed && !skipped) {
+    if (!renamed && !removed && !skipped && !ambiguous) {
       context.logger.info('  ↳ No translocoRead usages found.');
     }
   };

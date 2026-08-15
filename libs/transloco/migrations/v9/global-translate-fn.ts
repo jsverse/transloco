@@ -4,37 +4,147 @@ import {
   Tree,
   chain,
 } from '@angular-devkit/schematics';
-import { addRootProvider } from '@schematics/angular/utility/standalone/rules';
-import { getMainFilePath } from '@schematics/angular/utility/standalone/util';
 
+import { loadStandaloneRules, loadTypeScript } from './lazy-deps';
 import { collectFiles, getProjects } from './workspace-utils';
 
-const TRANSLOCO_IMPORT =
-  /import\s+(?:type\s+)?\{([^}]*)\}\s*from\s*['"]@jsverse\/transloco['"]/g;
+const TRANSLOCO_PACKAGE = '@jsverse/transloco';
 
 /** The standalone functions that stopped being auto-wired in v9. */
 const GLOBAL_FNS = ['translate', 'translateObject'];
 
 /**
- * Matches on import specifiers rather than call sites, so a local helper named
- * `translate` isn't mistaken for the global one.
+ * Whether `source` reaches for `translate()`/`translateObject()` at runtime.
+ *
+ * Detection is anchored on the import rather than on call sites, so a local
+ * helper that happens to be named `translate` is not mistaken for the global
+ * one. Reading the import declarations from the AST rather than by pattern is
+ * what lets `import type { translate }` be recognised for what it is: erased
+ * before the app ever runs, so it needs no provider.
  */
 export function usesGlobalTranslateFn(source: string): boolean {
-  TRANSLOCO_IMPORT.lastIndex = 0;
-  let match: RegExpExecArray | null;
+  const ts = loadTypeScript();
+  if (!ts) return false;
 
-  while ((match = TRANSLOCO_IMPORT.exec(source)) !== null) {
-    const imported = match[1].split(',').map((specifier) =>
-      specifier
-        .trim()
-        .split(/\s+as\s+/)[0]
-        .trim(),
+  const file = ts.createSourceFile(
+    'transloco-usage.ts',
+    source,
+    ts.ScriptTarget.Latest,
+    true,
+  );
+
+  for (const statement of file.statements) {
+    if (
+      !ts.isImportDeclaration(statement) ||
+      !ts.isStringLiteral(statement.moduleSpecifier) ||
+      statement.moduleSpecifier.text !== TRANSLOCO_PACKAGE
+    )
+      continue;
+
+    // `import type { ... }` disappears at compile time, so it is not usage.
+    const clause = statement.importClause;
+    if (!clause || clause.isTypeOnly || !clause.namedBindings) continue;
+
+    const bindings = clause.namedBindings;
+
+    // `import * as transloco` only counts if the namespace is actually called.
+    if (ts.isNamespaceImport(bindings)) {
+      if (callsNamespacedGlobalFn(file, bindings.name.text, ts)) return true;
+
+      continue;
+    }
+
+    const imports = bindings.elements.some(
+      (element) =>
+        !element.isTypeOnly &&
+        GLOBAL_FNS.includes((element.propertyName ?? element.name).text),
     );
 
-    if (imported.some((name) => GLOBAL_FNS.includes(name))) return true;
+    if (imports) return true;
   }
 
   return false;
+}
+
+const PROVIDER_FN = 'provideGlobalTranslateFn';
+
+/**
+ * Whether `source` actually calls `provideGlobalTranslateFn()`.
+ *
+ * The check is on a call expression rather than on the text, so a mention in a
+ * comment, a doc string or an unrelated identifier cannot make the migration
+ * believe a project is already wired and skip it. Any call counts, wherever it
+ * lives: extracting providers into their own file and spreading them into
+ * `app.config.ts` is a normal thing to do.
+ */
+export function providesGlobalTranslateFn(source: string): boolean {
+  const ts = loadTypeScript();
+  if (!ts) return false;
+
+  const file = ts.createSourceFile(
+    'transloco-providers.ts',
+    source,
+    ts.ScriptTarget.Latest,
+    true,
+  );
+
+  let found = false;
+
+  const visit = (node: import('typescript').Node): void => {
+    if (found) return;
+
+    if (ts.isCallExpression(node)) {
+      const callee = node.expression;
+      const name = ts.isIdentifier(callee)
+        ? callee.text
+        : ts.isPropertyAccessExpression(callee)
+          ? callee.name.text
+          : undefined;
+
+      if (name === PROVIDER_FN) {
+        found = true;
+
+        return;
+      }
+    }
+
+    ts.forEachChild(node, visit);
+  };
+
+  ts.forEachChild(file, visit);
+
+  return found;
+}
+
+/** Whether `namespace.translate(...)` or `.translateObject(...)` is called. */
+function callsNamespacedGlobalFn(
+  file: import('typescript').SourceFile,
+  namespace: string,
+  ts: NonNullable<ReturnType<typeof loadTypeScript>>,
+): boolean {
+  let found = false;
+
+  const visit = (node: import('typescript').Node): void => {
+    if (found) return;
+
+    if (
+      ts.isCallExpression(node) &&
+      ts.isPropertyAccessExpression(node.expression) &&
+      ts.isIdentifier(node.expression.expression) &&
+      node.expression.expression.text === namespace &&
+      GLOBAL_FNS.includes(node.expression.name.text)
+    ) {
+      found = true;
+
+      return;
+    }
+
+    ts.forEachChild(node, visit);
+  };
+
+  ts.forEachChild(file, visit);
+
+  return found;
 }
 
 /**
@@ -58,6 +168,18 @@ export function addGlobalTranslateFn(): Rule {
       return;
     }
 
+    // Only ships with `@angular/cli` or `@nx/angular`. Without it the provider
+    // cannot be wired, but the template rewrite has already run and stands.
+    const standalone = loadStandaloneRules();
+    if (!standalone) {
+      context.logger.warn(
+        `  ↳ @schematics/angular is not installed, so provideGlobalTranslateFn() could not\n` +
+          `    be added automatically. Add it to your application providers by hand.`,
+      );
+
+      return;
+    }
+
     const rules: Rule[] = [];
     const librariesWithUsage: string[] = [];
     const unresolved: string[] = [];
@@ -70,11 +192,10 @@ export function addGlobalTranslateFn(): Rule {
 
       if (!contents.some(usesGlobalTranslateFn)) continue;
 
-      // Already migrated - either by a previous run or by hand.
-      if (
-        contents.some((source) => source.includes('provideGlobalTranslateFn'))
-      )
-        continue;
+      // Already wired - by a previous run or by hand. The guard has to stay:
+      // `addRootProvider` inserts unconditionally, with no duplicate check of
+      // its own, so a second run would add a second call.
+      if (contents.some(providesGlobalTranslateFn)) continue;
 
       if (!project.isApplication) {
         librariesWithUsage.push(project.name);
@@ -85,17 +206,17 @@ export function addGlobalTranslateFn(): Rule {
       // executors - can't be wired. Skip it rather than aborting the migration,
       // which would roll back the template rewrites too.
       try {
-        await getMainFilePath(tree, project.name);
+        await standalone.getMainFilePath(tree, project.name);
       } catch {
         unresolved.push(project.name);
         continue;
       }
 
       rules.push(
-        addRootProvider(
+        standalone.addRootProvider(
           project.name,
           ({ code, external }) =>
-            code`${external('provideGlobalTranslateFn', '@jsverse/transloco')}()`,
+            code`${external(PROVIDER_FN, TRANSLOCO_PACKAGE)}()`,
         ),
       );
       context.logger.info(
@@ -137,8 +258,7 @@ function reportUnwiredUsage(tree: Tree, context: SchematicContext) {
     .map((path) => [path, tree.read(path)?.toString() ?? ''] as const)
     .filter(([, source]) => source.includes('@jsverse/transloco'));
 
-  if (sources.some(([, source]) => source.includes('provideGlobalTranslateFn')))
-    return;
+  if (sources.some(([, source]) => providesGlobalTranslateFn(source))) return;
 
   const users = sources
     .filter(([, source]) => usesGlobalTranslateFn(source))

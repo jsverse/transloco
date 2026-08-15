@@ -17,15 +17,19 @@ export interface WorkspaceProject {
  * per-project provider wiring.
  */
 export function readWorkspace(tree: Tree): WorkspaceSchema | null {
-  const path = ['/angular.json', '/.angular.json'].find((candidate) =>
-    tree.exists(candidate),
-  );
-  if (!path) return null;
-
-  const buffer = tree.read(path);
-  if (!buffer) return null;
-
+  // `exists` and `read` do not always agree: an Nx host can report a virtual
+  // `angular.json` as present and then fall through to the real filesystem to
+  // read it. An exception escaping here would fail the whole rule chain, so
+  // users would lose the template rewrite as well as the provider wiring.
   try {
+    const path = ['/angular.json', '/.angular.json'].find((candidate) =>
+      tree.exists(candidate),
+    );
+    if (!path) return null;
+
+    const buffer = tree.read(path);
+    if (!buffer) return null;
+
     return JSON.parse(buffer.toString()) as WorkspaceSchema;
   } catch {
     return null;
