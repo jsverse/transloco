@@ -9,10 +9,16 @@
 import * as compiler from '@angular/compiler';
 import type {
   LiteralMapKey,
-  LiteralMapPropertyKey,
   TmplAstNode,
   TmplAstSwitchBlock,
 } from '@angular/compiler';
+
+/**
+ * Structural on purpose, for the same reason as `SwitchCaseChildrenOwner`
+ * below: `LiteralMapPropertyKey` only exists from Angular 21.1, so naming it
+ * would put a symbol in the emitted `.d.ts` that Angular 20's typings lack.
+ */
+type LiteralMapPropertyKey = LiteralMapKey & { key: string };
 
 /**
  * Structural on purpose: naming the 21.1-only `TmplAstSwitchBlockCaseGroup`
