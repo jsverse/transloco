@@ -209,14 +209,29 @@ const generated = JSON.parse(
   readFileSync(join(project, 'i18n', 'en.json'), 'utf8'),
 );
 const actual = flatten(generated).sort();
-const missing = expected.filter((key) => !actual.includes(key));
 
-if (missing.length) {
-  console.error(
-    `\nMissing ${missing.length} expected key(s): ${missing.join(', ')}`,
-  );
+// Both directions: an AST shim that duplicates a node, or walks into one it
+// should not, adds keys rather than losing them - and a missing-only check
+// would call that a pass.
+const missing = expected.filter((key) => !actual.includes(key));
+const unexpected = actual.filter((key) => !expected.includes(key));
+
+if (missing.length || unexpected.length) {
+  if (missing.length) {
+    console.error(
+      `\nMissing ${missing.length} expected key(s): ${missing.join(', ')}`,
+    );
+  }
+
+  if (unexpected.length) {
+    console.error(
+      `\nExtracted ${unexpected.length} unexpected key(s): ${unexpected.join(', ')}`,
+    );
+  }
+
+  console.error(`Expected:  ${JSON.stringify(expected.slice().sort())}`);
   console.error(`Extracted: ${JSON.stringify(actual)}`);
   process.exit(1);
 }
 
-console.log(`\nAll ${expected.length} expected keys extracted.`);
+console.log(`\nExactly the ${expected.length} expected keys were extracted.`);

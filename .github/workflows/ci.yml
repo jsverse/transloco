@@ -43,6 +43,10 @@ jobs:
   # keys-manager's peer ranges are far wider than the versions the workspace
   # pins, and Angular 21.1 reshaped template AST nodes its extractors read.
   keys-manager-compat:
+    # Checks out and runs pull-request code; the steps below only ever read the
+    # repository, so the token is narrowed to match.
+    permissions:
+      contents: read
     strategy:
       fail-fast: false
       matrix:
