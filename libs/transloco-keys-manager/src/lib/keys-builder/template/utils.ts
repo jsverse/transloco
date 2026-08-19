@@ -178,10 +178,16 @@ export function resolveBlockChildNodes(node: BlockNode): TmplAstNode[] {
 
 export function resolveKeysFromLiteralMap(node: LiteralMap): string[] {
   let keys: string[] = [];
-  const propertyKeys = node.keys.filter(isLiteralMapPropertyKey);
 
-  for (let i = 0; i < node.values.length; i++) {
-    const { key } = propertyKeys[i];
+  // `keys` and `values` are parallel arrays, and a spread key owns an entry in
+  // both - so the walk skips over the keys it cannot name rather than filtering
+  // them out, which would shift every later value onto the wrong key and run
+  // off the end of the shortened list.
+  for (let i = 0; i < node.keys.length; i++) {
+    const mapKey = node.keys[i];
+    if (!isLiteralMapPropertyKey(mapKey)) continue;
+
+    const { key } = mapKey;
     const value = node.values[i];
 
     if (isLiteralMap(value)) {

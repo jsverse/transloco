@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import { TmplAstSwitchBlock, parseTemplate } from '@angular/compiler';
+import type {
+  ASTWithSource,
+  BindingPipe,
+  LiteralMap,
+  TmplAstElement,
+} from '@angular/compiler';
 
 import {
   isLiteralMapPropertyKey,
@@ -10,6 +16,7 @@ import {
   isBlockNode,
   isBlockWithChildren,
   resolveBlockChildNodes,
+  resolveKeysFromLiteralMap,
 } from '../keys-builder/template/utils';
 
 /**
@@ -135,5 +142,52 @@ describe('compiler-compat: literal map keys', () => {
       WHEN it is classified
       THEN it is rejected`, () => {
     expect(isLiteralMapPropertyKey({ kind: 'spread' } as never)).toBe(false);
+  });
+});
+
+describe('resolveKeysFromLiteralMap: spread keys', () => {
+  /** The params literal of `'greeting' | transloco: <params>`, as parsed. */
+  function parseParams(params: string): LiteralMap {
+    const { nodes, errors } = parseTemplate(
+      `<a [title]="'greeting' | transloco: ${params}"></a>`,
+      'test.html',
+    );
+
+    expect(errors ?? []).toEqual([]);
+
+    const element = nodes[0] as TmplAstElement;
+    const pipe = (element.inputs[0].value as ASTWithSource).ast as BindingPipe;
+
+    return pipe.args[0] as LiteralMap;
+  }
+
+  it(`GIVEN params holding a spread ahead of a named key
+      WHEN the keys are resolved
+      THEN the named key is returned rather than the walk throwing`, () => {
+    // `keys` and `values` stay parallel across a spread, so filtering the
+    // spread out of `keys` alone used to run the index off the end.
+    expect(
+      resolveKeysFromLiteralMap(parseParams(`{ ...params, name: 'x' }`)),
+    ).toEqual(['name']);
+  });
+
+  it(`GIVEN params holding a spread between two named keys
+      WHEN the keys are resolved
+      THEN each key keeps its own value`, () => {
+    // The desync is silent rather than fatal here: `b` would have been paired
+    // with the nested map that belongs to `c`.
+    expect(
+      resolveKeysFromLiteralMap(
+        parseParams(`{ a: 1, ...params, b: 2, c: { d: 3 } }`),
+      ),
+    ).toEqual(['a', 'b', 'c.d']);
+  });
+
+  it(`GIVEN params holding a spread last
+      WHEN the keys are resolved
+      THEN the named keys are returned`, () => {
+    expect(
+      resolveKeysFromLiteralMap(parseParams(`{ name: 'x', ...params }`)),
+    ).toEqual(['name']);
   });
 });
