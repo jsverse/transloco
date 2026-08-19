@@ -47,8 +47,9 @@ function migrateTranslocoRead(): Rule {
       if (result.ambiguous) {
         ambiguous += result.ambiguous;
         context.logger.warn(
-          `  ↳ ${path} binds translocoPrefix to an expression alongside translocoRead.\n` +
-            `    v8 fell back to the read whenever that expression was empty, which only the\n` +
+          `  ↳ ${path} sets translocoPrefix alongside translocoRead, to an expression or\n` +
+            `    to an interpolated value this migration cannot read.\n` +
+            `    v8 fell back to the read whenever that prefix came out empty, which only the\n` +
             `    running app can decide - the read was dropped, so check this one by hand.`,
         );
       }

@@ -193,6 +193,34 @@ function removalEdit(source: string, read: Binding): Edit {
 }
 
 /**
+ * How far to look for masking, given a binding.
+ *
+ * Angular drops a blank value out of the span - in the microsyntax that leaves
+ * nothing but the key, so `prefix: ${p}` reports the same span as a bare
+ * `prefix`. Walking over the `:` and the whitespace that follow puts the
+ * stretch the value would have occupied back in reach.
+ */
+function maskProbeEnd(source: string, span: Span): number {
+  let end = span.end.offset;
+  while (end < source.length && /[\s:]/.test(source[end])) end++;
+
+  return end;
+}
+
+/** Whether a binding covers any of the blanked-out stretches of a literal. */
+function overlapsMask(
+  source: string,
+  span: Span,
+  masked: Array<[number, number]>,
+): boolean {
+  const probeEnd = maskProbeEnd(source, span);
+
+  return masked.some(
+    ([start, end]) => span.start.offset < end && start < probeEnd,
+  );
+}
+
+/**
  * Decides what v8 would have done with the prefix sitting next to a `read`.
  *
  * v8 resolved `this.prefix || this.inlineRead`, so an empty prefix fell through
@@ -202,8 +230,19 @@ function removalEdit(source: string, read: Binding): Edit {
 function classifyPrefix(
   source: string,
   prefix: Binding | undefined,
+  masked: Array<[number, number]>,
 ): PrefixState {
   if (!prefix) return 'none';
+
+  // An inline template's `${...}` holes are blanked before parsing, so a prefix
+  // written over one reads as whitespace when static and as an empty expression
+  // when bound - decidable-looking either way, and neither is: only the running
+  // app knows what the hole stands for. Checked first, so neither branch below
+  // ever sees a value that masking invented.
+  //
+  // `sourceSpan`, not `valueSpan`: Angular collapses a blank value to a
+  // zero-length span, which overlaps nothing.
+  if (overlapsMask(source, prefix.sourceSpan, masked)) return 'ambiguous';
 
   // A text attribute carries its literal value, so the fallback is decidable.
   if (typeof prefix.value === 'string')
@@ -242,6 +281,7 @@ function templateEdits(
   source: string,
   offset: number,
   compiler: CompilerModule,
+  masked: Array<[number, number]> = [],
 ): {
   edits: Edit[];
   renamed: number;
@@ -279,7 +319,7 @@ function templateEdits(
     if (!reads.length) continue;
 
     const prefix = group.find((binding) => binding.name === PREFIX_INPUT);
-    const state = classifyPrefix(source, prefix);
+    const state = classifyPrefix(source, prefix, masked);
 
     for (const read of reads) {
       if (state === 'none') {
@@ -360,6 +400,31 @@ function staticRanges(
   }
 
   return ranges;
+}
+
+/**
+ * The stretches `maskOutside` blanks, as offsets into the masked string.
+ *
+ * `staticRanges` reports what survives, so the blanked stretches are the gaps
+ * left between them - the `${...}` holes, plus the quotes and backticks that
+ * delimit the literal itself.
+ */
+function maskedRanges(
+  from: number,
+  to: number,
+  ranges: Array<[number, number]>,
+): Array<[number, number]> {
+  const masked: Array<[number, number]> = [];
+  let cursor = from;
+
+  for (const [start, end] of ranges) {
+    if (start > cursor) masked.push([cursor - from, start - from]);
+    cursor = Math.max(cursor, end);
+  }
+
+  if (cursor < to) masked.push([cursor - from, to - from]);
+
+  return masked;
 }
 
 /** Blanks every character outside `ranges`, preserving length and offsets. */
@@ -443,7 +508,12 @@ export function migrateInlineTemplates(source: string): MigrationResult | null {
         const masked = maskOutside(source, from, to, ranges);
 
         if (mayContainRead(masked)) {
-          const result = templateEdits(masked, from, compiler);
+          const result = templateEdits(
+            masked,
+            from,
+            compiler,
+            maskedRanges(from, to, ranges),
+          );
 
           if (!result) {
             if (looksMigratable(masked)) skipped++;

@@ -506,6 +506,105 @@ describe('migrateInlineTemplates', () => {
     expect(result?.content).toBe(source);
     expect(result?.skipped).toBe(1);
   });
+
+  it(`GIVEN a static prefix written over an interpolation hole
+      WHEN the source is migrated
+      THEN the dropped read is reported as ambiguous`, () => {
+    // Masking blanks the hole, so the prefix parses as whitespace - non-empty,
+    // and so indistinguishable from a real static value without this check.
+    const source =
+      '@Component({ template: `<div translocoPrefix="${p}" translocoRead="fallback"></div>` })';
+
+    const result = migrateInlineTemplates(source);
+
+    expect(result?.content).toBe(
+      '@Component({ template: `<div translocoPrefix="${p}"></div>` })',
+    );
+    expect(result?.removed).toBe(1);
+    expect(result?.ambiguous).toBe(1);
+  });
+
+  it(`GIVEN a bound prefix written over an interpolation hole
+      WHEN the source is migrated
+      THEN the prefix survives and the read is reported as ambiguous`, () => {
+    // The masked expression is empty, which would otherwise read as "no prefix"
+    // and take the live binding down with the read it was renaming.
+    const source =
+      '@Component({ template: `<div [translocoPrefix]="${p}" translocoRead="fallback"></div>` })';
+
+    const result = migrateInlineTemplates(source);
+
+    expect(result?.content).toBe(
+      '@Component({ template: `<div [translocoPrefix]="${p}"></div>` })',
+    );
+    expect(result?.renamed).toBe(0);
+    expect(result?.removed).toBe(1);
+    expect(result?.ambiguous).toBe(1);
+  });
+
+  it(`GIVEN an interpolation hole away from the prefix
+      WHEN the source is migrated
+      THEN the static prefix is still decided without a warning`, () => {
+    const source =
+      '@Component({ template: `<div translocoPrefix="admin" translocoRead="fallback">${body}</div>` })';
+
+    const result = migrateInlineTemplates(source);
+
+    expect(result?.content).toBe(
+      '@Component({ template: `<div translocoPrefix="admin">${body}</div>` })',
+    );
+    expect(result?.removed).toBe(1);
+    expect(result?.ambiguous).toBe(0);
+  });
+
+  it(`GIVEN a microsyntax prefix written over an interpolation hole
+      WHEN the source is migrated
+      THEN the prefix survives and the read is reported as ambiguous`, () => {
+    // The microsyntax drops a blank value out of the binding's span, so this
+    // prefix reports the same span as a bare `prefix` - and removing it as an
+    // empty key used to leave the `: ${p}` behind it dangling.
+    const source =
+      '@Component({ template: `<div *transloco="let t; read: \'x\'; prefix: ${p}"></div>` })';
+
+    const result = migrateInlineTemplates(source);
+
+    expect(result?.content).toBe(
+      '@Component({ template: `<div *transloco="let t; prefix: ${p}"></div>` })',
+    );
+    expect(result?.renamed).toBe(0);
+    expect(result?.removed).toBe(1);
+    expect(result?.ambiguous).toBe(1);
+  });
+
+  it(`GIVEN a microsyntax hole ahead of the read
+      WHEN the source is migrated
+      THEN it is reported as skipped rather than rewritten`, () => {
+    // Masking leaves `prefix:  ; read`, which the expression parser rejects -
+    // so this one never reaches the classifier at all.
+    const source =
+      '@Component({ template: `<div *transloco="let t; prefix: ${p}; read: \'x\'"></div>` })';
+
+    const result = migrateInlineTemplates(source);
+
+    expect(result?.content).toBe(source);
+    expect(result?.skipped).toBe(1);
+  });
+
+  it(`GIVEN a read written over an interpolation hole with no prefix beside it
+      WHEN the source is migrated
+      THEN it is renamed as usual`, () => {
+    // Only the prefix decides the fallback, so a masked read is unaffected.
+    const source =
+      '@Component({ template: `<div translocoRead="${r}"></div>` })';
+
+    const result = migrateInlineTemplates(source);
+
+    expect(result?.content).toBe(
+      '@Component({ template: `<div translocoPrefix="${r}"></div>` })',
+    );
+    expect(result?.renamed).toBe(1);
+    expect(result?.ambiguous).toBe(0);
+  });
 });
 
 describe('usesGlobalTranslateFn', () => {
