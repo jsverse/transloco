@@ -1,6 +1,6 @@
 {
   "name": "@jsverse/transloco-keys-manager",
-  "version": "9.0.0-alpha.0",
+  "version": "9.0.0-alpha.1",
   "description": "Extract translatable keys from projects that uses Transloco",
   "main": "src/lib/transloco-keys-manager.js",
   "types": "src/lib/transloco-keys-manager.d.ts",
@@ -51,7 +51,7 @@
   },
   "dependencies": {
     "@jsverse/angular-utils": "1.0.0-beta.6",
-    "@jsverse/transloco-utils": "^9.0.0-alpha.0",
+    "@jsverse/transloco-utils": "^9.0.0-alpha.1",
     "@phenomnomnominal/tsquery": "6.2.0",
     "chalk": "6.0.0",
     "cheerio": "1.2.0",
