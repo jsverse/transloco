@@ -1,3 +1,7 @@
+## 9.0.0-alpha.1 (2026-08-19)
+
+This was a version bump only for transloco-preload-langs to align it with other projects, there were no code changes.
+
 ## 9.0.0-alpha.0 (2026-08-19)
 
 This was a version bump only for transloco-preload-langs to align it with other projects, there were no code changes.
