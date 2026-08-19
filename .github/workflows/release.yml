@@ -36,6 +36,8 @@ jobs:
   # be dispatched from any branch to test the pipeline
   gate:
     if: ${{ github.ref == 'refs/heads/master' || inputs.dry-run }}
+    permissions:
+      contents: read
     name: ${{ matrix.target }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -62,6 +64,10 @@ jobs:
   # see the longer note in ci.yml.
   gate-e2e:
     if: ${{ github.ref == 'refs/heads/master' || inputs.dry-run }}
+    # The workflow-level scope (contents: write + id-token: write) exists for
+    # the `release` job's push and OIDC publish. A gate only ever reads.
+    permissions:
+      contents: read
     name: ci:e2e
     runs-on: ubuntu-latest
     timeout-minutes: 30
