@@ -145,6 +145,8 @@
     "projectsRelationship": "fixed",
     "version": {
       "conventionalCommits": true,
+      "preserveMatchingDependencyRanges": false,
+      "versionPrefix": "^",
       "git": {
         "commit": true,
         "tag": true,
