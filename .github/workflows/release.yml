@@ -41,9 +41,15 @@ concurrency:
 jobs:
   # Real releases are master-only; dry-runs touch nothing remote (publish runs
   # with --dry-run; push/changelog are gated on !inputs.dry-run), so they may
-  # be dispatched from any branch to test the pipeline
+  # be dispatched from any branch to exercise the *release* pipeline — they do
+  # not verify the code, since the gate below is skipped on a dry run.
+  #
+  # Skipped on dry-run: ci.yml already runs lint/test/build/e2e on every PR and
+  # on every push to master, and a dry run only asks "does the release pipeline
+  # work" — nothing it does depends on the code being green. Re-proving it would
+  # be pure latency in front of the steps actually under test.
   gate:
-    if: ${{ github.ref == 'refs/heads/master' || inputs.dry-run }}
+    if: ${{ !inputs.dry-run && github.ref == 'refs/heads/master' }}
     permissions:
       contents: read
     name: ${{ matrix.target }}
@@ -71,7 +77,8 @@ jobs:
   # `playwright` matrix value in lockstep with ci.yml and @playwright/test —
   # see the longer note in ci.yml.
   gate-e2e:
-    if: ${{ github.ref == 'refs/heads/master' || inputs.dry-run }}
+    # Same dry-run skip as `gate` above — see the note there.
+    if: ${{ !inputs.dry-run && github.ref == 'refs/heads/master' }}
     # The workflow-level scope (contents: write + id-token: write) exists for
     # the `release` job's push and OIDC publish. A gate only ever reads.
     permissions:
@@ -100,9 +107,16 @@ jobs:
       - name: Run ci:e2e
         run: npm run ci:e2e
 
+  # `skipped` is an accepted gate result: on a dry run both gates are skipped,
+  # and a bare `needs:` would cascade that skip to this job. `!cancelled()`
+  # still keeps a cancelled run from ever reaching the publish step.
   release:
     needs: [gate, gate-e2e]
-    if: ${{ github.ref == 'refs/heads/master' || inputs.dry-run }}
+    if: >-
+      ${{ !cancelled()
+      && (needs.gate.result == 'success' || needs.gate.result == 'skipped')
+      && (needs.gate-e2e.result == 'success' || needs.gate-e2e.result == 'skipped')
+      && (github.ref == 'refs/heads/master' || inputs.dry-run) }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -115,7 +129,10 @@ jobs:
         id: app-token
         uses: actions/create-github-app-token@v3
         with:
-          app-id: ${{ secrets.RELEASE_APP_ID }}
+          # `client-id` supersedes the deprecated `app-id` input; the action
+          # forwards either verbatim as the JWT issuer and GitHub accepts the
+          # numeric App ID there, so the existing secret keeps working as-is.
+          client-id: ${{ secrets.RELEASE_APP_ID }}
           private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
           # Least-privilege: the token only needs Contents (push release
           # commit/tag to master + create the GitHub Release). Declaring it
