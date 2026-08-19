@@ -24,6 +24,10 @@
       ]
     }
   },
-  "include": ["schematics/**/*"],
-  "exclude": ["schematics/*/files/**/*", "schematics/**/*.spec.ts"]
+  "include": ["schematics/**/*", "migrations/**/*"],
+  "exclude": [
+    "schematics/*/files/**/*",
+    "schematics/**/*.spec.ts",
+    "migrations/**/*.spec.ts"
+  ]
 }

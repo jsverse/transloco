@@ -2,8 +2,6 @@ import {
   Call,
   Interpolation,
   LiteralMap,
-  LiteralMapKey,
-  LiteralMapPropertyKey,
   parseTemplate as ngParseTemplate,
   ParseTemplateOptions,
   PropertyRead,
@@ -20,7 +18,6 @@ import {
   TmplAstIfBlockBranch,
   TmplAstNode,
   TmplAstSwitchBlock,
-  TmplAstSwitchBlockCaseGroup,
   TmplAstTemplate,
   TmplAstTextAttribute,
 } from '@angular/compiler';
@@ -29,6 +26,14 @@ import { isLiteralMap } from '@jsverse/angular-utils';
 import { readFile } from '../../utils/file.utils';
 
 import { TemplateExtractorConfig } from './types';
+import {
+  isLiteralMapPropertyKey,
+  isSwitchCaseChildrenOwner,
+  resolveSwitchBlockChildren,
+  SwitchCaseChildrenOwner,
+} from './compiler-compat';
+
+export { isLiteralMapPropertyKey } from './compiler-compat';
 
 export function isTemplate(node: unknown): node is TmplAstTemplate {
   return node instanceof TmplAstTemplate;
@@ -48,12 +53,6 @@ export function isBoundAttribute(node: unknown): node is TmplAstBoundAttribute {
 
 export function isTextAttribute(node: unknown): node is TmplAstTextAttribute {
   return node instanceof TmplAstTextAttribute;
-}
-
-export function isLiteralMapPropertyKey(
-  key: LiteralMapKey,
-): key is LiteralMapPropertyKey {
-  return key.kind === 'property';
 }
 
 export function isInterpolation(ast: unknown): ast is Interpolation {
@@ -101,7 +100,7 @@ type BlockNode =
   | TmplAstDeferredBlockPlaceholder
   | TmplAstForLoopBlockEmpty
   | TmplAstIfBlockBranch
-  | TmplAstSwitchBlockCaseGroup
+  | SwitchCaseChildrenOwner
   | TmplAstForLoopBlock
   | TmplAstDeferredBlock
   | TmplAstIfBlock
@@ -116,7 +115,7 @@ export function isBlockWithChildren(
     node instanceof TmplAstDeferredBlockPlaceholder ||
     node instanceof TmplAstForLoopBlockEmpty ||
     node instanceof TmplAstIfBlockBranch ||
-    node instanceof TmplAstSwitchBlockCaseGroup
+    isSwitchCaseChildrenOwner(node)
   );
 }
 
@@ -140,12 +139,6 @@ export function isTmplAstSwitchBlock(
   node: unknown,
 ): node is TmplAstSwitchBlock {
   return node instanceof TmplAstSwitchBlock;
-}
-
-export function isTmplAstSwitchBlockCaseGroup(
-  node: unknown,
-): node is TmplAstSwitchBlockCaseGroup {
-  return node instanceof TmplAstSwitchBlockCaseGroup;
 }
 
 export function isBlockNode(node: TmplAstNode): node is BlockNode {
@@ -177,11 +170,7 @@ export function resolveBlockChildNodes(node: BlockNode): TmplAstNode[] {
   }
 
   if (isTmplAstSwitchBlock(node)) {
-    return node.groups;
-  }
-
-  if (isTmplAstSwitchBlockCaseGroup(node)) {
-    return node.children;
+    return resolveSwitchBlockChildren(node);
   }
 
   return node.children;
@@ -189,10 +178,16 @@ export function resolveBlockChildNodes(node: BlockNode): TmplAstNode[] {
 
 export function resolveKeysFromLiteralMap(node: LiteralMap): string[] {
   let keys: string[] = [];
-  const propertyKeys = node.keys.filter(isLiteralMapPropertyKey);
 
-  for (let i = 0; i < node.values.length; i++) {
-    const { key } = propertyKeys[i];
+  // `keys` and `values` are parallel arrays, and a spread key owns an entry in
+  // both - so the walk skips over the keys it cannot name rather than filtering
+  // them out, which would shift every later value onto the wrong key and run
+  // off the end of the shortened list.
+  for (let i = 0; i < node.keys.length; i++) {
+    const mapKey = node.keys[i];
+    if (!isLiteralMapPropertyKey(mapKey)) continue;
+
+    const { key } = mapKey;
     const value = node.values[i];
 
     if (isLiteralMap(value)) {

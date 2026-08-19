@@ -6,6 +6,7 @@
     "CHANGELOG.md",
     "schematics/**/*.json",
     "schematics-core/**/*.json",
+    "migrations/**/*.json",
     "**/files/**/*"
   ],
   "lib": {

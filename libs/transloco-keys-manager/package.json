@@ -46,8 +46,8 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "@angular/compiler": ">= 21.1.0 < 23.0.0",
-    "typescript": ">= 5.9.0 < 7.0.0"
+    "@angular/compiler": ">= 20.0.0 < 23.0.0",
+    "typescript": ">= 5.8.0 < 7.0.0"
   },
   "dependencies": {
     "@jsverse/angular-utils": "1.0.0-beta.6",

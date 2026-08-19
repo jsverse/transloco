@@ -70,8 +70,6 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   @Input('transloco') key: string | undefined;
   @Input('translocoParams') params: HashMap = {};
   @Input('translocoScope') inlineScope: string | undefined;
-  /** @deprecated use prefix instead, will be removed in Transloco v9 */
-  @Input('translocoRead') inlineRead: string | undefined;
   @Input('translocoPrefix') prefix: string | undefined;
   @Input('translocoLang') inlineLang: string | undefined;
   @Input('translocoLoadingTpl') inlineTpl: Content | undefined;
@@ -124,10 +122,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
         );
         this.strategy === 'attribute'
           ? this.attributeStrategy()
-          : this.structuralStrategy(
-              this.currentLang,
-              this.prefix || this.inlineRead,
-            );
+          : this.structuralStrategy(this.currentLang, this.prefix);
         this.cdr.markForCheck();
         this.initialized = true;
       });

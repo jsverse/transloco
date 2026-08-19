@@ -40,6 +40,49 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  # keys-manager's peer ranges are far wider than the versions the workspace
+  # pins, and Angular 21.1 reshaped template AST nodes its extractors read.
+  keys-manager-compat:
+    # Checks out and runs pull-request code; the steps below only ever read the
+    # repository, so the token is narrowed to match.
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Oldest supported: flat @switch cases, and compiler-cli@20.0.x caps ts below 5.9.
+          - angular: '20'
+            typescript: '5.8'
+          # Last minor before the AST reshape.
+          - angular: '21.0'
+            typescript: '5.9'
+          - angular: '21'
+            typescript: '5.9'
+          # Newest supported; Angular 22 requires ts 6.0.
+          - angular: '22'
+            typescript: '6.0'
+    runs-on: ubuntu-latest
+    name: keys-manager ng${{ matrix.angular }} ts${{ matrix.typescript }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Setup
+        uses: ./.github/actions/step-setup
+
+      - name: Build keys-manager
+        run: npx nx build transloco-keys-manager
+        shell: bash
+
+      - name: Verify key extraction
+        run: |
+          node tools/scripts/verify-keys-manager-compat.mts \
+            --angular=${{ matrix.angular }} \
+            --typescript=${{ matrix.typescript }}
+        shell: bash
+
   commitlint:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
@@ -102,6 +145,7 @@ jobs:
     if: always()
     needs:
       - ci-step
+      - keys-manager-compat
       - commitlint
       - actionlint
     runs-on: ubuntu-latest

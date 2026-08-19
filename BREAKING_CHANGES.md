@@ -1,3 +1,38 @@
+# Transloco v9
+
+Most of the changes below are applied automatically:
+
+```bash
+ng update @jsverse/transloco   # Angular CLI
+nx migrate @jsverse/transloco  # Nx
+```
+
+## Transloco
+
+- Removed the deprecated `translocoRead` input, use `translocoPrefix` instead. In the structural form the `read` microsyntax key becomes `prefix`.
+- `translate()` and `translateObject()` now require `provideGlobalTranslateFn()` in the providers. Without it they return `''` / `[]` and warn in dev mode. Omit it in SSR and multi-instance MFE setups.
+- `@angular/core` peer dependency is now `>=v20`.
+- `rxjs` peer dependency is now `^6.5.3 || ^7.4.0`.
+
+## Transloco Locale & Messageformat
+
+- `@angular/core` peer dependency is now `>=v20`.
+- `rxjs` peer dependency is now `^6.5.3 || ^7.4.0`.
+
+## Transloco Persist Lang, Persist Translations & Preload Langs
+
+- `@angular/core` peer dependency is now `>=v20`.
+
+## Transloco Keys Manager
+
+- The package moved into the main repo and joined the shared version line, so it jumps from `8.1.1` to `9.0.0`.
+- `@angular/compiler` peer dependency is now `>=v20` and `typescript` is now `>=5.8`.
+
+## Transloco Keys Manager, Optimize, Scoped Libs, Utils & Validator
+
+- Node.js `>=22` is now required.
+- Transloco Scoped Libs bumped `chokidar` to v5, which is ESM-only.
+
 # Transloco v8
 
 ## Transloco
