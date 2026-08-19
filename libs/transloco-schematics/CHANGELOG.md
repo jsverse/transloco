@@ -1,3 +1,7 @@
+## 9.0.0-alpha.0 (2026-08-19)
+
+This was a version bump only for transloco-schematics to align it with other projects, there were no code changes.
+
 ## 8.4.0 (2026-06-13)
 
 This was a version bump only for transloco-schematics to align it with other projects, there were no code changes.

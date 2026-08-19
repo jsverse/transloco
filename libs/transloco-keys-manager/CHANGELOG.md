@@ -1,3 +1,7 @@
+## 9.0.0-alpha.0 (2026-08-19)
+
+This was a version bump only for transloco-keys-manager to align it with other projects, there were no code changes.
+
 # Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
