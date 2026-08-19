@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: ['build', 'test', 'lint', 'e2e']
+        target: ['build', 'test', 'lint']
     runs-on: ubuntu-latest
     name: ${{ matrix.target }}
     steps:
@@ -26,10 +26,6 @@ jobs:
       - name: Setup
         uses: ./.github/actions/step-setup
 
-      - name: Setup Playwright
-        if: ${{ matrix.target == 'e2e' }}
-        uses: ./.github/actions/setup-playwright
-
       - name: Run ci:${{ matrix.target }}
         run: npm run ci:${{ matrix.target }}
         shell: bash
@@ -39,6 +35,45 @@ jobs:
         run: npm run release:pkg-pr-new
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # e2e runs in Playwright's own image, which already ships Chromium and every
+  # OS library it needs — no `playwright install` step, no browser cache to
+  # maintain. It cannot join the `ci-step` matrix above because a container is
+  # per-job, not per-matrix-entry.
+  #
+  # The single-entry matrix below is not a matrix in spirit: `container.image`
+  # can interpolate `matrix` but not `env`, so this is the only way to write the
+  # Playwright version once and reuse it in both the image tag and the drift
+  # check. Bump it together with @playwright/test in package.json.
+  e2e:
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        playwright: ['1.62.1']
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v${{ matrix.playwright }}-noble
+    name: e2e
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      # Installs Node 24 over the image's bundled Node, so e2e runs on the same
+      # runtime as every other job.
+      - name: Setup
+        uses: ./.github/actions/step-setup
+
+      - name: Verify Playwright image
+        uses: ./.github/actions/verify-playwright-image
+        with:
+          expected-version: ${{ matrix.playwright }}
+
+      - name: Run ci:e2e
+        run: npm run ci:e2e
+        shell: bash
 
   # keys-manager's peer ranges are far wider than the versions the workspace
   # pins, and Angular 21.1 reshaped template AST nodes its extractors read.
@@ -145,6 +180,7 @@ jobs:
     if: always()
     needs:
       - ci-step
+      - e2e
       - keys-manager-compat
       - commitlint
       - actionlint
