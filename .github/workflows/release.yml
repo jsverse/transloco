@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       bump:
-        description: 'Version bump (auto = infer from conventional commits)'
+        description: 'Version bump (auto = infer from conventional commits). Every pre* option requires a preid.'
         required: false
         type: choice
         default: auto
@@ -13,7 +13,15 @@ on:
           - patch
           - minor
           - major
+          - premajor
+          - preminor
+          - prepatch
           - prerelease
+      preid:
+        description: 'Prerelease identifier (alpha, beta, rc). Required for every pre* bump, and on EVERY subsequent prerelease run — see the Version step.'
+        required: false
+        type: string
+        default: ''
       dry-run:
         description: 'Dry run (builds + packs + publish --dry-run; no real publish, commit, tag, or push)'
         required: false
@@ -113,15 +121,30 @@ jobs:
         id: version
         env:
           BUMP: ${{ inputs.bump }}
+          PREID: ${{ inputs.preid }}
           DRY_RUN: ${{ inputs.dry-run }}
         run: |
           set -o pipefail
           GIT_FLAGS=()
           if [[ "$DRY_RUN" == "true" ]]; then GIT_FLAGS=(--git-commit=false --git-tag=false); fi
+          # nx's releaseTag.strictPreid defaults to true, so WITHOUT --preid the
+          # current-version lookup skips prerelease tags and falls back to the
+          # latest STABLE tag. A bare `prerelease` therefore does not advance an
+          # existing prerelease — it recomputes off the stable version and emits
+          # the same colliding version on every run (8.4.0 -> 8.4.1-0, twice).
+          # Hence: preid is mandatory for pre* bumps, on the first cut and on
+          # every follow-up alpha alike.
+          PREID_FLAG=()
+          if [[ -n "$PREID" ]]; then
+            PREID_FLAG=(--preid "$PREID")
+          elif [[ "$BUMP" == pre* ]]; then
+            echo "::error::bump=$BUMP requires a preid (e.g. alpha). Without it nx resolves the current version from the latest stable tag and produces a colliding version."
+            exit 1
+          fi
           if [[ "$BUMP" == "auto" ]]; then
-            npx nx release version --verbose "${GIT_FLAGS[@]}"
+            npx nx release version --verbose "${PREID_FLAG[@]}" "${GIT_FLAGS[@]}"
           else
-            npx nx release version "$BUMP" --verbose "${GIT_FLAGS[@]}"
+            npx nx release version "$BUMP" --verbose "${PREID_FLAG[@]}" "${GIT_FLAGS[@]}"
           fi
           VERSION=$(node -p "require('./libs/transloco/package.json').version")
           echo "value=$VERSION" >> "$GITHUB_OUTPUT"
@@ -159,16 +182,20 @@ jobs:
       # packs the tarballs and exercises the publish path (version, packageRoot,
       # tag, access) without uploading — note this does NOT exercise OIDC auth,
       # which only a real publish does. Prereleases go to the `next` dist-tag so
-      # `npm i @jsverse/transloco` (latest) never resolves to a prerelease.
+      # `npm i @jsverse/transloco` (latest) never resolves to a prerelease. That
+      # is decided by the version actually computed above, NOT by the bump input:
+      # `premajor` is a prerelease too, and once a prerelease is current, `auto`
+      # resolves internally to `prerelease` while the input string stays "auto" —
+      # keying off the input would publish those alphas over the stable `latest`.
       # Provenance attestations are generated automatically with trusted
       # publishing — no --provenance flag needed.
       - name: Publish to npm (OIDC trusted publishing + provenance)
         env:
-          BUMP: ${{ inputs.bump }}
+          VERSION: ${{ steps.version.outputs.value }}
           DRY_RUN: ${{ inputs.dry-run }}
         run: |
           TAG="latest"
-          if [[ "$BUMP" == "prerelease" ]]; then TAG="next"; fi
+          if [[ "$VERSION" == *-* ]]; then TAG="next"; fi
           DRY=()
           if [[ "$DRY_RUN" == "true" ]]; then DRY=(--dry-run); fi
           npx nx release publish --access public --tag "$TAG" --verbose "${DRY[@]}"
@@ -178,15 +205,24 @@ jobs:
         env:
           OUT_VERSION: ${{ steps.version.outputs.value }}
           BUMP: ${{ inputs.bump }}
+          PREID: ${{ inputs.preid }}
           DRY_RUN: ${{ inputs.dry-run }}
           REF: ${{ github.ref }}
           ACTOR: ${{ github.actor }}
         run: |
+          # Mirrors the Publish step's rule; "n/a" when the version step never ran
+          DIST_TAG="n/a"
+          if [[ -n "$OUT_VERSION" ]]; then
+            DIST_TAG="latest"
+            if [[ "$OUT_VERSION" == *-* ]]; then DIST_TAG="next"; fi
+          fi
           {
             echo "## Release run"
             echo ""
             echo "- Version: \`${OUT_VERSION:-n/a}\`"
             echo "- Bump input: \`${BUMP}\`"
+            echo "- Preid: \`${PREID:-none}\`"
+            echo "- npm dist-tag: \`${DIST_TAG}\`"
             echo "- Dry run: \`${DRY_RUN}\`"
             echo "- Ref: \`${REF}\`"
             echo "- Triggered by: @${ACTOR}"
