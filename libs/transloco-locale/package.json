@@ -1,6 +1,6 @@
 {
   "name": "@jsverse/transloco-locale",
-  "version": "8.4.0",
+  "version": "9.0.0-alpha.0",
   "description": "The localization (l10n) library plugin for Transloco",
   "publishConfig": {
     "access": "public"
@@ -25,7 +25,7 @@
   "license": "MIT",
   "peerDependencies": {
     "@angular/core": ">=20.0.0",
-    "@jsverse/transloco": ">=8.0.0",
+    "@jsverse/transloco": "^9.0.0-alpha.0",
     "rxjs": "^6.5.3 || ^7.4.0"
   },
   "dependencies": {
