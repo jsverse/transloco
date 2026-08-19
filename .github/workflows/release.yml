@@ -141,6 +141,17 @@ jobs:
             echo "::error::bump=$BUMP requires a preid (e.g. alpha). Without it nx resolves the current version from the latest stable tag and produces a colliding version."
             exit 1
           fi
+          # Same strictPreid trap, but for `auto`: while a prerelease line is
+          # active, a preid-less run resolves off the last STABLE tag, so
+          # conventional commits would cut a stable release mid-alpha (8.4.0 ->
+          # 9.0.0) and publish it to `latest`, skipping everything the alphas
+          # already shipped. An explicit specifier is a deliberate choice
+          # (`major` is how you graduate), so only `auto` is blocked here.
+          LATEST_RELEASE_TAG=$(git tag --list 'releases/*' --sort=-creatordate | head -1)
+          if [[ "$BUMP" == "auto" && -z "$PREID" && "$LATEST_RELEASE_TAG" == *-* ]]; then
+            echo "::error::A prerelease line is active ($LATEST_RELEASE_TAG). bump=auto without a preid resolves off the last stable tag and would cut a stable release. Pass preid to continue the prerelease line, or an explicit bump (major/minor/patch) to leave it deliberately."
+            exit 1
+          fi
           if [[ "$BUMP" == "auto" ]]; then
             npx nx release version --verbose "${PREID_FLAG[@]}" "${GIT_FLAGS[@]}"
           else
