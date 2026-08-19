@@ -1,0 +1,18 @@
+# actionlint validates action inputs against a data set of popular actions that
+# is baked into the binary at build time. As of actionlint 1.7.12 (the version
+# pinned in ci.yml) that snapshot predates `actions/create-github-app-token`
+# gaining the `client-id` input, so it still believes `app-id` is the only —
+# and a required — way to identify the app.
+#
+# The v3 tag we pin declares `client-id` (and marks `app-id` deprecated, which
+# is why the release run logs "Input 'app-id' has been deprecated with message:
+# Use 'client-id' instead"). Both are optional there and the action resolves
+# them as `client-id || app-id`.
+#
+# So these two errors are stale-metadata false positives, scoped as narrowly as
+# possible. Delete this file once an actionlint release refreshes its data set.
+paths:
+  .github/workflows/release.yml:
+    ignore:
+      - 'input "client-id" is not defined in action "actions/create-github-app-token@v3"'
+      - 'missing input "app-id" which is required by action "actions/create-github-app-token@v3"'
