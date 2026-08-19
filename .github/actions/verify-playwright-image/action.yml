@@ -1,0 +1,29 @@
+name: 'Verify Playwright image'
+description: 'Fail fast when the Playwright container image and the installed @playwright/test drift apart'
+
+# The e2e jobs run inside mcr.microsoft.com/playwright, whose bundled browsers
+# only match the Playwright release the image was built for. Nothing bumps the
+# image tag automatically (no Renovate/Dependabot in this repo), so this check
+# turns a bump of @playwright/test into an explicit, actionable failure instead
+# of a confusing "Executable doesn't exist at /ms-playwright/chromium-XXXX".
+inputs:
+  expected-version:
+    description: 'Playwright version the container image was tagged with (no leading v)'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Compare image tag with installed @playwright/test
+      env:
+        EXPECTED_VERSION: ${{ inputs.expected-version }}
+      run: |
+        set -euo pipefail
+        installed=$(node -p 'require("@playwright/test/package.json").version')
+        if [ "$installed" != "$EXPECTED_VERSION" ]; then
+          echo "::error::Playwright version mismatch: the workspace resolves @playwright/test to $installed, but this job runs in the v$EXPECTED_VERSION container image."
+          echo "Update the 'playwright' matrix value in .github/workflows/ci.yml and .github/workflows/release.yml to $installed."
+          exit 1
+        fi
+        echo "Playwright $installed matches the container image."
+      shell: bash

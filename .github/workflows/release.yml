@@ -44,13 +44,15 @@ jobs:
   # be dispatched from any branch to test the pipeline
   gate:
     if: ${{ github.ref == 'refs/heads/master' || inputs.dry-run }}
+    permissions:
+      contents: read
     name: ${{ matrix.target }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
       fail-fast: true
       matrix:
-        target: ['ci:lint', 'ci:test', 'ci:e2e']
+        target: ['ci:lint', 'ci:test']
     steps:
       - uses: actions/checkout@v7
         with:
@@ -59,17 +61,47 @@ jobs:
       - name: Setup
         uses: ./.github/actions/step-setup
 
-      - name: Setup Playwright
-        if: ${{ matrix.target == 'ci:e2e' }}
-        uses: ./.github/actions/setup-playwright
-
       - name: Run ${{ matrix.target }}
         env:
           TARGET: ${{ matrix.target }}
         run: npm run "$TARGET"
 
+  # Same gate, separate job: e2e runs inside Playwright's own image (Chromium
+  # and its OS deps are baked in), and a container is per-job. Keep the
+  # `playwright` matrix value in lockstep with ci.yml and @playwright/test —
+  # see the longer note in ci.yml.
+  gate-e2e:
+    if: ${{ github.ref == 'refs/heads/master' || inputs.dry-run }}
+    # The workflow-level scope (contents: write + id-token: write) exists for
+    # the `release` job's push and OIDC publish. A gate only ever reads.
+    permissions:
+      contents: read
+    name: ci:e2e
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      matrix:
+        playwright: ['1.62.1']
+    container:
+      image: mcr.microsoft.com/playwright:v${{ matrix.playwright }}-noble
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Setup
+        uses: ./.github/actions/step-setup
+
+      - name: Verify Playwright image
+        uses: ./.github/actions/verify-playwright-image
+        with:
+          expected-version: ${{ matrix.playwright }}
+
+      - name: Run ci:e2e
+        run: npm run ci:e2e
+
   release:
-    needs: gate
+    needs: [gate, gate-e2e]
     if: ${{ github.ref == 'refs/heads/master' || inputs.dry-run }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
