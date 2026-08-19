@@ -198,10 +198,19 @@ jobs:
 
       # The releases/{version} tag must be on the remote BEFORE the changelog
       # step creates the GitHub release, otherwise the API invents the tag at
-      # the old master HEAD
+      # the old master HEAD.
+      #
+      # --atomic because refs otherwise push independently: a rejected branch
+      # update still leaves the tag behind. That is exactly what the
+      # 9.0.0-alpha.0 run did — master was rejected (GH006) while
+      # releases/9.0.0-alpha.0 landed. master's version therefore never moved,
+      # so the retry recomputed the same version against a tag that already
+      # existed at a different commit, and would have been rejected again as a
+      # non-fast-forward tag update. All-or-nothing keeps a failed release
+      # re-runnable without manual tag cleanup.
       - name: Push commit and tag
         if: ${{ !inputs.dry-run }}
-        run: git push --follow-tags origin HEAD:master
+        run: git push --atomic --follow-tags origin HEAD:master
 
       # Use the app token (not the default GITHUB_TOKEN): nx release changelog
       # both creates the GitHub Release and may push the changelog commit, so it
