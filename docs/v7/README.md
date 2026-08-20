@@ -2,7 +2,7 @@
 
 🩷 Want to support the project? [read here](support.md) for more information 🩵
 
-![npm](https://img.shields.io/npm/v/@jsverse/transloco) ![Bundle Size](https://img.shields.io/bundlephobia/min/@jsverse/transloco) ![Downloads](https://img.shields.io/npm/dm/@jsverse/transloco) ![Build Status](https://github.com/jsverse/transloco/actions/workflows/ci.yml/badge.svg) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/jsverse/transloco/blob/master/CONTRIBUTING.md)
+![npm](https://img.shields.io/npm/v/@jsverse/transloco) ![Downloads](https://img.shields.io/npm/dm/@jsverse/transloco) ![Build Status](https://github.com/jsverse/transloco/actions/workflows/ci.yml/badge.svg) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/jsverse/transloco/blob/master/CONTRIBUTING.md)
 
 {% hint style="info" %}
 **Transloco v9 (alpha) is here** 🎉\
