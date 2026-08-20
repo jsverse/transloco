@@ -1,12 +1,15 @@
-# 🚀 Getting Started
+---
+icon: rocket-launch
+---
 
-🩷 Want to support the project? [read here](support.md) for more information 🩵
+# Transloco
+
+&#x20; 🩷 Want to support the project? [read here](../) for more information 🩵
 
 ![npm](https://img.shields.io/npm/v/@jsverse/transloco) ![Bundle Size](https://img.shields.io/bundlephobia/min/@jsverse/transloco) ![Downloads](https://img.shields.io/npm/dm/@jsverse/transloco) ![Build Status](https://github.com/jsverse/transloco/actions/workflows/ci.yml/badge.svg) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/jsverse/transloco/blob/master/CONTRIBUTING.md)
 
 {% hint style="info" %}
-**Transloco v9 (alpha) is here** 🎉\
-You're reading the documentation for v7 and older. Head to the [v9 docs](https://jsverse.gitbook.io/transloco) for the latest, and to the [v9 migration guide](https://jsverse.gitbook.io/transloco/migration-guides/migrate-to-v9) to upgrade.
+Transloco v9 is currently in **alpha**, published under the npm `next` tag. Some pages might still need an update — feel free to [open a PR](https://github.com/jsverse/transloco/pulls)/Issue if something is incorrect.
 {% endhint %}
 
 Transloco allows you to define translations for your content in different languages and switch between them easily in runtime. It exposes a rich API to manage translations efficiently and cleanly. It provides multiple plugins that will improve your development experience.
