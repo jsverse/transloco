@@ -50,6 +50,28 @@ dynamicParam = signal({ variable: 'world' });
 object = translateObjectSignal(this.dynamicKey, this.dynamicParam);
 ```
 
+## `activeLang`
+
+`TranslocoService` exposes the currently active language as a signal, so you can derive from it without subscribing to `langChanges$`.
+
+```typescript
+import { Component, computed, inject, linkedSignal } from '@angular/core';
+import { TranslocoService } from '@jsverse/transloco';
+
+@Component({ /* ... */ })
+export class MyComponent {
+  private transloco = inject(TranslocoService);
+
+  lang = this.transloco.activeLang;
+  upper = computed(() => this.transloco.activeLang().toUpperCase());
+
+  // Writable, but resets whenever the active language changes.
+  selected = linkedSignal(() => this.transloco.activeLang());
+}
+```
+
+The signal always holds a value — it is initialised synchronously with the active language — so there is no `undefined` to guard against.
+
 ## Integration with Angular Dependency Injection
 
 Both `translateSignal` and `translateObjectSignal` integrate with Angular's dependency injection system. They can be called within an injection context or with an explicitly provided injector.

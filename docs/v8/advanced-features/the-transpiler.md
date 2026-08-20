@@ -5,7 +5,7 @@ icon: arrow-progress
 
 # The Transpiler
 
-toThe transpiler is responsible for resolving dynamic values in translations. For example, when given `Hello {{ key }}`, the default transpiler will replace the dynamic variable `key` with the corresponding value from the provided parameters or the translation object.
+The transpiler is responsible for resolving dynamic values in translations. For example, when given `Hello {{ key }}`, the default transpiler will replace the dynamic variable `key` with the corresponding value from the provided parameters or the translation object.
 
 ## DefaultTranspiler
 
@@ -140,6 +140,7 @@ In this case, the translation checks if the user has the `newDashboards` feature
 ### Usage Notes
 
 * If the function returns a string that contains interpolation syntax (e.g., `{{ value }}`), the transpiler will replace it with the appropriate params or key references, just like the default transpiler.
+* **The arguments are transpiled too, before the function is called.** Interpolation params and key references inside an argument are resolved first, so the function receives the final string rather than the raw syntax.
 * If your function parameters need to include a comma, escape it using `\\,`:
 
 {% code title="en.json" %}

@@ -50,6 +50,10 @@ export class AppComponent {
 }
 ```
 
+{% hint style="info" %}
+For a reactive equivalent, `TranslocoService` also exposes the active language as a signal — see [`activeLang`](signals.md#activelang).
+{% endhint %}
+
 ***
 
 ## **`setActiveLang()`**
