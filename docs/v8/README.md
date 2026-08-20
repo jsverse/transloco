@@ -8,6 +8,11 @@ icon: globe
 
 [![npm](https://img.shields.io/npm/v/@jsverse/transloco)](https://www.npmjs.com/package/@jsverse/transloco) ![Bundle Size](https://img.shields.io/bundlephobia/min/@jsverse/transloco) ![Downloads](https://img.shields.io/npm/dm/@jsverse/transloco) ![Build Status](https://github.com/jsverse/transloco/actions/workflows/ci.yml/badge.svg) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/jsverse/transloco/blob/master/CONTRIBUTING.md)
 
+{% hint style="info" %}
+**Transloco v9 (alpha) is here** 🎉\
+You're reading the v8 documentation. Head to the [v9 docs](https://jsverse.gitbook.io/transloco) for the latest, and to the [v9 migration guide](https://jsverse.gitbook.io/transloco/migration-guides/migrate-to-v9) to upgrade — `ng update` handles most of it for you.
+{% endhint %}
+
 {% hint style="success" %}
 Help Transloco improve! Found an issue or have suggestions? I welcome [contributions](https://github.com/jsverse/transloco/pulls) and [feedback](https://github.com/jsverse/transloco/issues) from the community. 🤝
 {% endhint %}
