@@ -6,7 +6,7 @@ icon: rocket-launch
 
 &#x20; 🩷 Want to support the project? [read here](../) for more information 🩵
 
-![npm](https://img.shields.io/npm/v/@jsverse/transloco) ![Bundle Size](https://img.shields.io/bundlephobia/min/@jsverse/transloco) ![Downloads](https://img.shields.io/npm/dm/@jsverse/transloco) ![Build Status](https://github.com/jsverse/transloco/actions/workflows/ci.yml/badge.svg) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/jsverse/transloco/blob/master/CONTRIBUTING.md)
+![npm](https://img.shields.io/npm/v/@jsverse/transloco/next) ![Bundle Size](https://img.shields.io/bundlephobia/min/@jsverse/transloco) ![Downloads](https://img.shields.io/npm/dm/@jsverse/transloco) ![Build Status](https://github.com/jsverse/transloco/actions/workflows/ci.yml/badge.svg) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/jsverse/transloco/blob/master/CONTRIBUTING.md)
 
 {% hint style="info" %}
 Transloco v9 is currently in **alpha**, published under the npm `next` tag. Some pages might still need an update — feel free to [open a PR](https://github.com/jsverse/transloco/pulls)/Issue if something is incorrect.
