@@ -171,11 +171,17 @@ jobs:
       # `nx release`, where the changelog is computed in-process before tagging.)
       #
       # Two outputs because the correct start ref depends on the version that
-      # Version resolves, which is not known yet — this mirrors nx's own
-      # strictPreid behaviour:
+      # Version resolves, which is not known yet:
       #   prerelease -> previous tag of any kind (incremental notes per alpha)
       #   stable     -> previous STABLE tag, so 9.0.0 carries the whole
       #                 8.4.0 -> 9.0.0 story rather than only the post-beta tail
+      #
+      # The stable rule matches nx's strictPreid resolution; the prerelease rule
+      # deliberately does not. nx filters prerelease tags by preid, so the first
+      # 9.0.0-beta.0 would find no `-beta.` tag, fall back to the last stable and
+      # re-list everything the alphas already published. Keying off "previous
+      # release of any kind" keeps every prerelease entry incremental across a
+      # preid change; CHANGELOG.md accumulates the entries either way.
       #
       # versionsort.suffix=- makes git rank 9.0.0-alpha.1 below 9.0.0, matching
       # semver; --sort=-v:refname matches how nx enumerates tags internally.
@@ -276,8 +282,8 @@ jobs:
       #
       # --from is mandatory here, not an optimisation: without it nx resolves
       # the start ref to the tag the Version step just created and emits an
-      # empty changelog. See "Resolve previous release tags" above for why the
-      # two candidates exist and how the choice mirrors nx's strictPreid rule.
+      # empty changelog. See "Resolve previous release tags" above for why there
+      # are two candidates and how the choice between them is made.
       # With no previous tag at all (first ever release) --from is omitted so
       # nx.json's automaticFromRef falls back to the first commit.
       - name: Changelog and GitHub release
