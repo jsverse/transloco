@@ -1,0 +1,6 @@
+---
+icon: ruler-triangle
+---
+
+# Schematics
+
