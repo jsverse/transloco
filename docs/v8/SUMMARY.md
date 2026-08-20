@@ -73,6 +73,7 @@
 * [Recipes](resources/recipies/README.md)
   * [Prefetch User Language](resources/recipies/prefetch-user-language.md)
   * [Using Xliff](resources/recipies/using-xliff.md)
+  * [Use with Locize](resources/recipies/use-with-locize.md)
   * [Generate Locale Files using Google Translate](resources/recipies/generate-locale-files-using-google-translate.md)
 * [Blog Posts](resources/blog-posts/README.md)
   * [Official Posts](resources/blog-posts/transloco-team-posts/README.md)
