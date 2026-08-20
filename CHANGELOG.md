@@ -4,7 +4,46 @@ This was a version bump only, there were no code changes.
 
 ## 9.0.0-alpha.0 (2026-08-19)
 
-This was a version bump only, there were no code changes.
+### 🚀 Features
+
+- **keys-manager:** migrate the `transloco-keys-manager` engine into the monorepo ([#943](https://github.com/jsverse/transloco/pull/943), [#229](https://github.com/jsverse/transloco/issues/229), [#250](https://github.com/jsverse/transloco/issues/250))
+- ⚠️  **transloco:** introduce provideGlobalTranslateFn() ([#881](https://github.com/jsverse/transloco/pull/881))
+- ⚠️  **transloco:** v9 deprecation removal, ng update migration and keys-manager Angular 20+ support ([#983](https://github.com/jsverse/transloco/pull/983))
+- **transloco-keys-manager:** scaffold `transloco-keys-manager` library in the monorepo ([#942](https://github.com/jsverse/transloco/pull/942))
+
+### 🩹 Fixes
+
+- add @swc/core dep so Nx graph builds in CI ([#935](https://github.com/jsverse/transloco/pull/935))
+- **locale:** respect currency in numberFormatOptions ([#940](https://github.com/jsverse/transloco/pull/940))
+- **transloco:** stop the schematics build writing into transloco-utils sources ([#984](https://github.com/jsverse/transloco/pull/984))
+
+### ⚠️  Breaking Changes
+
+- **transloco:** v9 deprecation removal, ng update migration and keys-manager Angular 20+ support  ([#983](https://github.com/jsverse/transloco/pull/983))
+  the translocoRead input and the `read` microsyntax
+  key are removed, use translocoPrefix / `prefix` instead.
+  * feat(transloco): add ng update migration to v9
+  * ci(keys-manager): verify angular and typescript ranges
+  * docs: document the v9 breaking changes
+  * fix(transloco): parse templates in the v9 read migration
+  * fix(keys-manager): avoid angular 21.1-only compat typings
+  * ci(keys-manager): assert exact keys and restrict token
+  * docs: include keys-manager in the node 22 requirement
+  * fix(keys-manager): keep literal map keys aligned across spreads
+  * fix(transloco): handle masked prefixes in the v9 read migration
+- **transloco:** introduce provideGlobalTranslateFn()  ([#881](https://github.com/jsverse/transloco/pull/881))
+  translate() and translateObject() now require
+  provideGlobalTranslateFn() in the application providers. Without it
+  they return '' / [] and emit a dev-mode warning.
+
+### ❤️ Thank You
+
+- Artur @arturovt
+- austinw-fineart @austinw-fineart
+- Cole Munz @munzzyy
+- HermannBjorgvin @HermannBjorgvin
+- Mohamed Ben Makhlouf @medbenmakhlouf
+- Shahar Kazaz @shaharkazaz
 
 ## 8.4.0 (2026-06-13)
 

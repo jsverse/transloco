@@ -4,7 +4,13 @@ This was a version bump only for transloco-locale to align it with other project
 
 ## 9.0.0-alpha.0 (2026-08-19)
 
-This was a version bump only for transloco-locale to align it with other projects, there were no code changes.
+### 🩹 Fixes
+
+- **locale:** respect currency in numberFormatOptions ([#940](https://github.com/jsverse/transloco/pull/940))
+
+### ❤️ Thank You
+
+- Cole Munz @munzzyy
 
 ## 8.4.0 (2026-06-13)
 
