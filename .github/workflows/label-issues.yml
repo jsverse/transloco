@@ -26,52 +26,12 @@ jobs:
           sparse-checkout: .github/workflows/scripts
           sparse-checkout-cone-mode: false
 
-      - uses: actions/github-script@v8
+      # No `npm ci`: the script has no dependencies and Node 24 strips the types itself,
+      # so this job stays a few seconds rather than a few minutes.
+      - uses: actions/setup-node@v6
         with:
-          script: |
-            const { packageLabelsFor } = require('${{ github.workspace }}/.github/workflows/scripts/package-labels.js');
+          node-version: 24
 
-            const issue = context.payload.issue;
-            const { labels, answered, unknown } = packageLabelsFor(issue.body);
-
-            if (!answered) {
-              core.info('No affected-packages answer on this issue; nothing to do.');
-              return;
-            }
-            if (unknown.length) {
-              core.warning(`Unrecognised package option(s): ${unknown.join(', ')}. ` +
-                'The dropdown and .github/workflows/scripts/package-labels.js have drifted apart.');
-            }
-            if (!labels.length) {
-              core.info('Answered, but no package could be derived — needs manual triage.');
-              return;
-            }
-
-            // Only apply labels that exist; addLabels would otherwise create them on the fly.
-            const existing = await github.paginate(github.rest.issues.listLabelsForRepo, {
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              per_page: 100,
-            });
-            const known = new Set(existing.map((l) => l.name));
-
-            const missing = labels.filter((l) => !known.has(l));
-            if (missing.length) {
-              core.warning(`Label(s) not present in this repo, skipping: ${missing.join(', ')}`);
-            }
-
-            const already = new Set((issue.labels || []).map((l) => l.name));
-            const toAdd = labels.filter((l) => known.has(l) && !already.has(l));
-
-            if (!toAdd.length) {
-              core.info('Package labels already present; nothing to add.');
-              return;
-            }
-
-            await github.rest.issues.addLabels({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: issue.number,
-              labels: toAdd,
-            });
-            core.info(`Added: ${toAdd.join(', ')}`);
+      - run: node .github/workflows/scripts/label-issues.mts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

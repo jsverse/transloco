@@ -1,13 +1,13 @@
 /**
- * Run with: node --test .github/workflows/scripts/
+ * Run with: node --test .github/workflows/scripts/package-labels.test.mts
  *
  * Fixtures are trimmed from real issue bodies in jsverse/transloco, so the shapes here
  * are the ones the parser actually meets — including the pre-form issues that have no
  * dropdown at all, and the reporter who typed a package name instead of picking one.
  */
-const test = require('node:test');
-const assert = require('node:assert');
-const { packageLabelsFor, normalize } = require('./package-labels.js');
+import test from 'node:test';
+import assert from 'node:assert';
+import { packageLabelsFor, normalize } from './package-labels.mts';
 
 const question = '### Which Transloco package(s) are the source of the bug?';
 const withAnswer = (answer) =>

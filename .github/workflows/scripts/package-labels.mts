@@ -5,10 +5,11 @@
  * the selected options on the next non-empty line, comma separated. Reporters who pick
  * nothing get `_No response_`, which we treat as "no signal" rather than an error.
  *
- * Kept as a plain module with no dependencies so it can be unit-tested outside Actions.
+ * Pure functions with no I/O so the parsing can be unit-tested on its own.
  */
 
-const PACKAGE_LABELS = {
+/** Dropdown option (normalised) -> the label it maps to. */
+const PACKAGE_LABELS: Record<string, string> = {
   transloco: 'transloco',
   schematics: 'schematics',
   locale: 'locale',
@@ -28,8 +29,16 @@ const NO_LABEL = new Set(["don't know / other", 'dont know / other', 'other']);
 const QUESTION = /which transloco package/i;
 const NO_RESPONSE = /^_?no response_?$/i;
 
+export interface PackageLabelResult {
+  labels: string[];
+  /** Distinguishes "picked Don't know / other" from "the form has no such field". */
+  answered: boolean;
+  /** Options the dropdown offers that this map doesn't know about. */
+  unknown: string[];
+}
+
 /** Normalise an option so "Persist Lang", "persist-lang" and "Persist  Lang" all match. */
-function normalize(option) {
+export function normalize(option: string): string {
   return option
     .trim()
     .toLowerCase()
@@ -42,7 +51,7 @@ function normalize(option) {
 }
 
 /** Pull the raw answer text for the affected-packages dropdown, or null if absent. */
-function readAnswer(body) {
+export function readAnswer(body: string | null | undefined): string | null {
   if (!body) return null;
   const lines = body.replace(/\r/g, '').split('\n');
   const start = lines.findIndex(
@@ -59,17 +68,14 @@ function readAnswer(body) {
   return null;
 }
 
-/**
- * @param {string} body issue body
- * @returns {{labels: string[], answered: boolean, unknown: string[]}}
- *   `answered` distinguishes "picked Don't know / other" from "form has no such field".
- */
-function packageLabelsFor(body) {
+export function packageLabelsFor(
+  body: string | null | undefined,
+): PackageLabelResult {
   const answer = readAnswer(body);
   if (answer === null) return { labels: [], answered: false, unknown: [] };
 
-  const labels = [];
-  const unknown = [];
+  const labels: string[] = [];
+  const unknown: string[] = [];
   for (const option of answer.split(',')) {
     const key = normalize(option);
     if (!key) continue;
@@ -79,10 +85,4 @@ function packageLabelsFor(body) {
   return { labels: [...new Set(labels)], answered: true, unknown };
 }
 
-module.exports = {
-  packageLabelsFor,
-  readAnswer,
-  normalize,
-  PACKAGE_LABELS,
-  NO_LABEL,
-};
+export { PACKAGE_LABELS, NO_LABEL };
