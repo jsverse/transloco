@@ -1,0 +1,12 @@
+# Blank issues bypass the forms entirely, which is how issues end up with no package
+# answer and no type label — nothing downstream can classify them. Flip this to `true`
+# if you'd rather keep the escape hatch.
+blank_issues_enabled: false
+
+contact_links:
+  - name: Question or discussion
+    url: https://github.com/jsverse/transloco/discussions
+    about: Ask how to do something, or discuss an idea before opening a feature request.
+  - name: Documentation
+    url: https://jsverse.gitbook.io/transloco
+    about: Setup, configuration, and API reference for every Transloco package.

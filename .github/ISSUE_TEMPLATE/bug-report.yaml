@@ -1,6 +1,7 @@
 name: Bug Report
 description: Report a bug in one of the Transloco packages
-title: 'Bug(scope):'
+title: 'Bug: '
+labels: ['bug']
 
 body:
   - type: checkboxes
@@ -36,9 +37,11 @@ body:
     id: is-regression
     attributes:
       label: Is this a regression?
+      description: A regression is behaviour that used to work and stopped working in a newer version.
       options:
         - 'Yes'
         - 'No'
+        - "Don't know"
     validations:
       required: true
 
@@ -59,8 +62,8 @@ body:
   - type: input
     id: reproduction
     attributes:
-      label: Please provide a link to a minimal reproduction of the bug, if you won't provide a link the issue won't be handled.
-      description: 'You can fork this CodeSandbox playground: https://codesandbox.io/p/sandbox/jsverse-transloco-kn52hs'
+      label: Link to a minimal reproduction
+      description: 'Issues without a reproduction cannot be investigated and will be closed. Fork this CodeSandbox playground to get started: https://codesandbox.io/p/sandbox/jsverse-transloco-kn52hs'
     validations:
       required: true
 
@@ -100,7 +103,6 @@ body:
         Chrome (desktop/Android/iOS) version XX
         Firefox version XX
         Safari (desktop/iOS) version XX
-        IE version XX
         Edge version XX
 
   - type: textarea
