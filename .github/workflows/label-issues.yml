@@ -1,0 +1,38 @@
+name: Label issues by package
+
+# The issue forms apply the type label (`bug` / `enhancement`) themselves via their
+# `labels:` key, but GitHub cannot apply a label conditionally on a dropdown answer.
+# This reads the "Which Transloco package(s)…" answer and applies the matching package
+# labels. It only ever ADDS labels, and an `edited` event applies only the packages newly
+# selected by that edit, so a label removed during triage stays removed.
+#
+# The reporter's answer is a hint, not ground truth — it is wrong often enough that
+# these labels are a starting point for triage rather than the final word.
+
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          sparse-checkout: .github/workflows/scripts
+          sparse-checkout-cone-mode: false
+
+      # No `npm ci`: the script has no dependencies and Node 24 strips the types itself,
+      # so this job stays a few seconds rather than a few minutes.
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - run: node .github/workflows/scripts/label-issues.mts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
