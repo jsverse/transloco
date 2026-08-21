@@ -8,7 +8,11 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
 
-import { packageLabelsFor, normalize } from './package-labels.mts';
+import {
+  labelsAddedByEdit,
+  packageLabelsFor,
+  normalize,
+} from './package-labels.mts';
 
 const question = '### Which Transloco package(s) are the source of the bug?';
 
@@ -176,6 +180,83 @@ describe('packageLabelsFor', () => {
       assert.strictEqual(packageLabelsFor(null).answered, false);
       assert.strictEqual(packageLabelsFor(undefined).answered, false);
     });
+  });
+});
+
+describe('labelsAddedByEdit', () => {
+  it(`GIVEN an edit that left the body alone
+      WHEN the newly selected labels are derived
+      THEN returns nothing, so a label removed during triage stays removed`, () => {
+    // A title-only edit omits `body` from `changes` entirely. Reading the whole answer
+    // here is what would re-apply a package label a maintainer had removed.
+    const changes = { title: { from: 'Old title' } };
+
+    assert.deepStrictEqual(
+      labelsAddedByEdit(changes, bodyAnswering('Transloco')),
+      [],
+    );
+  });
+
+  it(`GIVEN an edit that left the affected-packages answer unchanged
+      WHEN the newly selected labels are derived
+      THEN returns nothing, since the answer carries no new signal`, () => {
+    // The common case: the reporter edits the body to add a reproduction link.
+    const before = bodyAnswering('Transloco');
+    const after = `${bodyAnswering('Transloco')}\nhttps://stackblitz.com/edit/repro\n`;
+
+    assert.deepStrictEqual(
+      labelsAddedByEdit({ body: { from: before } }, after),
+      [],
+    );
+  });
+
+  it(`GIVEN an edit that adds a package to the answer
+      WHEN the newly selected labels are derived
+      THEN returns only the package the edit introduced`, () => {
+    const before = bodyAnswering('Transloco');
+    const after = bodyAnswering('Transloco, Locale');
+
+    assert.deepStrictEqual(
+      labelsAddedByEdit({ body: { from: before } }, after),
+      ['locale'],
+    );
+  });
+
+  it(`GIVEN an edit that removes a package from the answer
+      WHEN the newly selected labels are derived
+      THEN returns nothing, because labels are never taken away`, () => {
+    const before = bodyAnswering('Transloco, Locale');
+    const after = bodyAnswering('Transloco');
+
+    assert.deepStrictEqual(
+      labelsAddedByEdit({ body: { from: before } }, after),
+      [],
+    );
+  });
+
+  it(`GIVEN an edit that fills in a body that was previously empty
+      WHEN the newly selected labels are derived
+      THEN treats every selected package as new`, () => {
+    // `from: ''` is a real edit, not an absent key — it must not be skipped.
+    const result = labelsAddedByEdit(
+      { body: { from: '' } },
+      bodyAnswering('Transloco'),
+    );
+
+    assert.deepStrictEqual(result, ['transloco']);
+  });
+
+  it(`GIVEN no changes object at all
+      WHEN the newly selected labels are derived
+      THEN returns nothing without throwing`, () => {
+    assert.deepStrictEqual(
+      labelsAddedByEdit(null, bodyAnswering('Transloco')),
+      [],
+    );
+    assert.deepStrictEqual(
+      labelsAddedByEdit(undefined, bodyAnswering('Transloco')),
+      [],
+    );
   });
 });
 

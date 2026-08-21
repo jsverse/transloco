@@ -3,7 +3,8 @@ name: Label issues by package
 # The issue forms apply the type label (`bug` / `enhancement`) themselves via their
 # `labels:` key, but GitHub cannot apply a label conditionally on a dropdown answer.
 # This reads the "Which Transloco package(s)…" answer and applies the matching package
-# labels. It only ever ADDS labels, so maintainer triage always wins.
+# labels. It only ever ADDS labels, and an `edited` event applies only the packages that
+# edit newly selected, so a label removed during triage stays removed.
 #
 # The reporter's answer is a hint, not ground truth — it is wrong often enough that
 # these labels are a starting point for triage rather than the final word.

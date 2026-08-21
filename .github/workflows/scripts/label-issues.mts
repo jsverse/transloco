@@ -5,10 +5,11 @@
  * matching how `tools/scripts/*.mts` are invoked — Node strips the types, so there is
  * nothing to install and no loader to configure.
  *
- * Only ever ADDS labels, so maintainer triage always wins over the reporter's answer.
+ * Only ever ADDS labels, and on an `edited` event only the packages that edit newly
+ * selected, so a label removed during triage stays removed.
  */
 import { readFile } from 'node:fs/promises';
-import { packageLabelsFor } from './package-labels.mts';
+import { labelsAddedByEdit, packageLabelsFor } from './package-labels.mts';
 
 interface Label {
   name: string;
@@ -93,14 +94,26 @@ async function main(): Promise<void> {
     return;
   }
 
+  // An edit re-runs this workflow over the whole body, so applying the full answer again
+  // would resurrect labels a maintainer removed. Only the packages the edit itself
+  // introduced are new signal.
+  const selected =
+    event.action === 'edited'
+      ? labelsAddedByEdit(event.changes, issue.body)
+      : labels;
+  if (!selected.length) {
+    console.log('The edit selected no new package; nothing to add.');
+    return;
+  }
+
   const known = await repoLabelNames(repo);
-  const missing = labels.filter((label) => !known.has(label));
+  const missing = selected.filter((label) => !known.has(label));
   if (missing.length) {
     warn(`Label(s) not present in this repo, skipping: ${missing.join(', ')}`);
   }
 
   const already = new Set((issue.labels ?? []).map((label) => label.name));
-  const toAdd = labels.filter(
+  const toAdd = selected.filter(
     (label) => known.has(label) && !already.has(label),
   );
 
