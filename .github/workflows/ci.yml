@@ -30,6 +30,16 @@ jobs:
         run: npm run ci:${{ matrix.target }}
         shell: bash
 
+      # LICENSE is extensionless, so it slips past a `*.md` assets glob with no
+      # error — which is how six packages shipped unlicensed up to 8.4.0 (#986).
+      # Gate it here, where a broken `assets` edit fails on the PR that made it,
+      # rather than only in release.yml where the first symptom would be an
+      # already-published tarball.
+      - name: Verify LICENSE in every released package
+        if: ${{ matrix.target == 'build' }}
+        run: npm run verify:license
+        shell: bash
+
       - name: Publish any commit / build for testing
         if: ${{ matrix.target == 'build' && github.ref != 'refs/heads/master' }}
         run: npm run release:pkg-pr-new

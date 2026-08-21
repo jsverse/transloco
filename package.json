@@ -14,6 +14,7 @@
     "ci:test": "nx run-many --target=test --all",
     "ci:build": "nx run-many --target=build --all",
     "ci:lint": "nx run-many --target=lint --all",
+    "verify:license": "node tools/scripts/verify-dist-license.mts",
     "ci:e2e": "nx run transloco-playground-e2e:e2e:ci",
     "e2e": "nx run transloco-playground-e2e:e2e",
     "pre-commit": "node scripts/pre-commit.js && lint-staged --allow-empty",

@@ -213,6 +213,12 @@ jobs:
       - name: Build
         run: npm run ci:build
 
+      # Belt-and-braces re-check of the CI gate: npm publish is irreversible, so
+      # an unlicensed tarball cannot be taken back. Runs before any git push or
+      # publish so a failure here aborts the release with nothing released.
+      - name: Verify LICENSE in every released package
+        run: npm run verify:license
+
       # The releases/{version} tag must be on the remote BEFORE the changelog
       # step creates the GitHub release, otherwise the API invents the tag at
       # the old master HEAD.
