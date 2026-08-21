@@ -160,6 +160,51 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
+      # MUST run BEFORE Version, which creates the releases/{version} tag.
+      #
+      # `nx release changelog` is a separate process here, so it cannot know the
+      # range this run covers: with no --from it resolves the start ref from the
+      # newest tag matching releaseTag.pattern, and by then that is the tag this
+      # very run just created. The range collapses to empty and every release
+      # note reads "This was a version bump only, there were no code changes" —
+      # which is what happened to 9.0.0-alpha.0. (It never bit the single-command
+      # `nx release`, where the changelog is computed in-process before tagging.)
+      #
+      # Two outputs because the correct start ref depends on the version that
+      # Version resolves, which is not known yet:
+      #   prerelease -> previous tag of any kind (incremental notes per alpha)
+      #   stable     -> previous STABLE tag, so 9.0.0 carries the whole
+      #                 8.4.0 -> 9.0.0 story rather than only the post-beta tail
+      #
+      # The stable rule matches nx's strictPreid resolution; the prerelease rule
+      # deliberately does not. nx filters prerelease tags by preid, so the first
+      # 9.0.0-beta.0 would find no `-beta.` tag, fall back to the last stable and
+      # re-list everything the alphas already published. Keying off "previous
+      # release of any kind" keeps every prerelease entry incremental across a
+      # preid change; CHANGELOG.md accumulates the entries either way.
+      #
+      # versionsort.suffix=- makes git rank 9.0.0-alpha.1 below 9.0.0, matching
+      # semver; --sort=-v:refname matches how nx enumerates tags internally.
+      - name: Resolve previous release tags
+        id: prev-tags
+        run: |
+          # Read the tags with a loop rather than a `... | head -1` pipeline:
+          # head exits early and SIGPIPEs git, which the runner's default
+          # `-o pipefail` would turn into a spurious step failure.
+          ANY=""
+          STABLE=""
+          while IFS= read -r tag; do
+            if [[ -z "$ANY" ]]; then ANY="$tag"; fi
+            # The "releases/" prefix has no hyphen, so a hyphen anywhere in the
+            # tag is a semver prerelease identifier
+            if [[ -z "$STABLE" && "$tag" != *-* ]]; then STABLE="$tag"; fi
+          done < <(git -c versionsort.suffix=- tag --list 'releases/*' --sort=-v:refname)
+          echo "Previous release tags: any=${ANY:-<none>} stable=${STABLE:-<none>}"
+          {
+            echo "any=$ANY"
+            echo "stable=$STABLE"
+          } >> "$GITHUB_OUTPUT"
+
       # Always bump the manifests for real so the version is on disk for the
       # build + publish steps. On a dry run we pass --git-commit=false
       # --git-tag=false: the files are written (never pushed) so the publish
@@ -172,6 +217,9 @@ jobs:
           BUMP: ${{ inputs.bump }}
           PREID: ${{ inputs.preid }}
           DRY_RUN: ${{ inputs.dry-run }}
+          # Single source of truth for tag ordering — see "Resolve previous
+          # release tags" above
+          LATEST_RELEASE_TAG: ${{ steps.prev-tags.outputs.any }}
         run: |
           set -o pipefail
           GIT_FLAGS=()
@@ -196,7 +244,6 @@ jobs:
           # 9.0.0) and publish it to `latest`, skipping everything the alphas
           # already shipped. An explicit specifier is a deliberate choice
           # (`major` is how you graduate), so only `auto` is blocked here.
-          LATEST_RELEASE_TAG=$(git tag --list 'releases/*' --sort=-creatordate | head -1)
           if [[ "$BUMP" == "auto" && -z "$PREID" && "$LATEST_RELEASE_TAG" == *-* ]]; then
             echo "::error::A prerelease line is active ($LATEST_RELEASE_TAG). bump=auto without a preid resolves off the last stable tag and would cut a stable release. Pass preid to continue the prerelease line, or an explicit bump (major/minor/patch) to leave it deliberately."
             exit 1
@@ -232,11 +279,27 @@ jobs:
       # Use the app token (not the default GITHUB_TOKEN): nx release changelog
       # both creates the GitHub Release and may push the changelog commit, so it
       # needs the bypass-capable identity for the push to protected master.
+      #
+      # --from is mandatory here, not an optimisation: without it nx resolves
+      # the start ref to the tag the Version step just created and emits an
+      # empty changelog. See "Resolve previous release tags" above for why there
+      # are two candidates and how the choice between them is made.
+      # With no previous tag at all (first ever release) --from is omitted so
+      # nx.json's automaticFromRef falls back to the first commit.
       - name: Changelog and GitHub release
         if: ${{ !inputs.dry-run }}
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-        run: npx nx release changelog ${{ steps.version.outputs.value }} --verbose
+          VERSION: ${{ steps.version.outputs.value }}
+          PREV_ANY: ${{ steps.prev-tags.outputs.any }}
+          PREV_STABLE: ${{ steps.prev-tags.outputs.stable }}
+        run: |
+          PREV="$PREV_STABLE"
+          if [[ "$VERSION" == *-* ]]; then PREV="$PREV_ANY"; fi
+          FROM=()
+          if [[ -n "$PREV" ]]; then FROM=(--from "$PREV"); fi
+          echo "Generating changelog for $VERSION from ${PREV:-<first commit>}"
+          npx nx release changelog "$VERSION" "${FROM[@]}" --verbose
 
       # The changelog step commits CHANGELOG.md locally — push it too
       - name: Push changelog commit
