@@ -79,7 +79,12 @@ export function packageLabelsFor(
   for (const option of answer.split(',')) {
     const key = normalize(option);
     if (!key) continue;
-    if (PACKAGE_LABELS[key]) labels.push(PACKAGE_LABELS[key]);
+    // `Object.hasOwn` rather than a truthiness check: an object literal inherits
+    // `constructor` and friends, which would otherwise read as a matching label.
+    const label = Object.hasOwn(PACKAGE_LABELS, key)
+      ? PACKAGE_LABELS[key]
+      : undefined;
+    if (label) labels.push(label);
     else if (!NO_LABEL.has(key)) unknown.push(option.trim());
   }
   return { labels: [...new Set(labels)], answered: true, unknown };

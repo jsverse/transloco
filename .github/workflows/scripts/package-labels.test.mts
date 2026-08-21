@@ -118,6 +118,23 @@ describe('packageLabelsFor', () => {
       assert.deepStrictEqual(result.labels, ['transloco']);
       assert.deepStrictEqual(result.unknown, ['Some New Package']);
     });
+
+    it(`GIVEN an answer that names a property every object inherits
+        WHEN the labels are derived
+        THEN surfaces it as unknown instead of matching the inherited value`, () => {
+      // A bare `PACKAGE_LABELS[key]` lookup answers `constructor` and `__proto__` with
+      // truthy values off Object.prototype, which would be pushed as a label.
+      for (const inherited of ['constructor', '__proto__', 'toString']) {
+        const result = packageLabelsFor(bodyAnswering(inherited));
+
+        assert.deepStrictEqual(
+          result.labels,
+          [],
+          `${inherited} must not resolve to a label`,
+        );
+        assert.deepStrictEqual(result.unknown, [inherited]);
+      }
+    });
   });
 
   describe('bodies with no answer to read', () => {
