@@ -7,7 +7,7 @@
   "tags": [],
   "targets": {
     "build-package": {
-      "dependsOn": ["copy-readme"],
+      "dependsOn": ["copy-readme", "copy-license"],
       "executor": "@nx/angular:package",
       "outputs": ["{workspaceRoot}/dist/libs/transloco"],
       "options": {
@@ -67,6 +67,12 @@
       "command": "cp README.md {projectRoot}/README.md",
       "inputs": ["{workspaceRoot}/README.md"],
       "outputs": ["{projectRoot}/README.md"],
+      "cache": true
+    },
+    "copy-license": {
+      "command": "cp LICENSE {projectRoot}/LICENSE",
+      "inputs": ["{workspaceRoot}/LICENSE"],
+      "outputs": ["{projectRoot}/LICENSE"],
       "cache": true
     }
   }

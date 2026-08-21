@@ -17,7 +17,8 @@
             "glob": "**/*.json",
             "input": "libs/transloco-schematics/src",
             "output": "./src"
-          }
+          },
+          { "input": ".", "glob": "LICENSE", "output": "." }
         ]
       }
     },

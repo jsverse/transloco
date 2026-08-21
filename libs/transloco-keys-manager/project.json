@@ -12,7 +12,10 @@
         "outputPath": "dist/libs/transloco-keys-manager",
         "main": "libs/transloco-keys-manager/src/index.ts",
         "tsConfig": "libs/transloco-keys-manager/tsconfig.lib.json",
-        "assets": ["libs/transloco-keys-manager/*.md"]
+        "assets": [
+          "libs/transloco-keys-manager/*.md",
+          { "input": ".", "glob": "LICENSE", "output": "." }
+        ]
       }
     },
     "lint": {

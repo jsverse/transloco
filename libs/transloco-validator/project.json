@@ -12,7 +12,10 @@
         "outputPath": "dist/libs/transloco-validator",
         "main": "libs/transloco-validator/src/index.ts",
         "tsConfig": "libs/transloco-validator/tsconfig.lib.json",
-        "assets": ["libs/transloco-validator/*.md"]
+        "assets": [
+          "libs/transloco-validator/*.md",
+          { "input": ".", "glob": "LICENSE", "output": "." }
+        ]
       }
     },
     "lint": {

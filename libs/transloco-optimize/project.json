@@ -12,7 +12,10 @@
         "outputPath": "dist/libs/transloco-optimize",
         "main": "libs/transloco-optimize/src/index.ts",
         "tsConfig": "libs/transloco-optimize/tsconfig.lib.json",
-        "assets": ["libs/transloco-optimize/*.md"]
+        "assets": [
+          "libs/transloco-optimize/*.md",
+          { "input": ".", "glob": "LICENSE", "output": "." }
+        ]
       }
     },
     "lint": {
