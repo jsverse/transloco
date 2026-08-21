@@ -5,8 +5,8 @@
  * matching how `tools/scripts/*.mts` are invoked — Node strips the types, so there is
  * nothing to install and no loader to configure.
  *
- * Only ever ADDS labels, and on an `edited` event only the packages that edit newly
- * selected, so a label removed during triage stays removed.
+ * Only ever ADDS labels, and on an `edited` event only the packages newly selected by
+ * that edit, so a label removed during triage stays removed.
  */
 import { readFile } from 'node:fs/promises';
 import { labelsAddedByEdit, packageLabelsFor } from './package-labels.mts';
@@ -94,15 +94,17 @@ async function main(): Promise<void> {
     return;
   }
 
-  // An edit re-runs this workflow over the whole body, so applying the full answer again
-  // would resurrect labels a maintainer removed. Only the packages the edit itself
-  // introduced are new signal.
+  // Only `opened` sees a body for the first time. Every other action re-runs this over a
+  // body already triaged, where applying the full answer again would resurrect labels a
+  // maintainer removed — so those add only what the edit itself introduced. Keyed this way
+  // round, an action added to `types:` later carries no `changes` and adds nothing, rather
+  // than silently re-applying everything.
   const selected =
-    event.action === 'edited'
-      ? labelsAddedByEdit(event.changes, issue.body)
-      : labels;
+    event.action === 'opened'
+      ? labels
+      : labelsAddedByEdit(event.changes, issue.body);
   if (!selected.length) {
-    console.log('The edit selected no new package; nothing to add.');
+    console.log('No newly selected package on this event; nothing to add.');
     return;
   }
 
