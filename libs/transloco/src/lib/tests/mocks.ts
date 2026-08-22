@@ -114,4 +114,9 @@ export const transpilerFunctions = {
   testParams: { transpile: (v: string) => `Hello {{person}} ${v}` },
   testKeyReference: { transpile: () => `{{fromList}}` },
   returnSecondParam: { transpile: (_: any, v: string) => v },
+  throwing: {
+    transpile: () => {
+      throw new Error('boom');
+    },
+  },
 };

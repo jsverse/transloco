@@ -44,7 +44,17 @@
     <b>Regular: </b><span transloco="mf.home"></span>
   </li>
   <li class="list-group-item" data-cy="d-with-params">
-    <b class="pointer" (click)="changeParam()">(click) </b> <b>With params: </b>
+    <b
+      class="pointer"
+      role="button"
+      tabindex="0"
+      (click)="changeParam()"
+      (keydown.enter)="changeParam()"
+      (keydown.space)="$event.preventDefault()"
+      (keyup.space)="changeParam()"
+      >(click)
+    </b>
+    <b>With params: </b>
     <span transloco="mf.params" [translocoParams]="{ value: dynamic }"></span>
   </li>
   <li class="list-group-item" data-cy="d-with-translation-reuse">
