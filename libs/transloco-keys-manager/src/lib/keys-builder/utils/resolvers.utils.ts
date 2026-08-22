@@ -35,14 +35,17 @@ export function resolveAliasAndKey(
  *
  *  scopePath: 'some/nested' => someNested
  *  scopePath: 'some/nested/en' => someNested
+ *  scopePath: 'some/nested/unknown' => undefined
  *
  */
 export function resolveScopeAlias({
   scopePath,
   scopes,
+  langs,
 }: {
   scopePath: string;
   scopes: Scopes;
+  langs: string[];
 }) {
   const scopeAlias = scopes.scopeToAlias[scopePath];
   if (scopeAlias) {
@@ -51,10 +54,18 @@ export function resolveScopeAlias({
 
   // Otherwise we're probably have a language in the scope: some/nested/en
   const splitted = scopePath.split('/');
+  const maybeLang = splitted.at(-1) ?? '';
 
-  // Remove the lang
+  // Only a configured language may be stripped, otherwise we'd resolve an
+  // unrelated path such as 'some/nested/deep' to the 'some/nested' scope.
+  if (!langs.includes(maybeLang)) {
+    return undefined;
+  }
+
   splitted.pop();
 
   const scopePathWithoutLang = splitted.join('/');
-  return scopePathWithoutLang && scopes.scopeToAlias[scopePathWithoutLang];
+  return scopePathWithoutLang
+    ? scopes.scopeToAlias[scopePathWithoutLang]
+    : undefined;
 }
