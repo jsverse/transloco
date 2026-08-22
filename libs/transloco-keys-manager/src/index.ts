@@ -34,12 +34,19 @@ const resolvedConfig = {
   ...(config.input ? { input: config.input.split(',') } : {}),
 } as Config;
 
-if (resolvedConfig.command === 'extract') {
-  warnUnsupportedOptions('extract', config);
-  buildTranslationFiles(resolvedConfig);
-} else if (resolvedConfig.command === 'find') {
-  warnUnsupportedOptions('find', config);
-  findMissingKeys(resolvedConfig);
-} else {
-  console.log(`Please provide an action...`);
+async function run() {
+  if (resolvedConfig.command === 'extract') {
+    warnUnsupportedOptions('extract', config);
+    await buildTranslationFiles(resolvedConfig);
+  } else if (resolvedConfig.command === 'find') {
+    warnUnsupportedOptions('find', config);
+    findMissingKeys(resolvedConfig);
+  } else {
+    console.log(`Please provide an action...`);
+  }
 }
+
+run().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
