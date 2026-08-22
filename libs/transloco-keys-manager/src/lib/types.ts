@@ -35,6 +35,7 @@ export type ExtractionResult = {
 export type ExtractorConfig = {
   file: string;
   scopes: Scopes;
+  langs: string[];
   defaultValue?: string;
   scopeToKeys: ScopeMap;
 };

@@ -27,7 +27,7 @@ export function extractTSKeys(config: Config): ExtractionResult {
 const translocoImport = /@(jsverse|ngneat)\/transloco/;
 const translocoKeysManagerImport = /@(jsverse|ngneat)\/transloco-keys-manager/;
 function TSExtractor(config: ExtractorConfig): ScopeMap {
-  const { file, scopes, defaultValue, scopeToKeys } = config;
+  const { file, scopes, defaultValue, scopeToKeys, langs } = config;
   const content = readFile(file);
   const extractors = [];
 
@@ -72,6 +72,7 @@ function TSExtractor(config: ExtractorConfig): ScopeMap {
         key,
         lang,
         scopes,
+        langs,
       );
       addKey({
         scopeAlias,
@@ -106,13 +107,14 @@ function resolveAliasAndKeyFromService(
   key: string,
   scopePath: string,
   scopes: Scopes,
+  langs: string[],
 ): [string, string | null] {
   // It means that it's the global
   if (!scopePath) {
     return [key, null];
   }
 
-  const scopeAlias = resolveScopeAlias({ scopePath, scopes });
+  const scopeAlias = resolveScopeAlias({ scopePath, scopes, langs });
 
-  return [key, scopeAlias];
+  return [key, scopeAlias ?? null];
 }
