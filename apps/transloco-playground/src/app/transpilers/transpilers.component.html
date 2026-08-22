@@ -50,7 +50,8 @@
       tabindex="0"
       (click)="changeParam()"
       (keydown.enter)="changeParam()"
-      (keydown.space)="$event.preventDefault(); changeParam()"
+      (keydown.space)="$event.preventDefault()"
+      (keyup.space)="changeParam()"
       >(click)
     </b>
     <b>With params: </b>
