@@ -17,37 +17,39 @@ const scopes: Scopes = {
 const langs = ['en', 'es'];
 
 describe('resolveScopeAlias', () => {
-  describe('when the scope path is registered', () => {
-    it('should return its alias', () => {
-      expect(
-        resolveScopeAlias({ scopePath: 'some/nested', scopes, langs }),
-      ).toBe('someNested');
-    });
+  it('given a registered scope path, when resolved, then it should return its alias', () => {
+    const scopePath = 'some/nested';
+
+    const result = resolveScopeAlias({ scopePath, scopes, langs });
+
+    expect(result).toBe('someNested');
   });
 
-  describe('when the scope path ends with a configured language', () => {
-    it('should strip the language and return the alias', () => {
-      expect(
-        resolveScopeAlias({ scopePath: 'some/nested/en', scopes, langs }),
-      ).toBe('someNested');
-    });
+  it('given a scope path ending with a configured language, when resolved, then the language should be stripped', () => {
+    const scopePath = 'some/nested/en';
+
+    const result = resolveScopeAlias({ scopePath, scopes, langs });
+
+    expect(result).toBe('someNested');
   });
 
   /**
    * Popping the last segment unconditionally used to resolve an unrelated
    * path to its parent scope, attributing the keys to the wrong scope.
    */
-  describe('when the last segment is not a configured language', () => {
-    it('should not strip it and should return no alias', () => {
-      expect(
-        resolveScopeAlias({ scopePath: 'some/nested/deep', scopes, langs }),
-      ).toBeUndefined();
-    });
+  it('given a trailing segment that is not a configured language, when resolved, then it should return no alias', () => {
+    const scopePath = 'some/nested/deep';
 
-    it('should not fall back to a parent scope', () => {
-      expect(
-        resolveScopeAlias({ scopePath: 'some/unregistered', scopes, langs }),
-      ).toBeUndefined();
-    });
+    const result = resolveScopeAlias({ scopePath, scopes, langs });
+
+    expect(result).toBeUndefined();
+  });
+
+  it('given an unregistered scope path, when resolved, then it should not fall back to a parent scope', () => {
+    const scopePath = 'some/unregistered';
+
+    const result = resolveScopeAlias({ scopePath, scopes, langs });
+
+    expect(result).toBeUndefined();
   });
 });
