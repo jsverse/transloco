@@ -29,10 +29,20 @@ if (help) {
   process.exit();
 }
 
+const inputPaths = config.input
+  ?.split(',')
+  .map((path: string) => path.trim())
+  .filter(Boolean);
+
+if (config.input && !inputPaths.length) {
+  console.error('The "input" option must contain at least one valid path.');
+  process.exit(1);
+}
+
 const resolvedConfig = {
   ...config,
   command: mainOptions.command,
-  ...(config.input ? { input: config.input.split(',') } : {}),
+  ...(inputPaths?.length ? { input: inputPaths } : {}),
 } as Config;
 
 async function run() {
@@ -52,6 +62,7 @@ async function run() {
     }
   } else {
     console.log(`Please provide an action...`);
+    process.exitCode = 1;
   }
 }
 

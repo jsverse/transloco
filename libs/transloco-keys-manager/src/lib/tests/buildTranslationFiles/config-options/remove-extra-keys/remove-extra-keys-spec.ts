@@ -182,5 +182,61 @@ export function testRemoveExtraKeysConfig(fileFormat: Config['fileFormat']) {
         });
       },
     );
+
+    /**
+     * The POT counterpart of the nested-translation guard above. A POT file is
+     * always flat, so the dotted msgids are what a nested JSON file would have
+     * been. The extra keys cleanup must still match them against the flat
+     * extracted keys instead of wiping the file.
+     */
+    describe.runIf(fileFormat === 'pot')(
+      'with dotted msgids and unflat = false',
+      () => {
+        const enPath = nodePath.join(
+          sourceRoot,
+          type,
+          'i18n',
+          `en.${fileFormat}`,
+        );
+
+        it('should drop only the extra keys and keep the existing translations', () => {
+          fs.copyFileSync(missingKeyTpl, testHtmlFile);
+          const entries: Record<string, string> = {
+            '1': 'translated 1',
+            '2': 'translated 2',
+            'group1.2': 'translated group1.2',
+            'group2.1': 'translated group2.1',
+            'group3.2': 'translated group3.2',
+          };
+          fs.outputFileSync(
+            enPath,
+            `msgid ""\nmsgstr ""\n\n${Object.entries(entries)
+              .map(
+                ([msgid, msgstr]) => `msgid "${msgid}"\nmsgstr "${msgstr}"\n`,
+              )
+              .join('\n')}`,
+          );
+
+          buildTranslationFiles({
+            ...buildConfig({ type, config: { unflat: false, fileFormat } }),
+            removeExtraKeys: true,
+          });
+
+          const translation = getCurrentTranslation({
+            path: enPath,
+            fileFormat,
+          });
+
+          expect(translation).toMatchObject({
+            '2': 'translated 2',
+            'group1.2': 'translated group1.2',
+            'group3.2': 'translated group3.2',
+          });
+          // `1` and `group2.1` are no longer used
+          expect(translation).not.toHaveProperty('1');
+          expect(translation).not.toHaveProperty(['group2.1']);
+        });
+      },
+    );
   });
 }
