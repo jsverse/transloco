@@ -4,7 +4,7 @@ import df from 'deep-diff';
 import { flatten, unflatten } from 'flat';
 
 import { messages } from '../messages';
-import { Config, ScopeMap } from '../types';
+import { Config, KeysDetectiveResult, ScopeMap } from '../types';
 import { readFile, writeFile } from '../utils/file.utils';
 import { getLogger } from '../utils/logger';
 import { getScopeAndLangFromPath } from '../utils/path.utils';
@@ -22,11 +22,7 @@ interface Result {
 
 interface CompareKeysOptions extends Pick<
   Config,
-  | 'unflat'
-  | 'fileFormat'
-  | 'addMissingKeys'
-  | 'emitErrorOnExtraKeys'
-  | 'translationsPath'
+  'unflat' | 'fileFormat' | 'addMissingKeys' | 'translationsPath'
 > {
   scopeToKeys: ScopeMap;
 }
@@ -35,10 +31,9 @@ export function compareKeysToFiles({
   scopeToKeys,
   translationsPath,
   addMissingKeys,
-  emitErrorOnExtraKeys,
   fileFormat,
   unflat,
-}: CompareKeysOptions) {
+}: CompareKeysOptions): KeysDetectiveResult {
   const logger = getLogger();
   logger.startSpinner(`${messages.checkMissing} ✨`);
 
@@ -156,10 +151,9 @@ export function compareKeysToFiles({
     return missing.length || extra.length;
   });
 
-  buildTable({
+  return buildTable({
     langs,
     diffsPerLang,
     addMissingKeys,
-    emitErrorOnExtraKeys,
   });
 }

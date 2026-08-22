@@ -57,7 +57,6 @@ describe('compareKeysToFiles', () => {
       scopeToKeys: { __global: { key: 'value' } },
       translationsPath: '/tmp/i18n',
       addMissingKeys: false,
-      emitErrorOnExtraKeys: false,
       fileFormat: 'json',
       unflat: false,
     });
@@ -82,7 +81,6 @@ describe('compareKeysToFiles', () => {
       scopeToKeys: { __global: { key: 'value' } },
       translationsPath: '/tmp/i18n',
       addMissingKeys: false,
-      emitErrorOnExtraKeys: false,
       fileFormat: 'json',
       unflat: false,
     });
@@ -103,7 +101,6 @@ describe('compareKeysToFiles', () => {
       scopeToKeys: { __global: { existing: 'val', newKey: 'new' } },
       translationsPath: '/tmp/i18n',
       addMissingKeys: true,
-      emitErrorOnExtraKeys: false,
       fileFormat: 'json',
       unflat: false,
     });
@@ -128,7 +125,6 @@ describe('compareKeysToFiles', () => {
       scopeToKeys: { __global: { key: 'value' } },
       translationsPath: '/tmp/i18n',
       addMissingKeys: false,
-      emitErrorOnExtraKeys: false,
       fileFormat: 'json',
       unflat: false,
     });
@@ -159,7 +155,6 @@ describe('compareKeysToFiles', () => {
       },
       translationsPath: '/tmp/i18n',
       addMissingKeys: false,
-      emitErrorOnExtraKeys: false,
       fileFormat: 'json',
       unflat: false,
     });
@@ -191,7 +186,6 @@ describe('compareKeysToFiles', () => {
       scopeToKeys: { __global: { 'a.b': 'value' } },
       translationsPath: '/tmp/i18n',
       addMissingKeys: true,
-      emitErrorOnExtraKeys: false,
       fileFormat: 'json',
       unflat: true,
     });
