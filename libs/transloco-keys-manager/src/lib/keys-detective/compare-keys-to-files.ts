@@ -1,11 +1,13 @@
 import { getGlobalConfig } from '@jsverse/transloco-utils';
 import type { DiffDeleted, DiffNew } from 'deep-diff';
 import df from 'deep-diff';
-import { flatten, unflatten } from 'flat';
+import { flatten } from 'flat';
 
+import { createTranslation } from '../keys-builder/utils/create-translation';
+import { getCurrentTranslation } from '../keys-builder/utils/get-current-translation';
 import { messages } from '../messages';
 import { Config, KeysDetectiveResult, ScopeMap } from '../types';
-import { readFile, writeFile } from '../utils/file.utils';
+import { writeFile } from '../utils/file.utils';
 import { getLogger } from '../utils/logger';
 import { getScopeAndLangFromPath } from '../utils/path.utils';
 import { normalizedGlob } from '../utils/normalize-glob-path';
@@ -22,7 +24,7 @@ interface Result {
 
 interface CompareKeysOptions extends Pick<
   Config,
-  'unflat' | 'fileFormat' | 'addMissingKeys' | 'translationsPath'
+  'fileFormat' | 'addMissingKeys' | 'translationsPath'
 > {
   scopeToKeys: ScopeMap;
 }
@@ -32,7 +34,6 @@ export function compareKeysToFiles({
   translationsPath,
   addMissingKeys,
   fileFormat,
-  unflat,
 }: CompareKeysOptions): KeysDetectiveResult {
   const logger = getLogger();
   logger.startSpinner(`${messages.checkMissing} ✨`);
@@ -104,7 +105,7 @@ export function compareKeysToFiles({
         translationsPath: baseFilesPath,
         fileFormat,
       });
-      const translation = readFile(filePath, { parse: true });
+      const translation = getCurrentTranslation({ path: filePath, fileFormat });
       // We always build the keys flatten, so we need to make sure we compare to a flat file
       const flat = flatten<Record<string, any>, Record<string, string>>(
         translation,
@@ -138,7 +139,16 @@ export function compareKeysToFiles({
         }
 
         if (addMissingKeys) {
-          writeFile(filePath, unflat ? unflatten(translation) : translation);
+          writeFile(
+            filePath,
+            createTranslation({
+              currentTranslation: {},
+              translation,
+              replace: true,
+              removeExtraKeys: false,
+              fileFormat,
+            }),
+          );
         }
       }
     }

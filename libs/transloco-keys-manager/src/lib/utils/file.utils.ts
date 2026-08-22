@@ -1,6 +1,7 @@
 import { readFileSync, writeFileSync } from 'fs';
 
 import { stringify } from './object.utils';
+import { isString } from './validators.utils';
 
 export function readFile(file: string): string;
 export function readFile(file: string, config: { parse: false }): string;
@@ -21,6 +22,8 @@ export function readFile(
   return content;
 }
 
-export function writeFile(fileName: string, content: object) {
-  writeFileSync(fileName, stringify(content), { encoding: 'utf-8' });
+export function writeFile(fileName: string, content: object | string) {
+  const output = isString(content) ? content : stringify(content);
+
+  writeFileSync(fileName, output, { encoding: 'utf-8' });
 }
