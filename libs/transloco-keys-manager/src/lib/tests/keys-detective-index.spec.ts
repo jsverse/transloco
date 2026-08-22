@@ -75,7 +75,6 @@ describe('findMissingKeys', () => {
       translationsPath: '/tmp/i18n',
       addMissingKeys: false,
       fileFormat: 'json',
-      unflat: false,
     });
   });
 });
