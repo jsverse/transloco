@@ -23,9 +23,7 @@ export type TranslocoEvents = LoadedEvent | FailedEvent | LangChangedEvent;
 export type Translation = HashMap;
 export type TranslateParams = string | string[];
 export type TranslateObjectParams =
-  | TranslateParams
-  | HashMap
-  | Map<string, HashMap>;
+  TranslateParams | HashMap | Map<string, HashMap>;
 export interface LangDefinition {
   id: string;
   label: string;

@@ -11,7 +11,8 @@ export interface FileAction {
 }
 
 interface BuildTranslationOptions
-  extends Required<Pick<Config, 'fileFormat'>>,
+  extends
+    Required<Pick<Config, 'fileFormat'>>,
     Partial<Pick<Config, 'replace' | 'removeExtraKeys'>> {
   path: string;
   translation?: Translation;

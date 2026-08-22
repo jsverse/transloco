@@ -61,9 +61,8 @@ describe('keys.utils', () => {
   describe('checkForProblematicUnflatKeys', () => {
     it('should log a warning when problematic keys are found', async () => {
       mockLog.mockClear();
-      const { checkForProblematicUnflatKeys } = await import(
-        '../utils/keys.utils'
-      );
+      const { checkForProblematicUnflatKeys } =
+        await import('../utils/keys.utils');
 
       checkForProblematicUnflatKeys({
         'a.b': 'value1',
@@ -75,9 +74,8 @@ describe('keys.utils', () => {
 
     it('should not log when no problematic keys exist', async () => {
       mockLog.mockClear();
-      const { checkForProblematicUnflatKeys } = await import(
-        '../utils/keys.utils'
-      );
+      const { checkForProblematicUnflatKeys } =
+        await import('../utils/keys.utils');
 
       checkForProblematicUnflatKeys({
         'a.b': 'value1',

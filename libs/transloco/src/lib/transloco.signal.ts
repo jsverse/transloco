@@ -19,9 +19,7 @@ type ScopeType = string | TranslocoScope | TranslocoScope[];
 type SignalKey = Signal<string> | Signal<string[]> | Signal<string>[];
 type TranslateSignalKey = string | string[] | SignalKey;
 type TranslateSignalParams =
-  | HashMap
-  | HashMap<Signal<string>>
-  | Signal<HashMap>;
+  HashMap | HashMap<Signal<string>> | Signal<HashMap>;
 type TranslateSignalRef<T> = T extends unknown[] | Signal<string[]>
   ? Signal<string[]>
   : Signal<string>;

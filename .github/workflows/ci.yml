@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: ['build', 'test', 'lint']
+        target: ['build', 'test', 'lint', 'format']
     runs-on: ubuntu-latest
     name: ${{ matrix.target }}
     steps:
