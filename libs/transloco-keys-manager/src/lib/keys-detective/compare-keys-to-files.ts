@@ -1,11 +1,13 @@
 import { getGlobalConfig } from '@jsverse/transloco-utils';
 import type { DiffDeleted, DiffNew } from 'deep-diff';
 import df from 'deep-diff';
-import { flatten, unflatten } from 'flat';
+import { flatten } from 'flat';
 
+import { createTranslation } from '../keys-builder/utils/create-translation';
+import { getCurrentTranslation } from '../keys-builder/utils/get-current-translation';
 import { messages } from '../messages';
-import { Config, ScopeMap } from '../types';
-import { readFile, writeFile } from '../utils/file.utils';
+import { Config, KeysDetectiveResult, ScopeMap } from '../types';
+import { writeFile } from '../utils/file.utils';
 import { getLogger } from '../utils/logger';
 import { getScopeAndLangFromPath } from '../utils/path.utils';
 import { normalizedGlob } from '../utils/normalize-glob-path';
@@ -20,15 +22,10 @@ interface Result {
   baseFilesPath: string;
 }
 
-interface CompareKeysOptions
-  extends Pick<
-    Config,
-    | 'unflat'
-    | 'fileFormat'
-    | 'addMissingKeys'
-    | 'emitErrorOnExtraKeys'
-    | 'translationsPath'
-  > {
+interface CompareKeysOptions extends Pick<
+  Config,
+  'fileFormat' | 'addMissingKeys' | 'translationsPath'
+> {
   scopeToKeys: ScopeMap;
 }
 
@@ -36,10 +33,8 @@ export function compareKeysToFiles({
   scopeToKeys,
   translationsPath,
   addMissingKeys,
-  emitErrorOnExtraKeys,
   fileFormat,
-  unflat,
-}: CompareKeysOptions) {
+}: CompareKeysOptions): KeysDetectiveResult {
   const logger = getLogger();
   logger.startSpinner(`${messages.checkMissing} ✨`);
 
@@ -59,9 +54,14 @@ export function compareKeysToFiles({
 
   const result: Result[] = [];
   const scopePaths = getGlobalConfig().scopePathMap || {};
+  const cache: Record<string, boolean> = {};
+
   for (const [scope, path] of Object.entries(scopePaths)) {
     const keys = scopeToKeys[scope];
     if (keys) {
+      // Scopes with an explicit path must not be picked up again from the
+      // default translations folder.
+      cache[scope] = true;
       const res: Omit<Result, 'files'> = {
         keys,
         scope,
@@ -73,7 +73,6 @@ export function compareKeysToFiles({
       });
     }
   }
-  const cache: Record<string, boolean> = {};
 
   for (const filePath of translationFiles) {
     const { scope = '__global' } = getScopeAndLangFromPath({
@@ -110,7 +109,7 @@ export function compareKeysToFiles({
         translationsPath: baseFilesPath,
         fileFormat,
       });
-      const translation = readFile(filePath, { parse: true });
+      const translation = getCurrentTranslation({ path: filePath, fileFormat });
       // We always build the keys flatten, so we need to make sure we compare to a flat file
       const flat = flatten<Record<string, any>, Record<string, string>>(
         translation,
@@ -144,7 +143,16 @@ export function compareKeysToFiles({
         }
 
         if (addMissingKeys) {
-          writeFile(filePath, unflat ? unflatten(translation) : translation);
+          writeFile(
+            filePath,
+            createTranslation({
+              currentTranslation: {},
+              translation,
+              replace: true,
+              removeExtraKeys: false,
+              fileFormat,
+            }),
+          );
         }
       }
     }
@@ -157,10 +165,9 @@ export function compareKeysToFiles({
     return missing.length || extra.length;
   });
 
-  buildTable({
+  return buildTable({
     langs,
     diffsPerLang,
     addMissingKeys,
-    emitErrorOnExtraKeys,
   });
 }

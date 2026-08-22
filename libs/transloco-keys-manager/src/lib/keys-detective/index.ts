@@ -1,14 +1,14 @@
 import { setConfig } from '../config';
 import { buildKeys } from '../keys-builder/build-keys';
 import { messages } from '../messages';
-import { Config } from '../types';
+import { Config, KeysDetectiveResult } from '../types';
 import { getLogger } from '../utils/logger';
 import { resolveConfig } from '../utils/resolve-config';
 
 import { compareKeysToFiles } from './compare-keys-to-files';
 import { getTranslationFilesPath } from './get-translation-files-path';
 
-export function findMissingKeys(inlineConfig: Config) {
+export function findMissingKeys(inlineConfig: Config): KeysDetectiveResult {
   const logger = getLogger();
   const config = resolveConfig(inlineConfig);
   setConfig(config);
@@ -21,7 +21,7 @@ export function findMissingKeys(inlineConfig: Config) {
 
   if (translationFiles.length === 0) {
     console.log('No translation files found.');
-    return;
+    return { hasMissingKeys: false, hasExtraKeys: false };
   }
 
   logger.log('\n 🕵 🔎', `\x1b[4m${messages.startSearch}\x1b[0m`, '🔍 🕵\n');
@@ -30,13 +30,12 @@ export function findMissingKeys(inlineConfig: Config) {
   const result = buildKeys(config);
   logger.success(`${messages.extract} 🗝`);
 
-  const { addMissingKeys, emitErrorOnExtraKeys, unflat } = config;
-  compareKeysToFiles({
+  const { addMissingKeys } = config;
+
+  return compareKeysToFiles({
     scopeToKeys: result.scopeToKeys,
     translationsPath,
     addMissingKeys,
-    emitErrorOnExtraKeys,
     fileFormat,
-    unflat,
   });
 }

@@ -18,148 +18,129 @@ vi.mock('../keys-detective/map-diff-to-keys', () => ({
   ),
 }));
 
+const missingKey = { kind: 'N', path: ['key'], rhs: 'val' } as any;
+const extraKey = { kind: 'D', path: ['old.key'], lhs: 'val' } as any;
+
 describe('buildTable', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
-    vi.spyOn(process, 'exit').mockImplementation((() => {}) as any);
     vi.mocked(getLogger().log).mockClear();
     vi.mocked(getLogger().success).mockClear();
   });
 
-  it('should log no missing keys when langs is empty', () => {
+  it('given no langs, when the table is built, then it should log that no keys are missing', () => {
     const logger = getLogger();
 
-    buildTable({
+    const result = buildTable({
       langs: [],
       diffsPerLang: {},
       addMissingKeys: false,
-      emitErrorOnExtraKeys: false,
     });
 
     expect(logger.log).toHaveBeenCalledWith(
       expect.stringContaining('No missing keys were found'),
     );
+    expect(result).toEqual({ hasMissingKeys: false, hasExtraKeys: false });
   });
 
-  it('should display "--" for missing column when no missing keys', () => {
+  it('given only extra keys, when the table is built, then the missing column should show "--"', () => {
     const logger = getLogger();
+    const diffsPerLang = { en: { missing: [], extra: [extraKey] } };
 
-    buildTable({
+    const result = buildTable({
       langs: ['en'],
-      diffsPerLang: {
-        en: {
-          missing: [],
-          extra: [{ kind: 'D', path: ['unused.key'], lhs: 'val' }],
-        },
-      },
+      diffsPerLang,
       addMissingKeys: false,
-      emitErrorOnExtraKeys: false,
     });
 
-    expect(process.exit).not.toHaveBeenCalled();
+    expect(result).toEqual({ hasMissingKeys: false, hasExtraKeys: true });
     expect(logger.log).toHaveBeenCalledWith(expect.stringContaining('--'));
   });
 
-  it('should display "--" for extra column when no extra keys', () => {
+  it('given only missing keys, when the table is built, then the extra column should show "--"', () => {
     const logger = getLogger();
+    const diffsPerLang = { en: { missing: [missingKey], extra: [] } };
 
-    buildTable({
+    const result = buildTable({
       langs: ['en'],
-      diffsPerLang: {
-        en: {
-          missing: [{ kind: 'N', path: ['new.key'], rhs: 'val' }],
-          extra: [],
-        },
-      },
+      diffsPerLang,
       addMissingKeys: true,
-      emitErrorOnExtraKeys: false,
     });
 
-    expect(process.exit).not.toHaveBeenCalled();
+    expect(result).toEqual({ hasMissingKeys: true, hasExtraKeys: false });
     expect(logger.log).toHaveBeenCalledWith(expect.stringContaining('--'));
   });
 
-  it('should call process.exit(1) when missing keys exist and addMissingKeys is false', () => {
-    buildTable({
+  it('given missing keys and addMissingKeys is false, when the table is built, then it should still report them', () => {
+    const diffsPerLang = { en: { missing: [missingKey], extra: [] } };
+
+    const result = buildTable({
       langs: ['en'],
-      diffsPerLang: {
-        en: {
-          missing: [{ kind: 'N', path: ['key'], rhs: 'val' }],
-          extra: [],
-        },
-      },
+      diffsPerLang,
       addMissingKeys: false,
-      emitErrorOnExtraKeys: false,
     });
 
-    expect(process.exit).toHaveBeenCalledWith(1);
+    expect(result).toEqual({ hasMissingKeys: true, hasExtraKeys: false });
   });
 
-  it('should log success when missing keys exist and addMissingKeys is true', () => {
-    const logger = getLogger();
-    const exitSpy = vi
-      .spyOn(process, 'exit')
-      .mockImplementation((() => {}) as any);
+  /**
+   * The reporting used to `process.exit(1)` before the extra keys were
+   * evaluated, so both statuses must now be reported to the caller, which
+   * decides on the exit code.
+   */
+  it('given both missing and extra keys, when the table is built, then both statuses should be reported', () => {
+    const diffsPerLang = { en: { missing: [missingKey], extra: [extraKey] } };
 
-    buildTable({
+    const result = buildTable({
       langs: ['en'],
-      diffsPerLang: {
-        en: {
-          missing: [{ kind: 'N', path: ['key'], rhs: 'val' }],
-          extra: [],
-        },
-      },
+      diffsPerLang,
+      addMissingKeys: false,
+    });
+
+    expect(result).toEqual({ hasMissingKeys: true, hasExtraKeys: true });
+  });
+
+  it('given missing keys and addMissingKeys is true, when the table is built, then it should log success', () => {
+    const logger = getLogger();
+    const diffsPerLang = { en: { missing: [missingKey], extra: [] } };
+
+    const result = buildTable({
+      langs: ['en'],
+      diffsPerLang,
       addMissingKeys: true,
-      emitErrorOnExtraKeys: false,
     });
 
     expect(logger.success).toHaveBeenCalledWith(
       expect.stringContaining('Added all missing keys'),
     );
-    expect(exitSpy).not.toHaveBeenCalled();
-    exitSpy.mockRestore();
+    // The status describes the diff, whether it is an error is up to the caller.
+    expect(result).toEqual({ hasMissingKeys: true, hasExtraKeys: false });
   });
 
-  it('should call process.exit(2) when extra keys exist and emitErrorOnExtraKeys is true', () => {
-    const exitSpy = vi
-      .spyOn(process, 'exit')
-      .mockImplementation((() => {}) as any);
+  it('given extra keys, when the table is built, then it should report them without any error policy', () => {
+    const diffsPerLang = { en: { missing: [], extra: [extraKey] } };
 
-    buildTable({
+    const result = buildTable({
       langs: ['en'],
-      diffsPerLang: {
-        en: {
-          missing: [],
-          extra: [{ kind: 'D', path: ['old.key'], lhs: 'val' }],
-        },
-      },
+      diffsPerLang,
       addMissingKeys: false,
-      emitErrorOnExtraKeys: true,
     });
 
-    expect(exitSpy).toHaveBeenCalledWith(2);
-    exitSpy.mockRestore();
+    expect(result).toEqual({ hasMissingKeys: false, hasExtraKeys: true });
   });
 
-  it('should skip langs with no missing and no extra keys', () => {
-    const exitSpy = vi
-      .spyOn(process, 'exit')
-      .mockImplementation((() => {}) as any);
+  it('given a lang with no differences, when the table is built, then it should be skipped', () => {
+    const diffsPerLang = {
+      en: { missing: [], extra: [] },
+      fr: { missing: [missingKey], extra: [] },
+    };
 
-    buildTable({
+    const result = buildTable({
       langs: ['en', 'fr'],
-      diffsPerLang: {
-        en: { missing: [], extra: [] },
-        fr: {
-          missing: [{ kind: 'N', path: ['key'], rhs: 'val' }],
-          extra: [],
-        },
-      },
+      diffsPerLang,
       addMissingKeys: true,
-      emitErrorOnExtraKeys: false,
     });
 
-    expect(exitSpy).not.toHaveBeenCalled();
-    exitSpy.mockRestore();
+    expect(result).toEqual({ hasMissingKeys: true, hasExtraKeys: false });
   });
 });
