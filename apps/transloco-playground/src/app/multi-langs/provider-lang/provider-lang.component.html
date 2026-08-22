@@ -2,7 +2,9 @@
 <ng-container *transloco="let t">
   <p data-cy="in-provider">{{ t('home') }}</p>
 </ng-container>
+<p data-cy="s-in-provider">{{ inProvider() }}</p>
 
 <ng-container *transloco="let t; lang: 'en'">
   <p data-cy="inline">Inline (en) wins: {{ t('home') }}</p>
 </ng-container>
+<p data-cy="s-inline">Inline (en) wins: {{ inline() }}</p>

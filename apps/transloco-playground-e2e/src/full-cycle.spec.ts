@@ -2,8 +2,10 @@ import { Page, test } from '@playwright/test';
 
 import { testDynamicContent } from './dynamic-translation';
 import { testHomeContent } from './home';
+import { testInlineLoadersContent } from './inline-loaders';
 import {
   generateLazyContent,
+  generateLazySignalContent,
   generateContentWithoutLoader,
   generateContentLoader,
 } from './lazy';
@@ -31,8 +33,10 @@ test.describe('Transloco Full Cycle', () => {
     /* it should display lazy translation */
     await changeLang(page, 'es');
     await generateLazyContent(page, 'spanish');
+    await generateLazySignalContent(page, 'spanish');
     await changeLang(page, 'en');
     await generateLazyContent(page);
+    await generateLazySignalContent(page);
     /* should not display loader template after loaded once */
     await changeLang(page, 'es');
     await changeLang(page, 'en');
@@ -63,6 +67,7 @@ test.describe('Transloco Full Cycle', () => {
   test('Multi langs page', async ({ page }) => {
     await page.goto('/multi-langs');
     await expectContains(page, `[data-cy=in-provider]`, 'home spanish');
+    await expectContains(page, `[data-cy=s-in-provider]`, 'home spanish');
     await changeLang(page, 'en');
     await testMultiLangContent(page, 'english', false);
     await changeLang(page, 'es');
@@ -83,6 +88,14 @@ test.describe('Transloco Full Cycle', () => {
     await testLocaleContentUS(page);
     await changeLang(page, 'es');
     await testLocaleContentES(page);
+  });
+  test('Inline loaders page', async ({ page }) => {
+    await page.goto('/inline-loaders');
+    await testInlineLoadersContent(page);
+    await changeLang(page, 'es');
+    await testInlineLoadersContent(page, 'spanish');
+    await changeLang(page, 'en');
+    await testInlineLoadersContent(page);
   });
 });
 
