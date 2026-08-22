@@ -3,6 +3,7 @@ import commandLineArgs from 'command-line-args';
 import commandLineUsage from 'command-line-usage';
 
 import { optionDefinitions, sections } from './lib/cli-options';
+import { getConfig } from './lib/config';
 import { buildTranslationFiles } from './lib/keys-builder';
 import { findMissingKeys } from './lib/keys-detective';
 import { Config } from './lib/types';
@@ -40,7 +41,15 @@ async function run() {
     await buildTranslationFiles(resolvedConfig);
   } else if (resolvedConfig.command === 'find') {
     warnUnsupportedOptions('find', config);
-    findMissingKeys(resolvedConfig);
+    const { hasMissingKeys, hasExtraKeys } = findMissingKeys(resolvedConfig);
+    // Read the resolved config, the flags may come from `transloco.config.js`.
+    const { addMissingKeys, emitErrorOnExtraKeys } = getConfig();
+
+    if (hasMissingKeys && !addMissingKeys) {
+      process.exitCode = 1;
+    } else if (hasExtraKeys && emitErrorOnExtraKeys) {
+      process.exitCode = 2;
+    }
   } else {
     console.log(`Please provide an action...`);
   }

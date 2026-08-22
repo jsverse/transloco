@@ -2,13 +2,13 @@ import chalk from 'chalk';
 import Table from 'cli-table3';
 
 import { messages } from '../messages';
+import { KeysDetectiveResult } from '../types';
 import { getLogger } from '../utils/logger';
 
 import { mapDiffToKeys } from './map-diff-to-keys';
 
 type Params = {
   addMissingKeys: boolean;
-  emitErrorOnExtraKeys: boolean;
   langs: string[];
   diffsPerLang: {
     [lang: string]: {
@@ -22,13 +22,14 @@ export function buildTable({
   langs,
   diffsPerLang,
   addMissingKeys,
-  emitErrorOnExtraKeys,
-}: Params) {
+}: Params): KeysDetectiveResult {
   const logger = getLogger();
-  if (langs.length > 0) {
-    let displayAddedMsg = false;
-    let hasExtraKeys = false;
+  const result: KeysDetectiveResult = {
+    hasMissingKeys: false,
+    hasExtraKeys: false,
+  };
 
+  if (langs.length > 0) {
     logger.success(`\x1b[4m${messages.summary}\x1b[0m\n`);
     const table = new Table({
       style: {
@@ -51,14 +52,14 @@ export function buildTable({
 
       if (hasMissing) {
         row.push(mapDiffToKeys(missing, 'rhs'));
-        displayAddedMsg = true;
+        result.hasMissingKeys = true;
       } else {
         row.push('--');
       }
 
       if (hasExtra) {
         row.push(mapDiffToKeys(extra, 'lhs'));
-        hasExtraKeys = true;
+        result.hasExtraKeys = true;
       } else {
         row.push('--');
       }
@@ -66,20 +67,15 @@ export function buildTable({
     }
 
     logger.log(table.toString());
-    if (displayAddedMsg) {
-      if (addMissingKeys) {
-        logger.success(`Added all missing keys\n`);
-      } else {
-        process.exit(1);
-      }
-    }
 
-    if (hasExtraKeys && emitErrorOnExtraKeys) {
-      process.exit(2);
+    if (result.hasMissingKeys && addMissingKeys) {
+      logger.success(`Added all missing keys\n`);
     }
   } else {
     logger.log(`\n🎉 ${messages.noMissing} 🎉\n`);
   }
 
   logger.log('\n');
+
+  return result;
 }
