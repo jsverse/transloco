@@ -54,9 +54,14 @@ export function compareKeysToFiles({
 
   const result: Result[] = [];
   const scopePaths = getGlobalConfig().scopePathMap || {};
+  const cache: Record<string, boolean> = {};
+
   for (const [scope, path] of Object.entries(scopePaths)) {
     const keys = scopeToKeys[scope];
     if (keys) {
+      // Scopes with an explicit path must not be picked up again from the
+      // default translations folder.
+      cache[scope] = true;
       const res: Omit<Result, 'files'> = {
         keys,
         scope,
@@ -68,7 +73,6 @@ export function compareKeysToFiles({
       });
     }
   }
-  const cache: Record<string, boolean> = {};
 
   for (const filePath of translationFiles) {
     const { scope = '__global' } = getScopeAndLangFromPath({

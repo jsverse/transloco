@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 import Table from 'cli-table3';
+import type { DiffDeleted, DiffNew } from 'deep-diff';
 
 import { messages } from '../messages';
 import { KeysDetectiveResult } from '../types';
@@ -12,8 +13,8 @@ type Params = {
   langs: string[];
   diffsPerLang: {
     [lang: string]: {
-      missing: any[];
-      extra: any[];
+      missing: Array<DiffNew<any>>;
+      extra: Array<DiffDeleted<any>>;
     };
   };
 };
@@ -41,7 +42,7 @@ export function buildTable({
     });
 
     for (let i = 0; i < langs.length; i++) {
-      const row: any = [];
+      const row: string[] = [];
       const { missing, extra } = diffsPerLang[langs[i]];
       const hasMissing = missing.length > 0;
       const hasExtra = extra.length > 0;
