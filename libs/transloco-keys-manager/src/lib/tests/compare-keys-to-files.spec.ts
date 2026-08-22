@@ -167,7 +167,7 @@ describe('compareKeysToFiles', () => {
     );
   });
 
-  it('should unflatten translation before writing when unflat is true', () => {
+  it('given unflat is true, when the missing keys are written, then the translation should be unflattened', () => {
     unflat = true;
     mockGetTranslationFilesPath.mockReturnValue(['/tmp/i18n/en.json']);
     mockGetCurrentTranslation.mockReturnValue({});
@@ -189,7 +189,7 @@ describe('compareKeysToFiles', () => {
    * JSON, so `find --file-format pot` crashed on the first `.pot` file.
    */
   describe('when the file format is pot', () => {
-    it('should parse the translation files as pot', () => {
+    it('given a pot translation file, when the keys are compared, then it should be parsed as pot', () => {
       mockGetTranslationFilesPath.mockReturnValue(['/tmp/i18n/en.pot']);
       mockGetCurrentTranslation.mockReturnValue({ 'existing.key': 'Existing' });
       mockNormalizedGlob.mockReturnValue(['/tmp/i18n/en.pot']);
@@ -218,7 +218,7 @@ describe('compareKeysToFiles', () => {
       );
     });
 
-    it('should write the missing keys back as pot', () => {
+    it('given addMissingKeys is true, when the missing keys are written, then the file should stay pot', () => {
       mockGetTranslationFilesPath.mockReturnValue(['/tmp/i18n/en.pot']);
       mockGetCurrentTranslation.mockReturnValue({ 'existing.key': 'Existing' });
       mockNormalizedGlob.mockReturnValue(['/tmp/i18n/en.pot']);
