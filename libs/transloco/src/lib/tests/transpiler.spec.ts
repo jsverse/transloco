@@ -171,21 +171,25 @@ describe('TranslocoTranspiler', () => {
         WHEN a function transpiler throws an error
         THEN the rethrown error should preserve the original error as its cause`, () => {
       const originalError = new Error('boom');
-      vi.spyOn(transpilerFunctions['throwing'], 'transpile').mockImplementation(
-        () => {
+      const spy = vi
+        .spyOn(transpilerFunctions['throwing'], 'transpile')
+        .mockImplementation(() => {
           throw originalError;
-        },
-      );
+        });
 
-      let caughtError: unknown;
       try {
-        transpiler.transpile(getTranspilerParams('[[ throwing() ]]'));
-      } catch (e) {
-        caughtError = e;
-      }
+        let caughtError: unknown;
+        try {
+          transpiler.transpile(getTranspilerParams('[[ throwing() ]]'));
+        } catch (e) {
+          caughtError = e;
+        }
 
-      expect(caughtError).toBeInstanceOf(Error);
-      expect((caughtError as Error).cause).toBe(originalError);
+        expect(caughtError).toBeInstanceOf(Error);
+        expect((caughtError as Error).cause).toBe(originalError);
+      } finally {
+        spy.mockRestore();
+      }
     });
 
     it(`GIVEN a FunctionalTranspiler instance
