@@ -4,7 +4,10 @@ import nx from '@nx/eslint-plugin';
 
 export default [
   ...baseConfig,
-  ...nx.configs['flat/angular'],
+  ...nx.configs['flat/angular'].map((config) => ({
+    ...config,
+    ignores: [...(config.ignores ?? []), '**/*.spec.ts'],
+  })),
   {
     files: ['**/*.ts'],
     ignores: ['**/*.spec.ts'],

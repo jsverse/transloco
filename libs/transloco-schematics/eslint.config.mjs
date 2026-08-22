@@ -19,7 +19,4 @@ export default [
     // Override or add rules here
     rules: {},
   },
-  {
-    ignores: ['src/utils/ast-utils.ts'],
-  },
 ];
