@@ -95,6 +95,8 @@ Tests follow given-when-then format (per recent commit convention).
 
 All packages use fixed versioning (bump together). Conventional commits drive semantic version bumps. Tag pattern: `releases/{version}`.
 
+Real (non-dry-run) releases are announced in Discord `#releases` by `.github/workflows/scripts/announce-release.mts`, posting to the webhook in the `DISCORD_RELEASES_WEBHOOK` secret. Best-effort: it self-skips when the secret is unset, and the step is `continue-on-error`.
+
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->
 

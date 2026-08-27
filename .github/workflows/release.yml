@@ -338,6 +338,21 @@ jobs:
           if [[ "$DRY_RUN" == "true" ]]; then DRY=(--dry-run); fi
           npx nx release publish --access public --tag "$TAG" --verbose "${DRY[@]}"
 
+      # Cosmetic and deliberately last: the tag is pushed and the tarballs are
+      # on npm by now, so a Discord outage must not fail the job and tempt a
+      # re-run. The script self-skips while the secret is unset.
+      #
+      # Setup: create a webhook on the #releases channel (Edit Channel ->
+      # Integrations -> Webhooks) and store its URL as DISCORD_RELEASES_WEBHOOK.
+      - name: Announce release on Discord
+        if: ${{ !inputs.dry-run }}
+        continue-on-error: true
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_RELEASES_WEBHOOK }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+          VERSION: ${{ steps.version.outputs.value }}
+        run: node .github/workflows/scripts/announce-release.mts
+
       - name: Summary
         if: always()
         env:
