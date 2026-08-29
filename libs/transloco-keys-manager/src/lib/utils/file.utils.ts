@@ -15,7 +15,8 @@ export function readFile(
   const content = readFileSync(file, { encoding: 'utf-8' });
 
   if (parse) {
-    return JSON.parse(content);
+    // Strip a leading BOM - some editors add one and it breaks JSON.parse.
+    return JSON.parse(content.replace(/^\uFEFF/, ''));
   }
 
   return content;
