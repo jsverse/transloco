@@ -37,7 +37,8 @@ export function optimizeFiles(translationPaths: string[], commentsKey: string) {
     for (const path of translationPaths) {
       try {
         const translation = fs.readFileSync(path, { encoding: 'utf8' });
-        const asObject = JSON.parse(translation);
+        // Strip a leading BOM - some editors add one and it breaks JSON.parse.
+        const asObject = JSON.parse(translation.replace(/^\uFEFF/, ''));
         const flatObject = flatten(asObject, { safe: true }) as Translation;
         const optimized = JSON.stringify(
           removeComments(flatObject, commentsKey),
