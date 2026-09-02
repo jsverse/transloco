@@ -15,7 +15,7 @@ This skill enforces the branch-naming convention and the commit/PR rules from
 
 ## Branch Naming Convention
 
-```
+```text
 <prefix>/<scope>-<kebab-case-description>
 <prefix>/<kebab-case-description>            (no scope, for repo-wide changes)
 ```
@@ -84,9 +84,13 @@ names and commit-message convention):
 
 3. **Determine `<scope>`**
 
-   - Prefer the scope encoded in the branch name (the segment right after
-     `<prefix>/`), if it matches one of the known scopes.
-   - Otherwise, infer it from the changed files vs. the base branch
+   - Prefer the scope encoded in the branch name: after `<prefix>/`, match the
+     longest known scope (see **Scopes** above) that forms a prefix of the
+     remainder followed by a `-` (e.g. `persist-lang-upgrade-nx` → scope
+     `persist-lang`, description `upgrade-nx`) — this correctly handles
+     hyphenated scope names.
+   - Otherwise, if no known scope matches as a prefix, infer it from the changed
+     files vs. the base branch
      (`git diff --name-only master...HEAD`): `libs/transloco-<scope>/` maps to
      `<scope>`; `libs/transloco/` maps to `transloco`.
    - If changes span multiple packages, or touch only root/shared files, omit the
@@ -134,7 +138,7 @@ names and commit-message convention):
      `keys-manager`, `persist-lang`) — these are named exactly after the scope.
    - Apply a type label only when one clearly matches: `bug`/`hotfix` → `bug`,
      `feature` → `enhancement`. There's no dedicated label for `tech`, `release`,
-     `e2e`, or `hotfix` — skip a type label rather than guessing one.
+     or `e2e` — skip a type label rather than guessing one for those prefixes.
    - Optionally add one `area: <topic>` label, but only when the change content
      clearly matches that label's description with high confidence (e.g. a change to
      the transpiler → `area: transpiler`). Skip it if uncertain.
