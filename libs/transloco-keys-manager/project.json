@@ -11,7 +11,9 @@
       "inputs": [
         "production",
         "^production",
-        { "dependentTasksOutputFiles": "marker.{mjs,d.mts}" }
+        {
+          "dependentTasksOutputFiles": "tmp/transloco-keys-manager/marker-esm/marker.{mjs,d.mts}"
+        }
       ],
       "outputs": ["{options.outputPath}"],
       "options": {
