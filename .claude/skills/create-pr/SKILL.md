@@ -73,7 +73,15 @@ names and commit-message convention):
 1. **Commit any pending work first**
 
    - Check `git status --porcelain`. If there are staged/unstaged/untracked changes,
-     stage everything (`git add -A`).
+     show the list of affected files to the user and get explicit confirmation
+     before staging anything — never run `git add -A` (or stage any file)
+     automatically. This avoids committing files the user hasn't reviewed
+     (including accidentally sensitive/local files).
+   - If the user has already given explicit instructions on what/how to stage or
+     commit (e.g. specific files, or "stage everything"), follow those instructions
+     instead of asking again.
+   - Once confirmed, stage only the agreed-upon files (prefer explicit paths over
+     `git add -A`) and proceed.
    - Determine `<type>` and `<scope>` (see below), then commit with:
      `<type>(<scope>): <description>` — generated from the actual diff content, not a
      generic message. Omit `(<scope>)` if no single package scope applies.
