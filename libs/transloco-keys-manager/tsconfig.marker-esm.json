@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "target": "ES2021",
+    "lib": ["es2022"],
+    "declaration": true,
+    "sourceMap": false,
+    "rootDir": "src/lib",
+    "outDir": "../../tmp/transloco-keys-manager/marker-esm"
+  },
+  "files": ["src/lib/marker.ts"],
+  "include": [],
+  "references": []
+}

@@ -7,6 +7,7 @@
   "targets": {
     "build": {
       "executor": "@nx/js:tsc",
+      "dependsOn": ["^build", "build-marker-esm"],
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/transloco-keys-manager",
@@ -14,7 +15,34 @@
         "tsConfig": "libs/transloco-keys-manager/tsconfig.lib.json",
         "assets": [
           "libs/transloco-keys-manager/*.md",
-          { "input": ".", "glob": "LICENSE", "output": "." }
+          { "input": ".", "glob": "LICENSE", "output": "." },
+          {
+            "input": "tmp/transloco-keys-manager/marker-esm",
+            "glob": "marker.{mjs,d.mts}",
+            "output": "src/lib",
+            "includeIgnoredFiles": true
+          }
+        ]
+      }
+    },
+    "build-marker-esm": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/src/lib/marker.ts",
+        "{projectRoot}/tsconfig.marker-esm.json",
+        "{workspaceRoot}/tools/scripts/build-marker-esm.mts"
+      ],
+      "outputs": ["{workspaceRoot}/tmp/transloco-keys-manager/marker-esm"],
+      "options": {
+        "parallel": false,
+        "commands": [
+          {
+            "command": "npx tsc -p libs/transloco-keys-manager/tsconfig.marker-esm.json"
+          },
+          {
+            "command": "node tools/scripts/build-marker-esm.mts"
+          }
         ]
       }
     },
