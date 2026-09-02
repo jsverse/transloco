@@ -8,6 +8,11 @@
     "build": {
       "executor": "@nx/js:tsc",
       "dependsOn": ["^build", "build-marker-esm"],
+      "inputs": [
+        "production",
+        "^production",
+        { "dependentTasksOutputFiles": "marker.{mjs,d.mts}" }
+      ],
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/transloco-keys-manager",
