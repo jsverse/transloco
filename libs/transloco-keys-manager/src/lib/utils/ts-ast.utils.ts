@@ -90,10 +90,7 @@ export function resolveImportedName(
 
     for (const element of bindings.elements) {
       const imported = element.propertyName ?? element.name;
-      if (
-        imported.text === importedName ||
-        element.name.text === importedName
-      ) {
+      if (imported.text === importedName) {
         return element.name.text;
       }
     }
