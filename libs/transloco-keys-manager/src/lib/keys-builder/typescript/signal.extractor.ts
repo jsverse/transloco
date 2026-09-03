@@ -1,28 +1,24 @@
-import { SourceFile, Node } from 'typescript';
-import { tsquery } from '@phenomnomnominal/tsquery';
+import { isNamed, resolveImportedName } from '../../utils/ts-ast.utils';
 
-import { buildKeysFromASTNodes } from './build-keys-from-ast-nodes';
+import { buildKeysFromCall } from './build-keys-from-call';
+import { SourceFileScan } from './scan-source-file';
 import { TSExtractorResult } from './types';
 
-export function signalExtractor(ast: SourceFile): TSExtractorResult {
-  // workaround from https://github.com/estools/esquery/issues/68
-  const [importNode] = tsquery(
-    ast,
-    `ImportDeclaration:has([text=/^@(jsverse|ngneat)\\x2Ftransloco/]):has(Identifier[name=translateSignal])`,
-  );
-  if (!importNode) {
-    return [];
-  }
-  const signalName = getSignalName(importNode);
-  const fns = tsquery(ast, `CallExpression Identifier[text=${signalName}]`);
+const translocoImport = /^@(jsverse|ngneat)\/transloco/;
 
-  return buildKeysFromASTNodes(fns, [signalName]);
-}
-
-function getSignalName(importNode: Node) {
-  const [defaultName, alias] = tsquery(
-    importNode,
-    'ImportSpecifier:has(Identifier[name=translateSignal]) Identifier',
+// `translateSignal('key')`, also under an import alias
+export function signalExtractor({
+  imports,
+  calls,
+}: SourceFileScan): TSExtractorResult {
+  const signalName = resolveImportedName(
+    imports,
+    translocoImport,
+    'translateSignal',
   );
-  return (alias || defaultName).getText();
+  if (!signalName) return [];
+
+  return calls
+    .filter((call) => isNamed(call.expression, signalName))
+    .flatMap(buildKeysFromCall);
 }

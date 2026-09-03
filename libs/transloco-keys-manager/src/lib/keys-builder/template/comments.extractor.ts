@@ -17,8 +17,11 @@ export function templateCommentsExtractor({
   scopes,
   defaultValue,
   scopeToKeys,
+  content: source,
 }: TemplateExtractorConfig) {
-  const { hasComments, content } = keepMarkingCommentsOnly(readFile(file));
+  const { hasComments, content } = keepMarkingCommentsOnly(
+    source ?? readFile(file),
+  );
   if (!hasComments) return scopeToKeys;
 
   const templateContainers: ContainersMetadata[] = [];
