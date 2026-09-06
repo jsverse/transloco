@@ -1,5 +1,5 @@
 ---
-name: create-pr
+name: create-branch-or-pr
 description: "Name branches correctly and create a pull request for the current branch in the Transloco repo. Use when the user asks to 'create a branch', 'name my branch', 'create a PR', 'open a pull request', or 'submit a PR'. Enforces the branch-naming convention, derives a conventional-commit PR title (type(scope): description), fills in .github/pull_request_template.md, and auto-applies matching repo labels."
 ---
 
