@@ -80,15 +80,16 @@ the scope entirely for changes that aren't tied to one package.
 
 ### Examples
 
-| Branch                                                  | PR/commit title                                                             |
-| ------------------------------------------------------- | --------------------------------------------------------------------------- |
-| `bug/locale-drop-conflicting-date-options`              | `fix(locale): drop conflicting date options when merging the global config` |
-| `feature/keys-manager-support-yaml-output`              | `feat(keys-manager): support yaml output`                                   |
-| `tech/persist-lang-upgrade-nx`                          | `chore(persist-lang): upgrade nx`                                           |
-| `tech/upgrade-nx` (root-level, no single package scope) | `chore: upgrade nx`                                                         |
-| `e2e/scoped-libs-stabilize-lazy-load-scenario`          | `test(scoped-libs): stabilize lazy load scenario`                           |
-| `docs/locale-document-date-format-options`              | `docs(locale): document date format options`                                |
-| `ci/cache-playwright-browsers`                          | `ci: cache playwright browsers`                                             |
+| Branch                                                              | PR/commit title                                                             |
+| ------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `bug/locale-drop-conflicting-date-options`                          | `fix(locale): drop conflicting date options when merging the global config` |
+| `feature/keys-manager-support-yaml-output`                          | `feat(keys-manager): support yaml output`                                   |
+| `tech/persist-lang-upgrade-nx`                                      | `chore(persist-lang): upgrade nx`                                           |
+| `tech/upgrade-nx` (root-level, no single package scope)             | `chore: upgrade nx`                                                         |
+| `tech/optimize-build-times` (touches no `libs/transloco-optimize/`) | `chore: optimize build times` — **not** `chore(optimize):`                  |
+| `e2e/scoped-libs-stabilize-lazy-load-scenario`                      | `test(scoped-libs): stabilize lazy load scenario`                           |
+| `docs/locale-document-date-format-options`                          | `docs(locale): document date format options`                                |
+| `ci/cache-playwright-browsers`                                      | `ci: cache playwright browsers`                                             |
 
 ## Procedure
 
@@ -126,17 +127,24 @@ the scope entirely for changes that aren't tied to one package.
 2. **Determine `<type>`** from the current branch's `<prefix>` using the mapping
    table above.
 
-3. **Determine `<scope>`**
+3. **Determine `<scope>`** — always derive it from the changed files; the branch name
+   is only a hint that must be corroborated.
 
-   - Prefer the scope encoded in the branch name: after `<prefix>/`, match the
+   - Get the changed files first: `git diff --name-only master...HEAD`. Map them to
+     scopes: `libs/transloco-<scope>/` → `<scope>`; `libs/transloco/` → `transloco`.
+   - Read the candidate scope from the branch name: after `<prefix>/`, match the
      longest known scope (resolved from `changelog.config.js`, see **Scopes** above)
      that forms a prefix of the remainder followed by a `-` (e.g.
      `persist-lang-upgrade-nx` → scope `persist-lang`, description `upgrade-nx`) —
      this correctly handles hyphenated scope names.
-   - Otherwise, if no known scope matches as a prefix, infer it from the changed
-     files vs. the base branch
-     (`git diff --name-only master...HEAD`): `libs/transloco-<scope>/` maps to
-     `<scope>`; `libs/transloco/` maps to `transloco`.
+   - Use that candidate **only if the changed files actually touch that package.**
+     A branch can be named for its _intent_ rather than its package, and several
+     scope names double as ordinary English words: `tech/optimize-build-times`
+     matches `optimize` and `tech/utils-cleanup` matches `utils`, yet neither may
+     touch `libs/transloco-optimize/` or `libs/transloco-utils/`. Labelling those
+     `chore(optimize):` / `chore(utils):` is wrong and misleads the changelog.
+   - If the branch-name candidate isn't corroborated (or there is none), fall back to
+     the file-based scope.
    - If changes span multiple packages, or touch only root/shared files, omit the
      scope entirely — don't force one.
 
