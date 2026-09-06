@@ -131,11 +131,13 @@ the scope entirely for changes that aren't tied to one package.
      before staging anything — never run `git add -A` (or stage any file)
      automatically. This avoids committing files the user hasn't reviewed
      (including accidentally sensitive/local files).
-   - If the user has already given explicit instructions on what/how to stage or
-     commit (e.g. specific files, or "stage everything"), follow those instructions
-     instead of asking again.
-   - Once confirmed, stage only the agreed-upon files (prefer explicit paths over
-     `git add -A`) and proceed.
+   - Broad wording (e.g. "stage everything") is not itself permission to run
+     `git add -A` or `git add .` — it still requires enumerating the candidate
+     files from `git status --porcelain`, displaying the exact paths to the user,
+     and getting explicit approval before staging. Only skip re-asking when the
+     user has already named the specific files/paths to stage.
+   - Once confirmed, stage only the agreed-upon files by explicit path (never
+     `git add -A` / `git add .`) and proceed.
    - Determine `<type>` and `<scope>` (see below), then build the message:
      `<type>(<scope>): <description>` — generated from the actual diff content, not a
      generic message. Omit `(<scope>)` if no single package scope applies.
@@ -178,12 +180,15 @@ the scope entirely for changes that aren't tied to one package.
 6. **Check for a related issue** (this repo has no ticket/DevOps system — issues are
    optional and opportunistic):
 
-   - Look for an issue number in the branch name or recent commits.
-   - If none is obvious, use `gh issue list --search "<key terms>"` to check for a
-     matching open issue. If genuinely unsure, ask the developer whether the PR
-     closes a specific issue number; don't fabricate one.
-   - If an issue is found, note it as `Closes #<number>`; otherwise leave the
-     template's "Issue Number: N/A" as-is.
+   - Look for an issue number in the branch name or recent commits, and use
+     `gh issue list --search "<key terms>"` to check for a matching open issue.
+     Treat all of these (branch name, commit references, keyword search results)
+     as candidates only, never as confirmed.
+   - Ask the developer to explicitly confirm the exact issue number before adding
+     `Closes #<number>` — don't add it based on a candidate alone, and don't
+     fabricate one.
+   - If confirmation isn't given (or no candidate exists), leave the template's
+     "Issue Number: N/A" as-is; don't add a closing reference.
 
 7. **Fill in `.github/pull_request_template.md`** as the PR body — don't skip or
    replace it:
@@ -205,6 +210,9 @@ the scope entirely for changes that aren't tied to one package.
      of another request — the developer decides when work leaves their machine.
    - Push the branch: `git push -u origin <branch>`.
    - Never use `--force`/`--force-with-lease` unless the user explicitly asks for it.
+   - After the push, display the final PR title, body, and resolved base branch again
+     and wait for a separate, explicit approval before running `gh pr create` — the
+     push approval does not double as approval to open the PR.
    - Create the PR against the `<base>` resolved in step 1, with the built title and
      the filled-in template as the body:
      `gh pr create --title "..." --body-file <file> --base <base>`.
