@@ -25,6 +25,12 @@ These override any convenience shortcut — the developer reviews, then approves
 - If the user only asked for part of the flow (e.g. "commit this"), stop there —
   don't continue into pushing or PR creation on your own.
 
+Wherever this skill says "ask the developer", use whatever interactive-question
+mechanism your agent provides, and wait for the answer instead of guessing. The
+mechanism is agent-specific, so no tool name is hardcoded here — this file lives under
+`.claude/`, but other assistants (e.g. GitHub Copilot CLI) discover skills from that
+directory too.
+
 ## Branch Naming Convention
 
 ```text
@@ -174,8 +180,8 @@ the scope entirely for changes that aren't tied to one package.
 
    - Look for an issue number in the branch name or recent commits.
    - If none is obvious, use `gh issue list --search "<key terms>"` to check for a
-     matching open issue. If genuinely unsure, ask the user with `ask_user` whether
-     the PR closes a specific issue number; don't fabricate one.
+     matching open issue. If genuinely unsure, ask the developer whether the PR
+     closes a specific issue number; don't fabricate one.
    - If an issue is found, note it as `Closes #<number>`; otherwise leave the
      template's "Issue Number: N/A" as-is.
 
