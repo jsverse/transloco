@@ -102,7 +102,23 @@ the scope entirely for changes that aren't tied to one package.
 
 ### 2. Creating a PR
 
-1. **Commit any pending work first**
+1. **Resolve the base branch first** — never assume `master`.
+
+   - Default: the repo's default branch, read at runtime rather than hardcoded:
+     `gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name'`.
+   - Exception: `CONTRIBUTING.md` routes GitBook documentation contributions to the
+     `gitbook-docs` branch. If the change edits that documentation content, the base
+     is `gitbook-docs`, not the default branch. (Repo-level docs that live on the
+     default branch — `README.md`, `CONTRIBUTING.md`, `docs/` — still target the
+     default branch.) If it's ambiguous, ask the user rather than guessing.
+   - Make sure the remote ref is current before diffing — `git fetch origin <base>` —
+     and always diff against `origin/<base>`, never the local ref. A local `master`
+     can be stale or entirely absent in a fresh clone or a fork, which silently
+     yields a wrong changed-file list with no error.
+   - Use this resolved `<base>` everywhere below: `origin/<base>...HEAD` for diffs and
+     `--base <base>` when creating the PR.
+
+2. **Commit any pending work first**
 
    - Check `git status --porcelain`. If there are staged/unstaged/untracked changes,
      show the list of affected files to the user and get explicit confirmation
@@ -124,14 +140,15 @@ the scope entirely for changes that aren't tied to one package.
      Never chain `git add` and `git commit` in one command so the developer always
      has a chance to review the staged diff first.
 
-2. **Determine `<type>`** from the current branch's `<prefix>` using the mapping
+3. **Determine `<type>`** from the current branch's `<prefix>` using the mapping
    table above.
 
-3. **Determine `<scope>`** — always derive it from the changed files; the branch name
+4. **Determine `<scope>`** — always derive it from the changed files; the branch name
    is only a hint that must be corroborated.
 
-   - Get the changed files first: `git diff --name-only master...HEAD`. Map them to
-     scopes: `libs/transloco-<scope>/` → `<scope>`; `libs/transloco/` → `transloco`.
+   - Get the changed files first: `git diff --name-only origin/<base>...HEAD`. Map
+     them to scopes: `libs/transloco-<scope>/` → `<scope>`; `libs/transloco/` →
+     `transloco`.
    - Read the candidate scope from the branch name: after `<prefix>/`, match the
      longest known scope (resolved from `changelog.config.js`, see **Scopes** above)
      that forms a prefix of the remainder followed by a `-` (e.g.
@@ -148,11 +165,11 @@ the scope entirely for changes that aren't tied to one package.
    - If changes span multiple packages, or touch only root/shared files, omit the
      scope entirely — don't force one.
 
-4. **Build the PR title**: `<type>(<scope>): <description>`, or `<type>: <description>`
+5. **Build the PR title**: `<type>(<scope>): <description>`, or `<type>: <description>`
    with no scope. Keep it lowercase after the colon, imperative mood, no trailing period
    (e.g. `fix(locale): drop conflicting date options when merging the global config`).
 
-5. **Check for a related issue** (this repo has no ticket/DevOps system — issues are
+6. **Check for a related issue** (this repo has no ticket/DevOps system — issues are
    optional and opportunistic):
 
    - Look for an issue number in the branch name or recent commits.
@@ -162,7 +179,7 @@ the scope entirely for changes that aren't tied to one package.
    - If an issue is found, note it as `Closes #<number>`; otherwise leave the
      template's "Issue Number: N/A" as-is.
 
-6. **Fill in `.github/pull_request_template.md`** as the PR body — don't skip or
+7. **Fill in `.github/pull_request_template.md`** as the PR body — don't skip or
    replace it:
 
    - Check the correct **PR Type** box(es) based on the branch prefix (`bug`/`hotfix`
@@ -170,24 +187,25 @@ the scope entirely for changes that aren't tied to one package.
      `docs` → Documentation content changes, `ci` → Build related changes/CI,
      `release` → Other, `e2e` → Other/Refactoring).
    - Fill in **What is the current behavior?** / **What is the new behavior?** from the
-     actual diff, and the **Issue Number** line from step 5.
+     actual diff, and the **Issue Number** line from step 6.
    - Check the **Does this PR introduce a breaking change?** box truthfully.
    - Leave the checklist items as checkboxes for the author/reviewer to verify (don't
      pre-check tests/docs boxes unless you actually added them in this change).
 
-7. **Push and create the PR**:
+8. **Push and create the PR**:
 
-   - Show the user the final PR title and body, and get explicit approval before
-     pushing. Never push or open a PR automatically as a side effect of another
-     request — the developer decides when work leaves their machine.
+   - Show the user the final PR title, body and resolved base branch, and get explicit
+     approval before pushing. Never push or open a PR automatically as a side effect
+     of another request — the developer decides when work leaves their machine.
    - Push the branch: `git push -u origin <branch>`.
    - Never use `--force`/`--force-with-lease` unless the user explicitly asks for it.
-   - Create the PR against `master` with the built title and the filled-in template
-     as the body (`gh pr create --title "..." --body-file <file> --base master`).
+   - Create the PR against the `<base>` resolved in step 1, with the built title and
+     the filled-in template as the body:
+     `gh pr create --title "..." --body-file <file> --base <base>`.
    - Default to a normal (non-draft) PR; only pass `--draft` if the user explicitly
      asked for a draft.
 
-8. **Apply labels**
+9. **Apply labels**
 
    - Fetch current labels and descriptions with `gh label list` (don't hardcode —
      labels and descriptions can change over time).
