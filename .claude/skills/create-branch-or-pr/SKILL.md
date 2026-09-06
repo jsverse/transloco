@@ -13,6 +13,18 @@ description: "Name branches correctly and create a pull request for the current 
 This skill enforces the branch-naming convention and the commit/PR rules from
 `CONTRIBUTING.md` and `commitlint.config.js`.
 
+## Safety Rules (apply to every step)
+
+These override any convenience shortcut — the developer reviews, then approves:
+
+- **Never stage, commit, push, or open a PR without explicit user approval.** Each of
+  these is a separate confirmation; approving a commit is not approval to push.
+- Never run `git add -A`/`git add .`; stage explicit paths the user agreed to.
+- Never chain staging and committing in a single command.
+- Never amend, rebase, reset, or force-push unless the user explicitly asks.
+- If the user only asked for part of the flow (e.g. "commit this"), stop there —
+  don't continue into pushing or PR creation on your own.
+
 ## Branch Naming Convention
 
 ```text
@@ -82,10 +94,15 @@ names and commit-message convention):
      instead of asking again.
    - Once confirmed, stage only the agreed-upon files (prefer explicit paths over
      `git add -A`) and proceed.
-   - Determine `<type>` and `<scope>` (see below), then commit with:
+   - Determine `<type>` and `<scope>` (see below), then build the message:
      `<type>(<scope>): <description>` — generated from the actual diff content, not a
      generic message. Omit `(<scope>)` if no single package scope applies.
    - Follow `CONTRIBUTING.md`: this is the same format produced by `npm run commit`.
+   - **Never commit without explicit approval.** Show the user the staged file list
+     and the proposed commit message, and wait for an explicit "yes" before running
+     `git commit`. If the user asks for a different message, use theirs verbatim.
+     Never chain `git add` and `git commit` in one command so the developer always
+     has a chance to review the staged diff first.
 
 2. **Determine `<type>`** from the current branch's `<prefix>` using the mapping
    table above.
@@ -132,7 +149,11 @@ names and commit-message convention):
 
 7. **Push and create the PR**:
 
+   - Show the user the final PR title and body, and get explicit approval before
+     pushing. Never push or open a PR automatically as a side effect of another
+     request — the developer decides when work leaves their machine.
    - Push the branch: `git push -u origin <branch>`.
+   - Never use `--force`/`--force-with-lease` unless the user explicitly asks for it.
    - Create the PR against `master` with the built title and the filled-in template
      as the body (`gh pr create --title "..." --body-file <file> --base master`).
    - Default to a normal (non-draft) PR; only pass `--draft` if the user explicitly
