@@ -39,16 +39,16 @@ These override any convenience shortcut — the developer reviews, then approves
 
 ### Prefix meaning & matching commit type
 
-| Branch prefix | Use for                                   | Commit/PR type |
-| -------------- | ------------------------------------------ | -------------- |
-| `feature`      | New functionality                           | `feat`         |
-| `bug`          | Bug fix                                     | `fix`          |
-| `hotfix`       | Urgent production fix                       | `fix`          |
-| `tech`         | Refactors, tooling, chores, deps            | `chore` (or `refactor`/`build`/`ci` if clearly a better fit) |
-| `docs`         | Documentation-only changes                  | `docs`         |
-| `ci`           | CI/workflow-only changes                    | `ci`           |
-| `release`      | Release preparation                         | `chore`        |
-| `e2e`          | Playwright e2e-only changes                 | `test`         |
+| Branch prefix | Use for                          | Commit/PR type                                               |
+| ------------- | -------------------------------- | ------------------------------------------------------------ |
+| `feature`     | New functionality                | `feat`                                                       |
+| `bug`         | Bug fix                          | `fix`                                                        |
+| `hotfix`      | Urgent production fix            | `fix`                                                        |
+| `tech`        | Refactors, tooling, chores, deps | `chore` (or `refactor`/`build`/`ci` if clearly a better fit) |
+| `docs`        | Documentation-only changes       | `docs`                                                       |
+| `ci`          | CI/workflow-only changes         | `ci`                                                         |
+| `release`     | Release preparation              | `chore`                                                      |
+| `e2e`         | Playwright e2e-only changes      | `test`                                                       |
 
 Prefer the most specific prefix: a documentation-only change belongs on `docs` (not
 `tech`), and a workflow-only change on `ci`. Because this repo squash-merges, the PR
@@ -69,15 +69,15 @@ names and commit-message convention):
 
 ### Examples
 
-| Branch                                                | PR/commit title                                                              |
-| ------------------------------------------------------ | ----------------------------------------------------------------------------- |
-| `bug/locale-drop-conflicting-date-options`              | `fix(locale): drop conflicting date options when merging the global config`   |
-| `feature/keys-manager-support-yaml-output`              | `feat(keys-manager): support yaml output`                                     |
-| `tech/persist-lang-upgrade-nx`                          | `chore(persist-lang): upgrade nx`                                             |
-| `tech/upgrade-nx` (root-level, no single package scope) | `chore: upgrade nx`                                                           |
-| `e2e/scoped-libs-stabilize-lazy-load-scenario`          | `test(scoped-libs): stabilize lazy load scenario`                             |
-| `docs/locale-document-date-format-options`              | `docs(locale): document date format options`                                 |
-| `ci/cache-playwright-browsers`                          | `ci: cache playwright browsers`                                              |
+| Branch                                                  | PR/commit title                                                             |
+| ------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `bug/locale-drop-conflicting-date-options`              | `fix(locale): drop conflicting date options when merging the global config` |
+| `feature/keys-manager-support-yaml-output`              | `feat(keys-manager): support yaml output`                                   |
+| `tech/persist-lang-upgrade-nx`                          | `chore(persist-lang): upgrade nx`                                           |
+| `tech/upgrade-nx` (root-level, no single package scope) | `chore: upgrade nx`                                                         |
+| `e2e/scoped-libs-stabilize-lazy-load-scenario`          | `test(scoped-libs): stabilize lazy load scenario`                           |
+| `docs/locale-document-date-format-options`              | `docs(locale): document date format options`                                |
+| `ci/cache-playwright-browsers`                          | `ci: cache playwright browsers`                                             |
 
 ## Procedure
 
