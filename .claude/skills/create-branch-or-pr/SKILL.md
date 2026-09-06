@@ -61,11 +61,22 @@ this list.
 ### Scopes
 
 Scope is the package name, without the `transloco-` prefix (matches `libs/` folder
-names and commit-message convention):
+names and commit-message convention).
 
-`transloco` (core, no suffix), `locale`, `messageformat`, `optimize`, `persist-lang`,
-`persist-translations`, `preload-langs`, `scoped-libs`, `keys-manager`, `schematics`,
-`utils`, `validator`
+`changelog.config.js` is the source of truth — it's the same list `npm run commit`
+offers. Read it at runtime rather than trusting the snapshot below:
+
+```bash
+node -p "require('./changelog.config.js').scopes.filter(Boolean).join(', ')"
+```
+
+At the time of writing that yields: `transloco` (core, no suffix), `keys-manager`,
+`locale`, `messageformat`, `optimize`, `persist-lang`, `persist-translations`,
+`preload-langs`, `scoped-libs`, `utils`, `validator`, `schematics`. If the command
+output differs, the command wins.
+
+Note the empty string in that array is the "no scope" option — filter it out, and omit
+the scope entirely for changes that aren't tied to one package.
 
 ### Examples
 
@@ -118,10 +129,10 @@ names and commit-message convention):
 3. **Determine `<scope>`**
 
    - Prefer the scope encoded in the branch name: after `<prefix>/`, match the
-     longest known scope (see **Scopes** above) that forms a prefix of the
-     remainder followed by a `-` (e.g. `persist-lang-upgrade-nx` → scope
-     `persist-lang`, description `upgrade-nx`) — this correctly handles
-     hyphenated scope names.
+     longest known scope (resolved from `changelog.config.js`, see **Scopes** above)
+     that forms a prefix of the remainder followed by a `-` (e.g.
+     `persist-lang-upgrade-nx` → scope `persist-lang`, description `upgrade-nx`) —
+     this correctly handles hyphenated scope names.
    - Otherwise, if no known scope matches as a prefix, infer it from the changed
      files vs. the base branch
      (`git diff --name-only master...HEAD`): `libs/transloco-<scope>/` maps to
