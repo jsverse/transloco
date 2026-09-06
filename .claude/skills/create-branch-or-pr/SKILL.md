@@ -32,7 +32,7 @@ These override any convenience shortcut — the developer reviews, then approves
 <prefix>/<kebab-case-description>            (no scope, for repo-wide changes)
 ```
 
-- `<prefix>`: one of `feature`, `tech`, `bug`, `release`, `hotfix`, `e2e`
+- `<prefix>`: one of `feature`, `tech`, `bug`, `release`, `hotfix`, `e2e`, `docs`, `ci`
 - `<scope>`: optional, a package/library scope (see **Scopes** below). Omit it for
   changes that aren't tied to one package (root config, CI, docs, monorepo tooling).
 - `<kebab-case-description>`: short, human-readable summary of the change.
@@ -45,8 +45,14 @@ These override any convenience shortcut — the developer reviews, then approves
 | `bug`          | Bug fix                                     | `fix`          |
 | `hotfix`       | Urgent production fix                       | `fix`          |
 | `tech`         | Refactors, tooling, chores, deps            | `chore` (or `refactor`/`build`/`ci` if clearly a better fit) |
+| `docs`         | Documentation-only changes                  | `docs`         |
+| `ci`           | CI/workflow-only changes                    | `ci`           |
 | `release`      | Release preparation                         | `chore`        |
 | `e2e`          | Playwright e2e-only changes                 | `test`         |
+
+Prefer the most specific prefix: a documentation-only change belongs on `docs` (not
+`tech`), and a workflow-only change on `ci`. Because this repo squash-merges, the PR
+title becomes the changelog entry — filing docs work as `chore` hides it there.
 
 `commitlint.config.js` only allows these commit types: `build`, `chore`, `ci`, `docs`,
 `feat`, `fix`, `perf`, `refactor`, `revert`, `style`, `test`, `plugin`. Always pick from
@@ -70,6 +76,8 @@ names and commit-message convention):
 | `tech/persist-lang-upgrade-nx`                          | `chore(persist-lang): upgrade nx`                                             |
 | `tech/upgrade-nx` (root-level, no single package scope) | `chore: upgrade nx`                                                           |
 | `e2e/scoped-libs-stabilize-lazy-load-scenario`          | `test(scoped-libs): stabilize lazy load scenario`                             |
+| `docs/locale-document-date-format-options`              | `docs(locale): document date format options`                                 |
+| `ci/cache-playwright-browsers`                          | `ci: cache playwright browsers`                                              |
 
 ## Procedure
 
@@ -140,6 +148,7 @@ names and commit-message convention):
 
    - Check the correct **PR Type** box(es) based on the branch prefix (`bug`/`hotfix`
      → Bugfix, `feature` → Feature, `tech` → Refactoring/Build/CI as fitting,
+     `docs` → Documentation content changes, `ci` → Build related changes/CI,
      `release` → Other, `e2e` → Other/Refactoring).
    - Fill in **What is the current behavior?** / **What is the new behavior?** from the
      actual diff, and the **Issue Number** line from step 5.
@@ -166,8 +175,9 @@ names and commit-message convention):
    - Apply the package label matching `<scope>`, if one exists (e.g. `locale`,
      `keys-manager`, `persist-lang`) — these are named exactly after the scope.
    - Apply a type label only when one clearly matches: `bug`/`hotfix` → `bug`,
-     `feature` → `enhancement`. There's no dedicated label for `tech`, `release`,
-     or `e2e` — skip a type label rather than guessing one for those prefixes.
+     `feature` → `enhancement`, `docs` → `documentation`. There's no dedicated label
+     for `tech`, `ci`, `release`, or `e2e` — skip a type label rather than guessing
+     one for those prefixes.
    - Optionally add one `area: <topic>` label, but only when the change content
      clearly matches that label's description with high confidence (e.g. a change to
      the transpiler → `area: transpiler`). Skip it if uncertain.
