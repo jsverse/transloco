@@ -1,0 +1,235 @@
+---
+name: create-branch-or-pr
+description: "Name branches correctly and create a pull request for the current branch in the Transloco repo. Use when the user asks to 'create a branch', 'name my branch', 'create a PR', 'open a pull request', or 'submit a PR'. Enforces the branch-naming convention, derives a conventional-commit PR title (type(scope): description), fills in .github/pull_request_template.md, and auto-applies matching repo labels."
+---
+
+# Name Branches & Create PRs (Transloco)
+
+## When to Use
+
+- The user wants help naming a new branch before starting work.
+- The user asks to create/open/submit a pull request for the current branch.
+
+This skill enforces the branch-naming convention and the commit/PR rules from
+`CONTRIBUTING.md` and `commitlint.config.js`.
+
+## Safety Rules (apply to every step)
+
+These override any convenience shortcut — the developer reviews, then approves:
+
+- **Never stage, commit, push, or open a PR without explicit user approval.** Each of
+  these is a separate confirmation; approving a commit is not approval to push.
+- Never run `git add -A`/`git add .`; stage explicit paths the user agreed to.
+- Never chain staging and committing in a single command.
+- Never amend, rebase, reset, or force-push unless the user explicitly asks.
+- If the user only asked for part of the flow (e.g. "commit this"), stop there —
+  don't continue into pushing or PR creation on your own.
+
+Wherever this skill says "ask the developer", use whatever interactive-question
+mechanism your agent provides, and wait for the answer instead of guessing. The
+mechanism is agent-specific, so no tool name is hardcoded here — this file lives under
+`.claude/`, but other assistants (e.g. GitHub Copilot CLI) discover skills from that
+directory too.
+
+## Branch Naming Convention
+
+```text
+<prefix>/<scope>-<kebab-case-description>
+<prefix>/<kebab-case-description>            (no scope, for repo-wide changes)
+```
+
+- `<prefix>`: one of `feature`, `tech`, `bug`, `release`, `hotfix`, `e2e`, `docs`, `ci`
+- `<scope>`: optional, a package/library scope (see **Scopes** below). Omit it for
+  changes that aren't tied to one package (root config, CI, docs, monorepo tooling).
+- `<kebab-case-description>`: short, human-readable summary of the change.
+
+### Prefix meaning & matching commit type
+
+| Branch prefix | Use for                          | Commit/PR type                                               |
+| ------------- | -------------------------------- | ------------------------------------------------------------ |
+| `feature`     | New functionality                | `feat`                                                       |
+| `bug`         | Bug fix                          | `fix`                                                        |
+| `hotfix`      | Urgent production fix            | `fix`                                                        |
+| `tech`        | Refactors, tooling, chores, deps | `chore` (or `refactor`/`build`/`ci` if clearly a better fit) |
+| `docs`        | Documentation-only changes       | `docs`                                                       |
+| `ci`          | CI/workflow-only changes         | `ci`                                                         |
+| `release`     | Release preparation              | `chore`                                                      |
+| `e2e`         | Playwright e2e-only changes      | `test`                                                       |
+
+Prefer the most specific prefix: a documentation-only change belongs on `docs` (not
+`tech`), and a workflow-only change on `ci`. Because this repo squash-merges, the PR
+title becomes the changelog entry — filing docs work as `chore` hides it there.
+
+`commitlint.config.js` only allows these commit types: `build`, `chore`, `ci`, `docs`,
+`feat`, `fix`, `perf`, `refactor`, `revert`, `style`, `test`, `plugin`. Always pick from
+this list.
+
+### Scopes
+
+Scope is the package name, without the `transloco-` prefix (matches `libs/` folder
+names and commit-message convention).
+
+`changelog.config.js` is the source of truth — it's the same list `npm run commit`
+offers. Read it at runtime rather than trusting the snapshot below:
+
+```bash
+node -p "require('./changelog.config.js').scopes.filter(Boolean).join(', ')"
+```
+
+At the time of writing that yields: `transloco` (core, no suffix), `keys-manager`,
+`locale`, `messageformat`, `optimize`, `persist-lang`, `persist-translations`,
+`preload-langs`, `scoped-libs`, `utils`, `validator`, `schematics`. If the command
+output differs, the command wins.
+
+Note the empty string in that array is the "no scope" option — filter it out, and omit
+the scope entirely for changes that aren't tied to one package.
+
+### Examples
+
+| Branch                                                              | PR/commit title                                                             |
+| ------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `bug/locale-drop-conflicting-date-options`                          | `fix(locale): drop conflicting date options when merging the global config` |
+| `feature/keys-manager-support-yaml-output`                          | `feat(keys-manager): support yaml output`                                   |
+| `tech/persist-lang-upgrade-nx`                                      | `chore(persist-lang): upgrade nx`                                           |
+| `tech/upgrade-nx` (root-level, no single package scope)             | `chore: upgrade nx`                                                         |
+| `tech/optimize-build-times` (touches no `libs/transloco-optimize/`) | `chore: optimize build times` — **not** `chore(optimize):`                  |
+| `e2e/scoped-libs-stabilize-lazy-load-scenario`                      | `test(scoped-libs): stabilize lazy load scenario`                           |
+| `docs/locale-document-date-format-options`                          | `docs(locale): document date format options`                                |
+| `ci/cache-playwright-browsers`                                      | `ci: cache playwright browsers`                                             |
+
+## Procedure
+
+### 1. Naming a new branch (if that's what's being asked)
+
+- Ask (or infer from context) what the change is about, pick the right `<prefix>`
+  from the table above, determine the `<scope>` (or omit it), and propose the
+  `<prefix>/<scope>-<description>` branch name. Create it with
+  `git checkout -b <name>` once confirmed.
+
+### 2. Creating a PR
+
+1. **Resolve the base branch first** — never assume `master`.
+
+   - Default: the repo's default branch, read at runtime rather than hardcoded:
+     `gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name'`.
+   - Exception: `CONTRIBUTING.md` routes GitBook documentation contributions to the
+     `gitbook-docs` branch. If the change edits that documentation content, the base
+     is `gitbook-docs`, not the default branch. (Repo-level docs that live on the
+     default branch — `README.md`, `CONTRIBUTING.md`, `docs/` — still target the
+     default branch.) If it's ambiguous, ask the user rather than guessing.
+   - Make sure the remote ref is current before diffing — `git fetch origin <base>` —
+     and always diff against `origin/<base>`, never the local ref. A local `master`
+     can be stale or entirely absent in a fresh clone or a fork, which silently
+     yields a wrong changed-file list with no error.
+   - Use this resolved `<base>` everywhere below: `origin/<base>...HEAD` for diffs and
+     `--base <base>` when creating the PR.
+
+2. **Commit any pending work first**
+
+   - Check `git status --porcelain`. If there are staged/unstaged/untracked changes,
+     show the list of affected files to the user and get explicit confirmation
+     before staging anything — never run `git add -A` (or stage any file)
+     automatically. This avoids committing files the user hasn't reviewed
+     (including accidentally sensitive/local files).
+   - Broad wording (e.g. "stage everything") is not itself permission to run
+     `git add -A` or `git add .` — it still requires enumerating the candidate
+     files from `git status --porcelain`, displaying the exact paths to the user,
+     and getting explicit approval before staging. Only skip re-asking when the
+     user has already named the specific files/paths to stage.
+   - Once confirmed, stage only the agreed-upon files by explicit path (never
+     `git add -A` / `git add .`) and proceed.
+   - Determine `<type>` and `<scope>` (see below), then build the message:
+     `<type>(<scope>): <description>` — generated from the actual diff content, not a
+     generic message. Omit `(<scope>)` if no single package scope applies.
+   - Follow `CONTRIBUTING.md`: this is the same format produced by `npm run commit`.
+   - **Never commit without explicit approval.** Show the user the staged file list
+     and the proposed commit message, and wait for an explicit "yes" before running
+     `git commit`. If the user asks for a different message, use theirs verbatim.
+     Never chain `git add` and `git commit` in one command so the developer always
+     has a chance to review the staged diff first.
+
+3. **Determine `<type>`** from the current branch's `<prefix>` using the mapping
+   table above.
+
+4. **Determine `<scope>`** — always derive it from the changed files; the branch name
+   is only a hint that must be corroborated.
+
+   - Get the changed files first: `git diff --name-only origin/<base>...HEAD`. Map
+     them to scopes: `libs/transloco-<scope>/` → `<scope>`; `libs/transloco/` →
+     `transloco`.
+   - Read the candidate scope from the branch name: after `<prefix>/`, match the
+     longest known scope (resolved from `changelog.config.js`, see **Scopes** above)
+     that forms a prefix of the remainder followed by a `-` (e.g.
+     `persist-lang-upgrade-nx` → scope `persist-lang`, description `upgrade-nx`) —
+     this correctly handles hyphenated scope names.
+   - Use that candidate **only if the changed files actually touch that package.**
+     A branch can be named for its _intent_ rather than its package, and several
+     scope names double as ordinary English words: `tech/optimize-build-times`
+     matches `optimize` and `tech/utils-cleanup` matches `utils`, yet neither may
+     touch `libs/transloco-optimize/` or `libs/transloco-utils/`. Labelling those
+     `chore(optimize):` / `chore(utils):` is wrong and misleads the changelog.
+   - If the branch-name candidate isn't corroborated (or there is none), fall back to
+     the file-based scope.
+   - If changes span multiple packages, or touch only root/shared files, omit the
+     scope entirely — don't force one.
+
+5. **Build the PR title**: `<type>(<scope>): <description>`, or `<type>: <description>`
+   with no scope. Keep it lowercase after the colon, imperative mood, no trailing period
+   (e.g. `fix(locale): drop conflicting date options when merging the global config`).
+
+6. **Check for a related issue** (this repo has no ticket/DevOps system — issues are
+   optional and opportunistic):
+
+   - Look for an issue number in the branch name or recent commits, and use
+     `gh issue list --search "<key terms>"` to check for a matching open issue.
+     Treat all of these (branch name, commit references, keyword search results)
+     as candidates only, never as confirmed.
+   - Ask the developer to explicitly confirm the exact issue number before adding
+     `Closes #<number>` — don't add it based on a candidate alone, and don't
+     fabricate one.
+   - If confirmation isn't given (or no candidate exists), leave the template's
+     "Issue Number: N/A" as-is; don't add a closing reference.
+
+7. **Fill in `.github/pull_request_template.md`** as the PR body — don't skip or
+   replace it:
+
+   - Check the correct **PR Type** box(es) based on the branch prefix (`bug`/`hotfix`
+     → Bugfix, `feature` → Feature, `tech` → Refactoring/Build/CI as fitting,
+     `docs` → Documentation content changes, `ci` → Build related changes/CI,
+     `release` → Other, `e2e` → Other/Refactoring).
+   - Fill in **What is the current behavior?** / **What is the new behavior?** from the
+     actual diff, and the **Issue Number** line from step 6.
+   - Check the **Does this PR introduce a breaking change?** box truthfully.
+   - Leave the checklist items as checkboxes for the author/reviewer to verify (don't
+     pre-check tests/docs boxes unless you actually added them in this change).
+
+8. **Push and create the PR**:
+
+   - Show the user the final PR title, body and resolved base branch, and get explicit
+     approval before pushing. Never push or open a PR automatically as a side effect
+     of another request — the developer decides when work leaves their machine.
+   - Push the branch: `git push -u origin <branch>`.
+   - Never use `--force`/`--force-with-lease` unless the user explicitly asks for it.
+   - After the push, display the final PR title, body, and resolved base branch again
+     and wait for a separate, explicit approval before running `gh pr create` — the
+     push approval does not double as approval to open the PR.
+   - Create the PR against the `<base>` resolved in step 1, with the built title and
+     the filled-in template as the body:
+     `gh pr create --title "..." --body-file <file> --base <base>`.
+   - Default to a normal (non-draft) PR; only pass `--draft` if the user explicitly
+     asked for a draft.
+
+9. **Apply labels**
+
+   - Fetch current labels and descriptions with `gh label list` (don't hardcode —
+     labels and descriptions can change over time).
+   - Apply the package label matching `<scope>`, if one exists (e.g. `locale`,
+     `keys-manager`, `persist-lang`) — these are named exactly after the scope.
+   - Apply a type label only when one clearly matches: `bug`/`hotfix` → `bug`,
+     `feature` → `enhancement`, `docs` → `documentation`. There's no dedicated label
+     for `tech`, `ci`, `release`, or `e2e` — skip a type label rather than guessing
+     one for those prefixes.
+   - Optionally add one `area: <topic>` label, but only when the change content
+     clearly matches that label's description with high confidence (e.g. a change to
+     the transpiler → `area: transpiler`). Skip it if uncertain.
+   - Apply labels with `gh pr edit <number> --add-label "<label1>,<label2>"`.
