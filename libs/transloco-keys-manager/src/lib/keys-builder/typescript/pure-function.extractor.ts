@@ -1,11 +1,14 @@
-import { SourceFile } from 'typescript';
-import { tsquery } from '@phenomnomnominal/tsquery';
+import { isNamed } from '../../utils/ts-ast.utils';
 
-import { buildKeysFromASTNodes } from './build-keys-from-ast-nodes';
+import { buildKeysFromCall } from './build-keys-from-call';
+import { SourceFileScan } from './scan-source-file';
 import { TSExtractorResult } from './types';
 
-export function pureFunctionExtractor(ast: SourceFile): TSExtractorResult {
-  const fns = tsquery(ast, `CallExpression Identifier[text=translate]`);
-
-  return buildKeysFromASTNodes(fns);
+// `translate('key')` from `@jsverse/transloco`
+export function pureFunctionExtractor({
+  calls,
+}: SourceFileScan): TSExtractorResult {
+  return calls
+    .filter((call) => isNamed(call.expression, 'translate'))
+    .flatMap(buildKeysFromCall);
 }

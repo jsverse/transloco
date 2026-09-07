@@ -1,5 +1,3 @@
-import { tsquery, ScriptKind } from '@phenomnomnominal/tsquery';
-
 import {
   Config,
   ExtractionResult,
@@ -9,6 +7,7 @@ import {
 } from '../../types';
 import { readFile } from '../../utils/file.utils';
 import { regexFactoryMap } from '../../utils/regexs.utils';
+import { parseTsSource } from '../../utils/ts-ast.utils';
 import { addCommentSectionKeys } from '../add-comment-section-keys';
 import { addKey } from '../add-key';
 import { extractKeys } from '../utils/extract-keys';
@@ -17,57 +16,48 @@ import { resolveScopeAlias } from '../utils/resolvers.utils';
 import { inlineTemplateExtractor } from './inline-template';
 import { markerExtractor } from './marker.extractor';
 import { pureFunctionExtractor } from './pure-function.extractor';
+import { scanSourceFile, SourceFileScan } from './scan-source-file';
 import { serviceExtractor } from './service.extractor';
 import { signalExtractor } from './signal.extractor';
+import { TSExtractorResult } from './types';
 
 export function extractTSKeys(config: Config): ExtractionResult {
   return extractKeys(config, 'ts', TSExtractor);
 }
+
+type TSExtractor = (scan: SourceFileScan) => TSExtractorResult;
 
 const translocoImport = /@(jsverse|ngneat)\/transloco/;
 const translocoKeysManagerImport = /@(jsverse|ngneat)\/transloco-keys-manager/;
 function TSExtractor(config: ExtractorConfig): ScopeMap {
   const { file, scopes, defaultValue, scopeToKeys } = config;
   const content = readFile(file);
-  const extractors = [];
-
-  const hasTranslocoImport = translocoImport.test(content);
-  const hasMarkerImport = translocoKeysManagerImport.test(content);
-  const hasTranslocoUsage = content.includes('transloco');
-
-  if (hasTranslocoImport) {
-    extractors.push(serviceExtractor, pureFunctionExtractor, signalExtractor);
-  }
-
-  if (hasMarkerImport) {
-    extractors.push(markerExtractor);
-  }
-
-  const baseParams = {
-    scopeToKeys,
-    scopes,
-    defaultValue,
+  const baseParams = { scopeToKeys, scopes, defaultValue };
+  const commentParams = {
+    content,
+    regexFactory: regexFactoryMap.ts.comments,
+    ...baseParams,
   };
 
-  // Skip expensive AST parsing if no transloco-related content found.
-  // Note: hasTranslocoImport/hasMarkerImport imply hasTranslocoUsage, since
-  // both import regexes match strings that contain "transloco", so checking
-  // !hasTranslocoUsage alone is sufficient here.
-  if (!hasTranslocoUsage) {
-    addCommentSectionKeys({
-      content,
-      regexFactory: regexFactoryMap.ts.comments,
-      ...baseParams,
-    });
+  // Both import regexes contain "transloco", so this single check is enough
+  // to skip the expensive AST parse for files that cannot hold any key.
+  if (!content.includes('transloco')) {
+    addCommentSectionKeys(commentParams);
     return scopeToKeys;
   }
 
-  const ast = tsquery.ast(content, undefined, ScriptKind.TS);
+  const extractors: TSExtractor[] = [];
+  if (translocoImport.test(content)) {
+    extractors.push(serviceExtractor, pureFunctionExtractor, signalExtractor);
+  }
+  if (translocoKeysManagerImport.test(content)) {
+    extractors.push(markerExtractor);
+  }
 
-  extractors
-    .map((ex) => ex(ast))
-    .flat()
-    .forEach(({ key, lang, params }) => {
+  const scan = scanSourceFile(parseTsSource(content, file));
+
+  for (const extractor of extractors) {
+    for (const { key, lang, params } of extractor(scan)) {
       const [keyWithoutScope, scopeAlias] = resolveAliasAndKeyFromService(
         key,
         lang,
@@ -79,16 +69,13 @@ function TSExtractor(config: ExtractorConfig): ScopeMap {
         params,
         ...baseParams,
       });
-    });
+    }
+  }
 
   /** Check for dynamic markings */
-  addCommentSectionKeys({
-    content,
-    regexFactory: regexFactoryMap.ts.comments,
-    ...baseParams,
-  });
+  addCommentSectionKeys(commentParams);
 
-  inlineTemplateExtractor(ast, config);
+  inlineTemplateExtractor(scan, config);
 
   return scopeToKeys;
 }

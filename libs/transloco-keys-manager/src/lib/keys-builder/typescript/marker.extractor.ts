@@ -1,28 +1,20 @@
-import { SourceFile, Node } from 'typescript';
-import { tsquery } from '@phenomnomnominal/tsquery';
+import { isNamed, resolveImportedName } from '../../utils/ts-ast.utils';
 
-import { buildKeysFromASTNodes } from './build-keys-from-ast-nodes';
+import { buildKeysFromCall } from './build-keys-from-call';
+import { SourceFileScan } from './scan-source-file';
 import { TSExtractorResult } from './types';
 
-export function markerExtractor(ast: SourceFile): TSExtractorResult {
-  // workaround from https://github.com/estools/esquery/issues/68
-  const [importNode] = tsquery(
-    ast,
-    `ImportDeclaration:has([text=/^@(jsverse|ngneat)\\x2Ftransloco-keys-manager(\\x2Fmarker)?$/])`,
-  );
-  if (!importNode) {
-    return [];
-  }
-  const markerName = getMarkerName(importNode);
-  const fns = tsquery(ast, `CallExpression Identifier[text=${markerName}]`);
+const markerImport = /^@(jsverse|ngneat)\/transloco-keys-manager(\/marker)?$/;
 
-  return buildKeysFromASTNodes(fns, [markerName]);
-}
+// `marker('key')`, also under an import alias
+export function markerExtractor({
+  imports,
+  calls,
+}: SourceFileScan): TSExtractorResult {
+  const markerName = resolveImportedName(imports, markerImport, 'marker');
+  if (!markerName) return [];
 
-function getMarkerName(importNode: Node) {
-  const [defaultName, alias] = tsquery(
-    importNode,
-    'ImportSpecifier Identifier',
-  );
-  return (alias || defaultName).getText();
+  return calls
+    .filter((call) => isNamed(call.expression, markerName))
+    .flatMap(buildKeysFromCall);
 }
