@@ -32,9 +32,17 @@ export type ExtractionResult = {
   fileCount: number;
 };
 
+export type KeysDetectiveResult = {
+  /** Missing keys were found in at least one translation file. */
+  hasMissingKeys: boolean;
+  /** Extra keys were found in at least one translation file. */
+  hasExtraKeys: boolean;
+};
+
 export type ExtractorConfig = {
   file: string;
   scopes: Scopes;
+  langs: string[];
   defaultValue?: string;
   scopeToKeys: ScopeMap;
 };

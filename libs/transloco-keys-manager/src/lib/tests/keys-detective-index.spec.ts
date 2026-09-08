@@ -74,9 +74,7 @@ describe('findMissingKeys', () => {
       scopeToKeys,
       translationsPath: '/tmp/i18n',
       addMissingKeys: false,
-      emitErrorOnExtraKeys: false,
       fileFormat: 'json',
-      unflat: false,
     });
   });
 });

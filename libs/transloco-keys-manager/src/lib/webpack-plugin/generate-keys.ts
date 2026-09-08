@@ -1,12 +1,12 @@
 import { basename } from 'node:path';
 
 import { TranslocoGlobalConfig } from '@jsverse/transloco-utils';
-import { unflatten } from 'flat';
 import { sync as globSync } from 'glob';
 
+import { createTranslation } from '../keys-builder/utils/create-translation';
+import { getCurrentTranslation } from '../keys-builder/utils/get-current-translation';
 import { ScopeMap, Config } from '../types';
-import { readFile, writeFile } from '../utils/file.utils';
-import { mergeDeep } from '../utils/object.utils';
+import { writeFile } from '../utils/file.utils';
 
 type Params = {
   translationPath: string;
@@ -29,10 +29,13 @@ export function generateKeys({ translationPath, scopeToKeys, config }: Params) {
   const scopePaths = config.scopePathMap || {};
 
   const result = [];
+  // Scopes with an explicit path must not fall back to the default location.
+  const resolvedScopes = new Set<string>();
 
   for (const [scope, path] of Object.entries(scopePaths)) {
     const keys = scopeToKeys[scope];
     if (keys) {
+      resolvedScopes.add(scope);
       result.push({
         keys,
         files: globSync(`${path}/*.${config.fileFormat}`).filter(
@@ -43,23 +46,37 @@ export function generateKeys({ translationPath, scopeToKeys, config }: Params) {
   }
 
   for (const [scope, keys] of Object.entries(scopeToKeys)) {
-    if (keys) {
+    if (keys && !resolvedScopes.has(scope)) {
       const isGlobal = scope === '__global';
 
       result.push({
         keys,
         files: globSync(
-          `${translationPath}/${isGlobal ? '' : scope}*.${config.fileFormat}`,
+          `${translationPath}/${isGlobal ? '' : `${scope}/`}*.${
+            config.fileFormat
+          }`,
         ).filter(filterLangs(config)),
       });
     }
   }
 
-  for (const { files, keys: extractedKeys } of result) {
-    const keys = config.unflat ? unflatten(extractedKeys) : extractedKeys;
+  for (const { files, keys } of result) {
     for (const filePath of files) {
-      const translation = readFile(filePath, { parse: true });
-      writeFile(filePath, mergeDeep({}, keys, translation));
+      const currentTranslation = getCurrentTranslation({
+        path: filePath,
+        fileFormat: config.fileFormat,
+      });
+
+      writeFile(
+        filePath,
+        createTranslation({
+          translation: keys,
+          currentTranslation,
+          replace: false,
+          removeExtraKeys: false,
+          fileFormat: config.fileFormat,
+        }),
+      );
     }
   }
 }
