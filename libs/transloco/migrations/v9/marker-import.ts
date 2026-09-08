@@ -114,7 +114,7 @@ export function migrateMarkerImport(): Rule {
   return (tree: Tree, context: SchematicContext) => {
     let migrated = 0;
 
-    for (const path of collectFiles(tree, '', ['.ts'])) {
+    for (const path of collectFiles(tree, '', ['.ts', '.mts'])) {
       const source = tree.read(path)?.toString();
       if (!source || !source.includes(PACKAGE)) continue;
 

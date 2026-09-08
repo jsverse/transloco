@@ -955,6 +955,21 @@ describe('migration-v9', () => {
       `import { marker } from '@jsverse/transloco-keys-manager/marker';`,
     );
   });
+
+  it(`GIVEN an .mts file importing marker from the top-level keys-manager package
+      WHEN the migration runs
+      THEN the import is repointed to the /marker subpath`, async () => {
+    const tree = await run((host) =>
+      host.create(
+        '/projects/bar/src/app/keys.mts',
+        `import { marker } from '@jsverse/transloco-keys-manager';`,
+      ),
+    );
+
+    expect(tree.readContent('/projects/bar/src/app/keys.mts')).toBe(
+      `import { marker } from '@jsverse/transloco-keys-manager/marker';`,
+    );
+  });
 });
 
 describe('migration-v9 without a workspace file', () => {
