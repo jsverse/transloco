@@ -152,6 +152,7 @@ export class TranslationLoadError extends Error {
 export class TranslocoService {
   langChanges$: Observable<string>;
 
+  private loader: TranslocoLoader;
   private translations = new Map<string, Translation>();
   private cache = new Map<string, Observable<Translation>>();
   private firstFallbackLang: string | undefined;
@@ -182,7 +183,7 @@ export class TranslocoService {
   private destroyed = false;
 
   constructor(
-    @Optional() @Inject(TRANSLOCO_LOADER) private loader: TranslocoLoader,
+    @Optional() @Inject(TRANSLOCO_LOADER) loader: TranslocoLoader | null,
     @Inject(TRANSLOCO_TRANSPILER) private parser: TranslocoTranspiler,
     @Inject(TRANSLOCO_MISSING_HANDLER)
     private missingHandler: TranslocoMissingHandler,
@@ -191,9 +192,7 @@ export class TranslocoService {
     @Inject(TRANSLOCO_FALLBACK_STRATEGY)
     private fallbackStrategy: TranslocoFallbackStrategy,
   ) {
-    if (!this.loader) {
-      this.loader = new DefaultLoader(this.translations);
-    }
+    this.loader = loader ?? new DefaultLoader(this.translations);
     this.config = JSON.parse(JSON.stringify(userConfig));
 
     this.setAvailableLangs(this.config.availableLangs || []);
