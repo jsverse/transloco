@@ -352,11 +352,15 @@ export class TranslocoService {
    * translate<string[]>(['hello', 'key'])
    * translate('hello', { }, 'en')
    * translate('scope.someKey', { }, 'en')
+   *
+   * When no language is given, the active language is read from the
+   * `activeLang` signal, so calling this method inside a reactive context
+   * (e.g. a `computed`) re-runs it when the active language changes.
    */
   translate<T = string>(
     key: TranslateParams,
     params: HashMap = {},
-    lang = this.getActiveLang(),
+    lang = this.activeLang(),
   ): T {
     if (!key) return key as any;
 
@@ -473,7 +477,7 @@ export class TranslocoService {
   translateObject<T = any>(
     key: TranslateObjectParams,
     params: HashMap | null = {},
-    lang = this.getActiveLang(),
+    lang = this.activeLang(),
   ): T | T[] {
     if (isString(key) || Array.isArray(key)) {
       const { resolveLang, scope } = this.resolveLangAndScope(lang);
