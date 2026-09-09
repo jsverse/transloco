@@ -1,3 +1,21 @@
+## 9.0.0-alpha.2 (2026-09-09)
+
+### 🚀 Features
+
+- **keys-manager:** publish marker as an ESM-only subpath export ([#1010](https://github.com/jsverse/transloco/pull/1010))
+
+### 🩹 Fixes
+
+- **transloco:** include LICENSE in all published packages ([#996](https://github.com/jsverse/transloco/pull/996))
+- **transloco:** strip a leading BOM in keys-manager and optimize ([#1002](https://github.com/jsverse/transloco/pull/1002))
+- **validator:** support UTF-8 BOM in translation files ([#1000](https://github.com/jsverse/transloco/pull/1000), [#609](https://github.com/jsverse/transloco/issues/609))
+
+### ❤️ Thank You
+
+- Artur @arturovt
+- Mohamed Ben Makhlouf @medbenmakhlouf
+- Shahar Kazaz @shaharkazaz
+
 ## 9.0.0-alpha.1 (2026-08-19)
 
 This was a version bump only, there were no code changes.

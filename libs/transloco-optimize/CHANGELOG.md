@@ -1,3 +1,14 @@
+## 9.0.0-alpha.2 (2026-09-09)
+
+### 🩹 Fixes
+
+- **transloco:** strip a leading BOM in keys-manager and optimize ([#1002](https://github.com/jsverse/transloco/pull/1002))
+- **transloco:** include LICENSE in all published packages ([#996](https://github.com/jsverse/transloco/pull/996))
+
+### ❤️ Thank You
+
+- Shahar Kazaz @shaharkazaz
+
 ## 9.0.0-alpha.1 (2026-08-19)
 
 This was a version bump only for transloco-optimize to align it with other projects, there were no code changes.

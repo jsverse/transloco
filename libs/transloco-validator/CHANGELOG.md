@@ -1,3 +1,15 @@
+## 9.0.0-alpha.2 (2026-09-09)
+
+### 🩹 Fixes
+
+- **validator:** support UTF-8 BOM in translation files ([#1000](https://github.com/jsverse/transloco/pull/1000), [#609](https://github.com/jsverse/transloco/issues/609))
+- **transloco:** include LICENSE in all published packages ([#996](https://github.com/jsverse/transloco/pull/996))
+
+### ❤️ Thank You
+
+- Artur @arturovt
+- Shahar Kazaz @shaharkazaz
+
 ## 9.0.0-alpha.1 (2026-08-19)
 
 This was a version bump only for transloco-validator to align it with other projects, there were no code changes.
