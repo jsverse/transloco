@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 
 import {
+  injectTransloco,
   TranslocoModule,
   translateObjectSignal,
   translateSignal,
@@ -21,6 +22,9 @@ export class HomeComponent {
   translocoObject = translateObjectSignal('nested');
   translocoParams = translateSignal('alert', { value: this.dynamic });
   translocoKeys = translateSignal(this.key);
+
+  t = injectTransloco();
+  nested = this.t.read('nested');
 
   translateList = ['home', 'a.b.c', 'b', 'c'];
 

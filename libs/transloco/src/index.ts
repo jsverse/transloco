@@ -67,6 +67,11 @@ export {
 } from './lib/transloco.providers';
 export { translateSignal, translateObjectSignal } from './lib/transloco.signal';
 export {
+  injectTransloco,
+  InjectTranslocoOptions,
+  TranslocoRef,
+} from './lib/transloco.inject';
+export {
   getBrowserLang,
   getBrowserCultureLang,
   isBrowser,

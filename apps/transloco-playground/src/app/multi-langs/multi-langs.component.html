@@ -2,6 +2,7 @@
 <ng-container *transloco="let t">
   <p data-cy="global">{{ t('home') }}</p>
 </ng-container>
+<p data-cy="s-global">{{ global() }}</p>
 
 <h4>Spanish: (inline lang, scope: lazy-page)</h4>
 <ng-container
@@ -9,6 +10,7 @@
 >
   <p data-cy="with-scope">{{ t('lazyPage.title') }}</p>
 </ng-container>
+<p data-cy="s-with-scope">{{ withScope() }}</p>
 
 <app-provider-lang />
 

@@ -26,4 +26,12 @@ export async function testScopeSharingContent(page: Page, lang = 'english') {
     `My scope name was mapped! ${lang}`,
   );
   await expectContains(page, `[data-cy=p-global]`, `home ${lang}`);
+
+  // Signal - regression coverage for translateSignal auto-prefixing with an
+  // *explicit* scope alias (not just the default camelCase mapping)
+  await expectContains(
+    page,
+    `[data-cy=s-todos-page-scope]`,
+    `My scope name was mapped! ${lang}`,
+  );
 }

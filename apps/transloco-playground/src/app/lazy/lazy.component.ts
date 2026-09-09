@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { TranslocoDirective } from '@jsverse/transloco';
+import { TranslocoDirective, translateSignal } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-lazy',
@@ -8,4 +8,9 @@ import { TranslocoDirective } from '@jsverse/transloco';
   styleUrls: ['./lazy.component.scss'],
   imports: [TranslocoDirective],
 })
-export default class LazyComponent {}
+export default class LazyComponent {
+  // Auto-prefixed via the `admin-page` scope provided at the route level (no
+  // explicit scope argument needed).
+  adminTitle = translateSignal('title');
+  lazyPageTitle = translateSignal('title', undefined, 'lazy-page');
+}

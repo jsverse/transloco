@@ -50,4 +50,29 @@ export async function testHomeContent(page: Page, lang = 'english') {
   // Loop
   await expectContains(page, `[data-cy=translation-loop]`, `b ${lang}`);
   await expectContains(page, `[data-cy=translation-loop]`, `c ${lang}`);
+
+  // Inject
+  const langCode = lang === 'spanish' ? 'es' : 'en';
+  await expectContains(page, `[data-cy=i-regular]`, `home ${lang}`);
+  await expectContains(page, `[data-cy=i-object]`, `Title ${lang}`);
+  await expectContains(page, `[data-cy=i-with-params]`, `alert 🦄 ${lang}`);
+  await expectContains(
+    page,
+    `[data-cy=i-with-translation-reuse]`,
+    `a.b.c from list ${lang}`,
+  );
+  await expectContains(page, `[data-cy=i-read-prefix]`, `Title ${lang}`);
+  await expectContains(page, `[data-cy=i-current-lang]`, langCode);
+
+  // Inject - dynamic key
+  await page.locator(`[data-cy=i-dynamic-key]`).click();
+  await expectContains(page, `[data-cy=i-dynamic-key]`, `from list`);
+  await page.locator(`[data-cy=i-dynamic-key]`).click();
+  await expectContains(page, `[data-cy=i-dynamic-key]`, `home ${lang}`);
+
+  // Inject - dynamic params
+  await page.locator(`[data-cy=i-with-params]`).click();
+  await expectContains(page, `[data-cy=i-with-params]`, `alert 🦄🦄🦄 ${lang}`);
+  await page.locator(`[data-cy=i-with-params]`).click();
+  await expectContains(page, `[data-cy=i-with-params]`, `🦄 ${lang}`);
 }

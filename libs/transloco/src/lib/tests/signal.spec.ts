@@ -13,8 +13,10 @@ import { Translation } from '../transloco.types';
 import { TranslocoModule } from '../transloco.module';
 import { TranslocoTestingModule } from '../transloco-testing.module';
 import { translateSignal, translateObjectSignal } from '../transloco.signal';
+import { translocoConfig } from '../transloco.config';
+import { provideTransloco } from '../transloco.providers';
 
-import { providersMock, runLoader } from './mocks';
+import { MockedLoader, providersMock, runLoader } from './mocks';
 
 @Component({
   imports: [TranslocoModule],
@@ -37,6 +39,7 @@ class TestComponent implements OnInit {
   private readonly injector = inject(Injector);
   translatedText = translateSignal('home');
   translatedObject = translateObjectSignal('nested');
+  translatedArrayKeys = translateSignal(['home', 'b']);
 
   dynamicKey = signal('home');
   dynamicParam = signal('Signal');
@@ -104,6 +107,26 @@ describe('translateSignal in component', () => {
     runLoader();
     spectator.detectChanges();
     expect(spectator.query('#text')).toHaveText('home english');
+  }));
+
+  it(`GIVEN translateSignal with an array of static keys
+      WHEN translations haven't loaded yet
+      THEN the initial value should have one empty string per key`, fakeAsync(() => {
+    spectator = createComponent();
+    spectator.detectChanges();
+    expect(spectator.component.translatedArrayKeys()).toEqual(['', '']);
+  }));
+
+  it(`GIVEN translateSignal with an array of static keys
+      WHEN translations are loaded
+      THEN should resolve each key in order`, fakeAsync(() => {
+    spectator = createComponent();
+    runLoader();
+    spectator.detectChanges();
+    expect(spectator.component.translatedArrayKeys()).toEqual([
+      'home english',
+      'b english',
+    ]);
   }));
 
   it(`GIVEN translateSignal with static key outside of an injection context
@@ -259,4 +282,91 @@ describe('Synchronous translateSignal', () => {
       'TranslatedHome',
     );
   });
+});
+
+describe('translateSignal/translateObjectSignal with scope', () => {
+  // Regression test: translateSignal/translateObjectSignal have always auto-prefixed keys
+  // with the active scope (config.scopes.autoPrefixKeys, default true) - unlike the
+  // *transloco directive/pipe, which require the caller to prefix the key manually
+  // (translocoPrefix or writing the scope into the key by hand). 'title'/'obj' below are
+  // deliberately left unprefixed - a rewrite of the scope/lang resolution engine once
+  // silently broke this by passing a scope-stripped lang to service.translate/translateObject
+  // instead of the scope-embedded path.
+  @Component({
+    imports: [TranslocoModule],
+    template: `
+      <div id="text">{{ translatedText() }}</div>
+      <div id="object">{{ translatedObject().a?.b }}</div>
+    `,
+  })
+  class TestScopedComponent {
+    translatedText = translateSignal('title', undefined, 'lazy-page');
+    translatedObject = translateObjectSignal('obj', undefined, 'lazy-page');
+  }
+
+  let spectator: Spectator<TestScopedComponent>;
+  const createComponent = createComponentFactory({
+    component: TestScopedComponent,
+    imports: [TranslocoModule],
+    providers: providersMock,
+  });
+
+  it(`GIVEN translateSignal/translateObjectSignal with a scope and an unprefixed key
+      WHEN the scope loads
+      THEN they should auto-prefix the key with the scope and display the translated value`, fakeAsync(() => {
+    spectator = createComponent();
+    runLoader();
+    spectator.detectChanges();
+    expect(spectator.query('#text')).toHaveText('Admin Lazy english');
+    expect(spectator.query('#object')).toHaveText('a.b english');
+  }));
+});
+
+describe('translateSignal with scopes.autoPrefixKeys disabled', () => {
+  // Covers the other branch of the auto-prefix behavior above: with
+  // config.scopes.autoPrefixKeys: false, translateSignal must NOT prefix an
+  // unprefixed key with the active scope - the caller has to spell out the
+  // full key themselves, same as translate()/translateObject() already do
+  // for the directive/pipe regardless of this flag.
+  @Component({
+    imports: [TranslocoModule],
+    template: `
+      <div id="unprefixed">{{ unprefixed() }}</div>
+      <div id="manuallyPrefixed">{{ manuallyPrefixed() }}</div>
+    `,
+  })
+  class TestNoAutoPrefixComponent {
+    unprefixed = translateSignal('title', undefined, 'lazy-page');
+    manuallyPrefixed = translateSignal(
+      'lazyPage.title',
+      undefined,
+      'lazy-page',
+    );
+  }
+
+  let spectator: Spectator<TestNoAutoPrefixComponent>;
+  const createComponent = createComponentFactory({
+    component: TestNoAutoPrefixComponent,
+    imports: [TranslocoModule],
+    providers: provideTransloco({
+      config: translocoConfig({
+        availableLangs: ['en', 'es'],
+        scopes: { autoPrefixKeys: false },
+      }),
+      loader: MockedLoader,
+    }),
+  });
+
+  it(`GIVEN translateSignal with a scope and scopes.autoPrefixKeys disabled
+      WHEN the scope loads
+      THEN an unprefixed key should not resolve, but a manually-prefixed one should`, fakeAsync(() => {
+    spectator = createComponent();
+    runLoader();
+    spectator.detectChanges();
+    // Falls back to the missing-key handler's default (returns the key as-is).
+    expect(spectator.query('#unprefixed')).toHaveText('title');
+    expect(spectator.query('#manuallyPrefixed')).toHaveText(
+      'Admin Lazy english',
+    );
+  }));
 });
