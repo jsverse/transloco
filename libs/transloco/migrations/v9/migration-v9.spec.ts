@@ -13,6 +13,7 @@ import {
   providesGlobalTranslateFn,
   usesGlobalTranslateFn,
 } from './global-translate-fn';
+import { migrateMarkerImportSource } from './marker-import';
 
 const collectionPath = nodePath.join(__dirname, '../migration.json');
 
@@ -738,6 +739,91 @@ describe('providesGlobalTranslateFn', () => {
   });
 });
 
+describe('migrateMarkerImportSource', () => {
+  it(`GIVEN marker imported alone from the top-level package
+      WHEN the source is migrated
+      THEN the specifier is repointed to the /marker subpath`, () => {
+    const result = migrateMarkerImportSource(
+      `import { marker } from '@jsverse/transloco-keys-manager';`,
+    );
+
+    expect(result?.content).toBe(
+      `import { marker } from '@jsverse/transloco-keys-manager/marker';`,
+    );
+    expect(result?.migrated).toBe(1);
+  });
+
+  it(`GIVEN marker imported under an alias
+      WHEN the source is migrated
+      THEN the alias is preserved on the new specifier`, () => {
+    const result = migrateMarkerImportSource(
+      `import { marker as mark } from '@jsverse/transloco-keys-manager';`,
+    );
+
+    expect(result?.content).toBe(
+      `import { marker as mark } from '@jsverse/transloco-keys-manager/marker';`,
+    );
+  });
+
+  it(`GIVEN double-quoted marker import
+      WHEN the source is migrated
+      THEN the new specifier keeps the same quote style`, () => {
+    const result = migrateMarkerImportSource(
+      `import { marker } from "@jsverse/transloco-keys-manager";`,
+    );
+
+    expect(result?.content).toBe(
+      `import { marker } from "@jsverse/transloco-keys-manager/marker";`,
+    );
+  });
+
+  it(`GIVEN marker imported alongside another named export
+      WHEN the source is migrated
+      THEN marker moves to its own import and the rest is left in place`, () => {
+    const result = migrateMarkerImportSource(
+      `import { TranslocoExtractKeysWebpackPlugin, marker } from '@jsverse/transloco-keys-manager';`,
+    );
+
+    expect(result?.content).toBe(
+      [
+        `import { TranslocoExtractKeysWebpackPlugin } from '@jsverse/transloco-keys-manager';`,
+        `import { marker } from '@jsverse/transloco-keys-manager/marker';`,
+      ].join('\n'),
+    );
+    expect(result?.migrated).toBe(1);
+  });
+
+  it(`GIVEN marker already imported from the /marker subpath
+      WHEN the source is migrated
+      THEN nothing changes`, () => {
+    expect(
+      migrateMarkerImportSource(
+        `import { marker } from '@jsverse/transloco-keys-manager/marker';`,
+      ),
+    ).toBeNull();
+  });
+
+  it(`GIVEN a type-only marker import
+      WHEN the source is migrated
+      THEN it is left alone, since it is erased before the app runs`, () => {
+    expect(
+      migrateMarkerImportSource(
+        `import type { marker } from '@jsverse/transloco-keys-manager';`,
+      ),
+    ).toBeNull();
+  });
+
+  it(`GIVEN a file that never imports marker
+      WHEN the source is migrated
+      THEN nothing changes`, () => {
+    expect(
+      migrateMarkerImportSource(
+        `import { TranslocoExtractKeysWebpackPlugin } from '@jsverse/transloco-keys-manager';`,
+      ),
+    ).toBeNull();
+  });
+});
+
 describe('migration-v9', () => {
   const schematicRunner = new SchematicTestRunner('migrations', collectionPath);
 
@@ -852,6 +938,36 @@ describe('migration-v9', () => {
 
     expect(tree.readContent('/projects/bar/src/app/app.config.ts')).toContain(
       'provideGlobalTranslateFn()',
+    );
+  });
+
+  it(`GIVEN a file importing marker from the top-level keys-manager package
+      WHEN the migration runs
+      THEN the import is repointed to the /marker subpath`, async () => {
+    const tree = await run((host) =>
+      host.create(
+        '/projects/bar/src/app/keys.ts',
+        `import { marker } from '@jsverse/transloco-keys-manager';`,
+      ),
+    );
+
+    expect(tree.readContent('/projects/bar/src/app/keys.ts')).toBe(
+      `import { marker } from '@jsverse/transloco-keys-manager/marker';`,
+    );
+  });
+
+  it(`GIVEN an .mts file importing marker from the top-level keys-manager package
+      WHEN the migration runs
+      THEN the import is repointed to the /marker subpath`, async () => {
+    const tree = await run((host) =>
+      host.create(
+        '/projects/bar/src/app/keys.mts',
+        `import { marker } from '@jsverse/transloco-keys-manager';`,
+      ),
+    );
+
+    expect(tree.readContent('/projects/bar/src/app/keys.mts')).toBe(
+      `import { marker } from '@jsverse/transloco-keys-manager/marker';`,
     );
   });
 });

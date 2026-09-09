@@ -10,8 +10,8 @@
       "default": "./src/lib/transloco-keys-manager.js"
     },
     "./marker": {
-      "types": "./src/lib/marker.d.ts",
-      "default": "./src/lib/marker.js"
+      "types": "./src/lib/marker.d.mts",
+      "default": "./src/lib/marker.mjs"
     },
     "./package.json": "./package.json"
   },

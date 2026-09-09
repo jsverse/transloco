@@ -8,6 +8,7 @@ import {
 import { migrateInlineTemplates, migrateTemplate } from './template-utils';
 import { collectFiles } from './workspace-utils';
 import { addGlobalTranslateFn } from './global-translate-fn';
+import { migrateMarkerImport } from './marker-import';
 import { reportVersionFloors } from './report-version-floors';
 
 /**
@@ -80,6 +81,7 @@ export function migrateToV9(): Rule {
     return chain([
       migrateTranslocoRead(),
       addGlobalTranslateFn(),
+      migrateMarkerImport(),
       reportVersionFloors(),
     ])(tree, context);
   };
