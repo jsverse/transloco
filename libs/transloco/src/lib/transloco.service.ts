@@ -506,20 +506,30 @@ export class TranslocoService {
     return translations;
   }
 
+  /**
+   * Load the translation file (if not loaded yet) and behaves the same as translateObject.
+   *
+   * @example
+   *
+   * selectTranslateObject<string>('someObject').subscribe(value => ...)
+   * selectTranslateObject('someObject', {}, 'es').subscribe(value => ...)
+   * selectTranslateObject('someObject', {}, 'todos').subscribe(value => ...)
+   * selectTranslateObject('someObject', {}, { scope: 'todos' }).subscribe(value => ...)
+   */
   selectTranslateObject<T = any>(
     key: string,
     params?: HashMap,
-    lang?: string,
+    lang?: string | TranslocoScope | TranslocoScope[],
   ): Observable<T>;
   selectTranslateObject<T = any>(
     key: string[],
     params?: HashMap,
-    lang?: string,
+    lang?: string | TranslocoScope | TranslocoScope[],
   ): Observable<T[]>;
   selectTranslateObject<T = any>(
     key: TranslateParams,
     params?: HashMap,
-    lang?: string,
+    lang?: string | TranslocoScope | TranslocoScope[],
   ): Observable<T> | Observable<T[]>;
   selectTranslateObject<T = any>(
     key: HashMap | Map<string, HashMap>,
@@ -529,21 +539,28 @@ export class TranslocoService {
   selectTranslateObject<T = any>(
     key: TranslateObjectParams,
     params?: HashMap | null,
-    lang?: string,
+    lang?: string | TranslocoScope | TranslocoScope[],
   ): Observable<T> | Observable<T[]> {
     if (isString(key) || Array.isArray(key)) {
       return this.selectTranslate<T>(key, params!, lang, true);
     }
 
+    // The key-map form has no scope argument, so `lang` is always a plain string here.
+    const stringLang = lang as string | undefined;
+
     const [[firstKey, firstParams], ...rest] = this.getEntries(key);
 
     /* In order to avoid subscribing multiple times to the load language event by calling selectTranslateObject for each pair,
      * we listen to when the first key has been translated (the language is loaded) and translate the rest synchronously */
-    return this.selectTranslateObject<T>(firstKey, firstParams, lang).pipe(
+    return this.selectTranslateObject<T>(
+      firstKey,
+      firstParams,
+      stringLang,
+    ).pipe(
       map((value) => {
         const translations = [value];
         for (const [_key, _params] of rest) {
-          translations.push(this.translateObject<T>(_key, _params, lang));
+          translations.push(this.translateObject<T>(_key, _params, stringLang));
         }
 
         return translations;
