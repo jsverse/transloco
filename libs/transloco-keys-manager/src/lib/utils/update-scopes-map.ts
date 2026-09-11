@@ -26,7 +26,21 @@ interface ScopeDef {
 type ScopeResolver = (node: Node) => ScopeDef[];
 
 const tokenProviderQuery = `ObjectLiteralExpression:has(PropertyAssignment > Identifier[name=TRANSLOCO_SCOPE]) > PropertyAssignment > Identifier[name=/useValue|useFactory/]`;
-const functionProviderQuery = `CallExpression > Identifier[name=provideTranslocoScope]`;
+
+function buildFunctionProviderQuery(scopeProviderFunctions: string[] = []) {
+  return ['provideTranslocoScope', ...scopeProviderFunctions]
+    .map((name) => `CallExpression > Identifier[name=${name}]`)
+    .join(', ');
+}
+
+function buildProviderRegex(scopeProviderFunctions: string[] = []) {
+  const names = [
+    'TRANSLOCO_SCOPE',
+    'provideTranslocoScope',
+    ...scopeProviderFunctions,
+  ];
+  return new RegExp(`(${names.join('|')})`);
+}
 
 function stringQueryDef(rootNode: Node) {
   return (
@@ -62,9 +76,11 @@ function objectQueryDef(rootNode: Node) {
 // Order is important, we check if it's an object first, then string
 const scopeValueQueries: ScopeResolver[] = [objectQueryDef, stringQueryDef];
 
-type Options = { input?: string[]; files?: string[] };
-
-const translocoProvider = /(TRANSLOCO_SCOPE|provideTranslocoScope)/;
+type Options = {
+  input?: string[];
+  files?: string[];
+  scopeProviderFunctions?: string[];
+};
 
 export function updateScopesMap(
   options: Omit<Options, 'input'>,
@@ -75,11 +91,17 @@ export function updateScopesMap(
 export function updateScopesMap({
   input,
   files,
+  scopeProviderFunctions,
 }: Options): Scopes['aliasToScope'] {
   const tsFiles =
     files || input!.map((path) => normalizedGlob(`${path}/**/*.ts`)).flat();
   // Return only the new scopes (for the plugin)
   const aliasToScope: Record<Alias, Scope> = {};
+
+  const translocoProvider = buildProviderRegex(scopeProviderFunctions);
+  const functionProviderQuery = buildFunctionProviderQuery(
+    scopeProviderFunctions,
+  );
 
   for (const file of tsFiles) {
     const content = readFile(file);

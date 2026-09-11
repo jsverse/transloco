@@ -23,6 +23,8 @@ const sharedOptions = [
   'unflat',
   'defaultValue',
   'translationsPath',
+  'scopeProviderFunctions',
+  'serviceNames',
   'help',
 ];
 

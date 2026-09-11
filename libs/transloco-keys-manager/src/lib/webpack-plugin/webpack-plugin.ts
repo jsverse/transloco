@@ -49,7 +49,10 @@ export class TranslocoExtractKeysWebpackPlugin {
           let tsResult = initExtraction();
           if (keysExtractions.ts.length) {
             // Maybe someone added a TRANSLOCO_SCOPE
-            const newScopes = updateScopesMap({ files: keysExtractions.ts });
+            const newScopes = updateScopesMap({
+              files: keysExtractions.ts,
+              scopeProviderFunctions: this.config.scopeProviderFunctions,
+            });
 
             const paths = buildScopeFilePaths({
               aliasToScope: newScopes,

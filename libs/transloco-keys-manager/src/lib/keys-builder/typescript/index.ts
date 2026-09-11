@@ -27,16 +27,22 @@ export function extractTSKeys(config: Config): ExtractionResult {
 const translocoImport = /@(jsverse|ngneat)\/transloco/;
 const translocoKeysManagerImport = /@(jsverse|ngneat)\/transloco-keys-manager/;
 function TSExtractor(config: ExtractorConfig): ScopeMap {
-  const { file, scopes, defaultValue, scopeToKeys } = config;
+  const { file, scopes, defaultValue, scopeToKeys, serviceNames } = config;
   const content = readFile(file);
   const extractors = [];
 
   const hasTranslocoImport = translocoImport.test(content);
   const hasMarkerImport = translocoKeysManagerImport.test(content);
-  const hasTranslocoUsage = content.includes('transloco');
+  const hasCustomService =
+    serviceNames?.some((name) => content.includes(name)) ?? false;
+  const hasTranslocoUsage = content.includes('transloco') || hasCustomService;
 
   if (hasTranslocoImport) {
     extractors.push(serviceExtractor, pureFunctionExtractor, signalExtractor);
+  } else if (hasCustomService) {
+    // Custom wrapper services live behind arbitrary import paths, so the
+    // transloco import gate doesn't apply to them.
+    extractors.push(serviceExtractor);
   }
 
   if (hasMarkerImport) {
@@ -65,7 +71,7 @@ function TSExtractor(config: ExtractorConfig): ScopeMap {
   const ast = tsquery.ast(content, undefined, ScriptKind.TS);
 
   extractors
-    .map((ex) => ex(ast))
+    .map((ex) => ex(ast, serviceNames))
     .flat()
     .forEach(({ key, lang, params }) => {
       const [keyWithoutScope, scopeAlias] = resolveAliasAndKeyFromService(

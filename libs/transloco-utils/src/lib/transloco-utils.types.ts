@@ -15,5 +15,7 @@ export interface TranslocoGlobalConfig {
     defaultValue?: string | undefined;
     unflat?: boolean;
     sort?: boolean;
+    scopeProviderFunctions?: string[];
+    serviceNames?: string[];
   };
 }

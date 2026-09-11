@@ -30,6 +30,7 @@ export type TranslationTestCase =
   | 'config-options/unflat-problematic-keys'
   | 'config-options/multi-input'
   | 'config-options/scope-mapping'
+  | 'config-options/custom-providers'
   | 'config-options/remove-extra-keys'
   | 'comments';
 

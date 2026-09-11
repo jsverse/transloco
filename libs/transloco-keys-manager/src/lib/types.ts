@@ -20,6 +20,8 @@ export type Config = {
   unflat: boolean;
   command: 'extract' | 'find';
   fileFormat: FileFormats;
+  scopeProviderFunctions?: string[];
+  serviceNames?: string[];
   /** @internal - Used for ${sourceRoot} interpolation in scopePathMap */
   __sourceRoot?: string;
 };
@@ -37,6 +39,7 @@ export type ExtractorConfig = {
   scopes: Scopes;
   defaultValue?: string;
   scopeToKeys: ScopeMap;
+  serviceNames?: string[];
 };
 
 export type Scopes = {
