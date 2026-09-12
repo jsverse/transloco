@@ -44,6 +44,24 @@ Transloco is your all-in-one solution for internationalizing Angular application
 - 📖 &nbsp;Dive into insightful [blog posts](https://jsverse.gitbook.io/transloco/resources/blog-posts).
 - ❓ &nbsp;Find answers to common questions in our [FAQs](https://jsverse.gitbook.io/transloco/resources/faqs).
 
+## AI Agent Skills 🤖
+
+Transloco ships [Agent Skills](https://skills.sh/) that teach AI coding agents (Claude Code, Copilot, Cursor, and [others](https://github.com/vercel-labs/skills#supported-agents)) how to use Transloco correctly — the right API to reach for, config, scopes, plugins, migrations, and the Keys Manager CLI, all grounded in this repo's source and docs.
+
+Install all of them with:
+
+```bash
+npx skills add https://github.com/jsverse/transloco
+```
+
+Or install a single skill:
+
+```bash
+npx skills add jsverse/transloco --skill transloco-core
+```
+
+Available skills live under [`skills/`](./skills): `transloco-core`, `transloco-plugins`, `transloco-migration`, `transloco-keys-manager`.
+
 ## Contributors ✨
 
 Thank goes to all these wonderful [people who contributed](https://github.com/jsverse/transloco/graphs/contributors) ❤️
