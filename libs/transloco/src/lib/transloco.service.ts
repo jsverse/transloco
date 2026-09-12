@@ -840,12 +840,33 @@ export class TranslocoService {
     }
 
     const splitted = lang.split('/');
+    const isScoped = splitted.length > 1;
     const fallbacks = loadOptions.fallbackLangs;
     const nextLang = fallbacks![loadOptions.failedCounter!];
     this.failedLangs.add(lang);
 
     // This handles the case where a loaded fallback language is requested again
     if (this.cache.has(nextLang)) {
+      if (isScoped) {
+        // Bailing out here breaks an infinite load loop (#647). Example: `en` is
+        // the active, already-cached lang and `admin/en.json` 404s. Without this
+        // guard, handleSuccess('en') runs, evicts `admin/en` from the cache and
+        // emits `wasFailure` -> the events$ subscription calls setActiveLang('en')
+        // -> langChanges$ fires -> every directive re-subscribes -> `admin/en` is
+        // no longer cached -> it re-fetches -> 404 -> repeat forever. So for a
+        // scope, keep the cache entry and leave the active language alone.
+        //
+        // Drop the whole scoped fallback chain (`admin/en`, `admin/es`, ...), not
+        // just the current path - a leftover entry would make the next unrelated
+        // handleSuccess report `wasFailure`, evict that path and flip the lang.
+        const scopePrefix = `${splitted.slice(0, -1).join('/')}/`;
+        this.failedLangs.forEach((failedLang) => {
+          if (failedLang.startsWith(scopePrefix)) {
+            this.failedLangs.delete(failedLang);
+          }
+        });
+        return EMPTY;
+      }
       this.handleSuccess(nextLang, this.getTranslation(nextLang));
       return EMPTY;
     }
