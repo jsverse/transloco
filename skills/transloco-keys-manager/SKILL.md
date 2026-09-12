@@ -25,11 +25,19 @@ npm install -D @jsverse/transloco-keys-manager
 }
 ```
 
-Or via schematics: install `@jsverse/transloco-schematics` as a dev dependency, then run `ng g @jsverse/transloco-schematics:keys-manager` (choose CLI, Webpack plugin, or both).
+Or via schematics: install `@jsverse/transloco-schematics` as a dev dependency, then run `ng g @jsverse/transloco-schematics:keys-manager` (choose CLI, Webpack plugin, or both). The schematic then installs `@jsverse/transloco-keys-manager` itself, unpinned — it always resolves the `latest` dist-tag regardless of which channel the schematic came from.
 
 ```bash
 npm install -D @jsverse/transloco-schematics
 ng g @jsverse/transloco-schematics:keys-manager
+```
+
+On the v9/`next` line, install the schematic with the matching tag, then re-pin the keys-manager package the schematic installs (it doesn't know to use `@next` itself):
+
+```bash
+npm install -D @jsverse/transloco-schematics@next
+ng g @jsverse/transloco-schematics:keys-manager
+npm install -D @jsverse/transloco-keys-manager@next
 ```
 
 ## `extract` — generate/update translation files

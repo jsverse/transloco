@@ -28,7 +28,7 @@ jobs:
         with: { node-version: '22' }
       - run: npm ci
       - run: |
-          git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} \
+          git diff --name-only --diff-filter=ACMR ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} \
             | grep 'src/assets/i18n/.*\.json' | xargs npx transloco-validator
 ```
 
