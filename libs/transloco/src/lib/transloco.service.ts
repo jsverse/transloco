@@ -301,11 +301,38 @@ export class TranslocoService {
         ? `${scope!}/${this.firstFallbackLang}`
         : this.firstFallbackLang;
 
-      const loaders = getFallbacksLoaders({
-        ...loadersOptions,
-        fallbackPath: fallback!,
-      });
-      loadTranslation = forkJoin(loaders);
+      const cachedFallback = this.cache.get(fallback!);
+      if (cachedFallback) {
+        // We already have the fallback lang in the cache (it's either still
+        // loading or fully loaded), so there's no need to ask the loader for it
+        // again. `getFallbacksLoaders` doesn't look at the cache, so calling it
+        // here would fire a second HTTP request for a file we already have.
+        //
+        // For example, with `defaultLang: 'en'`, `fallbackLang: 'en'` and
+        // `useFallbackTranslation` on:
+        //   1. load('en') -> not cached -> GET en.json (now cached)
+        //   2. load('es') -> fallback is 'en' -> reuse the cached 'en' instead
+        //      of fetching en.json again, and only GET es.json.
+        //
+        // So we build the two loaders by hand: fetch the requested lang, and
+        // reuse the cached fallback observable for the fallback lang.
+        const primaryLoader = from(resolveLoader(loadersOptions)).pipe(
+          map((translation) => ({ translation, lang: path })),
+        );
+        const fallbackLoader = cachedFallback.pipe(
+          map(() => ({
+            translation: this.getTranslation(fallback!),
+            lang: fallback!,
+          })),
+        );
+        loadTranslation = forkJoin([primaryLoader, fallbackLoader]);
+      } else {
+        const loaders = getFallbacksLoaders({
+          ...loadersOptions,
+          fallbackPath: fallback!,
+        });
+        loadTranslation = forkJoin(loaders);
+      }
     } else {
       const loader = resolveLoader(loadersOptions);
       loadTranslation = from(loader);
