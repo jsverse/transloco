@@ -9,7 +9,7 @@ npm install -D @jsverse/transloco-validator
 ## Usage — pre-commit (lint-staged)
 
 ```json
-"src/assets/i18n/*.json": ["transloco-validator"]
+"src/assets/i18n/**/*.json": ["transloco-validator"]
 ```
 
 ## Usage — CI (GitHub Actions)
@@ -23,11 +23,12 @@ jobs:
   validate-translations:
     steps:
       - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
       - uses: actions/setup-node@v4
-        with: { node-version: '20' }
+        with: { node-version: '22' }
       - run: npm ci
       - run: |
-          git diff --name-only ${{ github.event.before }} ${{ github.sha }} \
+          git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} \
             | grep 'src/assets/i18n/.*\.json' | xargs npx transloco-validator
 ```
 

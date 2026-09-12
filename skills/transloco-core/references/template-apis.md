@@ -49,7 +49,7 @@ Translation:
 - `getTranslation()` / `getTranslation(lang)` / `getTranslation('scope/lang')` — sync full translation map.
 - `selectTranslation(lang?)` — `Observable` of the full translation map, re-emits on language change.
 - `setTranslation(translation, lang?, { merge })` — manually set/merge translation data.
-- `setTranslationKey(key, value, lang?, { emitChange })` — set a single key.
+- `setTranslationKey(key, value, { lang?, emitChange? })` — set a single key.
 - `events$` — observable of `translationLoadSuccess` / `langChanged` events (only fires on load from source, not from cache).
 
 Language:

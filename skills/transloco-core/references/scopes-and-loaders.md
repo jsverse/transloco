@@ -24,10 +24,12 @@ This loads `todos/<lang>.json` and merges it under the `todos` namespace (camelC
 ## Inline loaders (no HTTP request)
 
 ```typescript
+import { InlineLoader } from '@jsverse/transloco';
+
 export const loader = ['en', 'es'].reduce((acc, lang) => {
   acc[lang] = () => import(`../i18n/${lang}.json`);
   return acc;
-}, {});
+}, {} as InlineLoader);
 
 providers: [provideTranslocoScope({ scope: 'scopeName', loader })];
 ```
@@ -64,6 +66,6 @@ Register custom implementations with the matching `provideTransloco*` function (
 
 - **`DefaultTranspiler`** — resolves `{{ param }}` interpolation; customize markers via `config.interpolation`.
 - **`FunctionalTranspiler`** — adds `[[ fnName(arg1, arg2) ]]` syntax, resolving `fnName` via DI (`provide: 'fnName', useClass: MyResolver implements TranslocoTranspilerFunction`). Compatible with the default transpiler (opt-in, no migration needed for existing translations). Escape literal commas in args with `\,`.
-- **Custom transpiler** — implement `TranslocoTranspiler.transpile(value, params, translation, key)` and provide via `provideTranslocoTranspiler(CustomTranspiler)`.
+- **Custom transpiler** — implement `TranslocoTranspiler.transpile({ value, params, translation, key })` (a single `TranspileParams` object) and provide via `provideTranslocoTranspiler(CustomTranspiler)`.
 
 Anti-pattern: reaching for a custom transpiler/functional transpiler for simple pluralization/gender — use the `transloco-plugins` skill's messageformat (ICU) reference instead, it's purpose-built for that.

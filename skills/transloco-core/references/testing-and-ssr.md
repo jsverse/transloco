@@ -14,11 +14,16 @@ import en from '../assets/i18n/en.json';
 import es from '../assets/i18n/es.json';
 
 export function getTranslocoModule(options: TranslocoTestingOptions = {}) {
+  const { langs, translocoConfig, ...rest } = options;
   return TranslocoTestingModule.forRoot({
-    langs: { en, es },
-    translocoConfig: { availableLangs: ['en', 'es'], defaultLang: 'en' },
+    langs: { en, es, ...langs },
+    translocoConfig: {
+      availableLangs: ['en', 'es'],
+      defaultLang: 'en',
+      ...translocoConfig,
+    },
     preloadLangs: true,
-    ...options,
+    ...rest,
   });
 }
 ```

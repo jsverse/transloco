@@ -15,6 +15,7 @@ CLI tool (`@jsverse/transloco-keys-manager`) that scans TypeScript/HTML for tran
 
 ```bash
 npm install -D @jsverse/transloco-keys-manager
+# on Angular >=20 / Transloco v9 (still alpha): npm install -D @jsverse/transloco-keys-manager@next
 ```
 
 ```json
@@ -24,7 +25,12 @@ npm install -D @jsverse/transloco-keys-manager
 }
 ```
 
-Or via schematics: `ng g @jsverse/transloco-schematics:keys-manager` (choose CLI, Webpack plugin, or both).
+Or via schematics: install `@jsverse/transloco-schematics` as a dev dependency, then run `ng g @jsverse/transloco-schematics:keys-manager` (choose CLI, Webpack plugin, or both).
+
+```bash
+npm install -D @jsverse/transloco-schematics
+ng g @jsverse/transloco-schematics:keys-manager
+```
 
 ## `extract` — generate/update translation files
 
@@ -89,16 +95,15 @@ Reports: (1) keys present in one language file but missing from others, (2) keys
 | `-m, --marker`            | Marker function name                                                                              | `t`                                           |
 | `-r, --replace`           | Overwrite existing files instead of merging                                                       | `false`                                       |
 | `-R, --remove-extra-keys` | Remove keys no longer used in code                                                                | `false`                                       |
-| `-a, --add-missing-keys`  | Add keys the `find` command flagged as missing                                                    | `false`                                       |
 | `-d, --defaultValue`      | Placeholder value template (supports `{{key}}`, `{{keyWithoutScope}}`, `{{scope}}`, `{{params}}`) | `Missing value for {{key}}`                   |
 | `-u, --unflat`            | Nest keys instead of flat dotted keys                                                             | flat                                          |
 | `--sort`                  | Sort keys                                                                                         | `false`                                       |
 | `-c, --config`            | Root dir to search for `transloco.config.ts`                                                      | `process.cwd()`                               |
 | `--project`               | Target Nx/Angular project (prefixes defaults with its `sourceRoot`)                               | `defaultProject`                              |
 
-`find` also has `-e, --emit-error-on-extra-keys` (fail CI on unused keys) and `-p, --translationsPath`.
+`find` also has `-a, --add-missing-keys` (add keys `find` flagged as missing), `-e, --emit-error-on-extra-keys` (fail CI on unused keys), and `-p, --translationsPath`.
 
-All of the above can also be set once via the shared `keysManager` block in the project's `transloco.config.ts` (see transloco-core's global config reference) instead of repeating CLI flags.
+Only a subset of these can be set once via the shared `keysManager` block in the project's `transloco.config.ts` (see transloco-core's global config reference): `input`, `output`, `fileFormat`, `marker`, `addMissingKeys`, `emitErrorOnExtraKeys`, `replace`, `defaultValue`, `unflat`, `sort` — plus the top-level `langs` and `rootTranslationsPath` fields. CLI-only options like `-c/--config` and `--project`, and the unsupported `removeExtraKeys`, cannot be configured there and must be passed as CLI flags.
 
 ## Anti-patterns
 

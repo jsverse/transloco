@@ -40,11 +40,15 @@ This also adds the copied files to `.gitignore` automatically (`--skip-gitignore
 Default strategy copies each library's files individually. Set `"strategy": "join"` in the library's `package.json` `i18n` entry to combine all of a library's files into one `<lang>.vendor.json`, then merge it in a custom loader:
 
 ```typescript
-getTranslation(lang: string, { scope }) {
+getTranslation(lang: string, { scope }: { scope?: string } = {}) {
   const base = this.http.get(`/assets/i18n/${lang}.json`);
-  if (scope) return base;
-  return forkJoin([base, this.http.get(`/assets/i18n/${lang}.vendor.json`)])
-    .pipe(map(([t, vendor]) => ({ ...t, ...vendor })));
+  if (!scope) return base;
+
+  const [, realLang] = lang.split('/'); // lang arrives as "<scope>/<lang>" for scoped requests
+  return forkJoin([
+    base,
+    this.http.get(`/assets/i18n/${realLang}.vendor.json`),
+  ]).pipe(map(([t, vendor]) => ({ ...t, [scope]: vendor[scope] })));
 }
 ```
 

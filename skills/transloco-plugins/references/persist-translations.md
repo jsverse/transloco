@@ -41,10 +41,16 @@ provideTranslocoPersistTranslations({
 
 ## Clearing cache
 
-Cache auto-clears on `ttl` expiry, or manually:
+Cache auto-clears on `ttl` expiry, or manually. Inject it in a valid injection context (e.g. a constructor or field initializer) and store it for later use:
 
 ```typescript
-inject(TranslocoPersistTranslations).clearCache();
+export class MyComponent {
+  private persistTranslations = inject(TranslocoPersistTranslations);
+
+  clearTranslationsCache() {
+    this.persistTranslations.clearCache();
+  }
+}
 ```
 
 Anti-pattern: keeping the default HTTP loader registered alongside this plugin's loader wrapper — that causes duplicate/uncached requests.

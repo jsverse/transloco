@@ -1,6 +1,6 @@
 # Optimize (`@jsverse/transloco-optimize`)
 
-Post-build optimization for translation files: AOT flattening, translator-comment removal (see transloco-core's comments-for-translators convention, keys suffixed `.comment`), and JSON minification. CLI-only, dev-dependency, run **after** the production build.
+Post-build optimization for translation files: AOT flattening, translator-comment removal (see transloco-core's comments-for-translators convention, keys suffixed `.comment`), and JSON minification. Dev-dependency, usable via CLI or programmatically, run **after** the production build.
 
 ```bash
 npm install -D @jsverse/transloco-optimize

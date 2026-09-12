@@ -65,7 +65,7 @@ ng g @jsverse/transloco-schematics:ng-migrate
 v9 is currently alpha under the npm `next` tag (`@jsverse/transloco@next`). Confirm the user actually wants to move to alpha/v9 before applying this — otherwise stay on the current v8.x stable line.
 
 ```bash
-ng update @jsverse/transloco   # or: nx migrate @jsverse/transloco
+ng update @jsverse/transloco --next   # or: nx migrate @jsverse/transloco@next && nx migrate --run-migrations
 ```
 
 The migration automates:
