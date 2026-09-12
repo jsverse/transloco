@@ -386,6 +386,7 @@ export class TranslocoService {
       params,
       translation,
       key,
+      lang: resolveLang,
     });
   }
 
@@ -495,7 +496,13 @@ export class TranslocoService {
       /* If an empty object was returned we want to try and translate the key as a string and not an object */
       return isEmpty(value)
         ? this.translate(key, params!, lang)
-        : this.parser.transpile({ value, params: params!, translation, key });
+        : this.parser.transpile({
+            value,
+            params: params!,
+            translation,
+            key,
+            lang: resolveLang,
+          });
     }
 
     const translations: T[] = [];

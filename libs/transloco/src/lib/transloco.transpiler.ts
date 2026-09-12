@@ -30,6 +30,13 @@ export interface TranspileParams<V = unknown> {
   params?: HashMap;
   translation: Translation;
   key: string;
+  /**
+   * The language the `value` belongs to. Transpilers that are locale-aware
+   * (e.g. messageformat) use it so a string is compiled with its own language's
+   * rules rather than the active language's — relevant for inline `lang` and
+   * fallback translations.
+   */
+  lang?: string;
 }
 
 @Injectable()
@@ -41,7 +48,12 @@ export class DefaultTranspiler implements TranslocoTranspiler {
     return resolveMatcher(this.config);
   }
 
-  transpile({ value, params = {}, translation, key }: TranspileParams): any {
+  transpile({
+    value,
+    params = {},
+    translation,
+    ...rest
+  }: TranspileParams): any {
     if (isString(value)) {
       let paramMatch: RegExpExecArray | null;
       let parsedValue = value;
@@ -62,8 +74,8 @@ export class DefaultTranspiler implements TranslocoTranspiler {
             ? this.transpile({
                 params,
                 translation,
-                key,
                 value: translation[match],
+                ...rest,
               })
             : '';
         });
@@ -76,10 +88,10 @@ export class DefaultTranspiler implements TranslocoTranspiler {
           value,
           params,
           translation,
-          key,
+          ...rest,
         });
       } else if (Array.isArray(value)) {
-        value = this.handleArray({ value, params, translation, key });
+        value = this.handleArray({ value, params, translation, ...rest });
       }
     }
 
@@ -114,7 +126,7 @@ export class DefaultTranspiler implements TranslocoTranspiler {
     value,
     params = {},
     translation,
-    key,
+    ...rest
   }: TranspileParams<Record<any, any>>) {
     let result = value;
 
@@ -126,7 +138,7 @@ export class DefaultTranspiler implements TranslocoTranspiler {
         // get the params of "b.c" => { value: "Transloco" }
         params: getValue(params, p),
         translation,
-        key,
+        ...rest,
       });
 
       // set "b.c" to `transpiled`
