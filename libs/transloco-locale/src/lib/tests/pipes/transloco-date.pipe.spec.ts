@@ -92,6 +92,60 @@ describe('TranslocoDatePipe', () => {
     expect(timeStyle).toEqual('medium');
   });
 
+  it(`GIVEN a global dateStyle/timeStyle config
+      WHEN the pipe passes explicit component options
+      THEN the styles are dropped so Intl does not reject the combination`, () => {
+    spectator = pipeFactory(`{{ date | translocoDate:config }}`, {
+      hostProps: {
+        date,
+        config: { year: 'numeric', month: 'long', day: 'numeric' },
+      },
+      providers: [provideTranslocoLocaleConfigMock(LOCALE_CONFIG_MOCK)],
+    });
+    const [, options] = getIntlCallArgs(intlSpy);
+    expect(options).toEqual({
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+    expect(spectator.element).toHaveText('October 7, 2019');
+  });
+
+  it(`GIVEN a global config of explicit component options
+      WHEN the pipe passes dateStyle
+      THEN the component options are dropped in favour of the style`, () => {
+    spectator = pipeFactory(`{{ date | translocoDate:config }}`, {
+      hostProps: {
+        date,
+        config: { dateStyle: 'medium' },
+      },
+      providers: [
+        provideTranslocoLocaleConfigMock({
+          global: {
+            date: { year: 'numeric', month: 'long', timeZone: 'UTC' },
+          },
+        }),
+      ],
+    });
+    const [, options] = getIntlCallArgs(intlSpy);
+    expect(options).toEqual({ dateStyle: 'medium', timeZone: 'UTC' });
+  });
+
+  it(`GIVEN a global config with a non-conflicting option
+      WHEN the pipe passes only a style
+      THEN the non-conflicting global option is kept`, () => {
+    spectator = pipeFactory(`{{ date | translocoDate:config }}`, {
+      hostProps: {
+        date,
+        config: { timeStyle: 'short' },
+      },
+      providers: [provideTranslocoLocaleConfigMock(LOCALE_CONFIG_MOCK)],
+    });
+    const [, { dateStyle, timeStyle }] = getIntlCallArgs(intlSpy);
+    expect(dateStyle).toEqual('medium');
+    expect(timeStyle).toEqual('short');
+  });
+
   describe('None date values', () => {
     it(`GIVEN null value
         WHEN transforming to date
