@@ -24,7 +24,7 @@ Angular and Transloco major versions are tightly coupled. Before generating code
 
 Rules:
 
-- Do not use v9-only APIs (`provideGlobalTranslateFn()`) unless `package.json` shows a `@jsverse/transloco` version `>=9.0.0` (including prereleases like `9.0.0-alpha.1`, resolved via the `@next` dist-tag or an explicit pin) — or the user explicitly asks to upgrade.
+- Do not use v9-only APIs (`provideGlobalTranslateFn()`) unless `package.json` shows `@jsverse/transloco` at a stable `>=9.0.0` release, or at a `9.0.0-alpha.x`/`9.0.0-beta.x` prerelease (resolved via the `@next` dist-tag or an explicit pin) — or the user explicitly asks to upgrade.
 - Packages under the old `@ngneat/transloco*` scope are unmaintained — if you see them, recommend migrating to `@jsverse/transloco` (same API, scope rename only) rather than adding new code against them.
 - If no version can be determined (new project), default to the current stable API (v8) unless the user asks for v9/`next`.
 
