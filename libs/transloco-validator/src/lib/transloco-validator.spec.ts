@@ -56,4 +56,48 @@ describe('transloco-validator', () => {
 
     expect(() => validator([file])).toThrow();
   });
+
+  it(`GIVEN a value with a missing curly brace
+      WHEN it is validated
+      THEN it throws naming the offending key`, () => {
+    const file = write(
+      'en.json',
+      JSON.stringify({
+        title: 'Created by { first }} {{ last }}',
+      }),
+    );
+
+    expect(() => validator([file])).toThrow(/title/);
+  });
+
+  it(`GIVEN a nested value with an extra closing brace
+      WHEN it is validated
+      THEN it throws with the full key path`, () => {
+    const file = write('en.json', JSON.stringify({ a: { b: 'hello }}' } }));
+
+    expect(() => validator([file])).toThrow(/a\.b/);
+  });
+
+  it(`GIVEN a value inside an array with unbalanced braces
+      WHEN it is validated
+      THEN it throws`, () => {
+    const file = write('en.json', JSON.stringify({ list: ['ok', '{{ x }'] }));
+
+    expect(() => validator([file])).toThrow(/list\[1]/);
+  });
+
+  it(`GIVEN values with balanced interpolation and ICU braces
+      WHEN it is validated
+      THEN it does not throw`, () => {
+    const file = write(
+      'en.json',
+      JSON.stringify({
+        interpolation: '{{ first }} {{ last }}',
+        icu: '{count, plural, one {# item} other {# items}}',
+        plain: 'no braces here',
+      }),
+    );
+
+    expect(() => validator([file])).not.toThrow();
+  });
 });
