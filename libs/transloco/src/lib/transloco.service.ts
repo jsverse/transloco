@@ -1,11 +1,4 @@
-import {
-  DestroyRef,
-  inject,
-  Inject,
-  Injectable,
-  Optional,
-  type Signal,
-} from '@angular/core';
+import { DestroyRef, inject, Injectable, type Signal } from '@angular/core';
 import {
   BehaviorSubject,
   catchError,
@@ -150,9 +143,23 @@ export class TranslationLoadError extends Error {
 
 @Injectable({ providedIn: 'root' })
 export class TranslocoService {
+  private translations = new Map<string, Translation>();
+  private readonly loader: TranslocoLoader =
+    inject(TRANSLOCO_LOADER, { optional: true }) ??
+    new DefaultLoader(this.translations);
+  private readonly parser = inject<TranslocoTranspiler>(TRANSLOCO_TRANSPILER);
+  private readonly missingHandler = inject<TranslocoMissingHandler>(
+    TRANSLOCO_MISSING_HANDLER,
+  );
+  private readonly interceptor = inject<TranslocoInterceptor>(
+    TRANSLOCO_INTERCEPTOR,
+  );
+  private readonly fallbackStrategy = inject<TranslocoFallbackStrategy>(
+    TRANSLOCO_FALLBACK_STRATEGY,
+  );
+
   langChanges$: Observable<string>;
 
-  private translations = new Map<string, Translation>();
   private cache = new Map<string, Observable<Translation>>();
   private firstFallbackLang: string | undefined;
   private defaultLang = '';
@@ -165,7 +172,7 @@ export class TranslocoService {
   events$ = this.events.asObservable();
   readonly config: TranslocoConfig & {
     scopeMapping?: HashMap<string>;
-  };
+  } = JSON.parse(JSON.stringify(inject<TranslocoConfig>(TRANSLOCO_CONFIG)));
 
   /**
    * A signal that reflects the currently active language.
@@ -181,21 +188,7 @@ export class TranslocoService {
   private destroyRef = inject(DestroyRef);
   private destroyed = false;
 
-  constructor(
-    @Optional() @Inject(TRANSLOCO_LOADER) private loader: TranslocoLoader,
-    @Inject(TRANSLOCO_TRANSPILER) private parser: TranslocoTranspiler,
-    @Inject(TRANSLOCO_MISSING_HANDLER)
-    private missingHandler: TranslocoMissingHandler,
-    @Inject(TRANSLOCO_INTERCEPTOR) private interceptor: TranslocoInterceptor,
-    @Inject(TRANSLOCO_CONFIG) userConfig: TranslocoConfig,
-    @Inject(TRANSLOCO_FALLBACK_STRATEGY)
-    private fallbackStrategy: TranslocoFallbackStrategy,
-  ) {
-    if (!this.loader) {
-      this.loader = new DefaultLoader(this.translations);
-    }
-    this.config = JSON.parse(JSON.stringify(userConfig));
-
+  constructor() {
     this.setAvailableLangs(this.config.availableLangs || []);
     this.setFallbackLangForMissingTranslation(this.config);
     this.setDefaultLang(this.config.defaultLang);
