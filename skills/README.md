@@ -65,3 +65,4 @@ When Transloco's public API changes:
 1. Update the relevant `docs/v*` page(s) as usual.
 2. Update the matching `SKILL.md` / `references/*.md` file(s) in the same PR, especially the version-compatibility table in `transloco-core/SKILL.md` and the upgrade steps in `transloco-migration/SKILL.md`.
 3. Keep `SKILL.md` files focused on rules an agent should follow; move prose/background explanation to `references/`.
+4. Reference files that summarize option/API tables (e.g. `references/config.md`) link back to the live docs page as the source of truth — update both together so the summary doesn't silently drift.

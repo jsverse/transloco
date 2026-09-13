@@ -1,5 +1,7 @@
 # Transloco Configuration
 
+> Source of truth: [Config Options](https://jsverse.gitbook.io/transloco/getting-started/config-options). The table below is a condensed, agent-oriented summary — re-verify against the live docs or `libs/transloco/src/lib/transloco.config.ts` if it looks out of date.
+
 `provideTransloco({ config, loader })` (or `translocoConfig({...})` for the `TRANSLOCO_CONFIG` token directly) accepts:
 
 ```typescript
