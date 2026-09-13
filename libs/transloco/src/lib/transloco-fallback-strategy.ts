@@ -1,4 +1,4 @@
-import { Inject, Injectable, InjectionToken } from '@angular/core';
+import { Injectable, InjectionToken, inject } from '@angular/core';
 
 import { TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
 import {
@@ -19,7 +19,7 @@ export interface TranslocoFallbackStrategy {
 
 @Injectable()
 export class DefaultFallbackStrategy implements TranslocoFallbackStrategy {
-  constructor(@Inject(TRANSLOCO_CONFIG) private userConfig: TranslocoConfig) {}
+  private readonly userConfig = inject<TranslocoConfig>(TRANSLOCO_CONFIG);
 
   getNextLangs() {
     const fallbackLang = this.userConfig.fallbackLang;
