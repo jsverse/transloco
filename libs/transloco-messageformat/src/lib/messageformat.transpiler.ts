@@ -9,7 +9,6 @@ import { isObject } from '@jsverse/utils';
 import MessageFormat, { MessageFormatOptions } from '@messageformat/core';
 
 import {
-  MessageformatConfig,
   MFLocale,
   TRANSLOCO_MESSAGE_FORMAT_CONFIG,
 } from './messageformat.config';
@@ -21,10 +20,9 @@ import {
 
 @Injectable()
 export class MessageFormatTranspiler extends DefaultTranspiler {
-  private readonly mfConfigInput = inject<MessageformatConfig>(
-    TRANSLOCO_MESSAGE_FORMAT_CONFIG,
-    { optional: true },
-  );
+  private readonly mfConfigInput = inject(TRANSLOCO_MESSAGE_FORMAT_CONFIG, {
+    optional: true,
+  });
   private messageFormat: MessageFormat;
   private readonly messageConfig: MessageFormatOptions<'string'>;
   private readonly mfFactory: MFFactory;
