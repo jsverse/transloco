@@ -160,6 +160,56 @@ describe('TranslationResolver', () => {
     });
   });
 
+  it(`GIVEN both inline and provider lang with the '|static' pipe on inline only
+      WHEN resolve() is called and the active lang changes afterwards
+      THEN it should honor the inline lang's '|static' marker and only emit once`, () => {
+    const next = vi.fn();
+    resolver
+      .resolve({
+        inlineLang: 'es|static',
+        providerLang: 'fr',
+        inlineScope: undefined,
+        providerScope: null,
+      })
+      .subscribe(next);
+
+    langChanges$.next('en');
+    langChanges$.next('de');
+
+    expect(next).toHaveBeenCalledTimes(1);
+    expect(loadDependencies).toHaveBeenCalledWith('es', undefined);
+  });
+
+  it(`GIVEN a single TranslationResolver instance
+      WHEN resolve() is called twice with different inline langs
+      THEN the second call should honor its own inline lang instead of the first call's`, () => {
+    resolver
+      .resolve({
+        inlineLang: 'es',
+        providerLang: undefined,
+        inlineScope: undefined,
+        providerScope: 'admin-page',
+      })
+      .subscribe();
+    langChanges$.next('en');
+
+    let secondResult: unknown;
+    resolver
+      .resolve({
+        inlineLang: 'fr',
+        providerLang: undefined,
+        inlineScope: undefined,
+        providerScope: 'admin-page',
+      })
+      .subscribe((value) => (secondResult = value));
+    langChanges$.next('en');
+
+    expect(secondResult).toEqual({
+      lang: 'fr',
+      translation: 'translation-for:admin-page/fr',
+    });
+  });
+
   it(`GIVEN a signal-based params function
       WHEN resolveSignal() is called and the active lang or params change
       THEN it should expose the resolved translation as a Signal`, () => {

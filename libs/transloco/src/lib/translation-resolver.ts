@@ -31,7 +31,6 @@ export interface ResolvedTranslation {
  * translation for it, respecting `reRenderOnLangChange`/the `|static` suffix.
  */
 export class TranslationResolver {
-  private langResolver = new LangResolver();
   private scopeResolver: ScopeResolver;
 
   constructor(private service: TranslocoService) {
@@ -44,21 +43,26 @@ export class TranslationResolver {
     inlineScope,
     providerScope,
   }: ResolveTranslationParams): Observable<ResolvedTranslation> {
+    // Created per `resolve()` call (not a shared field) so its `initialized`
+    // flag stays scoped to this call's langChanges$ subscription instead of
+    // sticking across separate resolve() invocations (e.g. two
+    // TranslocoPipe.transform() calls with different inline langs).
+    const langResolver = new LangResolver();
     const listenToLangChange = shouldListenToLangChanges(
       this.service,
-      providerLang || inlineLang,
+      inlineLang || providerLang || undefined,
     );
 
     return this.service.langChanges$.pipe(
       switchMap((activeLang) => {
-        const lang = this.langResolver.resolve({
+        const lang = langResolver.resolve({
           inline: inlineLang,
           provider: providerLang,
           active: activeLang,
         });
 
         const resolveScope = (scope: TranslocoScope | null) =>
-          this.resolveScope(lang, scope, inlineScope);
+          this.resolveScope(langResolver, lang, scope, inlineScope);
 
         return Array.isArray(providerScope)
           ? forkJoin(providerScope.map(resolveScope)).pipe(
@@ -96,6 +100,7 @@ export class TranslationResolver {
   }
 
   private resolveScope(
+    langResolver: LangResolver,
     lang: string,
     providerScope: TranslocoScope | null,
     inlineScope?: string,
@@ -104,12 +109,12 @@ export class TranslationResolver {
       inline: inlineScope,
       provider: providerScope,
     });
-    const path = this.langResolver.resolveLangPath(lang, resolvedScope);
+    const path = langResolver.resolveLangPath(lang, resolvedScope);
     const inlineLoader = resolveInlineLoader(providerScope, resolvedScope);
 
     return this.service._loadDependencies(path, inlineLoader).pipe(
       map((translation) => ({
-        lang: this.langResolver.resolveLangBasedOnScope(path),
+        lang: langResolver.resolveLangBasedOnScope(path),
         translation,
       })),
     );
