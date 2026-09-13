@@ -1,6 +1,6 @@
 import { computed, Signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { forkJoin, Observable, switchMap } from 'rxjs';
+import { forkJoin, map, Observable, switchMap } from 'rxjs';
 import { OrArray } from '@jsverse/utils';
 
 import { LangResolver } from './lang-resolver';
@@ -20,6 +20,11 @@ export interface ResolveTranslationParams {
   providerScope: OrArray<TranslocoScope> | null;
 }
 
+export interface ResolvedTranslation {
+  lang: string;
+  translation: Translation | Translation[];
+}
+
 /**
  * Shared by `TranslocoDirective` and `TranslocoPipe`: resolves the active lang
  * for the given inline/provider lang + scope, and loads the (possibly scoped)
@@ -28,7 +33,6 @@ export interface ResolveTranslationParams {
 export class TranslationResolver {
   private langResolver = new LangResolver();
   private scopeResolver: ScopeResolver;
-  private path: string | undefined;
 
   constructor(private service: TranslocoService) {
     this.scopeResolver = new ScopeResolver(service);
@@ -39,7 +43,7 @@ export class TranslationResolver {
     providerLang,
     inlineScope,
     providerScope,
-  }: ResolveTranslationParams): Observable<Translation | Translation[]> {
+  }: ResolveTranslationParams): Observable<ResolvedTranslation> {
     const listenToLangChange = shouldListenToLangChanges(
       this.service,
       providerLang || inlineLang,
@@ -57,16 +61,19 @@ export class TranslationResolver {
           this.resolveScope(lang, scope, inlineScope);
 
         return Array.isArray(providerScope)
-          ? forkJoin(providerScope.map(resolveScope))
+          ? forkJoin(providerScope.map(resolveScope)).pipe(
+              // All scopes share the same active lang (only the scope portion
+              // of the loaded path differs), so it's safe to read it off the
+              // first resolved item.
+              map((resolved) => ({
+                lang: resolved[0].lang,
+                translation: resolved.map((r) => r.translation),
+              })),
+            )
           : resolveScope(providerScope);
       }),
       listenOrNotOperator(listenToLangChange),
     );
-  }
-
-  /** Resolves the lang that was actually used for the last emitted translation. */
-  resolveLang(): string {
-    return this.langResolver.resolveLangBasedOnScope(this.path!);
   }
 
   /**
@@ -81,7 +88,7 @@ export class TranslationResolver {
    */
   resolveSignal(
     paramsFn: () => ResolveTranslationParams,
-  ): Signal<Translation | Translation[] | undefined> {
+  ): Signal<ResolvedTranslation | undefined> {
     const params$ = toObservable(computed(paramsFn));
     return toSignal(params$.pipe(switchMap((params) => this.resolve(params))), {
       initialValue: undefined,
@@ -92,14 +99,19 @@ export class TranslationResolver {
     lang: string,
     providerScope: TranslocoScope | null,
     inlineScope?: string,
-  ): Observable<Translation | Translation[]> {
+  ): Observable<ResolvedTranslation> {
     const resolvedScope = this.scopeResolver.resolve({
       inline: inlineScope,
       provider: providerScope,
     });
-    this.path = this.langResolver.resolveLangPath(lang, resolvedScope);
+    const path = this.langResolver.resolveLangPath(lang, resolvedScope);
     const inlineLoader = resolveInlineLoader(providerScope, resolvedScope);
 
-    return this.service._loadDependencies(this.path, inlineLoader);
+    return this.service._loadDependencies(path, inlineLoader).pipe(
+      map((translation) => ({
+        lang: this.langResolver.resolveLangBasedOnScope(path),
+        translation,
+      })),
+    );
   }
 }

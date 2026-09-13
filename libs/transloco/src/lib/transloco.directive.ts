@@ -90,8 +90,8 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
         providerScope: this.providerScope,
       })
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        this.currentLang = this.translationResolver.resolveLang();
+      .subscribe(({ lang }) => {
+        this.currentLang = lang;
         this.strategy === 'attribute'
           ? this.attributeStrategy()
           : this.structuralStrategy(this.currentLang, this.prefix);

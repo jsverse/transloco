@@ -66,7 +66,10 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
         inlineScope: undefined,
         providerScope: this.providerScope ?? null,
       })
-      .subscribe(() => this.updateValue(key, params));
+      .subscribe(({ lang }) => {
+        this.lastValue = this.service.translate(key, params, lang);
+        this.cdr.markForCheck();
+      });
 
     return this.lastValue;
   }
@@ -76,11 +79,5 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
     // Caretaker note: it's important to clean up references to subscriptions since they save the `next`
     // callback within its `destination` property, preventing classes from being GC'd.
     this.subscription = null;
-  }
-
-  private updateValue(key: string, params?: HashMap | undefined) {
-    const lang = this.translationResolver.resolveLang();
-    this.lastValue = this.service.translate(key, params, lang);
-    this.cdr.markForCheck();
   }
 }

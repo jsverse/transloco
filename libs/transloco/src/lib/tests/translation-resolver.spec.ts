@@ -52,14 +52,14 @@ describe('TranslationResolver', () => {
       undefined,
     );
     expect(results).toEqual([
-      'translation-for:admin-page/en',
-      'translation-for:admin-page/es',
+      { lang: 'en', translation: 'translation-for:admin-page/en' },
+      { lang: 'es', translation: 'translation-for:admin-page/es' },
     ]);
   });
 
   it(`GIVEN an array of provider scopes
       WHEN resolve() is called
-      THEN it should forkJoin the resolved path for every scope`, () => {
+      THEN it should forkJoin every scope into a single ResolvedTranslation`, () => {
     let result: unknown;
     resolver
       .resolve({
@@ -73,10 +73,13 @@ describe('TranslationResolver', () => {
 
     langChanges$.next('en');
 
-    expect(result).toEqual([
-      'translation-for:admin-page/en',
-      'translation-for:todos-page/en',
-    ]);
+    expect(result).toEqual({
+      lang: 'en',
+      translation: [
+        'translation-for:admin-page/en',
+        'translation-for:todos-page/en',
+      ],
+    });
   });
 
   it(`GIVEN inline lang with the '|static' pipe
@@ -136,9 +139,10 @@ describe('TranslationResolver', () => {
     expect(setScopeAlias).toHaveBeenCalledWith('admin-page', 'admin');
   });
 
-  it(`GIVEN a resolved translation
-      WHEN resolveLang() is called afterwards
-      THEN it should return the lang used to resolve the last emitted translation`, () => {
+  it(`GIVEN a single provider scope
+      WHEN resolve() is called
+      THEN the emitted ResolvedTranslation should carry the lang used to load it`, () => {
+    let result: unknown;
     resolver
       .resolve({
         inlineLang: undefined,
@@ -146,11 +150,14 @@ describe('TranslationResolver', () => {
         inlineScope: undefined,
         providerScope: 'admin-page',
       })
-      .subscribe();
+      .subscribe((value) => (result = value));
 
     langChanges$.next('en');
 
-    expect(resolver.resolveLang()).toEqual('en');
+    expect(result).toEqual({
+      lang: 'en',
+      translation: 'translation-for:admin-page/en',
+    });
   });
 
   it(`GIVEN a signal-based params function
@@ -172,11 +179,17 @@ describe('TranslationResolver', () => {
     // toObservable() defers its first emission until effects flush.
     TestBed.tick();
     langChanges$.next('en');
-    expect(translation()).toEqual('translation-for:admin-page/en');
+    expect(translation()).toEqual({
+      lang: 'en',
+      translation: 'translation-for:admin-page/en',
+    });
 
     inlineScope.set('todos-page');
     TestBed.tick();
     langChanges$.next('en');
-    expect(translation()).toEqual('translation-for:todos-page/en');
+    expect(translation()).toEqual({
+      lang: 'en',
+      translation: 'translation-for:todos-page/en',
+    });
   });
 });
