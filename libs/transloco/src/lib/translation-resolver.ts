@@ -1,3 +1,5 @@
+import { computed, Signal } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { forkJoin, Observable, switchMap } from 'rxjs';
 import { OrArray } from '@jsverse/utils';
 
@@ -65,6 +67,25 @@ export class TranslationResolver {
   /** Resolves the lang that was actually used for the last emitted translation. */
   resolveLang(): string {
     return this.langResolver.resolveLangBasedOnScope(this.path!);
+  }
+
+  /**
+   * Signal-based counterpart of `resolve()`, for consumers (e.g. a future
+   * signal-input-driven `TranslocoDirective`) that want the resolved
+   * translation as a `Signal` instead of subscribing to an `Observable`.
+   *
+   * `paramsFn` is read inside a `computed()`, so it's safe to call from a
+   * constructor and to read signal inputs within it; the resulting signal
+   * only recomputes the underlying `resolve()` pipeline when the params
+   * actually change.
+   */
+  resolveSignal(
+    paramsFn: () => ResolveTranslationParams,
+  ): Signal<Translation | Translation[] | undefined> {
+    const params$ = toObservable(computed(paramsFn));
+    return toSignal(params$.pipe(switchMap((params) => this.resolve(params))), {
+      initialValue: undefined,
+    });
   }
 
   private resolveScope(

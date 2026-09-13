@@ -1,3 +1,5 @@
+import { signal } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { of, Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
 
@@ -149,5 +151,32 @@ describe('TranslationResolver', () => {
     langChanges$.next('en');
 
     expect(resolver.resolveLang()).toEqual('en');
+  });
+
+  it(`GIVEN a signal-based params function
+      WHEN resolveSignal() is called and the active lang or params change
+      THEN it should expose the resolved translation as a Signal`, () => {
+    const inlineScope = signal<string | undefined>('admin-page');
+
+    const translation = TestBed.runInInjectionContext(() =>
+      resolver.resolveSignal(() => ({
+        inlineLang: undefined,
+        providerLang: undefined,
+        inlineScope: inlineScope(),
+        providerScope: null,
+      })),
+    );
+
+    expect(translation()).toEqual(undefined);
+
+    // toObservable() defers its first emission until effects flush.
+    TestBed.tick();
+    langChanges$.next('en');
+    expect(translation()).toEqual('translation-for:admin-page/en');
+
+    inlineScope.set('todos-page');
+    TestBed.tick();
+    langChanges$.next('en');
+    expect(translation()).toEqual('translation-for:todos-page/en');
   });
 });
