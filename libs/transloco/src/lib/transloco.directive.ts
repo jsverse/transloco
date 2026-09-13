@@ -14,7 +14,6 @@ import {
   TemplateRef,
   ViewContainerRef,
 } from '@angular/core';
-import { forkJoin, Observable, switchMap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { OrArray } from '@jsverse/utils';
 
@@ -23,14 +22,8 @@ import { TRANSLOCO_LANG } from './transloco-lang';
 import { TRANSLOCO_LOADING_TEMPLATE } from './transloco-loading-template';
 import { TRANSLOCO_SCOPE } from './transloco-scope';
 import { TranslocoService } from './transloco.service';
-import { Translation, TranslocoScope } from './transloco.types';
-import {
-  listenOrNotOperator,
-  shouldListenToLangChanges,
-} from './utils/lang.utils';
-import { resolveInlineLoader } from './utils/scope.utils';
-import { LangResolver } from './lang-resolver';
-import { ScopeResolver } from './scope-resolver';
+import { TranslocoScope } from './transloco.types';
+import { TranslationResolver } from './translation-resolver';
 import { HashMap } from './utils/type.utils';
 
 type TranslateFn = (key: string, params?: HashMap) => any;
@@ -78,9 +71,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   private loaderTplHandler: TemplateHandler | undefined;
   // Whether we already rendered the view once
   private initialized = false;
-  private path: string | undefined;
-  private langResolver = new LangResolver();
-  private scopeResolver = new ScopeResolver(this.service);
+  private translationResolver = new TranslationResolver(this.service);
   private readonly strategy = this.tpl === null ? 'attribute' : 'structural';
 
   static ngTemplateContextGuard(
@@ -91,35 +82,16 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnInit() {
-    const listenToLangChange = shouldListenToLangChanges(
-      this.service,
-      this.providerLang || this.inlineLang,
-    );
-
-    this.service.langChanges$
-      .pipe(
-        switchMap((activeLang) => {
-          const lang = this.langResolver.resolve({
-            inline: this.inlineLang,
-            provider: this.providerLang,
-            active: activeLang,
-          });
-
-          return Array.isArray(this.providerScope)
-            ? forkJoin(
-                this.providerScope.map((providerScope) =>
-                  this.resolveScope(lang, providerScope),
-                ),
-              )
-            : this.resolveScope(lang, this.providerScope);
-        }),
-        listenOrNotOperator(listenToLangChange),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe(() => {
-        this.currentLang = this.langResolver.resolveLangBasedOnScope(
-          this.path!,
-        );
+    this.translationResolver
+      .resolve({
+        inlineLang: this.inlineLang,
+        providerLang: this.providerLang,
+        inlineScope: this.inlineScope,
+        providerScope: this.providerScope,
+      })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(({ lang }) => {
+        this.currentLang = lang;
         this.strategy === 'attribute'
           ? this.attributeStrategy()
           : this.structuralStrategy(this.currentLang, this.prefix);
@@ -202,19 +174,5 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
 
   private detachLoader() {
     this.loaderTplHandler?.detachView();
-  }
-
-  private resolveScope(
-    lang: string,
-    providerScope: TranslocoScope | null,
-  ): Observable<Translation | Translation[]> {
-    const resolvedScope = this.scopeResolver.resolve({
-      inline: this.inlineScope,
-      provider: providerScope,
-    });
-    this.path = this.langResolver.resolveLangPath(lang, resolvedScope);
-    const inlineLoader = resolveInlineLoader(providerScope, resolvedScope);
-
-    return this.service._loadDependencies(this.path, inlineLoader);
   }
 }

@@ -18,7 +18,7 @@ describe('TranslocoPipe', () => {
     cdrMock = { markForCheck: vi.fn() } as unknown as ChangeDetectorRef;
 
     pipe = new TranslocoPipe(serviceMock, undefined, undefined, cdrMock);
-    vi.spyOn(pipe as any, 'updateValue');
+    vi.spyOn(serviceMock, 'translate');
   });
 
   it(`GIVEN pipe with provider lang
@@ -123,7 +123,7 @@ describe('TranslocoPipe', () => {
       pipe.transform(key);
       expect((pipe as any).lastKey).toBe(key);
       runLoader();
-      expect((pipe as any).updateValue).toHaveBeenCalledWith(key, undefined);
+      expect(serviceMock.translate).toHaveBeenCalledWith(key, undefined, 'en');
       expect((pipe as any).lastValue).toBe('home english');
       expect(cdrMock.markForCheck).toHaveBeenCalled();
     }));
@@ -177,11 +177,11 @@ describe('TranslocoPipe', () => {
         THEN should return cached value`, fakeAsync(() => {
       pipe.transform('home');
       runLoader();
-      expect((pipe as any).updateValue).toHaveBeenCalledTimes(1);
+      expect(serviceMock.translate).toHaveBeenCalledTimes(1);
       pipe.transform('home');
-      expect((pipe as any).updateValue).toHaveBeenCalledTimes(1);
+      expect(serviceMock.translate).toHaveBeenCalledTimes(1);
       pipe.transform('a.b.c');
-      expect((pipe as any).updateValue).toHaveBeenCalledTimes(2);
+      expect(serviceMock.translate).toHaveBeenCalledTimes(2);
     }));
 
     it(`GIVEN pipe transform called with same key and params
@@ -189,11 +189,11 @@ describe('TranslocoPipe', () => {
         THEN should return cached value until params change`, fakeAsync(() => {
       pipe.transform('alert', { value: 'value' });
       runLoader();
-      expect((pipe as any).updateValue).toHaveBeenCalledTimes(1);
+      expect(serviceMock.translate).toHaveBeenCalledTimes(1);
       pipe.transform('alert', { value: 'value' });
-      expect((pipe as any).updateValue).toHaveBeenCalledTimes(1);
+      expect(serviceMock.translate).toHaveBeenCalledTimes(1);
       pipe.transform('alert', { value: 'bla' });
-      expect((pipe as any).updateValue).toHaveBeenCalledTimes(2);
+      expect(serviceMock.translate).toHaveBeenCalledTimes(2);
     }));
   });
 
