@@ -1,4 +1,4 @@
-import { Inject, Injectable, InjectionToken, OnDestroy } from '@angular/core';
+import { Injectable, InjectionToken, OnDestroy, inject } from '@angular/core';
 import { TranslocoService } from '@jsverse/transloco';
 import { tap } from 'rxjs/operators';
 import { forkJoin, Subscription } from 'rxjs';
@@ -13,20 +13,19 @@ export const TRANSLOCO_PRELOAD_LANGUAGES = /* @__PURE__ */ new InjectionToken<
 
 @Injectable({ providedIn: 'root' })
 export class TranslocoPreloadLangsService implements OnDestroy {
+  private readonly service = inject(TranslocoService);
+  private readonly langs = inject(TRANSLOCO_PRELOAD_LANGUAGES);
   private readonly idleCallbackId: number | undefined;
   private subscription: Subscription | null = null;
 
-  constructor(
-    service: TranslocoService,
-    @Inject(TRANSLOCO_PRELOAD_LANGUAGES) langs: string[],
-  ) {
-    if (!langs.length) return;
+  constructor() {
+    if (!this.langs.length) return;
 
     this.idleCallbackId = window.requestIdleCallback(() => {
-      const preloads = langs.map((currentLangOrScope) => {
-        const lang = service._completeScopeWithLang(currentLangOrScope);
+      const preloads = this.langs.map((currentLangOrScope) => {
+        const lang = this.service._completeScopeWithLang(currentLangOrScope);
 
-        let load$ = service.load(lang);
+        let load$ = this.service.load(lang);
 
         if (typeof ngDevMode !== 'undefined' && ngDevMode) {
           load$ = load$.pipe(

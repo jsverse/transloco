@@ -1,11 +1,9 @@
 import {
   ChangeDetectorRef,
-  inject,
-  Inject,
   OnDestroy,
-  Optional,
   Pipe,
   PipeTransform,
+  inject,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { OrArray } from '@jsverse/utils';
@@ -23,20 +21,20 @@ import { HashMap } from './utils/type.utils';
 })
 export class TranslocoPipe implements PipeTransform, OnDestroy {
   private translationResolver = inject(TranslationResolver);
+  private service = inject(TranslocoService);
+  private providerScope = inject<OrArray<TranslocoScope> | undefined>(
+    TRANSLOCO_SCOPE,
+    { optional: true },
+  );
+  private providerLang = inject(TRANSLOCO_LANG, { optional: true });
+  private cdr = inject(ChangeDetectorRef);
+
   private subscription: Subscription | null = null;
   private lastValue = '';
   private lastKey: string | undefined;
-
-  constructor(
-    private service: TranslocoService,
-    @Optional()
-    @Inject(TRANSLOCO_SCOPE)
-    private providerScope: OrArray<TranslocoScope> | undefined,
-    @Optional()
-    @Inject(TRANSLOCO_LANG)
-    private providerLang: string | undefined,
-    private cdr: ChangeDetectorRef,
-  ) {}
+  private path: string | undefined;
+  private langResolver = new LangResolver();
+  private scopeResolver = new ScopeResolver(this.service);
 
   // null is for handling strict mode + async pipe types https://github.com/jsverse/transloco/issues/311
   // null is for handling strict mode + optional chaining types https://github.com/jsverse/transloco/issues/488
