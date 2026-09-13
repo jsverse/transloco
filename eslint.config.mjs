@@ -95,10 +95,4 @@ export default [
       '@typescript-eslint/no-explicit-any': 'off',
     },
   },
-  {
-    files: ['**/*.ts'],
-    rules: {
-      '@angular-eslint/prefer-inject': 'off',
-    },
-  },
 ];
