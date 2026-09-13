@@ -20,7 +20,12 @@ const args = new Map(
     .slice(2)
     .filter((arg) => arg.startsWith('--'))
     .map((arg) => {
-      const [key, value] = arg.slice(2).split('=');
+      // A plain split('=') would mangle a range like `>=22.2.0-next.0 <22.3.0`,
+      // which contains its own `=` inside the `>=` operator.
+      const raw = arg.slice(2);
+      const separatorIndex = raw.indexOf('=');
+      const key = raw.slice(0, separatorIndex);
+      const value = raw.slice(separatorIndex + 1);
 
       return [key, value] as const;
     }),
@@ -78,6 +83,22 @@ const GROUPED_CASES_TEMPLATE = `
 </ng-container>
 `;
 
+/**
+ * `@boundary`/`@error` error-boundary blocks are still prerelease (targeted
+ * for Angular 22.2) and are a parse error on every stable compiler today, so
+ * this only compiles - and only gets exercised - once the resolved version
+ * actually supports it (e.g. the `next` dist-tag).
+ */
+const BOUNDARY_TEMPLATE = `
+<ng-container *transloco="let t; prefix: 'boundary'">
+  @boundary {
+    <p>{{ t('primary') }}</p>
+  } @error {
+    <p>{{ t('fallback') }}</p>
+  }
+</ng-container>
+`;
+
 const SOURCE = `
 import { translate, TranslocoService } from '@jsverse/transloco';
 
@@ -110,11 +131,20 @@ const EXPECTED = [
 
 const GROUPED_CASES_EXPECTED = ['grouped.ownBody', 'grouped.sharedBody'];
 
+const BOUNDARY_EXPECTED = ['boundary.fallback', 'boundary.primary'];
+
 /** Case groups landed in 21.1. */
 function supportsGroupedCases(version: string): boolean {
   const [major, minor] = version.split('.').map(Number);
 
   return major > 21 || (major === 21 && minor >= 1);
+}
+
+/** `@boundary`/`@error` blocks are targeted for 22.2. */
+function supportsBoundaryBlock(version: string): boolean {
+  const [major, minor] = version.split('.').map(Number);
+
+  return major > 22 || (major === 22 && minor >= 2);
 }
 
 function run(command: string, commandArgs: string[], cwd: string) {
@@ -173,6 +203,10 @@ run(
     `typescript@${typescriptVersion}`,
     '--no-audit',
     '--no-fund',
+    // npm's peer-range matching excludes prereleases even when the range
+    // itself would allow them numerically (e.g. `>=20 <23` vs `22.2.0-next.x`),
+    // so prerelease ranges need the peer check relaxed.
+    ...(angularVersion.includes('-') ? ['--legacy-peer-deps'] : []),
   ],
   project,
 );
@@ -197,6 +231,17 @@ console.log(
   grouped
     ? 'Including grouped @case bodies (Angular >=21.1).'
     : 'Skipping grouped @case bodies - not valid syntax before Angular 21.1.',
+);
+
+const boundary = supportsBoundaryBlock(resolvedAngular);
+if (boundary) {
+  writeFileSync(join(project, 'src', 'boundary.html'), BOUNDARY_TEMPLATE);
+  expected.push(...BOUNDARY_EXPECTED);
+}
+console.log(
+  boundary
+    ? 'Including @boundary/@error block (Angular >=22.2).'
+    : 'Skipping @boundary/@error block - not valid syntax before Angular 22.2.',
 );
 
 run(

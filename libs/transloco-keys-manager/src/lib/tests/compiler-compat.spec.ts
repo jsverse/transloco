@@ -10,6 +10,8 @@ import type {
 import {
   isLiteralMapPropertyKey,
   isSwitchCaseChildrenOwner,
+  isTmplAstBoundaryBlock,
+  isTmplAstBoundaryErrorBlock,
   resolveSwitchBlockChildren,
 } from '../keys-builder/template/compiler-compat';
 import {
@@ -116,6 +118,29 @@ describe('compiler-compat: switch case children owner', () => {
     expect(() => isSwitchCaseChildrenOwner({ children: [] })).not.toThrow();
     expect(isSwitchCaseChildrenOwner({ children: [] })).toBe(false);
     expect(isSwitchCaseChildrenOwner(null)).toBe(false);
+  });
+});
+
+describe('compiler-compat: boundary block shape', () => {
+  it(`GIVEN a plain object
+      WHEN it is tested for being a boundary block
+      THEN it is rejected without throwing`, () => {
+    // \`@boundary\`/\`@error\` land in Angular 22.2; on every currently-supported
+    // version the class is undefined, and \`x instanceof undefined\` throws
+    // rather than returning false.
+    expect(() => isTmplAstBoundaryBlock({ children: [] })).not.toThrow();
+    expect(isTmplAstBoundaryBlock({ children: [], errorBlocks: [] })).toBe(
+      false,
+    );
+    expect(isTmplAstBoundaryBlock(null)).toBe(false);
+  });
+
+  it(`GIVEN a plain object
+      WHEN it is tested for being a boundary error block
+      THEN it is rejected without throwing`, () => {
+    expect(() => isTmplAstBoundaryErrorBlock({ children: [] })).not.toThrow();
+    expect(isTmplAstBoundaryErrorBlock({ children: [] })).toBe(false);
+    expect(isTmplAstBoundaryErrorBlock(null)).toBe(false);
   });
 });
 
