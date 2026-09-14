@@ -11,12 +11,6 @@
       "default": "en, es",
       "alias": "la"
     },
-    "ssr": {
-      "description": "Deprecated: no longer needed. Angular resolves the loader's relative URLs during server side rendering.",
-      "type": "boolean",
-      "default": false,
-      "x-deprecated": "SSR needs no special setup; this option has no effect."
-    },
     "loader": {
       "description": "The loader strategy for the translate files.",
       "type": "string",

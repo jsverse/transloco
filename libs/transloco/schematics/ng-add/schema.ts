@@ -25,10 +25,6 @@ export interface SchemaOptions {
    */
   project: string;
   /**
-   * @deprecated SSR needs no special setup; this option has no effect.
-   */
-  ssr: boolean;
-  /**
    * If the user is working with server side rendering.
    */
   translocoKeysManager: boolean;

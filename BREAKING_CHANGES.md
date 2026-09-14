@@ -13,6 +13,7 @@ nx migrate @jsverse/transloco  # Nx
 - `translate()` and `translateObject()` now require `provideGlobalTranslateFn()` in the providers. Without it they return `''` / `[]` and warn in dev mode. Omit it in SSR and multi-instance MFE setups.
 - `@angular/core` peer dependency is now `>=v20`.
 - `rxjs` peer dependency is now `^6.5.3 || ^7.4.0`.
+- Removed the `ssr` option from the `ng-add` schematic. Angular resolves the loader's relative URLs on the server, so the generated loader no longer needs an `environment.baseUrl` prefix.
 
 ## Transloco Locale & Messageformat
 

@@ -57,14 +57,11 @@ describe('ng add', () => {
     });
   });
 
-  describe('SSR', () => {
+  describe('Environment', () => {
     it(`GIVEN a standalone Angular project without an environments folder
-        WHEN ng-add schematic runs with ssr enabled
+        WHEN ng-add schematic runs for project 'bar'
         THEN the loader uses a relative URL and references no environment`, async () => {
-      const options: SchemaOptions = {
-        project: 'bar',
-        ssr: true,
-      } as SchemaOptions;
+      const options: SchemaOptions = { project: 'bar' } as SchemaOptions;
       const tree = await schematicRunner.runSchematic(
         'ng-add',
         options,
@@ -77,12 +74,9 @@ describe('ng add', () => {
     });
 
     it(`GIVEN an NgModule-based Angular project without an environments folder
-        WHEN ng-add schematic runs with ssr enabled
+        WHEN ng-add schematic runs for project 'bar'
         THEN the root module imports isDevMode and no environment file`, async () => {
-      const options: SchemaOptions = {
-        project: 'bar',
-        ssr: true,
-      } as SchemaOptions;
+      const options: SchemaOptions = { project: 'bar' } as SchemaOptions;
       const tree = await schematicRunner.runSchematic(
         'ng-add',
         options,
@@ -101,12 +95,9 @@ describe('ng add', () => {
     });
 
     it(`GIVEN an NgModule-based Angular project with an environment file
-        WHEN ng-add schematic runs with ssr enabled
-        THEN the root module uses the environment and the environment gets no baseUrl`, async () => {
-      const options: SchemaOptions = {
-        project: 'bar',
-        ssr: true,
-      } as SchemaOptions;
+        WHEN ng-add schematic runs for project 'bar'
+        THEN the root module uses the environment and the loader does not`, async () => {
+      const options: SchemaOptions = { project: 'bar' } as SchemaOptions;
       const initialTree = await createWorkspace(schematicRunner, {
         appOptions: { standalone: false },
       });
