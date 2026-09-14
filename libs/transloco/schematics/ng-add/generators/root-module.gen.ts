@@ -13,14 +13,12 @@ import { stringifyList } from '../../../schematics-core';
 
 export function createTranslocoModule({
   isLib,
-  ssr,
   langs,
   modulePath,
   sourceRoot,
   host,
 }: {
   isLib: boolean;
-  ssr: boolean;
   langs: string[];
   modulePath: string;
   sourceRoot: string;
@@ -45,7 +43,7 @@ export function createTranslocoModule({
       ts: 'ts',
       stringifyList,
       langs,
-      importEnv: ssr || envFileExists,
+      importEnv: envFileExists,
       envPath,
       prodMode,
     }),

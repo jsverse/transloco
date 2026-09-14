@@ -25,7 +25,7 @@ export interface SchemaOptions {
    */
   project: string;
   /**
-   * If the user is working with server side rendering.
+   * @deprecated SSR needs no special setup; this option has no effect.
    */
   ssr: boolean;
   /**

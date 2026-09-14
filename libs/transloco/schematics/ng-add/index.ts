@@ -27,28 +27,12 @@ import {
   createGlobalConfig,
   createTranslateFiles,
   getProject,
-  setEnvironments,
   stringifyList,
 } from '../../schematics-core';
 
 import { Loaders, SchemaOptions } from './schema';
 import { createLoaderFile } from './generators/http-loader.gen';
 import { createTranslocoModule } from './generators/root-module.gen';
-
-function updateEnvironmentBaseUrl(
-  host: Tree,
-  sourceRoot: string,
-  defaultValue: string,
-) {
-  const template = `$1{
-  baseUrl: '${defaultValue}',`;
-
-  setEnvironments(host, sourceRoot, (env: string) =>
-    env.indexOf('baseUrl') === -1
-      ? env.replace(/(environment.*=*)\{/, template)
-      : env,
-  );
-}
 
 interface ResolveLoaderPathParams {
   host: Tree;
@@ -193,7 +177,6 @@ export function ngAdd(options: SchemaOptions): Rule {
       actions.push(
         mergeWith(
           createLoaderFile({
-            ssr: options.ssr,
             loaderPath,
             urlPath,
           }),
@@ -240,17 +223,12 @@ export function ngAdd(options: SchemaOptions): Rule {
           createTranslocoModule({
             sourceRoot,
             isLib,
-            ssr: options.ssr,
             langs,
             modulePath,
             host,
           }),
         ),
       );
-    }
-
-    if (options.ssr) {
-      updateEnvironmentBaseUrl(host, sourceRoot, 'http://localhost:4200');
     }
 
     createGlobalConfig(host, langs, assetsPath);

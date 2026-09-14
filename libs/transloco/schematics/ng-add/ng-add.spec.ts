@@ -57,6 +57,83 @@ describe('ng add', () => {
     });
   });
 
+  describe('SSR', () => {
+    it(`GIVEN a standalone Angular project without an environments folder
+        WHEN ng-add schematic runs with ssr enabled
+        THEN the loader uses a relative URL and references no environment`, async () => {
+      const options: SchemaOptions = {
+        project: 'bar',
+        ssr: true,
+      } as SchemaOptions;
+      const tree = await schematicRunner.runSchematic(
+        'ng-add',
+        options,
+        await createWorkspace(schematicRunner),
+      );
+
+      const loaderContent = readFile(tree, 'app/transloco-loader.ts');
+      expect(loaderContent).not.toContain('environment');
+      expect(loaderContent).toContain('`/i18n/${lang}.json`');
+    });
+
+    it(`GIVEN an NgModule-based Angular project without an environments folder
+        WHEN ng-add schematic runs with ssr enabled
+        THEN the root module imports isDevMode and no environment file`, async () => {
+      const options: SchemaOptions = {
+        project: 'bar',
+        ssr: true,
+      } as SchemaOptions;
+      const tree = await schematicRunner.runSchematic(
+        'ng-add',
+        options,
+        await createWorkspace(schematicRunner, {
+          appOptions: { standalone: false },
+        }),
+      );
+
+      const moduleContent = readFile(tree, 'app/transloco-root.module.ts');
+      expect(moduleContent).not.toContain('environment');
+      expect(moduleContent).toContain('prodMode: !isDevMode()');
+      expect(moduleContent).toMatch(/import \{[^}]*\bisDevMode\b[^}]*\}/);
+      expect(readFile(tree, 'app/transloco-loader.ts')).not.toContain(
+        'environment',
+      );
+    });
+
+    it(`GIVEN an NgModule-based Angular project with an environment file
+        WHEN ng-add schematic runs with ssr enabled
+        THEN the root module uses the environment and the environment gets no baseUrl`, async () => {
+      const options: SchemaOptions = {
+        project: 'bar',
+        ssr: true,
+      } as SchemaOptions;
+      const initialTree = await createWorkspace(schematicRunner, {
+        appOptions: { standalone: false },
+      });
+      const envPath = '/projects/bar/src/environments/environment.ts';
+      initialTree.create(
+        envPath,
+        'export const environment = {\n  production: false,\n};\n',
+      );
+
+      const tree = await schematicRunner.runSchematic(
+        'ng-add',
+        options,
+        initialTree,
+      );
+
+      const moduleContent = readFile(tree, 'app/transloco-root.module.ts');
+      expect(moduleContent).toContain(
+        "import { environment } from '../environments/environment';",
+      );
+      expect(moduleContent).toContain('prodMode: environment.production');
+      expect(readFile(tree, 'app/transloco-loader.ts')).not.toContain(
+        'environment',
+      );
+      expect(tree.readContent(envPath)).not.toContain('baseUrl');
+    });
+  });
+
   describe('Folder Detection', () => {
     it(`GIVEN an Angular 18+ project with public folder
         WHEN ng-add schematic runs

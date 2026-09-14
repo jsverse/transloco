@@ -12,10 +12,10 @@
       "alias": "la"
     },
     "ssr": {
-      "description": "If the user is working with server side rendering.",
-      "x-prompt": "\uD83D\uDE80 Are you working with server side rendering?",
+      "description": "Deprecated: no longer needed. Angular resolves the loader's relative URLs during server side rendering.",
       "type": "boolean",
-      "default": false
+      "default": false,
+      "x-deprecated": "SSR needs no special setup; this option has no effect."
     },
     "loader": {
       "description": "The loader strategy for the translate files.",
