@@ -13,7 +13,7 @@ import {
   addScriptToPackageJson,
 } from '../../schematics-core';
 
-import { SchemaOptions } from './schema';
+import { KeysManagerStrategy, SchemaOptions } from './schema';
 
 async function installKeysManager() {
   const packageManager = await getConfiguredPackageManager();
@@ -49,7 +49,7 @@ module.exports = {
   host.create('webpack-dev.config.js', webpackConfig);
 }
 
-function addKeysDetectiveScript(host: Tree, strategy: string) {
+function addKeysDetectiveScript(host: Tree, strategy: KeysManagerStrategy) {
   if (strategy === 'Both') {
     addScriptToPackageJson(
       host,
