@@ -1,0 +1,24 @@
+# Single-version Nx workspace: every dependency lives in the root package.json,
+# so no `packages` are listed. Listing libs/* would make pnpm install each lib's
+# own ranges (e.g. transloco-utils' cosmiconfig 9 next to the root's 10).
+#
+# pnpm stays on 10 (package.json `packageManager`) until Nx is on 23: Nx 22's
+# `nx release publish` passes `--@scope:registry`, which pnpm 11+ rejects —
+# pnpm 11 spells it `--config.@scope:registry`, and only Nx 23 knows that
+# (nrwl/nx#36860). Move both together. Setting names change at 11 as well:
+# `onlyBuiltDependencies` becomes `allowBuilds`.
+
+# Native binaries and Nx's post-install; each ran unconditionally under npm.
+onlyBuiltDependencies:
+  - '@parcel/watcher'
+  - '@swc/core'
+  - esbuild
+  - lmdb
+  - msgpackr-extract
+  - nx
+  - unrs-resolver
+
+# less' postinstall downloads Playwright browsers when it thinks it is being
+# developed inside a monorepo — nothing here needs it.
+ignoredBuiltDependencies:
+  - less

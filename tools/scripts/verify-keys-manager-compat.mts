@@ -144,6 +144,8 @@ console.log(
 console.log(`Scratch project: ${project}`);
 
 // Pack so the check runs against the published layout, bin included.
+// npm, not pnpm, on purpose: this scratch project stands in for a consumer app
+// outside the workspace, and npm is the one package manager Node always ships.
 const packOutput = run(
   'npm',
   ['pack', distDir, '--pack-destination', project],

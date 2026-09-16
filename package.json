@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "homepage": "https://jsverse.gitbook.io/transloco/",
+  "packageManager": "pnpm@10.34.5",
   "engines": {
     "node": ">=24.0.0"
   },
@@ -21,7 +22,7 @@
     "format": "nx format:write",
     "format:check": "nx format:check",
     "pre-commit": "node scripts/pre-commit.js && lint-staged --allow-empty",
-    "release:pkg-pr-new": "npx pkg-pr-new@0.0.54 publish './dist/libs/*'"
+    "release:pkg-pr-new": "pnpm dlx pkg-pr-new@0.0.54 publish './dist/libs/*'"
   },
   "dependencies": {
     "@angular/animations": "21.2.19",

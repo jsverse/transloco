@@ -27,7 +27,7 @@ For each changed file:
 
 ### Step 3: Find Affected Libraries
 
-Run `npx nx show projects --affected --base=master` to get the Nx-computed affected project list.
+Run `pnpm exec nx show projects --affected --base=master` to get the Nx-computed affected project list.
 
 If you have access to the Nx MCP server, prefer using the `nx_workspace` tool to query affected projects.
 
@@ -38,7 +38,7 @@ Also manually verify by:
 
 ### Step 4: Run Affected Tests
 
-Run `npx nx affected --target=test --base=master` to verify affected libraries still pass their tests.
+Run `pnpm exec nx affected --target=test --base=master` to verify affected libraries still pass their tests.
 
 If tests fail, report:
 
