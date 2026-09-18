@@ -17,7 +17,7 @@ import { BaseLocalePipe } from './base-locale.pipe';
   pure: false,
 })
 export class TranslocoDatePipe extends BaseLocalePipe implements PipeTransform {
-  private localeConfig: LocaleConfig = injectLocaleConfig();
+  private readonly localeConfig: LocaleConfig = injectLocaleConfig();
 
   /**
    * Transform a date into the locale's date format.

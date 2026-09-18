@@ -27,14 +27,14 @@ import {
 
 @Injectable({ providedIn: 'root' })
 export class TranslocoLocaleService {
-  private translocoService = inject(TranslocoService);
-  private langLocaleMapping = injectLangMapping();
-  private defaultLocale = injectDefaultLocale();
-  private defaultCurrency = injectDefaultCurrency();
-  private localeCurrencyMapping = injectCurrencyMapping();
-  private numberTransformer = injectNumberTransformer();
-  private dateTransformer = injectDateTransformer();
-  private localeConfig: LocaleConfig = injectLocaleConfig();
+  private readonly translocoService = inject(TranslocoService);
+  private readonly langLocaleMapping = injectLangMapping();
+  private readonly defaultLocale = injectDefaultLocale();
+  private readonly defaultCurrency = injectDefaultCurrency();
+  private readonly localeCurrencyMapping = injectCurrencyMapping();
+  private readonly numberTransformer = injectNumberTransformer();
+  private readonly dateTransformer = injectDateTransformer();
+  private readonly localeConfig: LocaleConfig = injectLocaleConfig();
   private browserLocale = getBrowserCultureLang() || this.defaultLocale;
 
   private _locale = '';

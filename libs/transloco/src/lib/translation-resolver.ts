@@ -32,7 +32,7 @@ export interface ResolvedTranslation {
  */
 @Injectable({ providedIn: 'root' })
 export class TranslationResolver {
-  private service = inject(TranslocoService);
+  private readonly service = inject(TranslocoService);
   private scopeResolver = new ScopeResolver(this.service);
 
   resolve({

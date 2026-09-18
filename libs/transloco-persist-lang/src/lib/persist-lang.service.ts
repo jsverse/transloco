@@ -16,10 +16,10 @@ import {
 
 @Injectable({ providedIn: 'root' })
 export class TranslocoPersistLangService implements OnDestroy {
-  private platformId = inject(PLATFORM_ID);
-  private service = inject(TranslocoService);
-  private storage = injectPersistLangStorage();
-  private config = injectPersistLangConfig();
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly service = inject(TranslocoService);
+  private readonly storage = injectPersistLangStorage();
+  private readonly config = injectPersistLangConfig();
 
   private subscription: Subscription | null = null;
   private storageKey = this.config.storageKey || 'translocoLang';

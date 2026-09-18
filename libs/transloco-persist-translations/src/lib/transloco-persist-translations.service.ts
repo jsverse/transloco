@@ -19,9 +19,9 @@ export function getTimestampKey(key: string) {
 export class TranslocoPersistTranslations
   implements TranslocoLoader, OnDestroy
 {
-  private loader = injectPersistTranslationsLoader();
-  private storage = injectPersistTranslationsStorage();
-  private config = injectPersistTranslationsStorageConfig();
+  private readonly loader = injectPersistTranslationsLoader();
+  private readonly storage = injectPersistTranslationsStorage();
+  private readonly config = injectPersistTranslationsStorageConfig();
 
   private subscription: Subscription | null =
     this.clearCurrentStorage().subscribe();

@@ -19,7 +19,7 @@ export class TranslocoPercentPipe
   extends BaseLocalePipe
   implements PipeTransform
 {
-  private localeConfig: LocaleConfig = injectLocaleConfig();
+  private readonly localeConfig: LocaleConfig = injectLocaleConfig();
 
   /**
    * Transform a given number into the locale's currency format.
