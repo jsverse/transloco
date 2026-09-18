@@ -4,17 +4,27 @@ import ts, { SourceFile } from 'typescript';
 import { buildKeysFromASTNodes } from './build-keys-from-ast-nodes';
 import { TSExtractorResult } from './types';
 
-function buildInjectFunctionQuery(nodeType: string) {
-  return `${nodeType}:has(CallExpression:has(Identifier[name=inject]):has(Identifier[name=TranslocoService]))`;
+function buildInjectFunctionQuery(nodeType: string, serviceName: string) {
+  return `${nodeType}:has(CallExpression:has(Identifier[name=inject]):has(Identifier[name=${serviceName}]))`;
 }
 
-export function serviceExtractor(ast: SourceFile): TSExtractorResult {
-  const constructorInjection =
-    'Constructor Parameter:has(TypeReference Identifier[name=TranslocoService])';
-  const injectFunction = ['PropertyDeclaration', 'VariableDeclaration'].map(
-    buildInjectFunctionQuery,
+export function serviceExtractor(
+  ast: SourceFile,
+  serviceNames: string[] = [],
+): TSExtractorResult {
+  const allServiceNames = ['TranslocoService', ...serviceNames];
+  const constructorInjections = allServiceNames.map(
+    (name) =>
+      `Constructor Parameter:has(TypeReference Identifier[name=${name}])`,
   );
-  const serviceNameQuery = [constructorInjection, ...injectFunction].join(',');
+  const injectFunctions = allServiceNames.flatMap((name) =>
+    ['PropertyDeclaration', 'VariableDeclaration'].map((nodeType) =>
+      buildInjectFunctionQuery(nodeType, name),
+    ),
+  );
+  const serviceNameQuery = [...constructorInjections, ...injectFunctions].join(
+    ',',
+  );
   const serviceNameNodes = tsquery(ast, serviceNameQuery);
 
   let result: TSExtractorResult = [];

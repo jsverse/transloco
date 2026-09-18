@@ -23,6 +23,7 @@ import { testUnflatExtraction } from './config-options/unflat/unflat-spec';
 import { testScopeMappingConfig } from './config-options/scope-mapping/scope-mapping-spec';
 import { testRemoveExtraKeysConfig } from './config-options/remove-extra-keys/remove-extra-keys-spec';
 import { testMultiInputsConfig } from './config-options/multi-input/multi-input-spec';
+import { testCustomProvidersConfig } from './config-options/custom-providers/custom-providers-spec';
 
 const formats: FileFormats[] = ['pot', 'json'];
 
@@ -75,6 +76,8 @@ describe.each(formats)('buildTranslationFiles in %s', (fileFormat) => {
     testMultiInputsConfig(fileFormat);
 
     testRemoveExtraKeysConfig(fileFormat);
+
+    testCustomProvidersConfig(fileFormat);
   });
 
   testCommentsExtraction(fileFormat);
