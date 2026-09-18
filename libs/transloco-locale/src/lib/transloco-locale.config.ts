@@ -1,4 +1,4 @@
-import { InjectionToken } from '@angular/core';
+import { inject, InjectionToken } from '@angular/core';
 
 import LOCALE_CURRENCY from './locale-currency';
 import {
@@ -51,3 +51,28 @@ export const TRANSLOCO_LOCALE_CURRENCY_MAPPING =
       ? 'TRANSLOCO_LOCALE_CURRENCY_MAPPING'
       : '',
   );
+
+/** Resolves the provided `TRANSLOCO_LOCALE_DEFAULT_LOCALE`. */
+export function injectDefaultLocale() {
+  return inject(TRANSLOCO_LOCALE_DEFAULT_LOCALE);
+}
+
+/** Resolves the provided `TRANSLOCO_LOCALE_DEFAULT_CURRENCY`. */
+export function injectDefaultCurrency() {
+  return inject(TRANSLOCO_LOCALE_DEFAULT_CURRENCY);
+}
+
+/** Resolves the provided `TRANSLOCO_LOCALE_LANG_MAPPING`. */
+export function injectLangMapping() {
+  return inject(TRANSLOCO_LOCALE_LANG_MAPPING);
+}
+
+/** Resolves the provided `TRANSLOCO_LOCALE_CONFIG`. */
+export function injectLocaleConfig() {
+  return inject(TRANSLOCO_LOCALE_CONFIG);
+}
+
+/** Resolves the provided `TRANSLOCO_LOCALE_CURRENCY_MAPPING`. */
+export function injectCurrencyMapping() {
+  return inject(TRANSLOCO_LOCALE_CURRENCY_MAPPING);
+}

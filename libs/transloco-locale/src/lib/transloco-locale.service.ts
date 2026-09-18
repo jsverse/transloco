@@ -7,15 +7,15 @@ import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { isLocaleFormat, toDate } from './helpers';
 import { getDefaultOptions } from './shared';
 import {
-  TRANSLOCO_LOCALE_CONFIG,
-  TRANSLOCO_LOCALE_CURRENCY_MAPPING,
-  TRANSLOCO_LOCALE_DEFAULT_CURRENCY,
-  TRANSLOCO_LOCALE_DEFAULT_LOCALE,
-  TRANSLOCO_LOCALE_LANG_MAPPING,
+  injectCurrencyMapping,
+  injectDefaultCurrency,
+  injectDefaultLocale,
+  injectLangMapping,
+  injectLocaleConfig,
 } from './transloco-locale.config';
 import {
-  TRANSLOCO_DATE_TRANSFORMER,
-  TRANSLOCO_NUMBER_TRANSFORMER,
+  injectDateTransformer,
+  injectNumberTransformer,
 } from './transloco-locale.transformers';
 import {
   DateFormatOptions,
@@ -28,13 +28,13 @@ import {
 @Injectable({ providedIn: 'root' })
 export class TranslocoLocaleService {
   private translocoService = inject(TranslocoService);
-  private langLocaleMapping = inject(TRANSLOCO_LOCALE_LANG_MAPPING);
-  private defaultLocale = inject(TRANSLOCO_LOCALE_DEFAULT_LOCALE);
-  private defaultCurrency = inject(TRANSLOCO_LOCALE_DEFAULT_CURRENCY);
-  private localeCurrencyMapping = inject(TRANSLOCO_LOCALE_CURRENCY_MAPPING);
-  private numberTransformer = inject(TRANSLOCO_NUMBER_TRANSFORMER);
-  private dateTransformer = inject(TRANSLOCO_DATE_TRANSFORMER);
-  private localeConfig: LocaleConfig = inject(TRANSLOCO_LOCALE_CONFIG);
+  private langLocaleMapping = injectLangMapping();
+  private defaultLocale = injectDefaultLocale();
+  private defaultCurrency = injectDefaultCurrency();
+  private localeCurrencyMapping = injectCurrencyMapping();
+  private numberTransformer = injectNumberTransformer();
+  private dateTransformer = injectDateTransformer();
+  private localeConfig: LocaleConfig = injectLocaleConfig();
   private browserLocale = getBrowserCultureLang() || this.defaultLocale;
 
   private _locale = '';

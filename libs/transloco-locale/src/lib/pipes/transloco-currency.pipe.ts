@@ -1,8 +1,8 @@
-import { inject, Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
 import { isNil } from '@jsverse/utils';
 
 import { getDefaultOptions } from '../shared';
-import { TRANSLOCO_LOCALE_CONFIG } from '../transloco-locale.config';
+import { injectLocaleConfig } from '../transloco-locale.config';
 import {
   Currency,
   Locale,
@@ -20,7 +20,7 @@ export class TranslocoCurrencyPipe
   extends BaseLocalePipe
   implements PipeTransform
 {
-  private localeConfig: LocaleConfig = inject(TRANSLOCO_LOCALE_CONFIG);
+  private localeConfig: LocaleConfig = injectLocaleConfig();
 
   /**
    * Transform a given number into the locale's currency format.
