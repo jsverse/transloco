@@ -67,6 +67,10 @@ export {
 } from './lib/transloco.providers';
 export { translateSignal, translateObjectSignal } from './lib/transloco.signal';
 export {
+  TranslocoTitleStrategy,
+  provideTranslocoTitleStrategy,
+} from './lib/transloco.router';
+export {
   getBrowserLang,
   getBrowserCultureLang,
   isBrowser,
