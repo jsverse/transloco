@@ -60,7 +60,7 @@ export class TranslationResolver {
         });
 
         const resolveScope = (scope: TranslocoScope | null) =>
-          this.resolveScope(langResolver, lang, scope, inlineScope);
+          this.#resolveScope(langResolver, lang, scope, inlineScope);
 
         return Array.isArray(providerScope)
           ? forkJoin(providerScope.map(resolveScope)).pipe(
@@ -97,7 +97,7 @@ export class TranslationResolver {
     });
   }
 
-  private resolveScope(
+  #resolveScope(
     langResolver: LangResolver,
     lang: string,
     providerScope: TranslocoScope | null,
