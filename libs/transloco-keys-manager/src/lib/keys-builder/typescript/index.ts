@@ -39,6 +39,12 @@ const routeTitleProperty = /\btitle\s*:/;
  * it's typically called once (e.g. in `app.config.ts`), far from the route
  * files declaring `title` keys, so gating {@link routeTitleExtractor} per
  * file (like the other extractors gate on local imports) would miss it.
+ *
+ * This is a plain text search (no AST parsing), so it's cheap to run against
+ * every file up front, but it can false-positive on dead/commented-out code
+ * — an acceptable trade-off, since a false positive here only makes
+ * {@link routeTitleExtractor} run on more files, it doesn't extract wrong
+ * keys (that extractor has its own, stricter checks).
  */
 function detectTitleStrategyProvider(config: Config): boolean {
   return resolveFileList(config, 'ts').some((file) =>
@@ -57,6 +63,8 @@ function TSExtractor(
   const hasTranslocoImport = translocoImport.test(content);
   const hasMarkerImport = translocoKeysManagerImport.test(content);
   const hasTranslocoUsage = content.includes('transloco');
+  // Cheap pre-filter: only bother parsing this file's AST for route titles
+  // if it actually declares a `title:` property.
   const hasRouteTitle =
     hasTitleStrategyProvider && routeTitleProperty.test(content);
 
