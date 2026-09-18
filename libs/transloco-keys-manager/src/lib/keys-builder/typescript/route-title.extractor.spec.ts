@@ -117,6 +117,24 @@ describe('routeTitleExtractor', () => {
     ]);
   });
 
+  it('resolves a locator/shaper declared as a shorthand property (e.g. `{ path }`)', () => {
+    const ast = parse(`
+      const path = 'shorthand';
+      const component = ShorthandComponent;
+      export const routes = [
+        {
+          path,
+          component,
+          title: 'app.menu.shorthand',
+        },
+      ];
+    `);
+
+    expect(routeTitleExtractor(ast)).toEqual([
+      { key: 'app.menu.shorthand', lang: '', params: [] },
+    ]);
+  });
+
   it('does not extract a marker()-wrapped title (left to markerExtractor)', () => {
     const ast = parse(`
       export const routes = [
