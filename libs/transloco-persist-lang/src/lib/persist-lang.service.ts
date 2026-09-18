@@ -10,16 +10,16 @@ import { Subscription } from 'rxjs';
 import { skip } from 'rxjs/operators';
 
 import {
-  TRANSLOCO_PERSIST_LANG_CONFIG,
-  TRANSLOCO_PERSIST_LANG_STORAGE,
+  injectPersistLangConfig,
+  injectPersistLangStorage,
 } from './persist-lang.config';
 
 @Injectable({ providedIn: 'root' })
 export class TranslocoPersistLangService implements OnDestroy {
   private platformId = inject(PLATFORM_ID);
   private service = inject(TranslocoService);
-  private storage = inject(TRANSLOCO_PERSIST_LANG_STORAGE);
-  private config = inject(TRANSLOCO_PERSIST_LANG_CONFIG);
+  private storage = injectPersistLangStorage();
+  private config = injectPersistLangConfig();
 
   private subscription: Subscription | null = null;
   private storageKey = this.config.storageKey || 'translocoLang';
