@@ -21,8 +21,9 @@ export function testRouteTitleExtraction(fileFormat: Config['fileFormat']) {
     beforeEach(() => removeI18nFolder(type));
 
     it(`should extract plain-string route titles when provideTranslocoTitleStrategy is used,
-        without a ResolveFn title, an empty title, a non-Route path+title object, or a
-        parent object that only qualifies via a nested child route`, () => {
+        without a ResolveFn title, an empty title, a non-Route path+title object, a
+        parent object that only qualifies via a nested child route, and covering
+        loadChildren-shaped (lazy-loaded) routes as well`, () => {
       const config = buildConfig({ type, config: { fileFormat } });
 
       const expected = {
@@ -30,6 +31,8 @@ export function testRouteTitleExtraction(fileFormat: Config['fileFormat']) {
         'app.menu.settings': defaultValue,
         'app.menu.matched_route': defaultValue,
         'app.menu.nested': defaultValue,
+        'app.menu.reports': defaultValue,
+        'app.menu.reports_summary': defaultValue,
       };
 
       buildTranslationFiles(config);

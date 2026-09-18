@@ -56,6 +56,13 @@ export const routes: Routes = [
     ],
     title: 'not.a.route.title.either',
   },
+  {
+    // `loadChildren` (lazy-loaded child routes) is a valid route shaper too.
+    path: 'reports',
+    loadChildren: () =>
+      import('./reports/reports.routes').then((m) => m.routes),
+    title: 'app.menu.reports',
+  },
 ];
 
 // Not a Route: shares `path`/`title` with a Route but has none of the
