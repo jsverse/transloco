@@ -34,10 +34,16 @@ import { TranslocoService } from '@jsverse/transloco';
  *    main limitation of translating the title inside a route's `ResolveFn`.
  *    The subscription is torn down in {@link ngOnDestroy}.
  *
- * Wrap the key with the `marker` function from `@jsverse/transloco-keys-manager`
- * (commonly aliased as `_`) so the keys-manager CLI can statically detect and
- * extract it — a plain string in `title` is otherwise invisible to it, since
- * it isn't passed to `translate()`/the `transloco` pipe/directive.
+ * If the project uses `@jsverse/transloco-keys-manager`, a plain-string
+ * `title` on a route is automatically detected and extracted as a
+ * translation key — no `marker`/`_()` wrapping needed, unlike other plain
+ * strings the keys-manager CLI can't otherwise see (since they aren't passed
+ * to `translate()`/the `transloco` pipe/directive). This only kicks in once
+ * `provideTranslocoTitleStrategy()` is used somewhere in the project.
+ *
+ * A scoped/lazy-loaded title key still needs `marker(key, undefined, scope)`
+ * (aliased as `_`), since there's no way to express a scope on a plain
+ * string.
  *
  * @example
  * // app.config.ts
@@ -52,9 +58,17 @@ import { TranslocoService } from '@jsverse/transloco';
  *
  * export const routes: Routes = [
  *   {
+ *     // A global-scope key - auto-extracted, no `marker`/`_()` needed.
  *     path: 'design-system',
  *     loadComponent: () => import('./design-system.page'),
- *     title: _('app.menu.design_system'), // a translation key, not literal text
+ *     title: 'app.menu.design_system',
+ *   },
+ *   {
+ *     // A scoped key - needs `marker()` so the keys-manager CLI can pick up
+ *     // the scope (its 3rd argument) and extract it into that scope's file.
+ *     path: 'admin',
+ *     loadChildren: () => import('./admin/admin.routes'),
+ *     title: _('title', undefined, 'admin'),
  *   },
  * ];
  */
