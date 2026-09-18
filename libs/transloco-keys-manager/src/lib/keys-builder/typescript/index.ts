@@ -1,4 +1,5 @@
 import { tsquery, ScriptKind } from '@phenomnomnominal/tsquery';
+import ts, { SourceFile } from 'typescript';
 
 import {
   Config,
@@ -31,8 +32,10 @@ export function extractTSKeys(config: Config): ExtractionResult {
 
 const translocoImport = /@(jsverse|ngneat)\/transloco/;
 const translocoKeysManagerImport = /@(jsverse|ngneat)\/transloco-keys-manager/;
+const translocoRouterImport = /@(jsverse|ngneat)\/transloco\/router/;
 const titleStrategyProviderUsage = /\bprovideTranslocoTitleStrategy\b/;
 const routeTitleProperty = /\btitle\s*:/;
+const PROVIDE_TITLE_STRATEGY = 'provideTranslocoTitleStrategy';
 
 /**
  * Project-wide, one-time check for `provideTranslocoTitleStrategy()` usage:
@@ -42,11 +45,18 @@ const routeTitleProperty = /\btitle\s*:/;
  *
  * A cheap text search narrows down candidate files first (most files don't
  * even mention `provideTranslocoTitleStrategy`), but the actual decision is
- * AST-based: it only counts as "used" if the identifier is the callee of a
- * `CallExpression`, i.e. `provideTranslocoTitleStrategy()` is really called.
- * This deliberately excludes a bare import, a reference in a comment, or
- * dead/commented-out code (comments aren't part of the parsed AST), so those
- * don't enable {@link routeTitleExtractor} project-wide.
+ * AST-based, resolved through the import binding from `@jsverse/transloco/router`
+ * (or the legacy `@ngneat/transloco/router`) — a named import (optionally
+ * aliased) or a namespace import — and only counts as "used" if that binding
+ * is actually the callee of a `CallExpression`. This means:
+ * - a bare import with no call, or a reference passed as an argument/value
+ *   (not called) doesn't count;
+ * - an unrelated local function/variable that happens to share the name
+ *   `provideTranslocoTitleStrategy` (but isn't imported from the package)
+ *   doesn't count either;
+ * - both `import { provideTranslocoTitleStrategy as provideTitle } from '...'`
+ *   and `import * as router from '...'; router.provideTranslocoTitleStrategy()`
+ *   are correctly recognized as the real provider being used.
  */
 function detectTitleStrategyProvider(config: Config): boolean {
   return resolveFileList(config, 'ts').some((file) => {
@@ -56,13 +66,70 @@ function detectTitleStrategyProvider(config: Config): boolean {
 
     const ast = tsquery.ast(content, undefined, ScriptKind.TS);
 
+    return isTitleStrategyProviderCalled(ast);
+  });
+}
+
+/** @internal exported for unit testing only */
+export function isTitleStrategyProviderCalled(ast: SourceFile): boolean {
+  const { directNames, namespaceNames } =
+    resolveTitleStrategyImportBindings(ast);
+
+  if (directNames.size === 0 && namespaceNames.size === 0) return false;
+
+  return tsquery(ast, 'CallExpression').some((node) => {
+    if (!ts.isCallExpression(node)) return false;
+
+    const { expression } = node;
+
+    if (ts.isIdentifier(expression)) {
+      return directNames.has(expression.text);
+    }
+
     return (
-      tsquery(
-        ast,
-        'CallExpression > Identifier[name=provideTranslocoTitleStrategy]',
-      ).length > 0
+      ts.isPropertyAccessExpression(expression) &&
+      ts.isIdentifier(expression.expression) &&
+      namespaceNames.has(expression.expression.text) &&
+      expression.name.text === PROVIDE_TITLE_STRATEGY
     );
   });
+}
+
+/**
+ * Resolves the local binding name(s) that refer to
+ * `provideTranslocoTitleStrategy`, imported from `@jsverse/transloco/router`
+ * (or `@ngneat/transloco/router`):
+ * - `directNames`: names that refer to the export directly, whether imported
+ *   as-is or aliased (`import { provideTranslocoTitleStrategy as provideTitle }`).
+ * - `namespaceNames`: local names of a namespace import
+ *   (`import * as router from '...'`), where usage looks like
+ *   `router.provideTranslocoTitleStrategy()`.
+ */
+function resolveTitleStrategyImportBindings(ast: SourceFile) {
+  const directNames = new Set<string>();
+  const namespaceNames = new Set<string>();
+
+  for (const statement of ast.statements) {
+    if (!ts.isImportDeclaration(statement)) continue;
+    if (!ts.isStringLiteral(statement.moduleSpecifier)) continue;
+    if (!translocoRouterImport.test(statement.moduleSpecifier.text)) continue;
+
+    const namedBindings = statement.importClause?.namedBindings;
+    if (!namedBindings) continue;
+
+    if (ts.isNamedImports(namedBindings)) {
+      for (const element of namedBindings.elements) {
+        const importedName = (element.propertyName ?? element.name).text;
+        if (importedName === PROVIDE_TITLE_STRATEGY) {
+          directNames.add(element.name.text);
+        }
+      }
+    } else if (ts.isNamespaceImport(namedBindings)) {
+      namespaceNames.add(namedBindings.name.text);
+    }
+  }
+
+  return { directNames, namespaceNames };
 }
 
 function TSExtractor(

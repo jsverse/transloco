@@ -32,7 +32,10 @@ const SHAPER_PROPERTIES = new Set([
  *    from being misread as belonging to its parent object, e.g. a
  *    `{ children: [{ path, component, title }] }` wrapper that isn't itself
  *    a `Route`. Property names are resolved whether declared as an
- *    identifier (`path: ...`) or a quoted string (`'path': ...`).
+ *    identifier (`path: ...`), a quoted string (`'path': ...`), or a
+ *    shorthand property (`{ path }`, short for `{ path: path }`) — though
+ *    `title` itself must still be a regular (non-shorthand) property, since
+ *    a shorthand property can't carry a literal value to extract.
  * 2. `title` itself must be a non-empty plain string or no-substitution
  *    template literal — not a `ResolveFn` (a function/arrow expression) and
  *    not an already-`marker()`-wrapped call. Both are left untouched: a
@@ -61,6 +64,13 @@ export function routeTitleExtractor(ast: SourceFile): TSExtractorResult {
     let titleProperty: ts.PropertyAssignment | undefined;
 
     for (const property of node.properties) {
+      if (ts.isShorthandPropertyAssignment(property)) {
+        const name = property.name.text;
+        if (LOCATOR_PROPERTIES.has(name)) hasLocator = true;
+        if (SHAPER_PROPERTIES.has(name)) hasShaper = true;
+        continue;
+      }
+
       if (!ts.isPropertyAssignment(property)) continue;
 
       const name = resolvePropertyName(property.name);
