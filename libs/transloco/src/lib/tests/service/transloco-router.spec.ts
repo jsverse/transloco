@@ -76,6 +76,21 @@ describe('TranslocoTitleStrategy', () => {
     expect(setTitle).toHaveBeenCalledWith('Title spanish');
   }));
 
+  it(`GIVEN a route was activated with a translation key as its title
+      WHEN a translation successfully finishes loading (e.g. a scoped/lazy
+           translation not yet available on the first navigation to its route)
+      THEN it re-applies the title without a new navigation`, fakeAsync(() => {
+    loadLang(service, 'en');
+    const { strategy, setTitle } = createStrategy(service, 'nested.title');
+
+    strategy.updateTitle({} as RouterStateSnapshot);
+    setTitle.mockClear();
+
+    loadLang(service, 'admin-page/en');
+
+    expect(setTitle).toHaveBeenCalledWith('Title english');
+  }));
+
   it(`GIVEN no navigation has occurred yet
       WHEN the active language changes
       THEN it does not set any document title`, fakeAsync(() => {

@@ -1,7 +1,7 @@
 import { inject, Injectable, OnDestroy, Provider } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { RouterStateSnapshot, TitleStrategy } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { filter, merge, Subscription } from 'rxjs';
 
 import { TranslocoService } from './transloco.service';
 
@@ -19,12 +19,20 @@ import { TranslocoService } from './transloco.service';
  *    literal text.
  * 2. That key is translated and set via `Title.setTitle()`, and also cached
  *    on the instance so it can be re-applied later.
- * 3. A single, long-lived subscription to `TranslocoService.langChanges$` (set
- *    up once, when the strategy is created) re-translates the cached key and
- *    re-applies it via `Title.setTitle()` whenever the active language
- *    changes — without requiring a new navigation or a hard refresh, which is
- *    the main limitation of translating the title inside a route's
- *    `ResolveFn`. The subscription is torn down in {@link ngOnDestroy}.
+ * 3. A single, long-lived subscription (set up once, when the strategy is
+ *    created) re-translates the cached key and re-applies it via
+ *    `Title.setTitle()` whenever:
+ *    - the active language changes (`TranslocoService.langChanges$`), or
+ *    - any translation successfully loads (`TranslocoService.events$`,
+ *      filtered to `translationLoadSuccess`) — this covers a scoped/lazy-
+ *      loaded title key that isn't available yet on the *first* navigation to
+ *      its route: the key is translated as a fallback (e.g. the key itself)
+ *      until its scope finishes loading, at which point the title is
+ *      corrected.
+ *
+ *    None of this requires a new navigation or a hard refresh, which is the
+ *    main limitation of translating the title inside a route's `ResolveFn`.
+ *    The subscription is torn down in {@link ngOnDestroy}.
  *
  * Wrap the key with the `marker` function from `@jsverse/transloco-keys-manager`
  * (commonly aliased as `_`) so the keys-manager CLI can statically detect and
@@ -54,12 +62,16 @@ export class TranslocoTitleStrategy extends TitleStrategy implements OnDestroy {
   private readonly transloco = inject(TranslocoService);
   private titleKey: string | undefined;
 
-  private readonly subscription: Subscription =
-    this.transloco.langChanges$.subscribe(() => {
-      if (this.titleKey !== undefined) {
-        this.applyTitle(this.titleKey);
-      }
-    });
+  private readonly subscription: Subscription = merge(
+    this.transloco.langChanges$,
+    this.transloco.events$.pipe(
+      filter((event) => event.type === 'translationLoadSuccess'),
+    ),
+  ).subscribe(() => {
+    if (this.titleKey !== undefined) {
+      this.applyTitle(this.titleKey);
+    }
+  });
 
   override updateTitle(snapshot: RouterStateSnapshot): void {
     this.titleKey = this.buildTitle(snapshot);
