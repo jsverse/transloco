@@ -164,7 +164,6 @@ export class TranslocoService {
   readonly activeLang: Signal<string>;
 
   private destroyRef = inject(DestroyRef);
-  private destroyed = false;
 
   constructor() {
     this.setAvailableLangs(this.config.availableLangs || []);
@@ -187,7 +186,6 @@ export class TranslocoService {
     });
 
     this.destroyRef.onDestroy(() => {
-      this.destroyed = true;
       // Complete subjects to release observers if users forget to unsubscribe manually.
       // This is important in server-side rendering.
       this.lang.complete();
@@ -241,7 +239,7 @@ export class TranslocoService {
     // We use EMPTY instead of NEVER to ensure the observable completes.
     // This is important for operators like switchMap, which rely on the inner observable completing
     // before they can subscribe to the next one. NEVER would hang the chain indefinitely.
-    if (this.destroyed) {
+    if (this.destroyRef.destroyed) {
       return EMPTY;
     }
 
