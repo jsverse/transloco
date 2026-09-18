@@ -40,16 +40,29 @@ const routeTitleProperty = /\btitle\s*:/;
  * files declaring `title` keys, so gating {@link routeTitleExtractor} per
  * file (like the other extractors gate on local imports) would miss it.
  *
- * This is a plain text search (no AST parsing), so it's cheap to run against
- * every file up front, but it can false-positive on dead/commented-out code
- * — an acceptable trade-off, since a false positive here only makes
- * {@link routeTitleExtractor} run on more files, it doesn't extract wrong
- * keys (that extractor has its own, stricter checks).
+ * A cheap text search narrows down candidate files first (most files don't
+ * even mention `provideTranslocoTitleStrategy`), but the actual decision is
+ * AST-based: it only counts as "used" if the identifier is the callee of a
+ * `CallExpression`, i.e. `provideTranslocoTitleStrategy()` is really called.
+ * This deliberately excludes a bare import, a reference in a comment, or
+ * dead/commented-out code (comments aren't part of the parsed AST), so those
+ * don't enable {@link routeTitleExtractor} project-wide.
  */
 function detectTitleStrategyProvider(config: Config): boolean {
-  return resolveFileList(config, 'ts').some((file) =>
-    titleStrategyProviderUsage.test(readFile(file)),
-  );
+  return resolveFileList(config, 'ts').some((file) => {
+    const content = readFile(file);
+
+    if (!titleStrategyProviderUsage.test(content)) return false;
+
+    const ast = tsquery.ast(content, undefined, ScriptKind.TS);
+
+    return (
+      tsquery(
+        ast,
+        'CallExpression > Identifier[name=provideTranslocoTitleStrategy]',
+      ).length > 0
+    );
+  });
 }
 
 function TSExtractor(

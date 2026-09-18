@@ -3,6 +3,15 @@ import { tsquery } from '@phenomnomnominal/tsquery';
 
 import { TSExtractorResult } from './types';
 
+const LOCATOR_PROPERTIES = new Set(['path', 'matcher']);
+const SHAPER_PROPERTIES = new Set([
+  'component',
+  'loadComponent',
+  'loadChildren',
+  'children',
+  'redirectTo',
+]);
+
 /**
  * Extracts translation keys from a `Route`'s `title` property, without
  * requiring the `marker`/`_()` wrapping other plain strings need.
@@ -13,12 +22,17 @@ import { TSExtractorResult } from './types';
  * translation key, so a plain string used as `title` *is* a key on its own.
  *
  * How it decides a `title` is a route title key:
- * 1. It must sit in an object literal that both *locates* the route
- *    (`path` or a custom `matcher`) and *shapes* it (`component`,
- *    `loadComponent`, `loadChildren`, `children`, or `redirectTo`). These two
- *    signals together only ever appear on a `Route` object, which keeps
- *    this from matching unrelated `{ path, title }`-shaped data, e.g. a
- *    breadcrumb/nav-menu config.
+ * 1. It must be a *direct* property of an object literal that both
+ *    *locates* the route (`path` or a custom `matcher`) and *shapes* it
+ *    (`component`, `loadComponent`, `loadChildren`, `children`, or
+ *    `redirectTo`) — also as direct properties of that same object. These
+ *    two signals together only ever appear on a `Route` object, and
+ *    restricting all three to direct properties (rather than descendants at
+ *    any depth) keeps a nested/child route's own `path`/`component`/`title`
+ *    from being misread as belonging to its parent object, e.g. a
+ *    `{ children: [{ path, component, title }] }` wrapper that isn't itself
+ *    a `Route`. Property names are resolved whether declared as an
+ *    identifier (`path: ...`) or a quoted string (`'path': ...`).
  * 2. `title` itself must be a non-empty plain string or no-substitution
  *    template literal — not a `ResolveFn` (a function/arrow expression) and
  *    not an already-`marker()`-wrapped call. Both are left untouched: a
@@ -36,31 +50,30 @@ import { TSExtractorResult } from './types';
  * { path: 'admin', loadChildren: () => import('./admin.routes'), title: marker('title', undefined, 'admin') }
  */
 export function routeTitleExtractor(ast: SourceFile): TSExtractorResult {
-  const locatesRoute = ['path', 'matcher']
-    .map((name) => `PropertyAssignment > Identifier[name=${name}]`)
-    .join(', ');
-  const shapesRoute = [
-    'component',
-    'loadComponent',
-    'loadChildren',
-    'children',
-    'redirectTo',
-  ]
-    .map((name) => `PropertyAssignment > Identifier[name=${name}]`)
-    .join(', ');
-
-  const titleIdentifiers = tsquery(
-    ast,
-    `ObjectLiteralExpression:has(${locatesRoute}):has(${shapesRoute}) > PropertyAssignment > Identifier[name=title]`,
-  );
-
   const result: TSExtractorResult = [];
+  const objectLiterals = tsquery(ast, 'ObjectLiteralExpression');
 
-  for (const titleIdentifier of titleIdentifiers) {
-    const property = titleIdentifier.parent;
-    if (!ts.isPropertyAssignment(property)) continue;
+  for (const node of objectLiterals) {
+    if (!ts.isObjectLiteralExpression(node)) continue;
 
-    const { initializer } = property;
+    let hasLocator = false;
+    let hasShaper = false;
+    let titleProperty: ts.PropertyAssignment | undefined;
+
+    for (const property of node.properties) {
+      if (!ts.isPropertyAssignment(property)) continue;
+
+      const name = resolvePropertyName(property.name);
+      if (name === undefined) continue;
+
+      if (LOCATOR_PROPERTIES.has(name)) hasLocator = true;
+      if (SHAPER_PROPERTIES.has(name)) hasShaper = true;
+      if (name === 'title') titleProperty = property;
+    }
+
+    if (!hasLocator || !hasShaper || !titleProperty) continue;
+
+    const { initializer } = titleProperty;
     const isPlainStringTitle =
       ts.isStringLiteral(initializer) ||
       ts.isNoSubstitutionTemplateLiteral(initializer);
@@ -71,4 +84,20 @@ export function routeTitleExtractor(ast: SourceFile): TSExtractorResult {
   }
 
   return result;
+}
+
+/** Resolves a property's name whether it's declared as an identifier
+ * (`path: ...`) or a quoted string/no-substitution template literal
+ * (`'path': ...`). Returns `undefined` for computed or numeric names, which
+ * are never valid route locator/shaper/title property names. */
+function resolvePropertyName(name: ts.PropertyName): string | undefined {
+  if (
+    ts.isIdentifier(name) ||
+    ts.isStringLiteral(name) ||
+    ts.isNoSubstitutionTemplateLiteral(name)
+  ) {
+    return name.text;
+  }
+
+  return undefined;
 }
