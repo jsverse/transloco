@@ -2,6 +2,7 @@ import {
   ClassProvider,
   ExistingProvider,
   FactoryProvider,
+  inject,
   InjectionToken,
   Type,
   ValueProvider,
@@ -51,3 +52,18 @@ export const TRANSLOCO_PERSIST_TRANSLATIONS_STORAGE_CONFIG =
       ? 'Configuration for the storage behavior'
       : '',
   );
+
+/** Resolves the provided `TRANSLOCO_PERSIST_TRANSLATIONS_LOADER`. */
+export function injectPersistTranslationsLoader() {
+  return inject(TRANSLOCO_PERSIST_TRANSLATIONS_LOADER);
+}
+
+/** Resolves the provided `TRANSLOCO_PERSIST_TRANSLATIONS_STORAGE`. */
+export function injectPersistTranslationsStorage() {
+  return inject(TRANSLOCO_PERSIST_TRANSLATIONS_STORAGE);
+}
+
+/** Resolves the provided `TRANSLOCO_PERSIST_TRANSLATIONS_STORAGE_CONFIG`. */
+export function injectPersistTranslationsStorageConfig() {
+  return inject(TRANSLOCO_PERSIST_TRANSLATIONS_STORAGE_CONFIG);
+}
