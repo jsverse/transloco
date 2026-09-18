@@ -72,27 +72,53 @@ function detectTitleStrategyProvider(config: Config): boolean {
 
 /** @internal exported for unit testing only */
 export function isTitleStrategyProviderCalled(ast: SourceFile): boolean {
-  const { directNames, namespaceNames } =
+  const { directNames, namespaceNames, bindingsByName } =
     resolveTitleStrategyImportBindings(ast);
 
   if (directNames.size === 0 && namespaceNames.size === 0) return false;
 
-  return tsquery(ast, 'CallExpression').some((node) => {
-    if (!ts.isCallExpression(node)) return false;
+  const rootScope = createScope(null);
+  for (const [name, declaration] of bindingsByName) {
+    declareInScope(rootScope, name, declaration);
+  }
 
-    const { expression } = node;
+  let matched = false;
 
-    if (ts.isIdentifier(expression)) {
-      return directNames.has(expression.text);
+  const visit = (node: ts.Node, scope: Scope): void => {
+    if (matched) return;
+
+    const currentScope = introducesScope(node)
+      ? registerScopeDeclarations(node, createScope(scope))
+      : scope;
+
+    if (ts.isCallExpression(node)) {
+      const { expression } = node;
+
+      if (
+        ts.isIdentifier(expression) &&
+        directNames.has(expression.text) &&
+        resolveBinding(currentScope, expression.text) ===
+          bindingsByName.get(expression.text)
+      ) {
+        matched = true;
+      } else if (
+        ts.isPropertyAccessExpression(expression) &&
+        ts.isIdentifier(expression.expression) &&
+        namespaceNames.has(expression.expression.text) &&
+        expression.name.text === PROVIDE_TITLE_STRATEGY &&
+        resolveBinding(currentScope, expression.expression.text) ===
+          bindingsByName.get(expression.expression.text)
+      ) {
+        matched = true;
+      }
     }
 
-    return (
-      ts.isPropertyAccessExpression(expression) &&
-      ts.isIdentifier(expression.expression) &&
-      namespaceNames.has(expression.expression.text) &&
-      expression.name.text === PROVIDE_TITLE_STRATEGY
-    );
-  });
+    ts.forEachChild(node, (child) => visit(child, currentScope));
+  };
+
+  visit(ast, rootScope);
+
+  return matched;
 }
 
 /**
@@ -104,10 +130,15 @@ export function isTitleStrategyProviderCalled(ast: SourceFile): boolean {
  * - `namespaceNames`: local names of a namespace import
  *   (`import * as router from '...'`), where usage looks like
  *   `router.provideTranslocoTitleStrategy()`.
+ * - `bindingsByName`: maps each of those names to its declaring import node,
+ *   so {@link isTitleStrategyProviderCalled} can tell a real reference to the
+ *   import apart from an unrelated local declaration that merely shadows the
+ *   same name in a narrower scope (e.g. a nested function re-declaring it).
  */
 function resolveTitleStrategyImportBindings(ast: SourceFile) {
   const directNames = new Set<string>();
   const namespaceNames = new Set<string>();
+  const bindingsByName = new Map<string, ts.Node>();
 
   for (const statement of ast.statements) {
     if (!ts.isImportDeclaration(statement)) continue;
@@ -122,14 +153,103 @@ function resolveTitleStrategyImportBindings(ast: SourceFile) {
         const importedName = (element.propertyName ?? element.name).text;
         if (importedName === PROVIDE_TITLE_STRATEGY) {
           directNames.add(element.name.text);
+          bindingsByName.set(element.name.text, element);
         }
       }
     } else if (ts.isNamespaceImport(namedBindings)) {
       namespaceNames.add(namedBindings.name.text);
+      bindingsByName.set(namedBindings.name.text, namedBindings);
     }
   }
 
-  return { directNames, namespaceNames };
+  return { directNames, namespaceNames, bindingsByName };
+}
+
+/**
+ * A minimal lexical scope chain, used to tell whether a call to a name like
+ * `provideTranslocoTitleStrategy` really resolves to the import we detected,
+ * or is shadowed by a nearer local declaration (function, variable, class,
+ * parameter, or catch binding) with the same name.
+ */
+interface Scope {
+  declarations: Map<string, ts.Node>;
+  parent: Scope | null;
+}
+
+function createScope(parent: Scope | null): Scope {
+  return { declarations: new Map(), parent };
+}
+
+function declareInScope(scope: Scope, name: string, node: ts.Node): void {
+  if (!scope.declarations.has(name)) {
+    scope.declarations.set(name, node);
+  }
+}
+
+function resolveBinding(
+  scope: Scope | null,
+  name: string,
+): ts.Node | undefined {
+  for (let current: Scope | null = scope; current; current = current.parent) {
+    const declaration = current.declarations.get(name);
+    if (declaration) return declaration;
+  }
+
+  return undefined;
+}
+
+/** Nodes that introduce a new lexical scope worth tracking for shadow
+ * detection: function-likes (own scope for their parameters), blocks/the
+ * source file itself (own scope for their local declarations), and a catch
+ * clause (own scope for its caught variable). */
+function introducesScope(node: ts.Node): boolean {
+  return (
+    ts.isFunctionLike(node) ||
+    ts.isBlock(node) ||
+    ts.isSourceFile(node) ||
+    ts.isModuleBlock(node) ||
+    ts.isCatchClause(node)
+  );
+}
+
+function registerScopeDeclarations(node: ts.Node, scope: Scope): Scope {
+  if (ts.isFunctionLike(node)) {
+    for (const param of node.parameters) {
+      if (ts.isIdentifier(param.name)) {
+        declareInScope(scope, param.name.text, param);
+      }
+    }
+    return scope;
+  }
+
+  if (ts.isCatchClause(node)) {
+    const { variableDeclaration } = node;
+    if (variableDeclaration && ts.isIdentifier(variableDeclaration.name)) {
+      declareInScope(scope, variableDeclaration.name.text, variableDeclaration);
+    }
+    return scope;
+  }
+
+  // Block, SourceFile, ModuleBlock: register their own (non-nested)
+  // function/class/variable declarations, which are what a query for an
+  // identifier resolves to before it would fall through to an outer scope.
+  if (ts.isBlock(node) || ts.isSourceFile(node) || ts.isModuleBlock(node)) {
+    for (const statement of node.statements) {
+      if (ts.isFunctionDeclaration(statement) && statement.name) {
+        declareInScope(scope, statement.name.text, statement);
+      } else if (ts.isClassDeclaration(statement) && statement.name) {
+        declareInScope(scope, statement.name.text, statement);
+      } else if (ts.isVariableStatement(statement)) {
+        for (const declaration of statement.declarationList.declarations) {
+          if (ts.isIdentifier(declaration.name)) {
+            declareInScope(scope, declaration.name.text, declaration);
+          }
+        }
+      }
+    }
+  }
+
+  return scope;
 }
 
 function TSExtractor(

@@ -44,7 +44,7 @@ describe('isTitleStrategyProviderCalled', () => {
     expect(isTitleStrategyProviderCalled(ast)).toBe(true);
   });
 
-  it('does not match an unrelated local function that shares the same name', () => {
+  it('does not match an unrelated local function that shares the same name (no import at all)', () => {
     const ast = parse(`
       function provideTranslocoTitleStrategy() {
         return {};
@@ -52,6 +52,26 @@ describe('isTitleStrategyProviderCalled', () => {
 
       export const appConfig = {
         providers: [provideTranslocoTitleStrategy()],
+      };
+    `);
+
+    expect(isTitleStrategyProviderCalled(ast)).toBe(false);
+  });
+
+  it('does not match a call shadowed by a nested local declaration with the same name, even when the import exists', () => {
+    const ast = parse(`
+      import { provideTranslocoTitleStrategy } from '@jsverse/transloco/router';
+
+      function buildProviders() {
+        function provideTranslocoTitleStrategy() {
+          return {};
+        }
+
+        return [provideTranslocoTitleStrategy()];
+      }
+
+      export const appConfig = {
+        providers: buildProviders(),
       };
     `);
 
