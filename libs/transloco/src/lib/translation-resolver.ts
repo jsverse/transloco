@@ -1,4 +1,4 @@
-import { computed, Signal } from '@angular/core';
+import { computed, inject, Injectable, Signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { forkJoin, map, Observable, switchMap } from 'rxjs';
 import { OrArray } from '@jsverse/utils';
@@ -30,12 +30,10 @@ export interface ResolvedTranslation {
  * for the given inline/provider lang + scope, and loads the (possibly scoped)
  * translation for it, respecting `reRenderOnLangChange`/the `|static` suffix.
  */
+@Injectable({ providedIn: 'root' })
 export class TranslationResolver {
-  private scopeResolver: ScopeResolver;
-
-  constructor(private service: TranslocoService) {
-    this.scopeResolver = new ScopeResolver(service);
-  }
+  private service = inject(TranslocoService);
+  private scopeResolver = new ScopeResolver(this.service);
 
   resolve({
     inlineLang,

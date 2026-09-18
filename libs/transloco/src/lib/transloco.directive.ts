@@ -55,6 +55,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   private host = inject(ElementRef);
   private vcr = inject(ViewContainerRef);
   private renderer = inject(Renderer2);
+  private translationResolver = inject(TranslationResolver);
 
   view: EmbeddedViewRef<ViewContext> | undefined;
 
@@ -71,7 +72,6 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   private loaderTplHandler: TemplateHandler | undefined;
   // Whether we already rendered the view once
   private initialized = false;
-  private translationResolver = new TranslationResolver(this.service);
   private readonly strategy = this.tpl === null ? 'attribute' : 'structural';
 
   static ngTemplateContextGuard(

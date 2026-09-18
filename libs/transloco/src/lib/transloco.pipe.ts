@@ -1,5 +1,6 @@
 import {
   ChangeDetectorRef,
+  inject,
   Inject,
   OnDestroy,
   Optional,
@@ -21,10 +22,10 @@ import { HashMap } from './utils/type.utils';
   pure: false,
 })
 export class TranslocoPipe implements PipeTransform, OnDestroy {
+  private translationResolver = inject(TranslationResolver);
   private subscription: Subscription | null = null;
   private lastValue = '';
   private lastKey: string | undefined;
-  private translationResolver: TranslationResolver;
 
   constructor(
     private service: TranslocoService,
@@ -35,9 +36,7 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
     @Inject(TRANSLOCO_LANG)
     private providerLang: string | undefined,
     private cdr: ChangeDetectorRef,
-  ) {
-    this.translationResolver = new TranslationResolver(this.service);
-  }
+  ) {}
 
   // null is for handling strict mode + async pipe types https://github.com/jsverse/transloco/issues/311
   // null is for handling strict mode + optional chaining types https://github.com/jsverse/transloco/issues/488

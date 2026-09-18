@@ -4,6 +4,7 @@ import { of, Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { TranslationResolver } from '../translation-resolver';
+import { TranslocoService } from '../transloco.service';
 
 describe('TranslationResolver', () => {
   let langChanges$: Subject<string>;
@@ -22,7 +23,9 @@ describe('TranslationResolver', () => {
       _loadDependencies: loadDependencies,
       _setScopeAlias: setScopeAlias,
     };
-    resolver = new TranslationResolver(service);
+    resolver = TestBed.configureTestingModule({
+      providers: [{ provide: TranslocoService, useValue: service }],
+    }).inject(TranslationResolver);
   });
 
   it(`GIVEN a single provider scope
