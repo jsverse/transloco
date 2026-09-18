@@ -1,5 +1,5 @@
 import { ChangeDetectorRef } from '@angular/core';
-import { fakeAsync } from '@angular/core/testing';
+import { fakeAsync, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 
 import { createService, runLoader } from '../mocks';
@@ -17,14 +17,18 @@ describe('TranslocoPipe', () => {
 
     cdrMock = { markForCheck: vi.fn() } as unknown as ChangeDetectorRef;
 
-    pipe = new TranslocoPipe(serviceMock, undefined, undefined, cdrMock);
-    vi.spyOn(pipe as any, 'updateValue');
+    pipe = TestBed.runInInjectionContext(
+      () => new TranslocoPipe(serviceMock, undefined, undefined, cdrMock),
+    );
+    vi.spyOn(serviceMock, 'translate');
   });
 
   it(`GIVEN pipe with provider lang
       WHEN transform is called before translations load
       THEN should return empty string as default`, () => {
-    pipe = new TranslocoPipe(serviceMock, undefined, 'es', cdrMock);
+    pipe = TestBed.runInInjectionContext(
+      () => new TranslocoPipe(serviceMock, undefined, 'es', cdrMock),
+    );
     expect(pipe.transform('title', {})).toBe('');
   });
 
@@ -32,7 +36,9 @@ describe('TranslocoPipe', () => {
       WHEN transform is called
       THEN should use provided language for translation`, fakeAsync(() => {
     vi.spyOn(serviceMock, 'translate');
-    pipe = new TranslocoPipe(serviceMock, undefined, 'es', cdrMock);
+    pipe = TestBed.runInInjectionContext(
+      () => new TranslocoPipe(serviceMock, undefined, 'es', cdrMock),
+    );
     pipe.transform('title', {});
     runLoader();
     expect(serviceMock.translate).toHaveBeenCalledWith('title', {}, 'es');
@@ -41,7 +47,9 @@ describe('TranslocoPipe', () => {
   describe('Scoped Translation', () => {
     function assertScopedTranslation(scope: TranslocoScope) {
       vi.spyOn(serviceMock, 'translate');
-      pipe = new TranslocoPipe(serviceMock, scope, undefined, cdrMock);
+      pipe = TestBed.runInInjectionContext(
+        () => new TranslocoPipe(serviceMock, scope, undefined, cdrMock),
+      );
       serviceMock.config.reRenderOnLangChange = true;
       pipe.transform('title', {});
       runLoader();
@@ -71,14 +79,17 @@ describe('TranslocoPipe', () => {
       WHEN translating keys from different scopes
       THEN should load scope translations correctly`, fakeAsync(() => {
     vi.spyOn(serviceMock, 'translate');
-    pipe = new TranslocoPipe(
-      serviceMock,
-      [
-        { scope: 'lazy-page', alias: 'lazyPageAlias' },
-        { scope: 'admin-page', alias: 'adminPageAlias' },
-      ],
-      undefined,
-      cdrMock,
+    pipe = TestBed.runInInjectionContext(
+      () =>
+        new TranslocoPipe(
+          serviceMock,
+          [
+            { scope: 'lazy-page', alias: 'lazyPageAlias' },
+            { scope: 'admin-page', alias: 'adminPageAlias' },
+          ],
+          undefined,
+          cdrMock,
+        ),
     );
     (pipe as any).listenToLangChange = true;
     pipe.transform('lazyPageAlias.title', {});
@@ -123,7 +134,7 @@ describe('TranslocoPipe', () => {
       pipe.transform(key);
       expect((pipe as any).lastKey).toBe(key);
       runLoader();
-      expect((pipe as any).updateValue).toHaveBeenCalledWith(key, undefined);
+      expect(serviceMock.translate).toHaveBeenCalledWith(key, undefined, 'en');
       expect((pipe as any).lastValue).toBe('home english');
       expect(cdrMock.markForCheck).toHaveBeenCalled();
     }));
@@ -177,11 +188,11 @@ describe('TranslocoPipe', () => {
         THEN should return cached value`, fakeAsync(() => {
       pipe.transform('home');
       runLoader();
-      expect((pipe as any).updateValue).toHaveBeenCalledTimes(1);
+      expect(serviceMock.translate).toHaveBeenCalledTimes(1);
       pipe.transform('home');
-      expect((pipe as any).updateValue).toHaveBeenCalledTimes(1);
+      expect(serviceMock.translate).toHaveBeenCalledTimes(1);
       pipe.transform('a.b.c');
-      expect((pipe as any).updateValue).toHaveBeenCalledTimes(2);
+      expect(serviceMock.translate).toHaveBeenCalledTimes(2);
     }));
 
     it(`GIVEN pipe transform called with same key and params
@@ -189,11 +200,11 @@ describe('TranslocoPipe', () => {
         THEN should return cached value until params change`, fakeAsync(() => {
       pipe.transform('alert', { value: 'value' });
       runLoader();
-      expect((pipe as any).updateValue).toHaveBeenCalledTimes(1);
+      expect(serviceMock.translate).toHaveBeenCalledTimes(1);
       pipe.transform('alert', { value: 'value' });
-      expect((pipe as any).updateValue).toHaveBeenCalledTimes(1);
+      expect(serviceMock.translate).toHaveBeenCalledTimes(1);
       pipe.transform('alert', { value: 'bla' });
-      expect((pipe as any).updateValue).toHaveBeenCalledTimes(2);
+      expect(serviceMock.translate).toHaveBeenCalledTimes(2);
     }));
   });
 
