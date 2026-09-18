@@ -21,7 +21,6 @@ import { injectTranslocoLang } from './transloco-lang';
 import { injectLoadingTemplate } from './transloco-loading-template';
 import { injectTranslocoScope } from './transloco-scope';
 import { TranslocoService } from './transloco.service';
-import { TranslocoScope } from './transloco.types';
 import { TranslationResolver } from './translation-resolver';
 import { HashMap } from './utils/type.utils';
 
@@ -49,7 +48,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   private readonly host = inject(ElementRef);
   private readonly vcr = inject(ViewContainerRef);
   private readonly renderer = inject(Renderer2);
-  private translationResolver = inject(TranslationResolver);
+  private readonly translationResolver = inject(TranslationResolver);
 
   view: EmbeddedViewRef<ViewContext> | undefined;
 
