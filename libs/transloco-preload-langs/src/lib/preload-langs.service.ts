@@ -11,10 +11,15 @@ export const TRANSLOCO_PRELOAD_LANGUAGES = /* @__PURE__ */ new InjectionToken<
     : '',
 );
 
+/** Resolves the provided `TRANSLOCO_PRELOAD_LANGUAGES`. */
+export function injectPreloadLangs() {
+  return inject(TRANSLOCO_PRELOAD_LANGUAGES);
+}
+
 @Injectable({ providedIn: 'root' })
 export class TranslocoPreloadLangsService implements OnDestroy {
   private readonly service = inject(TranslocoService);
-  private readonly langs = inject(TRANSLOCO_PRELOAD_LANGUAGES);
+  private readonly langs = injectPreloadLangs();
   private readonly idleCallbackId: number | undefined;
   private subscription: Subscription | null = null;
 
