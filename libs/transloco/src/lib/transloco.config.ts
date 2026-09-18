@@ -1,4 +1,4 @@
-import { InjectionToken } from '@angular/core';
+import { inject, InjectionToken } from '@angular/core';
 
 import { AvailableLangs } from './transloco.types';
 
@@ -82,4 +82,13 @@ export function translocoConfig(
       ...config.scopes,
     },
   };
+}
+
+/**
+ * Resolves the provided `TRANSLOCO_CONFIG`. The token's own factory already
+ * falls back to `defaultConfig` when no config was provided, so `inject()`
+ * here always resolves.
+ */
+export function injectTranslocoConfig(): TranslocoConfig {
+  return inject(TRANSLOCO_CONFIG);
 }
