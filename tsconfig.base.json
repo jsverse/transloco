@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "paths": {
       "@jsverse/transloco": ["./libs/transloco/src/index.ts"],
+      "@jsverse/transloco/router": ["./libs/transloco/router/src/index.ts"],
       "@jsverse/transloco-keys-manager": [
         "./libs/transloco-keys-manager/src/index.ts"
       ],

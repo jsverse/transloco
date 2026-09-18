@@ -2,14 +2,15 @@ import { fakeAsync, TestBed } from '@angular/core/testing';
 import { Title } from '@angular/platform-browser';
 import { RouterStateSnapshot, TitleStrategy } from '@angular/router';
 
-import { createService } from '../mocks';
+import { TranslocoService } from '@jsverse/transloco';
+
+import { createService } from '../../src/lib/tests/mocks';
+import { loadLang } from '../../src/lib/tests/service/service-spec-utils';
+
 import {
   provideTranslocoTitleStrategy,
   TranslocoTitleStrategy,
-} from '../../transloco.router';
-import { TranslocoService } from '../../transloco.service';
-
-import { loadLang } from './service-spec-utils';
+} from './title-strategy';
 
 function createStrategy(service: TranslocoService, title: string | undefined) {
   const setTitle = vi.fn();

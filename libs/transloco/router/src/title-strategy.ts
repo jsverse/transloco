@@ -3,7 +3,7 @@ import { Title } from '@angular/platform-browser';
 import { RouterStateSnapshot, TitleStrategy } from '@angular/router';
 import { filter, merge, Subscription } from 'rxjs';
 
-import { TranslocoService } from './transloco.service';
+import { TranslocoService } from '@jsverse/transloco';
 
 /**
  * A `TitleStrategy` that treats the resolved route title (the `title` property
@@ -41,6 +41,8 @@ import { TranslocoService } from './transloco.service';
  *
  * @example
  * // app.config.ts
+ * import { provideTranslocoTitleStrategy } from '@jsverse/transloco/router';
+ *
  * export const appConfig: ApplicationConfig = {
  *   providers: [provideTranslocoTitleStrategy()],
  * };
