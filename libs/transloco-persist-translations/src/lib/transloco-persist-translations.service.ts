@@ -2,13 +2,13 @@ import { Translation, TranslocoLoader } from '@jsverse/transloco';
 import { isObject, isString } from '@jsverse/utils';
 import { from, Observable, of, Subscription } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
-import { inject, Injectable, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 
 import { observify } from './helpers';
 import {
-  TRANSLOCO_PERSIST_TRANSLATIONS_LOADER,
-  TRANSLOCO_PERSIST_TRANSLATIONS_STORAGE,
-  TRANSLOCO_PERSIST_TRANSLATIONS_STORAGE_CONFIG,
+  injectPersistTranslationsLoader,
+  injectPersistTranslationsStorage,
+  injectPersistTranslationsStorageConfig,
 } from './transloco-persist-translations.config';
 
 export function getTimestampKey(key: string) {
@@ -19,9 +19,9 @@ export function getTimestampKey(key: string) {
 export class TranslocoPersistTranslations
   implements TranslocoLoader, OnDestroy
 {
-  private loader = inject(TRANSLOCO_PERSIST_TRANSLATIONS_LOADER);
-  private storage = inject(TRANSLOCO_PERSIST_TRANSLATIONS_STORAGE);
-  private config = inject(TRANSLOCO_PERSIST_TRANSLATIONS_STORAGE_CONFIG);
+  private readonly loader = injectPersistTranslationsLoader();
+  private readonly storage = injectPersistTranslationsStorage();
+  private readonly config = injectPersistTranslationsStorageConfig();
 
   private subscription: Subscription | null =
     this.clearCurrentStorage().subscribe();

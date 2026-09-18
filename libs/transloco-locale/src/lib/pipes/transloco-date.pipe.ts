@@ -1,8 +1,8 @@
-import { inject, Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
 import { isNil } from '@jsverse/utils';
 
 import { getDefaultOptions } from '../shared';
-import { TRANSLOCO_LOCALE_CONFIG } from '../transloco-locale.config';
+import { injectLocaleConfig } from '../transloco-locale.config';
 import {
   DateFormatOptions,
   Locale,
@@ -17,7 +17,7 @@ import { BaseLocalePipe } from './base-locale.pipe';
   pure: false,
 })
 export class TranslocoDatePipe extends BaseLocalePipe implements PipeTransform {
-  private localeConfig: LocaleConfig = inject(TRANSLOCO_LOCALE_CONFIG);
+  private readonly localeConfig: LocaleConfig = injectLocaleConfig();
 
   /**
    * Transform a date into the locale's date format.

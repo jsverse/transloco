@@ -26,7 +26,6 @@ export default [
         },
       ],
       '@typescript-eslint/no-explicit-any': 'warn',
-      '@angular-eslint/prefer-inject': 'off',
     },
   },
   ...nx.configs['flat/angular-template'],

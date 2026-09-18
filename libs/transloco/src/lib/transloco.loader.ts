@@ -1,4 +1,4 @@
-import { InjectionToken } from '@angular/core';
+import { inject, InjectionToken } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
 import { Translation } from './transloco.types';
@@ -26,3 +26,16 @@ export const TRANSLOCO_LOADER =
   /* @__PURE__ */ new InjectionToken<TranslocoLoader>(
     typeof ngDevMode !== 'undefined' && ngDevMode ? 'TRANSLOCO_LOADER' : '',
   );
+
+/**
+ * Resolves the provided `TRANSLOCO_LOADER`, falling back to a `DefaultLoader`
+ * backed by `translations` when no loader was provided.
+ */
+export function injectLoader(
+  translations: Map<string, Translation>,
+): TranslocoLoader {
+  return (
+    inject(TRANSLOCO_LOADER, { optional: true }) ??
+    new DefaultLoader(translations)
+  );
+}

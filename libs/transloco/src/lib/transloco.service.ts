@@ -1,11 +1,4 @@
-import {
-  DestroyRef,
-  inject,
-  Inject,
-  Injectable,
-  Optional,
-  type Signal,
-} from '@angular/core';
+import { DestroyRef, inject, Injectable, type Signal } from '@angular/core';
 import {
   BehaviorSubject,
   catchError,
@@ -25,15 +18,8 @@ import {
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { isEmpty, isNil, isString, size, toCamelCase } from '@jsverse/utils';
 
-import {
-  DefaultLoader,
-  TRANSLOCO_LOADER,
-  TranslocoLoader,
-} from './transloco.loader';
-import {
-  TRANSLOCO_TRANSPILER,
-  TranslocoTranspiler,
-} from './transloco.transpiler';
+import { injectLoader, TranslocoLoader } from './transloco.loader';
+import { injectTranspiler } from './transloco.transpiler';
 import {
   AvailableLangs,
   InlineLoader,
@@ -46,20 +32,13 @@ import {
   TranslocoEvents,
   TranslocoScope,
 } from './transloco.types';
-import { TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
+import { injectTranslocoConfig, TranslocoConfig } from './transloco.config';
 import {
-  TRANSLOCO_MISSING_HANDLER,
-  TranslocoMissingHandler,
+  injectMissingHandler,
   TranslocoMissingHandlerData,
 } from './transloco-missing-handler';
-import {
-  TRANSLOCO_INTERCEPTOR,
-  TranslocoInterceptor,
-} from './transloco.interceptor';
-import {
-  TRANSLOCO_FALLBACK_STRATEGY,
-  TranslocoFallbackStrategy,
-} from './transloco-fallback-strategy';
+import { injectInterceptor } from './transloco.interceptor';
+import { injectFallbackStrategy } from './transloco-fallback-strategy';
 import { getFallbacksLoaders } from './get-fallbacks-loaders';
 import { resolveLoader } from './resolve-loader';
 import { flatten, unflatten } from './utils/flat.utils';
@@ -150,9 +129,15 @@ export class TranslationLoadError extends Error {
 
 @Injectable({ providedIn: 'root' })
 export class TranslocoService {
+  private translations = new Map<string, Translation>();
+  private readonly loader: TranslocoLoader = injectLoader(this.translations);
+  private readonly parser = injectTranspiler();
+  private readonly missingHandler = injectMissingHandler();
+  private readonly interceptor = injectInterceptor();
+  private readonly fallbackStrategy = injectFallbackStrategy();
+
   langChanges$: Observable<string>;
 
-  private translations = new Map<string, Translation>();
   private cache = new Map<string, Observable<Translation>>();
   private firstFallbackLang: string | undefined;
   private defaultLang = '';
@@ -165,7 +150,7 @@ export class TranslocoService {
   events$ = this.events.asObservable();
   readonly config: TranslocoConfig & {
     scopeMapping?: HashMap<string>;
-  };
+  } = JSON.parse(JSON.stringify(injectTranslocoConfig()));
 
   /**
    * A signal that reflects the currently active language.
@@ -178,24 +163,9 @@ export class TranslocoService {
    */
   readonly activeLang: Signal<string>;
 
-  private destroyRef = inject(DestroyRef);
-  private destroyed = false;
+  private readonly destroyRef = inject(DestroyRef);
 
-  constructor(
-    @Optional() @Inject(TRANSLOCO_LOADER) private loader: TranslocoLoader,
-    @Inject(TRANSLOCO_TRANSPILER) private parser: TranslocoTranspiler,
-    @Inject(TRANSLOCO_MISSING_HANDLER)
-    private missingHandler: TranslocoMissingHandler,
-    @Inject(TRANSLOCO_INTERCEPTOR) private interceptor: TranslocoInterceptor,
-    @Inject(TRANSLOCO_CONFIG) userConfig: TranslocoConfig,
-    @Inject(TRANSLOCO_FALLBACK_STRATEGY)
-    private fallbackStrategy: TranslocoFallbackStrategy,
-  ) {
-    if (!this.loader) {
-      this.loader = new DefaultLoader(this.translations);
-    }
-    this.config = JSON.parse(JSON.stringify(userConfig));
-
+  constructor() {
     this.setAvailableLangs(this.config.availableLangs || []);
     this.setFallbackLangForMissingTranslation(this.config);
     this.setDefaultLang(this.config.defaultLang);
@@ -216,7 +186,6 @@ export class TranslocoService {
     });
 
     this.destroyRef.onDestroy(() => {
-      this.destroyed = true;
       // Complete subjects to release observers if users forget to unsubscribe manually.
       // This is important in server-side rendering.
       this.lang.complete();
@@ -270,7 +239,7 @@ export class TranslocoService {
     // We use EMPTY instead of NEVER to ensure the observable completes.
     // This is important for operators like switchMap, which rely on the inner observable completing
     // before they can subscribe to the next one. NEVER would hang the chain indefinitely.
-    if (this.destroyed) {
+    if (this.destroyRef.destroyed) {
       return EMPTY;
     }
 

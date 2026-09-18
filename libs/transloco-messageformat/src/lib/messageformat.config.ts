@@ -1,4 +1,4 @@
-import { InjectionToken } from '@angular/core';
+import { inject, InjectionToken } from '@angular/core';
 import MessageFormat, { MessageFormatOptions } from '@messageformat/core';
 
 export const TRANSLOCO_MESSAGE_FORMAT_CONFIG =
@@ -7,6 +7,14 @@ export const TRANSLOCO_MESSAGE_FORMAT_CONFIG =
       ? 'TRANSLOCO_MESSAGE_FORMAT_CONFIG'
       : '',
   );
+
+/**
+ * There's no default value for this token, so it's optional and may
+ * resolve to `null` when no config is provided.
+ */
+export function injectMessageFormatConfig() {
+  return inject(TRANSLOCO_MESSAGE_FORMAT_CONFIG, { optional: true });
+}
 
 export type MFLocale = ConstructorParameters<typeof MessageFormat>[0];
 

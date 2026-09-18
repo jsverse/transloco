@@ -1,4 +1,4 @@
-import { InjectionToken } from '@angular/core';
+import { inject, InjectionToken } from '@angular/core';
 
 import { PersistStorage } from './persist-lang.types';
 
@@ -27,3 +27,13 @@ export const TRANSLOCO_PERSIST_LANG_CONFIG =
       ? 'TRANSLOCO_PERSIST_LANG_CONFIG'
       : '',
   );
+
+/** Resolves the provided `TRANSLOCO_PERSIST_LANG_STORAGE`. */
+export function injectPersistLangStorage() {
+  return inject(TRANSLOCO_PERSIST_LANG_STORAGE);
+}
+
+/** Resolves the provided `TRANSLOCO_PERSIST_LANG_CONFIG`. */
+export function injectPersistLangConfig() {
+  return inject(TRANSLOCO_PERSIST_LANG_CONFIG);
+}

@@ -1,4 +1,4 @@
-import { Injectable, InjectionToken } from '@angular/core';
+import { inject, Injectable, InjectionToken } from '@angular/core';
 
 import { Translation } from './transloco.types';
 
@@ -8,6 +8,11 @@ export const TRANSLOCO_INTERCEPTOR =
       ? 'TRANSLOCO_INTERCEPTOR'
       : '',
   );
+
+/** Resolves the provided `TRANSLOCO_INTERCEPTOR`. */
+export function injectInterceptor(): TranslocoInterceptor {
+  return inject(TRANSLOCO_INTERCEPTOR);
+}
 
 export interface TranslocoInterceptor {
   preSaveTranslation(translation: Translation, lang: string): Translation;

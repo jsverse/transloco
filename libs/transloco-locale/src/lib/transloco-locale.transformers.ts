@@ -1,4 +1,4 @@
-import { InjectionToken } from '@angular/core';
+import { inject, InjectionToken } from '@angular/core';
 
 import { localizeNumber, localizeDate } from './helpers';
 import {
@@ -31,6 +31,16 @@ export const TRANSLOCO_NUMBER_TRANSFORMER =
       ? 'TRANSLOCO_NUMBER_TRANSFORMER'
       : '',
   );
+
+/** Resolves the provided `TRANSLOCO_DATE_TRANSFORMER`. */
+export function injectDateTransformer() {
+  return inject(TRANSLOCO_DATE_TRANSFORMER);
+}
+
+/** Resolves the provided `TRANSLOCO_NUMBER_TRANSFORMER`. */
+export function injectNumberTransformer() {
+  return inject(TRANSLOCO_NUMBER_TRANSFORMER);
+}
 
 export class DefaultDateTransformer implements TranslocoDateTransformer {
   public transform(

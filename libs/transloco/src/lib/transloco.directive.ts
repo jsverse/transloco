@@ -15,14 +15,12 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { OrArray } from '@jsverse/utils';
 
 import { Content, TemplateHandler } from './template-handler';
-import { TRANSLOCO_LANG } from './transloco-lang';
-import { TRANSLOCO_LOADING_TEMPLATE } from './transloco-loading-template';
-import { TRANSLOCO_SCOPE } from './transloco-scope';
+import { injectTranslocoLang } from './transloco-lang';
+import { injectLoadingTemplate } from './transloco-loading-template';
+import { injectTranslocoScope } from './transloco-scope';
 import { TranslocoService } from './transloco.service';
-import { TranslocoScope } from './transloco.types';
 import { TranslationResolver } from './translation-resolver';
 import { HashMap } from './utils/type.utils';
 
@@ -38,24 +36,19 @@ interface ViewContext {
   selector: '[transloco]',
 })
 export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
-  private destroyRef = inject(DestroyRef);
-  private service = inject(TranslocoService);
-  private tpl = inject<TemplateRef<ViewContext>>(TemplateRef, {
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly service = inject(TranslocoService);
+  private readonly tpl = inject<TemplateRef<ViewContext>>(TemplateRef, {
     optional: true,
   });
-  private providerLang = inject(TRANSLOCO_LANG, { optional: true });
-  private providerScope: OrArray<TranslocoScope> | null = inject(
-    TRANSLOCO_SCOPE,
-    { optional: true },
-  );
-  private providedLoadingTpl = inject(TRANSLOCO_LOADING_TEMPLATE, {
-    optional: true,
-  });
-  private cdr = inject(ChangeDetectorRef);
-  private host = inject(ElementRef);
-  private vcr = inject(ViewContainerRef);
-  private renderer = inject(Renderer2);
-  private translationResolver = inject(TranslationResolver);
+  private readonly providerLang = injectTranslocoLang();
+  private readonly providerScope = injectTranslocoScope();
+  private readonly providedLoadingTpl = injectLoadingTemplate();
+  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly host = inject(ElementRef);
+  private readonly vcr = inject(ViewContainerRef);
+  private readonly renderer = inject(Renderer2);
+  private readonly translationResolver = inject(TranslationResolver);
 
   view: EmbeddedViewRef<ViewContext> | undefined;
 

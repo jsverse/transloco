@@ -33,7 +33,6 @@ export default [
           style: 'kebab-case',
         },
       ],
-      '@angular-eslint/prefer-inject': 'off',
     },
   },
   ...nx.configs['flat/angular-template'],
