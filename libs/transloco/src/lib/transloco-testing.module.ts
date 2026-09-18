@@ -37,9 +37,17 @@ const TRANSLOCO_TEST_OPTIONS =
       : '',
   );
 
+function injectTestLangs() {
+  return inject(TRANSLOCO_TEST_LANGS);
+}
+
+function injectTestOptions() {
+  return inject(TRANSLOCO_TEST_OPTIONS);
+}
+
 @Injectable()
 export class TestingLoader implements TranslocoLoader {
-  private readonly langs = inject(TRANSLOCO_TEST_LANGS);
+  private readonly langs = injectTestLangs();
 
   getTranslation(lang: string): Observable<Translation> | Promise<Translation> {
     return of(this.langs[lang]);
@@ -93,8 +101,8 @@ export class TranslocoTestingModule {
         provideAppInitializer(() => {
           const initializerFn = initTranslocoService(
             inject(TranslocoService),
-            inject(TRANSLOCO_TEST_LANGS),
-            inject(TRANSLOCO_TEST_OPTIONS),
+            injectTestLangs(),
+            injectTestOptions(),
           );
           return initializerFn();
         }),
