@@ -163,7 +163,7 @@ export class TranslocoService {
    */
   readonly activeLang: Signal<string>;
 
-  private destroyRef = inject(DestroyRef);
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor() {
     this.setAvailableLangs(this.config.availableLangs || []);

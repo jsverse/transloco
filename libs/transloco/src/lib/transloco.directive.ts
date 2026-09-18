@@ -37,18 +37,18 @@ interface ViewContext {
   selector: '[transloco]',
 })
 export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
-  private destroyRef = inject(DestroyRef);
-  private service = inject(TranslocoService);
-  private tpl = inject<TemplateRef<ViewContext>>(TemplateRef, {
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly service = inject(TranslocoService);
+  private readonly tpl = inject<TemplateRef<ViewContext>>(TemplateRef, {
     optional: true,
   });
-  private providerLang = injectTranslocoLang();
-  private providerScope = injectTranslocoScope();
-  private providedLoadingTpl = injectLoadingTemplate();
-  private cdr = inject(ChangeDetectorRef);
-  private host = inject(ElementRef);
-  private vcr = inject(ViewContainerRef);
-  private renderer = inject(Renderer2);
+  private readonly providerLang = injectTranslocoLang();
+  private readonly providerScope = injectTranslocoScope();
+  private readonly providedLoadingTpl = injectLoadingTemplate();
+  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly host = inject(ElementRef);
+  private readonly vcr = inject(ViewContainerRef);
+  private readonly renderer = inject(Renderer2);
   private translationResolver = inject(TranslationResolver);
 
   view: EmbeddedViewRef<ViewContext> | undefined;

@@ -20,10 +20,10 @@ import { HashMap } from './utils/type.utils';
 })
 export class TranslocoPipe implements PipeTransform, OnDestroy {
   private translationResolver = inject(TranslationResolver);
-  private service = inject(TranslocoService);
-  private providerScope = injectTranslocoScope();
-  private providerLang = injectTranslocoLang();
-  private cdr = inject(ChangeDetectorRef);
+  private readonly service = inject(TranslocoService);
+  private readonly providerScope = injectTranslocoScope();
+  private readonly providerLang = injectTranslocoLang();
+  private readonly cdr = inject(ChangeDetectorRef);
 
   private subscription: Subscription | null = null;
   private lastValue = '';
