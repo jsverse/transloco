@@ -2,11 +2,7 @@ import { inject, Injectable, InjectionToken, Injector } from '@angular/core';
 import { isDefined, isObject, isString } from '@jsverse/utils';
 
 import { Translation } from './transloco.types';
-import {
-  defaultConfig,
-  TRANSLOCO_CONFIG,
-  TranslocoConfig,
-} from './transloco.config';
+import { injectTranslocoConfig, TranslocoConfig } from './transloco.config';
 import { HashMap } from './utils/type.utils';
 import { getValue, setValue } from './utils/object.utils';
 import {
@@ -18,6 +14,11 @@ export const TRANSLOCO_TRANSPILER =
   /* @__PURE__ */ new InjectionToken<TranslocoTranspiler>(
     typeof ngDevMode !== 'undefined' && ngDevMode ? 'TRANSLOCO_TRANSPILER' : '',
   );
+
+/** Resolves the provided `TRANSLOCO_TRANSPILER`. */
+export function injectTranspiler(): TranslocoTranspiler {
+  return inject(TRANSLOCO_TRANSPILER);
+}
 
 export interface TranslocoTranspiler {
   transpile(params: TranspileParams): any;
@@ -34,8 +35,7 @@ export interface TranspileParams<V = unknown> {
 
 @Injectable()
 export class DefaultTranspiler implements TranslocoTranspiler {
-  protected config =
-    inject(TRANSLOCO_CONFIG, { optional: true }) ?? defaultConfig;
+  protected config = injectTranslocoConfig();
 
   protected get interpolationMatcher() {
     return resolveMatcher(this.config);

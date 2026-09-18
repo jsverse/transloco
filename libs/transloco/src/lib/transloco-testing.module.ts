@@ -39,7 +39,7 @@ const TRANSLOCO_TEST_OPTIONS =
 
 @Injectable()
 export class TestingLoader implements TranslocoLoader {
-  private readonly langs = inject<HashMap<Translation>>(TRANSLOCO_TEST_LANGS);
+  private readonly langs = inject(TRANSLOCO_TEST_LANGS);
 
   getTranslation(lang: string): Observable<Translation> | Promise<Translation> {
     return of(this.langs[lang]);

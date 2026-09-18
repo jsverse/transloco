@@ -1,4 +1,4 @@
-import { Injectable, InjectionToken } from '@angular/core';
+import { inject, Injectable, InjectionToken } from '@angular/core';
 
 import { TranslocoConfig } from './transloco.config';
 import { HashMap } from './utils/type.utils';
@@ -9,6 +9,11 @@ export const TRANSLOCO_MISSING_HANDLER =
       ? 'TRANSLOCO_MISSING_HANDLER'
       : '',
   );
+
+/** Resolves the provided `TRANSLOCO_MISSING_HANDLER`. */
+export function injectMissingHandler(): TranslocoMissingHandler {
+  return inject(TRANSLOCO_MISSING_HANDLER);
+}
 
 export interface TranslocoMissingHandlerData extends TranslocoConfig {
   activeLang: string;
