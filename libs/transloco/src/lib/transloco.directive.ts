@@ -15,12 +15,11 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { OrArray } from '@jsverse/utils';
 
 import { Content, TemplateHandler } from './template-handler';
-import { TRANSLOCO_LANG } from './transloco-lang';
-import { TRANSLOCO_LOADING_TEMPLATE } from './transloco-loading-template';
-import { TRANSLOCO_SCOPE } from './transloco-scope';
+import { injectTranslocoLang } from './transloco-lang';
+import { injectLoadingTemplate } from './transloco-loading-template';
+import { injectTranslocoScope } from './transloco-scope';
 import { TranslocoService } from './transloco.service';
 import { TranslocoScope } from './transloco.types';
 import { TranslationResolver } from './translation-resolver';
@@ -43,14 +42,9 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   private tpl = inject<TemplateRef<ViewContext>>(TemplateRef, {
     optional: true,
   });
-  private providerLang = inject(TRANSLOCO_LANG, { optional: true });
-  private providerScope: OrArray<TranslocoScope> | null = inject(
-    TRANSLOCO_SCOPE,
-    { optional: true },
-  );
-  private providedLoadingTpl = inject(TRANSLOCO_LOADING_TEMPLATE, {
-    optional: true,
-  });
+  private providerLang = injectTranslocoLang();
+  private providerScope = injectTranslocoScope();
+  private providedLoadingTpl = injectLoadingTemplate();
   private cdr = inject(ChangeDetectorRef);
   private host = inject(ElementRef);
   private vcr = inject(ViewContainerRef);

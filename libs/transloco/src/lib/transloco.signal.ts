@@ -10,9 +10,9 @@ import {
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Observable, of, switchMap } from 'rxjs';
 
-import { TRANSLOCO_SCOPE } from './transloco-scope';
 import { TranslocoService } from './transloco.service';
 import { Translation, TranslocoScope } from './transloco.types';
+import { injectTranslocoScope } from './transloco-scope';
 import { HashMap } from './utils/type.utils';
 
 type ScopeType = string | TranslocoScope | TranslocoScope[];
@@ -169,7 +169,7 @@ function computerKeysAndParams(
 
 function resolveScope(scope?: ScopeType) {
   if (typeof scope === 'undefined' || scope === '') {
-    const translocoScope = inject(TRANSLOCO_SCOPE, { optional: true });
+    const translocoScope = injectTranslocoScope();
     return translocoScope ?? undefined;
   }
   return scope;

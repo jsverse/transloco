@@ -6,12 +6,11 @@ import {
   inject,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { OrArray } from '@jsverse/utils';
 
 import { TranslocoService } from './transloco.service';
 import { TranslocoScope } from './transloco.types';
-import { TRANSLOCO_SCOPE } from './transloco-scope';
-import { TRANSLOCO_LANG } from './transloco-lang';
+import { injectTranslocoScope } from './transloco-scope';
+import { injectTranslocoLang } from './transloco-lang';
 import { TranslationResolver } from './translation-resolver';
 import { HashMap } from './utils/type.utils';
 
@@ -22,11 +21,8 @@ import { HashMap } from './utils/type.utils';
 export class TranslocoPipe implements PipeTransform, OnDestroy {
   private translationResolver = inject(TranslationResolver);
   private service = inject(TranslocoService);
-  private providerScope = inject<OrArray<TranslocoScope> | undefined>(
-    TRANSLOCO_SCOPE,
-    { optional: true },
-  );
-  private providerLang = inject(TRANSLOCO_LANG, { optional: true });
+  private providerScope = injectTranslocoScope();
+  private providerLang = injectTranslocoLang();
   private cdr = inject(ChangeDetectorRef);
 
   private subscription: Subscription | null = null;

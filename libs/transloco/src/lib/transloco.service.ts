@@ -18,15 +18,8 @@ import {
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { isEmpty, isNil, isString, size, toCamelCase } from '@jsverse/utils';
 
-import {
-  DefaultLoader,
-  TRANSLOCO_LOADER,
-  TranslocoLoader,
-} from './transloco.loader';
-import {
-  TRANSLOCO_TRANSPILER,
-  TranslocoTranspiler,
-} from './transloco.transpiler';
+import { injectLoader, TranslocoLoader } from './transloco.loader';
+import { injectTranspiler } from './transloco.transpiler';
 import {
   AvailableLangs,
   InlineLoader,
@@ -39,20 +32,13 @@ import {
   TranslocoEvents,
   TranslocoScope,
 } from './transloco.types';
-import { TRANSLOCO_CONFIG, TranslocoConfig } from './transloco.config';
+import { injectTranslocoConfig, TranslocoConfig } from './transloco.config';
 import {
-  TRANSLOCO_MISSING_HANDLER,
-  TranslocoMissingHandler,
+  injectMissingHandler,
   TranslocoMissingHandlerData,
 } from './transloco-missing-handler';
-import {
-  TRANSLOCO_INTERCEPTOR,
-  TranslocoInterceptor,
-} from './transloco.interceptor';
-import {
-  TRANSLOCO_FALLBACK_STRATEGY,
-  TranslocoFallbackStrategy,
-} from './transloco-fallback-strategy';
+import { injectInterceptor } from './transloco.interceptor';
+import { injectFallbackStrategy } from './transloco-fallback-strategy';
 import { getFallbacksLoaders } from './get-fallbacks-loaders';
 import { resolveLoader } from './resolve-loader';
 import { flatten, unflatten } from './utils/flat.utils';
@@ -144,19 +130,11 @@ export class TranslationLoadError extends Error {
 @Injectable({ providedIn: 'root' })
 export class TranslocoService {
   private translations = new Map<string, Translation>();
-  private readonly loader: TranslocoLoader =
-    inject(TRANSLOCO_LOADER, { optional: true }) ??
-    new DefaultLoader(this.translations);
-  private readonly parser = inject<TranslocoTranspiler>(TRANSLOCO_TRANSPILER);
-  private readonly missingHandler = inject<TranslocoMissingHandler>(
-    TRANSLOCO_MISSING_HANDLER,
-  );
-  private readonly interceptor = inject<TranslocoInterceptor>(
-    TRANSLOCO_INTERCEPTOR,
-  );
-  private readonly fallbackStrategy = inject<TranslocoFallbackStrategy>(
-    TRANSLOCO_FALLBACK_STRATEGY,
-  );
+  private readonly loader: TranslocoLoader = injectLoader(this.translations);
+  private readonly parser = injectTranspiler();
+  private readonly missingHandler = injectMissingHandler();
+  private readonly interceptor = injectInterceptor();
+  private readonly fallbackStrategy = injectFallbackStrategy();
 
   langChanges$: Observable<string>;
 
@@ -172,7 +150,7 @@ export class TranslocoService {
   events$ = this.events.asObservable();
   readonly config: TranslocoConfig & {
     scopeMapping?: HashMap<string>;
-  } = JSON.parse(JSON.stringify(inject<TranslocoConfig>(TRANSLOCO_CONFIG)));
+  } = JSON.parse(JSON.stringify(injectTranslocoConfig()));
 
   /**
    * A signal that reflects the currently active language.
