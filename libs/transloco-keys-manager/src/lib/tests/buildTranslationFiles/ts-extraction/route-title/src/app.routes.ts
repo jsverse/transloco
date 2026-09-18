@@ -42,6 +42,20 @@ export const routes: Routes = [
     // between the two.
     title: marker('title', undefined, 'admin'),
   },
+  {
+    // The parent object has neither its own `path`/`matcher` nor a title
+    // that should be extracted - it only *shapes* a route via `children`,
+    // and its own `title` must not be picked up just because a descendant
+    // (the nested route below) happens to have both a locator and a shaper.
+    children: [
+      {
+        path: 'nested',
+        component: null,
+        title: 'app.menu.nested',
+      },
+    ],
+    title: 'not.a.route.title.either',
+  },
 ];
 
 // Not a Route: shares `path`/`title` with a Route but has none of the

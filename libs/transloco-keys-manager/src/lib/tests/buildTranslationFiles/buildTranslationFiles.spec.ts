@@ -17,6 +17,7 @@ import { testMarkerExtraction } from './ts-extraction/marker/marker-spec';
 import { testSignalExtraction } from './ts-extraction/signal/signal-spec';
 import { testInlineTemplateExtraction } from './ts-extraction/inline-template/inline-template-spec';
 import { testRouteTitleExtraction } from './ts-extraction/route-title/route-title-spec';
+import { testRouteTitleNoProviderExtraction } from './ts-extraction/route-title-no-provider/route-title-no-provider-spec';
 import { testCommentsExtraction } from './comments/comments-spec';
 import { testUnflatSortExtraction } from './config-options/unflat-sort/unflat-sort-spec';
 import { testUnflatProblomaticKeysConfig } from './config-options/unflat-problematic-keys/unflat-problomatic-keys-spec';
@@ -64,6 +65,8 @@ describe.each(formats)('buildTranslationFiles in %s', (fileFormat) => {
     testInlineTemplateExtraction(fileFormat);
 
     testRouteTitleExtraction(fileFormat);
+
+    testRouteTitleNoProviderExtraction(fileFormat);
   });
 
   describe('Config options', () => {
