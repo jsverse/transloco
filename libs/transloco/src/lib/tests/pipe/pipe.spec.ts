@@ -3,7 +3,7 @@ import {
   Injector,
   runInInjectionContext,
 } from '@angular/core';
-import { fakeAsync, TestBed } from '@angular/core/testing';
+import { fakeAsync } from '@angular/core/testing';
 import { of } from 'rxjs';
 
 import { createService, runLoader } from '../mocks';
@@ -12,6 +12,7 @@ import { TranslocoPipe } from '../../transloco.pipe';
 import { TranslocoScope } from '../../transloco.types';
 import { TRANSLOCO_SCOPE } from '../../transloco-scope';
 import { TRANSLOCO_LANG } from '../../transloco-lang';
+import { TranslationResolver } from '../../translation-resolver';
 
 describe('TranslocoPipe', () => {
   let serviceMock: TranslocoService;
@@ -28,6 +29,7 @@ describe('TranslocoPipe', () => {
         { provide: TRANSLOCO_SCOPE, useValue: scope },
         { provide: TRANSLOCO_LANG, useValue: lang },
         { provide: ChangeDetectorRef, useValue: cdrMock },
+        TranslationResolver,
       ],
     });
 
@@ -40,7 +42,7 @@ describe('TranslocoPipe', () => {
     cdrMock = { markForCheck: vi.fn() } as unknown as ChangeDetectorRef;
 
     pipe = createPipe();
-    vi.spyOn(pipe as any, 'translate');
+    vi.spyOn(serviceMock, 'translate');
   });
 
   it(`GIVEN pipe with provider lang

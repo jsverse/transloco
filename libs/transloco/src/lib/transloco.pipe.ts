@@ -8,7 +8,6 @@ import {
 import { Subscription } from 'rxjs';
 
 import { TranslocoService } from './transloco.service';
-import { TranslocoScope } from './transloco.types';
 import { injectTranslocoScope } from './transloco-scope';
 import { injectTranslocoLang } from './transloco-lang';
 import { TranslationResolver } from './translation-resolver';
@@ -19,7 +18,7 @@ import { HashMap } from './utils/type.utils';
   pure: false,
 })
 export class TranslocoPipe implements PipeTransform, OnDestroy {
-  private translationResolver = inject(TranslationResolver);
+  private readonly translationResolver = inject(TranslationResolver);
   private readonly service = inject(TranslocoService);
   private readonly providerScope = injectTranslocoScope();
   private readonly providerLang = injectTranslocoLang();
@@ -28,9 +27,6 @@ export class TranslocoPipe implements PipeTransform, OnDestroy {
   private subscription: Subscription | null = null;
   private lastValue = '';
   private lastKey: string | undefined;
-  private path: string | undefined;
-  private langResolver = new LangResolver();
-  private scopeResolver = new ScopeResolver(this.service);
 
   // null is for handling strict mode + async pipe types https://github.com/jsverse/transloco/issues/311
   // null is for handling strict mode + optional chaining types https://github.com/jsverse/transloco/issues/488
