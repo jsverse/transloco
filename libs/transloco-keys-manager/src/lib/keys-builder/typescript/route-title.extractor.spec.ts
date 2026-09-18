@@ -101,6 +101,22 @@ describe('routeTitleExtractor', () => {
     expect(routeTitleExtractor(ast)).toEqual([]);
   });
 
+  it('extracts a plain-string title on a route shaped via loadChildren (lazy-loaded child routes)', () => {
+    const ast = parse(`
+      export const routes = [
+        {
+          path: 'reports',
+          loadChildren: () => import('./reports/reports.routes').then((m) => m.routes),
+          title: 'app.menu.reports',
+        },
+      ];
+    `);
+
+    expect(routeTitleExtractor(ast)).toEqual([
+      { key: 'app.menu.reports', lang: '', params: [] },
+    ]);
+  });
+
   it('does not extract a marker()-wrapped title (left to markerExtractor)', () => {
     const ast = parse(`
       export const routes = [
