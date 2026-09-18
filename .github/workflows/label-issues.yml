@@ -27,7 +27,7 @@ jobs:
           sparse-checkout: .github/workflows/scripts
           sparse-checkout-cone-mode: false
 
-      # No `npm ci`: the script has no dependencies and Node 24 strips the types itself,
+      # No `pnpm install`: the script has no dependencies and Node 24 strips the types itself,
       # so this job stays a few seconds rather than a few minutes.
       - uses: actions/setup-node@v6
         with:

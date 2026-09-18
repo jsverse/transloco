@@ -70,7 +70,7 @@ jobs:
       - name: Run ${{ matrix.target }}
         env:
           TARGET: ${{ matrix.target }}
-        run: npm run "$TARGET"
+        run: pnpm run "$TARGET"
 
   # Same gate, separate job: e2e runs inside Playwright's own image (Chromium
   # and its OS deps are baked in), and a container is per-job. Keep the
@@ -105,7 +105,7 @@ jobs:
           expected-version: ${{ matrix.playwright }}
 
       - name: Run ci:e2e
-        run: npm run ci:e2e
+        run: pnpm ci:e2e
 
   # `skipped` is an accepted gate result: on a dry run both gates are skipped,
   # and a bare `needs:` would cascade that skip to this job. `!cancelled()`
@@ -150,7 +150,7 @@ jobs:
           fetch-tags: true
           token: ${{ steps.app-token.outputs.token }}
 
-      # Shared setup: Node 24 + npm ci. It deliberately sets no registry-url,
+      # Shared setup: Node 24 + pnpm install. It deliberately sets no registry-url,
       # which OIDC trusted publishing (below) depends on — see step-setup.
       - name: Setup
         uses: ./.github/actions/step-setup
@@ -249,22 +249,22 @@ jobs:
             exit 1
           fi
           if [[ "$BUMP" == "auto" ]]; then
-            npx nx release version --verbose "${PREID_FLAG[@]}" "${GIT_FLAGS[@]}"
+            pnpm exec nx release version --verbose "${PREID_FLAG[@]}" "${GIT_FLAGS[@]}"
           else
-            npx nx release version "$BUMP" --verbose "${PREID_FLAG[@]}" "${GIT_FLAGS[@]}"
+            pnpm exec nx release version "$BUMP" --verbose "${PREID_FLAG[@]}" "${GIT_FLAGS[@]}"
           fi
           VERSION=$(node -p "require('./libs/transloco/package.json').version")
           echo "value=$VERSION" >> "$GITHUB_OUTPUT"
 
       # Build AFTER version so dist/ package.json files carry the bumped version
       - name: Build
-        run: npm run ci:build
+        run: pnpm ci:build
 
       # Belt-and-braces re-check of the CI gate: npm publish is irreversible, so
       # an unlicensed tarball cannot be taken back. Runs before any git push or
       # publish so a failure here aborts the release with nothing released.
       - name: Verify LICENSE in every released package
-        run: npm run verify:license
+        run: pnpm verify:license
 
       # The releases/{version} tag must be on the remote BEFORE the changelog
       # step creates the GitHub release, otherwise the API invents the tag at
@@ -305,7 +305,7 @@ jobs:
           FROM=()
           if [[ -n "$PREV" ]]; then FROM=(--from "$PREV"); fi
           echo "Generating changelog for $VERSION from ${PREV:-<first commit>}"
-          npx nx release changelog "$VERSION" "${FROM[@]}" --verbose
+          pnpm exec nx release changelog "$VERSION" "${FROM[@]}" --verbose
 
       # The changelog step commits CHANGELOG.md locally — push it too
       - name: Push changelog commit
@@ -336,7 +336,7 @@ jobs:
           if [[ "$VERSION" == *-* ]]; then TAG="next"; fi
           DRY=()
           if [[ "$DRY_RUN" == "true" ]]; then DRY=(--dry-run); fi
-          npx nx release publish --access public --tag "$TAG" --verbose "${DRY[@]}"
+          pnpm exec nx release publish --access public --tag "$TAG" --verbose "${DRY[@]}"
 
       # Cosmetic and deliberately last: the tag is pushed and the tarballs are
       # on npm by now, so a Discord outage must not fail the job and tempt a

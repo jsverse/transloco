@@ -4,14 +4,20 @@ description: 'Setup Node and install dependencies'
 runs:
   using: composite
   steps:
+    # Takes its version from package.json's `packageManager`. Must precede
+    # setup-node, whose `cache: pnpm` needs the pnpm binary to locate the store.
+    # pnpm 11 publishes natively, and OIDC trusted publishing in release.yml
+    # only works from action-setup v6.0.6 on (pnpm/pnpm#11513) — don't pin
+    # below it.
+    - uses: pnpm/action-setup@v6
+
     # Do NOT add registry-url here: it writes an _authToken=${NODE_AUTH_TOKEN}
     # line into .npmrc that shadows OIDC trusted publishing in release.yml.
-    # Node 24 bundles npm >= 11.5.1, which OIDC trusted publishing requires.
     - uses: actions/setup-node@v6
       with:
         node-version: 24
-        cache: npm
+        cache: pnpm
 
     - name: Install dependencies
-      run: npm ci
+      run: pnpm install --frozen-lockfile
       shell: bash

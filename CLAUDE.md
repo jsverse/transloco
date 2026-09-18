@@ -10,31 +10,31 @@ Transloco is an internationalization (i18n) library for Angular, published under
 
 ```bash
 # Development
-npm start                          # Serve playground app
-npm run commit                     # Interactive conventional commit (git-cz)
+pnpm start                         # Serve playground app
+pnpm commit                        # Interactive conventional commit (git-cz)
 
 # Build
-npm run ci:build                   # Build all packages
+pnpm ci:build                      # Build all packages
 nx build <package-name>            # Build single package
 
 # Test
-npm run ci:test                    # Test all packages
+pnpm ci:test                       # Test all packages
 nx test <package-name>             # Test single package
 nx test-library transloco          # Core library tests (Vitest)
 nx test-schematics transloco       # Core schematics tests (Vitest)
 
 # Lint
-npm run ci:lint                    # Lint all packages
+pnpm ci:lint                       # Lint all packages
 nx lint <package-name>             # Lint single package
 
 # Format (Prettier, via Nx's built-in formatter)
-npm run format                     # Format files affected vs. base branch
-npm run format:check               # Check formatting of files affected vs. base branch
-npm run ci:format                  # Check formatting of the whole repo (used in CI)
+pnpm format                        # Format files affected vs. base branch
+pnpm format:check                  # Check formatting of files affected vs. base branch
+pnpm ci:format                     # Check formatting of the whole repo (used in CI)
 
 # E2E
-npm run ci:e2e                     # Playwright E2E (CI mode, production serve)
-npm run e2e                        # Playwright E2E (local, dev serve)
+pnpm ci:e2e                        # Playwright E2E (CI mode, production serve)
+pnpm e2e                           # Playwright E2E (local, dev serve)
 ```
 
 ## Architecture
@@ -84,7 +84,7 @@ All libraries are mapped via `tsconfig.base.json` paths (e.g., `@jsverse/translo
 
 ### Commits
 
-Format: `type(scope): subject` (max 64 chars). Use `npm run commit` for interactive prompt.
+Format: `type(scope): subject` (max 64 chars). Use `pnpm commit` for interactive prompt.
 
 Scopes: `transloco`, `locale`, `messageformat`, `optimize`, `persist-lang`, `persist-translations`, `preload-langs`, `scoped-libs`, `utils`, `validator`, `schematics`
 
