@@ -8,8 +8,6 @@ import { from, map } from 'rxjs';
 import {
   updateGlobalConfig,
   getGlobalConfig,
-  getWorkspace,
-  setWorkspace,
   addScriptToPackageJson,
 } from '../../schematics-core';
 
@@ -19,66 +17,18 @@ async function installKeysManager() {
   const packageManager = await getConfiguredPackageManager();
   console.log('Installing packages for tooling...');
   if (packageManager === 'yarn') {
-    execSync('yarn add --dev @jsverse/transloco-keys-manager ngx-build-plus');
+    execSync('yarn add --dev @jsverse/transloco-keys-manager');
   } else {
-    execSync(
-      'npm install --save-dev @jsverse/transloco-keys-manager ngx-build-plus',
-    );
+    execSync('npm install --save-dev @jsverse/transloco-keys-manager');
   }
 }
 
-export function updateAngularJson(host: Tree, options: SchemaOptions) {
-  const angularJson = getWorkspace(host);
-  if (angularJson) {
-    const project = angularJson.projects[options.project];
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore - This is a custom builder type added after installing ngx-build-plus
-    project.architect.serve.builder = 'ngx-build-plus:dev-server';
-  }
-
-  setWorkspace(host, angularJson);
-}
-
-export function createWebpackConfig(host: Tree) {
-  const webpackConfig = `const { TranslocoExtractKeysWebpackPlugin } = require('@jsverse/transloco-keys-manager');
- 
-module.exports = {
-  plugins: [new TranslocoExtractKeysWebpackPlugin()]
-};
-`;
-  host.create('webpack-dev.config.js', webpackConfig);
-}
-
-function addKeysDetectiveScript(host: Tree, strategy: string) {
-  if (strategy === 'Both') {
-    addScriptToPackageJson(
-      host,
-      'start',
-      'ng serve --extra-webpack-config webpack-dev.config.js',
-    );
-    addScriptToPackageJson(
-      host,
-      'i18n:extract',
-      'transloco-keys-manager extract',
-    );
-  }
-
-  if (strategy === 'CLI') {
-    addScriptToPackageJson(
-      host,
-      'i18n:extract',
-      'transloco-keys-manager extract',
-    );
-  }
-
-  if (strategy === 'Webpack Plugin') {
-    addScriptToPackageJson(
-      host,
-      'start',
-      'ng serve --extra-webpack-config webpack-dev.config.js',
-    );
-  }
-
+function addKeysDetectiveScript(host: Tree) {
+  addScriptToPackageJson(
+    host,
+    'i18n:extract',
+    'transloco-keys-manager extract',
+  );
   addScriptToPackageJson(host, 'i18n:find', 'transloco-keys-manager find');
 }
 
@@ -121,13 +71,7 @@ export default function (options: SchemaOptions): Rule {
     return from(installKeysManager()).pipe(
       map(() => {
         updateTranslocoConfig(host, options);
-
-        if (['Webpack Plugin', 'Both'].includes(options.strategy)) {
-          createWebpackConfig(host);
-          updateAngularJson(host, options);
-        }
-
-        addKeysDetectiveScript(host, options.strategy);
+        addKeysDetectiveScript(host);
 
         return host;
       }),

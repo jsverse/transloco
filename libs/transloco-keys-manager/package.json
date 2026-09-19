@@ -2,13 +2,7 @@
   "name": "@jsverse/transloco-keys-manager",
   "version": "9.0.0-alpha.2",
   "description": "Extract translatable keys from projects that uses Transloco",
-  "main": "src/lib/transloco-keys-manager.js",
-  "types": "src/lib/transloco-keys-manager.d.ts",
   "exports": {
-    ".": {
-      "types": "./src/lib/transloco-keys-manager.d.ts",
-      "default": "./src/lib/transloco-keys-manager.js"
-    },
     "./marker": {
       "types": "./src/lib/marker.d.mts",
       "default": "./src/lib/marker.mjs"
@@ -41,8 +35,7 @@
     "Extract",
     "Keys",
     "Tool",
-    "CLI",
-    "Webpack"
+    "CLI"
   ],
   "license": "MIT",
   "peerDependencies": {
