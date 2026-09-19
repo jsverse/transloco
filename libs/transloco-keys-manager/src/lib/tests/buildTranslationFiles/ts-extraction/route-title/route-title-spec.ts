@@ -40,10 +40,9 @@ export function testRouteTitleExtraction(fileFormat: Config['fileFormat']) {
       assertTranslation({ type, fileFormat, expected });
     });
 
-    it(`GIVEN a route title wrapped in marker() with a scope argument
+    it(`GIVEN a route title prefixed with a known scope alias
         WHEN keys are extracted
-        THEN it's extracted once, into that scope's translation file, with no
-             duplication/conflict from the (skipped) route title extractor`, () => {
+        THEN it's extracted into that scope's translation file, not the global one`, () => {
       const config = buildConfig({ type, config: { fileFormat } });
 
       buildTranslationFiles(config);
