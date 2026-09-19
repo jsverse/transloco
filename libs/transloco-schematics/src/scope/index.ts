@@ -158,13 +158,14 @@ function createTranslationFiles(
 }
 
 function extractModuleOptions({
+  name,
   path,
   project,
   routing,
   flat,
   commonModule,
 }: SchemaOptions) {
-  return { path, project, routing, flat, commonModule };
+  return { name, path, project, routing, flat, commonModule };
 }
 
 export default function (options: SchemaOptions): Rule {
@@ -194,10 +195,13 @@ export default function (options: SchemaOptions): Rule {
         extractModuleOptions(options),
       ),
       (tree) => {
-        const moduleAction = tree.actions.find(
-          (action) =>
-            !!action.path.match(/\.module\.ts/) &&
-            !action.path.match(/-routing\.module\.ts/),
+        // Angular names the file `<name>.module.ts` up to v19 and
+        // `<name>-module.ts` from v20 on. Match on the scope name so we never
+        // pick another module the tree happens to hold (nor its routing one).
+        const scopeFileName = dasherize(options.name.split('/').pop() ?? '');
+        const moduleFile = new RegExp(`/${scopeFileName}[.-]module\\.ts$`);
+        const moduleAction = tree.actions.find((action) =>
+          moduleFile.test(action.path),
         );
         if (!moduleAction) {
           throw new Error('Could not find the generated module file.');
