@@ -35,6 +35,11 @@ describe('ng add', () => {
       expect(readFile(tree, 'app/transloco-root.module.ts')).toContain(
         "from './transloco-loader'",
       );
+      const rootModule = readFile(tree, 'app/transloco-root.module.ts');
+      expect(rootModule).toContain(
+        'exports: [ TranslocoDirective, TranslocoPipe ]',
+      );
+      expect(rootModule).not.toContain('TranslocoModule');
     });
   });
 
