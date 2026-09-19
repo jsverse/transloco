@@ -1,5 +1,5 @@
 import {
-  TranslocoTestingModule,
+  provideTranslocoTesting,
   TranslocoTestingOptions,
 } from '@jsverse/transloco';
 
@@ -10,9 +10,11 @@ import adminSpanish from '../assets/i18n/admin-page/es.json';
 import lazy from '../assets/i18n/lazy-page/en.json';
 import lazySpanish from '../assets/i18n/lazy-page/es.json';
 
-export function getTranslocoModule(options: TranslocoTestingOptions = {}) {
+export function getTranslocoTestingProviders(
+  options: TranslocoTestingOptions = {},
+) {
   const { langs, translocoConfig, ...rest } = options;
-  return TranslocoTestingModule.forRoot({
+  return provideTranslocoTesting({
     langs: {
       en,
       es,
