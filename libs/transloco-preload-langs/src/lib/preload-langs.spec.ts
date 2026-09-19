@@ -1,5 +1,6 @@
 import { createServiceFactory, mockProvider } from '@ngneat/spectator/vitest';
-import { PLATFORM_ID } from '@angular/core';
+import { NgZone, PLATFORM_ID, provideZoneChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { TranslocoService } from '@jsverse/transloco';
 import { of } from 'rxjs';
 
@@ -120,6 +121,32 @@ describe('TranslocoPreloadLangsService', () => {
       vi.runAllTimers();
 
       expect(load).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('with Zone.js', () => {
+    it(`GIVEN the service is created inside the Angular zone
+        WHEN the setTimeout fallback fires
+        THEN languages are loaded outside the Angular zone`, async () => {
+      const loadedInAngularZone: boolean[] = [];
+      load.mockImplementation(() => {
+        loadedInAngularZone.push(NgZone.isInAngularZone());
+        return of({});
+      });
+
+      // TestBed defaults to a NoopNgZone, so opt into zone-based change detection
+      // and create the service inside the zone, as a zone-based app would.
+      TestBed.configureTestingModule({
+        providers: [provideZoneChangeDetection()],
+      });
+      TestBed.inject(NgZone).run(() =>
+        TestBed.inject(TranslocoPreloadLangsService),
+      );
+      // Real timers on purpose: fake timers bypass Zone.js's patched setTimeout.
+      await new Promise((resolve) => setTimeout(resolve, 10));
+
+      expect(loadedInAngularZone).toEqual([false, false]);
+      load.mockImplementation(() => of({}));
     });
   });
 

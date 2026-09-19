@@ -1,6 +1,7 @@
 import {
   Injectable,
   InjectionToken,
+  NgZone,
   OnDestroy,
   PLATFORM_ID,
   inject,
@@ -44,6 +45,7 @@ function scheduleIdle(cb: () => void): () => void {
 @Injectable({ providedIn: 'root' })
 export class TranslocoPreloadLangsService implements OnDestroy {
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly ngZone = inject(NgZone);
   private readonly service = inject(TranslocoService);
   private readonly langs = injectPreloadLangs();
   private readonly cancelIdle: (() => void) | undefined;
@@ -61,27 +63,33 @@ export class TranslocoPreloadLangsService implements OnDestroy {
       return;
     }
 
-    this.cancelIdle = scheduleIdle(() => {
-      const preloads = this.langs.map((currentLangOrScope) => {
-        const lang = this.service._completeScopeWithLang(currentLangOrScope);
+    // Zone.js patches `setTimeout` (but not `requestIdleCallback`), so schedule
+    // outside Angular: the fallback timer then doesn't trigger change detection,
+    // matching the `requestIdleCallback` path. Preloading only fills the cache,
+    // so there is nothing to render and no need to re-enter the zone.
+    this.cancelIdle = this.ngZone.runOutsideAngular(() =>
+      scheduleIdle(() => {
+        const preloads = this.langs.map((currentLangOrScope) => {
+          const lang = this.service._completeScopeWithLang(currentLangOrScope);
 
-        let load$ = this.service.load(lang);
+          let load$ = this.service.load(lang);
 
-        if (typeof ngDevMode !== 'undefined' && ngDevMode) {
-          load$ = load$.pipe(
-            tap(() => {
-              console.log(
-                `%c 👁 Preloaded ${lang}`,
-                'background: #fff; color: #607D8B;',
-              );
-            }),
-          );
-        }
+          if (typeof ngDevMode !== 'undefined' && ngDevMode) {
+            load$ = load$.pipe(
+              tap(() => {
+                console.log(
+                  `%c 👁 Preloaded ${lang}`,
+                  'background: #fff; color: #607D8B;',
+                );
+              }),
+            );
+          }
 
-        return load$;
-      });
-      this.subscription = forkJoin(preloads).subscribe();
-    });
+          return load$;
+        });
+        this.subscription = forkJoin(preloads).subscribe();
+      }),
+    );
   }
 
   ngOnDestroy() {
