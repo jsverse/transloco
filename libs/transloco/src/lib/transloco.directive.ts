@@ -5,7 +5,7 @@ import {
   ElementRef,
   EmbeddedViewRef,
   inject,
-  Input,
+  input,
   OnChanges,
   OnDestroy,
   OnInit,
@@ -54,12 +54,14 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
 
   private memo = new Map<string, any>();
 
-  @Input('transloco') key: string | undefined;
-  @Input('translocoParams') params: HashMap = {};
-  @Input('translocoScope') inlineScope: string | undefined;
-  @Input('translocoPrefix') prefix: string | undefined;
-  @Input('translocoLang') inlineLang: string | undefined;
-  @Input('translocoLoadingTpl') inlineTpl: Content | undefined;
+  readonly key = input<string>(undefined, { alias: 'transloco' });
+  readonly params = input<HashMap>({}, { alias: 'translocoParams' });
+  readonly inlineScope = input<string>(undefined, { alias: 'translocoScope' });
+  readonly prefix = input<string>(undefined, { alias: 'translocoPrefix' });
+  readonly inlineLang = input<string>(undefined, { alias: 'translocoLang' });
+  readonly inlineTpl = input<Content>(undefined, {
+    alias: 'translocoLoadingTpl',
+  });
 
   private currentLang: string | undefined;
   private loaderTplHandler: TemplateHandler | undefined;
@@ -77,9 +79,9 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   ngOnInit() {
     this.translationResolver
       .resolve({
-        inlineLang: this.inlineLang,
+        inlineLang: this.inlineLang(),
         providerLang: this.providerLang,
-        inlineScope: this.inlineScope,
+        inlineScope: this.inlineScope(),
         providerScope: this.providerScope,
       })
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -87,7 +89,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
         this.currentLang = lang;
         this.strategy === 'attribute'
           ? this.attributeStrategy()
-          : this.structuralStrategy(this.currentLang, this.prefix);
+          : this.structuralStrategy(this.currentLang, this.prefix());
         this.cdr.markForCheck();
         this.initialized = true;
       });
@@ -115,7 +117,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
     this.renderer.setProperty(
       this.host.nativeElement,
       'innerText',
-      this.service.translate(this.key!, this.params, this.currentLang),
+      this.service.translate(this.key()!, this.params(), this.currentLang),
     );
   }
 
@@ -158,7 +160,7 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
   }
 
   private resolveLoadingContent() {
-    return this.inlineTpl || this.providedLoadingTpl;
+    return this.inlineTpl() || this.providedLoadingTpl;
   }
 
   ngOnDestroy() {
