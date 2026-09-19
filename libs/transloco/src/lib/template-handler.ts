@@ -16,7 +16,7 @@ export class TemplateHandler {
       this.vcr.createEmbeddedView(this.view);
     } else if (isString(this.view)) {
       const componentRef = this.vcr.createComponent(TranslocoLoaderComponent);
-      componentRef.instance.html = this.view;
+      componentRef.setInput('html', this.view);
       componentRef.hostView.detectChanges();
     } else {
       this.vcr.createComponent(this.view);

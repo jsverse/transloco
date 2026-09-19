@@ -1,10 +1,10 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
   template: `
-    <div class="transloco-loader-template" [innerHTML]="html"></div>
+    <div class="transloco-loader-template" [innerHTML]="html()"></div>
   `,
 })
 export class TranslocoLoaderComponent {
-  @Input() html: string | undefined;
+  readonly html = input<string>();
 }
