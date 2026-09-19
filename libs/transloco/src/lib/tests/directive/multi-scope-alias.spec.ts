@@ -9,7 +9,7 @@ import { Component } from '@angular/core';
 import { providersMock, runLoader } from '../mocks';
 import { TranslocoDirective } from '../../transloco.directive';
 import { TRANSLOCO_SCOPE } from '../../transloco-scope';
-import { TranslocoModule } from '../../transloco.module';
+import { TranslocoPipe } from '../../transloco.pipe';
 
 import { createFactory } from './shared';
 
@@ -60,7 +60,7 @@ describe('Scope alias', () => {
     <span>{{ 'admin.title' | transloco }}</span>
     <h1>{{ 'nested.title' | transloco }}</h1>
   `,
-  imports: [TranslocoModule],
+  imports: [TranslocoDirective, TranslocoPipe],
 })
 class TestPipe {}
 
@@ -68,7 +68,7 @@ describe('Scope alias pipe', () => {
   let spectator: Spectator<TestPipe>;
   const createComponent = createComponentFactory({
     component: TestPipe,
-    imports: [TranslocoModule],
+    imports: [TranslocoDirective, TranslocoPipe],
     providers: [
       providersMock,
       {
