@@ -119,14 +119,16 @@ export function provideTranslocoTesting(options: TranslocoTestingOptions) {
 
 /**
  * @deprecated Use {@link provideTranslocoTesting} and import the standalone
- * `TranslocoDirective` / `TranslocoPipe` directly instead.
+ * `TranslocoDirective` / `TranslocoPipe` directly instead. Will be removed in
+ * v10.
  */
 @NgModule({
   exports: [TranslocoModule],
 })
 export class TranslocoTestingModule {
   /**
-   * @deprecated Use {@link provideTranslocoTesting} instead.
+   * @deprecated Use {@link provideTranslocoTesting} instead. Will be removed in
+   * v10.
    */
   static forRoot(
     options: TranslocoTestingOptions,
