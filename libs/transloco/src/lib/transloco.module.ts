@@ -7,7 +7,7 @@ const decl = [TranslocoDirective, TranslocoPipe];
 
 /**
  * @deprecated Import the standalone {@link TranslocoDirective} and
- * {@link TranslocoPipe} directly instead.
+ * {@link TranslocoPipe} directly instead. Will be removed in v10.
  */
 @NgModule({
   imports: decl,
