@@ -10,6 +10,7 @@ import { collectFiles } from './workspace-utils';
 import { addGlobalTranslateFn } from './global-translate-fn';
 import { migrateMarkerImport } from './marker-import';
 import { migrateConfigTypeImport } from './config-type-import';
+import { migrateDeprecatedModules } from './deprecated-modules';
 import { reportVersionFloors } from './report-version-floors';
 
 /**
@@ -84,6 +85,7 @@ export function migrateToV9(): Rule {
       addGlobalTranslateFn(),
       migrateMarkerImport(),
       migrateConfigTypeImport(),
+      migrateDeprecatedModules(),
       reportVersionFloors(),
     ])(tree, context);
   };
