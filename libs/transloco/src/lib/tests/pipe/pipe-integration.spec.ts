@@ -4,7 +4,7 @@ import { fakeAsync } from '@angular/core/testing';
 
 import { providersMock, runLoader } from '../mocks';
 import { defaultConfig, TRANSLOCO_CONFIG } from '../../transloco.config';
-import { TranslocoModule } from '../../transloco.module';
+import { TranslocoPipe } from '../../transloco.pipe';
 import { TranslocoService } from '../../transloco.service';
 import { TRANSLOCO_LANG } from '../../transloco-lang';
 import { TRANSLOCO_SCOPE } from '../../transloco-scope';
@@ -26,7 +26,7 @@ export const listenToLangChangesProvider = {
     <h3>{{ 'alert' | transloco: { value: value } }}</h3>
     <h5>{{ 'home' | transloco: null : 'es' }}</h5>
   `,
-  imports: [TranslocoModule],
+  imports: [TranslocoPipe],
 })
 class TestPipe {
   value = 'hey';
@@ -37,7 +37,7 @@ describe('Transloco Pipe', () => {
     let spectator: Spectator<TestPipe>;
     const createComponent = createComponentFactory({
       component: TestPipe,
-      imports: [TranslocoModule],
+      imports: [TranslocoPipe],
       providers: providersMock,
     });
 
@@ -99,7 +99,7 @@ describe('Transloco Pipe', () => {
     let spectator: Spectator<TestPipe>;
     const createComponent = createComponentFactory({
       component: TestPipe,
-      imports: [TranslocoModule],
+      imports: [TranslocoPipe],
       providers: [
         providersMock,
         {
@@ -133,7 +133,7 @@ describe('Transloco Pipe', () => {
     let spectator: Spectator<TestPipe>;
     const createComponent = createComponentFactory({
       component: TestPipe,
-      imports: [TranslocoModule],
+      imports: [TranslocoPipe],
       providers: [
         providersMock,
         {
@@ -170,7 +170,7 @@ describe('Transloco Pipe', () => {
       <h1>{{ 'nested.title' | transloco }}</h1>
       <span>{{ 'alert' | transloco: { value: 'netanel' } }}</span>
     `,
-    imports: [TranslocoModule],
+    imports: [TranslocoPipe],
   })
   class TestScopePipe {}
 
@@ -178,7 +178,7 @@ describe('Transloco Pipe', () => {
     let spectator: Spectator<TestScopePipe>;
     const createComponent = createComponentFactory({
       component: TestScopePipe,
-      imports: [TranslocoModule],
+      imports: [TranslocoPipe],
       providers: [
         providersMock,
         {
