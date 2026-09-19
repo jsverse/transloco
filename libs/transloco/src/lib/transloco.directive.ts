@@ -54,18 +54,12 @@ export class TranslocoDirective implements OnInit, OnDestroy, OnChanges {
 
   private memo = new Map<string, any>();
 
-  readonly key = input<string | undefined>(undefined, { alias: 'transloco' });
+  readonly key = input<string>(undefined, { alias: 'transloco' });
   readonly params = input<HashMap>({}, { alias: 'translocoParams' });
-  readonly inlineScope = input<string | undefined>(undefined, {
-    alias: 'translocoScope',
-  });
-  readonly prefix = input<string | undefined>(undefined, {
-    alias: 'translocoPrefix',
-  });
-  readonly inlineLang = input<string | undefined>(undefined, {
-    alias: 'translocoLang',
-  });
-  readonly inlineTpl = input<Content | undefined>(undefined, {
+  readonly inlineScope = input<string>(undefined, { alias: 'translocoScope' });
+  readonly prefix = input<string>(undefined, { alias: 'translocoPrefix' });
+  readonly inlineLang = input<string>(undefined, { alias: 'translocoLang' });
+  readonly inlineTpl = input<Content>(undefined, {
     alias: 'translocoLoadingTpl',
   });
 
