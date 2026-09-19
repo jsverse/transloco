@@ -34,6 +34,7 @@ export {
   TestingLoader,
   TranslocoTestingModule,
   TranslocoTestingOptions,
+  provideTranslocoTesting,
 } from './lib/transloco-testing.module';
 export {
   TRANSLOCO_INTERCEPTOR,
