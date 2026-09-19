@@ -136,6 +136,48 @@ describe('migrateDeprecatedModulesSource', () => {
       expect(result?.unresolved).toHaveLength(1);
     });
 
+    it(`GIVEN the file already uses TranslocoPipe for something else
+        WHEN the source is migrated
+        THEN the pipe is imported under an alias instead of a second binding`, () => {
+      const result = migrateDeprecatedModulesSource(
+        join(
+          `import { TranslocoModule } from '@jsverse/transloco';`,
+          `import { TranslocoPipe } from './my-pipes';`,
+          `const imports = [TranslocoModule, TranslocoPipe];`,
+        ),
+      );
+
+      expect(result?.content).toBe(
+        join(
+          `import { TranslocoDirective, TranslocoPipe as TranslocoPipe_1 } from '@jsverse/transloco';`,
+          `import { TranslocoPipe } from './my-pipes';`,
+          `const imports = [TranslocoDirective, TranslocoPipe_1, TranslocoPipe];`,
+        ),
+      );
+    });
+
+    it(`GIVEN the file declares its own TranslocoDirective
+        WHEN the source is migrated
+        THEN the directive is imported under an alias and reused for every usage`, () => {
+      const result = migrateDeprecatedModulesSource(
+        join(
+          `import { TranslocoModule } from '@jsverse/transloco';`,
+          `class TranslocoDirective {}`,
+          `const a = [TranslocoModule];`,
+          `const b = [TranslocoModule];`,
+        ),
+      );
+
+      expect(result?.content).toBe(
+        join(
+          `import { TranslocoDirective as TranslocoDirective_1, TranslocoPipe } from '@jsverse/transloco';`,
+          `class TranslocoDirective {}`,
+          `const a = [TranslocoDirective_1, TranslocoPipe];`,
+          `const b = [TranslocoDirective_1, TranslocoPipe];`,
+        ),
+      );
+    });
+
     it(`GIVEN a same-named symbol from another package
         WHEN the source is migrated
         THEN nothing changes`, () => {
@@ -297,21 +339,65 @@ describe('migrateDeprecatedModulesSource', () => {
       expect(result?.unresolved).toHaveLength(1);
     });
 
-    it(`GIVEN two forRoot calls in one object
+    it(`GIVEN two forRoot calls in one imports array
         WHEN the source is migrated
-        THEN the second is reported instead of adding a duplicate providers key`, () => {
+        THEN the file is left as it was and each call is reported`, () => {
+      // Moved to providers, the first would override the second regardless of
+      // the order they had as imports, so neither is touched.
+      const source = join(
+        header,
+        `TestBed.configureTestingModule({`,
+        `  imports: [TranslocoTestingModule.forRoot(a), TranslocoTestingModule.forRoot(b)],`,
+        `});`,
+      );
+      const result = migrateDeprecatedModulesSource(source);
+
+      expect(result?.content).toBe(source);
+      expect(result?.migrated).toBe(0);
+      expect(result?.unresolved).toEqual([
+        { name: 'TranslocoTestingModule', line: 3 },
+        { name: 'TranslocoTestingModule', line: 3 },
+      ]);
+    });
+
+    it(`GIVEN quoted imports and providers keys
+        WHEN the source is migrated
+        THEN the existing providers array is appended to, not duplicated`, () => {
       const result = migrateDeprecatedModulesSource(
         join(
           header,
           `TestBed.configureTestingModule({`,
-          `  imports: [TranslocoTestingModule.forRoot(a), TranslocoTestingModule.forRoot(b)],`,
+          `  'imports': [TranslocoTestingModule.forRoot({ langs })],`,
+          `  'providers': [Foo],`,
           `});`,
         ),
       );
 
-      expect(result?.migrated).toBe(1);
-      expect(result?.unresolved).toHaveLength(1);
-      expect(result?.content.match(/providers:/g)).toHaveLength(1);
+      expect(result?.content).toContain(
+        `'providers': [Foo, provideTranslocoTesting({ langs })]`,
+      );
+      expect(result?.content).toContain(
+        `'imports': [TranslocoDirective, TranslocoPipe]`,
+      );
+      expect(result?.content.match(/providers/g)).toHaveLength(1);
+    });
+
+    it(`GIVEN a computed string-literal providers key
+        WHEN the source is migrated
+        THEN the existing providers array is appended to, not duplicated`, () => {
+      const result = migrateDeprecatedModulesSource(
+        join(
+          header,
+          `TestBed.configureTestingModule({`,
+          `  imports: [TranslocoTestingModule.forRoot({ langs })],`,
+          `  ['providers']: [Foo],`,
+          `});`,
+        ),
+      );
+
+      expect(result?.content).toContain(
+        `['providers']: [Foo, provideTranslocoTesting({ langs })]`,
+      );
     });
 
     it(`GIVEN the bare TranslocoTestingModule in imports

@@ -4,7 +4,7 @@ import type {
   CallExpression,
   ImportDeclaration,
   Node,
-  ObjectLiteralExpression,
+  ObjectLiteralElementLike,
 } from 'typescript';
 
 import { loadTypeScript } from './lazy-deps';
@@ -134,20 +134,71 @@ export function migrateDeprecatedModulesSource(
 
   const edits: Edit[] = [];
   const unresolved: UnresolvedUsage[] = [];
-  const added = new Map<string, Set<string>>();
+  // Package -> standalone export -> the local name it is imported under.
+  const added = new Map<string, Map<string, string>>();
   const rewritten = new Set<string>();
   const blocked = new Set<string>();
-  const handledObjects = new Set<ObjectLiteralExpression>();
   let migrated = 0;
 
-  /** The local name for a standalone export, queued for import if it's new. */
+  // Every identifier the file already uses, so a name we add can't collide with
+  // one of the user's own declarations or an import from another package.
+  const occupied = new Set<string>();
+  const collect = (node: Node): void => {
+    if (ts.isIdentifier(node)) occupied.add(node.text);
+    ts.forEachChild(node, collect);
+  };
+  ts.forEachChild(file, collect);
+
+  /**
+   * The local name for a standalone export, queued for import if it's new. An
+   * import that is already there is reused; a name the file uses for something
+   * else gets an alias instead of a second binding.
+   */
   const local = (pkg: string, name: string) => {
-    const known = existing.get(pkg)?.get(name);
+    const known = existing.get(pkg)?.get(name) ?? added.get(pkg)?.get(name);
     if (known) return known;
 
-    added.set(pkg, (added.get(pkg) ?? new Set<string>()).add(name));
-    return name;
+    let alias = name;
+    for (let suffix = 1; occupied.has(alias); suffix++) {
+      alias = `${name}_${suffix}`;
+    }
+    occupied.add(alias);
+    added.set(
+      pkg,
+      (added.get(pkg) ?? new Map<string, string>()).set(name, alias),
+    );
+
+    return alias;
   };
+
+  /** A property's key, whether written bare, quoted or computed from a literal. */
+  const keyOf = (property: ObjectLiteralElementLike): string | undefined => {
+    const name = (property as { name?: Node }).name;
+    if (!name) return undefined;
+
+    if (
+      ts.isIdentifier(name) ||
+      ts.isStringLiteral(name) ||
+      ts.isNoSubstitutionTemplateLiteral(name)
+    )
+      return name.text;
+
+    if (
+      ts.isComputedPropertyName(name) &&
+      (ts.isStringLiteral(name.expression) ||
+        ts.isNoSubstitutionTemplateLiteral(name.expression))
+    )
+      return name.expression.text;
+
+    return undefined;
+  };
+
+  const isTestingForRoot = (node: Node) =>
+    ts.isCallExpression(node) &&
+    ts.isPropertyAccessExpression(node.expression) &&
+    node.expression.name.text === 'forRoot' &&
+    ts.isIdentifier(node.expression.expression) &&
+    bindings.get(node.expression.expression.text)?.kind === 'testing';
 
   const standaloneFor = (binding: Binding) =>
     binding.kind === 'locale'
@@ -173,22 +224,19 @@ export function migrateDeprecatedModulesSource(
     const property = array.parent;
     if (
       !ts.isPropertyAssignment(property) ||
-      !ts.isIdentifier(property.name) ||
-      property.name.text !== 'imports' ||
+      keyOf(property) !== 'imports' ||
       !ts.isObjectLiteralExpression(property.parent)
     )
       return false;
 
-    const object = property.parent;
-    // A second `forRoot` would need a second `providers` key.
-    if (handledObjects.has(object)) return false;
+    // Two `forRoot` calls in one `imports` can't be told apart once moved: a
+    // `providers` entry overrides an imported module's, whatever the order was.
+    // Leave them all as they are, and let each one be reported.
+    if (array.elements.filter(isTestingForRoot).length > 1) return false;
 
+    const object = property.parent;
     const providers = object.properties.find(
-      (candidate) =>
-        (ts.isPropertyAssignment(candidate) ||
-          ts.isShorthandPropertyAssignment(candidate)) &&
-        ts.isIdentifier(candidate.name) &&
-        candidate.name.text === 'providers',
+      (candidate) => keyOf(candidate) === 'providers',
     );
     // `providers` given by reference can't be appended to in place.
     if (
@@ -199,8 +247,6 @@ export function migrateDeprecatedModulesSource(
       )
     )
       return false;
-
-    handledObjects.add(object);
 
     const declarables = CORE_DECLARABLES.map((name) => local(CORE, name));
     const provider = `${local(CORE, TESTING_PROVIDER)}(${call.arguments
@@ -309,7 +355,12 @@ export function migrateDeprecatedModulesSource(
           !blocked.has(element.name.text)
         );
       });
-      const additions = index === 0 ? [...(added.get(pkg) ?? [])] : [];
+      const additions =
+        index === 0
+          ? [...(added.get(pkg) ?? [])].map(([name, alias]) =>
+              alias === name ? name : `${name} as ${alias}`,
+            )
+          : [];
 
       if (
         kept.length === namedImports.elements.length &&
