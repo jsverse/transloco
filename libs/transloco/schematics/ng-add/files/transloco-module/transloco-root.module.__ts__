@@ -1,13 +1,15 @@
 import {
   provideTransloco,
-  TranslocoModule
+  TranslocoDirective,
+  TranslocoPipe
 } from '@jsverse/transloco';
 import { <% if (!importEnv) {%>isDevMode, <% } %>NgModule } from '@angular/core';
 import { TranslocoHttpLoader } from './transloco-loader';
 <% if (importEnv) {%>import { environment } from '<%= envPath %>';<% } %>
 
 @NgModule({
-  exports: [ TranslocoModule ],
+  imports: [ TranslocoDirective, TranslocoPipe ],
+  exports: [ TranslocoDirective, TranslocoPipe ],
   providers: [
       provideTransloco({
         config: {
