@@ -36,19 +36,21 @@ export function generateMatchers(path: string) {
         .replace(/,\s*,/, ',')
         .replace(/{\s*,/, '{')
         .replace(/,\s*}/, '}')
-        .concat(`\nimport { TranslocoModule } from '@jsverse/transloco';`),
+        .concat(
+          `\nimport { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';`,
+        ),
   };
 
   const moduleSingleImport = {
     files: `${path}.ts`,
     from: /import\s*{\s*(TranslateModule),?\s*}\s*from\s*('|").?ngx-translate(\/[^'"]+)?('|");?/g,
-    to: `import { TranslocoModule } from '@jsverse/transloco';`,
+    to: `import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';`,
   };
 
   const modules = {
     files: `${path}.ts`,
     from: /(?<![a-zA-Z])TranslateModule(?![^]*from)(\.(forRoot|forChild)\(({[^}]*})*[^)]*\))?/g,
-    to: 'TranslocoModule',
+    to: 'TranslocoDirective, TranslocoPipe',
   };
 
   const serviceMultiImport = {
