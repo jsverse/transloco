@@ -65,19 +65,21 @@ function addScopeToModule(
   changes.push(
     addProviderToModule(moduleSource, modulePath, provider, NAMES.LIB_NAME)[0],
   );
-  changes.push(
-    addImportToModule(
-      moduleSource,
-      modulePath,
-      'TranslocoModule',
-      NAMES.LIB_NAME,
-    )[0],
-  );
+  for (const standalone of ['TranslocoDirective', 'TranslocoPipe']) {
+    changes.push(
+      addImportToModule(
+        moduleSource,
+        modulePath,
+        standalone,
+        NAMES.LIB_NAME,
+      )[0],
+    );
+  }
   changes.push(
     insertImport(
       moduleSource,
       modulePath,
-      'provideTranslocoScope, TranslocoModule',
+      'provideTranslocoScope, TranslocoDirective, TranslocoPipe',
       NAMES.LIB_NAME,
     ),
   );
