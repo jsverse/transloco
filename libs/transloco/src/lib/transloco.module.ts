@@ -5,6 +5,10 @@ import { TranslocoPipe } from './transloco.pipe';
 
 const decl = [TranslocoDirective, TranslocoPipe];
 
+/**
+ * @deprecated Import the standalone {@link TranslocoDirective} and
+ * {@link TranslocoPipe} directly instead.
+ */
 @NgModule({
   imports: decl,
   exports: decl,
