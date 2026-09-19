@@ -1,5 +1,5 @@
 import { Routes, UrlMatcher } from '@angular/router';
-import { marker } from '@jsverse/transloco-keys-manager/marker';
+import { provideTranslocoScope } from '@jsverse/transloco';
 
 export const routes: Routes = [
   {
@@ -34,13 +34,12 @@ export const routes: Routes = [
   {
     path: 'admin',
     loadComponent: () => import('./admin/admin.page'),
-    // Wrapped in marker() with a 3rd (scope) argument, since a scoped/lazy
-    // title key can't be a plain string - the bare-string route-title
-    // extractor must not also pick this up: its `title` initializer is a
-    // CallExpression, not a string literal, so only `markerExtractor`
-    // extracts it (into the `admin` scope), with no duplication/conflict
-    // between the two.
-    title: marker('title', undefined, 'admin'),
+    // The scope is declared on the route itself. keys-manager discovers it
+    // from `provideTranslocoScope('admin')`, so a title prefixed with that
+    // alias (`admin.title`) is extracted into the `admin` scope file, while
+    // a title whose prefix is not a declared scope (`app.menu.*`) stays global.
+    providers: [provideTranslocoScope('admin')],
+    title: 'admin.title',
   },
   {
     // The parent object has neither its own `path`/`matcher` nor a title

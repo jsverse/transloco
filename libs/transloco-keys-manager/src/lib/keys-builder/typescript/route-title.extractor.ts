@@ -1,6 +1,9 @@
 import ts, { SourceFile } from 'typescript';
 import { tsquery } from '@phenomnomnominal/tsquery';
 
+import { Scopes } from '../../types';
+import { resolveAliasAndKey } from '../utils/resolvers.utils';
+
 import { TSExtractorResult } from './types';
 
 const LOCATOR_PROPERTIES = new Set(['path', 'matcher']);
@@ -41,18 +44,25 @@ const SHAPER_PROPERTIES = new Set([
  *    not an already-`marker()`-wrapped call. Both are left untouched: a
  *    `ResolveFn` isn't a static key, and a `marker()` call is picked up by
  *    `markerExtractor` instead, so there's no double-extraction/conflict
- *    when a developer explicitly wraps a route title in `marker()` (e.g. to
- *    route it into a scoped translation file via its 3rd argument).
+ *    when a developer explicitly wraps a route title in `marker()`.
+ *
+ * A key prefixed with a known scope alias is extracted into that scope's
+ * translation file, mirroring how `{{ 'admin.title' | transloco }}` is
+ * resolved in templates (see `resolveAliasAndKey`). This matches the runtime,
+ * where `TranslocoTitleStrategy` translates the fully-qualified key.
  *
  * @example
- * // Extracted as a global-scope key, no `marker`/`_()` needed:
+ * // Extracted as a global-scope key:
  * { path: 'design-system', component: DesignSystemPage, title: 'app.menu.design_system' }
  *
  * @example
- * // Left to `markerExtractor` (needed to target the `admin` scope):
- * { path: 'admin', loadChildren: () => import('./admin.routes'), title: marker('title', undefined, 'admin') }
+ * // Extracted as the `title` key of the `admin` scope:
+ * { path: 'admin', loadChildren: () => import('./admin.routes'), title: 'admin.title' }
  */
-export function routeTitleExtractor(ast: SourceFile): TSExtractorResult {
+export function routeTitleExtractor(
+  ast: SourceFile,
+  scopes: Scopes,
+): TSExtractorResult {
   const result: TSExtractorResult = [];
   const objectLiterals = tsquery(ast, 'ObjectLiteralExpression');
 
@@ -89,7 +99,13 @@ export function routeTitleExtractor(ast: SourceFile): TSExtractorResult {
       ts.isNoSubstitutionTemplateLiteral(initializer);
 
     if (isPlainStringTitle && initializer.text.length > 0) {
-      result.push({ key: initializer.text, lang: '', params: [] });
+      const [key, scopeAlias] = resolveAliasAndKey(initializer.text, scopes);
+
+      result.push({
+        key,
+        lang: scopeAlias ? scopes.aliasToScope[scopeAlias] : '',
+        params: [],
+      });
     }
   }
 

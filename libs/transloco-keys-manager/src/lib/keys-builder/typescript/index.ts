@@ -21,6 +21,7 @@ import { pureFunctionExtractor } from './pure-function.extractor';
 import { routeTitleExtractor } from './route-title.extractor';
 import { serviceExtractor } from './service.extractor';
 import { signalExtractor } from './signal.extractor';
+import { TSExtractorResult } from './types';
 
 export function extractTSKeys(config: Config): ExtractionResult {
   const hasTitleStrategyProvider = detectTitleStrategyProvider(config);
@@ -258,7 +259,7 @@ function TSExtractor(
 ): ScopeMap {
   const { file, scopes, defaultValue, scopeToKeys } = config;
   const content = readFile(file);
-  const extractors = [];
+  const extractors: ((ast: SourceFile) => TSExtractorResult)[] = [];
 
   const hasTranslocoImport = translocoImport.test(content);
   const hasMarkerImport = translocoKeysManagerImport.test(content);
@@ -277,7 +278,7 @@ function TSExtractor(
   }
 
   if (hasRouteTitle) {
-    extractors.push(routeTitleExtractor);
+    extractors.push((ast: SourceFile) => routeTitleExtractor(ast, scopes));
   }
 
   const baseParams = {
