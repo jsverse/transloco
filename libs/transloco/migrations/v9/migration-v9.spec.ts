@@ -970,6 +970,64 @@ describe('migration-v9', () => {
       `import { marker } from '@jsverse/transloco-keys-manager/marker';`,
     );
   });
+
+  it(`GIVEN marker imported alongside the removed webpack plugin
+      WHEN the migration runs
+      THEN marker is repointed and the leftover root import is reported`, async () => {
+    const warnings: string[] = [];
+    schematicRunner.logger.subscribe((entry) => {
+      if (entry.level === 'warn') warnings.push(entry.message);
+    });
+
+    const tree = await run((host) =>
+      host.create(
+        '/projects/bar/src/app/keys.ts',
+        `import { TranslocoExtractKeysWebpackPlugin, marker } from '@jsverse/transloco-keys-manager';`,
+      ),
+    );
+
+    expect(tree.readContent('/projects/bar/src/app/keys.ts')).toContain(
+      `import { marker } from '@jsverse/transloco-keys-manager/marker';`,
+    );
+    const reported = warnings.join('\n');
+    expect(reported).toContain('TranslocoExtractKeysWebpackPlugin');
+    expect(reported).toContain('/projects/bar/src/app/keys.ts');
+  });
+
+  it(`GIVEN a webpack config requiring the removed plugin from the package root
+      WHEN the migration runs
+      THEN the file is left untouched and reported`, async () => {
+    const config = `const { TranslocoExtractKeysWebpackPlugin } = require('@jsverse/transloco-keys-manager');`;
+    const warnings: string[] = [];
+    schematicRunner.logger.subscribe((entry) => {
+      if (entry.level === 'warn') warnings.push(entry.message);
+    });
+
+    const tree = await run((host) =>
+      host.create('/webpack-dev.config.js', config),
+    );
+
+    expect(tree.readContent('/webpack-dev.config.js')).toBe(config);
+    expect(warnings.join('\n')).toContain('/webpack-dev.config.js');
+  });
+
+  it(`GIVEN marker as the only name imported from the package root
+      WHEN the migration runs
+      THEN it is fully repointed and no root-entry warning is reported`, async () => {
+    const warnings: string[] = [];
+    schematicRunner.logger.subscribe((entry) => {
+      if (entry.level === 'warn') warnings.push(entry.message);
+    });
+
+    await run((host) =>
+      host.create(
+        '/projects/bar/src/app/keys.ts',
+        `import { marker } from '@jsverse/transloco-keys-manager';`,
+      ),
+    );
+
+    expect(warnings.join('\n')).not.toContain('root entry point');
+  });
 });
 
 describe('migration-v9 without a workspace file', () => {

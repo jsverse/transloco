@@ -6,6 +6,9 @@ import { collectFiles } from './workspace-utils';
 const PACKAGE = '@jsverse/transloco-keys-manager';
 const SUBPATH = `${PACKAGE}/marker`;
 
+/** An `import`/`require`/`import()` of the bare package root, in any quote style. */
+const ROOT_SPECIFIER = /(['"`])@jsverse\/transloco-keys-manager\1/;
+
 interface Edit {
   start: number;
   end: number;
@@ -84,8 +87,9 @@ export function migrateMarkerImportSource(
       continue;
     }
 
-    // Other specifiers stay on the main entry point: drop `marker` from that
-    // list and add a second import statement for it right after.
+    // Other specifiers stay on the root import: drop `marker` from that list
+    // and add a second import statement for it right after. The root entry no
+    // longer exists in v9, so `migrateMarkerImport` reports what's left.
     edits.push({
       start: clause.namedBindings.getStart(),
       end: clause.namedBindings.getEnd(),
@@ -109,20 +113,45 @@ export function migrateMarkerImportSource(
   return { content, migrated };
 }
 
-/** Walks every `.ts` file in the tree, rewriting `marker` imports in place. */
+/** Whether `source` still references the package root, which v9 removed. */
+export function referencesPackageRoot(source: string): boolean {
+  return ROOT_SPECIFIER.test(source);
+}
+
+/**
+ * Walks every `.ts` file in the tree, rewriting `marker` imports in place.
+ *
+ * v9 also removed the package root along with its only other export, the
+ * webpack plugin. Anything still pointing at the root after the rewrite -
+ * a plugin import, a `webpack-dev.config.js` requiring it - has no automatic
+ * replacement, so those files are reported instead of edited.
+ */
 export function migrateMarkerImport(): Rule {
   return (tree: Tree, context: SchematicContext) => {
     let migrated = 0;
+    const rootReferences: string[] = [];
 
-    for (const path of collectFiles(tree, '', ['.ts', '.mts'])) {
-      const source = tree.read(path)?.toString();
+    for (const path of collectFiles(tree, '', [
+      '.ts',
+      '.mts',
+      '.cts',
+      '.js',
+      '.mjs',
+      '.cjs',
+    ])) {
+      let source = tree.read(path)?.toString();
       if (!source || !source.includes(PACKAGE)) continue;
 
-      const result = migrateMarkerImportSource(source);
-      if (!result) continue;
+      if (path.endsWith('.ts') || path.endsWith('.mts')) {
+        const result = migrateMarkerImportSource(source);
+        if (result) {
+          tree.overwrite(path, result.content);
+          migrated += result.migrated;
+          source = result.content;
+        }
+      }
 
-      tree.overwrite(path, result.content);
-      migrated += result.migrated;
+      if (referencesPackageRoot(source)) rootReferences.push(path);
     }
 
     if (migrated) {
@@ -131,6 +160,14 @@ export function migrateMarkerImport(): Rule {
       );
     } else {
       context.logger.info('  ↳ No top-level marker imports found.');
+    }
+
+    if (rootReferences.length) {
+      context.logger.warn(
+        `  ↳ '${PACKAGE}' no longer has a root entry point: its only export, TranslocoExtractKeysWebpackPlugin, was removed.\n` +
+          `    Remove the plugin and run 'transloco-keys-manager extract' instead. Still referenced in:\n` +
+          rootReferences.map((path) => `    - ${path}`).join('\n'),
+      );
     }
   };
 }
