@@ -8,6 +8,7 @@ import { TranslocoHttpLoader } from './transloco-loader';
 <% if (importEnv) {%>import { environment } from '<%= envPath %>';<% } %>
 
 @NgModule({
+  imports: [ TranslocoDirective, TranslocoPipe ],
   exports: [ TranslocoDirective, TranslocoPipe ],
   providers: [
       provideTransloco({
