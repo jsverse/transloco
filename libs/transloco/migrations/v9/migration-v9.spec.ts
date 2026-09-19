@@ -805,12 +805,44 @@ describe('migrateMarkerImportSource', () => {
 
   it(`GIVEN a type-only marker import
       WHEN the source is migrated
-      THEN it is left alone, since it is erased before the app runs`, () => {
-    expect(
-      migrateMarkerImportSource(
-        `import type { marker } from '@jsverse/transloco-keys-manager';`,
-      ),
-    ).toBeNull();
+      THEN it is repointed, since the package root no longer resolves`, () => {
+    const result = migrateMarkerImportSource(
+      `import type { marker } from '@jsverse/transloco-keys-manager';`,
+    );
+
+    expect(result?.content).toBe(
+      `import type { marker } from '@jsverse/transloco-keys-manager/marker';`,
+    );
+  });
+
+  it(`GIVEN a type-only import mixing marker with another name
+      WHEN the source is migrated
+      THEN the new marker import stays type-only`, () => {
+    const result = migrateMarkerImportSource(
+      `import type { Other, marker } from '@jsverse/transloco-keys-manager';`,
+    );
+
+    expect(result?.content).toBe(
+      [
+        `import type { Other } from '@jsverse/transloco-keys-manager';`,
+        `import type { marker } from '@jsverse/transloco-keys-manager/marker';`,
+      ].join('\n'),
+    );
+  });
+
+  it(`GIVEN marker imported with an inline type modifier
+      WHEN the source is migrated
+      THEN the modifier is kept on the moved import`, () => {
+    const result = migrateMarkerImportSource(
+      `import { Other, type marker as mark } from '@jsverse/transloco-keys-manager';`,
+    );
+
+    expect(result?.content).toBe(
+      [
+        `import { Other } from '@jsverse/transloco-keys-manager';`,
+        `import { type marker as mark } from '@jsverse/transloco-keys-manager/marker';`,
+      ].join('\n'),
+    );
   });
 
   it(`GIVEN a file that never imports marker
@@ -969,6 +1001,64 @@ describe('migration-v9', () => {
     expect(tree.readContent('/projects/bar/src/app/keys.mts')).toBe(
       `import { marker } from '@jsverse/transloco-keys-manager/marker';`,
     );
+  });
+
+  it(`GIVEN marker imported alongside the removed webpack plugin
+      WHEN the migration runs
+      THEN marker is repointed and the leftover root import is reported`, async () => {
+    const warnings: string[] = [];
+    schematicRunner.logger.subscribe((entry) => {
+      if (entry.level === 'warn') warnings.push(entry.message);
+    });
+
+    const tree = await run((host) =>
+      host.create(
+        '/projects/bar/src/app/keys.ts',
+        `import { TranslocoExtractKeysWebpackPlugin, marker } from '@jsverse/transloco-keys-manager';`,
+      ),
+    );
+
+    expect(tree.readContent('/projects/bar/src/app/keys.ts')).toContain(
+      `import { marker } from '@jsverse/transloco-keys-manager/marker';`,
+    );
+    const reported = warnings.join('\n');
+    expect(reported).toContain('TranslocoExtractKeysWebpackPlugin');
+    expect(reported).toContain('/projects/bar/src/app/keys.ts');
+  });
+
+  it(`GIVEN a webpack config requiring the removed plugin from the package root
+      WHEN the migration runs
+      THEN the file is left untouched and reported`, async () => {
+    const config = `const { TranslocoExtractKeysWebpackPlugin } = require('@jsverse/transloco-keys-manager');`;
+    const warnings: string[] = [];
+    schematicRunner.logger.subscribe((entry) => {
+      if (entry.level === 'warn') warnings.push(entry.message);
+    });
+
+    const tree = await run((host) =>
+      host.create('/webpack-dev.config.js', config),
+    );
+
+    expect(tree.readContent('/webpack-dev.config.js')).toBe(config);
+    expect(warnings.join('\n')).toContain('/webpack-dev.config.js');
+  });
+
+  it(`GIVEN marker as the only name imported from the package root
+      WHEN the migration runs
+      THEN it is fully repointed and no root-entry warning is reported`, async () => {
+    const warnings: string[] = [];
+    schematicRunner.logger.subscribe((entry) => {
+      if (entry.level === 'warn') warnings.push(entry.message);
+    });
+
+    await run((host) =>
+      host.create(
+        '/projects/bar/src/app/keys.ts',
+        `import { marker } from '@jsverse/transloco-keys-manager';`,
+      ),
+    );
+
+    expect(warnings.join('\n')).not.toContain('root entry point');
   });
 });
 
