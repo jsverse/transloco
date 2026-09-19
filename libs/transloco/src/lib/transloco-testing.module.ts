@@ -4,6 +4,7 @@ import {
   ModuleWithProviders,
   NgModule,
   inject,
+  makeEnvironmentProviders,
   provideAppInitializer,
 } from '@angular/core';
 import { Observable, of } from 'rxjs';
@@ -69,44 +70,70 @@ export function initTranslocoService(
   return preloadAllLangs;
 }
 
+/**
+ * Provides Transloco configured for testing: an in-memory loader serving the
+ * given `langs`, `prodMode` enabled and missing-key logging disabled.
+ *
+ * @example
+ * TestBed.configureTestingModule({
+ *   providers: [
+ *     provideTranslocoTesting({
+ *       langs: { en: { hello: 'Hello' } },
+ *       translocoConfig: { defaultLang: 'en' },
+ *       preloadLangs: true,
+ *     }),
+ *   ],
+ * });
+ */
+export function provideTranslocoTesting(options: TranslocoTestingOptions) {
+  return makeEnvironmentProviders([
+    provideTransloco({
+      loader: TestingLoader,
+      config: {
+        prodMode: true,
+        ...options.translocoConfig,
+        missingHandler: {
+          logMissingKey: false,
+          ...options.translocoConfig?.missingHandler,
+        },
+      },
+    }),
+    {
+      provide: TRANSLOCO_TEST_LANGS,
+      useValue: options.langs,
+    },
+    {
+      provide: TRANSLOCO_TEST_OPTIONS,
+      useValue: options,
+    },
+    provideAppInitializer(() => {
+      const initializerFn = initTranslocoService(
+        inject(TranslocoService),
+        injectTestLangs(),
+        injectTestOptions(),
+      );
+      return initializerFn();
+    }),
+  ]);
+}
+
+/**
+ * @deprecated Use {@link provideTranslocoTesting} and import the standalone
+ * `TranslocoDirective` / `TranslocoPipe` directly instead.
+ */
 @NgModule({
   exports: [TranslocoModule],
 })
 export class TranslocoTestingModule {
+  /**
+   * @deprecated Use {@link provideTranslocoTesting} instead.
+   */
   static forRoot(
     options: TranslocoTestingOptions,
   ): ModuleWithProviders<TranslocoTestingModule> {
     return {
       ngModule: TranslocoTestingModule,
-      providers: [
-        provideTransloco({
-          loader: TestingLoader,
-          config: {
-            prodMode: true,
-            ...options.translocoConfig,
-            missingHandler: {
-              logMissingKey: false,
-              ...options.translocoConfig?.missingHandler,
-            },
-          },
-        }),
-        {
-          provide: TRANSLOCO_TEST_LANGS,
-          useValue: options.langs,
-        },
-        {
-          provide: TRANSLOCO_TEST_OPTIONS,
-          useValue: options,
-        },
-        provideAppInitializer(() => {
-          const initializerFn = initTranslocoService(
-            inject(TranslocoService),
-            injectTestLangs(),
-            injectTestOptions(),
-          );
-          return initializerFn();
-        }),
-      ],
+      providers: [provideTranslocoTesting(options)],
     };
   }
 }
