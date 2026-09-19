@@ -58,9 +58,10 @@ export function migrateMarkerImportSource(
       continue;
 
     const clause = statement.importClause;
-    // A default/namespace-only clause, or a whole `import type {...}`, has
-    // nothing that needs a runtime module to resolve from.
-    if (!clause || clause.isTypeOnly || !clause.namedBindings) continue;
+    // A default/namespace-only clause has no `marker` binding to move. Type-only
+    // imports are migrated too: the package root is gone in v9, so even an
+    // erased `import type` no longer resolves for the type checker.
+    if (!clause || !clause.namedBindings) continue;
     if (!ts.isNamedImports(clause.namedBindings)) continue;
 
     const elements = clause.namedBindings.elements;
@@ -72,9 +73,9 @@ export function migrateMarkerImportSource(
     migrated++;
 
     const quote = source[statement.moduleSpecifier.getStart()];
-    const importedName = markerElement.propertyName
-      ? `marker as ${markerElement.name.text}`
-      : 'marker';
+    // The element's own text keeps an alias and an inline `type` modifier.
+    const importedName = markerElement.getText();
+    const importKeyword = clause.isTypeOnly ? 'import type' : 'import';
     const remaining = elements.filter((element) => element !== markerElement);
 
     if (remaining.length === 0) {
@@ -98,7 +99,7 @@ export function migrateMarkerImportSource(
     edits.push({
       start: statement.getEnd(),
       end: statement.getEnd(),
-      text: `\nimport { ${importedName} } from ${quote}${SUBPATH}${quote};`,
+      text: `\n${importKeyword} { ${importedName} } from ${quote}${SUBPATH}${quote};`,
     });
   }
 
@@ -164,9 +165,10 @@ export function migrateMarkerImport(): Rule {
 
     if (rootReferences.length) {
       context.logger.warn(
-        `  ↳ '${PACKAGE}' no longer has a root entry point: its only export, TranslocoExtractKeysWebpackPlugin, was removed.\n` +
-          `    Remove the plugin and run 'transloco-keys-manager extract' instead. Still referenced in:\n` +
-          rootReferences.map((path) => `    - ${path}`).join('\n'),
+        `  ↳ '${PACKAGE}' no longer has a root entry point, but these files still reference it:\n` +
+          rootReferences.map((path) => `    - ${path}`).join('\n') +
+          `\n    Import marker from '${SUBPATH}'. TranslocoExtractKeysWebpackPlugin was removed;` +
+          ` run 'transloco-keys-manager extract' instead.`,
       );
     }
   };

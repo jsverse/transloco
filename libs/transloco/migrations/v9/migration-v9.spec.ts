@@ -805,12 +805,44 @@ describe('migrateMarkerImportSource', () => {
 
   it(`GIVEN a type-only marker import
       WHEN the source is migrated
-      THEN it is left alone, since it is erased before the app runs`, () => {
-    expect(
-      migrateMarkerImportSource(
-        `import type { marker } from '@jsverse/transloco-keys-manager';`,
-      ),
-    ).toBeNull();
+      THEN it is repointed, since the package root no longer resolves`, () => {
+    const result = migrateMarkerImportSource(
+      `import type { marker } from '@jsverse/transloco-keys-manager';`,
+    );
+
+    expect(result?.content).toBe(
+      `import type { marker } from '@jsverse/transloco-keys-manager/marker';`,
+    );
+  });
+
+  it(`GIVEN a type-only import mixing marker with another name
+      WHEN the source is migrated
+      THEN the new marker import stays type-only`, () => {
+    const result = migrateMarkerImportSource(
+      `import type { Other, marker } from '@jsverse/transloco-keys-manager';`,
+    );
+
+    expect(result?.content).toBe(
+      [
+        `import type { Other } from '@jsverse/transloco-keys-manager';`,
+        `import type { marker } from '@jsverse/transloco-keys-manager/marker';`,
+      ].join('\n'),
+    );
+  });
+
+  it(`GIVEN marker imported with an inline type modifier
+      WHEN the source is migrated
+      THEN the modifier is kept on the moved import`, () => {
+    const result = migrateMarkerImportSource(
+      `import { Other, type marker as mark } from '@jsverse/transloco-keys-manager';`,
+    );
+
+    expect(result?.content).toBe(
+      [
+        `import { Other } from '@jsverse/transloco-keys-manager';`,
+        `import { type marker as mark } from '@jsverse/transloco-keys-manager/marker';`,
+      ].join('\n'),
+    );
   });
 
   it(`GIVEN a file that never imports marker
