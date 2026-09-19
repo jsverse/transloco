@@ -41,9 +41,16 @@ import { TranslocoService } from '@jsverse/transloco';
  * to `translate()`/the `transloco` pipe/directive). This only kicks in once
  * `provideTranslocoTitleStrategy()` is used somewhere in the project.
  *
- * A scoped/lazy-loaded title key still needs `marker(key, undefined, scope)`
- * (aliased as `_`), since there's no way to express a scope on a plain
- * string.
+ * A scoped title is a plain string prefixed with the scope alias
+ * (`title: 'admin.title'`), the same as `{{ 'admin.title' | transloco }}`:
+ * it's translated as-is at runtime, and the keys-manager CLI extracts it into
+ * that scope's translation file.
+ *
+ * The strategy doesn't load scopes itself: a scoped title resolves once its
+ * scope is loaded, which happens when the page uses it (pipe, directive or
+ * `translateSignal`) under a `provideTranslocoScope()` declared on the route
+ * or the component. Until then the title shows the raw key, and it's
+ * corrected as soon as the scope finishes loading.
  *
  * @example
  * // app.config.ts
@@ -54,8 +61,6 @@ import { TranslocoService } from '@jsverse/transloco';
  * };
  *
  * // app.routes.ts
- * import { marker as _ } from '@jsverse/transloco-keys-manager/marker';
- *
  * export const routes: Routes = [
  *   {
  *     // A global-scope key - auto-extracted, no `marker`/`_()` needed.
@@ -64,11 +69,10 @@ import { TranslocoService } from '@jsverse/transloco';
  *     title: 'app.menu.design_system',
  *   },
  *   {
- *     // A scoped key - needs `marker()` so the keys-manager CLI can pick up
- *     // the scope (its 3rd argument) and extract it into that scope's file.
+ *     // A scoped key - prefixed with the scope alias.
  *     path: 'admin',
  *     loadChildren: () => import('./admin/admin.routes'),
- *     title: _('title', undefined, 'admin'),
+ *     title: 'admin.title',
  *   },
  * ];
  */

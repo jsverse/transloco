@@ -1,10 +1,20 @@
+import { Component } from '@angular/core';
 import { fakeAsync, TestBed } from '@angular/core/testing';
 import { Title } from '@angular/platform-browser';
-import { RouterStateSnapshot, TitleStrategy } from '@angular/router';
+import {
+  provideRouter,
+  RouterStateSnapshot,
+  TitleStrategy,
+} from '@angular/router';
+import { RouterTestingHarness } from '@angular/router/testing';
 
-import { TranslocoService } from '@jsverse/transloco';
+import {
+  provideTranslocoScope,
+  TranslocoPipe,
+  TranslocoService,
+} from '@jsverse/transloco';
 
-import { createService } from '../../src/lib/tests/mocks';
+import { createService, providersMock } from '../../src/lib/tests/mocks';
 import { loadLang } from '../../src/lib/tests/service/service-spec-utils';
 
 import {
@@ -34,6 +44,9 @@ function createStrategy(service: TranslocoService, title: string | undefined) {
 
   return { strategy, setTitle };
 }
+
+@Component({ template: `{{ 'title' | transloco }}`, imports: [TranslocoPipe] })
+class ScopedPage {}
 
 describe('TranslocoTitleStrategy', () => {
   let service: TranslocoService;
@@ -127,5 +140,38 @@ describe('TranslocoTitleStrategy', () => {
       provide: TitleStrategy,
       useClass: TranslocoTitleStrategy,
     });
+  });
+
+  it(`GIVEN a route that declares its scope in providers and uses it in its component,
+      with a scope-prefixed title
+      WHEN the route is activated
+      THEN the title is corrected once the scope finishes loading`, async () => {
+    const setTitle = vi.fn();
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [
+        providersMock,
+        { provide: Title, useValue: { setTitle } },
+        provideTranslocoTitleStrategy(),
+        provideRouter([
+          {
+            path: 'admin',
+            component: ScopedPage,
+            providers: [provideTranslocoScope('admin-page')],
+            // The scope alias is the camel-cased scope name.
+            title: 'adminPage.title',
+          },
+        ]),
+      ],
+    });
+
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/admin');
+
+    // `MockedLoader` resolves after real 1s timers (lang, then scope).
+    await vi.waitFor(
+      () => expect(setTitle).toHaveBeenLastCalledWith('Admin english'),
+      { timeout: 5000 },
+    );
   });
 });
