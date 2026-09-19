@@ -69,3 +69,59 @@ export function isLiteralMapPropertyKey(
 ): key is LiteralMapPropertyKey {
   return 'kind' in key ? key.kind === 'property' : true;
 }
+
+/**
+ * Structural on purpose, and deliberately named after the real `@boundary`/
+ * `@error` classes Angular 22.2 will export: `@angular/compiler` doesn't have
+ * `TmplAstBoundaryBlock`/`TmplAstBoundaryErrorBlock` in any currently-supported
+ * version, so a named import would put symbols in the emitted `.d.ts` that
+ * those typings lack. Matching the future names means the only change needed
+ * once 22.2 is the minimum supported version is swapping these two aliases
+ * for a `import type { ... } from '@angular/compiler'` - call sites elsewhere
+ * in this package won't need to change at all.
+ */
+export type TmplAstBoundaryBlock = TmplAstNode & {
+  children: TmplAstNode[];
+  errorBlocks: TmplAstNode[];
+};
+
+export type TmplAstBoundaryErrorBlock = TmplAstNode & {
+  children: TmplAstNode[];
+};
+
+type Ctor<T> = new (...args: never[]) => T;
+
+/**
+ * Reads a not-yet-existing export defensively: some test setups wrap
+ * `@angular/compiler` in a strict mock proxy that throws on `get` for any
+ * property missing from the mocked module, so an `in` check comes first.
+ */
+function readOptionalExport<T>(name: string): T | undefined {
+  const source = compiler as unknown as Record<string, unknown>;
+  return name in source ? (source[name] as T) : undefined;
+}
+
+/** Added in 22.2; `undefined` on earlier versions. */
+const BoundaryBlockCtor = readOptionalExport<Ctor<TmplAstBoundaryBlock>>(
+  'TmplAstBoundaryBlock',
+);
+
+/** Added in 22.2; `undefined` on earlier versions. */
+const BoundaryErrorBlockCtor = readOptionalExport<
+  Ctor<TmplAstBoundaryErrorBlock>
+>('TmplAstBoundaryErrorBlock');
+
+export function isTmplAstBoundaryBlock(
+  node: unknown,
+): node is TmplAstBoundaryBlock {
+  return BoundaryBlockCtor !== undefined && node instanceof BoundaryBlockCtor;
+}
+
+export function isTmplAstBoundaryErrorBlock(
+  node: unknown,
+): node is TmplAstBoundaryErrorBlock {
+  return (
+    BoundaryErrorBlockCtor !== undefined &&
+    node instanceof BoundaryErrorBlockCtor
+  );
+}

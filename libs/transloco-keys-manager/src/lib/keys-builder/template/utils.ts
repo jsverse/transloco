@@ -29,11 +29,13 @@ import { TemplateExtractorConfig } from './types';
 import {
   isLiteralMapPropertyKey,
   isSwitchCaseChildrenOwner,
+  isTmplAstBoundaryBlock,
+  isTmplAstBoundaryErrorBlock,
   resolveSwitchBlockChildren,
   SwitchCaseChildrenOwner,
+  TmplAstBoundaryBlock,
+  TmplAstBoundaryErrorBlock,
 } from './compiler-compat';
-
-export { isLiteralMapPropertyKey } from './compiler-compat';
 
 export function isTemplate(node: unknown): node is TmplAstTemplate {
   return node instanceof TmplAstTemplate;
@@ -101,10 +103,12 @@ type BlockNode =
   | TmplAstForLoopBlockEmpty
   | TmplAstIfBlockBranch
   | SwitchCaseChildrenOwner
+  | TmplAstBoundaryErrorBlock
   | TmplAstForLoopBlock
   | TmplAstDeferredBlock
   | TmplAstIfBlock
-  | TmplAstSwitchBlock;
+  | TmplAstSwitchBlock
+  | TmplAstBoundaryBlock;
 
 export function isBlockWithChildren(
   node: unknown,
@@ -115,7 +119,8 @@ export function isBlockWithChildren(
     node instanceof TmplAstDeferredBlockPlaceholder ||
     node instanceof TmplAstForLoopBlockEmpty ||
     node instanceof TmplAstIfBlockBranch ||
-    isSwitchCaseChildrenOwner(node)
+    isSwitchCaseChildrenOwner(node) ||
+    isTmplAstBoundaryErrorBlock(node)
   );
 }
 
@@ -147,6 +152,7 @@ export function isBlockNode(node: TmplAstNode): node is BlockNode {
     isTmplAstForLoopBlock(node) ||
     isTmplAstDeferredBlock(node) ||
     isTmplAstSwitchBlock(node) ||
+    isTmplAstBoundaryBlock(node) ||
     isBlockWithChildren(node)
   );
 }
@@ -171,6 +177,10 @@ export function resolveBlockChildNodes(node: BlockNode): TmplAstNode[] {
 
   if (isTmplAstSwitchBlock(node)) {
     return resolveSwitchBlockChildren(node);
+  }
+
+  if (isTmplAstBoundaryBlock(node)) {
+    return [...node.children, ...node.errorBlocks];
   }
 
   return node.children;
