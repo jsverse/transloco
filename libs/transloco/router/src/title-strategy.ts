@@ -39,7 +39,7 @@ import { TranslocoService } from '@jsverse/transloco';
  * translation key — no `marker`/`_()` wrapping needed, unlike other plain
  * strings the keys-manager CLI can't otherwise see (since they aren't passed
  * to `translate()`/the `transloco` pipe/directive). This only kicks in once
- * `provideTranslocoTitleStrategy()` is used somewhere in the project.
+ * `provideTranslocoTitleStrategy` is imported somewhere in the project.
  *
  * A scoped title is a plain string prefixed with the scope alias
  * (`title: 'admin.title'`), the same as `{{ 'admin.title' | transloco }}`:

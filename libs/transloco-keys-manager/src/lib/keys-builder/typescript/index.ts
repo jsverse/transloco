@@ -21,15 +21,34 @@ import { pureFunctionExtractor } from './pure-function.extractor';
 import { routeTitleExtractor } from './route-title.extractor';
 import { serviceExtractor } from './service.extractor';
 import { signalExtractor } from './signal.extractor';
-import { detectTitleStrategyProvider } from './title-strategy-provider.detector';
+import { importsTitleStrategyProvider } from './title-strategy-provider.detector';
 import { TSExtractorResult } from './types';
 
-export function extractTSKeys(config: Config): ExtractionResult {
-  const hasTitleStrategyProvider = detectTitleStrategyProvider(config);
+/**
+ * Route title keys are collected while extracting, but only applied once some
+ * file turned out to import `provideTranslocoTitleStrategy`; otherwise they're
+ * discarded, as plain `title` properties aren't translation keys without it.
+ */
+interface RouteTitleCollector {
+  providerUsed: boolean;
+  pendingKeys: (() => void)[];
+}
 
-  return extractKeys(config, 'ts', (extractorConfig) =>
-    TSExtractor(extractorConfig, hasTitleStrategyProvider),
+export function extractTSKeys(config: Config): ExtractionResult {
+  const routeTitles: RouteTitleCollector = {
+    providerUsed: false,
+    pendingKeys: [],
+  };
+
+  const result = extractKeys(config, 'ts', (extractorConfig) =>
+    TSExtractor(extractorConfig, routeTitles),
   );
+
+  if (routeTitles.providerUsed) {
+    routeTitles.pendingKeys.forEach((addPendingKeys) => addPendingKeys());
+  }
+
+  return result;
 }
 
 const translocoImport = /@(jsverse|ngneat)\/transloco/;
@@ -38,7 +57,7 @@ const routeTitleProperty = /\btitle\s*:/;
 
 function TSExtractor(
   config: ExtractorConfig,
-  hasTitleStrategyProvider: boolean,
+  routeTitles: RouteTitleCollector,
 ): ScopeMap {
   const { file, scopes, defaultValue, scopeToKeys } = config;
   const content = readFile(file);
@@ -47,10 +66,13 @@ function TSExtractor(
   const hasTranslocoImport = translocoImport.test(content);
   const hasMarkerImport = translocoKeysManagerImport.test(content);
   const hasTranslocoUsage = content.includes('transloco');
-  // Cheap pre-filter: only bother parsing this file's AST for route titles
-  // if it actually declares a `title:` property.
-  const hasRouteTitle =
-    hasTitleStrategyProvider && routeTitleProperty.test(content);
+  // Cheap pre-filter: only parse this file's AST for route titles if it
+  // actually declares a `title:` property.
+  const hasRouteTitle = routeTitleProperty.test(content);
+
+  if (!routeTitles.providerUsed && importsTitleStrategyProvider(content)) {
+    routeTitles.providerUsed = true;
+  }
 
   if (hasTranslocoImport) {
     extractors.push(serviceExtractor, pureFunctionExtractor, signalExtractor);
@@ -58,10 +80,6 @@ function TSExtractor(
 
   if (hasMarkerImport) {
     extractors.push(markerExtractor);
-  }
-
-  if (hasRouteTitle) {
-    extractors.push((ast: SourceFile) => routeTitleExtractor(ast, scopes));
   }
 
   const baseParams = {
@@ -85,10 +103,8 @@ function TSExtractor(
 
   const ast = tsquery.ast(content, undefined, ScriptKind.TS);
 
-  extractors
-    .map((ex) => ex(ast))
-    .flat()
-    .forEach(({ key, lang, params }) => {
+  const addExtractedKeys = (results: TSExtractorResult) =>
+    results.forEach(({ key, lang, params }) => {
       const [keyWithoutScope, scopeAlias] = resolveAliasAndKeyFromService(
         key,
         lang,
@@ -101,6 +117,16 @@ function TSExtractor(
         ...baseParams,
       });
     });
+
+  extractors.forEach((extractor) => addExtractedKeys(extractor(ast)));
+
+  if (hasRouteTitle) {
+    const routeTitleKeys = routeTitleExtractor(ast, scopes);
+
+    if (routeTitleKeys.length) {
+      routeTitles.pendingKeys.push(() => addExtractedKeys(routeTitleKeys));
+    }
+  }
 
   /** Check for dynamic markings */
   addCommentSectionKeys({

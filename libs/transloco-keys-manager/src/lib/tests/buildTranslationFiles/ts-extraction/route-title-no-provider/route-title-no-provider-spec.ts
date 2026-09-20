@@ -17,13 +17,12 @@ const { buildTranslationFiles } = await import('../../../../keys-builder');
 export function testRouteTitleNoProviderExtraction(
   fileFormat: Config['fileFormat'],
 ) {
-  describe('route title (provider not actually used)', () => {
+  describe('route title (provider not imported)', () => {
     const type: TranslationTestCase = 'ts-extraction/route-title-no-provider';
 
     beforeEach(() => removeI18nFolder(type));
 
-    it(`GIVEN provideTranslocoTitleStrategy() is only imported and mentioned
-        in a comment, but never actually called
+    it(`GIVEN provideTranslocoTitleStrategy is never imported in the project
         WHEN keys are extracted
         THEN no route title keys are extracted`, () => {
       const config = buildConfig({ type, config: { fileFormat } });
