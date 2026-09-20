@@ -120,7 +120,13 @@ export function referencesPackageRoot(source: string): boolean {
 }
 
 /**
- * Walks every `.ts` file in the tree, rewriting `marker` imports in place.
+ * Walks the tree rewriting `marker` imports in place, and reports whatever is
+ * left pointing at the package root.
+ *
+ * Only ESM TypeScript (`.ts`, `.mts`) is rewritten: `./marker` ships as
+ * `marker.mjs`, so a CommonJS file can't `require` it and repointing one there
+ * would trade an unresolved specifier for a broken require. Those files are
+ * still scanned, just to be named in the warning.
  *
  * v9 also removed the package root along with its only other export, the
  * webpack plugin. Anything still pointing at the root after the rewrite -
@@ -143,6 +149,7 @@ export function migrateMarkerImport(): Rule {
       let source = tree.read(path)?.toString();
       if (!source || !source.includes(PACKAGE)) continue;
 
+      // ESM TypeScript only - see the note above on the ESM-only `/marker`.
       if (path.endsWith('.ts') || path.endsWith('.mts')) {
         const result = migrateMarkerImportSource(source);
         if (result) {
