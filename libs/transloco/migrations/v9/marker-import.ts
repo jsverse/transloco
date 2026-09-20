@@ -9,17 +9,8 @@ const SUBPATH = `${PACKAGE}/marker`;
 /** An `import`/`require`/`import()` of the bare package root, in any quote style. */
 const ROOT_SPECIFIER = /(['"`])@jsverse\/transloco-keys-manager\1/;
 
-/** Extensions that are scanned for a leftover root reference. */
+/** Extensions carrying an `import` this migration can rewrite. */
 const SCANNED = ['.ts', '.mts', '.cts', '.js', '.mjs', '.cjs'];
-
-/**
- * Extensions whose `marker` import is repointed to `/marker`.
- *
- * `/marker` publishes as `marker.mjs`, so only ESM can load it. `.cts`/`.cjs`
- * are always CommonJS and are left for the warning: repointing one would trade
- * an unresolved specifier for a `require` of an ESM-only module.
- */
-const REWRITABLE = /\.(ts|mts|js|mjs)$/;
 
 interface Edit {
   start: number;
@@ -135,8 +126,9 @@ export function referencesPackageRoot(source: string): boolean {
  * Walks the tree rewriting `marker` imports in place, and reports whatever is
  * left pointing at the package root.
  *
- * Only ESM sources are rewritten (see {@link REWRITABLE}); CommonJS ones are
- * scanned just to be named in the warning.
+ * Every `marker` import is repointed, whatever the file extension: `/marker`
+ * publishes as `marker.mjs`, so v9 expects ESM consumers. A `require()` of the
+ * root isn't an import and stays put, which lands it in the warning below.
  *
  * v9 also removed the package root along with its only other export, the
  * webpack plugin. Anything still pointing at the root after the rewrite -
@@ -152,13 +144,11 @@ export function migrateMarkerImport(): Rule {
       let source = tree.read(path)?.toString();
       if (!source || !source.includes(PACKAGE)) continue;
 
-      if (REWRITABLE.test(path)) {
-        const result = migrateMarkerImportSource(source);
-        if (result) {
-          tree.overwrite(path, result.content);
-          migrated += result.migrated;
-          source = result.content;
-        }
+      const result = migrateMarkerImportSource(source);
+      if (result) {
+        tree.overwrite(path, result.content);
+        migrated += result.migrated;
+        source = result.content;
       }
 
       if (referencesPackageRoot(source)) rootReferences.push(path);
