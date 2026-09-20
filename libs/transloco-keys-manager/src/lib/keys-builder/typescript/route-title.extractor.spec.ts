@@ -16,7 +16,9 @@ function parse(content: string) {
 }
 
 describe('routeTitleExtractor', () => {
-  it('extracts a plain-string title from a Route object', () => {
+  it(`GIVEN a Route object with a plain-string title
+      WHEN the route titles are extracted
+      THEN the title is extracted as a global key`, () => {
     const ast = parse(`
       export const routes = [
         {
@@ -32,7 +34,9 @@ describe('routeTitleExtractor', () => {
     ]);
   });
 
-  it('resolves locator/shaper/title property names declared as quoted strings, not just identifiers', () => {
+  it(`GIVEN a Route whose path, component and title property names are quoted strings
+      WHEN the route titles are extracted
+      THEN the title is extracted`, () => {
     const ast = parse(`
       export const routes = [
         {
@@ -48,7 +52,9 @@ describe('routeTitleExtractor', () => {
     ]);
   });
 
-  it('does not extract a parent object title that only qualifies via a nested/descendant child route', () => {
+  it(`GIVEN a parent object with a title that only qualifies as a Route through a nested child route
+      WHEN the route titles are extracted
+      THEN only the child route title is extracted`, () => {
     const ast = parse(`
       export const routes = [
         {
@@ -70,7 +76,9 @@ describe('routeTitleExtractor', () => {
     ]);
   });
 
-  it('does not extract from an object that merely shares path+title with a Route (no shaper property)', () => {
+  it(`GIVEN an object that shares path and title with a Route but has no shaper property
+      WHEN the route titles are extracted
+      THEN nothing is extracted`, () => {
     const ast = parse(`
       export const breadcrumbConfig = {
         path: 'design-system',
@@ -81,7 +89,9 @@ describe('routeTitleExtractor', () => {
     expect(routeTitleExtractor(ast, noScopes)).toEqual([]);
   });
 
-  it('does not extract a ResolveFn title', () => {
+  it(`GIVEN a Route whose title is a ResolveFn
+      WHEN the route titles are extracted
+      THEN nothing is extracted`, () => {
     const ast = parse(`
       export const routes = [
         {
@@ -95,7 +105,9 @@ describe('routeTitleExtractor', () => {
     expect(routeTitleExtractor(ast, noScopes)).toEqual([]);
   });
 
-  it('does not extract an empty-string title', () => {
+  it(`GIVEN a Route with an empty-string title
+      WHEN the route titles are extracted
+      THEN nothing is extracted`, () => {
     const ast = parse(`
       export const routes = [
         {
@@ -109,7 +121,9 @@ describe('routeTitleExtractor', () => {
     expect(routeTitleExtractor(ast, noScopes)).toEqual([]);
   });
 
-  it('extracts a plain-string title on a route shaped via loadChildren (lazy-loaded child routes)', () => {
+  it(`GIVEN a Route shaped via loadChildren
+      WHEN the route titles are extracted
+      THEN its plain-string title is extracted`, () => {
     const ast = parse(`
       export const routes = [
         {
@@ -125,7 +139,9 @@ describe('routeTitleExtractor', () => {
     ]);
   });
 
-  it('resolves a locator/shaper declared as a shorthand property (e.g. `{ path }`)', () => {
+  it(`GIVEN a Route whose locator or shaper is a shorthand property (e.g. { path })
+      WHEN the route titles are extracted
+      THEN its title is extracted`, () => {
     const ast = parse(`
       const path = 'shorthand';
       const component = ShorthandComponent;
@@ -143,7 +159,9 @@ describe('routeTitleExtractor', () => {
     ]);
   });
 
-  it('does not extract a marker()-wrapped title (left to markerExtractor)', () => {
+  it(`GIVEN a Route whose title is wrapped in marker()
+      WHEN the route titles are extracted
+      THEN nothing is extracted, as markerExtractor handles it`, () => {
     const ast = parse(`
       export const routes = [
         {
@@ -157,7 +175,9 @@ describe('routeTitleExtractor', () => {
     expect(routeTitleExtractor(ast, noScopes)).toEqual([]);
   });
 
-  it('extracts a key prefixed with a known scope alias into that scope', () => {
+  it(`GIVEN a Route title prefixed with a known scope alias
+      WHEN the route titles are extracted
+      THEN the key is extracted into that scope`, () => {
     const ast = parse(`
       export const routes = [
         {
@@ -173,7 +193,9 @@ describe('routeTitleExtractor', () => {
     ]);
   });
 
-  it('keeps a dotted key global when its prefix is not a known scope alias', () => {
+  it(`GIVEN a Route title with a dotted key whose prefix is not a known scope alias
+      WHEN the route titles are extracted
+      THEN the key stays global`, () => {
     const ast = parse(`
       export const routes = [
         {

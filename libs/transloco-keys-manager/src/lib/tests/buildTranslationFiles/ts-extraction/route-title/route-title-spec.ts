@@ -20,10 +20,11 @@ export function testRouteTitleExtraction(fileFormat: Config['fileFormat']) {
 
     beforeEach(() => removeI18nFolder(type));
 
-    it(`should extract plain-string route titles when provideTranslocoTitleStrategy is used,
-        without a ResolveFn title, an empty title, a non-Route path+title object, a
-        parent object that only qualifies via a nested child route, and covering
-        loadChildren-shaped (lazy-loaded) routes as well`, () => {
+    it(`GIVEN provideTranslocoTitleStrategy is used and routes declare plain-string titles,
+        including loadChildren-shaped ones, next to a ResolveFn title, an empty title,
+        a non-Route path+title object and a parent that only qualifies via a child route
+        WHEN keys are extracted
+        THEN only the plain-string Route titles are extracted`, () => {
       const config = buildConfig({ type, config: { fileFormat } });
 
       const expected = {

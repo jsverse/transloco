@@ -8,7 +8,9 @@ function parse(content: string) {
 }
 
 describe('isTitleStrategyProviderCalled', () => {
-  it('detects a plain named import call', () => {
+  it(`GIVEN a named import of the provider that is called
+      WHEN checking for a provider call
+      THEN it is detected`, () => {
     const ast = parse(`
       import { provideTranslocoTitleStrategy } from '@jsverse/transloco/router';
 
@@ -20,7 +22,9 @@ describe('isTitleStrategyProviderCalled', () => {
     expect(isTitleStrategyProviderCalled(ast)).toBe(true);
   });
 
-  it('detects an aliased named import call', () => {
+  it(`GIVEN an aliased named import of the provider that is called
+      WHEN checking for a provider call
+      THEN it is detected`, () => {
     const ast = parse(`
       import { provideTranslocoTitleStrategy as provideTitle } from '@jsverse/transloco/router';
 
@@ -32,7 +36,9 @@ describe('isTitleStrategyProviderCalled', () => {
     expect(isTitleStrategyProviderCalled(ast)).toBe(true);
   });
 
-  it('detects a namespace import call', () => {
+  it(`GIVEN a namespace import whose provider member is called
+      WHEN checking for a provider call
+      THEN it is detected`, () => {
     const ast = parse(`
       import * as router from '@jsverse/transloco/router';
 
@@ -44,7 +50,9 @@ describe('isTitleStrategyProviderCalled', () => {
     expect(isTitleStrategyProviderCalled(ast)).toBe(true);
   });
 
-  it('does not match an unrelated local function that shares the same name (no import at all)', () => {
+  it(`GIVEN a local function that shares the provider name and no import
+      WHEN checking for a provider call
+      THEN it is not detected`, () => {
     const ast = parse(`
       function provideTranslocoTitleStrategy() {
         return {};
@@ -58,7 +66,9 @@ describe('isTitleStrategyProviderCalled', () => {
     expect(isTitleStrategyProviderCalled(ast)).toBe(false);
   });
 
-  it('does not match a call shadowed by a nested local declaration with the same name, even when the import exists', () => {
+  it(`GIVEN the import and a nested local function shadowing the provider name that is called
+      WHEN checking for a provider call
+      THEN it is not detected`, () => {
     const ast = parse(`
       import { provideTranslocoTitleStrategy } from '@jsverse/transloco/router';
 
@@ -78,7 +88,9 @@ describe('isTitleStrategyProviderCalled', () => {
     expect(isTitleStrategyProviderCalled(ast)).toBe(false);
   });
 
-  it('does not match a reference passed as an argument without being called', () => {
+  it(`GIVEN the imported provider passed as an argument without being called
+      WHEN checking for a provider call
+      THEN it is not detected`, () => {
     const ast = parse(`
       import { provideTranslocoTitleStrategy } from '@jsverse/transloco/router';
 
@@ -90,7 +102,9 @@ describe('isTitleStrategyProviderCalled', () => {
     expect(isTitleStrategyProviderCalled(ast)).toBe(false);
   });
 
-  it('does not match a bare import with no call at all', () => {
+  it(`GIVEN a bare import of the provider with no call
+      WHEN checking for a provider call
+      THEN it is not detected`, () => {
     const ast = parse(`
       import { provideTranslocoTitleStrategy } from '@jsverse/transloco/router';
 
