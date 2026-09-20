@@ -9,6 +9,18 @@ const SUBPATH = `${PACKAGE}/marker`;
 /** An `import`/`require`/`import()` of the bare package root, in any quote style. */
 const ROOT_SPECIFIER = /(['"`])@jsverse\/transloco-keys-manager\1/;
 
+/** Extensions that are scanned for a leftover root reference. */
+const SCANNED = ['.ts', '.mts', '.cts', '.js', '.mjs', '.cjs'];
+
+/**
+ * Extensions whose `marker` import is repointed to `/marker`.
+ *
+ * `/marker` publishes as `marker.mjs`, so only ESM can load it. `.cts`/`.cjs`
+ * are always CommonJS and are left for the warning: repointing one would trade
+ * an unresolved specifier for a `require` of an ESM-only module.
+ */
+const REWRITABLE = /\.(ts|mts|js|mjs)$/;
+
 interface Edit {
   start: number;
   end: number;
@@ -123,10 +135,8 @@ export function referencesPackageRoot(source: string): boolean {
  * Walks the tree rewriting `marker` imports in place, and reports whatever is
  * left pointing at the package root.
  *
- * Only ESM TypeScript (`.ts`, `.mts`) is rewritten: `./marker` ships as
- * `marker.mjs`, so a CommonJS file can't `require` it and repointing one there
- * would trade an unresolved specifier for a broken require. Those files are
- * still scanned, just to be named in the warning.
+ * Only ESM sources are rewritten (see {@link REWRITABLE}); CommonJS ones are
+ * scanned just to be named in the warning.
  *
  * v9 also removed the package root along with its only other export, the
  * webpack plugin. Anything still pointing at the root after the rewrite -
@@ -138,19 +148,11 @@ export function migrateMarkerImport(): Rule {
     let migrated = 0;
     const rootReferences: string[] = [];
 
-    for (const path of collectFiles(tree, '', [
-      '.ts',
-      '.mts',
-      '.cts',
-      '.js',
-      '.mjs',
-      '.cjs',
-    ])) {
+    for (const path of collectFiles(tree, '', SCANNED)) {
       let source = tree.read(path)?.toString();
       if (!source || !source.includes(PACKAGE)) continue;
 
-      // ESM TypeScript only - see the note above on the ESM-only `/marker`.
-      if (path.endsWith('.ts') || path.endsWith('.mts')) {
+      if (REWRITABLE.test(path)) {
         const result = migrateMarkerImportSource(source);
         if (result) {
           tree.overwrite(path, result.content);

@@ -1003,6 +1003,38 @@ describe('migration-v9', () => {
     );
   });
 
+  it(`GIVEN an .mjs file importing marker from the top-level keys-manager package
+      WHEN the migration runs
+      THEN the import is repointed, since .mjs can load the ESM subpath`, async () => {
+    const tree = await run((host) =>
+      host.create(
+        '/projects/bar/src/app/keys.mjs',
+        `import { marker } from '@jsverse/transloco-keys-manager';`,
+      ),
+    );
+
+    expect(tree.readContent('/projects/bar/src/app/keys.mjs')).toBe(
+      `import { marker } from '@jsverse/transloco-keys-manager/marker';`,
+    );
+  });
+
+  it(`GIVEN a .cts file importing marker from the top-level keys-manager package
+      WHEN the migration runs
+      THEN it is only reported, since CommonJS can't load the ESM subpath`, async () => {
+    const source = `import { marker } from '@jsverse/transloco-keys-manager';`;
+    const warnings: string[] = [];
+    schematicRunner.logger.subscribe((entry) => {
+      if (entry.level === 'warn') warnings.push(entry.message);
+    });
+
+    const tree = await run((host) =>
+      host.create('/projects/bar/src/app/keys.cts', source),
+    );
+
+    expect(tree.readContent('/projects/bar/src/app/keys.cts')).toBe(source);
+    expect(warnings.join('\n')).toContain('/projects/bar/src/app/keys.cts');
+  });
+
   it(`GIVEN marker imported alongside the removed webpack plugin
       WHEN the migration runs
       THEN marker is repointed and the leftover root import is reported`, async () => {
