@@ -21,7 +21,10 @@ import { pureFunctionExtractor } from './pure-function.extractor';
 import { routeTitleExtractor } from './route-title.extractor';
 import { serviceExtractor } from './service.extractor';
 import { signalExtractor } from './signal.extractor';
-import { importsTitleStrategyProvider } from './title-strategy-provider.detector';
+import {
+  importsTitleStrategyProvider,
+  mentionsTitleStrategyProvider,
+} from './title-strategy-provider.detector';
 import { TSExtractorResult } from './types';
 
 /**
@@ -66,13 +69,11 @@ function TSExtractor(
   const hasTranslocoImport = translocoImport.test(content);
   const hasMarkerImport = translocoKeysManagerImport.test(content);
   const hasTranslocoUsage = content.includes('transloco');
-  // Cheap pre-filter: only parse this file's AST for route titles if it
-  // actually declares a `title:` property.
+  // Cheap pre-filters: only parse this file's AST for route titles / the
+  // title strategy provider if it declares a `title:` property / mentions it.
   const hasRouteTitle = routeTitleProperty.test(content);
-
-  if (!routeTitles.providerUsed && importsTitleStrategyProvider(content)) {
-    routeTitles.providerUsed = true;
-  }
+  const mentionsProvider =
+    !routeTitles.providerUsed && mentionsTitleStrategyProvider(content);
 
   if (hasTranslocoImport) {
     extractors.push(serviceExtractor, pureFunctionExtractor, signalExtractor);
@@ -92,7 +93,7 @@ function TSExtractor(
   // Note: hasTranslocoImport/hasMarkerImport imply hasTranslocoUsage, since
   // both import regexes match strings that contain "transloco", so checking
   // !hasTranslocoUsage alone is sufficient here.
-  if (!hasTranslocoUsage && !hasRouteTitle) {
+  if (!hasTranslocoUsage && !hasRouteTitle && !mentionsProvider) {
     addCommentSectionKeys({
       content,
       regexFactory: regexFactoryMap.ts.comments,
@@ -126,6 +127,10 @@ function TSExtractor(
     if (routeTitleKeys.length) {
       routeTitles.pendingKeys.push(() => addExtractedKeys(routeTitleKeys));
     }
+  }
+
+  if (mentionsProvider && importsTitleStrategyProvider(ast)) {
+    routeTitles.providerUsed = true;
   }
 
   /** Check for dynamic markings */
