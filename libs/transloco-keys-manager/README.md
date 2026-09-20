@@ -22,7 +22,6 @@ To make the process less burdensome, we've created two tools for the Transloco l
 
 - ✅ &nbsp;Extract Translate Keys
 - ✅ &nbsp;Scopes Support
-- ✅ &nbsp;Webpack Plugin
 - ✅ &nbsp;Find Missing and Extra Keys
 
 Read the full documentation on the [official Transloco documentation site](https://jsverse.gitbook.io/transloco/tools/keys-manager-tkm).
