@@ -21,7 +21,6 @@ import {
   provideTranslocoTitleStrategy,
   TranslocoTitleStrategy,
   TranslocoTitleStrategyConfig,
-  TRANSLOCO_TITLE_STRATEGY_CONFIG,
 } from './title-strategy';
 
 /** A `Title` stand-in that actually tracks the current title, like the real service. */
@@ -48,7 +47,9 @@ function createStrategy(
       TranslocoTitleStrategy,
       { provide: TranslocoService, useValue: service },
       { provide: Title, useValue: titleMock },
-      { provide: TRANSLOCO_TITLE_STRATEGY_CONFIG, useValue: config },
+      // Piggy-backs on the public provider function to reach the (internal,
+      // unexported) config token.
+      provideTranslocoTitleStrategy(config),
     ],
   }).inject(TranslocoTitleStrategy);
 
@@ -154,10 +155,18 @@ describe('TranslocoTitleStrategy', () => {
   it(`GIVEN provideTranslocoTitleStrategy
       WHEN read
       THEN it provides TranslocoTitleStrategy under the TitleStrategy token`, () => {
-    expect(provideTranslocoTitleStrategy()).toEqual([
-      { provide: TitleStrategy, useClass: TranslocoTitleStrategy },
-      { provide: TRANSLOCO_TITLE_STRATEGY_CONFIG, useValue: {} },
-    ]);
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: TranslocoService, useValue: service },
+        { provide: Title, useValue: createTitleMock() },
+        provideTranslocoTitleStrategy(),
+      ],
+    });
+
+    expect(TestBed.inject(TitleStrategy)).toBeInstanceOf(
+      TranslocoTitleStrategy,
+    );
   });
 
   it(`GIVEN a scoped title key whose scope isn't loaded yet
