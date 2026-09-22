@@ -1,9 +1,52 @@
-import { inject, Injectable, OnDestroy, Provider } from '@angular/core';
+import {
+  inject,
+  Injectable,
+  InjectionToken,
+  OnDestroy,
+  Provider,
+} from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { RouterStateSnapshot, TitleStrategy } from '@angular/router';
 import { filter, merge, Subscription } from 'rxjs';
 
-import { TranslocoService } from '@jsverse/transloco';
+import { getValue, TranslocoService } from '@jsverse/transloco';
+
+/**
+ * Options for {@link provideTranslocoTitleStrategy}.
+ */
+export interface TranslocoTitleStrategyConfig {
+  /**
+   * What to do when a title key isn't found in the active language's
+   * translations. This covers two cases that look identical to the
+   * strategy: the key's scope hasn't finished loading yet, or the key is
+   * simply wrong (a typo).
+   *
+   * - `'wait'` (default): don't set a title for it yet. Once the key's
+   *   scope loads (or the active language changes), the title is applied.
+   *   A genuinely missing key never sets a title and never logs - the
+   *   tradeoff for silencing the "Missing translation" noise a loading
+   *   scope would otherwise produce on every navigation and language
+   *   change.
+   * - `'key'`: translate it anyway, matching the pre-existing behaviour
+   *   (dev-mode logs "Missing translation for '<key>'" and the untranslated
+   *   key is shown as the title until it loads).
+   */
+  whenMissing?: 'wait' | 'key';
+
+  /**
+   * Applied to the translated title right before `Title.setTitle()`, e.g.
+   * to append an app name: `(title) => \`${title} - MyApp\``.
+   */
+  format?: (translatedTitle: string) => string;
+}
+
+export const TRANSLOCO_TITLE_STRATEGY_CONFIG =
+  /* @__PURE__ */ new InjectionToken<TranslocoTitleStrategyConfig>(
+    typeof ngDevMode !== 'undefined' && ngDevMode
+      ? 'TRANSLOCO_TITLE_STRATEGY_CONFIG'
+      : '',
+    { factory: () => ({}) },
+  );
 
 /**
  * A `TitleStrategy` that treats the resolved route title (the `title` property
@@ -26,9 +69,10 @@ import { TranslocoService } from '@jsverse/transloco';
  *    - any translation successfully loads (`TranslocoService.events$`,
  *      filtered to `translationLoadSuccess`) — this covers a scoped/lazy-
  *      loaded title key that isn't available yet on the *first* navigation to
- *      its route: the key is translated as a fallback (e.g. the key itself)
- *      until its scope finishes loading, at which point the title is
- *      corrected.
+ *      its route: by default ({@link TranslocoTitleStrategyConfig.whenMissing}
+ *      `'wait'`) the title is left untouched (the previous route's title
+ *      stays until the key resolves) rather than briefly showing the raw
+ *      key, and it's applied as soon as its scope finishes loading.
  *
  *    None of this requires a new navigation or a hard refresh, which is the
  *    main limitation of translating the title inside a route's `ResolveFn`.
@@ -49,8 +93,9 @@ import { TranslocoService } from '@jsverse/transloco';
  * The strategy doesn't load scopes itself: a scoped title resolves once its
  * scope is loaded, which happens when the page uses it (pipe, directive or
  * `translateSignal`) under a `provideTranslocoScope()` declared on the route
- * or the component. Until then the title shows the raw key, and it's
- * corrected as soon as the scope finishes loading.
+ * or the component. Until then the title is left as-is (see
+ * {@link TranslocoTitleStrategyConfig.whenMissing}), and it's set as soon as
+ * the scope finishes loading.
  *
  * @example
  * // app.config.ts
@@ -78,9 +123,10 @@ import { TranslocoService } from '@jsverse/transloco';
  */
 @Injectable()
 export class TranslocoTitleStrategy extends TitleStrategy implements OnDestroy {
-  private readonly title = inject(Title);
-  private readonly transloco = inject(TranslocoService);
-  private titleKey: string | undefined;
+  protected readonly title = inject(Title);
+  protected readonly transloco = inject(TranslocoService);
+  private readonly config = inject(TRANSLOCO_TITLE_STRATEGY_CONFIG);
+  protected titleKey: string | undefined;
 
   private readonly subscription: Subscription = merge(
     this.transloco.langChanges$,
@@ -101,8 +147,28 @@ export class TranslocoTitleStrategy extends TitleStrategy implements OnDestroy {
     }
   }
 
-  private applyTitle(key: string): void {
-    this.title.setTitle(this.transloco.translate(key));
+  protected applyTitle(key: string): void {
+    const translation = this.transloco.getTranslation(
+      this.transloco.getActiveLang(),
+    );
+    const whenMissing = this.config.whenMissing ?? 'wait';
+
+    if (whenMissing === 'wait' && getValue(translation, key) === undefined) {
+      // The key's scope is still loading (or the key is wrong and we'll
+      // never hear back) - wait rather than translate a key that isn't
+      // there yet, which would log a dev-mode "Missing translation" warning
+      // and briefly show the raw key as the title.
+      return;
+    }
+
+    const translated = this.transloco.translate(key);
+    const title = this.config.format
+      ? this.config.format(translated)
+      : translated;
+
+    if (this.title.getTitle() !== title) {
+      this.title.setTitle(title);
+    }
   }
 
   ngOnDestroy(): void {
@@ -114,6 +180,11 @@ export class TranslocoTitleStrategy extends TitleStrategy implements OnDestroy {
  * Registers {@link TranslocoTitleStrategy} as the Router's `TitleStrategy`,
  * so route `title`s are translated and kept in sync with the active language.
  */
-export function provideTranslocoTitleStrategy(): Provider {
-  return { provide: TitleStrategy, useClass: TranslocoTitleStrategy };
+export function provideTranslocoTitleStrategy(
+  config: TranslocoTitleStrategyConfig = {},
+): Provider[] {
+  return [
+    { provide: TitleStrategy, useClass: TranslocoTitleStrategy },
+    { provide: TRANSLOCO_TITLE_STRATEGY_CONFIG, useValue: config },
+  ];
 }

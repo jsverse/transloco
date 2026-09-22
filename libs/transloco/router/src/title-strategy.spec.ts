@@ -20,10 +20,25 @@ import { loadLang } from '../../src/lib/tests/service/service-spec-utils';
 import {
   provideTranslocoTitleStrategy,
   TranslocoTitleStrategy,
+  TranslocoTitleStrategyConfig,
+  TRANSLOCO_TITLE_STRATEGY_CONFIG,
 } from './title-strategy';
 
-function createStrategy(service: TranslocoService, title: string | undefined) {
-  const setTitle = vi.fn();
+/** A `Title` stand-in that actually tracks the current title, like the real service. */
+function createTitleMock() {
+  let current = '';
+  return {
+    getTitle: vi.fn(() => current),
+    setTitle: vi.fn((title: string) => (current = title)),
+  };
+}
+
+function createStrategy(
+  service: TranslocoService,
+  title: string | undefined,
+  config: TranslocoTitleStrategyConfig = {},
+) {
+  const titleMock = createTitleMock();
 
   // `createService` already instantiated its own TestBed module; reset it so
   // we can configure a fresh one just for the strategy under test.
@@ -32,7 +47,8 @@ function createStrategy(service: TranslocoService, title: string | undefined) {
     providers: [
       TranslocoTitleStrategy,
       { provide: TranslocoService, useValue: service },
-      { provide: Title, useValue: { setTitle } },
+      { provide: Title, useValue: titleMock },
+      { provide: TRANSLOCO_TITLE_STRATEGY_CONFIG, useValue: config },
     ],
   }).inject(TranslocoTitleStrategy);
 
@@ -42,7 +58,7 @@ function createStrategy(service: TranslocoService, title: string | undefined) {
   // an arbitrary resolved title key without depending on that internal.
   vi.spyOn(strategy, 'buildTitle').mockReturnValue(title);
 
-  return { strategy, setTitle };
+  return { strategy, setTitle: titleMock.setTitle };
 }
 
 @Component({ template: `{{ 'title' | transloco }}`, imports: [TranslocoPipe] })
@@ -90,10 +106,12 @@ describe('TranslocoTitleStrategy', () => {
     expect(setTitle).toHaveBeenCalledWith('Title spanish');
   }));
 
-  it(`GIVEN a route was activated with a translation key as its title
-      WHEN a translation successfully finishes loading (e.g. a scoped/lazy
-           translation not yet available on the first navigation to its route)
-      THEN it re-applies the title without a new navigation`, fakeAsync(() => {
+  it(`GIVEN a route was activated with an already-loaded translation key as
+           its title
+      WHEN an unrelated translation successfully finishes loading (e.g. a
+           different scope than the one the title key belongs to)
+      THEN it does not re-apply the title, since the translated value hasn't
+           changed`, fakeAsync(() => {
     loadLang(service, 'en');
     const { strategy, setTitle } = createStrategy(service, 'nested.title');
 
@@ -102,7 +120,7 @@ describe('TranslocoTitleStrategy', () => {
 
     loadLang(service, 'admin-page/en');
 
-    expect(setTitle).toHaveBeenCalledWith('Title english');
+    expect(setTitle).not.toHaveBeenCalled();
   }));
 
   it(`GIVEN no navigation has occurred yet
@@ -136,22 +154,121 @@ describe('TranslocoTitleStrategy', () => {
   it(`GIVEN provideTranslocoTitleStrategy
       WHEN read
       THEN it provides TranslocoTitleStrategy under the TitleStrategy token`, () => {
-    expect(provideTranslocoTitleStrategy()).toEqual({
-      provide: TitleStrategy,
-      useClass: TranslocoTitleStrategy,
-    });
+    expect(provideTranslocoTitleStrategy()).toEqual([
+      { provide: TitleStrategy, useClass: TranslocoTitleStrategy },
+      { provide: TRANSLOCO_TITLE_STRATEGY_CONFIG, useValue: {} },
+    ]);
   });
+
+  it(`GIVEN a scoped title key whose scope isn't loaded yet
+      WHEN the route is activated
+      THEN it does not translate the key or set a title`, fakeAsync(() => {
+    loadLang(service, 'en');
+    const translateSpy = vi.spyOn(service, 'translate');
+    const missingHandlerSpy = vi.spyOn(service, '_handleMissingKey');
+    const { strategy, setTitle } = createStrategy(service, 'adminPage.title');
+
+    strategy.updateTitle({} as RouterStateSnapshot);
+
+    expect(translateSpy).not.toHaveBeenCalled();
+    expect(missingHandlerSpy).not.toHaveBeenCalled();
+    expect(setTitle).not.toHaveBeenCalled();
+  }));
+
+  it(`GIVEN a scoped title key whose scope isn't loaded yet
+      WHEN the route is activated and the scope then finishes loading
+      THEN the title is set exactly once, to the translated key`, fakeAsync(() => {
+    loadLang(service, 'en');
+    const { strategy, setTitle } = createStrategy(service, 'adminPage.title');
+
+    strategy.updateTitle({} as RouterStateSnapshot);
+    expect(setTitle).not.toHaveBeenCalled();
+
+    loadLang(service, 'admin-page/en');
+
+    expect(setTitle).toHaveBeenCalledTimes(1);
+    expect(setTitle).toHaveBeenCalledWith('Admin english');
+  }));
+
+  it(`GIVEN a route was activated with a translation key as its title
+      WHEN the active language changes before the new language is loaded
+      THEN the previous title is kept, with no raw key and no missing-handler
+           call, until the new language finishes loading`, fakeAsync(() => {
+    loadLang(service, 'en');
+    const { strategy, setTitle } = createStrategy(service, 'nested.title');
+
+    strategy.updateTitle({} as RouterStateSnapshot);
+    setTitle.mockClear();
+
+    const missingHandlerSpy = vi.spyOn(service, '_handleMissingKey');
+    service.setActiveLang('es'); // not loaded yet
+
+    expect(missingHandlerSpy).not.toHaveBeenCalled();
+    expect(setTitle).not.toHaveBeenCalled();
+
+    loadLang(service, 'es');
+
+    expect(setTitle).toHaveBeenCalledTimes(1);
+    expect(setTitle).toHaveBeenCalledWith('Title spanish');
+  }));
+
+  it(`GIVEN an already-loaded title key
+      WHEN the route is activated
+      THEN it translates and sets the title immediately, unchanged from
+           before`, fakeAsync(() => {
+    loadLang(service, 'en');
+    const { strategy, setTitle } = createStrategy(service, 'nested.title');
+
+    strategy.updateTitle({} as RouterStateSnapshot);
+
+    expect(setTitle).toHaveBeenCalledTimes(1);
+    expect(setTitle).toHaveBeenCalledWith('Title english');
+  }));
+
+  it(`GIVEN whenMissing: 'key'
+      WHEN the route is activated with a scoped key whose scope isn't loaded
+      THEN it falls back to translating (and showing) the raw key, matching
+           the pre-existing behaviour`, fakeAsync(() => {
+    loadLang(service, 'en');
+    const missingHandlerSpy = vi.spyOn(service, '_handleMissingKey');
+    const { strategy, setTitle } = createStrategy(service, 'adminPage.title', {
+      whenMissing: 'key',
+    });
+
+    strategy.updateTitle({} as RouterStateSnapshot);
+
+    expect(missingHandlerSpy).toHaveBeenCalledWith(
+      'adminPage.title',
+      undefined,
+      {},
+    );
+    expect(setTitle).toHaveBeenCalledWith('adminPage.title');
+  }));
+
+  it(`GIVEN a format function
+      WHEN the title is applied
+      THEN it's applied to the translated title before Title.setTitle`, fakeAsync(() => {
+    loadLang(service, 'en');
+    const { strategy, setTitle } = createStrategy(service, 'nested.title', {
+      format: (title) => `${title} - MyApp`,
+    });
+
+    strategy.updateTitle({} as RouterStateSnapshot);
+
+    expect(setTitle).toHaveBeenCalledWith('Title english - MyApp');
+  }));
 
   it(`GIVEN a route that declares its scope in providers and uses it in its component,
       with a scope-prefixed title
       WHEN the route is activated
       THEN the title is corrected once the scope finishes loading`, async () => {
-    const setTitle = vi.fn();
+    const titleMock = createTitleMock();
+    const { setTitle } = titleMock;
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       providers: [
         providersMock,
-        { provide: Title, useValue: { setTitle } },
+        { provide: Title, useValue: titleMock },
         provideTranslocoTitleStrategy(),
         provideRouter([
           {
