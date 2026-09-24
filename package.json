@@ -70,6 +70,7 @@
     "@eslint/js": "^10.0.1",
     "@ngneat/spectator": "22.1.0",
     "@nx/angular": "23.2.1",
+    "@nx/devkit": "23.2.1",
     "@nx/eslint": "23.2.1",
     "@nx/eslint-plugin": "23.2.1",
     "@nx/js": "23.2.1",
