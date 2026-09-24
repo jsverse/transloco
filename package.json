@@ -3,7 +3,13 @@
   "version": "0.0.0",
   "license": "MIT",
   "homepage": "https://jsverse.gitbook.io/transloco/",
-  "packageManager": "pnpm@11.27.0",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "11.27.0",
+      "onFail": "download"
+    }
+  },
   "engines": {
     "node": ">=24.0.0"
   },

@@ -4,7 +4,7 @@
 
 # Developing
 
-The repo uses pnpm; its version is pinned in `package.json`'s `packageManager` field. Start by installing all dependencies:
+The repo uses pnpm; its version is pinned in `package.json`'s `devEngines.packageManager` field, and any other pnpm version switches to it automatically (`npm install` is refused). Start by installing all dependencies:
 
 ```bash
 pnpm install
