@@ -17,6 +17,3 @@ allowBuilds:
   msgpackr-extract: true
   nx: true
   unrs-resolver: true
-  # less' postinstall downloads Playwright browsers when it thinks it is being
-  # developed inside a monorepo — nothing here needs it.
-  less: false
