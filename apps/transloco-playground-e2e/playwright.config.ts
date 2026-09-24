@@ -27,7 +27,7 @@ export default defineConfig({
   },
   /* Run the playground dev/prod server before starting the tests */
   webServer: {
-    command: `npx nx run transloco-playground:serve:${serveConfiguration} --port=4200`,
+    command: `pnpm exec nx run transloco-playground:serve:${serveConfiguration} --port=4200`,
     url: baseURL,
     reuseExistingServer: !isCI,
     cwd: workspaceRoot,
