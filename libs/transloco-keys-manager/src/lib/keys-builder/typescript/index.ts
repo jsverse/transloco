@@ -1,4 +1,5 @@
 import { tsquery, ScriptKind } from '@phenomnomnominal/tsquery';
+import ts, { SourceFile } from 'typescript';
 
 import {
   Config,
@@ -17,23 +18,62 @@ import { resolveScopeAlias } from '../utils/resolvers.utils';
 import { inlineTemplateExtractor } from './inline-template';
 import { markerExtractor } from './marker.extractor';
 import { pureFunctionExtractor } from './pure-function.extractor';
+import { routeTitleExtractor } from './route-title.extractor';
 import { serviceExtractor } from './service.extractor';
 import { signalExtractor } from './signal.extractor';
+import {
+  importsTitleStrategyProvider,
+  mentionsTitleStrategyProvider,
+} from './title-strategy-provider.detector';
+import { TSExtractorResult } from './types';
+
+/**
+ * Route title keys are collected while extracting, but only applied once some
+ * file turned out to import `provideTranslocoTitleStrategy`; otherwise they're
+ * discarded, as plain `title` properties aren't translation keys without it.
+ */
+interface RouteTitleCollector {
+  providerUsed: boolean;
+  pendingKeys: (() => void)[];
+}
 
 export function extractTSKeys(config: Config): ExtractionResult {
-  return extractKeys(config, 'ts', TSExtractor);
+  const routeTitles: RouteTitleCollector = {
+    providerUsed: false,
+    pendingKeys: [],
+  };
+
+  const result = extractKeys(config, 'ts', (extractorConfig) =>
+    TSExtractor(extractorConfig, routeTitles),
+  );
+
+  if (routeTitles.providerUsed) {
+    routeTitles.pendingKeys.forEach((addPendingKeys) => addPendingKeys());
+  }
+
+  return result;
 }
 
 const translocoImport = /@(jsverse|ngneat)\/transloco/;
 const translocoKeysManagerImport = /@(jsverse|ngneat)\/transloco-keys-manager/;
-function TSExtractor(config: ExtractorConfig): ScopeMap {
+const routeTitleProperty = /\btitle\s*:/;
+
+function TSExtractor(
+  config: ExtractorConfig,
+  routeTitles: RouteTitleCollector,
+): ScopeMap {
   const { file, scopes, defaultValue, scopeToKeys } = config;
   const content = readFile(file);
-  const extractors = [];
+  const extractors: ((ast: SourceFile) => TSExtractorResult)[] = [];
 
   const hasTranslocoImport = translocoImport.test(content);
   const hasMarkerImport = translocoKeysManagerImport.test(content);
   const hasTranslocoUsage = content.includes('transloco');
+  // Cheap pre-filters: only parse this file's AST for route titles / the
+  // title strategy provider if it declares a `title:` property / mentions it.
+  const hasRouteTitle = routeTitleProperty.test(content);
+  const mentionsProvider =
+    !routeTitles.providerUsed && mentionsTitleStrategyProvider(content);
 
   if (hasTranslocoImport) {
     extractors.push(serviceExtractor, pureFunctionExtractor, signalExtractor);
@@ -53,7 +93,7 @@ function TSExtractor(config: ExtractorConfig): ScopeMap {
   // Note: hasTranslocoImport/hasMarkerImport imply hasTranslocoUsage, since
   // both import regexes match strings that contain "transloco", so checking
   // !hasTranslocoUsage alone is sufficient here.
-  if (!hasTranslocoUsage) {
+  if (!hasTranslocoUsage && !hasRouteTitle && !mentionsProvider) {
     addCommentSectionKeys({
       content,
       regexFactory: regexFactoryMap.ts.comments,
@@ -64,10 +104,8 @@ function TSExtractor(config: ExtractorConfig): ScopeMap {
 
   const ast = tsquery.ast(content, undefined, ScriptKind.TS);
 
-  extractors
-    .map((ex) => ex(ast))
-    .flat()
-    .forEach(({ key, lang, params }) => {
+  const addExtractedKeys = (results: TSExtractorResult) =>
+    results.forEach(({ key, lang, params }) => {
       const [keyWithoutScope, scopeAlias] = resolveAliasAndKeyFromService(
         key,
         lang,
@@ -80,6 +118,20 @@ function TSExtractor(config: ExtractorConfig): ScopeMap {
         ...baseParams,
       });
     });
+
+  extractors.forEach((extractor) => addExtractedKeys(extractor(ast)));
+
+  if (hasRouteTitle) {
+    const routeTitleKeys = routeTitleExtractor(ast, scopes);
+
+    if (routeTitleKeys.length) {
+      routeTitles.pendingKeys.push(() => addExtractedKeys(routeTitleKeys));
+    }
+  }
+
+  if (mentionsProvider && importsTitleStrategyProvider(ast)) {
+    routeTitles.providerUsed = true;
+  }
 
   /** Check for dynamic markings */
   addCommentSectionKeys({

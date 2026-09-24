@@ -25,6 +25,8 @@ export type TranslationTestCase =
   | 'ts-extraction/marker'
   | 'ts-extraction/signal'
   | 'ts-extraction/inline-template'
+  | 'ts-extraction/route-title'
+  | 'ts-extraction/route-title-no-provider'
   | 'config-options/unflat'
   | 'config-options/unflat-sort'
   | 'config-options/unflat-problematic-keys'
