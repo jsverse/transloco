@@ -4,31 +4,14 @@ description: 'Setup Node and install dependencies'
 runs:
   using: composite
   steps:
-    # pnpm's version comes from package.json's `packageManager`, Node's from
-    # .nvmrc.
+    # One step for pnpm, Node and the install. pnpm's version comes from
+    # package.json's `packageManager`, Node's from .nvmrc. No store cache: a cold
+    # install takes ~13s, so there is little for one to save.
     #
     # It writes no registry-url/_authToken into .npmrc, which OIDC trusted
     # publishing in release.yml depends on — keep it that way.
-    #
-    # Its own `cache` is not used: v3 saves every job's store under a unique
-    # key, so each CI run would upload ~10 copies of a ~260 MB store against
-    # the repo's 10 GB cache quota. The steps below cache it under one key per
-    # lockfile instead, which is why the install runs outside the action.
     - uses: pnpm/setup@v3
       with:
-        install: false
-
-    - name: Get pnpm store path
-      id: pnpm-store
-      run: echo "path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
-      shell: bash
-
-    - uses: actions/cache@v5
-      with:
-        path: ${{ steps.pnpm-store.outputs.path }}
-        key: pnpm-store-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
-
-    # --frozen-lockfile also fails the job when pnpm-lock.yaml is missing.
-    - name: Install dependencies
-      run: pnpm install --frozen-lockfile
-      shell: bash
+        # Installs with --frozen-lockfile, and fails outright if the lockfile
+        # is missing instead of resolving a fresh one.
+        require-lockfile: true
