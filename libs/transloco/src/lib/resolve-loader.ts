@@ -16,7 +16,7 @@ export function resolveLoader(options: Options) {
   if (inlineLoader) {
     const pathLoader = inlineLoader[path];
     if (isFunction(pathLoader) === false) {
-      throw `You're using an inline loader but didn't provide a loader for ${path}`;
+      return Promise.reject(`You're using an inline loader but didn't provide a loader for ${path}`);
     }
 
     return inlineLoader[path]().then((res) =>
