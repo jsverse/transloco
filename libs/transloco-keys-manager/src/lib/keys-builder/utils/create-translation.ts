@@ -46,28 +46,34 @@ function createJson(config: CreateTranslationOptions) {
 }
 
 function createPot(config: CreateTranslationOptions) {
-  const resolved: Translation = getConfig().unflat
+  const { unflat, sort } = getConfig();
+  const resolved: Translation = unflat
     ? flatten(resolveTranslation(config))
     : resolveTranslation(config);
 
   return po
-    .compile({
-      charset: 'utf-8',
-      headers: {
-        'mime-version': '1.0',
-        'content-type': 'text/plain; charset=utf-8',
-        'content-transfer-encoding': '8bit',
+    .compile(
+      {
+        charset: 'utf-8',
+        headers: {
+          'mime-version': '1.0',
+          'content-type': 'text/plain; charset=utf-8',
+          'content-transfer-encoding': '8bit',
+        },
+        translations: {
+          '': Object.entries(resolved).reduce(
+            (acc, [msgid, msgstr]) => ({
+              ...acc,
+              [msgid]: { msgid, msgstr },
+            }),
+            {},
+          ),
+        },
       },
-      translations: {
-        '': Object.entries(resolved).reduce(
-          (acc, [msgid, msgstr]) => ({
-            ...acc,
-            [msgid]: { msgid, msgstr },
-          }),
-          {},
-        ),
-      },
-    })
+      // Sort at compile time: a pre-sorted object would still enumerate
+      // integer-like msgids first
+      { sort },
+    )
     .toString('utf8');
 }
 
