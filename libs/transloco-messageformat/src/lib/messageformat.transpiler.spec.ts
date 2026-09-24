@@ -1,9 +1,11 @@
 import {
   defaultConfig,
+  provideTransloco,
   provideTranslocoConfig,
   TRANSLOCO_TRANSPILER,
   translocoConfig,
   TranslocoConfig,
+  TranslocoService,
   TranspileParams,
 } from '@jsverse/transloco';
 import { CustomFormatter } from '@messageformat/core';
@@ -104,6 +106,97 @@ describe('MessageFormatTranspiler', () => {
     expect(
       transpiler.transpile(getTranspilerParams(polishKey, { params })),
     ).toBe('2 things');
+  });
+
+  describe('per-language compilation (#528)', () => {
+    const polishKey =
+      '{count, plural, =0 {none} one {# thing} few {# things} many {# things} other {# things}}';
+
+    it(`GIVEN a transpiler whose active locale is en
+        WHEN a Polish string is transpiled with lang: 'pl'
+        THEN it compiles with Polish plural rules instead of throwing`, () => {
+      const transpiler = getTranspiler({ locales: 'en' });
+
+      expect(
+        transpiler.transpile(
+          getTranspilerParams(polishKey, { params: { count: 2 }, lang: 'pl' }),
+        ),
+      ).toBe('2 things');
+    });
+
+    it(`GIVEN a string transpiled once with lang: 'pl'
+        WHEN the same string is transpiled again with no lang hint
+        THEN the hint does not leak and the active locale still applies`, () => {
+      const transpiler = getTranspiler({ locales: 'en' });
+
+      expect(
+        transpiler.transpile(
+          getTranspilerParams(polishKey, { params: { count: 2 }, lang: 'pl' }),
+        ),
+      ).toBe('2 things');
+      expect(() =>
+        transpiler.transpile(
+          getTranspilerParams(polishKey, { params: { count: 2 } }),
+        ),
+      ).toThrowError();
+    });
+
+    it(`GIVEN an object value with a nested messageformat string
+        WHEN transpiled with lang: 'pl'
+        THEN the lang hint reaches the nested compilation`, () => {
+      const transpiler = getTranspiler({ locales: 'en' });
+
+      expect(
+        transpiler.transpile(
+          getTranspilerParams(
+            { things: polishKey },
+            { params: { things: { count: 2 } }, lang: 'pl' },
+          ),
+        ),
+      ).toEqual({ things: '2 things' });
+    });
+
+    it(`GIVEN no lang hint
+        WHEN a string is transpiled
+        THEN it still uses the active locale`, () => {
+      const transpiler = getTranspiler({ locales: 'en' });
+
+      expect(() =>
+        transpiler.transpile(
+          getTranspilerParams(polishKey, { params: { count: 2 } }),
+        ),
+      ).toThrowError();
+    });
+  });
+
+  describe('fallback translation with differing plural rules (#528)', () => {
+    it(`GIVEN active lang ja (no 'one' plural) and an en fallback translation
+        WHEN a key missing in ja is translated
+        THEN the en fallback compiles with en plural rules`, () => {
+      const service = TestBed.configureTestingModule({
+        providers: [
+          provideTransloco({
+            config: translocoConfig({
+              availableLangs: ['en', 'ja'],
+              defaultLang: 'ja',
+              fallbackLang: 'en',
+              missingHandler: { useFallbackTranslation: true },
+            }),
+          }),
+          provideTranslocoMessageformat(),
+        ],
+      }).inject(TranslocoService);
+
+      service.setTranslation(
+        { items: '{count, plural, one {# item} other {# items}}' },
+        'en',
+        { emitChange: false },
+      );
+      service.setTranslation({}, 'ja', { emitChange: false });
+      service.setActiveLang('ja');
+
+      expect(service.translate('items', { count: 1 })).toBe('1 item');
+    });
   });
 });
 

@@ -21,6 +21,9 @@ export class MessageFormatTranspiler extends DefaultTranspiler {
   private messageFormat: MessageFormat;
   private readonly messageConfig: MessageFormatOptions<'string'>;
   private readonly mfFactory: MFFactory;
+  // MessageFormat instances keyed by language, so a string is compiled with its
+  // own language's plural/select rules and not the active language's (#528).
+  private readonly messageFormatByLang = new Map<string, MessageFormat>();
 
   constructor() {
     super();
@@ -34,10 +37,12 @@ export class MessageFormatTranspiler extends DefaultTranspiler {
     this.messageFormat = this.mfFactory(locales, messageConfig);
   }
 
-  transpile({ value, params = {}, translation, key }: TranspileParams) {
+  transpile({ value, params = {}, translation, key, lang }: TranspileParams) {
     if (!value) {
       return value;
     }
+
+    const messageFormat = this.resolveMessageFormat(lang);
 
     if (isObject(value) && params) {
       Object.keys(params).forEach((p) => {
@@ -46,14 +51,21 @@ export class MessageFormatTranspiler extends DefaultTranspiler {
           params: getValue(params, p),
           translation,
           key,
+          lang,
         });
-        const message = this.messageFormat.compile(transpiled);
+        const message = messageFormat.compile(transpiled);
         value = setValue(value, p, message(params[p]));
       });
     } else if (!Array.isArray(value)) {
-      const transpiled = super.transpile({ value, params, translation, key });
+      const transpiled = super.transpile({
+        value,
+        params,
+        translation,
+        key,
+        lang,
+      });
 
-      const message = this.messageFormat.compile(transpiled);
+      const message = messageFormat.compile(transpiled);
       return message(params);
     }
 
@@ -66,5 +78,19 @@ export class MessageFormatTranspiler extends DefaultTranspiler {
 
   setLocale(locale: MFLocale) {
     this.messageFormat = this.mfFactory(locale, this.messageConfig);
+  }
+
+  private resolveMessageFormat(lang: string | undefined): MessageFormat {
+    if (!lang) {
+      return this.messageFormat;
+    }
+
+    let messageFormat = this.messageFormatByLang.get(lang);
+    if (!messageFormat) {
+      messageFormat = this.mfFactory(lang, this.messageConfig);
+      this.messageFormatByLang.set(lang, messageFormat);
+    }
+
+    return messageFormat;
   }
 }
