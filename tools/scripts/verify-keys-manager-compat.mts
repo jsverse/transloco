@@ -20,7 +20,9 @@ const args = new Map(
     .slice(2)
     .filter((arg) => arg.startsWith('--'))
     .map((arg) => {
-      const [key, value] = arg.slice(2).split('=');
+      const separator = arg.indexOf('=');
+      const key = arg.slice(2, separator < 0 ? undefined : separator);
+      const value = separator < 0 ? undefined : arg.slice(separator + 1);
 
       return [key, value] as const;
     }),
