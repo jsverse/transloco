@@ -1,7 +1,9 @@
 import { fakeAsync } from '@angular/core/testing';
+import { map, timer } from 'rxjs';
 
-import { createService, runLoader } from '../mocks';
+import { createService, mockLangs, runLoader } from '../mocks';
 import { TranslocoService } from '../../transloco.service';
+import { TranslocoLoader } from '../../transloco.loader';
 
 describe('missingHandler', () => {
   describe('missingHandler.allowEmpty', () => {
@@ -94,6 +96,48 @@ describe('missingHandler', () => {
       service.load('en').subscribe();
       runLoader(2000);
       expect(service.translate('empty', { value: 'hello' })).toEqual('');
+    }));
+  });
+
+  describe('useFallbackTranslation - no duplicate request', () => {
+    it(`GIVEN fallback lang is already cached
+        WHEN loading another lang with useFallbackTranslation
+        THEN should not make a duplicate request for the fallback lang`, fakeAsync(() => {
+      // Record every lang the loader is actually asked to fetch, so we can
+      // assert on real requests instead of spying on service internals.
+      const requestedLangs: string[] = [];
+
+      class RecordingLoader implements TranslocoLoader {
+        getTranslation(lang: string) {
+          requestedLangs.push(lang);
+          return timer(1000).pipe(map(() => mockLangs[lang]));
+        }
+      }
+
+      const service = createService(
+        {
+          // defaultLang and fallbackLang both default to 'en' in createService.
+          missingHandler: { useFallbackTranslation: true },
+        },
+        { loader: RecordingLoader },
+      );
+
+      // Loads 'en' as the default lang -> fetched once.
+      service.load('en').subscribe();
+      runLoader();
+
+      // Loads 'es'; its fallback is 'en', which is already cached, so only
+      // 'es' should hit the loader here.
+      service.load('es').subscribe();
+      runLoader();
+
+      expect(requestedLangs).toEqual(['en', 'es']);
+      // 'es' resolved from its own file, and a key missing in 'es' still
+      // falls back to the cached 'en'.
+      expect(service.translate('home', {}, 'es')).toEqual('home spanish');
+      expect(service.translate('key.is.like.path', {}, 'es')).toEqual(
+        'key is like path',
+      );
     }));
   });
 });
