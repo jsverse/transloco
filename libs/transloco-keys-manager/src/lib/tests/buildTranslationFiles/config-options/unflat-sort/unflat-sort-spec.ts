@@ -1,6 +1,7 @@
 import nodePath from 'node:path';
 
 import { flatten } from 'flat';
+import fs from 'fs-extra';
 import { describe, beforeEach, expect, it } from 'vitest';
 
 import {
@@ -55,19 +56,18 @@ export function testUnflatSortExtraction(fileFormat: Config['fileFormat']) {
 
     it('should write the keys in sorted order', () => {
       buildTranslationFiles(config);
-      const translation = getCurrentTranslation({
-        path: nodePath.join(sourceRoot, type, 'i18n', `en.${fileFormat}`),
-        fileFormat,
-      });
+      const path = nodePath.join(sourceRoot, type, 'i18n', `en.${fileFormat}`);
+      // Read the pot msgids straight from the file: parsing it into an
+      // object would hide a wrong order
+      const keys =
+        fileFormat === 'pot'
+          ? Array.from(
+              fs.readFileSync(path, 'utf8').matchAll(/^msgid "(.+)"$/gm),
+              ([, msgid]) => msgid,
+            )
+          : Object.keys(flatten(getCurrentTranslation({ path, fileFormat })));
 
-      // Both parsers keep the order the keys appear in the file
-      expect(Object.keys(flatten(translation))).toEqual([
-        'b.b.a',
-        'b.b.b',
-        'b.c.a',
-        'b.c.p',
-        'b.c.x',
-      ]);
+      expect(keys).toEqual(['b.b.a', 'b.b.b', 'b.c.a', 'b.c.p', 'b.c.x']);
     });
   });
 }

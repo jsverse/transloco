@@ -50,30 +50,30 @@ function createPot(config: CreateTranslationOptions) {
   const resolved: Translation = unflat
     ? flatten(resolveTranslation(config))
     : resolveTranslation(config);
-  const msgids = Object.keys(resolved);
-
-  if (sort) {
-    msgids.sort();
-  }
 
   return po
-    .compile({
-      charset: 'utf-8',
-      headers: {
-        'mime-version': '1.0',
-        'content-type': 'text/plain; charset=utf-8',
-        'content-transfer-encoding': '8bit',
+    .compile(
+      {
+        charset: 'utf-8',
+        headers: {
+          'mime-version': '1.0',
+          'content-type': 'text/plain; charset=utf-8',
+          'content-transfer-encoding': '8bit',
+        },
+        translations: {
+          '': Object.entries(resolved).reduce(
+            (acc, [msgid, msgstr]) => ({
+              ...acc,
+              [msgid]: { msgid, msgstr },
+            }),
+            {},
+          ),
+        },
       },
-      translations: {
-        '': msgids.reduce(
-          (acc, msgid) => ({
-            ...acc,
-            [msgid]: { msgid, msgstr: resolved[msgid] },
-          }),
-          {},
-        ),
-      },
-    })
+      // Sort at compile time: a pre-sorted object would still enumerate
+      // integer-like msgids first
+      { sort },
+    )
     .toString('utf8');
 }
 
