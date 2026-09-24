@@ -46,9 +46,15 @@ function createJson(config: CreateTranslationOptions) {
 }
 
 function createPot(config: CreateTranslationOptions) {
-  const resolved: Translation = getConfig().unflat
+  const { unflat, sort } = getConfig();
+  const resolved: Translation = unflat
     ? flatten(resolveTranslation(config))
     : resolveTranslation(config);
+  const msgids = Object.keys(resolved);
+
+  if (sort) {
+    msgids.sort();
+  }
 
   return po
     .compile({
@@ -59,10 +65,10 @@ function createPot(config: CreateTranslationOptions) {
         'content-transfer-encoding': '8bit',
       },
       translations: {
-        '': Object.entries(resolved).reduce(
-          (acc, [msgid, msgstr]) => ({
+        '': msgids.reduce(
+          (acc, msgid) => ({
             ...acc,
-            [msgid]: { msgid, msgstr },
+            [msgid]: { msgid, msgstr: resolved[msgid] },
           }),
           {},
         ),

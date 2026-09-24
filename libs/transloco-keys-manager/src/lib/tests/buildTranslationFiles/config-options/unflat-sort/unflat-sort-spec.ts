@@ -1,4 +1,7 @@
-import { describe, beforeEach, it } from 'vitest';
+import nodePath from 'node:path';
+
+import { flatten } from 'flat';
+import { describe, beforeEach, expect, it } from 'vitest';
 
 import {
   assertTranslation,
@@ -9,6 +12,7 @@ import {
 } from '../../build-translation-utils';
 import { defaultValue, mockResolveProjectBasePath } from '../../../spec-utils';
 import { Config } from '../../../../types';
+import { getCurrentTranslation } from '../../../../keys-builder/utils/get-current-translation';
 
 mockResolveProjectBasePath(sourceRoot);
 
@@ -47,6 +51,23 @@ export function testUnflatSortExtraction(fileFormat: Config['fileFormat']) {
       };
       buildTranslationFiles(config);
       assertTranslation({ type, expected: expected.global, fileFormat });
+    });
+
+    it('should write the keys in sorted order', () => {
+      buildTranslationFiles(config);
+      const translation = getCurrentTranslation({
+        path: nodePath.join(sourceRoot, type, 'i18n', `en.${fileFormat}`),
+        fileFormat,
+      });
+
+      // Both parsers keep the order the keys appear in the file
+      expect(Object.keys(flatten(translation))).toEqual([
+        'b.b.a',
+        'b.b.b',
+        'b.c.a',
+        'b.c.p',
+        'b.c.x',
+      ]);
     });
   });
 }
