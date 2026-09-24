@@ -104,19 +104,12 @@ jobs:
             typescript: '5.9'
           - angular: '21'
             typescript: '5.9'
-          # Newest supported; Angular 22 requires ts 6.0.
+          # Newest supported; Angular 22 requires ts 6.0. 22.2 is the first line
+          # with `@boundary`/`@error`.
           - angular: '22'
             typescript: '6.0'
-          # 22.2 is the first line to ship the `@boundary`/`@error` block; the
-          # range picks up its prereleases now and its stable release later
-          # without drifting to 22.3+. Not gating merges on it yet since it's
-          # still unreleased and potentially unstable.
-          - angular: '>=22.2.0-next.0 <22.3.0'
-            label: '22.2'
-            typescript: '6.0'
-            experimental: true
     runs-on: ubuntu-latest
-    name: keys-manager ng${{ matrix.label || matrix.angular }} ts${{ matrix.typescript }}
+    name: keys-manager ng${{ matrix.angular }} ts${{ matrix.typescript }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -130,11 +123,10 @@ jobs:
         shell: bash
 
       - name: Verify key extraction
-        continue-on-error: ${{ matrix.experimental == true }}
         run: |
           node tools/scripts/verify-keys-manager-compat.mts \
-            --angular="${{ matrix.angular }}" \
-            --typescript="${{ matrix.typescript }}"
+            --angular=${{ matrix.angular }} \
+            --typescript=${{ matrix.typescript }}
         shell: bash
 
   commitlint:

@@ -20,12 +20,7 @@ const args = new Map(
     .slice(2)
     .filter((arg) => arg.startsWith('--'))
     .map((arg) => {
-      // A plain split('=') would mangle a range like `>=22.2.0-next.0 <22.3.0`,
-      // which contains its own `=` inside the `>=` operator.
-      const raw = arg.slice(2);
-      const separatorIndex = raw.indexOf('=');
-      const key = raw.slice(0, separatorIndex);
-      const value = raw.slice(separatorIndex + 1);
+      const [key, value] = arg.slice(2).split('=');
 
       return [key, value] as const;
     }),
@@ -84,10 +79,9 @@ const GROUPED_CASES_TEMPLATE = `
 `;
 
 /**
- * `@boundary`/`@error` error-boundary blocks are still prerelease (targeted
- * for Angular 22.2) and are a parse error on every stable compiler today, so
- * this only compiles - and only gets exercised - once the resolved version
- * actually supports it (e.g. the `next` dist-tag).
+ * `@boundary`/`@error` error-boundary blocks landed in Angular 22.2 and are a
+ * parse error on earlier compilers, so this only gets exercised once the
+ * resolved version supports it.
  */
 const BOUNDARY_TEMPLATE = `
 <ng-container *transloco="let t; prefix: 'boundary'">
@@ -140,7 +134,7 @@ function supportsGroupedCases(version: string): boolean {
   return major > 21 || (major === 21 && minor >= 1);
 }
 
-/** `@boundary`/`@error` blocks are targeted for 22.2. */
+/** `@boundary`/`@error` blocks landed in 22.2. */
 function supportsBoundaryBlock(version: string): boolean {
   const [major, minor] = version.split('.').map(Number);
 
@@ -203,10 +197,6 @@ run(
     `typescript@${typescriptVersion}`,
     '--no-audit',
     '--no-fund',
-    // npm's peer-range matching excludes prereleases even when the range
-    // itself would allow them numerically (e.g. `>=20 <23` vs `22.2.0-next.x`),
-    // so prerelease ranges need the peer check relaxed.
-    ...(angularVersion.includes('-') ? ['--legacy-peer-deps'] : []),
   ],
   project,
 );

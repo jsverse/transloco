@@ -72,7 +72,7 @@ export function isLiteralMapPropertyKey(
 
 /**
  * Structural on purpose, and deliberately named after the real `@boundary`/
- * `@error` classes Angular 22.2 will export: `@angular/compiler` doesn't have
+ * `@error` classes Angular 22.2 exports: `@angular/compiler` doesn't have
  * `TmplAstBoundaryBlock`/`TmplAstBoundaryErrorBlock` in any currently-supported
  * version, so a named import would put symbols in the emitted `.d.ts` that
  * those typings lack. Matching the future names means the only change needed

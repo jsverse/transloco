@@ -125,7 +125,7 @@ describe('compiler-compat: boundary block shape', () => {
   it(`GIVEN a plain object
       WHEN it is tested for being a boundary block
       THEN it is rejected without throwing`, () => {
-    // \`@boundary\`/\`@error\` land in Angular 22.2; on every currently-supported
+    // \`@boundary\`/\`@error\` landed in Angular 22.2; on every currently-supported
     // version the class is undefined, and \`x instanceof undefined\` throws
     // rather than returning false.
     expect(() => isTmplAstBoundaryBlock({ children: [] })).not.toThrow();
