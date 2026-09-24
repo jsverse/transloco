@@ -11,7 +11,10 @@ runs:
     # publishing in release.yml depends on — keep it that way.
     - uses: pnpm/setup@v3
       with:
-        cache: true
+        # Off on purpose: v3 keys the store cache per job and run, so every CI
+        # run would upload ~10 copies of a ~260 MB store against the repo's
+        # 10 GB cache quota — to save a few seconds off a ~13s cold install.
+        cache: false
         # Installs with --frozen-lockfile, and fails outright if the lockfile
         # is missing instead of resolving a fresh one.
         require-lockfile: true
