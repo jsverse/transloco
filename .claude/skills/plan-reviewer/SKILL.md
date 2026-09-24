@@ -1,7 +1,7 @@
 ---
 name: plan-reviewer
 description: Thoroughly reviews implementation plans before execution. Acts as a senior architect validating completeness, feasibility, risk, scope, and code reuse. Use whenever a plan has been written and needs review, when the user says "review plan", "check the plan", "is this plan good", or when about to approve a plan written by an agent.
-allowed-tools: Read Grep Glob Bash(git:*) Bash(npx nx:*)
+allowed-tools: Read Grep Glob Bash(git:*) Bash(pnpm exec nx:*)
 disable-model-invocation: true
 ---
 

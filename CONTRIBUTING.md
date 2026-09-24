@@ -4,11 +4,10 @@
 
 # Developing
 
-Start by installing all dependencies:
+The repo uses pnpm; its version is pinned in `package.json`'s `devEngines.packageManager` field, and any other pnpm version switches to it automatically (`npm install` is refused). Start by installing all dependencies:
 
 ```bash
-npm i
-yarn
+pnpm install
 ```
 
 The Transloco project is a monorepo managed by nx with the following structure:
@@ -42,7 +41,7 @@ nx e2e transloco-playground-e2e
 Run the playground app:
 
 ```bash
-npm start
+pnpm start
 ```
 
 ## Contributing to the Documentation
@@ -90,8 +89,7 @@ we use the git commit messages to **generate the changelog**.
 All commits must be committed using the `commit` script:
 
 ```bash
-npm run commit
-yarn commit
+pnpm commit
 ```
 
 Choose the correct package you are making the changes for. If this is a repository-level change, you can choose the first (empty) option.

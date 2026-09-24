@@ -32,7 +32,7 @@
             "command": "nx build-package transloco"
           },
           {
-            "command": "npx tsc -p libs/transloco/tsconfig.schematics.json"
+            "command": "pnpm exec tsc -p libs/transloco/tsconfig.schematics.json"
           },
           {
             "command": "node tools/scripts/append-schematics-npmignore.mts"

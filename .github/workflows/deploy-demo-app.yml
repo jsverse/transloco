@@ -39,7 +39,7 @@ jobs:
         uses: actions/configure-pages@v6
 
       - name: Build playground
-        run: ORIGIN='https://jsverse.github.io/transloco/' npm run build:playground
+        run: ORIGIN='https://jsverse.github.io/transloco/' pnpm build:playground
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5

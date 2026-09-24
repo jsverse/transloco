@@ -1,9 +1,10 @@
 /**
  * Asserts every released package carries a LICENSE at its publish root.
  *
- * npm always includes a root LICENSE in the tarball regardless of the `files`
- * field, so landing it in `dist/libs/<project>/` is the whole requirement — but
- * nothing in the build fails when it is missing. That is how six packages
+ * npm and pnpm (which packs the tarball `nx release publish` uploads) both
+ * include a root LICENSE regardless of the `files` field, so landing it in
+ * `dist/libs/<project>/` is the whole requirement — but nothing in the build
+ * fails when it is missing. That is how six packages
  * shipped unlicensed up to 8.4.0 (see #986): the `@nx/js:tsc` `assets` globs
  * were `*.md` only, and LICENSE is extensionless.
  *

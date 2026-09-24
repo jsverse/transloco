@@ -27,7 +27,7 @@ jobs:
         uses: ./.github/actions/step-setup
 
       - name: Run ci:${{ matrix.target }}
-        run: npm run ci:${{ matrix.target }}
+        run: pnpm ci:${{ matrix.target }}
         shell: bash
 
       # LICENSE is extensionless, so it slips past a `*.md` assets glob with no
@@ -37,12 +37,12 @@ jobs:
       # already-published tarball.
       - name: Verify LICENSE in every released package
         if: ${{ matrix.target == 'build' }}
-        run: npm run verify:license
+        run: pnpm verify:license
         shell: bash
 
       - name: Publish any commit / build for testing
         if: ${{ matrix.target == 'build' && github.ref != 'refs/heads/master' }}
-        run: npm run release:pkg-pr-new
+        run: pnpm release:pkg-pr-new
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -82,7 +82,7 @@ jobs:
           expected-version: ${{ matrix.playwright }}
 
       - name: Run ci:e2e
-        run: npm run ci:e2e
+        run: pnpm ci:e2e
         shell: bash
 
   # keys-manager's peer ranges are far wider than the versions the workspace
@@ -118,7 +118,7 @@ jobs:
         uses: ./.github/actions/step-setup
 
       - name: Build keys-manager
-        run: npx nx build transloco-keys-manager
+        run: pnpm exec nx build transloco-keys-manager
         shell: bash
 
       - name: Verify key extraction
@@ -141,7 +141,7 @@ jobs:
         uses: ./.github/actions/step-setup
 
       - name: Validate PR commits with commitlint
-        run: npx commitlint --from ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }} --to ${{ github.event.pull_request.head.sha }} --verbose
+        run: pnpm exec commitlint --from ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }} --to ${{ github.event.pull_request.head.sha }} --verbose
 
   actionlint:
     runs-on: ubuntu-latest

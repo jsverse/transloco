@@ -6,6 +6,7 @@ node_modules
 /.nx
 /tmp
 /.angular
+pnpm-lock.yaml
 
 /docs/build
 /docs/.docusaurus
