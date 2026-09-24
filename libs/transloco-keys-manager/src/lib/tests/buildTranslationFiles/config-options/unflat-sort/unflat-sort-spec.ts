@@ -37,6 +37,8 @@ export function testUnflatSortExtraction(fileFormat: Config['fileFormat']) {
     it('should work with unflat and sort true', () => {
       const expected = {
         global: {
+          '10': defaultValue,
+          '2': defaultValue,
           b: {
             b: {
               a: defaultValue,
@@ -57,17 +59,26 @@ export function testUnflatSortExtraction(fileFormat: Config['fileFormat']) {
     it('should write the keys in sorted order', () => {
       buildTranslationFiles(config);
       const path = nodePath.join(sourceRoot, type, 'i18n', `en.${fileFormat}`);
-      // Read the pot msgids straight from the file: parsing it into an
-      // object would hide a wrong order
-      const keys =
-        fileFormat === 'pot'
-          ? Array.from(
-              fs.readFileSync(path, 'utf8').matchAll(/^msgid "(.+)"$/gm),
-              ([, msgid]) => msgid,
-            )
-          : Object.keys(flatten(getCurrentTranslation({ path, fileFormat })));
+      const sorted = ['b.b.a', 'b.b.b', 'b.c.a', 'b.c.p', 'b.c.x'];
 
-      expect(keys).toEqual(['b.b.a', 'b.b.b', 'b.c.a', 'b.c.p', 'b.c.x']);
+      if (fileFormat === 'pot') {
+        // Read the msgids straight from the file: parsing it into an object
+        // would hide a wrong order. Code-unit order puts '10' before '2'.
+        const msgids = Array.from(
+          fs.readFileSync(path, 'utf8').matchAll(/^msgid "(.+)"$/gm),
+          ([, msgid]) => msgid,
+        );
+
+        expect(msgids).toEqual(['10', '2', ...sorted]);
+      } else {
+        // Object.keys always enumerates integer-like keys first, whatever
+        // order they were written in, so they say nothing about the file
+        const keys = Object.keys(
+          flatten(getCurrentTranslation({ path, fileFormat })),
+        ).filter((key) => !/^\d+$/.test(key));
+
+        expect(keys).toEqual(sorted);
+      }
     });
   });
 }
