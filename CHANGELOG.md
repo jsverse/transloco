@@ -1,3 +1,27 @@
+## 9.0.0-alpha.3 (2026-09-25)
+
+### 🚀 Features
+
+- ⚠️  **keys-manager:** remove the webpack plugin ([#1024](https://github.com/jsverse/transloco/pull/1024))
+- **keys-manager:** support @boundary/@error error-boundary block ([#1016](https://github.com/jsverse/transloco/pull/1016))
+- **transloco:** add TranslocoTitleStrategy to translate and reactively update router titles ([#1021](https://github.com/jsverse/transloco/pull/1021))
+
+### 🩹 Fixes
+
+- **keys-manager:** honor the sort option for pot output ([#1026](https://github.com/jsverse/transloco/pull/1026), [#958](https://github.com/jsverse/transloco/issues/958))
+- **preload-langs:** drop window polyfill and skip preload on SSR ([#1022](https://github.com/jsverse/transloco/pull/1022))
+- **transloco:** unify TranslocoPipe/TranslocoDirective translation resolution and fix lang precedence bugs ([#1019](https://github.com/jsverse/transloco/pull/1019))
+
+### ⚠️  Breaking Changes
+
+- **keys-manager:** remove the webpack plugin  ([#1024](https://github.com/jsverse/transloco/pull/1024))
+
+### ❤️ Thank You
+
+- drakeo338
+- Mohamed Ben Makhlouf @medbenmakhlouf
+- Shahar Kazaz @shaharkazaz
+
 ## 9.0.0-alpha.2 (2026-09-09)
 
 ### 🚀 Features

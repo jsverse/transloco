@@ -1,3 +1,23 @@
+## 9.0.0-alpha.3 (2026-09-25)
+
+### 🚀 Features
+
+- **transloco:** add TranslocoTitleStrategy to translate and reactively update router titles ([#1021](https://github.com/jsverse/transloco/pull/1021))
+- ⚠️  **keys-manager:** remove the webpack plugin ([#1024](https://github.com/jsverse/transloco/pull/1024))
+
+### 🩹 Fixes
+
+- **transloco:** unify TranslocoPipe/TranslocoDirective translation resolution and fix lang precedence bugs ([#1019](https://github.com/jsverse/transloco/pull/1019))
+
+### ⚠️  Breaking Changes
+
+- **keys-manager:** remove the webpack plugin  ([#1024](https://github.com/jsverse/transloco/pull/1024))
+
+### ❤️ Thank You
+
+- Mohamed Ben Makhlouf @medbenmakhlouf
+- Shahar Kazaz @shaharkazaz
+
 ## 9.0.0-alpha.2 (2026-09-09)
 
 ### 🚀 Features
