@@ -2,7 +2,7 @@
 # so no `packages` are listed. Listing libs/* would make pnpm install each lib's
 # own ranges (e.g. transloco-utils' cosmiconfig 9 next to the root's 10).
 #
-# pnpm is on 11, not 12 (package.json `devEngines.packageManager`): pnpm 12's
+# pnpm is on 11, not 12 (package.json `packageManager`): pnpm 12's
 # rewritten `publish` has OIDC and provenance support that pnpm itself has not
 # tested end to end yet (pnpm/pnpm#12738, #12739), and release.yml relies on
 # both.

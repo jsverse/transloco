@@ -5,7 +5,7 @@ runs:
   using: composite
   steps:
     # One step for pnpm, Node and the install. pnpm's version comes from
-    # package.json's `devEngines.packageManager`, Node's from .nvmrc. No store
+    # package.json's `packageManager`, Node's from .nvmrc. No store
     # cache: a cold install takes ~13s, so there is little for one to save.
     #
     # It writes no registry-url/_authToken into .npmrc, which OIDC trusted

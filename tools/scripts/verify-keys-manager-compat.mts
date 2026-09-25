@@ -172,8 +172,8 @@ console.log(`Scratch project: ${project}`);
 // Pack so the check runs against the published layout, bin included.
 // npm, not pnpm, on purpose: this scratch project stands in for a consumer app
 // outside the workspace, and npm is the one package manager Node always ships.
-// Runs from the scratch project, not repoRoot: the root package.json pins pnpm
-// in devEngines, so npm refuses every command started there (EBADDEVENGINES).
+// Runs from the scratch project, not repoRoot, so npm never picks up the
+// workspace root package.json.
 const packOutput = run(
   'npm',
   ['pack', distDir, '--pack-destination', project],
