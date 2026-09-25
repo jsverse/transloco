@@ -230,7 +230,26 @@ jobs:
           set -o pipefail
           if [[ "$PUBLISH_ONLY" == "true" ]]; then
             VERSION=$(node -p "require('./libs/transloco/package.json').version")
-            echo "publish-only: keeping version $VERSION already on disk"
+            RELEASE_TAG="releases/$VERSION"
+            # The tarballs are built from this checkout, so they must match the
+            # tagged release: the tag has to exist, be an ancestor of HEAD, and
+            # no published source under libs/ may have changed since. Later
+            # changelog commits and non-library commits (e.g. this workflow's
+            # own fixes) are allowed.
+            if ! git rev-parse -q --verify "refs/tags/$RELEASE_TAG" >/dev/null; then
+              echo "::error::publish-only: tag $RELEASE_TAG does not exist. Publish-only only recovers an already tagged release."
+              exit 1
+            fi
+            if ! git merge-base --is-ancestor "$RELEASE_TAG" HEAD; then
+              echo "::error::publish-only: $RELEASE_TAG is not an ancestor of HEAD."
+              exit 1
+            fi
+            if ! git diff --quiet "$RELEASE_TAG" HEAD -- libs ':(exclude)*.md'; then
+              echo "::error::publish-only: libs/ changed since $RELEASE_TAG; refusing to publish code that differs from the tag."
+              git diff --stat "$RELEASE_TAG" HEAD -- libs ':(exclude)*.md'
+              exit 1
+            fi
+            echo "publish-only: keeping version $VERSION already on disk (matches $RELEASE_TAG)"
             echo "value=$VERSION" >> "$GITHUB_OUTPUT"
             exit 0
           fi
