@@ -67,9 +67,8 @@ describe('packageLabelsFor', () => {
     it(`GIVEN a reporter typed an npm package name instead of selecting an option
         WHEN the labels are derived
         THEN resolves it to the matching package label`, () => {
-      // #621 typed the npm name rather than picking an option.
       const result = packageLabelsFor(
-        bodyAnswering('@ngneat/transloco-messageformat'),
+        bodyAnswering('@jsverse/transloco-messageformat'),
       );
 
       assert.deepStrictEqual(result.labels, ['messageformat']);
