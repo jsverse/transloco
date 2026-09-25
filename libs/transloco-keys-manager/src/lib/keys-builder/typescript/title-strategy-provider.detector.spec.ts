@@ -1,5 +1,6 @@
-import { tsquery, ScriptKind } from '@phenomnomnominal/tsquery';
 import { describe, expect, it } from 'vitest';
+
+import { parseTsSource } from '../../utils/ts-ast.utils';
 
 import {
   importsTitleStrategyProvider,
@@ -7,7 +8,7 @@ import {
 } from './title-strategy-provider.detector';
 
 function parse(content: string) {
-  return tsquery.ast(content, undefined, ScriptKind.TS);
+  return parseTsSource(content);
 }
 
 describe('importsTitleStrategyProvider', () => {

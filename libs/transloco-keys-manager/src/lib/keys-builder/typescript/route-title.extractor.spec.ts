@@ -1,7 +1,7 @@
-import { tsquery, ScriptKind } from '@phenomnomnominal/tsquery';
 import { describe, expect, it } from 'vitest';
 
 import { Scopes } from '../../types';
+import { parseTsSource } from '../../utils/ts-ast.utils';
 
 import { routeTitleExtractor } from './route-title.extractor';
 
@@ -12,7 +12,7 @@ const adminScopes: Scopes = {
 };
 
 function parse(content: string) {
-  return tsquery.ast(content, undefined, ScriptKind.TS);
+  return parseTsSource(content);
 }
 
 describe('routeTitleExtractor', () => {
