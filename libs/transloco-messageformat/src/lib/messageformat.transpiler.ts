@@ -20,6 +20,7 @@ import {
 } from './messageformat.factory';
 
 type Params = NonNullable<TranspileParams['params']>;
+type ParamsNode = Record<string, unknown> | unknown[];
 
 // Characters that open an ICU quoted literal (`'{`, `'}`, `'#`) - used by
 // the apostrophe fixup below to spot one already starting in static text.
@@ -302,7 +303,7 @@ export class MessageFormatTranspiler extends DefaultTranspiler {
       rawParams,
       placeholders,
       nextName,
-      new WeakSet(),
+      new WeakMap(),
       new WeakMap(),
     );
 
@@ -325,7 +326,7 @@ export class MessageFormatTranspiler extends DefaultTranspiler {
     value: unknown,
     placeholders: Record<string, string>,
     nextName: () => string,
-    ancestors: WeakSet<object>,
+    inProgress: WeakMap<object, ParamsNode | null>,
     memo: WeakMap<object, unknown>,
   ): unknown {
     if (isString(value)) {
@@ -352,34 +353,52 @@ export class MessageFormatTranspiler extends DefaultTranspiler {
       return memo.get(value);
     }
     // A param object that (directly or indirectly) contains itself would
-    // otherwise recurse forever; treat it as opaque where it re-appears.
-    if (ancestors.has(value)) {
-      return value;
+    // otherwise recurse forever. Where it re-appears, hand out the copy the
+    // walk further up is building instead of the original, so a value
+    // protected there is also protected when reached back round the cycle
+    // (`user.self.id`), rather than read raw off the original object.
+    if (inProgress.has(value)) {
+      return this.copyOf(value as ParamsNode, inProgress);
     }
-    ancestors.add(value);
+    inProgress.set(value, null);
 
     // Copy on write: keep the original reference when nothing changed.
-    let result: Record<string, unknown> | unknown[] = value as
-      Record<string, unknown> | unknown[];
     Object.keys(value).forEach((k) => {
       const original = (value as Record<string, unknown>)[k];
       const replaced = this.toPlaceholders(
         original,
         placeholders,
         nextName,
-        ancestors,
+        inProgress,
         memo,
       );
       if (replaced !== original) {
-        if (result === value) {
-          result = Array.isArray(value) ? [...value] : { ...value };
-        }
-        (result as Record<string, unknown>)[k] = replaced;
+        const copy = this.copyOf(value as ParamsNode, inProgress);
+        (copy as Record<string, unknown>)[k] = replaced;
       }
     });
-    ancestors.delete(value);
+    const result = inProgress.get(value) ?? value;
+    inProgress.delete(value);
     memo.set(value, result);
 
     return result;
+  }
+
+  /**
+   * The one copy of an object still being walked, created on first need -
+   * its first changed entry or the first circular reference back to it - so
+   * the walk's result and every back-reference share the same object.
+   */
+  private copyOf(
+    value: ParamsNode,
+    inProgress: WeakMap<object, ParamsNode | null>,
+  ): ParamsNode {
+    let copy = inProgress.get(value);
+    if (!copy) {
+      copy = Array.isArray(value) ? [...value] : { ...value };
+      inProgress.set(value, copy);
+    }
+
+    return copy;
   }
 }

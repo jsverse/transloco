@@ -175,6 +175,36 @@ describe('MessageFormatTranspiler', () => {
     expect(parsed).toEqual('UUID: {1234-5678}');
   });
 
+  it(`GIVEN a params object with a circular reference walked before its
+      value containing braces
+      WHEN transpiling that value through the cycle
+      THEN protects it on that path too`, () => {
+    const transpiler = getTranspiler({});
+    const user: Record<string, unknown> = {};
+    user['self'] = user;
+    user['id'] = '{1234-5678}';
+    const parsed = transpiler.transpile(
+      getTranspilerParams('UUID: {{ user.self.self.id }}', {
+        params: { user },
+      }),
+    );
+    expect(parsed).toEqual('UUID: {1234-5678}');
+  });
+
+  it(`GIVEN two params objects that reference each other
+      WHEN transpiling a value containing braces through the cycle
+      THEN protects it on that path too`, () => {
+    const transpiler = getTranspiler({});
+    const user: Record<string, unknown> = { id: '{1234-5678}' };
+    user['team'] = { owner: user };
+    const parsed = transpiler.transpile(
+      getTranspilerParams('Owner: {{ user.team.owner.id }}', {
+        params: { user },
+      }),
+    );
+    expect(parsed).toEqual('Owner: {1234-5678}');
+  });
+
   it(`GIVEN a params object where the same nested object is referenced by two keys
       WHEN transpiling with a param value containing braces
       THEN protects the value through both references`, () => {
