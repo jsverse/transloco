@@ -1,0 +1,22 @@
+@boundary {
+<span>{{ '1' | transloco }}</span>
+<span transloco="2"></span>
+} @error {
+<span>{{ '3' | transloco }}</span>
+}
+
+<ng-container *transloco="let t">
+  @boundary {
+  <span>{{ t('4') }}</span>
+  } @error {
+  <span>{{ t('5') }}</span>
+  }
+</ng-container>
+
+@if (a > b) { @boundary {
+<span>{{ '6' | transloco }}</span>
+} @error { @switch (condition) { @case (caseA) {
+<span>{{ '7' | transloco }}</span>
+} @default {
+<span>{{ '8' | transloco }}</span>
+} } } }

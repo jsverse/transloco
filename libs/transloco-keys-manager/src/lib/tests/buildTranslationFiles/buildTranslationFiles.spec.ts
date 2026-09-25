@@ -9,6 +9,7 @@ import { testDirectiveExtraction } from './template-extraction/directive/directi
 import { testNgContainerExtraction } from './template-extraction/ng-container/ng-container-spec';
 import { testNgTemplateExtraction } from './template-extraction/ng-template/ng-template-spec';
 import { testControlFlowExtraction } from './template-extraction/control-flow/control-flow-spec';
+import { testBoundaryExtraction } from './template-extraction/boundary/boundary-spec';
 import { testPrefixExtraction } from './template-extraction/prefix/prefix-spec';
 import { testScopeExtraction } from './template-extraction/scope/scope-spec';
 import { testServiceExtraction } from './ts-extraction/service/service-spec';
@@ -45,6 +46,8 @@ describe.each(formats)('buildTranslationFiles in %s', (fileFormat) => {
     testNgTemplateExtraction(fileFormat);
 
     testControlFlowExtraction(fileFormat);
+
+    testBoundaryExtraction(fileFormat);
 
     testPrefixExtraction(fileFormat);
 

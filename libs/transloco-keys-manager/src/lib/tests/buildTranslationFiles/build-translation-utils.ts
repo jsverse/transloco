@@ -18,6 +18,7 @@ export type TranslationTestCase =
   | 'template-extraction/ng-container'
   | 'template-extraction/ng-template'
   | 'template-extraction/control-flow'
+  | 'template-extraction/boundary'
   | 'template-extraction/prefix'
   | 'template-extraction/scope'
   | 'ts-extraction/service'
