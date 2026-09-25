@@ -20,7 +20,9 @@ const args = new Map(
     .slice(2)
     .filter((arg) => arg.startsWith('--'))
     .map((arg) => {
-      const [key, value] = arg.slice(2).split('=');
+      const separator = arg.indexOf('=');
+      const key = arg.slice(2, separator < 0 ? undefined : separator);
+      const value = separator < 0 ? undefined : arg.slice(separator + 1);
 
       return [key, value] as const;
     }),
@@ -78,6 +80,21 @@ const GROUPED_CASES_TEMPLATE = `
 </ng-container>
 `;
 
+/**
+ * `@boundary`/`@error` error-boundary blocks landed in Angular 22.2 and are a
+ * parse error on earlier compilers, so this only gets exercised once the
+ * resolved version supports it.
+ */
+const BOUNDARY_TEMPLATE = `
+<ng-container *transloco="let t; prefix: 'boundary'">
+  @boundary {
+    <p>{{ t('primary') }}</p>
+  } @error {
+    <p>{{ t('fallback') }}</p>
+  }
+</ng-container>
+`;
+
 const SOURCE = `
 import { translate, TranslocoService } from '@jsverse/transloco';
 
@@ -110,11 +127,20 @@ const EXPECTED = [
 
 const GROUPED_CASES_EXPECTED = ['grouped.ownBody', 'grouped.sharedBody'];
 
+const BOUNDARY_EXPECTED = ['boundary.fallback', 'boundary.primary'];
+
 /** Case groups landed in 21.1. */
 function supportsGroupedCases(version: string): boolean {
   const [major, minor] = version.split('.').map(Number);
 
   return major > 21 || (major === 21 && minor >= 1);
+}
+
+/** `@boundary`/`@error` blocks landed in 22.2. */
+function supportsBoundaryBlock(version: string): boolean {
+  const [major, minor] = version.split('.').map(Number);
+
+  return major > 22 || (major === 22 && minor >= 2);
 }
 
 function run(command: string, commandArgs: string[], cwd: string) {
@@ -201,6 +227,17 @@ console.log(
   grouped
     ? 'Including grouped @case bodies (Angular >=21.1).'
     : 'Skipping grouped @case bodies - not valid syntax before Angular 21.1.',
+);
+
+const boundary = supportsBoundaryBlock(resolvedAngular);
+if (boundary) {
+  writeFileSync(join(project, 'src', 'boundary.html'), BOUNDARY_TEMPLATE);
+  expected.push(...BOUNDARY_EXPECTED);
+}
+console.log(
+  boundary
+    ? 'Including @boundary/@error block (Angular >=22.2).'
+    : 'Skipping @boundary/@error block - not valid syntax before Angular 22.2.',
 );
 
 run(

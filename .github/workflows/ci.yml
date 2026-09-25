@@ -104,7 +104,8 @@ jobs:
             typescript: '5.9'
           - angular: '21'
             typescript: '5.9'
-          # Newest supported; Angular 22 requires ts 6.0.
+          # Newest supported; Angular 22 requires ts 6.0. 22.2 is the first line
+          # with `@boundary`/`@error`.
           - angular: '22'
             typescript: '6.0'
     runs-on: ubuntu-latest
