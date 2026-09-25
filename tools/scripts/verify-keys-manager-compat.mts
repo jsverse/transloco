@@ -40,6 +40,7 @@ if (!angularVersion || !typescriptVersion) {
 
 const repoRoot = process.cwd();
 const distDir = join(repoRoot, 'dist', 'libs', 'transloco-keys-manager');
+const utilsDistDir = join(repoRoot, 'dist', 'libs', 'transloco-utils');
 
 /**
  * Every template feature whose AST the extractors walk. `@switch` and the
@@ -174,12 +175,20 @@ console.log(`Scratch project: ${project}`);
 // outside the workspace, and npm is the one package manager Node always ships.
 // Runs from the scratch project, not repoRoot, so npm never picks up the
 // workspace root package.json.
-const packOutput = run(
-  'npm',
-  ['pack', distDir, '--pack-destination', project],
-  project,
-);
-const tarball = join(project, packOutput.trim().split('\n').pop()!);
+const pack = (dir: string) => {
+  const output = run(
+    'npm',
+    ['pack', dir, '--pack-destination', project],
+    project,
+  );
+
+  return join(project, output.trim().split('\n').pop()!);
+};
+const tarball = pack(distDir);
+// transloco-utils is packed too, so keys-manager is checked against the utils it
+// ships with rather than the one on npm: on a release commit that version is not
+// published yet, and on a PR the registry copy lacks the PR's changes.
+const utilsTarball = pack(utilsDistDir);
 
 mkdirSync(join(project, 'src'), { recursive: true });
 writeFileSync(join(project, 'src', 'app.html'), TEMPLATE);
@@ -199,6 +208,7 @@ run(
   [
     'install',
     tarball,
+    utilsTarball,
     `@angular/compiler@${angularVersion}`,
     `typescript@${typescriptVersion}`,
     '--no-audit',
