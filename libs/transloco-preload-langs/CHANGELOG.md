@@ -1,3 +1,13 @@
+## 9.0.0-alpha.3 (2026-09-25)
+
+### 🩹 Fixes
+
+- **preload-langs:** drop window polyfill and skip preload on SSR ([#1022](https://github.com/jsverse/transloco/pull/1022))
+
+### ❤️ Thank You
+
+- Shahar Kazaz @shaharkazaz
+
 ## 9.0.0-alpha.2 (2026-09-09)
 
 ### 🩹 Fixes

@@ -1,3 +1,17 @@
+## 9.0.0-alpha.3 (2026-09-25)
+
+### 🚀 Features
+
+- ⚠️  **keys-manager:** remove the webpack plugin ([#1024](https://github.com/jsverse/transloco/pull/1024))
+
+### ⚠️  Breaking Changes
+
+- **keys-manager:** remove the webpack plugin  ([#1024](https://github.com/jsverse/transloco/pull/1024))
+
+### ❤️ Thank You
+
+- Shahar Kazaz @shaharkazaz
+
 ## 9.0.0-alpha.2 (2026-09-09)
 
 ### 🩹 Fixes
