@@ -27,6 +27,11 @@ on:
         required: false
         type: boolean
         default: true
+      publish-only:
+        description: 'Recovery: skip version/tag/push/changelog and only build + publish the version already in package.json. Use when a release committed and tagged but the npm publish failed.'
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -217,11 +222,18 @@ jobs:
           BUMP: ${{ inputs.bump }}
           PREID: ${{ inputs.preid }}
           DRY_RUN: ${{ inputs.dry-run }}
+          PUBLISH_ONLY: ${{ inputs.publish-only }}
           # Single source of truth for tag ordering — see "Resolve previous
           # release tags" above
           LATEST_RELEASE_TAG: ${{ steps.prev-tags.outputs.any }}
         run: |
           set -o pipefail
+          if [[ "$PUBLISH_ONLY" == "true" ]]; then
+            VERSION=$(node -p "require('./libs/transloco/package.json').version")
+            echo "publish-only: keeping version $VERSION already on disk"
+            echo "value=$VERSION" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           GIT_FLAGS=()
           if [[ "$DRY_RUN" == "true" ]]; then GIT_FLAGS=(--git-commit=false --git-tag=false); fi
           # nx's releaseTag.strictPreid defaults to true, so WITHOUT --preid the
@@ -279,7 +291,7 @@ jobs:
       # non-fast-forward tag update. All-or-nothing keeps a failed release
       # re-runnable without manual tag cleanup.
       - name: Push commit and tag
-        if: ${{ !inputs.dry-run }}
+        if: ${{ !inputs.dry-run && !inputs.publish-only }}
         run: git push --atomic --follow-tags origin HEAD:master
 
       # Use the app token (not the default GITHUB_TOKEN): nx release changelog
@@ -293,7 +305,7 @@ jobs:
       # With no previous tag at all (first ever release) --from is omitted so
       # nx.json's automaticFromRef falls back to the first commit.
       - name: Changelog and GitHub release
-        if: ${{ !inputs.dry-run }}
+        if: ${{ !inputs.dry-run && !inputs.publish-only }}
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           VERSION: ${{ steps.version.outputs.value }}
@@ -309,7 +321,7 @@ jobs:
 
       # The changelog step commits CHANGELOG.md locally — push it too
       - name: Push changelog commit
-        if: ${{ !inputs.dry-run }}
+        if: ${{ !inputs.dry-run && !inputs.publish-only }}
         run: git push origin HEAD:master
 
       # Publish LAST: npm publish is irreversible, so it runs only after every
@@ -345,7 +357,7 @@ jobs:
       # Setup: create a webhook on the #releases channel (Edit Channel ->
       # Integrations -> Webhooks) and store its URL as DISCORD_RELEASES_WEBHOOK.
       - name: Announce release on Discord
-        if: ${{ !inputs.dry-run }}
+        if: ${{ !inputs.dry-run && !inputs.publish-only }}
         continue-on-error: true
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_RELEASES_WEBHOOK }}

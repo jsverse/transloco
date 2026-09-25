@@ -7,7 +7,7 @@
     "packageManager": {
       "name": "pnpm",
       "version": "11.27.0",
-      "onFail": "download"
+      "onFail": "warn"
     }
   },
   "engines": {
