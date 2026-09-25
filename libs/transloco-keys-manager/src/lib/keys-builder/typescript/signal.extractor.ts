@@ -8,7 +8,7 @@ export function signalExtractor(ast: SourceFile): TSExtractorResult {
   // workaround from https://github.com/estools/esquery/issues/68
   const [importNode] = tsquery(
     ast,
-    `ImportDeclaration:has([text=/^@(jsverse|ngneat)\\x2Ftransloco/]):has(Identifier[name=translateSignal])`,
+    `ImportDeclaration:has([text=/^@jsverse\\x2Ftransloco/]):has(Identifier[name=translateSignal])`,
   );
   if (!importNode) {
     return [];

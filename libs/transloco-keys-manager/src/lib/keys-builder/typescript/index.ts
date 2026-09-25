@@ -54,8 +54,8 @@ export function extractTSKeys(config: Config): ExtractionResult {
   return result;
 }
 
-const translocoImport = /@(jsverse|ngneat)\/transloco/;
-const translocoKeysManagerImport = /@(jsverse|ngneat)\/transloco-keys-manager/;
+const translocoImport = /@jsverse\/transloco/;
+const translocoKeysManagerImport = /@jsverse\/transloco-keys-manager/;
 const routeTitleProperty = /\btitle\s*:/;
 
 function TSExtractor(

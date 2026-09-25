@@ -34,7 +34,7 @@ export function testNgContainerExtraction(fileFormat: Config['fileFormat']) {
 
     it('should work with ngContainer', () => {
       const expected = generateKeys({ end: 46 });
-      // See https://github.com/ngneat/transloco-keys-manager/issues/87
+      // See https://github.com/jsverse/transloco-keys-manager/issues/87
       expected["Bob's Burgers"] =
         expected['another(test)'] =
         expected['last "one"'] =

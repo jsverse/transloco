@@ -52,7 +52,6 @@ export function normalize(option: string): string {
     .trim()
     .toLowerCase()
     .replace(/^@jsverse\//, '')
-    .replace(/^@ngneat\//, '')
     .replace(/^transloco-/, '')
     .replace(/[-_]+/g, ' ')
     .replace(/\s+/g, ' ')
