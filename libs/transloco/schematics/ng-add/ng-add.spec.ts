@@ -35,6 +35,16 @@ describe('ng add', () => {
       expect(readFile(tree, 'app/transloco-root.module.ts')).toContain(
         "from './transloco-loader'",
       );
+      const rootModule = readFile(tree, 'app/transloco-root.module.ts');
+      // An NgModule can only export a standalone declarable it also imports
+      // (NG6004), so both must be present.
+      expect(rootModule).toContain(
+        'imports: [ TranslocoDirective, TranslocoPipe ]',
+      );
+      expect(rootModule).toContain(
+        'exports: [ TranslocoDirective, TranslocoPipe ]',
+      );
+      expect(rootModule).not.toContain('TranslocoModule');
     });
   });
 

@@ -39,7 +39,7 @@ The `TranslateService` imports will be replaced with `TranslocoService`.
 1. `import { TranslateService } from '@ngx-translate/core';` will be replaced with `import { TranslocoService } from '@jsverse/transloco';`
 2. `import { TranslateModule, TranslateLoader } from '@ngx-translate/core';` will be replaced with  
    `import { TranslateLoader } from '@ngx-translate/core';`
-   `import { TranslocoModule } from '@jsverse/transloco';`
+   `import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';`
 
 ### Constructor Injections
 
@@ -75,11 +75,11 @@ The `TranslateService` injections will be replaced with `TranslocoService`.
 
 ### Modules
 
-`TranslateModule` & `TranslateModule.forChild(...)` & `TranslateModule.forRoot(...)` will be replaced with `TranslocoModule`
+`TranslateModule` & `TranslateModule.forChild(...)` & `TranslateModule.forRoot(...)` will be replaced with `TranslocoDirective, TranslocoPipe`
 
 ##### Examples:
 
-1. `TranslateModule.forChild({ loader: { provide: TranslateLoader, useFactory: HttpLoaderFactory, deps: [HttpClient] } })` will be replaced with `TranslocoModule`
+1. `TranslateModule.forChild({ loader: { provide: TranslateLoader, useFactory: HttpLoaderFactory, deps: [HttpClient] } })` will be replaced with `TranslocoDirective, TranslocoPipe`
 
 ### Specs
 

@@ -18,7 +18,7 @@ import {
   addImportToModule,
 } from '@schematics/angular/utility/ast-utils';
 import { applyChangesToFile } from '@schematics/angular/utility/standalone/util';
-import { Change } from '@schematics/angular/utility/change';
+import { Change, NoopChange } from '@schematics/angular/utility/change';
 
 import {
   NAMES,
@@ -39,11 +39,13 @@ function getProviderValue(options: SchemaOptions) {
   return `{ scope: '${name}', loader }`;
 }
 
-function addScopeToModule(
-  tree: Tree,
-  modulePath: string,
-  options: SchemaOptions,
-) {
+const SCOPE_IMPORTS = [
+  'provideTranslocoScope',
+  'TranslocoDirective',
+  'TranslocoPipe',
+];
+
+function parseModule(tree: Tree, modulePath: string) {
   const module = tree.read(modulePath);
   if (!module) {
     throw new Error(`Could not read module file at ${modulePath}`);
@@ -54,40 +56,75 @@ function addScopeToModule(
   // the TypeScript compiler API types (third_party/.../TypeScript). The AST
   // shapes are compatible at runtime, but structurally distinct to the type
   // checker, so an explicit cast is required at this interop boundary.
-  const moduleSource = createSourceFile(
+  return createSourceFile(
     modulePath,
     module.toString('utf-8'),
     ScriptTarget.Latest,
     true,
   ) as unknown as Parameters<typeof addProviderToModule>[0];
+}
+
+/**
+ * The AST helpers answer "already there" with a `NoopChange` or an empty
+ * result, neither of which `applyChangesToFile` accepts.
+ */
+function applyChanges(
+  tree: Tree,
+  modulePath: string,
+  changes: (Change | undefined)[],
+) {
+  applyChangesToFile(
+    tree,
+    modulePath,
+    changes.filter(
+      (change): change is Change => !!change && !(change instanceof NoopChange),
+    ),
+  );
+}
+
+function addScopeToModule(
+  tree: Tree,
+  modulePath: string,
+  options: SchemaOptions,
+) {
+  const moduleSource = parseModule(tree, modulePath);
   const provider = `provideTranslocoScope(${getProviderValue(options)})`;
-  const changes: Change[] = [];
+  const changes: (Change | undefined)[] = [];
   changes.push(
     addProviderToModule(moduleSource, modulePath, provider, NAMES.LIB_NAME)[0],
   );
-  changes.push(
-    addImportToModule(
-      moduleSource,
-      modulePath,
-      'TranslocoModule',
-      NAMES.LIB_NAME,
-    )[0],
-  );
-  changes.push(
-    insertImport(
-      moduleSource,
-      modulePath,
-      'provideTranslocoScope, TranslocoModule',
-      NAMES.LIB_NAME,
-    ),
-  );
+  for (const standalone of ['TranslocoDirective', 'TranslocoPipe']) {
+    changes.push(
+      addImportToModule(
+        moduleSource,
+        modulePath,
+        standalone,
+        NAMES.LIB_NAME,
+      )[0],
+    );
+  }
   if (options.inlineLoader) {
     changes.push(
       insertImport(moduleSource, modulePath, 'loader', './transloco.loader'),
     );
   }
 
-  applyChangesToFile(tree, modulePath, changes);
+  applyChanges(tree, modulePath, changes);
+
+  // `insertImport` recognizes an existing import by a single symbol name, so
+  // each symbol goes in on its own. The module is re-read in between so the
+  // next one sees the import the previous one created and joins it, rather
+  // than adding another statement.
+  for (const symbol of SCOPE_IMPORTS) {
+    applyChanges(tree, modulePath, [
+      insertImport(
+        parseModule(tree, modulePath),
+        modulePath,
+        symbol,
+        NAMES.LIB_NAME,
+      ),
+    ]);
+  }
 }
 
 function getTranslationFilesFromAssets(
@@ -156,13 +193,14 @@ function createTranslationFiles(
 }
 
 function extractModuleOptions({
+  name,
   path,
   project,
   routing,
   flat,
   commonModule,
 }: SchemaOptions) {
-  return { path, project, routing, flat, commonModule };
+  return { name, path, project, routing, flat, commonModule };
 }
 
 export default function (options: SchemaOptions): Rule {
@@ -192,10 +230,13 @@ export default function (options: SchemaOptions): Rule {
         extractModuleOptions(options),
       ),
       (tree) => {
-        const moduleAction = tree.actions.find(
-          (action) =>
-            !!action.path.match(/\.module\.ts/) &&
-            !action.path.match(/-routing\.module\.ts/),
+        // Angular names the file `<name>.module.ts` up to v19 and
+        // `<name>-module.ts` from v20 on. Match on the scope name so we never
+        // pick another module the tree happens to hold (nor its routing one).
+        const scopeFileName = dasherize(options.name.split('/').pop() ?? '');
+        const moduleFile = new RegExp(`/${scopeFileName}[.-]module\\.ts$`);
+        const moduleAction = tree.actions.find((action) =>
+          moduleFile.test(action.path),
         );
         if (!moduleAction) {
           throw new Error('Could not find the generated module file.');

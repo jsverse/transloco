@@ -902,6 +902,82 @@ describe('migration-v9', () => {
     expect(config).toContain('@jsverse/transloco');
   });
 
+  it(`GIVEN files using the deprecated modules
+      WHEN the migration runs
+      THEN they are rewritten to the standalone API and the unrewritable ones are reported`, async () => {
+    const warnings: string[] = [];
+    const infos: string[] = [];
+    schematicRunner.logger.subscribe((entry) => {
+      if (entry.level === 'warn') warnings.push(entry.message);
+      if (entry.level === 'info') infos.push(entry.message);
+    });
+
+    const tree = await run((host) => {
+      host.create(
+        '/projects/bar/src/app/feature.ts',
+        [
+          `import { TranslocoModule } from '@jsverse/transloco';`,
+          `import { TranslocoLocaleModule } from '@jsverse/transloco-locale';`,
+          `export const imports = [TranslocoModule, TranslocoLocaleModule];`,
+        ].join('\n'),
+      );
+      host.create(
+        '/projects/bar/src/app/feature.spec.ts',
+        [
+          `import { TranslocoTestingModule } from '@jsverse/transloco';`,
+          `TestBed.configureTestingModule({`,
+          `  imports: [TranslocoTestingModule.forRoot({ langs: {} })],`,
+          `});`,
+        ].join('\n'),
+      );
+      host.create(
+        '/projects/bar/src/app/helper.ts',
+        [
+          `import { TranslocoTestingModule } from '@jsverse/transloco';`,
+          `export const getModule = () => TranslocoTestingModule.forRoot({ langs: {} });`,
+        ].join('\n'),
+      );
+    });
+
+    const feature = tree.readContent('/projects/bar/src/app/feature.ts');
+    expect(feature).toContain(
+      `import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';`,
+    );
+    expect(feature).toContain(
+      `[TranslocoDirective, TranslocoPipe, TranslocoCurrencyPipe, TranslocoDatePipe, TranslocoDecimalPipe, TranslocoPercentPipe]`,
+    );
+    expect(feature).not.toContain('TranslocoModule');
+
+    const spec = tree.readContent('/projects/bar/src/app/feature.spec.ts');
+    expect(spec).toContain(
+      `providers: [provideTranslocoTesting({ langs: {} })]`,
+    );
+    expect(spec).not.toContain('TranslocoTestingModule');
+
+    expect(warnings.join('\n')).toContain('/projects/bar/src/app/helper.ts:2');
+    expect(infos.join('\n')).toContain(
+      'ng generate @angular/core:cleanup-unused-imports',
+    );
+  });
+
+  it(`GIVEN no deprecated module usages
+      WHEN the migration runs
+      THEN the unused-imports cleanup is not suggested`, async () => {
+    const infos: string[] = [];
+    schematicRunner.logger.subscribe((entry) => {
+      if (entry.level === 'info') infos.push(entry.message);
+    });
+
+    await run((host) =>
+      host.create(
+        '/projects/bar/src/app/plain.ts',
+        `import { TranslocoService } from '@jsverse/transloco';`,
+      ),
+    );
+
+    expect(infos.join('\n')).not.toContain('cleanup-unused-imports');
+  });
+
   it(`GIVEN an application that does not use the standalone functions
       WHEN the migration runs
       THEN no provider is added`, async () => {
