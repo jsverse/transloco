@@ -4,6 +4,16 @@
 
 - **utils:** load config when --config points to a file ([#1030](https://github.com/jsverse/transloco/pull/1030))
 
+### 📦 Build
+
+- ⚠️  **utils:** upgrade cosmiconfig to v10 ([#1031](https://github.com/jsverse/transloco/pull/1031))
+
+### ⚠️  Breaking Changes
+
+- **utils:** upgrade cosmiconfig to v10 ([#1031](https://github.com/jsverse/transloco/pull/1031))
+  - TS configs (`transloco.config.ts`) are now loaded with Node's type stripping. Type imports must use `import type { TranslocoGlobalConfig }`; `ng update` migrates this automatically. Syntax that needs compiling, such as `enum` and `namespace`, is no longer supported in a config.
+  - `@jsverse/transloco-utils`, `@jsverse/transloco-keys-manager` and `@jsverse/transloco-scoped-libs` now require Node `^22.18.0 || >=24`.
+
 ### ❤️ Thank You
 
 - Shahar Kazaz @shaharkazaz
