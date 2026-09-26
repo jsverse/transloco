@@ -1,10 +1,14 @@
-import { tsquery } from '@phenomnomnominal/tsquery';
-import { SourceFile } from 'typescript';
+import ts, { SourceFile } from 'typescript';
+
+import { hasDescendant } from '../../utils/ts-ast.utils';
 
 const titleStrategyMention = /\b(?:provide)?TranslocoTitleStrategy\b/;
 
-const routerModule = `StringLiteral[text="@jsverse/transloco/router"]`;
-const titleStrategyIdentifier = `:matches(Identifier[text=provideTranslocoTitleStrategy], Identifier[text=TranslocoTitleStrategy])`;
+const routerModule = '@jsverse/transloco/router';
+const titleStrategyIdentifiers = new Set([
+  'provideTranslocoTitleStrategy',
+  'TranslocoTitleStrategy',
+]);
 
 /**
  * Cheap text pre-filter: most files never mention the title strategy, so only
@@ -29,7 +33,14 @@ export function mentionsTitleStrategyProvider(content: string): boolean {
  */
 export function importsTitleStrategyProvider(ast: SourceFile): boolean {
   return (
-    tsquery(ast, routerModule).length > 0 &&
-    tsquery(ast, titleStrategyIdentifier).length > 0
+    hasDescendant(
+      ast,
+      (node) => ts.isStringLiteral(node) && node.text === routerModule,
+    ) &&
+    hasDescendant(
+      ast,
+      (node) =>
+        ts.isIdentifier(node) && titleStrategyIdentifiers.has(node.text),
+    )
   );
 }
