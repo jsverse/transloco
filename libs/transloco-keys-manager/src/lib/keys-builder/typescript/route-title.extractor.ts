@@ -1,7 +1,7 @@
 import ts, { SourceFile } from 'typescript';
-import { tsquery } from '@phenomnomnominal/tsquery';
 
 import { Scopes } from '../../types';
+import { findDescendants } from '../../utils/ts-ast.utils';
 import { resolveAliasAndKey } from '../utils/resolvers.utils';
 
 import { TSExtractorResult } from './types';
@@ -64,7 +64,7 @@ export function routeTitleExtractor(
   scopes: Scopes,
 ): TSExtractorResult {
   const result: TSExtractorResult = [];
-  const objectLiterals = tsquery(ast, 'ObjectLiteralExpression');
+  const objectLiterals = findDescendants(ast, ts.isObjectLiteralExpression);
 
   for (const node of objectLiterals) {
     if (!ts.isObjectLiteralExpression(node)) continue;

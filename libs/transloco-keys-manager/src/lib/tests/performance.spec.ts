@@ -12,7 +12,6 @@ import {
   afterAll,
   beforeEach,
 } from 'vitest';
-import { tsquery } from '@phenomnomnominal/tsquery';
 import { parseTemplate as ngParseTemplate } from '@angular/compiler';
 
 import { templateExtractor } from '../keys-builder/template';
@@ -21,6 +20,7 @@ import { directiveExtractor } from '../keys-builder/template/directive.extractor
 import { structuralDirectiveExtractor } from '../keys-builder/template/structural-directive.extractor';
 import { extractTSKeys } from '../keys-builder/typescript';
 import { readFile } from '../utils/file.utils';
+import { parseTsSource } from '../utils/ts-ast.utils';
 import { setConfig } from '../config';
 import { ScopeMap, Scopes } from '../types';
 
@@ -48,6 +48,14 @@ vi.mock('@angular/compiler', async (importOriginal) => {
   return {
     ...actual,
     parseTemplate: vi.fn(actual.parseTemplate),
+  };
+});
+
+vi.mock('../utils/ts-ast.utils', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../utils/ts-ast.utils')>();
+  return {
+    ...actual,
+    parseTsSource: vi.fn(actual.parseTsSource),
   };
 });
 
@@ -146,7 +154,7 @@ describe('Performance Benchmarks', () => {
       scopes: { aliasToScope: {}, scopeToAlias: {} },
       scopePathMap: {},
     } as any);
-    // Pre-generate template files on disk (needed by comments extractor)
+    // Pre-generate the template files the `file` paths below point at
     for (let i = 0; i < COMPONENT_COUNT; i++) {
       fs.writeFileSync(
         path.join(PERF_TMP, `comp${i}.html`),
@@ -289,7 +297,8 @@ describe('Performance Benchmarks', () => {
   });
 
   it('should early-exit TS AST parsing for non-transloco files', () => {
-    const astSpy = vi.spyOn(tsquery, 'ast');
+    const astSpy = vi.mocked(parseTsSource);
+    astSpy.mockClear();
     const nonTranslocoCount = 500;
 
     const resultWithExit = extractTSKeys({
@@ -319,8 +328,6 @@ describe('Performance Benchmarks', () => {
     expect(resultNoExit.fileCount).toBe(nonTranslocoCount);
     // Files that reference transloco must be parsed, once per file.
     expect(astSpy).toHaveBeenCalledTimes(nonTranslocoCount);
-
-    astSpy.mockRestore();
   });
 
   // Same rationale as the skip-test above: ~400 real template parses, which

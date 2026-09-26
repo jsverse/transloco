@@ -240,9 +240,6 @@ importers:
       '@messageformat/core':
         specifier: 3.4.0
         version: 3.4.0
-      '@phenomnomnominal/tsquery':
-        specifier: 6.2.0
-        version: 6.2.0(typescript@5.9.3)
       bootstrap:
         specifier: ^5.3.8
         version: 5.3.8(@popperjs/core@2.11.8)

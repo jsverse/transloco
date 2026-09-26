@@ -1,6 +1,3 @@
-import { tsquery, ScriptKind } from '@phenomnomnominal/tsquery';
-import ts, { SourceFile } from 'typescript';
-
 import {
   Config,
   ExtractionResult,
@@ -10,6 +7,7 @@ import {
 } from '../../types';
 import { readFile } from '../../utils/file.utils';
 import { regexFactoryMap } from '../../utils/regexs.utils';
+import { parseTsSource } from '../../utils/ts-ast.utils';
 import { addCommentSectionKeys } from '../add-comment-section-keys';
 import { addKey } from '../add-key';
 import { extractKeys } from '../utils/extract-keys';
@@ -19,6 +17,7 @@ import { inlineTemplateExtractor } from './inline-template';
 import { markerExtractor } from './marker.extractor';
 import { pureFunctionExtractor } from './pure-function.extractor';
 import { routeTitleExtractor } from './route-title.extractor';
+import { scanSourceFile, SourceFileScan } from './scan-source-file';
 import { serviceExtractor } from './service.extractor';
 import { signalExtractor } from './signal.extractor';
 import {
@@ -54,6 +53,8 @@ export function extractTSKeys(config: Config): ExtractionResult {
   return result;
 }
 
+type TSExtractor = (scan: SourceFileScan) => TSExtractorResult;
+
 const translocoImport = /@jsverse\/transloco/;
 const translocoKeysManagerImport = /@jsverse\/transloco-keys-manager/;
 const routeTitleProperty = /\btitle\s*:/;
@@ -64,48 +65,39 @@ function TSExtractor(
 ): ScopeMap {
   const { file, scopes, defaultValue, scopeToKeys } = config;
   const content = readFile(file);
-  const extractors: ((ast: SourceFile) => TSExtractorResult)[] = [];
+  const baseParams = { scopeToKeys, scopes, defaultValue };
+  const commentParams = {
+    content,
+    regexFactory: regexFactoryMap.ts.comments,
+    ...baseParams,
+  };
 
-  const hasTranslocoImport = translocoImport.test(content);
-  const hasMarkerImport = translocoKeysManagerImport.test(content);
-  const hasTranslocoUsage = content.includes('transloco');
   // Cheap pre-filters: only parse this file's AST for route titles / the
   // title strategy provider if it declares a `title:` property / mentions it.
   const hasRouteTitle = routeTitleProperty.test(content);
   const mentionsProvider =
     !routeTitles.providerUsed && mentionsTitleStrategyProvider(content);
 
-  if (hasTranslocoImport) {
-    extractors.push(serviceExtractor, pureFunctionExtractor, signalExtractor);
-  }
-
-  if (hasMarkerImport) {
-    extractors.push(markerExtractor);
-  }
-
-  const baseParams = {
-    scopeToKeys,
-    scopes,
-    defaultValue,
-  };
-
-  // Skip expensive AST parsing if no transloco-related content found.
-  // Note: hasTranslocoImport/hasMarkerImport imply hasTranslocoUsage, since
-  // both import regexes match strings that contain "transloco", so checking
-  // !hasTranslocoUsage alone is sufficient here.
-  if (!hasTranslocoUsage && !hasRouteTitle && !mentionsProvider) {
-    addCommentSectionKeys({
-      content,
-      regexFactory: regexFactoryMap.ts.comments,
-      ...baseParams,
-    });
+  // Both import regexes contain "transloco", so this single check is enough
+  // to skip the expensive AST parse for files that cannot hold any key.
+  if (!content.includes('transloco') && !hasRouteTitle && !mentionsProvider) {
+    addCommentSectionKeys(commentParams);
     return scopeToKeys;
   }
 
-  const ast = tsquery.ast(content, undefined, ScriptKind.TS);
+  const extractors: TSExtractor[] = [];
+  if (translocoImport.test(content)) {
+    extractors.push(serviceExtractor, pureFunctionExtractor, signalExtractor);
+  }
+  if (translocoKeysManagerImport.test(content)) {
+    extractors.push(markerExtractor);
+  }
 
-  const addExtractedKeys = (results: TSExtractorResult) =>
-    results.forEach(({ key, lang, params }) => {
+  const ast = parseTsSource(content, file);
+  const scan = scanSourceFile(ast);
+
+  const addExtractedKeys = (results: TSExtractorResult) => {
+    for (const { key, lang, params } of results) {
       const [keyWithoutScope, scopeAlias] = resolveAliasAndKeyFromService(
         key,
         lang,
@@ -117,9 +109,12 @@ function TSExtractor(
         params,
         ...baseParams,
       });
-    });
+    }
+  };
 
-  extractors.forEach((extractor) => addExtractedKeys(extractor(ast)));
+  for (const extractor of extractors) {
+    addExtractedKeys(extractor(scan));
+  }
 
   if (hasRouteTitle) {
     const routeTitleKeys = routeTitleExtractor(ast, scopes);
@@ -134,13 +129,9 @@ function TSExtractor(
   }
 
   /** Check for dynamic markings */
-  addCommentSectionKeys({
-    content,
-    regexFactory: regexFactoryMap.ts.comments,
-    ...baseParams,
-  });
+  addCommentSectionKeys(commentParams);
 
-  inlineTemplateExtractor(ast, config);
+  inlineTemplateExtractor(scan, config);
 
   return scopeToKeys;
 }
