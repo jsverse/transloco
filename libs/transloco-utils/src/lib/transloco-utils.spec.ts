@@ -67,6 +67,28 @@ describe('getGlobalConfig', () => {
     expect(getGlobalConfig(relative).langs).toEqual(['en', 'es']);
   });
 
+  it(`GIVEN a path pointing at an empty config file
+      WHEN the config is resolved from the file path
+      THEN it returns an empty config`, () => {
+    const file = write('transloco.config.ts', '');
+
+    expect(getGlobalConfig(file)).toEqual({});
+  });
+
+  it(`GIVEN a JSON config with a top-level "default" key
+      WHEN the config is resolved
+      THEN the config is returned as-is`, () => {
+    const file = write(
+      '.translocorc.json',
+      '{"default": "en", "defaultLang": "fr"}',
+    );
+
+    expect(getGlobalConfig(file)).toEqual({
+      default: 'en',
+      defaultLang: 'fr',
+    });
+  });
+
   it(`GIVEN a directory without a transloco config
       WHEN the config is resolved
       THEN it returns an empty config`, () => {
