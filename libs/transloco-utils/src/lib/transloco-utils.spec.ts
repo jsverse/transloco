@@ -89,6 +89,16 @@ describe('getGlobalConfig', () => {
     });
   });
 
+  it(`GIVEN a path that goes through a file
+      WHEN the config is resolved
+      THEN the search reports ENOTDIR`, () => {
+    const file = write('transloco.config.ts', TS_CONFIG);
+
+    expect(() => getGlobalConfig(path.join(file, 'nested'))).toThrow(
+      expect.objectContaining({ code: 'ENOTDIR' }),
+    );
+  });
+
   it(`GIVEN a directory without a transloco config
       WHEN the config is resolved
       THEN it returns an empty config`, () => {
