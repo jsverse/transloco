@@ -9,7 +9,7 @@ This config is used by tools & plugins such as the scoped lib extractor and the 
 If you installed Transloco via the schematics, a `transloco.config.ts` should have been created. Otherwise, you can just create a `transloco.config.ts` in the project's root folder and add the configuration in it:
 
 ```typescript
-import { TranslocoGlobalConfig } from "@jsverse/transloco-utils";
+import type { TranslocoGlobalConfig } from "@jsverse/transloco-utils";
 
 const config: TranslocoGlobalConfig = {
   rootTranslationsPath?: string;

@@ -157,7 +157,7 @@ This config is used by tools & plugins such as the scoped lib extractor and the 
 
 {% code title="transloco.config.ts" %}
 ```typescript
-import { TranslocoGlobalConfig } from '@jsverse/transloco-utils';
+import type { TranslocoGlobalConfig } from '@jsverse/transloco-utils';
 
 const config: TranslocoGlobalConfig = {
   rootTranslationsPath: 'src/assets/i18n/',
