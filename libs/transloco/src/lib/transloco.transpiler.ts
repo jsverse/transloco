@@ -20,6 +20,11 @@ export function injectTranspiler(): TranslocoTranspiler {
   return inject(TRANSLOCO_TRANSPILER);
 }
 
+// Unicode private-use characters that stand in for interpolation delimiters inside
+// substituted values while a string is being transpiled
+const ESCAPED_INTERPOLATION_START = '';
+const ESCAPED_INTERPOLATION_END = '';
+
 export interface TranslocoTranspiler {
   transpile(params: TranspileParams): any;
 
@@ -36,6 +41,8 @@ export interface TranspileParams<V = unknown> {
 @Injectable()
 export class DefaultTranspiler implements TranslocoTranspiler {
   protected config = injectTranslocoConfig();
+  // The chain of keys currently being resolved, used to detect circular key references
+  private resolvingKeys: string[] = [];
 
   protected get interpolationMatcher() {
     return resolveMatcher(this.config);
@@ -45,31 +52,46 @@ export class DefaultTranspiler implements TranslocoTranspiler {
     if (isString(value)) {
       let paramMatch: RegExpExecArray | null;
       let parsedValue = value;
-
-      while (
-        (paramMatch = this.interpolationMatcher.exec(parsedValue)) !== null
-      ) {
-        const [match, paramValue] = paramMatch;
-        parsedValue = parsedValue.replace(match, () => {
-          const match = paramValue.trim();
-
-          const param = getValue(params, match);
-          if (isDefined(param)) {
-            return param;
-          }
-
-          return isDefined(translation[match])
-            ? this.transpile({
-                params,
-                translation,
-                key,
-                value: translation[match],
-              })
-            : '';
-        });
+      const isEntryKey =
+        this.resolvingKeys.length === 0 && translation[key] === value;
+      if (isEntryKey) {
+        this.resolvingKeys.push(key);
       }
 
-      return parsedValue;
+      try {
+        // Rescan after each replacement so replaced values can form dynamic key references,
+        // e.g. `{{ common.{{ type }} }}`. Substituted values are escaped, so their own
+        // interpolation syntax is never matched.
+        while (
+          (paramMatch = this.interpolationMatcher.exec(parsedValue)) !== null
+        ) {
+          const [match, paramValue] = paramMatch;
+          parsedValue = parsedValue.replace(match, () => {
+            const match = paramValue.trim();
+
+            const param = getValue(params, match);
+            if (isDefined(param)) {
+              return this.escapeInterpolation(param);
+            }
+
+            return isDefined(translation[match])
+              ? this.escapeInterpolation(
+                  this.resolveKeyReference(match, {
+                    params,
+                    translation,
+                    key,
+                  }),
+                )
+              : '';
+          });
+        }
+      } finally {
+        if (isEntryKey) {
+          this.resolvingKeys.pop();
+        }
+      }
+
+      return this.unescapeInterpolation(parsedValue);
     } else if (params) {
       if (isObject(value)) {
         value = this.handleObject({
@@ -84,6 +106,49 @@ export class DefaultTranspiler implements TranslocoTranspiler {
     }
 
     return value;
+  }
+
+  private resolveKeyReference(
+    referencedKey: string,
+    { params, translation, key }: Omit<TranspileParams, 'value'>,
+  ): unknown {
+    if (this.resolvingKeys.includes(referencedKey)) {
+      if (typeof ngDevMode !== 'undefined' && ngDevMode) {
+        const path = [...this.resolvingKeys, referencedKey].join(' -> ');
+        throw new Error(`Circular key reference detected: ${path}`);
+      }
+
+      return '';
+    }
+
+    this.resolvingKeys.push(referencedKey);
+    try {
+      return this.transpile({
+        params,
+        translation,
+        key,
+        value: translation[referencedKey],
+      });
+    } finally {
+      this.resolvingKeys.pop();
+    }
+  }
+
+  private escapeInterpolation<T>(value: T): T | string {
+    if (!isString(value)) return value;
+    const [start, end] = this.config.interpolation;
+
+    return value
+      .replaceAll(start, ESCAPED_INTERPOLATION_START)
+      .replaceAll(end, ESCAPED_INTERPOLATION_END);
+  }
+
+  private unescapeInterpolation(value: string): string {
+    const [start, end] = this.config.interpolation;
+
+    return value
+      .replaceAll(ESCAPED_INTERPOLATION_START, start)
+      .replaceAll(ESCAPED_INTERPOLATION_END, end);
   }
 
   /**
