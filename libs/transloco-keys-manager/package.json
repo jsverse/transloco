@@ -19,6 +19,7 @@
   "bin": {
     "transloco-keys-manager": "./src/index.js"
   },
+  "sideEffects": false,
   "engines": {
     "node": "^22.18.0 || >=24"
   },
