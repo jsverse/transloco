@@ -10,7 +10,7 @@
     "./package.json": "./package.json"
   },
   "engines": {
-    "node": ">=22"
+    "node": "^22.18.0 || >=24"
   },
   "bin": {
     "transloco-keys-manager": "src/index.js"
@@ -51,7 +51,7 @@
     "cli-table3": "0.6.1",
     "command-line-args": "6.0.2",
     "command-line-usage": "7.0.4",
-    "cosmiconfig": "9.0.2",
+    "cosmiconfig": "10.0.0",
     "debug": "4.4.3",
     "deep-diff": "1.0.2",
     "flat": "6.0.1",

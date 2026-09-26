@@ -8,7 +8,7 @@ export const NAMES = {
 };
 
 export function generateConfigFile(config: TranslocoGlobalConfig) {
-  return `import {TranslocoGlobalConfig} from '@jsverse/transloco-utils';
+  return `import type { TranslocoGlobalConfig } from '@jsverse/transloco-utils';
     
 const config: TranslocoGlobalConfig = ${inspect(config)};
     
