@@ -1,5 +1,8 @@
 {
   "*.{ts,js}": ["eslint --fix"],
+  "{package.json,libs/*/package.json}": [
+    "eslint -c eslint.package-json.config.mjs --fix"
+  ],
   "*.{js,mts,json,css,scss,less,md,ts,html,component.html}": [
     "prettier --write"
   ]

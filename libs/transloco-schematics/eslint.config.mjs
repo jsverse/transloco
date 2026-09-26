@@ -1,4 +1,4 @@
-import baseConfig from '../../eslint.config.mjs';
+import baseConfig, { dependencyChecks } from '../../eslint.config.mjs';
 
 export default [
   ...baseConfig,
@@ -19,4 +19,13 @@ export default [
     // Override or add rules here
     rules: {},
   },
+  // Schematics run inside the Angular CLI, which provides these.
+  dependencyChecks([
+    '@angular-devkit/core',
+    '@angular-devkit/schematics',
+    '@angular/cli',
+    '@schematics/angular',
+    'rxjs',
+    'typescript',
+  ]),
 ];

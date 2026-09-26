@@ -1,12 +1,13 @@
 {
   "name": "transloco-nx",
   "version": "0.0.0",
+  "private": true,
   "license": "MIT",
   "homepage": "https://jsverse.gitbook.io/transloco/",
-  "packageManager": "pnpm@11.27.0",
   "engines": {
     "node": ">=24.0.0"
   },
+  "packageManager": "pnpm@11.27.0",
   "scripts": {
     "prepare": "husky",
     "commit": "git-cz",
@@ -14,7 +15,7 @@
     "build:playground": "nx build transloco-playground --configuration=docs",
     "ci:test": "nx run-many --target=test --all",
     "ci:build": "nx run-many --target=build --all",
-    "ci:lint": "nx run-many --target=lint --all",
+    "ci:lint": "nx run-many --target=lint --all && pnpm lint:package-json",
     "ci:format": "nx format:check --all",
     "verify:license": "node tools/scripts/verify-dist-license.mts",
     "ci:e2e": "nx run transloco-playground-e2e:e2e:ci",
@@ -22,7 +23,13 @@
     "format": "nx format:write",
     "format:check": "nx format:check",
     "pre-commit": "node scripts/pre-commit.js && lint-staged --allow-empty",
-    "release:pkg-pr-new": "pnpm dlx pkg-pr-new@0.0.54 publish './dist/libs/*'"
+    "release:pkg-pr-new": "pnpm dlx pkg-pr-new@0.0.54 publish './dist/libs/*'",
+    "lint:package-json": "eslint -c eslint.package-json.config.mjs package.json \"libs/*/package.json\""
+  },
+  "config": {
+    "commitizen": {
+      "path": "git-cz"
+    }
   },
   "dependencies": {
     "@angular/animations": "21.2.19",
@@ -98,6 +105,7 @@
     "eslint": "^10.8.0",
     "eslint-config-prettier": "10.1.8",
     "eslint-import-resolver-typescript": "^4.4.5",
+    "eslint-package-json": "1.0.0",
     "eslint-plugin-import-x": "^4.17.1",
     "git-cz": "4.9.0",
     "husky": "^9.1.7",
@@ -116,11 +124,6 @@
     "vite": "^8.2.0",
     "vite-tsconfig-paths": "^6.1.1",
     "vitest": "^4.1.9"
-  },
-  "config": {
-    "commitizen": {
-      "path": "git-cz"
-    }
   },
   "nx": {
     "includedScripts": []

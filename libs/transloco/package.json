@@ -2,6 +2,53 @@
   "name": "@jsverse/transloco",
   "version": "9.0.0-alpha.3",
   "description": "The internationalization (i18n) library for Angular",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jsverse/transloco"
+  },
+  "homepage": "https://jsverse.gitbook.io/transloco/",
+  "bugs": "https://github.com/jsverse/transloco/issues",
+  "exports": {
+    "./schematics/*": "./schematics/*",
+    "./schematics-core/*": "./schematics-core/*",
+    "./migrations/*": "./migrations/*"
+  },
+  "sideEffects": false,
+  "engines": {
+    "node": "^22.18.0 || >=24"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "angular",
+    "i18n",
+    "translate",
+    "angular translate",
+    "transloco",
+    "schematics",
+    "angular cli"
+  ],
+  "dependencies": {
+    "@jsverse/transloco-utils": "^9.0.0-alpha.3",
+    "@jsverse/utils": "1.0.0-beta.5",
+    "tslib": "^2.8.1"
+  },
+  "peerDependencies": {
+    "@angular/core": ">=20.0.0",
+    "@angular/platform-browser": ">=20.0.0",
+    "@angular/router": ">=20.0.0",
+    "rxjs": "^6.5.3 || ^7.4.0"
+  },
+  "peerDependenciesMeta": {
+    "@angular/platform-browser": {
+      "optional": true
+    },
+    "@angular/router": {
+      "optional": true
+    }
+  },
   "schematics": "./schematics/collection.json",
   "ng-update": {
     "migrations": "./migrations/migration.json",
@@ -19,51 +66,5 @@
       "@jsverse/transloco-validator",
       "@jsverse/transloco-keys-manager"
     ]
-  },
-  "exports": {
-    "./schematics/*": "./schematics/*",
-    "./schematics-core/*": "./schematics-core/*",
-    "./migrations/*": "./migrations/*"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "bugs": {
-    "url": "https://github.com/jsverse/transloco/issues"
-  },
-  "homepage": "https://jsverse.gitbook.io/transloco/",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/jsverse/transloco"
-  },
-  "keywords": [
-    "Angular",
-    "i18n",
-    "Translate",
-    "Angular Translate",
-    "Transloco",
-    "Schematics",
-    "Angular CLI"
-  ],
-  "license": "MIT",
-  "peerDependencies": {
-    "@angular/core": ">=20.0.0",
-    "@angular/platform-browser": ">=20.0.0",
-    "@angular/router": ">=20.0.0",
-    "rxjs": "^6.5.3 || ^7.4.0"
-  },
-  "peerDependenciesMeta": {
-    "@angular/platform-browser": {
-      "optional": true
-    },
-    "@angular/router": {
-      "optional": true
-    }
-  },
-  "dependencies": {
-    "tslib": "^2.8.1",
-    "@jsverse/utils": "1.0.0-beta.5",
-    "@jsverse/transloco-utils": "^9.0.0-alpha.3"
-  },
-  "sideEffects": false
+  }
 }

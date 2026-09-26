@@ -2,39 +2,38 @@
   "name": "@jsverse/transloco-scoped-libs",
   "version": "9.0.0-alpha.3",
   "description": "Transloco support tool for libraries with translations",
-  "main": "src/lib/transloco-scoped-libs.js",
-  "engines": {
-    "node": "^22.18.0 || >=24"
-  },
-  "bin": {
-    "transloco-scoped-libs": "src/index.js"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "bugs": {
-    "url": "https://github.com/jsverse/transloco/issues"
-  },
-  "homepage": "https://jsverse.gitbook.io/transloco/tools/scoped-library-extractor",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/jsverse/transloco"
   },
+  "homepage": "https://jsverse.gitbook.io/transloco/tools/scoped-library-extractor",
+  "bugs": "https://github.com/jsverse/transloco/issues",
+  "main": "./src/lib/transloco-scoped-libs.js",
+  "bin": {
+    "transloco-scoped-libs": "./src/index.js"
+  },
+  "engines": {
+    "node": "^22.18.0 || >=24"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "keywords": [
-    "Angular",
+    "angular",
     "i18n",
-    "Translate",
-    "Angular Translate",
-    "Transloco",
-    "Build Tool"
+    "translate",
+    "angular translate",
+    "transloco",
+    "build tool"
   ],
-  "license": "MIT",
   "dependencies": {
     "@jsverse/transloco-utils": "^9.0.0-alpha.3",
     "chalk": "6.0.0",
     "chokidar": "^5.0.0",
     "command-line-args": "6.0.2",
+    "fs-extra": "11.4.0",
     "glob": "13.0.6",
-    "fs-extra": "11.4.0"
+    "tslib": "^2.8.1"
   }
 }

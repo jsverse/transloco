@@ -2,38 +2,37 @@
   "name": "@jsverse/transloco-optimize",
   "version": "9.0.0-alpha.3",
   "description": "Transloco optimization process for production environments",
-  "main": "src/lib/transloco-optimize.js",
-  "engines": {
-    "node": ">=22"
-  },
-  "bin": {
-    "transloco-optimize": "src/index.js"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "bugs": {
-    "url": "https://github.com/jsverse/transloco/issues"
-  },
-  "homepage": "https://jsverse.gitbook.io/transloco/tools/optimize",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/jsverse/transloco"
   },
+  "homepage": "https://jsverse.gitbook.io/transloco/tools/optimize",
+  "bugs": "https://github.com/jsverse/transloco/issues",
+  "main": "./src/lib/transloco-optimize.js",
+  "bin": {
+    "transloco-optimize": "./src/index.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "keywords": [
-    "Angular",
+    "angular",
     "i18n",
-    "Translate",
-    "Angular Translate",
-    "Transloco",
-    "Translator Comments",
-    "Build",
-    "Optimize"
+    "translate",
+    "angular translate",
+    "transloco",
+    "translator comments",
+    "build",
+    "optimize"
   ],
-  "license": "MIT",
   "dependencies": {
-    "flat": "6.0.1",
     "command-line-args": "6.0.2",
-    "glob": "13.0.6"
+    "flat": "6.0.1",
+    "glob": "13.0.6",
+    "tslib": "^2.8.1"
   }
 }

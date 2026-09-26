@@ -2,30 +2,28 @@
   "name": "@jsverse/transloco-utils",
   "version": "9.0.0-alpha.3",
   "description": "Transloco utils library",
-  "main": "src/index.js",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jsverse/transloco"
+  },
+  "homepage": "https://jsverse.github.io/transloco/",
+  "bugs": "https://github.com/jsverse/transloco/issues",
+  "main": "./src/index.js",
   "engines": {
     "node": "^22.18.0 || >=24"
   },
   "publishConfig": {
     "access": "public"
   },
-  "bugs": {
-    "url": "https://github.com/jsverse/transloco/issues"
-  },
-  "homepage": "https://jsverse.github.io/transloco/",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/jsverse/transloco"
-  },
   "keywords": [
-    "Angular",
+    "angular",
     "i18n",
-    "Translate",
-    "Angular Translate",
-    "Transloco",
-    "Utils"
+    "translate",
+    "angular translate",
+    "transloco",
+    "utils"
   ],
-  "license": "MIT",
   "dependencies": {
     "cosmiconfig": "10.0.0",
     "tslib": "^2.8.1"

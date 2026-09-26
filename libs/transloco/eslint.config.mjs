@@ -1,5 +1,5 @@
 import angularEslint from 'angular-eslint';
-import baseConfig from '../../eslint.config.mjs';
+import baseConfig, { dependencyChecks } from '../../eslint.config.mjs';
 import nx from '@nx/eslint-plugin';
 
 export default [
@@ -36,4 +36,12 @@ export default [
     },
   },
   ...nx.configs['flat/angular-template'],
+  // The bundled schematics/migrations run inside the Angular CLI, which provides these.
+  dependencyChecks([
+    '@angular-devkit/core',
+    '@angular-devkit/schematics',
+    '@angular/compiler',
+    '@schematics/angular',
+    'typescript',
+  ]),
 ];
