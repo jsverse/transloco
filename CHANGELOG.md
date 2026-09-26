@@ -1,3 +1,26 @@
+## 9.0.0-alpha.4 (2026-09-26)
+
+### 🚀 Features
+
+- ⚠️  **keys-manager:** drop @ngneat import compatibility ([#1029](https://github.com/jsverse/transloco/pull/1029))
+
+### 🩹 Fixes
+
+- **utils:** load config when --config points to a file ([#1030](https://github.com/jsverse/transloco/pull/1030))
+
+### 🔥 Performance
+
+- **keys-manager:** single-pass TS extraction without tsquery ([#1012](https://github.com/jsverse/transloco/pull/1012), [#1011](https://github.com/jsverse/transloco/issues/1011))
+
+### ⚠️  Breaking Changes
+
+- **keys-manager:** drop @ngneat import compatibility  ([#1029](https://github.com/jsverse/transloco/pull/1029))
+
+### ❤️ Thank You
+
+- pkurcx
+- Shahar Kazaz @shaharkazaz
+
 ## 9.0.0-alpha.3 (2026-09-25)
 
 ### 🚀 Features

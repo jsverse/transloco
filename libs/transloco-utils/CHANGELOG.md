@@ -1,3 +1,13 @@
+## 9.0.0-alpha.4 (2026-09-26)
+
+### 🩹 Fixes
+
+- **utils:** load config when --config points to a file ([#1030](https://github.com/jsverse/transloco/pull/1030))
+
+### ❤️ Thank You
+
+- Shahar Kazaz @shaharkazaz
+
 ## 9.0.0-alpha.3 (2026-09-25)
 
 This was a version bump only for transloco-utils to align it with other projects, there were no code changes.
