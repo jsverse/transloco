@@ -31,6 +31,11 @@ export function getGlobalConfig(searchPath = ''): TranslocoGlobalConfig {
 
 const MODULE_CONFIG = /\.[cm]?[jt]s$/;
 
+// Any stat error (ENOENT, ENOTDIR, EACCES, ...) falls through to `search()`, which reports it as before.
 function isFile(filePath: string): boolean {
-  return statSync(filePath, { throwIfNoEntry: false })?.isFile() ?? false;
+  try {
+    return statSync(filePath).isFile();
+  } catch {
+    return false;
+  }
 }
