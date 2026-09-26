@@ -13,17 +13,23 @@ export function getGlobalConfig(searchPath = ''): TranslocoGlobalConfig {
     ? explorer.load(resolvedPath)
     : explorer.search(resolvedPath);
 
-  if (!configSearch) {
+  // `load()` reports an empty file as `isEmpty` instead of skipping it like `search()` does.
+  if (!configSearch || configSearch.isEmpty) {
     return {};
   }
 
-  const { config } = configSearch;
+  const { config, filepath } = configSearch;
 
   // cosmiconfig 10+ no longer unwraps the default export of a TS config.
-  return config && typeof config === 'object' && 'default' in config
+  return MODULE_CONFIG.test(filepath) &&
+    config &&
+    typeof config === 'object' &&
+    'default' in config
     ? config.default
     : config;
 }
+
+const MODULE_CONFIG = /\.[cm]?[jt]s$/;
 
 function isFile(filePath: string): boolean {
   return statSync(filePath, { throwIfNoEntry: false })?.isFile() ?? false;
