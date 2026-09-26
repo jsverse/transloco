@@ -2,36 +2,35 @@
   "name": "@jsverse/transloco-validator",
   "version": "9.0.0-alpha.4",
   "description": "Transloco translation files validator",
-  "main": "src/lib/transloco-validator.js",
-  "engines": {
-    "node": ">=22"
-  },
-  "bin": {
-    "transloco-validator": "src/index.js"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "bugs": {
-    "url": "https://github.com/jsverse/transloco/issues"
-  },
-  "homepage": "https://jsverse.gitbook.io/transloco/tools/validator",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/jsverse/transloco"
   },
+  "homepage": "https://jsverse.gitbook.io/transloco/tools/validator",
+  "bugs": "https://github.com/jsverse/transloco/issues",
+  "main": "./src/lib/transloco-validator.js",
+  "bin": {
+    "transloco-validator": "./src/index.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "keywords": [
-    "Angular",
+    "angular",
     "i18n",
-    "Translate",
-    "Angular Translate",
-    "Transloco",
-    "Translation Validator",
-    "JSON validator",
-    "Validator"
+    "translate",
+    "angular translate",
+    "transloco",
+    "translation validator",
+    "json validator",
+    "validator"
   ],
-  "license": "MIT",
   "dependencies": {
-    "find-duplicated-property-keys": "1.2.9"
+    "find-duplicated-property-keys": "1.2.9",
+    "tslib": "^2.8.1"
   }
 }

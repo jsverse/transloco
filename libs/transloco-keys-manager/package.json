@@ -2,6 +2,13 @@
   "name": "@jsverse/transloco-keys-manager",
   "version": "9.0.0-alpha.4",
   "description": "Extract translatable keys from projects that uses Transloco",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jsverse/transloco"
+  },
+  "homepage": "https://jsverse.gitbook.io/transloco/tools/keys-manager-tkm",
+  "bugs": "https://github.com/jsverse/transloco/issues",
   "exports": {
     "./marker": {
       "types": "./src/lib/marker.d.mts",
@@ -9,39 +16,27 @@
     },
     "./package.json": "./package.json"
   },
+  "bin": {
+    "transloco-keys-manager": "./src/index.js"
+  },
+  "sideEffects": false,
   "engines": {
     "node": "^22.18.0 || >=24"
-  },
-  "bin": {
-    "transloco-keys-manager": "src/index.js"
   },
   "publishConfig": {
     "access": "public"
   },
-  "bugs": {
-    "url": "https://github.com/jsverse/transloco/issues"
-  },
-  "homepage": "https://jsverse.gitbook.io/transloco/tools/keys-manager-tkm",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/jsverse/transloco"
-  },
   "keywords": [
-    "Angular",
+    "angular",
     "i18n",
-    "Translate",
-    "Angular Translate",
-    "Transloco",
-    "Extract",
-    "Keys",
-    "Tool",
-    "CLI"
+    "translate",
+    "angular translate",
+    "transloco",
+    "extract",
+    "keys",
+    "tool",
+    "cli"
   ],
-  "license": "MIT",
-  "peerDependencies": {
-    "@angular/compiler": ">= 20.0.0 < 23.0.0",
-    "typescript": ">= 5.8.0 < 7.0.0"
-  },
   "dependencies": {
     "@jsverse/angular-utils": "1.0.0-beta.6",
     "@jsverse/transloco-utils": "^9.0.0-alpha.4",
@@ -58,6 +53,11 @@
     "gettext-parser": "8.0.0",
     "glob": "13.0.6",
     "jsonc-parser": "3.3.1",
-    "ora": "9.4.1"
+    "ora": "9.4.1",
+    "tslib": "^2.8.1"
+  },
+  "peerDependencies": {
+    "@angular/compiler": ">= 20.0.0 < 23.0.0",
+    "typescript": ">= 5.8.0 < 7.0.0"
   }
 }

@@ -1,6 +1,9 @@
 {
   "*.{ts,js}": ["eslint --fix"],
-  "*.{js,mts,json,css,scss,less,md,ts,html,component.html}": [
+  "package.json": [
+    "eslint -c eslint.package-json.config.mjs --no-warn-ignored --fix",
     "prettier --write"
-  ]
+  ],
+  "!(package).json": ["prettier --write"],
+  "*.{js,mts,css,scss,less,md,ts,html,component.html}": ["prettier --write"]
 }
