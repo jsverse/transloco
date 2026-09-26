@@ -4,7 +4,7 @@
   "description": "Transloco utils library",
   "main": "src/index.js",
   "engines": {
-    "node": ">=22"
+    "node": "^22.18.0 || >=24"
   },
   "publishConfig": {
     "access": "public"
@@ -27,7 +27,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "cosmiconfig": "9.0.2",
+    "cosmiconfig": "10.0.0",
     "tslib": "^2.8.1"
   }
 }

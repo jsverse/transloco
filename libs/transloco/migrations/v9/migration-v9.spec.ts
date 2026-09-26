@@ -14,6 +14,11 @@ import {
   usesGlobalTranslateFn,
 } from './global-translate-fn';
 import { migrateMarkerImportSource } from './marker-import';
+import {
+  findStrippingError,
+  migrateConfigTypeImportSource,
+} from './config-type-import';
+import { findVersionFloorWarnings } from './report-version-floors';
 
 const collectionPath = nodePath.join(__dirname, '../migration.json');
 
@@ -856,6 +861,125 @@ describe('migrateMarkerImportSource', () => {
   });
 });
 
+describe('migrateConfigTypeImportSource', () => {
+  it(`GIVEN the config v8's schematics generated
+      WHEN it is migrated
+      THEN the TranslocoGlobalConfig import becomes type-only`, () => {
+    const result = migrateConfigTypeImportSource(
+      [
+        `import {TranslocoGlobalConfig} from '@jsverse/transloco-utils';`,
+        ``,
+        `const config: TranslocoGlobalConfig = { langs: ['en'] };`,
+        ``,
+        `export default config;`,
+      ].join('\n'),
+    );
+
+    expect(result?.content).toBe(
+      [
+        `import type {TranslocoGlobalConfig} from '@jsverse/transloco-utils';`,
+        ``,
+        `const config: TranslocoGlobalConfig = { langs: ['en'] };`,
+        ``,
+        `export default config;`,
+      ].join('\n'),
+    );
+    expect(result?.migrated).toBe(1);
+  });
+
+  it(`GIVEN TranslocoGlobalConfig imported alongside a runtime binding
+      WHEN it is migrated
+      THEN only the type gets an inline type modifier`, () => {
+    const result = migrateConfigTypeImportSource(
+      `import { getGlobalConfig, TranslocoGlobalConfig as Config } from "@jsverse/transloco-utils";`,
+    );
+
+    expect(result?.content).toBe(
+      `import { getGlobalConfig, type TranslocoGlobalConfig as Config } from "@jsverse/transloco-utils";`,
+    );
+  });
+
+  it(`GIVEN a clause where another specifier is already type-only
+      WHEN it is migrated
+      THEN the modifier is added inline rather than to the clause`, () => {
+    // `import type { type X }` does not compile.
+    const result = migrateConfigTypeImportSource(
+      `import { type Foo, TranslocoGlobalConfig } from '@jsverse/transloco-utils';`,
+    );
+
+    expect(result?.content).toBe(
+      `import { type Foo, type TranslocoGlobalConfig } from '@jsverse/transloco-utils';`,
+    );
+  });
+
+  it.each([
+    `import type { TranslocoGlobalConfig } from '@jsverse/transloco-utils';`,
+    `import { type TranslocoGlobalConfig } from '@jsverse/transloco-utils';`,
+    `import { getGlobalConfig } from '@jsverse/transloco-utils';`,
+    `import { TranslocoGlobalConfig } from './local-types';`,
+  ])(
+    `GIVEN %s
+      WHEN it is migrated
+      THEN it is left alone`,
+    (source) => {
+      expect(migrateConfigTypeImportSource(source)).toBeNull();
+    },
+  );
+});
+
+describe('findStrippingError', () => {
+  it(`GIVEN a config using only erasable type syntax
+      WHEN it is checked
+      THEN no error is reported`, () => {
+    expect(
+      findStrippingError(
+        `import type { TranslocoGlobalConfig } from '@jsverse/transloco-utils';\nexport default { langs: ['en'] } satisfies TranslocoGlobalConfig;`,
+      ),
+    ).toBeNull();
+  });
+
+  it(`GIVEN a config declaring an enum
+      WHEN it is checked
+      THEN the stripping error is reported`, () => {
+    expect(
+      findStrippingError(
+        `enum Lang { En = 'en' }\nexport default { langs: [Lang.En] };`,
+      ),
+    ).toBeTruthy();
+  });
+});
+
+describe('findVersionFloorWarnings', () => {
+  it.each(['22.18.0', '22.20.1', '24.0.0', '26.1.0'])(
+    `GIVEN Node %s
+      WHEN the floors are checked
+      THEN nothing is reported`,
+    (version) => {
+      expect(findVersionFloorWarnings(version)).toEqual([]);
+    },
+  );
+
+  it.each(['22.17.1', '23.11.0'])(
+    `GIVEN Node %s
+      WHEN the floors are checked
+      THEN the type stripping range is reported`,
+    (version) => {
+      const [warning] = findVersionFloorWarnings(version);
+
+      expect(warning).toContain('^22.18.0 || >=24');
+      expect(warning).toContain('@jsverse/transloco-utils');
+    },
+  );
+
+  it(`GIVEN Node 20
+      WHEN the floors are checked
+      THEN the Node 22 floor is reported`, () => {
+    const [warning] = findVersionFloorWarnings('20.19.0');
+
+    expect(warning).toContain('Node >=22');
+  });
+});
+
 describe('migration-v9', () => {
   const schematicRunner = new SchematicTestRunner('migrations', collectionPath);
 
@@ -1077,6 +1201,59 @@ describe('migration-v9', () => {
     );
 
     expect(warnings.join('\n')).not.toContain('root entry point');
+  });
+
+  it(`GIVEN a root transloco.config.ts importing TranslocoGlobalConfig as a value
+      WHEN the migration runs
+      THEN the import becomes type-only`, async () => {
+    const tree = await run((host) =>
+      host.create(
+        '/transloco.config.ts',
+        [
+          `import {TranslocoGlobalConfig} from '@jsverse/transloco-utils';`,
+          `const config: TranslocoGlobalConfig = { langs: ['en'] };`,
+          `export default config;`,
+        ].join('\n'),
+      ),
+    );
+
+    expect(tree.readContent('/transloco.config.ts')).toContain(
+      `import type {TranslocoGlobalConfig} from '@jsverse/transloco-utils';`,
+    );
+  });
+
+  it(`GIVEN a custom-named config passed through --config
+      WHEN the migration runs
+      THEN its import is migrated too`, async () => {
+    const tree = await run((host) =>
+      host.create(
+        '/projects/bar/i18n.config.ts',
+        `import { TranslocoGlobalConfig } from '@jsverse/transloco-utils';\nexport default {} as TranslocoGlobalConfig;`,
+      ),
+    );
+
+    expect(tree.readContent('/projects/bar/i18n.config.ts')).toContain(
+      `import type { TranslocoGlobalConfig }`,
+    );
+  });
+
+  it(`GIVEN a transloco.config.ts using an enum
+      WHEN the migration runs
+      THEN the file is reported as unloadable and left as is`, async () => {
+    const config = `enum Lang { En = 'en' }\nexport default { langs: [Lang.En] };`;
+    const warnings: string[] = [];
+    schematicRunner.logger.subscribe((entry) => {
+      if (entry.level === 'warn') warnings.push(entry.message);
+    });
+
+    const tree = await run((host) =>
+      host.create('/.config/translocorc.ts', config),
+    );
+
+    expect(tree.readContent('/.config/translocorc.ts')).toBe(config);
+    const reported = warnings.join('\n');
+    expect(reported).toContain('/.config/translocorc.ts');
+    expect(reported).toContain('type stripping');
   });
 });
 
