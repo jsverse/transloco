@@ -1,6 +1,6 @@
 {
   "name": "@jsverse/transloco-preload-langs",
-  "version": "9.0.0-alpha.3",
+  "version": "9.0.0-alpha.4",
   "description": "Transloco preload languages while idle",
   "license": "MIT",
   "repository": {
@@ -31,7 +31,7 @@
   "peerDependencies": {
     "@angular/common": ">=20.0.0",
     "@angular/core": ">=20.0.0",
-    "@jsverse/transloco": "^9.0.0-alpha.3",
+    "@jsverse/transloco": "^9.0.0-alpha.4",
     "rxjs": "^6.5.3 || ^7.4.0"
   }
 }

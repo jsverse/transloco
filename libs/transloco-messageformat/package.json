@@ -1,6 +1,6 @@
 {
   "name": "@jsverse/transloco-messageformat",
-  "version": "9.0.0-alpha.3",
+  "version": "9.0.0-alpha.4",
   "description": "Transpiler for Transloco that uses messageformat.js to compile translations using ICU syntax for handling pluralization and gender",
   "license": "MIT",
   "repository": {
@@ -34,7 +34,7 @@
   },
   "peerDependencies": {
     "@angular/core": ">=20.0.0",
-    "@jsverse/transloco": "^9.0.0-alpha.3",
+    "@jsverse/transloco": "^9.0.0-alpha.4",
     "@jsverse/utils": "1.0.0-beta.5"
   }
 }

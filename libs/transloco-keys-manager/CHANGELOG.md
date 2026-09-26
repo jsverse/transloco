@@ -1,3 +1,29 @@
+## 9.0.0-alpha.4 (2026-09-26)
+
+### 🚀 Features
+
+- ⚠️  **keys-manager:** drop @ngneat import compatibility ([#1029](https://github.com/jsverse/transloco/pull/1029))
+
+### 🔥 Performance
+
+- **keys-manager:** single-pass TS extraction without tsquery ([#1012](https://github.com/jsverse/transloco/pull/1012), [#1011](https://github.com/jsverse/transloco/issues/1011))
+
+### 📦 Build
+
+- ⚠️  **utils:** upgrade cosmiconfig to v10 ([#1031](https://github.com/jsverse/transloco/pull/1031))
+
+### ⚠️  Breaking Changes
+
+- **keys-manager:** drop @ngneat import compatibility  ([#1029](https://github.com/jsverse/transloco/pull/1029))
+- **utils:** upgrade cosmiconfig to v10 ([#1031](https://github.com/jsverse/transloco/pull/1031))
+  - TS configs (`transloco.config.ts`) are now loaded with Node's type stripping. Type imports must use `import type { TranslocoGlobalConfig }`; `ng update` migrates this automatically. Syntax that needs compiling, such as `enum` and `namespace`, is no longer supported in a config.
+  - `@jsverse/transloco-utils`, `@jsverse/transloco-keys-manager` and `@jsverse/transloco-scoped-libs` now require Node `^22.18.0 || >=24`.
+
+### ❤️ Thank You
+
+- pkurcx
+- Shahar Kazaz @shaharkazaz
+
 ## 9.0.0-alpha.3 (2026-09-25)
 
 ### 🚀 Features

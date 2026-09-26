@@ -1,3 +1,7 @@
+## 9.0.0-alpha.4 (2026-09-26)
+
+This was a version bump only for transloco-persist-translations to align it with other projects, there were no code changes.
+
 ## 9.0.0-alpha.3 (2026-09-25)
 
 This was a version bump only for transloco-persist-translations to align it with other projects, there were no code changes.
