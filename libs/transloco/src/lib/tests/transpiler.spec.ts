@@ -217,6 +217,94 @@ describe('TranslocoTranspiler', () => {
       }
     });
 
+    describe('Circular key references', () => {
+      it(`GIVEN a cycle that is reached through function arguments
+          WHEN transpiling in dev mode
+          THEN should throw the circular reference error with its path instead of a function error`, () => {
+        const translation = {
+          a: '[[ upperCase({{ b }}) ]]',
+          b: '{{ a }}',
+        };
+        expect(() =>
+          transpiler.transpile(
+            getTranspilerParams(translation.a, { key: 'a', translation }),
+          ),
+        ).toThrow('Circular key reference detected: a -> b -> a');
+      });
+
+      it(`GIVEN a translation that calls a function and references itself
+          WHEN transpiling in production mode
+          THEN should call the function once and resolve the circular reference to an empty string`, () => {
+        const translation = { a: '[[ upperCase(x) ]] {{ a }}' };
+        const originalNgDevMode = ngDevMode;
+        // @ts-expect-error Property 'ngDevMode' does not exist on type 'typeof globalThis'
+        globalThis['ngDevMode'] = false;
+        try {
+          expect(
+            transpiler.transpile(
+              getTranspilerParams(translation.a, { key: 'a', translation }),
+            ),
+          ).toEqual('X ');
+        } finally {
+          // @ts-expect-error Property 'ngDevMode' does not exist on type 'typeof globalThis'
+          globalThis['ngDevMode'] = originalNgDevMode;
+        }
+      });
+
+      it(`GIVEN a function that transpiles another translation map while a key is being resolved
+          WHEN the inner translation references a key with the same name
+          THEN should resolve it without reporting a circular reference`, () => {
+        const outer = { start: '{{ a }}', a: 'A [[ upperCase(x) ]]' };
+        const inner = { inner: 'Inner {{ a }}', a: 'fine' };
+        const spy = vi
+          .spyOn(transpilerFunctions['upperCase'], 'transpile')
+          .mockImplementation(() =>
+            transpiler.transpile(
+              getTranspilerParams(inner.inner, {
+                key: 'inner',
+                translation: inner,
+              }),
+            ),
+          );
+
+        try {
+          expect(
+            transpiler.transpile(
+              getTranspilerParams(outer.start, {
+                key: 'start',
+                translation: outer,
+              }),
+            ),
+          ).toEqual('A Inner fine');
+        } finally {
+          spy.mockRestore();
+        }
+      });
+
+      it(`GIVEN a function that transpiles a key of the same translation map
+          WHEN that key references back a key that is being resolved
+          THEN should throw the circular reference error with its path`, () => {
+        const translation = { a: 'A [[ upperCase(x) ]]', x: 'X {{ a }}' };
+        const spy = vi
+          .spyOn(transpilerFunctions['upperCase'], 'transpile')
+          .mockImplementation(() =>
+            transpiler.transpile(
+              getTranspilerParams(translation.x, { key: 'x', translation }),
+            ),
+          );
+
+        try {
+          expect(() =>
+            transpiler.transpile(
+              getTranspilerParams(translation.a, { key: 'a', translation }),
+            ),
+          ).toThrow('Circular key reference detected: a -> x -> a');
+        } finally {
+          spy.mockRestore();
+        }
+      });
+    });
+
     describe('getFunctionArgs', () => {
       it(`GIVEN an empty string of raw arguments
           WHEN parsing the function arguments
@@ -751,6 +839,52 @@ describe('TranslocoTranspiler', () => {
       });
 
       describe('Interpolation syntax inside param values', () => {
+        it(`GIVEN a translation containing private-use unicode characters
+            WHEN transpiling
+            THEN should keep those characters as-is`, () => {
+          const translation = {
+            icon: `\uE000\uE001 Failed ${wrapParam('reason')}`,
+          };
+          expect(
+            transpiler.transpile(
+              getTranspilerParams(translation.icon, {
+                key: 'icon',
+                translation,
+                params: { reason: 'Timeout' },
+              }),
+            ),
+          ).toEqual('\uE000\uE001 Failed Timeout');
+        });
+
+        it(`GIVEN a param value containing private-use unicode characters
+            WHEN transpiling
+            THEN should render the param value as-is`, () => {
+          expect(
+            transpiler.transpile(
+              getTranspilerParams(`Icon ${wrapParam('icon')}`, {
+                params: { icon: '\uE001\uE000\uE001' },
+              }),
+            ),
+          ).toEqual('Icon \uE001\uE000\uE001');
+        });
+
+        it(`GIVEN a param value containing part of an interpolation delimiter
+            WHEN the surrounding translation completes the delimiter
+            THEN should not form a new placeholder`, () => {
+          const partialStart = start.slice(0, 1);
+          expect(
+            transpiler.transpile(
+              getTranspilerParams(
+                `${wrapParam('x')}${start.slice(1)} secret ${end}`,
+                {
+                  params: { x: partialStart },
+                  translation: { secret: 'Secret' },
+                },
+              ),
+            ),
+          ).toEqual(`${start} secret ${end}`);
+        });
+
         it(`GIVEN a param value containing its own placeholder
             WHEN transpiling
             THEN should render the param value as-is`, () => {
