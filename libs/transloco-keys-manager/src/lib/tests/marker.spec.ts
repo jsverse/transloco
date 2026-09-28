@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { marker } from '../marker';
+import { marker } from '../marker.mjs';
 
 describe('marker', () => {
   it('given a key, when marked, then it should be returned as is', () => {
