@@ -11,7 +11,10 @@ import { parseTsSource } from '../../utils/ts-ast.utils';
 import { addCommentSectionKeys } from '../add-comment-section-keys';
 import { addKey } from '../add-key';
 import { extractKeys } from '../utils/extract-keys';
-import { resolveScopeAlias } from '../utils/resolvers.utils';
+import {
+  resolveAliasAndKey,
+  resolveScopeAlias,
+} from '../utils/resolvers.utils';
 
 import { inlineTemplateExtractor } from './inline-template';
 import { markerExtractor } from './marker.extractor';
@@ -142,6 +145,7 @@ function TSExtractor(
  *
  * translate('2', {}, 'some/nested');
  * translate('3', {}, 'some/nested/en');
+ * translate('scopeAlias.4');
  * translate('globalKey');
  *
  */
@@ -150,9 +154,9 @@ function resolveAliasAndKeyFromService(
   scopePath: string,
   scopes: Scopes,
 ): [string, string | null] {
-  // It means that it's the global
+  // No explicit scope: a known alias prefix selects the scope, as in templates
   if (!scopePath) {
-    return [key, null];
+    return resolveAliasAndKey(key, scopes);
   }
 
   const scopeAlias = resolveScopeAlias({ scopePath, scopes });
