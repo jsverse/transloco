@@ -256,6 +256,39 @@ describe('resolveProjectBasePath', () => {
     );
   });
 
+  describe('Modern Nx project.json without sourceRoot', () => {
+    afterEach(() => {
+      removeProjectConfig('libs/modern');
+    });
+
+    it('derives the source root from the project directory', () => {
+      addProjectConfig({
+        path: 'libs/modern',
+        config: { name: 'modern-lib', projectType: 'library' },
+      });
+
+      const { projectBasePath, projectType } =
+        resolveProjectBasePath('modern-lib');
+      expect(projectBasePath).toBe('libs/modern/src');
+      expect(projectType).toBe('library');
+    });
+
+    it('honors an explicit root field over the directory', () => {
+      addProjectConfig({
+        path: 'libs/modern',
+        config: {
+          name: 'modern-lib',
+          projectType: 'library',
+          root: 'libs/xyz',
+        },
+      });
+
+      expect(resolveProjectBasePath('modern-lib').projectBasePath).toBe(
+        'libs/xyz/src',
+      );
+    });
+  });
+
   describe('Malformed configs', () => {
     const healthy = 'libs/healthy';
     const broken = 'libs/broken';
