@@ -57,5 +57,20 @@ export function testMarkerExtraction(fileFormat: Config['fileFormat']) {
         path: 'nested/scope/',
       });
     });
+
+    it(`GIVEN a marker key prefixed with a known scope alias and no scope argument
+        WHEN keys are extracted
+        THEN it's extracted into that scope's translation file, not the global one`, () => {
+      const config = buildConfig({ type, config: { fileFormat } });
+
+      buildTranslationFiles(config);
+
+      assertTranslation({
+        type,
+        fileFormat,
+        expected: { marker_with_alias_prefix: defaultValue },
+        path: 'marker-prefixed/',
+      });
+    });
   });
 }

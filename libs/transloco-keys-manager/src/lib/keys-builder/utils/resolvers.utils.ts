@@ -18,11 +18,12 @@ export function resolveAliasAndKey(
    */
   if (!isString(key)) return ['', null];
   const [scopeAliasOrKey, ...actualKey] = key.split('.');
-  const scopeAliasExists = Object.prototype.hasOwnProperty.call(
-    scopes.aliasToScope,
-    scopeAliasOrKey,
-  );
-  const translationKey = scopeAliasExists ? actualKey.join('.') : key;
+  const keyAfterAlias = actualKey.join('.');
+  // A bare alias is a global key, not the scope with an empty key
+  const scopeAliasExists =
+    keyAfterAlias !== '' &&
+    Object.prototype.hasOwnProperty.call(scopes.aliasToScope, scopeAliasOrKey);
+  const translationKey = scopeAliasExists ? keyAfterAlias : key;
 
   return [translationKey, scopeAliasExists ? scopeAliasOrKey : null];
 }

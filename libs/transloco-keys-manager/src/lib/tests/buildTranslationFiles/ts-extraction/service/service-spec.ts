@@ -42,6 +42,7 @@ export function testServiceExtraction(fileFormat: Config['fileFormat']) {
         'private-class-field.test': defaultValue,
         'permission.snackbar.no-permission': defaultValue,
         'permission.snackbar.close': defaultValue,
+        servicePrefixed: defaultValue,
       };
 
       buildTranslationFiles(config);
@@ -81,6 +82,34 @@ export function testServiceExtraction(fileFormat: Config['fileFormat']) {
         type,
         expected: expected.nested,
         path: 'nested/scope/',
+        fileFormat,
+      });
+    });
+
+    it(`GIVEN a service key prefixed with a known scope alias and no scope argument
+        WHEN keys are extracted
+        THEN it's extracted into that scope's translation file, not the global one`, () => {
+      buildTranslationFiles(config);
+
+      assertTranslation({
+        type,
+        expected: {
+          translate: defaultValue,
+          'select-translate': defaultValue,
+        },
+        path: 'service-prefixed/',
+        fileFormat,
+      });
+    });
+
+    it(`GIVEN a service key equal to a known scope alias, with nothing after it
+        WHEN keys are extracted
+        THEN it stays a global key`, () => {
+      buildTranslationFiles(config);
+
+      assertPartialTranslation({
+        type,
+        expected: { servicePrefixed: defaultValue },
         fileFormat,
       });
     });
