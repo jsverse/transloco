@@ -2,34 +2,37 @@
   "name": "@jsverse/transloco-persist-lang",
   "version": "9.0.0-alpha.4",
   "description": "Transloco persist active language",
-  "publishConfig": {
-    "access": "public"
-  },
-  "bugs": {
-    "url": "https://github.com/jsverse/transloco/issues"
-  },
-  "homepage": "https://jsverse.gitbook.io/transloco/plugins/persist-lang",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/jsverse/transloco"
   },
-  "keywords": [
-    "Angular",
-    "i18n",
-    "Translate",
-    "Angular Translate",
-    "Transloco",
-    "Persist",
-    "Storage"
-  ],
-  "license": "MIT",
-  "peerDependencies": {
-    "@angular/core": ">=20.0.0",
-    "@jsverse/transloco": "^9.0.0-alpha.4",
-    "@jsverse/utils": "1.0.0-beta.5"
+  "homepage": "https://jsverse.gitbook.io/transloco/plugins/persist-lang",
+  "bugs": "https://github.com/jsverse/transloco/issues",
+  "sideEffects": false,
+  "engines": {
+    "node": "^22.18.0 || >=24"
   },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "angular",
+    "i18n",
+    "translate",
+    "angular translate",
+    "transloco",
+    "persist",
+    "storage"
+  ],
   "dependencies": {
     "tslib": "^2.8.1"
   },
-  "sideEffects": false
+  "peerDependencies": {
+    "@angular/common": ">=20.0.0",
+    "@angular/core": ">=20.0.0",
+    "@jsverse/transloco": "^9.0.0-alpha.4",
+    "@jsverse/utils": "1.0.0-beta.5",
+    "rxjs": "^6.5.3 || ^7.4.0"
+  }
 }
