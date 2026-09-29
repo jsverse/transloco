@@ -10,14 +10,12 @@ import { fakeAsync, TestBed } from '@angular/core/testing';
 import { createComponentFactory, Spectator } from '@ngneat/spectator/vitest';
 
 import { Translation } from '../transloco.types';
-import { TranslocoModule } from '../transloco.module';
-import { TranslocoTestingModule } from '../transloco-testing.module';
+import { provideTranslocoTesting } from '../transloco-testing.module';
 import { translateSignal, translateObjectSignal } from '../transloco.signal';
 
 import { providersMock, runLoader } from './mocks';
 
 @Component({
-  imports: [TranslocoModule],
   template: `
     <div id="text">{{ translatedText() }}</div>
     <div id="textObject">{{ translatedObject().title }}</div>
@@ -93,7 +91,6 @@ describe('translateSignal in component', () => {
   let spectator: Spectator<TestComponent>;
   const createComponent = createComponentFactory({
     component: TestComponent,
-    imports: [TranslocoModule],
     providers: providersMock,
   });
 
@@ -157,7 +154,6 @@ describe('translateObjectSignal in component', () => {
   let spectator: Spectator<TestComponent>;
   const createComponent = createComponentFactory({
     component: TestComponent,
-    imports: [TranslocoModule],
     providers: providersMock,
   });
 
@@ -223,7 +219,6 @@ describe('translateObjectSignal in component', () => {
 
 describe('Synchronous translateSignal', () => {
   @Component({
-    imports: [TranslocoModule],
     template: ` <div id="text">{{ translatedText() }}</div> `,
   })
   class TestComponentStatic {
@@ -232,9 +227,9 @@ describe('Synchronous translateSignal', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        TestComponentStatic,
-        TranslocoTestingModule.forRoot({
+      imports: [TestComponentStatic],
+      providers: [
+        provideTranslocoTesting({
           translocoConfig: {
             availableLangs: ['en'],
             defaultLang: 'en',

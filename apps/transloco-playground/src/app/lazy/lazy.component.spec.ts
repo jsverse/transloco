@@ -3,15 +3,17 @@ import { By } from '@angular/platform-browser';
 
 import { TRANSLOCO_SCOPE } from '@jsverse/transloco';
 
-import { getTranslocoModule } from '../transloco-testing.module';
+import { getTranslocoTestingProviders } from '../transloco-testing.module';
 
 import LazyComponent from './lazy.component';
 
 describe('LazyComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      providers: [{ provide: TRANSLOCO_SCOPE, useValue: 'admin-page' }],
-      imports: [getTranslocoModule()],
+      providers: [
+        { provide: TRANSLOCO_SCOPE, useValue: 'admin-page' },
+        getTranslocoTestingProviders(),
+      ],
     }).compileComponents();
   }));
 

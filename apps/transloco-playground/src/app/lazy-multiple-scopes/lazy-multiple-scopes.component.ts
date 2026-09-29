@@ -1,6 +1,10 @@
 import { Component } from '@angular/core';
 
-import { TranslocoModule, provideTranslocoScope } from '@jsverse/transloco';
+import {
+  TranslocoDirective,
+  TranslocoPipe,
+  provideTranslocoScope,
+} from '@jsverse/transloco';
 
 @Component({
   selector: 'app-lazy-multiple-scopes',
@@ -12,6 +16,6 @@ import { TranslocoModule, provideTranslocoScope } from '@jsverse/transloco';
       { scope: 'lazy-page', alias: 'LazyPageAlias' },
     ),
   ],
-  imports: [TranslocoModule],
+  imports: [TranslocoDirective, TranslocoPipe],
 })
 export default class LazyMultipleScopesComponent {}
