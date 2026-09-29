@@ -9,9 +9,9 @@
   },
   "homepage": "https://jsverse.gitbook.io/transloco/tools/scoped-library-extractor",
   "bugs": "https://github.com/jsverse/transloco/issues",
-  "main": "./src/lib/transloco-scoped-libs.js",
+  "main": "src/lib/transloco-scoped-libs.js",
   "bin": {
-    "transloco-scoped-libs": "./src/index.js"
+    "transloco-scoped-libs": "src/index.js"
   },
   "engines": {
     "node": "^22.18.0 || >=24"

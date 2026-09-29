@@ -21,7 +21,7 @@ export function dependencyChecks(ignoredDependencies = []) {
           ignoredDependencies,
           ignoredFiles: [
             '{projectRoot}/eslint.config.{js,cjs,mjs}',
-            '{projectRoot}/vitest.config.{ts,mts}',
+            '{projectRoot}/vitest.config*.{ts,mts}',
             '{projectRoot}/**/*.spec.ts',
             '{projectRoot}/**/test-setup.ts',
             '{projectRoot}/**/mocks.ts',

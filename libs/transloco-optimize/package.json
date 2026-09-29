@@ -9,9 +9,9 @@
   },
   "homepage": "https://jsverse.gitbook.io/transloco/tools/optimize",
   "bugs": "https://github.com/jsverse/transloco/issues",
-  "main": "./src/lib/transloco-optimize.js",
+  "main": "src/lib/transloco-optimize.js",
   "bin": {
-    "transloco-optimize": "./src/index.js"
+    "transloco-optimize": "src/index.js"
   },
   "engines": {
     "node": ">=22"

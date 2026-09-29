@@ -17,7 +17,7 @@
     "./package.json": "./package.json"
   },
   "bin": {
-    "transloco-keys-manager": "./src/index.js"
+    "transloco-keys-manager": "src/index.js"
   },
   "sideEffects": false,
   "engines": {

@@ -9,9 +9,9 @@
   },
   "homepage": "https://jsverse.gitbook.io/transloco/tools/validator",
   "bugs": "https://github.com/jsverse/transloco/issues",
-  "main": "./src/lib/transloco-validator.js",
+  "main": "src/lib/transloco-validator.js",
   "bin": {
-    "transloco-validator": "./src/index.js"
+    "transloco-validator": "src/index.js"
   },
   "engines": {
     "node": ">=22"

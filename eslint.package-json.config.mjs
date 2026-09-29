@@ -13,6 +13,9 @@ export default [
       'package-json/types-in-dev-dependencies': 'error',
       'package-json/no-git-dependencies': 'error',
       'package-json/no-local-dependencies': 'error',
+      // npm's publish-time normalization strips a leading `./` from `bin`
+      // (warning that the path "was invalid"), so keep paths unprefixed.
+      'package-json/consistent-path-prefix': ['error', { prefix: 'never' }],
 
       // Versions are pinned exactly on purpose.
       'package-json/dependency-version-range': 'off',
