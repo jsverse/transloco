@@ -361,7 +361,12 @@ export class FunctionalTranspiler
             });
             return func.transpile(...transpiledArgs);
           } catch (e: unknown) {
-            if (e instanceof CircularKeyReferenceError) {
+            // Circular references only throw in dev mode, guarding the check lets production builds drop the class
+            if (
+              typeof ngDevMode !== 'undefined' &&
+              ngDevMode &&
+              e instanceof CircularKeyReferenceError
+            ) {
               throw e;
             }
 
