@@ -3,7 +3,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { compareKeysToFiles } from '../keys-detective/compare-keys-to-files';
 import { buildTable } from '../keys-detective/build-table';
 import { normalizedGlob } from '../utils/normalize-glob-path';
-import { readFile, writeFile } from '../utils/file.utils';
+import { writeFile } from '../utils/file.utils';
+import { getCurrentTranslation } from '../keys-builder/utils/get-current-translation';
 import { getTranslationFilesPath } from '../keys-detective/get-translation-files-path';
 
 vi.mock('../utils/logger', () => ({
@@ -27,8 +28,16 @@ vi.mock('../keys-detective/get-translation-files-path', () => ({
 }));
 
 vi.mock('../utils/file.utils', () => ({
-  readFile: vi.fn(() => ({})),
   writeFile: vi.fn(),
+}));
+
+vi.mock('../keys-builder/utils/get-current-translation', () => ({
+  getCurrentTranslation: vi.fn(() => ({})),
+}));
+
+let unflat = false;
+vi.mock('../config', () => ({
+  getConfig: () => ({ unflat, sort: false }),
 }));
 
 vi.mock('@jsverse/transloco-utils', () => ({
@@ -38,18 +47,16 @@ vi.mock('@jsverse/transloco-utils', () => ({
 describe('compareKeysToFiles', () => {
   const mockBuildTable = vi.mocked(buildTable);
   const mockNormalizedGlob = vi.mocked(normalizedGlob);
-  const mockReadFile = vi.mocked(readFile);
+  const mockGetCurrentTranslation = vi.mocked(getCurrentTranslation);
   const mockWriteFile = vi.mocked(writeFile);
   const mockGetTranslationFilesPath = vi.mocked(getTranslationFilesPath);
 
   beforeEach(() => {
     vi.clearAllMocks();
+    unflat = false;
     mockNormalizedGlob.mockReturnValue([]);
     mockGetTranslationFilesPath.mockReturnValue([]);
-    mockReadFile.mockImplementation(((path: string, opts?: any) => {
-      if (opts?.parse) return {};
-      return '{}';
-    }) as any);
+    mockGetCurrentTranslation.mockReturnValue({});
   });
 
   it('should call buildTable with empty langs when no translation files', () => {
@@ -57,9 +64,7 @@ describe('compareKeysToFiles', () => {
       scopeToKeys: { __global: { key: 'value' } },
       translationsPath: '/tmp/i18n',
       addMissingKeys: false,
-      emitErrorOnExtraKeys: false,
       fileFormat: 'json',
-      unflat: false,
     });
 
     expect(mockBuildTable).toHaveBeenCalledWith(
@@ -72,19 +77,14 @@ describe('compareKeysToFiles', () => {
       '/tmp/i18n/en.json',
       '/tmp/i18n/fr.json',
     ]);
-    mockReadFile.mockImplementation(((path: string, opts?: any) => {
-      if (opts?.parse) return { key: 'value' };
-      return '{"key":"value"}';
-    }) as any);
+    mockGetCurrentTranslation.mockReturnValue({ key: 'value' });
     mockNormalizedGlob.mockReturnValue(['/tmp/i18n/en.json']);
 
     compareKeysToFiles({
       scopeToKeys: { __global: { key: 'value' } },
       translationsPath: '/tmp/i18n',
       addMissingKeys: false,
-      emitErrorOnExtraKeys: false,
       fileFormat: 'json',
-      unflat: false,
     });
 
     // normalizedGlob called only once for __global scope (second file same scope = cached)
@@ -93,19 +93,14 @@ describe('compareKeysToFiles', () => {
 
   it('should detect missing keys and add them when addMissingKeys is true', () => {
     mockGetTranslationFilesPath.mockReturnValue(['/tmp/i18n/en.json']);
-    mockReadFile.mockImplementation(((path: string, opts?: any) => {
-      if (opts?.parse) return { existing: 'val' };
-      return '{"existing":"val"}';
-    }) as any);
+    mockGetCurrentTranslation.mockReturnValue({ existing: 'val' });
     mockNormalizedGlob.mockReturnValue(['/tmp/i18n/en.json']);
 
     compareKeysToFiles({
       scopeToKeys: { __global: { existing: 'val', newKey: 'new' } },
       translationsPath: '/tmp/i18n',
       addMissingKeys: true,
-      emitErrorOnExtraKeys: false,
       fileFormat: 'json',
-      unflat: false,
     });
 
     expect(mockWriteFile).toHaveBeenCalled();
@@ -118,19 +113,17 @@ describe('compareKeysToFiles', () => {
 
   it('should exclude comment deletions from extra keys', () => {
     mockGetTranslationFilesPath.mockReturnValue(['/tmp/i18n/en.json']);
-    mockReadFile.mockImplementation(((path: string, opts?: any) => {
-      if (opts?.parse) return { key: 'value', 'key.comment': 'a comment' };
-      return '{}';
-    }) as any);
+    mockGetCurrentTranslation.mockReturnValue({
+      key: 'value',
+      'key.comment': 'a comment',
+    });
     mockNormalizedGlob.mockReturnValue(['/tmp/i18n/en.json']);
 
     compareKeysToFiles({
       scopeToKeys: { __global: { key: 'value' } },
       translationsPath: '/tmp/i18n',
       addMissingKeys: false,
-      emitErrorOnExtraKeys: false,
       fileFormat: 'json',
-      unflat: false,
     });
 
     expect(mockBuildTable).toHaveBeenCalledWith(
@@ -146,10 +139,7 @@ describe('compareKeysToFiles', () => {
 
   it('should namespace missing keys under the scope path (e.g. admin/en) for scoped translation files', () => {
     mockGetTranslationFilesPath.mockReturnValue(['/tmp/i18n/admin/en.json']);
-    mockReadFile.mockImplementation(((path: string, opts?: any) => {
-      if (opts?.parse) return { key: 'value' };
-      return '{"key":"value"}';
-    }) as any);
+    mockGetCurrentTranslation.mockReturnValue({ key: 'value' });
     mockNormalizedGlob.mockReturnValue(['/tmp/i18n/admin/en.json']);
 
     compareKeysToFiles({
@@ -159,9 +149,7 @@ describe('compareKeysToFiles', () => {
       },
       translationsPath: '/tmp/i18n',
       addMissingKeys: false,
-      emitErrorOnExtraKeys: false,
       fileFormat: 'json',
-      unflat: false,
     });
 
     // Scoped diffs must be keyed as `<scope>/<lang>` (not the global `<lang>`
@@ -179,26 +167,75 @@ describe('compareKeysToFiles', () => {
     );
   });
 
-  it('should unflatten translation before writing when unflat is true', () => {
+  it('given unflat is true, when the missing keys are written, then the translation should be unflattened', () => {
+    unflat = true;
     mockGetTranslationFilesPath.mockReturnValue(['/tmp/i18n/en.json']);
-    mockReadFile.mockImplementation(((path: string, opts?: any) => {
-      if (opts?.parse) return {};
-      return '{}';
-    }) as any);
+    mockGetCurrentTranslation.mockReturnValue({});
     mockNormalizedGlob.mockReturnValue(['/tmp/i18n/en.json']);
 
     compareKeysToFiles({
       scopeToKeys: { __global: { 'a.b': 'value' } },
       translationsPath: '/tmp/i18n',
       addMissingKeys: true,
-      emitErrorOnExtraKeys: false,
       fileFormat: 'json',
-      unflat: true,
     });
 
-    expect(mockWriteFile).toHaveBeenCalledWith(
-      '/tmp/i18n/en.json',
-      expect.objectContaining({ a: { b: 'value' } }),
-    );
+    const [, content] = mockWriteFile.mock.calls[0];
+    expect(JSON.parse(content as string)).toEqual({ a: { b: 'value' } });
+  });
+
+  /**
+   * The translation files used to be read with `JSON.parse` and written back as
+   * JSON, so `find --file-format pot` crashed on the first `.pot` file.
+   */
+  describe('when the file format is pot', () => {
+    it('given a pot translation file, when the keys are compared, then it should be parsed as pot', () => {
+      mockGetTranslationFilesPath.mockReturnValue(['/tmp/i18n/en.pot']);
+      mockGetCurrentTranslation.mockReturnValue({ 'existing.key': 'Existing' });
+      mockNormalizedGlob.mockReturnValue(['/tmp/i18n/en.pot']);
+
+      compareKeysToFiles({
+        scopeToKeys: {
+          __global: { 'existing.key': 'Existing', 'missing.key': '' },
+        },
+        translationsPath: '/tmp/i18n',
+        addMissingKeys: false,
+        fileFormat: 'pot',
+      });
+
+      expect(mockGetCurrentTranslation).toHaveBeenCalledWith({
+        path: '/tmp/i18n/en.pot',
+        fileFormat: 'pot',
+      });
+      expect(mockBuildTable).toHaveBeenCalledWith(
+        expect.objectContaining({
+          diffsPerLang: expect.objectContaining({
+            en: expect.objectContaining({
+              missing: [expect.objectContaining({ path: ['missing.key'] })],
+            }),
+          }),
+        }),
+      );
+    });
+
+    it('given addMissingKeys is true, when the missing keys are written, then the file should stay pot', () => {
+      mockGetTranslationFilesPath.mockReturnValue(['/tmp/i18n/en.pot']);
+      mockGetCurrentTranslation.mockReturnValue({ 'existing.key': 'Existing' });
+      mockNormalizedGlob.mockReturnValue(['/tmp/i18n/en.pot']);
+
+      compareKeysToFiles({
+        scopeToKeys: {
+          __global: { 'existing.key': 'Existing', 'missing.key': '' },
+        },
+        translationsPath: '/tmp/i18n',
+        addMissingKeys: true,
+        fileFormat: 'pot',
+      });
+
+      const [path, content] = mockWriteFile.mock.calls[0];
+      expect(path).toBe('/tmp/i18n/en.pot');
+      expect(content).toEqual(expect.stringContaining('msgid "missing.key"'));
+      expect(content).toEqual(expect.stringContaining('msgid "existing.key"'));
+    });
   });
 });

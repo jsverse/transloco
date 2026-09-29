@@ -27,7 +27,7 @@ export async function buildTranslationFiles(inlineConfig: Config) {
 
   let keysFound = 0;
   for (const [_, scopeKeys] of Object.entries(scopeToKeys)) {
-    keysFound += countKeys(scopeKeys as object);
+    keysFound += countKeys(scopeKeys);
   }
 
   logger.log(

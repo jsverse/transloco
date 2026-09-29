@@ -202,6 +202,7 @@ describe('Performance Benchmarks', () => {
         file: path.join(PERF_TMP, `comp${i}.html`),
         content,
         scopes,
+        langs: ['en'],
         defaultValue: '',
         scopeToKeys,
       });
@@ -222,6 +223,7 @@ describe('Performance Benchmarks', () => {
       file: path.join(PERF_TMP, 'comp0.html'),
       content: generateTemplate(0, KEYS_PER_COMPONENT),
       scopes,
+      langs: ['en'],
       defaultValue: '',
       scopeToKeys: sampleScopeToKeys,
     });
@@ -250,6 +252,7 @@ describe('Performance Benchmarks', () => {
         file: path.join(PERF_TMP, `skip${i}.html`),
         content,
         scopes,
+        langs: ['en'],
         defaultValue: '',
         scopeToKeys: skipScopeToKeys,
       });
@@ -265,6 +268,7 @@ describe('Performance Benchmarks', () => {
         file: path.join(PERF_TMP, 'transloco-benchmark.html'),
         content: translocoContent,
         scopes,
+        langs: ['en'],
         defaultValue: '',
         scopeToKeys,
       });
@@ -346,6 +350,7 @@ describe('Performance Benchmarks', () => {
         file: path.join(PERF_TMP, 'parse-once.html'),
         content: largeTemplate,
         scopes,
+        langs: ['en'],
         defaultValue: '',
         scopeToKeys: { __global: {} },
       };
@@ -363,6 +368,7 @@ describe('Performance Benchmarks', () => {
         file: path.join(PERF_TMP, 'parse-once.html'),
         content: largeTemplate,
         scopes,
+        langs: ['en'],
         defaultValue: '',
         scopeToKeys: { __global: {} },
       });
