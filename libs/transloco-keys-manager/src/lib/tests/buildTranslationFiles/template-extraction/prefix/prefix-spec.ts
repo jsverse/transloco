@@ -1,13 +1,18 @@
 import { describe, beforeEach, it } from 'vitest';
 
 import {
+  assertPartialTranslation,
   assertTranslation,
   buildConfig,
   removeI18nFolder,
   sourceRoot,
   TranslationTestCase,
 } from '../../build-translation-utils';
-import { generateKeys, mockResolveProjectBasePath } from '../../../spec-utils';
+import {
+  defaultValue,
+  generateKeys,
+  mockResolveProjectBasePath,
+} from '../../../spec-utils';
 import { Config } from '../../../../types';
 
 mockResolveProjectBasePath(sourceRoot);
@@ -48,6 +53,10 @@ export function testPrefixExtraction(fileFormat: Config['fileFormat']) {
             end: 2,
             prefix: 'site-header.navigation.route.nested',
           }),
+          ...generateKeys({ end: 2, prefix: 'shadowing.outer' }),
+          ...generateKeys({ end: 1, prefix: 'shadowing.inner' }),
+          ...generateKeys({ end: 1, prefix: 'shadowing.template' }),
+          ...generateKeys({ end: 3, prefix: 'shadowing.unprefixed' }),
         },
         todos: {
           ...generateKeys({ end: 2, prefix: 'numbers' }),
@@ -60,6 +69,37 @@ export function testPrefixExtraction(fileFormat: Config['fileFormat']) {
         type,
         expected: expected.todos,
         path: 'todos-page/',
+        fileFormat,
+      });
+    });
+
+    it(`GIVEN a nested transloco block that redeclares the outer variable without a prefix
+        WHEN keys are extracted
+        THEN its keys are extracted as written, without the outer block's prefix`, () => {
+      buildTranslationFiles(config);
+
+      assertPartialTranslation({
+        type,
+        expected: {
+          'shadowing.outer.1': defaultValue,
+          'shadowing.outer.2': defaultValue,
+          ...generateKeys({ end: 3, prefix: 'shadowing.unprefixed' }),
+        },
+        fileFormat,
+      });
+    });
+
+    it(`GIVEN a nested transloco block that redeclares the outer variable with its own prefix
+        WHEN keys are extracted
+        THEN only the inner block's prefix is applied`, () => {
+      buildTranslationFiles(config);
+
+      assertPartialTranslation({
+        type,
+        expected: {
+          'shadowing.inner.1': defaultValue,
+          'shadowing.template.1': defaultValue,
+        },
         fileFormat,
       });
     });
