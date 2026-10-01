@@ -134,14 +134,33 @@ function getMethodUsages(expressions: AST[], containers: ContainerMetaData[]) {
         params: isLiteralMap(paramsNode)
           ? resolveKeysFromLiteralMap(paramsNode)
           : [],
-        ...containers.find(({ name, spanOffset: { start, end } }) => {
-          const inRange =
-            exp.sourceSpan.end < end && exp.sourceSpan.start > start;
-
-          return (exp.receiver as PropertyRead).name === name && inRange;
-        })!,
+        ...resolveContainer(exp, containers),
       };
     });
+}
+
+/**
+ * A nested block can redeclare the outer block's variable (`let t`), shadowing
+ * it along with its prefix. Containers are collected in document order, so the
+ * last one that encloses the call is the innermost declaration.
+ */
+function resolveContainer(
+  exp: Call,
+  containers: ContainerMetaData[],
+): ContainerMetaData | undefined {
+  const { name } = exp.receiver as PropertyRead;
+
+  for (let i = containers.length - 1; i >= 0; i--) {
+    const container = containers[i];
+    const { start, end } = container.spanOffset;
+    const inRange = exp.sourceSpan.end < end && exp.sourceSpan.start > start;
+
+    if (container.name === name && inRange) {
+      return container;
+    }
+  }
+
+  return undefined;
 }
 
 function isTranslocoAttr(attr: TmplAstTextAttribute | TmplAstBoundAttribute) {
