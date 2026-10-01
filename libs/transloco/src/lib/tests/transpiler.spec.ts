@@ -218,6 +218,10 @@ describe('TranslocoTranspiler', () => {
     });
 
     describe('Circular key references', () => {
+      afterEach(() => {
+        vi.unstubAllGlobals();
+      });
+
       it(`GIVEN a cycle that is reached through function arguments
           WHEN transpiling in dev mode
           THEN should throw the circular reference error with its path instead of a function error`, () => {
@@ -225,6 +229,8 @@ describe('TranslocoTranspiler', () => {
           a: '[[ upperCase({{ b }}) ]]',
           b: '{{ a }}',
         };
+        vi.stubGlobal('ngDevMode', true);
+
         expect(() =>
           transpiler.transpile(
             getTranspilerParams(translation.a, { key: 'a', translation }),
@@ -236,19 +242,13 @@ describe('TranslocoTranspiler', () => {
           WHEN transpiling in production mode
           THEN should call the function once and resolve the circular reference to an empty string`, () => {
         const translation = { a: '[[ upperCase(x) ]] {{ a }}' };
-        const originalNgDevMode = ngDevMode;
-        // @ts-expect-error Property 'ngDevMode' does not exist on type 'typeof globalThis'
-        globalThis['ngDevMode'] = false;
-        try {
-          expect(
-            transpiler.transpile(
-              getTranspilerParams(translation.a, { key: 'a', translation }),
-            ),
-          ).toEqual('X ');
-        } finally {
-          // @ts-expect-error Property 'ngDevMode' does not exist on type 'typeof globalThis'
-          globalThis['ngDevMode'] = originalNgDevMode;
-        }
+        vi.stubGlobal('ngDevMode', false);
+
+        expect(
+          transpiler.transpile(
+            getTranspilerParams(translation.a, { key: 'a', translation }),
+          ),
+        ).toEqual('X ');
       });
 
       it(`GIVEN a function that transpiles another translation map while a key is being resolved
@@ -709,17 +709,9 @@ describe('TranslocoTranspiler', () => {
       });
 
       describe('Circular key references', () => {
-        function withNgDevMode(value: boolean, fn: () => void) {
-          const originalNgDevMode = ngDevMode;
-          // @ts-expect-error Property 'ngDevMode' does not exist on type 'typeof globalThis'
-          globalThis['ngDevMode'] = value;
-          try {
-            fn();
-          } finally {
-            // @ts-expect-error Property 'ngDevMode' does not exist on type 'typeof globalThis'
-            globalThis['ngDevMode'] = originalNgDevMode;
-          }
-        }
+        afterEach(() => {
+          vi.unstubAllGlobals();
+        });
 
         function transpileKey(
           key: string,
@@ -742,62 +734,62 @@ describe('TranslocoTranspiler', () => {
         it(`GIVEN a translation that references itself
             WHEN transpiling it in dev mode
             THEN should throw an error containing the recursive path`, () => {
-          withNgDevMode(true, () => {
-            expect(() => transpileKey('recursive', selfRef)).toThrow(
-              'recursive -> recursive',
-            );
-          });
+          vi.stubGlobal('ngDevMode', true);
+
+          expect(() => transpileKey('recursive', selfRef)).toThrow(
+            'recursive -> recursive',
+          );
         });
 
         it(`GIVEN two translations that reference each other
             WHEN transpiling one of them in dev mode
             THEN should throw an error containing the recursive path`, () => {
-          withNgDevMode(true, () => {
-            expect(() => transpileKey('a', indirect)).toThrow('a -> b -> a');
-          });
+          vi.stubGlobal('ngDevMode', true);
+
+          expect(() => transpileKey('a', indirect)).toThrow('a -> b -> a');
         });
 
         it(`GIVEN a non-cyclic translation that leads into a cycle
             WHEN transpiling it in dev mode
             THEN should throw an error containing the full path from the entry key`, () => {
-          withNgDevMode(true, () => {
-            expect(() =>
-              transpileKey('start', {
-                ...indirect,
-                start: `Start ${wrapParam('a')}`,
-              }),
-            ).toThrow('start -> a -> b -> a');
-          });
+          vi.stubGlobal('ngDevMode', true);
+
+          expect(() =>
+            transpileKey('start', {
+              ...indirect,
+              start: `Start ${wrapParam('a')}`,
+            }),
+          ).toThrow('start -> a -> b -> a');
         });
 
         it(`GIVEN a translation whose dynamic key reference resolves to itself
             WHEN transpiling it in dev mode
             THEN should throw an error containing the recursive path`, () => {
-          withNgDevMode(true, () => {
-            expect(() =>
-              transpileKey(
-                'self',
-                { self: wrapParam(wrapParam('target')) },
-                { target: 'self' },
-              ),
-            ).toThrow('self -> self');
-          });
+          vi.stubGlobal('ngDevMode', true);
+
+          expect(() =>
+            transpileKey(
+              'self',
+              { self: wrapParam(wrapParam('target')) },
+              { target: 'self' },
+            ),
+          ).toThrow('self -> self');
         });
 
         it(`GIVEN a translation that references itself
             WHEN transpiling it in production mode
             THEN should resolve the circular reference to an empty string`, () => {
-          withNgDevMode(false, () => {
-            expect(transpileKey('recursive', selfRef)).toEqual('Recursive ');
-          });
+          vi.stubGlobal('ngDevMode', false);
+
+          expect(transpileKey('recursive', selfRef)).toEqual('Recursive ');
         });
 
         it(`GIVEN two translations that reference each other
             WHEN transpiling one of them in production mode
             THEN should stop at the circular reference`, () => {
-          withNgDevMode(false, () => {
-            expect(transpileKey('a', indirect)).toEqual('A B ');
-          });
+          vi.stubGlobal('ngDevMode', false);
+
+          expect(transpileKey('a', indirect)).toEqual('A B ');
         });
 
         it(`GIVEN a translation that references the same key twice
