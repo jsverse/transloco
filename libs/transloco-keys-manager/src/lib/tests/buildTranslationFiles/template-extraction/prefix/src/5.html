@@ -1,0 +1,17 @@
+<ng-container *transloco="let t; prefix: 'shadowing.outer'">
+  {{ t('1') }}
+  <div *transloco="let t">
+    <p>{{ t('shadowing.unprefixed.1') }}</p>
+    <comp [aa]="t('shadowing.unprefixed.2')"></comp>
+  </div>
+  <div *transloco="let t; prefix: 'shadowing.inner'">{{ t('1') }}</div>
+  <tabs
+    [tabs]="[{ id: 'tab', headerTranslationKey: 'not-extracted', content: tpl }]"
+  ></tabs>
+  {{ t('2') }}
+</ng-container>
+
+<ng-template transloco let-t translocoPrefix="shadowing.template">
+  {{ t('1') }}
+  <ng-template transloco let-t> {{ t('shadowing.unprefixed.3') }} </ng-template>
+</ng-template>
