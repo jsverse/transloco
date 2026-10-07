@@ -145,6 +145,23 @@ describe('object.utils', () => {
       // every other key, including one named `prototype`, still merges
       expect(result).toEqual({ prototype: 'Prototyp', hello: 'Hallo' });
     });
+
+    it('should give a key that shadows Object.prototype its own object', async () => {
+      const { mergeDeep } = await import('../utils/object.utils');
+      const source = {
+        constructor: { title: 'Konstruktor' },
+        toString: { label: 'Text' },
+      };
+
+      const result = mergeDeep({}, source);
+
+      expect(Object.prototype.hasOwnProperty.call(result, 'constructor')).toBe(
+        true,
+      );
+      expect(result).toEqual(source);
+      expect(Object.prototype.constructor).toBe(Object);
+      expect((Object.prototype as any).title).toBeUndefined();
+    });
   });
 
   describe('stringify', () => {

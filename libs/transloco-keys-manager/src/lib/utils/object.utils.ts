@@ -35,7 +35,13 @@ export function mergeDeep(target: object, ...sources: any[]) {
       // source key of that name writes translation data onto it.
       if (key === '__proto__') continue;
       if (isObject(source[key])) {
-        if (!target[key]) Object.assign(target, { [key]: {} });
+        // An inherited `constructor` or `toString` is not ours to merge into.
+        if (
+          !Object.prototype.hasOwnProperty.call(target, key) ||
+          !target[key]
+        ) {
+          Object.assign(target, { [key]: {} });
+        }
         mergeDeep(target[key], source[key]);
       } else {
         Object.assign(target, { [key]: source[key] });
