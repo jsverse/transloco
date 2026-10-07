@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Transloco is an internationalization (i18n) library for Angular, published under the `@jsverse` npm scope. It's an Nx monorepo with 14 libraries and a playground app.
+Transloco is an internationalization (i18n) library for Angular, published under the `@jsverse` npm scope. It's an Nx monorepo with 15 libraries and a playground app.
 
 ## Common Commands
 
@@ -51,6 +51,7 @@ The core `transloco` library is the foundation. All plugin libraries depend on i
 - **transloco-preload-langs** - Preload languages on app init
 - **transloco-scoped-libs** - Scoped translations for lazy-loaded features
 - **transloco-optimize** - Build-time optimization webpack plugin
+- **transloco-cli** - Unified `transloco` CLI (extract/find/validate/optimize/scoped-libs)
 - **transloco-keys-manager** - CLI to extract/manage translation keys
 - **transloco-schematics** - `ng add`/`ng generate` schematics
 - **transloco-validator** - CLI to validate translation files
@@ -86,7 +87,7 @@ All libraries are mapped via `tsconfig.base.json` paths (e.g., `@jsverse/translo
 
 Format: `type(scope): subject` (max 64 chars). Use `pnpm commit` for interactive prompt.
 
-Scopes: `transloco`, `locale`, `messageformat`, `optimize`, `persist-lang`, `persist-translations`, `preload-langs`, `scoped-libs`, `utils`, `validator`, `schematics`
+Scopes: `transloco`, `cli`, `locale`, `messageformat`, `optimize`, `persist-lang`, `persist-translations`, `preload-langs`, `scoped-libs`, `utils`, `validator`, `schematics`
 
 ### Pre-commit Checks
 

@@ -17,7 +17,8 @@
       "@jsverse/transloco-utils",
       "@jsverse/transloco-optimize",
       "@jsverse/transloco-validator",
-      "@jsverse/transloco-keys-manager"
+      "@jsverse/transloco-keys-manager",
+      "@jsverse/transloco-cli"
     ]
   },
   "exports": {
