@@ -26,7 +26,7 @@ export function testCustomProvidersConfig(fileFormat: Config['fileFormat']) {
       type,
       config: {
         fileFormat,
-        scopeProviderFunctions: ['provideScopedTranslations'],
+        scopeProviderFunctions: ['provideScopedTranslations', '$provideScope'],
         serviceNames: ['TranslationsService'],
       },
     });
@@ -55,6 +55,16 @@ export function testCustomProvidersConfig(fileFormat: Config['fileFormat']) {
         type,
         expected: { '2': defaultValue },
         path: 'other-page/',
+        fileFormat,
+      });
+    });
+
+    it('should resolve scopes provided by custom functions whose names contain regex characters', () => {
+      buildTranslationFiles(config);
+      assertTranslation({
+        type,
+        expected: { '3': defaultValue },
+        path: 'dollar-page/',
         fileFormat,
       });
     });

@@ -4,7 +4,7 @@ import { addScope, hasScope } from '../keys-builder/utils/scope.utils';
 import { Scopes } from '../types';
 
 import { readFile } from './file.utils';
-import { toCamelCase } from './string.utils';
+import { sanitizeForRegex, toCamelCase } from './string.utils';
 import { normalizedGlob } from './normalize-glob-path';
 import {
   findDescendant,
@@ -30,13 +30,16 @@ type Options = {
   scopeProviderFunctions?: string[];
 };
 
+// Cheap pre-filter for files that may provide a scope. Names are matched as
+// whole identifiers, which may contain `$`, so `\b` can't be used as boundary.
 function buildProviderRegex(scopeProviderFunctions: string[] = []) {
   const names = [
     'TRANSLOCO_SCOPE',
     'provideTranslocoScope',
     ...scopeProviderFunctions,
-  ];
-  return new RegExp(`(${names.join('|')})`);
+  ].map(sanitizeForRegex);
+
+  return new RegExp(`(?<![\\w$])(?:${names.join('|')})(?![\\w$])`);
 }
 
 export function updateScopesMap(

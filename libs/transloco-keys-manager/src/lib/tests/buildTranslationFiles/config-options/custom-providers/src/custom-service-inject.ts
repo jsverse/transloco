@@ -11,5 +11,6 @@ export class CustomInjectComponent implements OnInit {
   ngOnInit() {
     this.translations.translate('custom-service.inject');
     this.translations.translate('1', {}, 'custom-page');
+    this.translations.translate('3', {}, 'dollar-page');
   }
 }
