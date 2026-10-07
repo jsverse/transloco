@@ -17,6 +17,18 @@
       "@jsverse/transloco": ["./libs/transloco/src/index.ts"],
       "@jsverse/transloco/router": ["./libs/transloco/router/src/index.ts"],
       "@jsverse/transloco-cli": ["./libs/transloco-cli/src/index.ts"],
+      "@jsverse/transloco-cli/internal/keys-manager": [
+        "./libs/transloco-cli/src/keys-manager/index.ts"
+      ],
+      "@jsverse/transloco-cli/internal/optimize": [
+        "./libs/transloco-cli/src/optimize/index.ts"
+      ],
+      "@jsverse/transloco-cli/internal/scoped-libs": [
+        "./libs/transloco-cli/src/scoped-libs/index.ts"
+      ],
+      "@jsverse/transloco-cli/internal/validator": [
+        "./libs/transloco-cli/src/validator/index.ts"
+      ],
       "@jsverse/transloco-keys-manager": [
         "./libs/transloco-keys-manager/src/index.ts"
       ],

@@ -43,21 +43,8 @@
     "typescript": ">= 5.8.0 < 7.0.0"
   },
   "dependencies": {
-    "@jsverse/angular-utils": "1.0.0-beta.6",
-    "@jsverse/transloco-utils": "^9.0.0-alpha.4",
-    "chalk": "6.0.0",
-    "cheerio": "1.2.0",
-    "cli-table3": "0.6.1",
+    "@jsverse/transloco-cli": "^9.0.0-alpha.4",
     "command-line-args": "6.0.2",
-    "command-line-usage": "7.0.4",
-    "cosmiconfig": "10.0.0",
-    "debug": "4.4.3",
-    "deep-diff": "1.0.2",
-    "flat": "6.0.1",
-    "fs-extra": "11.4.0",
-    "gettext-parser": "8.0.0",
-    "glob": "13.0.6",
-    "jsonc-parser": "3.3.1",
-    "ora": "9.4.1"
+    "command-line-usage": "7.0.4"
   }
 }

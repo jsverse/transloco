@@ -4,6 +4,7 @@
   "sourceRoot": "libs/transloco-cli/src",
   "projectType": "library",
   "tags": [],
+  "implicitDependencies": ["!transloco"],
   "targets": {
     "build": {
       "executor": "@nx/js:tsc",

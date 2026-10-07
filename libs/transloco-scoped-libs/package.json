@@ -30,11 +30,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@jsverse/transloco-utils": "^9.0.0-alpha.4",
-    "chalk": "6.0.0",
-    "chokidar": "^5.0.0",
-    "command-line-args": "6.0.2",
-    "glob": "13.0.6",
-    "fs-extra": "11.4.0"
+    "@jsverse/transloco-cli": "^9.0.0-alpha.4",
+    "command-line-args": "6.0.2"
   }
 }
