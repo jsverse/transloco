@@ -1,0 +1,46 @@
+{
+  "description": "GIVEN the very same config file, an en file with an extra key and an es file missing one WHEN the keys are searched with nothing but --config THEN the options find reads apply (rootTranslationsPath, addMissingKeys, emitErrorOnExtraKeys, sort, defaultValue) so the key is added and it exits with 2, the ones only extract reads are no error and nothing is said about them on either stream",
+  "args": [
+    "find",
+    "--config",
+    "transloco.config.js"
+  ],
+  "exitCode": 2,
+  "stderrQuiet": true,
+  "stdoutIncludes": [
+    "File Name Missing Keys Extra Keys",
+    "en -- 'old.key'",
+    "es 'actions.cancel' --"
+  ],
+  "stdoutExcludes": [
+    "warning",
+    "Warning",
+    "WARN",
+    "⚠",
+    "not supported",
+    "ignored",
+    "unknown option",
+    "error:",
+    "output",
+    "replace",
+    "removeExtraKeys",
+    "remove-extra-keys",
+    "langs"
+  ],
+  "stderrExcludes": [
+    "warning",
+    "Warning",
+    "WARN",
+    "⚠",
+    "not supported",
+    "ignored",
+    "unknown option",
+    "error:",
+    "output",
+    "replace",
+    "removeExtraKeys",
+    "remove-extra-keys",
+    "langs"
+  ],
+  "sameStreamsAs": "provenance/own-config-find"
+}

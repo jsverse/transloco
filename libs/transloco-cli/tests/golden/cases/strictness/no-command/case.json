@@ -1,0 +1,9 @@
+{
+  "description": "GIVEN no command WHEN the binary runs THEN the help goes to stderr and it exits with 1",
+  "args": [],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

@@ -1,0 +1,2 @@
+error: option '-o, --output <path>' argument missing ('-R' is an option, a value that starts with a dash is written as --output=-R)
+(add --help for additional information)

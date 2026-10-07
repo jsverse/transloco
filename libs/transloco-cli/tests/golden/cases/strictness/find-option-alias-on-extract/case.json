@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN -e, the alias of the find only --emit-error-on-extra-keys WHEN extract runs THEN it is rejected and it exits with 1",
+  "args": [
+    "extract",
+    "-e"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

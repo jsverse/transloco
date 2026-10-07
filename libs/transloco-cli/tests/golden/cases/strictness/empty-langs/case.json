@@ -1,0 +1,17 @@
+{
+  "description": "GIVEN an empty --langs WHEN extract runs THEN it is rejected instead of writing a file without a language, and it exits with 1",
+  "args": [
+    "extract",
+    "-i",
+    "src/app",
+    "-o",
+    "out",
+    "-l",
+    ""
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

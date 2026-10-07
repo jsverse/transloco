@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN the same files WHEN they are optimized with -k note THEN the result is the same as with --comments-key",
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ],
+  "args": [
+    "optimize",
+    "dist/i18n",
+    "-k",
+    "note"
+  ]
+}

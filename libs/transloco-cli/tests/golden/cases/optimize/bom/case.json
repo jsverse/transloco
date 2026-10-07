@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN a translation file starting with a UTF-8 BOM WHEN it is optimized THEN it is flattened and minified without the BOM",
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ],
+  "args": [
+    "optimize",
+    "dist/i18n"
+  ]
+}

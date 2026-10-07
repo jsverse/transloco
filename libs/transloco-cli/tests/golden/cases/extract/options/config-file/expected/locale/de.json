@@ -1,0 +1,11 @@
+{
+  "actions": {
+    "cancel": "TODO: actions.cancel",
+    "save": "TODO: actions.save"
+  },
+  "home": {
+    "documentTitle": "TODO: home.documentTitle",
+    "greeting": "TODO: home.greeting",
+    "title": "TODO: home.title"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN the help of find is asked for WHEN the binary runs THEN it prints the usage to stdout and exits with 0",
+  "args": [
+    "find",
+    "--help"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

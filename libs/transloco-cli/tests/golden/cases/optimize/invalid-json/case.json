@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN a translation file that is not valid JSON WHEN the directory is optimized THEN the failure goes to stderr, the file is left as it was and it exits with 1",
+  "args": [
+    "optimize",
+    "dist/i18n"
+  ],
+  "exitCode": 1,
+  "stdoutIncludes": [
+    "Transloco Optimize: found 1 translation files, optimizing..."
+  ],
+  "stderrMatches": "^[^\\n]+$"
+}

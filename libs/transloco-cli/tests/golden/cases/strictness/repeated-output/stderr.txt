@@ -1,0 +1,2 @@
+error: option '-o, --output <path>' was given more than once.
+(add --help for additional information)

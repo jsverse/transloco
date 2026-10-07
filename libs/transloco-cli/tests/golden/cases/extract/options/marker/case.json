@@ -1,0 +1,19 @@
+{
+  "description": "GIVEN comments marking dynamic keys with \"_\" next to ones using the default \"t\" WHEN the keys are extracted with --marker _ THEN only the \"_\" comments yield keys",
+  "args": [
+    "extract",
+    "--input",
+    "src/app",
+    "--output",
+    "i18n",
+    "--file-format",
+    "json",
+    "--marker",
+    "_",
+    "--default-value",
+    "missing",
+    "--langs",
+    "en"
+  ],
+  "exitCode": 0
+}

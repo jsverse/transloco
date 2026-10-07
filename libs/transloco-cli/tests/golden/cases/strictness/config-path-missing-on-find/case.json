@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN a --config path that does not exist WHEN find runs with --add-missing-keys THEN the path is reported instead of the defaults being used, the translation files are untouched and it exits with 1",
+  "args": [
+    "find",
+    "-a",
+    "--config",
+    "missing.config.js"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

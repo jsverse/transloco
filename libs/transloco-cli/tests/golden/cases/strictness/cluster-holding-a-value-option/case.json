@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN -sor, which would read as -s and -o with \"r\" for an output directory WHEN extract runs THEN it is rejected, no \"r\" directory is written, the translation file is untouched and it exits with 1",
+  "args": [
+    "extract",
+    "-c",
+    "configs/transloco.config.js",
+    "-sor"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

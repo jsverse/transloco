@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN a directory that does not exist WHEN it is optimized THEN stderr names the resolved directory and it exits with 1",
+  "args": [
+    "optimize",
+    "dist/nope"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

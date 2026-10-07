@@ -1,0 +1,2 @@
+error: option '-d, --dist <path>' argument cannot be empty
+(add --help for additional information)

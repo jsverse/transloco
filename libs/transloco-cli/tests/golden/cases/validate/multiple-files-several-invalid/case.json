@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN translation files where one defines a key twice and another is not valid JSON WHEN they are validated THEN each problem gets its own line, in the order of the files, and it exits with 1",
+  "args": [
+    "validate",
+    "i18n/en.json",
+    "i18n/es.json",
+    "i18n/it.json"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout"
+  ],
+  "stderrMatches": "^Found duplicate keys: hello \\(i18n/en\\.json\\)\\n[^\\n]+ \\(i18n/it\\.json\\)$"
+}

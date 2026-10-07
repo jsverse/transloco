@@ -1,0 +1,24 @@
+{
+  "description": "GIVEN the config-options/scope-mapping/src fixture of the in-process specs WHEN its keys are extracted to json with --config transloco.config.js --sort THEN the generated translation files match",
+  "args": [
+    "extract",
+    "--input",
+    "src",
+    "--output",
+    "i18n",
+    "--file-format",
+    "json",
+    "--default-value",
+    "missing",
+    "--config",
+    "transloco.config.js",
+    "--sort",
+    "--langs",
+    "en",
+    "es"
+  ],
+  "exitCode": 0,
+  "fixtures": {
+    "src": "buildTranslationFiles/config-options/scope-mapping/src"
+  }
+}

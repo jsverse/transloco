@@ -1,0 +1,13 @@
+{
+  "description": "GIVEN valid translation files WHEN they are validated THEN nothing is printed and it exits with 0",
+  "args": [
+    "validate",
+    "i18n/en.json",
+    "i18n/es.json"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

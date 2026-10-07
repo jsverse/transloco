@@ -1,0 +1,11 @@
+{
+  "description": "GIVEN an Nx workspace without angular.json, where a project.json names its project differently than its directory WHEN the keys are extracted with --project THEN the source root of that project gives the input and the output",
+  "args": [
+    "extract",
+    "--project",
+    "shop-app",
+    "--default-value",
+    "missing"
+  ],
+  "exitCode": 0
+}

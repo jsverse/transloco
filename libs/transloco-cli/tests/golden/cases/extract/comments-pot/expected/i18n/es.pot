@@ -1,0 +1,218 @@
+msgid ""
+msgstr ""
+"mime-version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "1"
+msgstr "missing"
+
+msgid "1.some"
+msgstr "missing"
+
+msgid "10"
+msgstr "missing"
+
+msgid "10.1"
+msgstr "missing"
+
+msgid "10.2"
+msgstr "missing"
+
+msgid "10.3"
+msgstr "missing"
+
+msgid "10.4"
+msgstr "missing"
+
+msgid "10.5"
+msgstr "missing"
+
+msgid "10.6.7"
+msgstr "missing"
+
+msgid "101"
+msgstr "missing"
+
+msgid "11"
+msgstr "missing"
+
+msgid "11.1"
+msgstr "missing"
+
+msgid "11.12"
+msgstr "missing"
+
+msgid "11.2.3"
+msgstr "missing"
+
+msgid "111.12"
+msgstr "missing"
+
+msgid "13"
+msgstr "missing"
+
+msgid "131"
+msgstr "missing"
+
+msgid "2"
+msgstr "missing"
+
+msgid "200"
+msgstr "missing"
+
+msgid "201"
+msgstr "missing"
+
+msgid "202"
+msgstr "missing"
+
+msgid "203.204"
+msgstr "missing"
+
+msgid "205"
+msgstr "missing"
+
+msgid "206"
+msgstr "missing"
+
+msgid "207.208"
+msgstr "missing"
+
+msgid "209"
+msgstr "missing"
+
+msgid "210"
+msgstr "missing"
+
+msgid "211"
+msgstr "missing"
+
+msgid "212"
+msgstr "missing"
+
+msgid "213.214"
+msgstr "missing"
+
+msgid "215"
+msgstr "missing"
+
+msgid "216"
+msgstr "missing"
+
+msgid "217.218"
+msgstr "missing"
+
+msgid "3"
+msgstr "missing"
+
+msgid "4"
+msgstr "missing"
+
+msgid "5"
+msgstr "missing"
+
+msgid "6"
+msgstr "missing"
+
+msgid "7"
+msgstr "missing"
+
+msgid "8"
+msgstr "missing"
+
+msgid "a.some.key"
+msgstr "missing"
+
+msgid "another.container.1"
+msgstr "missing"
+
+msgid "another.container.2"
+msgstr "missing"
+
+msgid "b.some.key"
+msgstr "missing"
+
+msgid "c.some.key"
+msgstr "missing"
+
+msgid "early.exit.comment.key"
+msgstr "missing"
+
+msgid "from.comment"
+msgstr "missing"
+
+msgid "global.1"
+msgstr "missing"
+
+msgid "global.2"
+msgstr "missing"
+
+msgid "global.3"
+msgstr "missing"
+
+msgid "global.4"
+msgstr "missing"
+
+msgid "hello"
+msgstr "missing"
+
+msgid "hello1"
+msgstr "missing"
+
+msgid "hey.man"
+msgstr "missing"
+
+msgid "hey1.man"
+msgstr "missing"
+
+msgid "inner.read.1"
+msgstr "missing"
+
+msgid "inner.read.2"
+msgstr "missing"
+
+msgid "inner.read.3"
+msgstr "missing"
+
+msgid "inner.read.4"
+msgstr "missing"
+
+msgid "need.transloco"
+msgstr "missing"
+
+msgid "outer.read.1"
+msgstr "missing"
+
+msgid "outer.read.2"
+msgstr "missing"
+
+msgid "outer.read.3"
+msgstr "missing"
+
+msgid "outer.read.4"
+msgstr "missing"
+
+msgid "outer.read.5"
+msgstr "missing"
+
+msgid "outer.read.6"
+msgstr "missing"
+
+msgid "outer.read.7"
+msgstr "missing"
+
+msgid "outer.read.8"
+msgstr "missing"
+
+msgid "prefix_c.some.key"
+msgstr "missing"
+
+msgid "pretty.cool.da"
+msgstr "missing"
+
+msgid "whats.app"
+msgstr "missing"
+
+msgid "whats1.app"
+msgstr "missing"

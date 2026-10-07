@@ -1,0 +1,2 @@
+error: option '-d, --dist <path>' was given more than once.
+(add --help for additional information)

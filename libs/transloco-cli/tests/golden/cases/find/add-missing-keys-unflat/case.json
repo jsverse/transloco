@@ -1,0 +1,21 @@
+{
+  "description": "GIVEN the nested en.json of the add-missing-keys spec WHEN the keys are searched with --add-missing-keys --unflat THEN the missing keys are added nested and it exits with 0",
+  "args": [
+    "find",
+    "--input",
+    "src",
+    "--translations-path",
+    "i18n",
+    "--add-missing-keys",
+    "--unflat",
+    "--default-value",
+    "missing"
+  ],
+  "exitCode": 0,
+  "fixtures": {
+    "src": "findMissingKeys/add-missing-keys/src"
+  },
+  "stderrIncludes": [
+    "Added all missing keys"
+  ]
+}

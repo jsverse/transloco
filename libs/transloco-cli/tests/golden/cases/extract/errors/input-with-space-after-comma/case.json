@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN an --input whose second path follows a space after the comma WHEN the keys are extracted THEN the paths are taken as they are, the one starting with a space is not found, nothing is written and it exits with 1",
+  "args": [
+    "extract",
+    "--input",
+    "src/app, lib/src",
+    "--output",
+    "i18n"
+  ],
+  "exitCode": 1,
+  "stdoutIncludes": [
+    "Input path provided doesn't exist!"
+  ]
+}

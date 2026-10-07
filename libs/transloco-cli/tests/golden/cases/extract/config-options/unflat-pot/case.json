@@ -1,0 +1,22 @@
+{
+  "description": "GIVEN the config-options/unflat/src fixture of the in-process specs WHEN its keys are extracted to pot with --unflat THEN the generated translation files match",
+  "args": [
+    "extract",
+    "--input",
+    "src",
+    "--output",
+    "i18n",
+    "--file-format",
+    "pot",
+    "--default-value",
+    "missing",
+    "--unflat",
+    "--langs",
+    "en",
+    "es"
+  ],
+  "exitCode": 0,
+  "fixtures": {
+    "src": "buildTranslationFiles/config-options/unflat/src"
+  }
+}

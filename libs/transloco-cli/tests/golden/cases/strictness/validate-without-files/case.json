@@ -1,0 +1,11 @@
+{
+  "description": "GIVEN no files WHEN validate runs THEN the missing argument is reported and it exits with 1",
+  "args": [
+    "validate"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

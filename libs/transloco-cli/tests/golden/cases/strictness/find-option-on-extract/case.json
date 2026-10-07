@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN --add-missing-keys, which only find reads WHEN extract runs THEN it is rejected like an unknown option and it exits with 1",
+  "args": [
+    "extract",
+    "--input",
+    "src/app",
+    "--add-missing-keys"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

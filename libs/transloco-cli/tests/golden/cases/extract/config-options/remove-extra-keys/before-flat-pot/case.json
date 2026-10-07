@@ -1,0 +1,21 @@
+{
+  "description": "GIVEN the \"before\" template of the remove-extra-keys spec and no translation files WHEN its keys are extracted to pot THEN the files hold every key of the template",
+  "args": [
+    "extract",
+    "--input",
+    "src",
+    "--output",
+    "i18n",
+    "--file-format",
+    "pot",
+    "--default-value",
+    "missing",
+    "--langs",
+    "en",
+    "es"
+  ],
+  "exitCode": 0,
+  "fixtures": {
+    "src/1.html": "buildTranslationFiles/config-options/remove-extra-keys/src/1-before.html.in"
+  }
+}

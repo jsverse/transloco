@@ -1,0 +1,18 @@
+{
+  "description": "GIVEN an en.json with translated values in no particular order WHEN the keys are searched with -a --sort THEN the file is rewritten sorted, keeping the translations",
+  "args": [
+    "find",
+    "--input",
+    "src",
+    "--translations-path",
+    "i18n",
+    "-a",
+    "--sort",
+    "--default-value",
+    "missing"
+  ],
+  "exitCode": 0,
+  "fixtures": {
+    "src": "findMissingKeys/add-missing-keys/src"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN -output, which reads as -o with \"utput\" for a value WHEN extract runs THEN it is rejected with the option that was meant, the translation files are untouched and it exits with 1",
+  "args": [
+    "extract",
+    "-c",
+    "configs/transloco.config.js",
+    "-output"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

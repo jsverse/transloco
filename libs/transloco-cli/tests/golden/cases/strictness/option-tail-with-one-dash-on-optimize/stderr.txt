@@ -1,0 +1,2 @@
+error: unknown option '-key=note' (did you mean '--comments-key'?)
+(add --help for additional information)

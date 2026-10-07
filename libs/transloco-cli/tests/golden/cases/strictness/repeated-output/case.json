@@ -1,0 +1,17 @@
+{
+  "description": "GIVEN --output twice WHEN extract runs THEN it is rejected instead of the last one winning, nothing is written and it exits with 1",
+  "args": [
+    "extract",
+    "-i",
+    "src/app",
+    "-o",
+    "a",
+    "-o",
+    "b"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

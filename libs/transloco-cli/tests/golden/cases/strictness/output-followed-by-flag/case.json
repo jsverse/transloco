@@ -1,0 +1,15 @@
+{
+  "description": "GIVEN -o directly followed by -R WHEN extract runs THEN the value is reported missing instead of a directory named \"-R\" being written, the translation files are untouched and it exits with 1",
+  "args": [
+    "extract",
+    "-c",
+    "configs/transloco.config.js",
+    "-o",
+    "-R"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

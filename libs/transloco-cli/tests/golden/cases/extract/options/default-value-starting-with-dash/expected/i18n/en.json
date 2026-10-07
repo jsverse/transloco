@@ -1,0 +1,8 @@
+{
+  "actions.save": "-R",
+  "home.title": "Welcome",
+  "home.greeting": "-R",
+  "home.documentTitle": "-R",
+  "actions.cancel": "-R",
+  "removed.key": "Stale"
+}

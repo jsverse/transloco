@@ -1,0 +1,16 @@
+{
+  "description": "GIVEN the flags -s and -u written behind one dash WHEN the keys are extracted THEN both apply: the file is written sorted and nested",
+  "args": [
+    "extract",
+    "-i",
+    "src/app",
+    "-o",
+    "i18n",
+    "-d",
+    "missing",
+    "-l",
+    "en",
+    "-su"
+  ],
+  "exitCode": 0
+}

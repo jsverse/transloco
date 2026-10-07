@@ -1,0 +1,2 @@
+error: missing required argument 'files'
+(add --help for additional information)

@@ -1,0 +1,11 @@
+{
+  "description": "GIVEN the transloco.config.ts that ng add generates, with its type-only import of a package that is not installed WHEN the keys are extracted with --config THEN the config is loaded and a file per configured language is written",
+  "args": [
+    "extract",
+    "--config",
+    "transloco.config.ts",
+    "--default-value",
+    "missing"
+  ],
+  "exitCode": 0
+}
