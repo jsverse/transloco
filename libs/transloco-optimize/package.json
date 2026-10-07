@@ -32,8 +32,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "flat": "6.0.1",
-    "command-line-args": "6.0.2",
-    "glob": "13.0.6"
+    "@jsverse/transloco-cli": "^9.0.0-alpha.4",
+    "command-line-args": "6.0.2"
   }
 }
