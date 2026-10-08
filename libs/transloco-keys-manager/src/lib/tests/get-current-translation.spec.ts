@@ -88,4 +88,27 @@ describe('getCurrentTranslation', () => {
     expect(mockWarn).toHaveBeenCalledTimes(1);
     expect(mockWarn).toHaveBeenCalledWith(expect.stringContaining(file));
   });
+
+  it(`GIVEN a pot file without a __proto__ entry
+      WHEN the translation is read
+      THEN it is returned untouched and nothing is logged`, () => {
+    const file = path.join(dir, 'en.pot');
+    fs.writeFileSync(
+      file,
+      [
+        'msgid ""',
+        'msgstr ""',
+        '"Content-Type: text/plain; charset=UTF-8\\n"',
+        '',
+        'msgid "hello"',
+        'msgstr "Hello"',
+        '',
+      ].join('\n'),
+    );
+
+    expect(getCurrentTranslation({ path: file, fileFormat: 'pot' })).toEqual({
+      hello: 'Hello',
+    });
+    expect(mockWarn).not.toHaveBeenCalled();
+  });
 });
