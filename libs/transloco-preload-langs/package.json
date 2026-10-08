@@ -2,34 +2,36 @@
   "name": "@jsverse/transloco-preload-langs",
   "version": "9.0.0-alpha.4",
   "description": "Transloco preload languages while idle",
-  "publishConfig": {
-    "access": "public"
-  },
-  "bugs": {
-    "url": "https://github.com/jsverse/transloco/issues"
-  },
-  "homepage": "https://jsverse.gitbook.io/transloco/plugins/preload-langs",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/jsverse/transloco"
   },
-  "keywords": [
-    "Angular",
-    "i18n",
-    "Translate",
-    "Angular Translate",
-    "Transloco",
-    "Preload",
-    "Optimization"
-  ],
-  "license": "MIT",
-  "peerDependencies": {
-    "@angular/common": ">=20.0.0",
-    "@angular/core": ">=20.0.0",
-    "@jsverse/transloco": "^9.0.0-alpha.4"
+  "homepage": "https://jsverse.gitbook.io/transloco/plugins/preload-langs",
+  "bugs": "https://github.com/jsverse/transloco/issues",
+  "sideEffects": false,
+  "engines": {
+    "node": "^22.18.0 || >=24"
   },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "angular",
+    "i18n",
+    "translate",
+    "angular translate",
+    "transloco",
+    "preload",
+    "optimization"
+  ],
   "dependencies": {
     "tslib": "^2.8.1"
   },
-  "sideEffects": false
+  "peerDependencies": {
+    "@angular/common": ">=20.0.0",
+    "@angular/core": ">=20.0.0",
+    "@jsverse/transloco": "^9.0.0-alpha.4",
+    "rxjs": "^6.5.3 || ^7.4.0"
+  }
 }
