@@ -8,32 +8,20 @@ import { Component } from '@angular/core';
 
 import { providersMock, runLoader } from '../mocks';
 import { TranslocoDirective } from '../../transloco.directive';
-import { TRANSLOCO_SCOPE } from '../../transloco-scope';
-import { TranslocoModule } from '../../transloco.module';
+import { provideTranslocoScope } from '../../transloco.providers';
+import { TranslocoPipe } from '../../transloco.pipe';
 
 import { createFactory } from './shared';
 
 describe('Scope alias', () => {
   let spectator: SpectatorHost<TranslocoDirective>;
 
-  const createHost = createFactory([
-    {
-      provide: TRANSLOCO_SCOPE,
-      useValue: {
-        scope: 'admin-page',
-        alias: 'adminPageAlias',
-      },
-      multi: true,
-    },
-    {
-      provide: TRANSLOCO_SCOPE,
-      useValue: {
-        scope: 'lazy-page',
-        alias: 'lazyPage',
-      },
-      multi: true,
-    },
-  ]);
+  const createHost = createFactory(
+    provideTranslocoScope(
+      { scope: 'admin-page', alias: 'adminPageAlias' },
+      { scope: 'lazy-page', alias: 'lazyPage' },
+    ),
+  );
 
   it(`GIVEN multiple scopes with aliases configured
       WHEN directive renders with aliased scope keys
@@ -60,7 +48,7 @@ describe('Scope alias', () => {
     <span>{{ 'admin.title' | transloco }}</span>
     <h1>{{ 'nested.title' | transloco }}</h1>
   `,
-  imports: [TranslocoModule],
+  imports: [TranslocoDirective, TranslocoPipe],
 })
 class TestPipe {}
 
@@ -68,25 +56,13 @@ describe('Scope alias pipe', () => {
   let spectator: Spectator<TestPipe>;
   const createComponent = createComponentFactory({
     component: TestPipe,
-    imports: [TranslocoModule],
+    imports: [TranslocoDirective, TranslocoPipe],
     providers: [
       providersMock,
-      {
-        provide: TRANSLOCO_SCOPE,
-        useValue: {
-          scope: 'lazy-page',
-          alias: 'lazy',
-        },
-        multi: true,
-      },
-      {
-        provide: TRANSLOCO_SCOPE,
-        useValue: {
-          scope: 'admin-page',
-          alias: 'admin',
-        },
-        multi: true,
-      },
+      provideTranslocoScope(
+        { scope: 'lazy-page', alias: 'lazy' },
+        { scope: 'admin-page', alias: 'admin' },
+      ),
     ],
   });
 

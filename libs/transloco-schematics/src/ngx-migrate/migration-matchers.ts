@@ -1,6 +1,127 @@
+import {
+  createSourceFile,
+  forEachChild,
+  isArrayLiteralExpression,
+  isCallExpression,
+  isIdentifier,
+  isObjectLiteralExpression,
+  isPropertyAssignment,
+  ScriptTarget,
+  type Node,
+  type ObjectLiteralExpression,
+} from 'typescript';
+
 const PIPE_CONTENT_REGEX = `\\s*([^}\\r\\n]*?\\|)\\s*(translate)[^\\r\\n]*?`;
 export const PIPE_REGEX = `{{${PIPE_CONTENT_REGEX}}}`;
 export const PIPE_IN_BINDING_REGEX = `\\]=('|")${PIPE_CONTENT_REGEX}\\1`;
+
+const DECLARABLES = ['TranslocoDirective', 'TranslocoPipe'];
+
+/** An NgModule metadata property holding an array literal. */
+function arrayProperty(object: ObjectLiteralExpression, key: string) {
+  const property = object.properties.find(
+    (candidate) =>
+      isPropertyAssignment(candidate) &&
+      isIdentifier(candidate.name) &&
+      candidate.name.text === key,
+  );
+
+  if (
+    !property ||
+    !isPropertyAssignment(property) ||
+    !isArrayLiteralExpression(property.initializer)
+  )
+    return undefined;
+
+  return property.initializer;
+}
+
+function isNgModuleMetadata(object: ObjectLiteralExpression) {
+  const call = object.parent;
+
+  return (
+    !!call &&
+    isCallExpression(call) &&
+    isIdentifier(call.expression) &&
+    call.expression.text === 'NgModule'
+  );
+}
+
+/**
+ * `TranslateModule` could be re-exported by an NgModule that never imported it.
+ * `TranslocoDirective` and `TranslocoPipe` cannot: an NgModule may only export
+ * a standalone declarable it imports, or the build fails with NG6004. So once
+ * the modules step has rewritten the exports, the same names are added to the
+ * sibling `imports`.
+ */
+export function importReExportedDeclarables(content: string): string {
+  if (!DECLARABLES.some((name) => content.includes(name))) return content;
+
+  const file = createSourceFile(
+    'ngx-migrate.ts',
+    content,
+    ScriptTarget.Latest,
+    true,
+  );
+  const edits: { position: number; text: string }[] = [];
+
+  const visit = (node: Node): void => {
+    forEachChild(node, visit);
+
+    if (!isObjectLiteralExpression(node) || !isNgModuleMetadata(node)) return;
+
+    const exported = arrayProperty(node, 'exports');
+    if (!exported) return;
+
+    const texts = exported.elements.map((element) => element.getText());
+    const needed = DECLARABLES.filter((name) => texts.includes(name));
+    if (!needed.length) return;
+
+    const imported = arrayProperty(node, 'imports');
+    const hasImportsKey = node.properties.some(
+      (candidate) =>
+        isPropertyAssignment(candidate) &&
+        isIdentifier(candidate.name) &&
+        candidate.name.text === 'imports',
+    );
+    // An `imports` that is not an array literal, or a spread that may carry one
+    // of its own, cannot be extended in place - that is left to the developer.
+    if (hasImportsKey && !imported) return;
+    if (node.properties.some((candidate) => !isPropertyAssignment(candidate)))
+      return;
+
+    if (!imported) {
+      const last = node.properties[node.properties.length - 1];
+      if (!last) return;
+      edits.push({
+        position: last.getEnd(),
+        text: `, imports: [${needed.join(', ')}]`,
+      });
+      return;
+    }
+
+    const present = imported.elements.map((element) => element.getText());
+    const missing = needed.filter((name) => !present.includes(name));
+    if (!missing.length) return;
+
+    const last = imported.elements[imported.elements.length - 1];
+    edits.push(
+      last
+        ? { position: last.getEnd(), text: `, ${missing.join(', ')}` }
+        : { position: imported.getStart() + 1, text: missing.join(', ') },
+    );
+  };
+
+  forEachChild(file, visit);
+
+  return edits
+    .sort((a, b) => b.position - a.position)
+    .reduce(
+      (acc, edit) =>
+        acc.slice(0, edit.position) + edit.text + acc.slice(edit.position),
+      content,
+    );
+}
 
 export interface MatcherDef {
   files: string;
@@ -36,19 +157,28 @@ export function generateMatchers(path: string) {
         .replace(/,\s*,/, ',')
         .replace(/{\s*,/, '{')
         .replace(/,\s*}/, '}')
-        .concat(`\nimport { TranslocoModule } from '@jsverse/transloco';`),
+        .concat(
+          `\nimport { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';`,
+        ),
   };
 
   const moduleSingleImport = {
     files: `${path}.ts`,
     from: /import\s*{\s*(TranslateModule),?\s*}\s*from\s*('|").?ngx-translate(\/[^'"]+)?('|");?/g,
-    to: `import { TranslocoModule } from '@jsverse/transloco';`,
+    to: `import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';`,
   };
 
   const modules = {
     files: `${path}.ts`,
     from: /(?<![a-zA-Z])TranslateModule(?![^]*from)(\.(forRoot|forChild)\(({[^}]*})*[^)]*\))?/g,
-    to: 'TranslocoModule',
+    to: 'TranslocoDirective, TranslocoPipe',
+  };
+
+  // Runs last in the modules step, over whatever the replacements above left.
+  const reExportedDeclarables = {
+    files: `${path}.ts`,
+    from: /^[^]+$/g,
+    to: (match: string) => importReExportedDeclarables(match),
   };
 
   const serviceMultiImport = {
@@ -145,7 +275,12 @@ export function generateMatchers(path: string) {
   ];
   const tsReplacements: Matcher[] = [
     {
-      matchers: [modules, moduleMultiImport, moduleSingleImport],
+      matchers: [
+        modules,
+        moduleMultiImport,
+        moduleSingleImport,
+        reExportedDeclarables,
+      ],
       step: 'modules',
     },
     {

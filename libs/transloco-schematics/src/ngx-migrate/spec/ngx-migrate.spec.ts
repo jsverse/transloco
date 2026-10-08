@@ -6,7 +6,11 @@ import { vol } from 'memfs';
 import { glob } from 'glob';
 
 import { run } from '../index';
-import { PIPE_IN_BINDING_REGEX, PIPE_REGEX } from '../migration-matchers';
+import {
+  PIPE_IN_BINDING_REGEX,
+  PIPE_REGEX,
+  generateMatchers,
+} from '../migration-matchers';
 
 // Mock the fs module with memfs.
 // vi.mock is hoisted above imports, so memfs must be imported inside the factory
@@ -278,6 +282,115 @@ describe('ngx-translate migration', () => {
         );
         expect(updatedContent).toBe(expectedContent);
       }
+    });
+  });
+
+  describe('Modules', () => {
+    const migrateModules = (source: string) => {
+      const { tsReplacements } = generateMatchers('src/');
+      const step = tsReplacements.find(({ step }) => step === 'modules');
+
+      return step!.matchers.reduce(
+        (acc, { from, to }) =>
+          acc.replace(from, to as Parameters<typeof acc.replace>[1]),
+        source,
+      );
+    };
+
+    it(`GIVEN a module importing TranslateModule.forRoot
+        WHEN the modules step runs
+        THEN it imports the standalone directive and pipe instead`, () => {
+      const result = migrateModules(
+        [
+          `import { TranslateModule } from '@ngx-translate/core';`,
+          ``,
+          `@NgModule({ imports: [TranslateModule.forRoot()] })`,
+          `export class AppModule {}`,
+        ].join('\n'),
+      );
+
+      expect(result).toContain(
+        `import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';`,
+      );
+      expect(result).toContain(`imports: [TranslocoDirective, TranslocoPipe]`);
+      expect(result).not.toContain('TranslocoModule');
+    });
+
+    it(`GIVEN a module importing TranslateModule next to other ngx-translate symbols
+        WHEN the modules step runs
+        THEN the other symbols stay and the standalone directive and pipe are imported`, () => {
+      const result = migrateModules(
+        [
+          `import { TranslateModule, TranslateLoader } from '@ngx-translate/core';`,
+          ``,
+          `@NgModule({ imports: [TranslateModule.forChild()] })`,
+          `export class FeatureModule {}`,
+        ].join('\n'),
+      );
+
+      expect(result).toContain(
+        `import { TranslateLoader } from '@ngx-translate/core';`,
+      );
+      expect(result).toContain(
+        `import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';`,
+      );
+      expect(result).toContain(`imports: [TranslocoDirective, TranslocoPipe]`);
+    });
+    it(`GIVEN a module re-exporting TranslateModule
+        WHEN the modules step runs
+        THEN the standalone declarables are imported as well as exported`, () => {
+      const result = migrateModules(
+        [
+          `import { TranslateModule } from '@ngx-translate/core';`,
+          ``,
+          `@NgModule({`,
+          `  exports: [CommonModule, TranslateModule],`,
+          `})`,
+          `export class SharedModule {}`,
+        ].join('\n'),
+      );
+
+      expect(result).toContain(
+        `exports: [CommonModule, TranslocoDirective, TranslocoPipe], imports: [TranslocoDirective, TranslocoPipe],`,
+      );
+    });
+
+    it(`GIVEN a module that both imports and re-exports TranslateModule
+        WHEN the modules step runs
+        THEN the imports array is not given duplicate entries`, () => {
+      const result = migrateModules(
+        [
+          `import { TranslateModule } from '@ngx-translate/core';`,
+          ``,
+          `@NgModule({`,
+          `  imports: [TranslateModule.forChild()],`,
+          `  exports: [TranslateModule],`,
+          `})`,
+          `export class SharedModule {}`,
+        ].join('\n'),
+      );
+
+      expect(result).toContain(`imports: [TranslocoDirective, TranslocoPipe],`);
+      expect(result).toContain(`exports: [TranslocoDirective, TranslocoPipe],`);
+      expect(result.match(/TranslocoDirective/g)).toHaveLength(3);
+    });
+
+    it(`GIVEN an imports array that cannot be extended in place
+        WHEN the modules step runs
+        THEN no second imports property is added`, () => {
+      const result = migrateModules(
+        [
+          `import { TranslateModule } from '@ngx-translate/core';`,
+          ``,
+          `@NgModule({`,
+          `  imports: SHARED_IMPORTS,`,
+          `  exports: [TranslateModule],`,
+          `})`,
+          `export class SharedModule {}`,
+        ].join('\n'),
+      );
+
+      expect(result.match(/imports:/g)).toHaveLength(1);
     });
   });
 });

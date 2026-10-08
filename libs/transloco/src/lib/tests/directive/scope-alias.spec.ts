@@ -8,22 +8,16 @@ import { Component } from '@angular/core';
 
 import { providersMock, runLoader } from '../mocks';
 import { TranslocoDirective } from '../../transloco.directive';
-import { TRANSLOCO_SCOPE } from '../../transloco-scope';
-import { TranslocoModule } from '../../transloco.module';
+import { provideTranslocoScope } from '../../transloco.providers';
+import { TranslocoPipe } from '../../transloco.pipe';
 
 import { createFactory } from './shared';
 
 describe('Scope alias', () => {
   let spectator: SpectatorHost<TranslocoDirective>;
-  const createHost = createFactory([
-    {
-      provide: TRANSLOCO_SCOPE,
-      useValue: {
-        scope: 'lazy-page',
-        alias: 'lazy',
-      },
-    },
-  ]);
+  const createHost = createFactory(
+    provideTranslocoScope({ scope: 'lazy-page', alias: 'lazy' }),
+  );
 
   it(`GIVEN directive with scope alias
       WHEN translations are loaded
@@ -43,7 +37,7 @@ describe('Scope alias', () => {
     <p>{{ 'lazy.title' | transloco }}</p>
     <h1>{{ 'nested.title' | transloco }}</h1>
   `,
-  imports: [TranslocoModule],
+  imports: [TranslocoDirective, TranslocoPipe],
 })
 class TestPipe {}
 
@@ -51,16 +45,10 @@ describe('Scope alias pipe', () => {
   let spectator: Spectator<TestPipe>;
   const createComponent = createComponentFactory({
     component: TestPipe,
-    imports: [TranslocoModule],
+    imports: [TranslocoDirective, TranslocoPipe],
     providers: [
       providersMock,
-      {
-        provide: TRANSLOCO_SCOPE,
-        useValue: {
-          scope: 'lazy-page',
-          alias: 'lazy',
-        },
-      },
+      provideTranslocoScope({ scope: 'lazy-page', alias: 'lazy' }),
     ],
   });
 

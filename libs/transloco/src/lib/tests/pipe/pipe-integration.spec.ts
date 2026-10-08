@@ -4,10 +4,12 @@ import { fakeAsync } from '@angular/core/testing';
 
 import { providersMock, runLoader } from '../mocks';
 import { defaultConfig, TRANSLOCO_CONFIG } from '../../transloco.config';
-import { TranslocoModule } from '../../transloco.module';
+import { TranslocoPipe } from '../../transloco.pipe';
 import { TranslocoService } from '../../transloco.service';
-import { TRANSLOCO_LANG } from '../../transloco-lang';
-import { TRANSLOCO_SCOPE } from '../../transloco-scope';
+import {
+  provideTranslocoLang,
+  provideTranslocoScope,
+} from '../../transloco.providers';
 
 export const listenToLangChangesProvider = {
   provide: TRANSLOCO_CONFIG,
@@ -26,7 +28,7 @@ export const listenToLangChangesProvider = {
     <h3>{{ 'alert' | transloco: { value: value } }}</h3>
     <h5>{{ 'home' | transloco: null : 'es' }}</h5>
   `,
-  imports: [TranslocoModule],
+  imports: [TranslocoPipe],
 })
 class TestPipe {
   value = 'hey';
@@ -37,7 +39,7 @@ describe('Transloco Pipe', () => {
     let spectator: Spectator<TestPipe>;
     const createComponent = createComponentFactory({
       component: TestPipe,
-      imports: [TranslocoModule],
+      imports: [TranslocoPipe],
       providers: providersMock,
     });
 
@@ -99,13 +101,10 @@ describe('Transloco Pipe', () => {
     let spectator: Spectator<TestPipe>;
     const createComponent = createComponentFactory({
       component: TestPipe,
-      imports: [TranslocoModule],
+      imports: [TranslocoPipe],
       providers: [
         providersMock,
-        {
-          provide: TRANSLOCO_LANG,
-          useValue: 'es',
-        },
+        provideTranslocoLang('es'),
         listenToLangChangesProvider,
       ],
     });
@@ -133,13 +132,10 @@ describe('Transloco Pipe', () => {
     let spectator: Spectator<TestPipe>;
     const createComponent = createComponentFactory({
       component: TestPipe,
-      imports: [TranslocoModule],
+      imports: [TranslocoPipe],
       providers: [
         providersMock,
-        {
-          provide: TRANSLOCO_LANG,
-          useValue: 'es|static',
-        },
+        provideTranslocoLang('es|static'),
         listenToLangChangesProvider,
       ],
     });
@@ -170,7 +166,7 @@ describe('Transloco Pipe', () => {
       <h1>{{ 'nested.title' | transloco }}</h1>
       <span>{{ 'alert' | transloco: { value: 'netanel' } }}</span>
     `,
-    imports: [TranslocoModule],
+    imports: [TranslocoPipe],
   })
   class TestScopePipe {}
 
@@ -178,13 +174,10 @@ describe('Transloco Pipe', () => {
     let spectator: Spectator<TestScopePipe>;
     const createComponent = createComponentFactory({
       component: TestScopePipe,
-      imports: [TranslocoModule],
+      imports: [TranslocoPipe],
       providers: [
         providersMock,
-        {
-          provide: TRANSLOCO_SCOPE,
-          useValue: 'lazy-page',
-        },
+        provideTranslocoScope('lazy-page'),
         listenToLangChangesProvider,
       ],
     });

@@ -14,6 +14,12 @@ const decl = [
   TranslocoPercentPipe,
 ];
 
+/**
+ * @deprecated Import the standalone {@link TranslocoCurrencyPipe},
+ * {@link TranslocoDatePipe}, {@link TranslocoDecimalPipe} and
+ * {@link TranslocoPercentPipe} directly instead, and configure with
+ * {@link provideTranslocoLocale}. Will be removed in v10.
+ */
 @NgModule({
   imports: decl,
   exports: decl,
