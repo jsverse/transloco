@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 let mockConfig: any = {};
 
@@ -126,6 +126,59 @@ describe('object.utils', () => {
       const target = { a: 1 };
       const result = mergeDeep(target);
       expect(result).toBe(target);
+    });
+
+    describe('prototype safety', () => {
+      afterEach(() => {
+        delete (Object.prototype as any).polluted;
+        delete (Object.prototype as any).title;
+      });
+
+      it(`GIVEN a source with a __proto__ key next to ordinary keys
+      WHEN it is merged
+      THEN Object.prototype stays clean and every other key, including one named prototype, merges`, async () => {
+        const { mergeDeep } = await import('../utils/object.utils');
+        // `readJsonSync` keeps `__proto__` as an own key on the parsed translation
+        const source = JSON.parse(
+          '{"__proto__": {"polluted": "yes"}, "prototype": "Prototyp", "hello": "Hallo"}',
+        );
+
+        const result = mergeDeep({}, source);
+
+        expect(({} as any).polluted).toBeUndefined();
+        expect(result).toEqual({ prototype: 'Prototyp', hello: 'Hallo' });
+      });
+
+      it(`GIVEN a source with a nested __proto__ key
+      WHEN it is merged
+      THEN Object.prototype stays clean and the nested key is dropped like a top-level one`, async () => {
+        const { mergeDeep } = await import('../utils/object.utils');
+        const source = JSON.parse(
+          '{"a": {"__proto__": {"polluted": true}, "b": "B"}}',
+        );
+
+        const result = mergeDeep({}, source);
+
+        expect(({} as any).polluted).toBeUndefined();
+        expect(result).toEqual({ a: { b: 'B' } });
+        expect(Object.hasOwn(result.a, '__proto__')).toBe(false);
+      });
+
+      it(`GIVEN a source whose object-valued keys shadow Object.prototype members
+      WHEN it is merged
+      THEN each key gets its own object and Object.prototype is untouched`, async () => {
+        const { mergeDeep } = await import('../utils/object.utils');
+        const source = {
+          constructor: { title: 'Konstruktor' },
+          toString: { label: 'Text' },
+        };
+
+        const result = mergeDeep({}, source);
+
+        expect(Object.hasOwn(result, 'constructor')).toBe(true);
+        expect(result).toEqual(source);
+        expect((Object.prototype as any).title).toBeUndefined();
+      });
     });
   });
 
