@@ -31,7 +31,7 @@ describe('TranslocoTestingModule', () => {
 });
 
 describe('provideTranslocoTesting', () => {
-  it('should provide testing config and serve the given langs', async () => {
+  it('GIVEN provideTranslocoTesting with langs WHEN translating THEN serves the given langs', async () => {
     const testBed = TestBed.configureTestingModule({
       providers: [
         provideTranslocoTesting({
