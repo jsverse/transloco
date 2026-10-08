@@ -6,8 +6,10 @@ import { providersMock, runLoader } from '../mocks';
 import { defaultConfig, TRANSLOCO_CONFIG } from '../../transloco.config';
 import { TranslocoPipe } from '../../transloco.pipe';
 import { TranslocoService } from '../../transloco.service';
-import { TRANSLOCO_LANG } from '../../transloco-lang';
-import { TRANSLOCO_SCOPE } from '../../transloco-scope';
+import {
+  provideTranslocoLang,
+  provideTranslocoScope,
+} from '../../transloco.providers';
 
 export const listenToLangChangesProvider = {
   provide: TRANSLOCO_CONFIG,
@@ -102,10 +104,7 @@ describe('Transloco Pipe', () => {
       imports: [TranslocoPipe],
       providers: [
         providersMock,
-        {
-          provide: TRANSLOCO_LANG,
-          useValue: 'es',
-        },
+        provideTranslocoLang('es'),
         listenToLangChangesProvider,
       ],
     });
@@ -136,10 +135,7 @@ describe('Transloco Pipe', () => {
       imports: [TranslocoPipe],
       providers: [
         providersMock,
-        {
-          provide: TRANSLOCO_LANG,
-          useValue: 'es|static',
-        },
+        provideTranslocoLang('es|static'),
         listenToLangChangesProvider,
       ],
     });
@@ -181,10 +177,7 @@ describe('Transloco Pipe', () => {
       imports: [TranslocoPipe],
       providers: [
         providersMock,
-        {
-          provide: TRANSLOCO_SCOPE,
-          useValue: 'lazy-page',
-        },
+        provideTranslocoScope('lazy-page'),
         listenToLangChangesProvider,
       ],
     });

@@ -2,7 +2,7 @@ import { createComponentFactory, Spectator } from '@ngneat/spectator/vitest';
 
 import { TranslocoService } from '@jsverse/transloco';
 
-import { getTranslocoTestingProviders } from '../transloco-testing.module';
+import { providePlaygroundTranslocoTesting } from '../transloco-testing.module';
 
 import { HomeComponent } from './home.component';
 
@@ -11,7 +11,7 @@ describe('OnPushComponent', () => {
   const createComponent = createComponentFactory({
     component: HomeComponent,
     providers: [
-      getTranslocoTestingProviders({
+      providePlaygroundTranslocoTesting({
         translocoConfig: { reRenderOnLangChange: true },
       }),
     ],

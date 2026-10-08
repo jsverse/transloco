@@ -10,7 +10,7 @@ import adminSpanish from '../assets/i18n/admin-page/es.json';
 import lazy from '../assets/i18n/lazy-page/en.json';
 import lazySpanish from '../assets/i18n/lazy-page/es.json';
 
-export function getTranslocoTestingProviders(
+export function providePlaygroundTranslocoTesting(
   options: TranslocoTestingOptions = {},
 ) {
   const { langs, translocoConfig, ...rest } = options;

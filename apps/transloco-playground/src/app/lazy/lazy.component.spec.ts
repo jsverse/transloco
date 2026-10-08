@@ -1,9 +1,9 @@
 import { waitForAsync, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
-import { TRANSLOCO_SCOPE } from '@jsverse/transloco';
+import { provideTranslocoScope } from '@jsverse/transloco';
 
-import { getTranslocoTestingProviders } from '../transloco-testing.module';
+import { providePlaygroundTranslocoTesting } from '../transloco-testing.module';
 
 import LazyComponent from './lazy.component';
 
@@ -11,8 +11,8 @@ describe('LazyComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       providers: [
-        { provide: TRANSLOCO_SCOPE, useValue: 'admin-page' },
-        getTranslocoTestingProviders(),
+        provideTranslocoScope('admin-page'),
+        providePlaygroundTranslocoTesting(),
       ],
     }).compileComponents();
   }));
