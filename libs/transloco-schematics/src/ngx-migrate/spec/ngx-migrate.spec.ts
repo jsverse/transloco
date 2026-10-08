@@ -336,5 +336,61 @@ describe('ngx-translate migration', () => {
       );
       expect(result).toContain(`imports: [TranslocoDirective, TranslocoPipe]`);
     });
+    it(`GIVEN a module re-exporting TranslateModule
+        WHEN the modules step runs
+        THEN the standalone declarables are imported as well as exported`, () => {
+      const result = migrateModules(
+        [
+          `import { TranslateModule } from '@ngx-translate/core';`,
+          ``,
+          `@NgModule({`,
+          `  exports: [CommonModule, TranslateModule],`,
+          `})`,
+          `export class SharedModule {}`,
+        ].join('\n'),
+      );
+
+      expect(result).toContain(
+        `exports: [CommonModule, TranslocoDirective, TranslocoPipe], imports: [TranslocoDirective, TranslocoPipe],`,
+      );
+    });
+
+    it(`GIVEN a module that both imports and re-exports TranslateModule
+        WHEN the modules step runs
+        THEN the imports array is not given duplicate entries`, () => {
+      const result = migrateModules(
+        [
+          `import { TranslateModule } from '@ngx-translate/core';`,
+          ``,
+          `@NgModule({`,
+          `  imports: [TranslateModule.forChild()],`,
+          `  exports: [TranslateModule],`,
+          `})`,
+          `export class SharedModule {}`,
+        ].join('\n'),
+      );
+
+      expect(result).toContain(`imports: [TranslocoDirective, TranslocoPipe],`);
+      expect(result).toContain(`exports: [TranslocoDirective, TranslocoPipe],`);
+      expect(result.match(/TranslocoDirective/g)).toHaveLength(3);
+    });
+
+    it(`GIVEN an imports array that cannot be extended in place
+        WHEN the modules step runs
+        THEN no second imports property is added`, () => {
+      const result = migrateModules(
+        [
+          `import { TranslateModule } from '@ngx-translate/core';`,
+          ``,
+          `@NgModule({`,
+          `  imports: SHARED_IMPORTS,`,
+          `  exports: [TranslateModule],`,
+          `})`,
+          `export class SharedModule {}`,
+        ].join('\n'),
+      );
+
+      expect(result.match(/imports:/g)).toHaveLength(1);
+    });
   });
 });
