@@ -20,6 +20,56 @@ export function injectTranspiler(): TranslocoTranspiler {
   return inject(TRANSLOCO_TRANSPILER);
 }
 
+// A private-use character that prefixes escaped characters while a string is being transpiled.
+// Substituted values have it and every interpolation delimiter character escaped, so they can
+// never form a new placeholder. It is also escaped in the transpiled value itself, so private-use
+// characters that are already in a translation or a param survive the round trip.
+const ESCAPE_CHAR = '\uE000';
+const ESCAPED_CHAR_CODE_OFFSET = ESCAPE_CHAR.charCodeAt(0) + 1;
+const ESCAPED_CHAR_MATCHER = new RegExp(`${ESCAPE_CHAR}(.)`, 'gs');
+
+// The chain of keys currently being resolved per translation, used to detect circular key references
+const resolvingKeysByTranslation = new WeakMap<Translation, string[]>();
+
+class CircularKeyReferenceError extends Error {}
+
+function getResolvingKeys(translation: Translation): string[] {
+  let resolvingKeys = resolvingKeysByTranslation.get(translation);
+  if (!resolvingKeys) {
+    resolvingKeys = [];
+    resolvingKeysByTranslation.set(translation, resolvingKeys);
+  }
+
+  return resolvingKeys;
+}
+
+/**
+ * Marks `key` as being resolved when `value` is its translation, so references back to it are detected.
+ * Returns whether the key was marked, in which case the caller must release it with `releaseEntryKey`.
+ */
+function enterEntryKey({ value, translation, key }: TranspileParams): boolean {
+  if (
+    !isString(value) ||
+    !isObject(translation) ||
+    translation[key] !== value
+  ) {
+    return false;
+  }
+
+  const resolvingKeys = getResolvingKeys(translation);
+  if (resolvingKeys.includes(key)) {
+    return false;
+  }
+
+  resolvingKeys.push(key);
+
+  return true;
+}
+
+function releaseEntryKey(translation: Translation) {
+  getResolvingKeys(translation).pop();
+}
+
 export interface TranslocoTranspiler {
   transpile(params: TranspileParams): any;
 
@@ -36,6 +86,8 @@ export interface TranspileParams<V = unknown> {
 @Injectable()
 export class DefaultTranspiler implements TranslocoTranspiler {
   protected config = injectTranslocoConfig();
+  // The characters escaped in substituted values, the index of each one encodes it
+  private escapedChars?: string[];
 
   protected get interpolationMatcher() {
     return resolveMatcher(this.config);
@@ -44,32 +96,43 @@ export class DefaultTranspiler implements TranslocoTranspiler {
   transpile({ value, params = {}, translation, key }: TranspileParams): any {
     if (isString(value)) {
       let paramMatch: RegExpExecArray | null;
-      let parsedValue = value;
+      let parsedValue = this.escapeTranspiledValue(value);
+      const isEntryKey = enterEntryKey({ value, translation, key });
 
-      while (
-        (paramMatch = this.interpolationMatcher.exec(parsedValue)) !== null
-      ) {
-        const [match, paramValue] = paramMatch;
-        parsedValue = parsedValue.replace(match, () => {
-          const match = paramValue.trim();
+      try {
+        // Rescan after each replacement so replaced values can form dynamic key references,
+        // e.g. `{{ common.{{ type }} }}`. Substituted values are escaped, so their own
+        // interpolation syntax is never matched.
+        while (
+          (paramMatch = this.interpolationMatcher.exec(parsedValue)) !== null
+        ) {
+          const [match, paramValue] = paramMatch;
+          parsedValue = parsedValue.replace(match, () => {
+            const match = paramValue.trim();
 
-          const param = getValue(params, match);
-          if (isDefined(param)) {
-            return param;
-          }
+            const param = getValue(params, match);
+            if (isDefined(param)) {
+              return this.escapeSubstitutedValue(param);
+            }
 
-          return isDefined(translation[match])
-            ? this.transpile({
-                params,
-                translation,
-                key,
-                value: translation[match],
-              })
-            : '';
-        });
+            return isDefined(translation[match])
+              ? this.escapeSubstitutedValue(
+                  this.resolveKeyReference(match, {
+                    params,
+                    translation,
+                    key,
+                  }),
+                )
+              : '';
+          });
+        }
+      } finally {
+        if (isEntryKey) {
+          releaseEntryKey(translation);
+        }
       }
 
-      return parsedValue;
+      return this.unescapeValue(parsedValue);
     } else if (params) {
       if (isObject(value)) {
         value = this.handleObject({
@@ -84,6 +147,90 @@ export class DefaultTranspiler implements TranslocoTranspiler {
     }
 
     return value;
+  }
+
+  private resolveKeyReference(
+    referencedKey: string,
+    { params, translation, key }: Omit<TranspileParams, 'value'>,
+  ): unknown {
+    const resolvingKeys = getResolvingKeys(translation);
+    if (resolvingKeys.includes(referencedKey)) {
+      if (typeof ngDevMode !== 'undefined' && ngDevMode) {
+        const path = [...resolvingKeys, referencedKey].join(' -> ');
+        throw new CircularKeyReferenceError(
+          `Circular key reference detected: ${path}`,
+        );
+      }
+
+      return '';
+    }
+
+    resolvingKeys.push(referencedKey);
+    try {
+      return this.transpile({
+        params,
+        translation,
+        key,
+        value: translation[referencedKey],
+      });
+    } finally {
+      resolvingKeys.pop();
+    }
+  }
+
+  private getEscapedChars(): string[] {
+    if (!this.escapedChars) {
+      const [start, end] = this.config.interpolation;
+      this.escapedChars = Array.from(new Set(ESCAPE_CHAR + start + end));
+    }
+
+    return this.escapedChars;
+  }
+
+  private escapeChar(char: string): string {
+    const index = this.getEscapedChars().indexOf(char);
+
+    return index === -1
+      ? char
+      : ESCAPE_CHAR + String.fromCharCode(ESCAPED_CHAR_CODE_OFFSET + index);
+  }
+
+  // Escapes the escape character itself, so it isn't mistaken for an escape sequence
+  private escapeTranspiledValue(value: string): string {
+    return value.includes(ESCAPE_CHAR)
+      ? value.replaceAll(ESCAPE_CHAR, this.escapeChar(ESCAPE_CHAR))
+      : value;
+  }
+
+  // Escapes the escape character and every interpolation delimiter character
+  private escapeSubstitutedValue<T>(value: T): T | string {
+    if (
+      !isString(value) ||
+      !this.getEscapedChars().some((char) => value.includes(char))
+    ) {
+      return value;
+    }
+
+    let escaped = '';
+    for (const char of value) {
+      escaped += this.escapeChar(char);
+    }
+
+    return escaped;
+  }
+
+  private unescapeValue(value: string): string {
+    if (!value.includes(ESCAPE_CHAR)) {
+      return value;
+    }
+
+    const escapedChars = this.getEscapedChars();
+
+    return value.replace(
+      ESCAPED_CHAR_MATCHER,
+      (_, code: string) =>
+        escapedChars[code.charCodeAt(0) - ESCAPED_CHAR_CODE_OFFSET],
+    );
   }
 
   /**
@@ -181,6 +328,24 @@ export class FunctionalTranspiler
   protected injector = inject(Injector);
 
   transpile({ value, ...rest }: TranspileParams) {
+    // Mark the key before calling functions, so references back to it from their arguments are detected
+    const isEntryKey = enterEntryKey({ value, ...rest });
+    try {
+      return super.transpile({
+        value: this.transpileFunctions(value, rest),
+        ...rest,
+      });
+    } finally {
+      if (isEntryKey) {
+        releaseEntryKey(rest.translation);
+      }
+    }
+  }
+
+  private transpileFunctions(
+    value: unknown,
+    rest: Omit<TranspileParams, 'value'>,
+  ): unknown {
     let transpiled = value;
     if (isString(value)) {
       transpiled = value.replace(
@@ -196,6 +361,15 @@ export class FunctionalTranspiler
             });
             return func.transpile(...transpiledArgs);
           } catch (e: unknown) {
+            // Circular references only throw in dev mode, guarding the check lets production builds drop the class
+            if (
+              typeof ngDevMode !== 'undefined' &&
+              ngDevMode &&
+              e instanceof CircularKeyReferenceError
+            ) {
+              throw e;
+            }
+
             let message: string;
             if (typeof ngDevMode !== 'undefined' && ngDevMode) {
               message = `There is an error in: '${value}'. 
@@ -215,6 +389,6 @@ export class FunctionalTranspiler
       );
     }
 
-    return super.transpile({ value: transpiled, ...rest });
+    return transpiled;
   }
 }
