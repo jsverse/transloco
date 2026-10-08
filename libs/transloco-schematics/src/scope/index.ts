@@ -87,34 +87,46 @@ function addScopeToModule(
   modulePath: string,
   options: SchemaOptions,
 ) {
-  const moduleSource = parseModule(tree, modulePath);
   const provider = `provideTranslocoScope(${getProviderValue(options)})`;
-  const changes: (Change | undefined)[] = [];
-  changes.push(
-    addProviderToModule(moduleSource, modulePath, provider, NAMES.LIB_NAME)[0],
-  );
+
+  // Every change is computed against a freshly parsed source and applied on its
+  // own. Two changes derived from the same AST target the same offset: on
+  // `imports: []` both land just before the `]` without a comma, and on a
+  // module with no `imports` property each adds its own. The module is re-read
+  // in between so the next change sees what the previous one wrote and extends
+  // it instead of duplicating it - which is also how `insertImport` joins an
+  // existing import statement rather than adding another.
+  applyChanges(tree, modulePath, [
+    addProviderToModule(
+      parseModule(tree, modulePath),
+      modulePath,
+      provider,
+      NAMES.LIB_NAME,
+    )[0],
+  ]);
+
   for (const standalone of ['TranslocoDirective', 'TranslocoPipe']) {
-    changes.push(
+    applyChanges(tree, modulePath, [
       addImportToModule(
-        moduleSource,
+        parseModule(tree, modulePath),
         modulePath,
         standalone,
         NAMES.LIB_NAME,
       )[0],
-    );
+    ]);
   }
+
   if (options.inlineLoader) {
-    changes.push(
-      insertImport(moduleSource, modulePath, 'loader', './transloco.loader'),
-    );
+    applyChanges(tree, modulePath, [
+      insertImport(
+        parseModule(tree, modulePath),
+        modulePath,
+        'loader',
+        './transloco.loader',
+      ),
+    ]);
   }
 
-  applyChanges(tree, modulePath, changes);
-
-  // `insertImport` recognizes an existing import by a single symbol name, so
-  // each symbol goes in on its own. The module is re-read in between so the
-  // next one sees the import the previous one created and joins it, rather
-  // than adding another statement.
   for (const symbol of SCOPE_IMPORTS) {
     applyChanges(tree, modulePath, [
       insertImport(

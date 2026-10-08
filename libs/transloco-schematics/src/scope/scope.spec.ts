@@ -129,6 +129,56 @@ describe('Scope', () => {
       expect(importLine).toContain('TranslocoPipe');
     });
 
+    it(`GIVEN a module with an empty imports array
+        WHEN the scope schematic runs
+        THEN both declarables land in it, separated by a comma`, async () => {
+      appTree.overwrite(
+        modulePath,
+        [
+          `import { NgModule } from '@angular/core';`,
+          `@NgModule({ imports: [] })`,
+          `export class AdminModule {}`,
+        ].join('\n'),
+      );
+
+      const tree = await schematicRunner.runSchematic(
+        'scope',
+        scopeOptions,
+        appTree,
+      );
+      const content = tree.readContent(modulePath);
+
+      expect(content).toMatch(
+        /imports:\s*\[\s*TranslocoDirective,\s*TranslocoPipe\s*,?\s*\]/,
+      );
+      expect(count(content, 'imports:')).toBe(1);
+    });
+
+    it(`GIVEN a module with no imports property
+        WHEN the scope schematic runs
+        THEN a single imports property is added with both declarables`, async () => {
+      appTree.overwrite(
+        modulePath,
+        [
+          `import { NgModule } from '@angular/core';`,
+          `@NgModule({ declarations: [] })`,
+          `export class AdminModule {}`,
+        ].join('\n'),
+      );
+
+      const tree = await schematicRunner.runSchematic(
+        'scope',
+        scopeOptions,
+        appTree,
+      );
+      const content = tree.readContent(modulePath);
+
+      expect(count(content, 'imports:')).toBe(1);
+      expect(count(content, 'providers:')).toBe(1);
+      expect(count(content, 'TranslocoDirective')).toBe(2);
+      expect(count(content, 'TranslocoPipe')).toBe(2);
+    });
+
     it(`GIVEN the scope schematic already ran on a module
         WHEN it runs again
         THEN the imports are not duplicated`, async () => {
