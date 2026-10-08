@@ -202,6 +202,134 @@ describe('migrateDeprecatedModulesSource', () => {
     });
   });
 
+  describe('NgModule exports', () => {
+    it(`GIVEN an exports-only module with no imports property
+        WHEN the source is migrated
+        THEN the standalone names are also added to imports`, () => {
+      const result = migrateDeprecatedModulesSource(
+        join(
+          `import { TranslocoModule } from '@jsverse/transloco';`,
+          `@NgModule({ exports: [TranslocoModule] })`,
+          `export class TranslocoRootModule {}`,
+        ),
+      );
+
+      expect(result?.content).toBe(
+        join(
+          `import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';`,
+          `@NgModule({ exports: [TranslocoDirective, TranslocoPipe], imports: [TranslocoDirective, TranslocoPipe] })`,
+          `export class TranslocoRootModule {}`,
+        ),
+      );
+      expect(result?.unresolved).toEqual([]);
+    });
+
+    it(`GIVEN a module that exports and already imports the module
+        WHEN the source is migrated
+        THEN the imports array is not given duplicate entries`, () => {
+      const result = migrateDeprecatedModulesSource(
+        join(
+          `import { TranslocoModule } from '@jsverse/transloco';`,
+          `@NgModule({ imports: [TranslocoModule], exports: [TranslocoModule] })`,
+          `export class SharedModule {}`,
+        ),
+      );
+
+      expect(result?.content).toBe(
+        join(
+          `import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';`,
+          `@NgModule({ imports: [TranslocoDirective, TranslocoPipe], exports: [TranslocoDirective, TranslocoPipe] })`,
+          `export class SharedModule {}`,
+        ),
+      );
+    });
+
+    it(`GIVEN a module that exports the locale module next to an empty imports array
+        WHEN the source is migrated
+        THEN the pipes are added to both arrays`, () => {
+      const result = migrateDeprecatedModulesSource(
+        join(
+          `import { TranslocoLocaleModule } from '@jsverse/transloco-locale';`,
+          `@NgModule({ imports: [], exports: [TranslocoLocaleModule] })`,
+          `export class SharedModule {}`,
+        ),
+      );
+
+      expect(result?.content).toContain(
+        `imports: [TranslocoCurrencyPipe, TranslocoDatePipe, TranslocoDecimalPipe, TranslocoPercentPipe]`,
+      );
+      expect(result?.content).toContain(
+        `exports: [TranslocoCurrencyPipe, TranslocoDatePipe, TranslocoDecimalPipe, TranslocoPercentPipe]`,
+      );
+    });
+
+    it(`GIVEN exports next to an imports given by reference
+        WHEN the source is migrated
+        THEN it is reported rather than left exporting an unimported directive`, () => {
+      const source = join(
+        `import { TranslocoModule } from '@jsverse/transloco';`,
+        `@NgModule({ imports: sharedImports, exports: [TranslocoModule] })`,
+        `export class SharedModule {}`,
+      );
+      const result = migrateDeprecatedModulesSource(source);
+
+      expect(result?.content).toBe(source);
+      expect(result?.migrated).toBe(0);
+      expect(result?.unresolved).toEqual([
+        { name: 'TranslocoModule', line: 2 },
+      ]);
+    });
+  });
+
+  describe('usages this migration cannot rewrite', () => {
+    it(`GIVEN a namespace import
+        WHEN the source is migrated
+        THEN the usage is reported and the file is left as it was`, () => {
+      const source = join(
+        `import * as transloco from '@jsverse/transloco';`,
+        `const imports = [transloco.TranslocoModule];`,
+      );
+      const result = migrateDeprecatedModulesSource(source);
+
+      expect(result?.content).toBe(source);
+      expect(result?.migrated).toBe(0);
+      expect(result?.unresolved).toEqual([
+        { name: 'TranslocoModule', line: 2 },
+      ]);
+    });
+
+    it(`GIVEN a barrel re-export
+        WHEN the source is migrated
+        THEN the re-exported name is reported`, () => {
+      const source = join(
+        `export { TranslocoModule } from '@jsverse/transloco';`,
+        `export { TranslocoLocaleModule } from '@jsverse/transloco-locale';`,
+      );
+      const result = migrateDeprecatedModulesSource(source);
+
+      expect(result?.content).toBe(source);
+      expect(result?.migrated).toBe(0);
+      expect(result?.unresolved).toEqual([
+        { name: 'TranslocoModule', line: 1 },
+        { name: 'TranslocoLocaleModule', line: 2 },
+      ]);
+    });
+
+    it(`GIVEN a namespace import of an untouched symbol
+        WHEN the source is migrated
+        THEN nothing is reported`, () => {
+      expect(
+        migrateDeprecatedModulesSource(
+          join(
+            `import * as transloco from '@jsverse/transloco';`,
+            `const service = transloco.TranslocoService;`,
+            `const x = 'TranslocoModule';`,
+          ),
+        ),
+      ).toBeNull();
+    });
+  });
+
   describe('TranslocoLocaleModule', () => {
     it(`GIVEN a component importing TranslocoLocaleModule
         WHEN the source is migrated
@@ -251,7 +379,7 @@ describe('migrateDeprecatedModulesSource', () => {
 
     it(`GIVEN forRoot next to an existing providers array
         WHEN the source is migrated
-        THEN the provider is appended to it`, () => {
+        THEN the provider is prepended, so the user's providers still win`, () => {
       const result = migrateDeprecatedModulesSource(
         join(
           header,
@@ -263,7 +391,7 @@ describe('migrateDeprecatedModulesSource', () => {
       );
 
       expect(result?.content).toContain(
-        `providers: [Foo, Bar, provideTranslocoTesting({ langs })],`,
+        `providers: [provideTranslocoTesting({ langs }), Foo, Bar],`,
       );
       expect(result?.content).toContain(
         `imports: [TranslocoDirective, TranslocoPipe],`,
@@ -360,9 +488,28 @@ describe('migrateDeprecatedModulesSource', () => {
       ]);
     });
 
+    it(`GIVEN a spread in the object holding forRoot
+        WHEN the source is migrated
+        THEN it is reported rather than shadowing the spread providers`, () => {
+      const source = join(
+        header,
+        `TestBed.configureTestingModule({`,
+        `  ...baseConfig,`,
+        `  imports: [TranslocoTestingModule.forRoot({ langs })],`,
+        `});`,
+      );
+      const result = migrateDeprecatedModulesSource(source);
+
+      expect(result?.content).toBe(source);
+      expect(result?.migrated).toBe(0);
+      expect(result?.unresolved).toEqual([
+        { name: 'TranslocoTestingModule', line: 4 },
+      ]);
+    });
+
     it(`GIVEN quoted imports and providers keys
         WHEN the source is migrated
-        THEN the existing providers array is appended to, not duplicated`, () => {
+        THEN the existing providers array is reused, not duplicated`, () => {
       const result = migrateDeprecatedModulesSource(
         join(
           header,
@@ -374,7 +521,7 @@ describe('migrateDeprecatedModulesSource', () => {
       );
 
       expect(result?.content).toContain(
-        `'providers': [Foo, provideTranslocoTesting({ langs })]`,
+        `'providers': [provideTranslocoTesting({ langs }), Foo]`,
       );
       expect(result?.content).toContain(
         `'imports': [TranslocoDirective, TranslocoPipe]`,
@@ -384,7 +531,7 @@ describe('migrateDeprecatedModulesSource', () => {
 
     it(`GIVEN a computed string-literal providers key
         WHEN the source is migrated
-        THEN the existing providers array is appended to, not duplicated`, () => {
+        THEN the existing providers array is reused, not duplicated`, () => {
       const result = migrateDeprecatedModulesSource(
         join(
           header,
@@ -396,7 +543,7 @@ describe('migrateDeprecatedModulesSource', () => {
       );
 
       expect(result?.content).toContain(
-        `['providers']: [Foo, provideTranslocoTesting({ langs })]`,
+        `['providers']: [provideTranslocoTesting({ langs }), Foo]`,
       );
     });
 

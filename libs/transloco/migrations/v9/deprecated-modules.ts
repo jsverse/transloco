@@ -5,6 +5,8 @@ import type {
   ImportDeclaration,
   Node,
   ObjectLiteralElementLike,
+  ObjectLiteralExpression,
+  PropertyAssignment,
 } from 'typescript';
 
 import { loadTypeScript } from './lazy-deps';
@@ -70,8 +72,13 @@ export interface DeprecatedModulesResult {
  * Only usages that sit directly in an array literal (or, for `forRoot`, in the
  * `imports` of an object literal) are rewritten - those are the shapes where the
  * result is provably equivalent. Anything else, such as a helper returning the
- * module from a function, is left alone and reported: moving a module between
+ * module from a function, a namespace import (`transloco.TranslocoModule`) or a
+ * barrel re-export, is left alone and reported: moving a module between
  * `imports` and `providers` needs to know where it ends up.
+ *
+ * A rewrite inside an NgModule's `exports` also adds the names to its `imports`,
+ * since a standalone declarable can only be re-exported by a module that imports
+ * it (NG6004).
  *
  * Both the directive and the pipe are always added, without reading templates,
  * because that is exactly what the module exported. A component using only one
@@ -100,8 +107,36 @@ export function migrateDeprecatedModulesSource(
   const bindings = new Map<string, Binding>();
   const declarations = new Map<string, ImportDeclaration[]>();
   const existing = new Map<string, Map<string, string>>();
+  // `import * as transloco from '@jsverse/transloco'`: local name -> package.
+  // There is no named binding to rewrite, but `transloco.TranslocoModule` still
+  // stops compiling in v10, so those usages are reported.
+  const namespaces = new Map<string, string>();
+  const unresolved: UnresolvedUsage[] = [];
+
+  const lineOf = (node: Node) =>
+    file.getLineAndCharacterOfPosition(node.getStart()).line + 1;
 
   for (const statement of file.statements) {
+    // A barrel that re-exports a deprecated module passes it on to its own
+    // consumers, so it is reported rather than rewritten: the migration cannot
+    // see what the re-exported name is used for downstream.
+    if (
+      ts.isExportDeclaration(statement) &&
+      statement.moduleSpecifier &&
+      ts.isStringLiteral(statement.moduleSpecifier) &&
+      statement.exportClause &&
+      ts.isNamedExports(statement.exportClause)
+    ) {
+      const pkg = statement.moduleSpecifier.text;
+      for (const element of statement.exportClause.elements) {
+        const exported = (element.propertyName ?? element.name).text;
+        if (DEPRECATED[exported]?.pkg === pkg) {
+          unresolved.push({ name: exported, line: lineOf(element) });
+        }
+      }
+      continue;
+    }
+
     if (
       !ts.isImportDeclaration(statement) ||
       !ts.isStringLiteral(statement.moduleSpecifier)
@@ -112,6 +147,12 @@ export function migrateDeprecatedModulesSource(
     const clause = statement.importClause;
     if (pkg !== CORE && pkg !== LOCALE) continue;
     if (!clause || clause.isTypeOnly || !clause.namedBindings) continue;
+
+    if (ts.isNamespaceImport(clause.namedBindings)) {
+      namespaces.set(clause.namedBindings.name.text, pkg);
+      continue;
+    }
+
     if (!ts.isNamedImports(clause.namedBindings)) continue;
 
     declarations.set(pkg, [...(declarations.get(pkg) ?? []), statement]);
@@ -130,14 +171,19 @@ export function migrateDeprecatedModulesSource(
     }
   }
 
-  if (!bindings.size) return null;
+  if (!bindings.size && !namespaces.size && !unresolved.length) return null;
 
   const edits: Edit[] = [];
-  const unresolved: UnresolvedUsage[] = [];
+  // NgModule object literal -> the standalone names its `exports` array needs
+  // in `imports` as well. Collected while walking, emitted once per object.
+  const reExports = new Map<ObjectLiteralExpression, Set<string>>();
   // Package -> standalone export -> the local name it is imported under.
   const added = new Map<string, Map<string, string>>();
   const rewritten = new Set<string>();
   const blocked = new Set<string>();
+  // Array element -> the standalone names it was rewritten to, so an `imports`
+  // array is matched against what it will hold, not what it holds now.
+  const produced = new Map<Node, string[]>();
   let migrated = 0;
 
   // Every identifier the file already uses, so a name we add can't collide with
@@ -207,10 +253,44 @@ export function migrateDeprecatedModulesSource(
 
   const report = (node: Node, binding: Binding, localName: string) => {
     blocked.add(localName);
-    unresolved.push({
-      name: binding.imported,
-      line: file.getLineAndCharacterOfPosition(node.getStart()).line + 1,
-    });
+    unresolved.push({ name: binding.imported, line: lineOf(node) });
+  };
+
+  const propertyOf = (object: ObjectLiteralExpression, key: string) =>
+    object.properties.find((candidate) => keyOf(candidate) === key);
+
+  /**
+   * An NgModule can re-export a module it never imported, but it cannot
+   * re-export a standalone directive or pipe it does not import - that is
+   * NG6004. So a rewrite inside an `exports` array has to put the same names in
+   * the sibling `imports`: this returns the object literal to add them to,
+   * `'none'` when the array is not an `exports`, or `'blocked'` when they
+   * cannot be added there.
+   */
+  const reExportTarget = (
+    array: ArrayLiteralExpression,
+  ): ObjectLiteralExpression | 'none' | 'blocked' => {
+    const property = array.parent;
+    if (!ts.isPropertyAssignment(property) || keyOf(property) !== 'exports')
+      return 'none';
+
+    const object = property.parent;
+    if (!ts.isObjectLiteralExpression(object)) return 'none';
+    // A spread may already carry `imports`, which a sibling property shadows.
+    if (object.properties.some((candidate) => ts.isSpreadAssignment(candidate)))
+      return 'blocked';
+
+    const imports = propertyOf(object, 'imports');
+    if (
+      imports &&
+      !(
+        ts.isPropertyAssignment(imports) &&
+        ts.isArrayLiteralExpression(imports.initializer)
+      )
+    )
+      return 'blocked';
+
+    return object;
   };
 
   /**
@@ -235,6 +315,13 @@ export function migrateDeprecatedModulesSource(
     if (array.elements.filter(isTestingForRoot).length > 1) return false;
 
     const object = property.parent;
+    // A spread can carry a `providers` of its own. Appending to or adding a
+    // `providers` property next to it either shadows the user's providers or
+    // is shadowed by them, depending on which side the spread sits on, so the
+    // whole object is left alone.
+    if (object.properties.some((candidate) => ts.isSpreadAssignment(candidate)))
+      return false;
+
     const providers = object.properties.find(
       (candidate) => keyOf(candidate) === 'providers',
     );
@@ -261,10 +348,18 @@ export function migrateDeprecatedModulesSource(
 
     if (providers && ts.isPropertyAssignment(providers)) {
       const list = providers.initializer as ArrayLiteralExpression;
-      const last = list.elements[list.elements.length - 1];
+      const first = list.elements[0];
+      // The module came from `imports`, where the user's own `providers` took
+      // precedence over it. Going in first keeps that: the later entries of a
+      // `providers` array win, so appending would let the testing defaults
+      // override whatever the user configured.
       edits.push(
-        last
-          ? { start: last.getEnd(), end: last.getEnd(), text: `, ${provider}` }
+        first
+          ? {
+              start: first.getStart(),
+              end: first.getStart(),
+              text: `${provider}, `,
+            }
           : {
               start: list.getStart() + 1,
               end: list.getStart() + 1,
@@ -284,6 +379,20 @@ export function migrateDeprecatedModulesSource(
 
   const visit = (node: Node): void => {
     if (ts.isImportDeclaration(node)) return;
+
+    // `transloco.TranslocoModule` off a namespace import: there is no local
+    // binding to rewrite, so it is only reported.
+    if (
+      ts.isPropertyAccessExpression(node) &&
+      ts.isIdentifier(node.expression) &&
+      namespaces.has(node.expression.text)
+    ) {
+      const deprecated = DEPRECATED[node.name.text];
+      if (deprecated?.pkg === namespaces.get(node.expression.text)) {
+        unresolved.push({ name: node.name.text, line: lineOf(node) });
+        return;
+      }
+    }
 
     if (ts.isIdentifier(node) && bindings.has(node.text)) {
       const binding = bindings.get(node.text) as Binding;
@@ -315,11 +424,25 @@ export function migrateDeprecatedModulesSource(
       }
 
       if (ts.isArrayLiteralExpression(parent)) {
+        const target = reExportTarget(parent);
+        if (target === 'blocked') {
+          report(node, binding, node.text);
+          return;
+        }
+
+        const names = standaloneFor(binding);
+        if (target !== 'none') {
+          const queued = reExports.get(target) ?? new Set<string>();
+          reExports.set(target, queued);
+          names.forEach((name) => queued.add(name));
+        }
+
         edits.push({
           start: node.getStart(),
           end: node.getEnd(),
-          text: standaloneFor(binding).join(', '),
+          text: names.join(', '),
         });
+        produced.set(node, names);
         rewritten.add(node.text);
         migrated++;
         return;
@@ -333,6 +456,47 @@ export function migrateDeprecatedModulesSource(
   };
 
   ts.forEachChild(file, visit);
+
+  // The standalone names an `exports` array picked up also have to be in
+  // `imports`, or the NgModule fails to compile with NG6004.
+  for (const [object, names] of reExports) {
+    const imports = propertyOf(object, 'imports') as
+      PropertyAssignment | undefined;
+
+    if (!imports) {
+      const last = object.properties[object.properties.length - 1];
+      edits.push({
+        start: last.getEnd(),
+        end: last.getEnd(),
+        text: `, imports: [${[...names].join(', ')}]`,
+      });
+      continue;
+    }
+
+    const list = imports.initializer as ArrayLiteralExpression;
+    const present = new Set(
+      list.elements.flatMap(
+        (element) => produced.get(element) ?? [element.getText()],
+      ),
+    );
+    const missing = [...names].filter((name) => !present.has(name));
+    if (!missing.length) continue;
+
+    const last = list.elements[list.elements.length - 1];
+    edits.push(
+      last
+        ? {
+            start: last.getEnd(),
+            end: last.getEnd(),
+            text: `, ${missing.join(', ')}`,
+          }
+        : {
+            start: list.getStart() + 1,
+            end: list.getStart() + 1,
+            text: missing.join(', '),
+          },
+    );
+  }
 
   if (!edits.length && !unresolved.length) return null;
 
