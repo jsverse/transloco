@@ -13,10 +13,10 @@ To integrate Transloco commands with an Nx workspace, you can define tasks in th
 ```json
 {
   "i18n-extract": {
-    "command": "transloco-keys-manager extract --project projectName"
+    "command": "transloco-keys-manager extract --project {projectName}"
   },
   "i18n-find": {
-    "command": "transloco-keys-manager find --project projectName"
+    "command": "transloco-keys-manager find --project {projectName}"
   }
 }
 ```
@@ -24,7 +24,7 @@ To integrate Transloco commands with an Nx workspace, you can define tasks in th
 - **`i18n-extract`**: Extracts translation keys from the specified project.
 - **`i18n-find`**: Identifies missing keys or extra keys in the specified project.
 
-Replace `projectName` with the project's name as defined in your `angular.json` or Nx workspace configuration.
+Replace `{projectName}` with the project's name as defined in your `angular.json` if you're using the Angular CLI.
 
 {% hint style="warning" %}
 Don't pass the `cwd` option to these nx commands as it will affect the root path to look for the "prettier" config file used by the keys manager.
