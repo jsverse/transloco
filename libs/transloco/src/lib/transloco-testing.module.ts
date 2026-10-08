@@ -100,7 +100,7 @@ export function provideTranslocoTesting(options: TranslocoTestingOptions) {
     }),
     {
       provide: TRANSLOCO_TEST_LANGS,
-      useValue: options.langs,
+      useValue: options.langs ?? {},
     },
     {
       provide: TRANSLOCO_TEST_OPTIONS,
