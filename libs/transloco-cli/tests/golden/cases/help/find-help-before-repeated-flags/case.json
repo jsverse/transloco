@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN -h followed by a flag given twice WHEN find runs THEN it prints the usage, writes nothing and exits with 0",
+  "args": [
+    "find",
+    "-h",
+    "-a",
+    "-a"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

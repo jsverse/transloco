@@ -1,0 +1,13 @@
+{
+  "description": "GIVEN a value glued to its option, which is rejected, followed by -h WHEN extract runs THEN it prints the usage, extracts nothing and exits with 0",
+  "args": [
+    "extract",
+    "-cpath",
+    "-h"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

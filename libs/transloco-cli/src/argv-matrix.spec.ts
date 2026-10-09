@@ -12,6 +12,9 @@ import { collectOutput, everyCommand } from './tests/program-harness';
  * as it was typed. There is no third outcome, where the command runs and a
  * typed value went somewhere else or nowhere. Asking for the help or the
  * version is the one thing that isn't a setting: it prints, and nothing runs.
+ * The help comes before all of it: a command line that asks for it gets the
+ * help of the command it asks it of, whatever else was typed and however
+ * wrong that is.
  *
  * The options are read off the real program and the shapes are generated per
  * option, so an option or a command added later is covered without touching
@@ -63,6 +66,8 @@ interface Shape {
   impossible?: boolean;
   /** What stdout starts with when the help or the version was asked for: nothing runs and the exit code is 0. */
   prints?: string;
+  /** A request for the help was put on the command line, so it has to be found there. */
+  asksForHelp?: boolean;
 }
 
 const takesValue = (option: CommandUnknownOpts['options'][number]) =>
@@ -125,6 +130,151 @@ function readOptions(
 const discovered = readOptions(createProgram());
 const samePath = (a: OptionInfo, b: OptionInfo) =>
   a.path.join(' ') === b.path.join(' ');
+
+/** The real program. Its commands and options are read off it, it never runs. */
+const tree: CommandUnknownOpts = createProgram();
+const version = `${tree.version()}\n`;
+
+/** What the help of the command at the path starts with. */
+const usageOf = (path: string[]) =>
+  `Usage: ${[tree.name(), ...path].join(' ')} `;
+
+/** The help option is the one commander shows without it being declared. */
+function helpOptionOf(command: CommandUnknownOpts) {
+  const option = command
+    .createHelp()
+    .visibleOptions(command)
+    .find((visible) => !command.options.includes(visible));
+
+  return { long: option?.long as string, short: option?.short as string };
+}
+
+/** The command and the ones above it. */
+function lineage(command: CommandUnknownOpts): CommandUnknownOpts[] {
+  return command.parent ? [command, ...lineage(command.parent)] : [command];
+}
+
+/** What commander takes for an argument although it starts with a dash. */
+const negativeNumber = /^-(\d+|\d*\.\d+)(e[+-]?\d+)?$/;
+
+/**
+ * The commands leading to the one a command line asks the help of, or
+ * `undefined` when it doesn't ask for any. This is the rule of the README,
+ * written out a second time and apart from the program, which the matrix
+ * holds to it:
+ *
+ * - A request is `--help`, `-h`, or the help letter among nothing but flags of
+ *   the command behind one dash. It counts anywhere before `--`, also where a
+ *   value was expected, and never inside `--name=value`.
+ * - It is a request for the help of the command whose arguments it stands
+ *   among. Those of a command with subcommands end at the name of one, for as
+ *   long as the command knows every option before that name: at the first one
+ *   it doesn't know, the rest of the command line is its own.
+ */
+function helpAskedOf(
+  args: string[],
+  command = tree,
+  path: string[] = [],
+): string[] | undefined {
+  const end = args.indexOf('--');
+  const typed = end === -1 ? args : args.slice(0, end);
+  const help = helpOptionOf(command);
+  const short = (letter: string) =>
+    command.options.find((option) => option.short === `-${letter}`);
+  const asks = (token: string) =>
+    token === help.long ||
+    token === help.short ||
+    (/^-[^-]/.test(token) &&
+      token.includes(help.short.slice(1)) &&
+      [...token.slice(1)].every((letter) => {
+        const option = short(letter);
+
+        return `-${letter}` === help.short || (option && !takesValue(option));
+      }));
+  const own = typed.some(asks) ? path : undefined;
+
+  // The first name that isn't the value of an option is the subcommand
+  for (let index = 0; index < typed.length; index++) {
+    const token = typed[index];
+    const next: string | undefined = typed[index + 1];
+
+    if (asks(token) || !command.commands.length) return own;
+
+    if (!token.startsWith('-') || token === '-' || negativeNumber.test(token)) {
+      // `help <command>` is the help of that command already
+      const [name, ...rest] =
+        token === 'help' ? typed.slice(index + 1) : typed.slice(index);
+      const subcommand = command.commands.find(
+        (candidate) => candidate.name() === name,
+      );
+
+      return subcommand
+        ? helpAskedOf(rest, subcommand, [...path, subcommand.name()])
+        : own;
+    }
+
+    // Whether the option is known, and whether it is still waiting for a value
+    let waiting: boolean;
+
+    if (token.startsWith('--')) {
+      const [name, ...attached] = token.split('=');
+      const option = command.options.find(({ long }) => long === name);
+
+      if (!option || (attached.length && !takesValue(option))) return own;
+
+      waiting = Boolean(takesValue(option)) && !attached.length;
+    } else {
+      const letters = [...token.slice(1)].map(short);
+      const valueAt = letters.findIndex(
+        (option) => option && takesValue(option),
+      );
+      const read = valueAt === -1 ? letters : letters.slice(0, valueAt + 1);
+
+      if (!read.every(Boolean)) return own;
+
+      waiting = valueAt === letters.length - 1 && valueAt !== -1;
+    }
+
+    // What reads as an option isn't taken for the value
+    const known = lineage(command).flatMap(({ options }) => options);
+    const readsAsOption =
+      next !== undefined &&
+      (next.startsWith('--')
+        ? [help.long, ...known.map(({ long }) => long)].includes(
+            next.split('=')[0],
+          )
+        : next.length > 1 &&
+          [help.short, ...known.map((option) => option.short)].includes(
+            next.slice(0, 2),
+          ));
+
+    if (waiting && next !== undefined && !readsAsOption) index++;
+  }
+
+  return own;
+}
+
+/** The whole help of the command at the path: what `--help` prints for it. */
+const helps = new Map<string, string>();
+
+function helpOf(path: string[]) {
+  const key = path.join(' ');
+
+  if (!helps.has(key)) {
+    const program = createProgram();
+    const output = collectOutput(program);
+
+    try {
+      program.parse([...path, '--help'], { from: 'user' });
+    } catch {
+      // Commander is done once the help is printed
+    }
+
+    helps.set(key, output.stdout);
+  }
+
+  return helps.get(key) as string;
+}
 
 /** A program option goes before a command, a command option after its command and operands. */
 function commandLine(option: OptionInfo, tokens: string[]) {
@@ -238,11 +388,14 @@ function shapesOfValueOption(option: OptionInfo): Shape[] {
   ].filter((token): token is string => token !== undefined);
 
   for (const follower of followers) {
-    add(`long followed by ${follower}`, [long, follower], { impossible: true });
+    // The help is asked for wherever it stands, also where a value was expected
+    const outcome = ['--help', '-h'].includes(follower)
+      ? { prints: usageOf(option.path) }
+      : { impossible: true };
+
+    add(`long followed by ${follower}`, [long, follower], outcome);
     if (short) {
-      add(`short followed by ${follower}`, [short, follower], {
-        impossible: true,
-      });
+      add(`short followed by ${follower}`, [short, follower], outcome);
     }
     // The way to pass a value that looks like an option
     add(`long=${follower}`, [`${long}=${follower}`], typed(follower));
@@ -480,14 +633,11 @@ function shapesOfFlagClusters(): Shape[] {
 /**
  * The help letter behind one dash with the flags of a command, the program and
  * a command without any flag included. It is a flag like the others, wherever
- * it stands. Next to the version letter the version is printed, in either
- * order, as it is when the two are typed apart.
+ * it stands. Next to the version letter the help is printed as well, in either
+ * order, as it is when the two are typed apart: the help comes first.
  */
 function shapesOfHelpInClusters(): Shape[] {
-  const program = createProgram();
-  const version = `${program.version()}\n`;
-
-  return everyCommand(program).flatMap((command) => {
+  return everyCommand(createProgram()).flatMap((command) => {
     const names: string[] = [];
 
     for (
@@ -510,9 +660,6 @@ function shapesOfHelpInClusters(): Shape[] {
         .visibleOptions(command)
         .find((option) => !command.options.includes(option)),
     ) as string;
-    const versionLetter = letter(
-      command.options.find((option) => option.name() === 'version'),
-    );
     const letters = (takingValue: boolean) =>
       command.options
         .filter((option) => Boolean(takesValue(option)) === takingValue)
@@ -533,12 +680,7 @@ function shapesOfHelpInClusters(): Shape[] {
       shape(
         group,
         separately ? typed.map((one) => `-${one}`) : [`-${typed.join('')}`],
-        {
-          prints:
-            versionLetter && typed.includes(versionLetter)
-              ? version
-              : `Usage: ${names.join(' ')} `,
-        },
+        { prints: `Usage: ${names.join(' ')} ` },
       );
     const never = { impossible: true };
 
@@ -613,6 +755,77 @@ function shapesOfProgramOptionsAfterCommand(): Shape[] {
   );
 }
 
+/**
+ * The version, alone and in front of a command. It is printed as soon as it is
+ * read, so nothing after it is looked at.
+ */
+function shapesOfVersion(): Shape[] {
+  const option = tree.options.find(({ long }) => long === '--version');
+  const { long, short } = option as { long: string; short: string };
+
+  return [
+    [short],
+    [long],
+    [short, short],
+    [short, long],
+    [short, 'validate', 'en.json'],
+    [long, 'extract'],
+    ['--cwd', os.tmpdir(), short],
+    [`--cwd=${os.tmpdir()}`, long, 'extract'],
+  ].map((args) => ({ group: args.join(' '), args, prints: version }));
+}
+
+/**
+ * The same command lines with a request for the help added: in each of its
+ * forms, at every position before `--`. Whatever the command line was, one
+ * that ran, one that was rejected or one that printed the version, it now
+ * prints the help.
+ */
+function withHelpRequest(shapes: Shape[]): Shape[] {
+  const seen = new Set<string>();
+  const isCommand = (name: string) =>
+    tree.commands.some((command) => command.name() === name);
+
+  return shapes.flatMap(({ group, args }) => {
+    const end = args.includes('--') ? args.indexOf('--') : args.length;
+    const nameAt = args.slice(0, end).findIndex(isCommand);
+
+    return Array.from({ length: end + 1 }, (_, position) => {
+      const inProgram = nameAt === -1 || position <= nameAt;
+      const named = tree.commands.find(
+        (command) => command.name() === args[nameAt],
+      ) as CommandUnknownOpts;
+      // A request in front of the name of the command is one for the help of
+      // the program, and one after a command line starting with that name is
+      // for the help of the command. After options of the program it depends
+      // on them, which is left to the rule to tell.
+      const path = inProgram ? [] : nameAt === 0 ? [named.name()] : undefined;
+      const { long, short } = helpOptionOf(inProgram ? tree : named);
+      const letter = short.slice(1);
+      const [flag = letter] = path
+        ? (inProgram ? tree : named).options.flatMap((option) =>
+            option.short && !takesValue(option) ? [option.short.slice(1)] : [],
+          )
+        : [];
+
+      return [long, short, `-${letter}${flag}`, `-${flag}${letter}`].map(
+        (request): Shape => ({
+          group: `${group}, with ${request} at ${position}`,
+          args: [...args.slice(0, position), request, ...args.slice(position)],
+          asksForHelp: true,
+          ...(path ? { prints: usageOf(path) } : {}),
+        }),
+      );
+    })
+      .flat()
+      .filter(({ args: withRequest }) => {
+        const key = JSON.stringify(withRequest);
+
+        return !seen.has(key) && seen.add(key);
+      });
+  });
+}
+
 const matrix = [
   ...discovered.values.map((option) => ({
     title: [...option.path, option.long].join(' '),
@@ -628,7 +841,17 @@ const matrix = [
   },
   { title: 'clusters of flags', shapes: shapesOfFlagClusters() },
   { title: 'the help letter in a cluster', shapes: shapesOfHelpInClusters() },
+  { title: 'the version', shapes: shapesOfVersion() },
 ];
+
+/** Every command line of the matrix once more, asking for the help as well. */
+const helpMatrix = matrix.map(({ title, shapes }) => ({
+  title,
+  shapes: withHelpRequest(shapes),
+}));
+
+const countOf = (entries: Array<{ shapes: Shape[] }>) =>
+  entries.reduce((total, { shapes }) => total + shapes.length, 0);
 
 describe('argv matrix', () => {
   let chdir: ReturnType<typeof vi.spyOn>;
@@ -666,6 +889,33 @@ describe('argv matrix', () => {
     const ran = Object.values(runners).filter(
       (runner) => runner.mock.calls.length > 0,
     );
+    const asked = helpAskedOf(shape.args);
+
+    if (shape.asksForHelp && !asked) {
+      return 'holds a request for the help that the rule does not find';
+    }
+    if (shape.prints?.startsWith('Usage: ') && !asked) {
+      return 'is expected to print the help without asking for it';
+    }
+    if (asked) {
+      if (ran.length) return 'ran a command instead of printing the help';
+      if (chdir.mock.calls.length) return 'changed the working directory';
+      if (failure?.exitCode !== 0) {
+        return `didn't print the help and exit with 0: ${failure ? output.stderr.trim() : 'it ran'}`;
+      }
+      if (output.stderr) {
+        return `wrote ${JSON.stringify(output.stderr.slice(0, 50))} to stderr`;
+      }
+      if (output.stdout !== helpOf(asked)) {
+        return `printed ${JSON.stringify(output.stdout.slice(0, 50))} instead of the help of "${[tree.name(), ...asked].join(' ')}"`;
+      }
+      // Where the command is known from how the command line was put together
+      if (shape.prints && !output.stdout.startsWith(shape.prints)) {
+        return `printed the help of "${[tree.name(), ...asked].join(' ')}" instead of ${JSON.stringify(shape.prints)}`;
+      }
+
+      return undefined;
+    }
 
     if (shape.prints !== undefined) {
       if (ran.length) return 'ran a command instead of only printing';
@@ -735,15 +985,56 @@ describe('argv matrix', () => {
     );
     expect(discovered.values.length).toBeGreaterThanOrEqual(19);
     expect(discovered.flags.length).toBeGreaterThanOrEqual(10);
+    expect(countOf(matrix)).toBeGreaterThan(2800);
+  });
+
+  it(`GIVEN the command lines of the matrix
+      WHEN each is searched for a request for the help
+      THEN every one holding a request is expected to print the help, none of them to run or to be rejected, and there are tens of thousands of them`, () => {
+    const asking = [...matrix, ...helpMatrix]
+      .flatMap(({ shapes }) => shapes)
+      .filter(({ args }) => helpAskedOf(args));
+
     expect(
-      matrix.reduce((total, { shapes }) => total + shapes.length, 0),
-    ).toBeGreaterThan(2800);
+      asking
+        .filter(
+          ({ prints, asksForHelp, impossible, values, flags }) =>
+            !(asksForHelp || prints?.startsWith('Usage: ')) ||
+            impossible ||
+            values ||
+            flags,
+        )
+        .map(({ args }) => args),
+    ).toEqual([]);
+    expect(asking.length).toBeGreaterThanOrEqual(countOf(helpMatrix));
+    expect(countOf(helpMatrix)).toBeGreaterThan(40_000);
   });
 
   it.each(matrix.map(({ title, shapes }) => [title, shapes] as const))(
     `GIVEN every way of writing "%s"
      WHEN the program runs each of them
      THEN each is either rejected or the command gets exactly what was typed`,
+    async (_, shapes) => {
+      const violations: string[] = [];
+
+      for (const shape of shapes) {
+        const problem = await violation(shape);
+
+        if (problem) {
+          violations.push(
+            `[${shape.group}] ${JSON.stringify(shape.args)}: ${problem}`,
+          );
+        }
+      }
+
+      expect(violations).toEqual([]);
+    },
+  );
+
+  it.each(helpMatrix.map(({ title, shapes }) => [title, shapes] as const))(
+    `GIVEN every way of writing "%s", with a request for the help added in each of its forms and at every position
+     WHEN the program runs each of them
+     THEN each prints the help of the command the request stands in, and nothing else happens`,
     async (_, shapes) => {
       const violations: string[] = [];
 

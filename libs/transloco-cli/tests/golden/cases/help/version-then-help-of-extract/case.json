@@ -1,0 +1,13 @@
+{
+  "description": "GIVEN -V in front of the command and -h after it WHEN the binary runs THEN it prints the usage of extract instead of the version and exits with 0",
+  "args": [
+    "-V",
+    "extract",
+    "-h"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

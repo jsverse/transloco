@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN an empty --cwd, which is rejected, in front of the command and -h after it WHEN the binary runs THEN it prints the usage of extract and exits with 0",
+  "args": [
+    "-C",
+    "",
+    "extract",
+    "-h"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

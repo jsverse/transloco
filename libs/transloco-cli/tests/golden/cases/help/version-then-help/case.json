@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN -V followed by -h WHEN the binary runs THEN the help comes first: it prints the usage of the program instead of the version and exits with 0",
+  "args": [
+    "-V",
+    "-h"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

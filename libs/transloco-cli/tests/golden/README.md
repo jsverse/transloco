@@ -107,6 +107,8 @@ The `strictness` cases pin down what this binary rejects, with exit code 1 and b
 - several letters behind one dash that aren't all flags (`-su` is fine): a value glued to its option (`-cpath`, `-c=path`), an option taking a value inside a cluster (`-sc path`), a long option written with one dash in any spelling (`-output`, `-out=i18n`, `-defaultValue=TODO`). A value always goes in the next argument or after `--option=`;
 - a `--config` path that doesn't exist, for `extract`, `find` and `scoped-libs` alike. A directory is searched for a config.
 
+A request for the help gets past every one of them, and past the version: `--help`, `-h` or the letter among flags behind one dash, anywhere before `--`, prints the help of the command it follows and exits with 0 before anything else is looked at. The `help` cases pin that down next to the usage texts, along with what isn't a request, such as the value in `--default-value=-h`.
+
 ## Known issues not covered
 
 These are defects of the current implementation. They are left out on purpose, so that the suite doesn't turn them into expected behaviour:

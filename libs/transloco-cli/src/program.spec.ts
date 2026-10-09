@@ -1093,10 +1093,6 @@ describe('createProgram', () => {
         args: ['extract', '-h=1'],
         error: `error: unknown option '-h=1' ('-h' takes no value)\n`,
       },
-      {
-        args: ['extract', '-o', '-hs'],
-        error: `error: option '-o, --output <path>' argument missing ('-hs' is an option`,
-      },
     ])(
       `GIVEN the arguments $args
        WHEN the program runs
@@ -1480,9 +1476,6 @@ describe('createProgram', () => {
             .visibleOptions(command)
             .find((option) => !command.options.includes(option)),
         ) as string,
-        version: letter(
-          command.options.find((option) => option.name() === 'version'),
-        ),
         flags: letters(false),
         values: letters(true),
         operands: command.registeredArguments.map(
@@ -1532,9 +1525,9 @@ describe('createProgram', () => {
     )(
       `GIVEN %s
        WHEN the help letter shares a dash with its flags, in every position
-       THEN it prints what the same flags print when they are typed apart, and nothing runs`,
+       THEN it prints the help, as the same flags do when they are typed apart, and nothing runs`,
       async (_, command) => {
-        const { help, flags, version: versionLetter } = command;
+        const { help, flags } = command;
         const clusters = [
           [help, help],
           ...flags.flatMap((flag) => [
@@ -1561,13 +1554,9 @@ describe('createProgram', () => {
           );
 
           expect(together, cluster.join('')).toBe(apart);
-          // The version is printed as soon as it is read, before the help
-          // is looked for: it wins in either order
-          expect(together, cluster.join('')).toBe(
-            versionLetter && cluster.includes(versionLetter)
-              ? `${version}\n`
-              : usage,
-          );
+          // The help comes first, in either order and next to the version
+          // letter as well
+          expect(together, cluster.join('')).toBe(usage);
         }
       },
     );
@@ -1611,6 +1600,472 @@ describe('createProgram', () => {
         }
       },
     );
+  });
+
+  describe('a request for the help', () => {
+    /** The only options whose value may be empty. */
+    const emptyValueAllowed = ['default-value'];
+    const program = createProgram();
+    // Read off the real program, so a command or an option added to it is
+    // held to the rule without anyone having to remember this spec.
+    const commands = everyCommand(program).map((command) => {
+      const names: string[] = [];
+
+      for (
+        let current: typeof command | null = command;
+        current;
+        current = current.parent
+      ) {
+        names.unshift(current.name());
+      }
+
+      const takesValue = (option: (typeof command.options)[number]) =>
+        Boolean(option.required || option.optional);
+      // Of a command where there is one, as the program has options too
+      const [foreign] = everyCommand(program)
+        .filter((other) => other.parent)
+        .flatMap(({ options }) => options)
+        .flatMap(({ long }) => long ?? [])
+        .filter((long) => !command.options.some((own) => own.long === long));
+
+      return {
+        names,
+        /** The commands leading here, none for the program. */
+        path: names.slice(1),
+        values: command.options
+          .filter((option) => takesValue(option))
+          .map((option) => ({
+            name: option.name(),
+            long: option.long as string,
+            short: option.short,
+            variadic: option.variadic,
+            value: option.argChoices?.[0] ?? 'value',
+          })),
+        /** The letters of its flags, the one of the version included. */
+        flags: command.options
+          .filter((option) => !takesValue(option))
+          .flatMap((option) => option.short?.slice(1) ?? []),
+        /** The long name of an option only another command has. */
+        foreign,
+        arguments: command.registeredArguments.map((argument) => ({
+          operand: `${argument.name()}-operand`,
+          required: argument.required,
+          variadic: argument.variadic,
+        })),
+      };
+    });
+    type Walked = (typeof commands)[number];
+
+    /** What `--help` prints for the command at the path. */
+    async function helpOf(path: string[]) {
+      const { run, output } = setup();
+
+      await expect(run(...path, '--help')).rejects.toMatchObject({
+        exitCode: 0,
+      });
+
+      return output.stdout;
+    }
+
+    /** Expects the arguments to print the help of the command at the path, and to do nothing else. */
+    async function expectHelp(args: string[], path: string[]) {
+      const usage = await helpOf(path);
+      const label = JSON.stringify(args);
+
+      vi.clearAllMocks();
+
+      const chdir = vi.spyOn(process, 'chdir').mockImplementation(() => {});
+      const { run, output } = setup();
+
+      await expect(run(...args), label).rejects.toMatchObject({ exitCode: 0 });
+
+      expect(output.stdout, label).toBe(usage);
+      expect(output.stderr, label).toBe('');
+      expect(chdir, label).not.toHaveBeenCalled();
+      expectNoRunnerCalled();
+    }
+
+    /** Expects the arguments to be rejected, which is what makes them a mistake to begin with. */
+    async function expectRejected(args: string[]) {
+      const label = JSON.stringify(args);
+
+      vi.clearAllMocks();
+      vi.spyOn(process, 'chdir').mockImplementation(() => {});
+
+      const { run, output } = setup();
+
+      await expect(run(...args), label).rejects.toMatchObject({ exitCode: 1 });
+
+      expect(output.stdout, label).toBe('');
+      expectNoRunnerCalled();
+    }
+
+    /**
+     * Every family of mistake the command can be given: what goes before its
+     * name, if anything, and what goes after it.
+     */
+    function mistakes(command: Walked) {
+      const { values, foreign, arguments: args } = command;
+      const operands = args.map(({ operand }) => operand);
+      const [flag] = command.flags;
+      const missing = path.join(os.tmpdir(), 'transloco-cli-no-such-directory');
+      const after = (family: string, ...tokens: string[]) => ({
+        family,
+        before: [] as string[],
+        tokens: [...operands, ...tokens],
+      });
+      const before = (family: string, ...tokens: string[]) => ({
+        family,
+        before: tokens,
+        tokens: operands,
+      });
+
+      return [
+        after('an unknown option', '--frobnicate'),
+        after('an unknown letter', '-X'),
+        after('an unknown letter behind a flag', `-${flag ?? 'h'}X`),
+        after('an option of another command', foreign),
+        ...values.flatMap(({ name, long, short, variadic, value }) => [
+          ...(variadic
+            ? []
+            : [after(`${long} twice`, long, value, long, value)]),
+          ...(emptyValueAllowed.includes(name)
+            ? []
+            : [
+                after(`${long} with an empty value`, long, ''),
+                after(`${long} with a blank value`, `${long}= `),
+              ]),
+          after(`${long} without its value`, long),
+          after(`${long} followed by an option`, long, long, value),
+          after(`${long} behind one dash`, long.slice(1), value),
+          ...(short
+            ? [
+                after(`${short} with its value attached`, `${short}${value}`),
+                after(`${short} with "="`, `${short}=${value}`),
+                after(`${short} without its value`, short),
+                after(
+                  `${short} sharing its dash`,
+                  `-${flag ?? 'h'}${short.slice(1)}`,
+                  value,
+                ),
+              ]
+            : []),
+        ]),
+        // A command also fails on its arguments and on the options of the program
+        ...(command.path.length
+          ? [
+              ...(args.some(({ required }) => required)
+                ? [{ family: 'no argument', before: [], tokens: [] }]
+                : []),
+              ...(args.some(({ variadic }) => variadic)
+                ? []
+                : [after('an argument too many', 'one-too-many')]),
+              before('a --cwd that does not exist', '--cwd', missing),
+              before('an empty --cwd', '-C', ''),
+              before('--cwd twice', '-C', os.tmpdir(), '-C', os.tmpdir()),
+            ]
+          : []),
+      ];
+    }
+
+    it.each(
+      commands.map((command) => [command.names.join(' '), command] as const),
+    )(
+      `GIVEN %s and every family of mistake in its arguments
+       WHEN each is run as it is, and then with a request for the help in each of its forms at every position
+       THEN the first is rejected and the second prints the help of the command, running nothing`,
+      async (_, command) => {
+        const [flag = 'h'] = command.flags;
+        const requests = [
+          ...new Set(['--help', '-h', `-h${flag}`, `-${flag}h`]),
+        ];
+        const families = mistakes(command);
+
+        expect(families.length).toBeGreaterThanOrEqual(5);
+
+        for (const { before, tokens } of families) {
+          // A program option goes before a command, a command option after its command
+          const line = (typed: string[]) =>
+            command.path.length
+              ? [...before, ...command.path, ...typed]
+              : [...typed, 'validate', 'en.json'];
+
+          await expectRejected(line(tokens));
+
+          for (const request of requests) {
+            for (let position = 0; position <= tokens.length; position++) {
+              await expectHelp(
+                line([
+                  ...tokens.slice(0, position),
+                  request,
+                  ...tokens.slice(position),
+                ]),
+                command.path,
+              );
+            }
+          }
+        }
+      },
+    );
+
+    it.each(
+      commands.map((command) => [command.names.join(' '), command] as const),
+    )(
+      `GIVEN %s
+       WHEN the help is asked for through the help command
+       THEN it prints what --help prints for it`,
+      async (_, { path }) => {
+        await expectHelp(['help', ...path], path);
+      },
+    );
+
+    it.each([
+      // The help and the version: the help comes first, in either order
+      { args: ['-h', '-V'], help: 'transloco' },
+      { args: ['-V', '-h'], help: 'transloco' },
+      { args: ['-hV'], help: 'transloco' },
+      { args: ['-Vh'], help: 'transloco' },
+      { args: ['--help', '--version'], help: 'transloco' },
+      { args: ['--version', '--help'], help: 'transloco' },
+      { args: ['-V', 'extract', '-h'], help: 'transloco extract' },
+      { args: ['--version', 'find', '--help'], help: 'transloco find' },
+      // The help and what is wrong with the rest of the command line
+      { args: ['extract', '-h', '--bogus'], help: 'transloco extract' },
+      { args: ['extract', '--bogus', '-h'], help: 'transloco extract' },
+      { args: ['extract', '-h', '-c', '-s'], help: 'transloco extract' },
+      { args: ['extract', '-cpath', '-h'], help: 'transloco extract' },
+      { args: ['extract', '-c=path', '--help'], help: 'transloco extract' },
+      { args: ['extract', '-sor', '-h'], help: 'transloco extract' },
+      { args: ['find', '-h', '-a', '-a', '-i', ''], help: 'transloco find' },
+      { args: ['find', '--replace', '-ha'], help: 'transloco find' },
+      { args: ['validate', '-h'], help: 'transloco validate' },
+      {
+        args: ['validate', '-h', 'a.json', 'b.json'],
+        help: 'transloco validate',
+      },
+      { args: ['optimize', '-h'], help: 'transloco optimize' },
+      { args: ['optimize', '-h', 'd1', 'd2'], help: 'transloco optimize' },
+      {
+        args: ['optimize', 'd1', '--dist', 'd2', '-h'],
+        help: 'transloco optimize',
+      },
+      { args: ['optimize', '', '--help'], help: 'transloco optimize' },
+      {
+        args: ['scoped-libs', '--config', '', '-hw'],
+        help: 'transloco scoped-libs',
+      },
+      // Where a value was expected
+      { args: ['extract', '-c', '-h'], help: 'transloco extract' },
+      { args: ['extract', '-d', '-h'], help: 'transloco extract' },
+      { args: ['extract', '-o', '-hs'], help: 'transloco extract' },
+      { args: ['extract', '--langs', '--help'], help: 'transloco extract' },
+      { args: ['--cwd', '-h', 'extract'], help: 'transloco' },
+      // A config file that isn't there, which the command would only find out by running
+      {
+        args: ['extract', '--config', 'missing.config.js', '-h'],
+        help: 'transloco extract',
+      },
+      // The options of the program
+      {
+        args: ['-C', 'missing-dir', 'extract', '-h'],
+        help: 'transloco extract',
+      },
+      { args: ['-C', '', 'extract', '-h'], help: 'transloco extract' },
+      { args: ['-C', '', '-h'], help: 'transloco' },
+      { args: ['-C=apps', 'extract', '-h'], help: 'transloco extract' },
+      { args: ['-Capps', 'find', '--help'], help: 'transloco find' },
+      { args: ['-h', '-C'], help: 'transloco' },
+      // A token that only holds the letter is a mistake, and a request next to it still wins
+      { args: ['extract', '-hc', '-h'], help: 'transloco extract' },
+      { args: ['extract', '-hX', '--help'], help: 'transloco extract' },
+      { args: ['extract', '--helpme', '-sh'], help: 'transloco extract' },
+      // In front of the command it is the help of the program
+      { args: ['-h', 'extract'], help: 'transloco' },
+      { args: ['--help', 'extract', '--bogus'], help: 'transloco' },
+      { args: ['-h', 'translate'], help: 'transloco' },
+      // Commander only looks for a command as long as it knows what stands
+      // before it, so after these the request is one to the program
+      { args: ['translate', '-h'], help: 'transloco' },
+      { args: ['translate', '--help', 'extract'], help: 'transloco' },
+      { args: ['translate', 'extract', '-h'], help: 'transloco' },
+      { args: ['--frobnicate', 'extract', '-h'], help: 'transloco' },
+      { args: ['-X', 'extract', '-h'], help: 'transloco' },
+      { args: ['-cwd', 'apps', 'extract', '-h'], help: 'transloco' },
+      // The help command, which a request turns into the help of the program
+      // unless it names a command
+      { args: ['help', '-h'], help: 'transloco' },
+      { args: ['help', 'translate', '--help'], help: 'transloco' },
+      { args: ['help', 'find', '-h'], help: 'transloco find' },
+      { args: ['help', 'find', '--bogus', '-h'], help: 'transloco find' },
+      // Before "--" only
+      { args: ['extract', '-h', '--', 'src'], help: 'transloco extract' },
+      { args: ['-h', '--', 'extract'], help: 'transloco' },
+    ])(
+      `GIVEN the arguments $args
+       WHEN the program runs
+       THEN it prints the help of "$help" and nothing else happens`,
+      async ({ args, help }) => {
+        await expectHelp(args, help.split(' ').slice(1));
+      },
+    );
+
+    it.each(
+      commands.map((command) => [command.names.join(' '), command] as const),
+    )(
+      `GIVEN %s
+       WHEN something that only looks like a request for the help is typed
+       THEN the help is not printed: it is a mistake, a value or an argument like any other`,
+      async (_, { path, values, arguments: args }) => {
+        const operands = args.map(({ operand }) => operand);
+        const line = (typed: string[]) =>
+          path.length
+            ? [...path, ...operands, ...typed]
+            : [...typed, 'validate', 'en.json'];
+        const lookalikes = [
+          ['-hX'],
+          ['-Xh'],
+          ['-h=1'],
+          ['-H'],
+          ['-help'],
+          ['--helpme'],
+          ['--help=1'],
+          ['--Help'],
+          ['--', '-h'],
+          ['--', '--help'],
+          ['--', '-hh'],
+          // The value of an option, the way a value starting with a dash is written
+          ...values.flatMap(({ long }) => [[`${long}=-h`], [`${long}=--help`]]),
+        ];
+
+        for (const typed of lookalikes) {
+          const label = JSON.stringify(typed);
+
+          vi.clearAllMocks();
+          vi.spyOn(process, 'chdir').mockImplementation(() => {});
+
+          const { run, output } = setup();
+          const failure = await run(...line(typed)).then(
+            () => undefined,
+            (error: { exitCode?: number }) => error,
+          );
+
+          expect(output.stdout, label).toBe('');
+          // Either it is rejected, or the command runs with it
+          expect(failure?.exitCode, label).toBe(failure ? 1 : undefined);
+          if (failure) {
+            expect(output.stderr, label).toContain('error: ');
+            expectNoRunnerCalled();
+          }
+        }
+      },
+    );
+
+    it.each([
+      {
+        scenario: 'the help letter as the value of an option, written with "="',
+        args: ['extract', '--default-value=-h'],
+        config: { defaultValue: '-h' },
+      },
+      {
+        scenario: 'the help flag as the value of an option, written with "="',
+        args: ['extract', '--output=--help', '-s'],
+        config: { output: '--help', sort: true },
+      },
+      {
+        scenario: 'a cluster holding the help letter as the value of an option',
+        args: ['extract', '--marker=-sh'],
+        config: { marker: '-sh' },
+      },
+    ])(
+      `GIVEN $scenario
+       WHEN the program runs
+       THEN the command gets it as the value and no help is printed`,
+      async ({ args, config }) => {
+        const { run, output } = setup();
+
+        await run(...args);
+
+        expect(runners.runExtract).toHaveBeenCalledExactlyOnceWith({
+          command: 'extract',
+          ...config,
+        });
+        expect(output.stdout).toBe('');
+      },
+    );
+
+    it(`GIVEN the help letter and the help flag after "--"
+        WHEN validate runs
+        THEN they are handed over as files`, async () => {
+      const { run, output } = setup();
+
+      await run('validate', 'en.json', '--', '-h', '--help');
+
+      expect(runners.runValidate).toHaveBeenCalledExactlyOnceWith([
+        'en.json',
+        '-h',
+        '--help',
+      ]);
+      expect(output.stdout).toBe('');
+    });
+
+    it.each([
+      {
+        scenario: 'the help command with a name that is no command',
+        args: ['help', 'translate'],
+      },
+      {
+        scenario: 'the help command asked for the help of itself',
+        args: ['help', 'help'],
+      },
+    ])(
+      `GIVEN $scenario
+       WHEN the program runs
+       THEN it prints the help of the program as an error, as there is no request for the help in it`,
+      async ({ args }) => {
+        const { run, output } = setup();
+
+        await expect(run(...args)).rejects.toMatchObject({ exitCode: 1 });
+
+        expect(output.stderr).toContain('Usage: transloco [options] [command]');
+        expect(output.stdout).toBe('');
+        expectNoRunnerCalled();
+      },
+    );
+
+    it.each([
+      ['-V', '--frobnicate'],
+      ['--frobnicate', '-V'],
+      ['-V', 'translate'],
+      ['-V', 'extract', '--frobnicate'],
+      ['--version', '-C'],
+      ['-V', 'help'],
+    ])(
+      `GIVEN the version next to a mistake, as in "%s %s"
+       WHEN the program runs
+       THEN the version is printed, as it is as soon as it is read`,
+      async (...args) => {
+        const { run, output } = setup();
+
+        await expect(run(...args)).rejects.toMatchObject({ exitCode: 0 });
+
+        expect(output.stdout).toBe(`${version}\n`);
+        expect(output.stderr).toBe('');
+        expectNoRunnerCalled();
+      },
+    );
+
+    it(`GIVEN the version after a mistake commander fails on as it reads it
+        WHEN the program runs
+        THEN it is rejected: unlike the help, the version does not come first`, async () => {
+      const { run, output } = setup();
+
+      await expect(run('-C', '', '-V')).rejects.toMatchObject({ exitCode: 1 });
+
+      expect(output.stderr).toContain(
+        `error: option '-C, --cwd <dir>' argument cannot be empty`,
+      );
+      expect(output.stdout).toBe('');
+    });
   });
 
   describe('rules of every option taking a value', () => {

@@ -1,0 +1,24 @@
+Usage: transloco extract [options]
+
+Extract the translation keys into the translation files
+
+Options:
+  --project <name>             Name of the targeted project
+  -c, --config <path>          Path to a custom transloco config
+  -i, --input <paths>          The source directory for all files using the
+                               translation keys, comma separated when there are
+                               several
+  -f, --file-format <format>   The translation file format, `json` unless
+                               configured otherwise (choices: "json", "pot")
+  -m, --marker <name>          The marker sign for dynamic values
+  -s, --sort                   Sort keys using the sort() method
+  -u, --unflat                 Unflat the translation file
+  -d, --default-value <value>  The default value of a generated key
+  -o, --output <path>          The target directory for all generated
+                               translation files
+  -l, --langs <langs...>       The languages files to generate
+  -r, --replace                Replace the contents of a translation file (if it
+                               exists) with the generated one (default value is
+                               false, in which case files are merged)
+  -R, --remove-extra-keys      Remove extra keys from existing translation files
+  -h, --help                   Display help for the command

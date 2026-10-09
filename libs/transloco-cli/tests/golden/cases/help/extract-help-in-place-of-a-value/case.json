@@ -1,0 +1,13 @@
+{
+  "description": "GIVEN -h where the value of --config was expected WHEN extract runs THEN it prints the usage instead of reporting the value as missing, extracts nothing and exits with 0",
+  "args": [
+    "extract",
+    "-c",
+    "-h"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}
