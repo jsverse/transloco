@@ -1,12 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-import { createTranslationFiles } from '../keys-builder/create-translation-files';
-import { runPrettier } from '../keys-builder/utils/run-prettier';
-import { getLogger } from '../utils/logger';
-import { buildTranslationFile } from '../keys-builder/build-translation-file';
-import { ScopeMap } from '../types';
+import { createTranslationFiles } from '../keys-builder/create-translation-files.js';
+import { runPrettier } from '../keys-builder/utils/run-prettier.js';
+import { getLogger } from '../utils/logger.js';
+import { buildTranslationFile } from '../keys-builder/build-translation-file.js';
+import { ScopeMap } from '../types.js';
 
-vi.mock('../utils/logger', () => {
+vi.mock('../utils/logger.js', () => {
   const mockLogger = {
     log: vi.fn(),
     success: vi.fn(),
@@ -15,15 +15,15 @@ vi.mock('../utils/logger', () => {
   return { getLogger: () => mockLogger };
 });
 
-vi.mock('../config', () => ({
+vi.mock('../config.js', () => ({
   getConfig: () => ({ scopePathMap: {}, __sourceRoot: '' }),
 }));
 
-vi.mock('../keys-builder/utils/run-prettier', () => ({
+vi.mock('../keys-builder/utils/run-prettier.js', () => ({
   runPrettier: vi.fn().mockResolvedValue(undefined),
 }));
 
-vi.mock('../keys-builder/build-translation-file', () => ({
+vi.mock('../keys-builder/build-translation-file.js', () => ({
   buildTranslationFile: vi.fn(),
 }));
 

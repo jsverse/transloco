@@ -30,7 +30,7 @@ describe('transloco-optimize bin', () => {
   async function runBin(...args: string[]) {
     process.argv = ['node', 'transloco-optimize', ...args];
     vi.resetModules();
-    await import('./index');
+    await import('./index.js');
   }
 
   it(`GIVEN a dist folder and a comments key

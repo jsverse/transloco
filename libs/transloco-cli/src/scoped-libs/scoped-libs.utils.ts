@@ -1,7 +1,7 @@
 import path from 'node:path';
 import fs from 'fs';
 
-import { readJSONSync, writeJSONSync } from 'fs-extra';
+import { readJSONSync, writeJSONSync } from 'fs-extra/esm';
 import chalk from 'chalk';
 
 export function toLinuxFormat(p: string) {

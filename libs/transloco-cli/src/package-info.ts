@@ -8,7 +8,11 @@ interface PackageJson {
 
 // `package.json` sits one level above this file in the sources as well as in
 // the published package, where `src/` is kept next to it.
-export const packageJsonPath = path.join(__dirname, '..', 'package.json');
+export const packageJsonPath = path.join(
+  import.meta.dirname,
+  '..',
+  'package.json',
+);
 
 export function readPackageJson(): PackageJson {
   return JSON.parse(readFileSync(packageJsonPath, 'utf-8'));

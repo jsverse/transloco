@@ -1,13 +1,13 @@
 import * as cheerio from 'cheerio';
 import type { Element } from 'domhandler';
 
-import { getConfig } from '../../config';
-import { TEMPLATE_TYPE } from '../../types';
-import { readFile } from '../../utils/file.utils';
-import { regexFactoryMap } from '../../utils/regexs.utils';
-import { addCommentSectionKeys } from '../add-comment-section-keys';
+import { getConfig } from '../../config.js';
+import { TEMPLATE_TYPE } from '../../types.js';
+import { readFile } from '../../utils/file.utils.js';
+import { regexFactoryMap } from '../../utils/regexs.utils.js';
+import { addCommentSectionKeys } from '../add-comment-section-keys.js';
 
-import { ContainersMetadata, TemplateExtractorConfig } from './types';
+import { ContainersMetadata, TemplateExtractorConfig } from './types.js';
 
 /**
  * We can't use AST here since the comments markings support the read property, and the AST extracts them without context

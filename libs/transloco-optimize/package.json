@@ -2,9 +2,11 @@
   "name": "@jsverse/transloco-optimize",
   "version": "9.0.0-alpha.4",
   "description": "Transloco optimization process for production environments",
+  "type": "module",
   "main": "src/lib/transloco-optimize.js",
+  "module": "src/lib/transloco-optimize.js",
   "engines": {
-    "node": ">=22"
+    "node": "^22.18.0 || >=24"
   },
   "bin": {
     "transloco-optimize": "src/index.js"

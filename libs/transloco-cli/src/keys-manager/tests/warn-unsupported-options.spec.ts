@@ -1,10 +1,10 @@
 import commandLineArgs from 'command-line-args';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { commandSpecificOptions, optionDefinitions } from '../cli-options';
-import { warnUnsupportedOptions } from '../utils/warn-unsupported-options';
+import { commandSpecificOptions, optionDefinitions } from '../cli-options.js';
+import { warnUnsupportedOptions } from '../utils/warn-unsupported-options.js';
 
-import { spyOnConsole } from './spec-utils';
+import { spyOnConsole } from './spec-utils.js';
 
 /**
  * The options both commands read, spelled out so `commandSpecificOptions` can't

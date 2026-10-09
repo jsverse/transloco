@@ -1,10 +1,10 @@
-import { messages } from '../messages';
-import { Config, ScopeMap } from '../types';
-import { getLogger } from '../utils/logger';
-import { buildScopeFilePaths } from '../utils/path.utils';
+import { messages } from '../messages.js';
+import { Config, ScopeMap } from '../types.js';
+import { getLogger } from '../utils/logger.js';
+import { buildScopeFilePaths } from '../utils/path.utils.js';
 
-import { buildTranslationFile, FileAction } from './build-translation-file';
-import { runPrettier } from './utils/run-prettier';
+import { buildTranslationFile, FileAction } from './build-translation-file.js';
+import { runPrettier } from './utils/run-prettier.js';
 
 export async function createTranslationFiles({
   scopeToKeys,

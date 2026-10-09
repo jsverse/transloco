@@ -16,11 +16,11 @@ import { fileURLToPath } from 'node:url';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 
 const packageDir = path.resolve(
-  __dirname,
+  import.meta.dirname,
   '../../../../dist/libs/transloco-cli',
 );
 const bin = path.join(packageDir, 'src', 'bin.js');
-const hook = path.join(__dirname, 'record-loaded-modules.mjs');
+const hook = path.join(import.meta.dirname, 'record-loaded-modules.mjs');
 
 interface Allowed {
   /** Files of the CLI itself, relative to its package directory. */

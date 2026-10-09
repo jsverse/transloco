@@ -19,7 +19,7 @@ describe('logger', () => {
 
   describe('getLogger', () => {
     it('should return a logger with log, warn, success, and startSpinner methods', async () => {
-      const { getLogger } = await import('../utils/logger');
+      const { getLogger } = await import('../utils/logger.js');
       const logger = getLogger();
       expect(logger).toHaveProperty('log');
       expect(logger).toHaveProperty('warn');
@@ -30,7 +30,7 @@ describe('logger', () => {
     it('should write warnings to stderr through console.warn', async () => {
       const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
-      const { getLogger } = await import('../utils/logger');
+      const { getLogger } = await import('../utils/logger.js');
       getLogger().warn('something is off');
 
       expect(warnSpy).toHaveBeenCalledWith(
@@ -48,7 +48,7 @@ describe('logger', () => {
       const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
       debug.disable();
 
-      const { devlog } = await import('../utils/logger');
+      const { devlog } = await import('../utils/logger.js');
       devlog('config', 'Test', { key: 'value' });
 
       expect(consoleSpy).not.toHaveBeenCalled();
@@ -59,7 +59,7 @@ describe('logger', () => {
       const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
       debug.enable('tkm:config');
 
-      const { devlog } = await import('../utils/logger');
+      const { devlog } = await import('../utils/logger.js');
       devlog('config', 'MyTag', { myVar: 'myValue' });
 
       expect(consoleSpy).toHaveBeenCalledWith(
@@ -79,7 +79,7 @@ describe('logger', () => {
       const originalDebugLog = debug.log;
       debug.log = debugLogSpy;
 
-      const { devlog } = await import('../utils/logger');
+      const { devlog } = await import('../utils/logger.js');
       devlog('extraction', 'Extract', { a: 1, b: 'two' });
 
       // The header goes through console.log.

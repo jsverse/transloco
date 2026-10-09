@@ -13,7 +13,7 @@ import { baseConfig } from './vitest.base';
 export interface ProjectOptions {
   /** Vitest project name, shown in reporters. */
   name: string;
-  /** The project directory — always pass `__dirname`. */
+  /** The project directory — always pass `__dirname`, or `import.meta.dirname` from an ES module package. */
   root: string;
   /** Coverage output dir, relative to `root` (e.g. '../../coverage/libs/foo'). */
   coverageDir: string;

@@ -3,11 +3,11 @@ import path from 'node:path';
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { CliError } from '../errors';
-import type { Config } from '../keys-manager/types';
+import { CliError } from '../errors.js';
+import type { Config } from '../keys-manager/types.js';
 
-import { runExtract } from './extract';
-import { runFind } from './find';
+import { runExtract } from './extract.js';
+import { runFind } from './find.js';
 
 const { assertKeysManagerPeers, buildTranslationFiles, findMissingKeys } =
   vi.hoisted(() => ({
@@ -100,8 +100,8 @@ describe('keys manager runners', () => {
     );
 
     it.each([
-      ['a file', __filename],
-      ['a directory', __dirname],
+      ['a file', import.meta.filename],
+      ['a directory', import.meta.dirname],
     ])(
       `GIVEN a config path that is %s
        WHEN the commands run

@@ -45,14 +45,14 @@ describe('transloco bin', () => {
    * a CliError when it comes from the same fresh copy of the module the bin loads.
    */
   async function cliError(message: string, exitCode?: number) {
-    const { CliError } = await import('./errors');
+    const { CliError } = await import('./errors.js');
 
     return new CliError(message, exitCode);
   }
 
   /** Runs the bin and lets its rejection handler and the stderr flush complete. */
   async function runBin() {
-    await import('./bin');
+    await import('./bin.js');
     await new Promise((resolve) => setImmediate(resolve));
     await new Promise((resolve) => setImmediate(resolve));
   }
@@ -101,7 +101,7 @@ describe('transloco bin', () => {
       THEN the process is not ended before the flush completes`, async () => {
     parseAsync.mockRejectedValueOnce(await cliError('slow pipe'));
 
-    await import('./bin');
+    await import('./bin.js');
     // The rejection handler has run, the write callback hasn't yet
     await Promise.resolve();
     await Promise.resolve();
