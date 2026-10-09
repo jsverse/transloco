@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN -defaultValue=TODO, which would read as -d with \"efaultValue=TODO\" for a value WHEN extract runs THEN it is rejected with the option that was meant, the translation file is untouched and it exits with 1",
+  "args": [
+    "extract",
+    "-c",
+    "configs/transloco.config.js",
+    "-defaultValue=TODO"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

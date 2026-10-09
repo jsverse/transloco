@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN -ha, the help letter in front of a flag behind one dash WHEN find runs THEN it prints the same usage as --help, writes nothing and exits with 0",
+  "args": [
+    "find",
+    "-ha"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

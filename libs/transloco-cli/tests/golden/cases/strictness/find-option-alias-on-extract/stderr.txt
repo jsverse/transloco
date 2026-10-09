@@ -1,0 +1,2 @@
+error: unknown option '-e'
+(add --help for additional information)

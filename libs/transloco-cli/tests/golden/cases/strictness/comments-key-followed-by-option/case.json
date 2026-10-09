@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN -k directly followed by -d WHEN optimize runs THEN the value is reported missing, the translation file is left as it was and it exits with 1",
+  "args": [
+    "optimize",
+    "dist",
+    "-k",
+    "-d"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

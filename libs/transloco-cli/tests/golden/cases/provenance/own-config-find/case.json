@@ -1,0 +1,15 @@
+{
+  "description": "GIVEN a config file holding only the options find reads WHEN the keys are searched with nothing but --config THEN they all apply. It is the reference the shared config case is compared with",
+  "args": [
+    "find",
+    "--config",
+    "transloco.config.js"
+  ],
+  "exitCode": 2,
+  "stderrQuiet": true,
+  "stdoutIncludes": [
+    "File Name Missing Keys Extra Keys",
+    "en -- 'old.key'",
+    "es 'actions.cancel' --"
+  ]
+}

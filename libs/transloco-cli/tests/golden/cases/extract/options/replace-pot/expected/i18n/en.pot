@@ -1,0 +1,20 @@
+msgid ""
+msgstr ""
+"mime-version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "actions.save"
+msgstr "missing"
+
+msgid "home.title"
+msgstr "missing"
+
+msgid "home.greeting"
+msgstr "missing"
+
+msgid "home.documentTitle"
+msgstr "missing"
+
+msgid "actions.cancel"
+msgstr "missing"

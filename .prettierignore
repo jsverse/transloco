@@ -21,3 +21,6 @@ BREAKING_CHANGES.md
 
 # Vendored AI agent skill docs, not project source
 .claude/
+
+# Inputs and expected outputs of the CLI golden suite, compared byte for byte
+/libs/transloco-cli/tests/golden/cases

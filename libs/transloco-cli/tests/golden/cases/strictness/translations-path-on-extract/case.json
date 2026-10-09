@@ -1,0 +1,13 @@
+{
+  "description": "GIVEN --translations-path, which only find reads WHEN extract runs THEN it is rejected and it exits with 1",
+  "args": [
+    "extract",
+    "--translations-path",
+    "i18n"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

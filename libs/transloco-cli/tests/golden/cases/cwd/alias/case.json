@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN translation files in a sub directory WHEN validate runs with -C naming it THEN the relative file resolves against that directory",
+  "args": [
+    "-C",
+    "packages/shop",
+    "validate",
+    "i18n/en.json"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

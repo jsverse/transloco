@@ -1,0 +1,13 @@
+{
+  "description": "GIVEN -c=<path> WHEN find runs with --add-missing-keys THEN it is rejected saying how to write it, the translation files are untouched and it exits with 1",
+  "args": [
+    "find",
+    "-a",
+    "-c=configs/transloco.config.js"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

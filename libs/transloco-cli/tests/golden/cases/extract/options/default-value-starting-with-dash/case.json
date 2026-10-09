@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN a default value that looks like an option, written as --default-value=-R WHEN the keys are extracted THEN it is taken for the value, and --remove-extra-keys stays off",
+  "args": [
+    "extract",
+    "-i",
+    "src/app",
+    "-o",
+    "i18n",
+    "--default-value=-R",
+    "--langs",
+    "en"
+  ],
+  "exitCode": 0
+}

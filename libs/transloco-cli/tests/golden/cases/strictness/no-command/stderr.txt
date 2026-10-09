@@ -1,0 +1,21 @@
+Usage: transloco [options] [command]
+
+The Transloco command line
+
+Options:
+  -V, --version              Output the version
+  -C, --cwd <dir>            Run as if transloco was started in <dir>
+  -h, --help                 Display help for the command
+
+Commands:
+  extract [options]          Extract the translation keys into the translation
+                             files
+  find [options]             Find the keys missing from the translation files,
+                             and the extra ones in them
+  validate <files...>        Verify the translation files are valid JSON and
+                             hold no duplicate keys
+  optimize [options] [dist]  Flatten and minify the translation files of a
+                             production build, dropping the translator comments
+  scoped-libs [options]      Copy the translation files of scoped libraries into
+                             the application
+  help [command]             Display help for the command

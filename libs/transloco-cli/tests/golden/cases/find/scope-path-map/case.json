@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN a scope mapped to its own directory through scopePathMap, whose en file misses a key and holds an extra one WHEN the keys are searched with -e THEN the files of the mapped directory are compared and it exits with 1",
+  "args": [
+    "find",
+    "--config",
+    "transloco.config.js",
+    "-e"
+  ],
+  "exitCode": 1,
+  "stdoutIncludes": [
+    "File Name Missing Keys Extra Keys",
+    "admin/en 'users.add' 'users.removed'"
+  ]
+}

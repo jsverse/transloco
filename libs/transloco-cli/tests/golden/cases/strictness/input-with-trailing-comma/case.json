@@ -1,0 +1,16 @@
+{
+  "description": "GIVEN an --input ending with a comma, which leaves an empty path WHEN extract runs THEN it is rejected instead of taking the working directory for a source, nothing is written and it exits with 1",
+  "args": [
+    "extract",
+    "-i",
+    "src/app,",
+    "-o",
+    "out",
+    "-R"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

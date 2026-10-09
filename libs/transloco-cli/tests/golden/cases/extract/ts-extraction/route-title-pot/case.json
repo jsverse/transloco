@@ -1,0 +1,22 @@
+{
+  "description": "GIVEN the ts-extraction/route-title/src fixture of the in-process specs WHEN its keys are extracted to pot with --sort THEN the generated translation files match",
+  "args": [
+    "extract",
+    "--input",
+    "src",
+    "--output",
+    "i18n",
+    "--file-format",
+    "pot",
+    "--default-value",
+    "missing",
+    "--sort",
+    "--langs",
+    "en",
+    "es"
+  ],
+  "exitCode": 0,
+  "fixtures": {
+    "src": "buildTranslationFiles/ts-extraction/route-title/src"
+  }
+}

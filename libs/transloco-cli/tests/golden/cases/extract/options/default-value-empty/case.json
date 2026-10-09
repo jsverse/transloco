@@ -1,0 +1,15 @@
+{
+  "description": "GIVEN an empty --default-value WHEN the keys are extracted THEN it is accepted and every new key gets an empty value, as it always has",
+  "args": [
+    "extract",
+    "-i",
+    "src/app",
+    "-o",
+    "i18n",
+    "--default-value",
+    "",
+    "--langs",
+    "en"
+  ],
+  "exitCode": 0
+}

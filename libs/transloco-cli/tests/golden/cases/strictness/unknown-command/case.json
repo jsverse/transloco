@@ -1,0 +1,11 @@
+{
+  "description": "GIVEN a command that does not exist WHEN the binary runs THEN it is rejected and it exits with 1",
+  "args": [
+    "translate"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

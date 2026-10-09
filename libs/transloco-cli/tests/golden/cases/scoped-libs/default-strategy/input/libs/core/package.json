@@ -1,0 +1,10 @@
+{
+  "name": "@demo/core",
+  "version": "1.0.0",
+  "i18n": [
+    {
+      "scope": "core",
+      "path": "src/i18n"
+    }
+  ]
+}

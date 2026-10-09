@@ -1,0 +1,19 @@
+{
+  "description": "GIVEN an en.json with both a missing and an extra key WHEN the keys are searched with -e THEN the missing key wins and it exits with 1",
+  "args": [
+    "find",
+    "--input",
+    "src",
+    "--translations-path",
+    "i18n",
+    "-e"
+  ],
+  "exitCode": 1,
+  "fixtures": {
+    "src": "findMissingKeys/add-missing-keys/src"
+  },
+  "stdoutIncludes": [
+    "File Name Missing Keys Extra Keys",
+    "en '4' 'old.key'"
+  ]
+}

@@ -1,0 +1,13 @@
+Usage: transloco optimize [options] [dist]
+
+Flatten and minify the translation files of a production build, dropping the
+translator comments
+
+Arguments:
+  dist                      The directory holding the built translation files
+
+Options:
+  -d, --dist <path>         Same as the `dist` argument
+  -k, --comments-key <key>  The key translator comments are kept under (default:
+                            "comment")
+  -h, --help                Display help for the command

@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN the dist both as an argument and with --dist WHEN optimize runs THEN it is rejected instead of picking one and it exits with 1",
+  "args": [
+    "optimize",
+    "dist/i18n",
+    "--dist",
+    "dist/other"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

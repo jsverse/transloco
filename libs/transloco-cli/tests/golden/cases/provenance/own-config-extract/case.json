@@ -1,0 +1,10 @@
+{
+  "description": "GIVEN a config file holding only the options extract reads WHEN the keys are extracted with nothing but --config THEN they all apply. It is the reference the shared config case is compared with",
+  "args": [
+    "extract",
+    "--config",
+    "transloco.config.js"
+  ],
+  "exitCode": 0,
+  "stderrQuiet": true
+}

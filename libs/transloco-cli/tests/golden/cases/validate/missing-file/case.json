@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN a path that does not exist WHEN it is validated THEN a single line on stderr names the file and it exits with 1",
+  "args": [
+    "validate",
+    "i18n/nope.json"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout"
+  ],
+  "stderrMatches": "^[^\\n]*i18n/nope\\.json[^\\n]*$"
+}

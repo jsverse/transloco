@@ -1,0 +1,13 @@
+{
+  "description": "GIVEN the same generated transloco.config.ts and translation files under its rootTranslationsPath, one of them missing a key WHEN the keys are searched with --config THEN the config is loaded, the missing key is reported and it exits with 1",
+  "args": [
+    "find",
+    "--config",
+    "transloco.config.ts"
+  ],
+  "exitCode": 1,
+  "stdoutIncludes": [
+    "File Name Missing Keys Extra Keys",
+    "es 'home.title' --"
+  ]
+}

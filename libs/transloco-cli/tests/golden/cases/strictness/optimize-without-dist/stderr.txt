@@ -1,0 +1,2 @@
+error: missing required argument 'dist'
+(add --help for additional information)
