@@ -3,8 +3,8 @@ import os from 'node:os';
 import type { CommandUnknownOpts } from '@commander-js/extra-typings';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { createProgram } from './program';
-import { collectOutput, everyCommand } from './tests/program-harness';
+import { createProgram } from './program.js';
+import { collectOutput, everyCommand } from './tests/program-harness.js';
 
 /**
  * Every way of writing every option, against one rule: a command line is

@@ -3,10 +3,10 @@ import { describe, it, expect, vi } from 'vitest';
 import {
   getScopeAndLangFromPath,
   resolveConfigPaths,
-} from '../utils/path.utils';
-import { Config } from '../types';
+} from '../utils/path.utils.js';
+import { Config } from '../types.js';
 
-vi.mock('../config', () => ({
+vi.mock('../config.js', () => ({
   getConfig: () => ({
     scopePathMap: {},
     __sourceRoot: '',

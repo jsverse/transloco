@@ -2,9 +2,11 @@
   "name": "@jsverse/transloco-validator",
   "version": "9.0.0-alpha.4",
   "description": "Transloco translation files validator",
+  "type": "module",
   "main": "src/lib/transloco-validator.js",
+  "module": "src/lib/transloco-validator.js",
   "engines": {
-    "node": ">=22"
+    "node": "^22.18.0 || >=24"
   },
   "bin": {
     "transloco-validator": "src/index.js"

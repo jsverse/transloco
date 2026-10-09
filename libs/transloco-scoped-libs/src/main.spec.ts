@@ -1,7 +1,7 @@
 import cliRun from '@jsverse/transloco-cli/internal/scoped-libs';
 import { describe, expect, it } from 'vitest';
 
-import * as main from './lib/transloco-scoped-libs';
+import * as main from './lib/transloco-scoped-libs.js';
 
 describe('transloco-scoped-libs main', () => {
   it(`GIVEN the package's main module

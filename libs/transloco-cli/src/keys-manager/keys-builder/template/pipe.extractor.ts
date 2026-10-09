@@ -14,14 +14,14 @@ import {
   TmplPipeCollector,
 } from '@jsverse/angular-utils';
 
-import { ExtractorConfig, OrArray } from '../../types';
-import { addKey } from '../add-key';
-import { resolveAliasAndKey } from '../utils/resolvers.utils';
-import { notNil } from '../../utils/validators.utils';
-import { coerceArray } from '../../utils/collection.utils';
+import { ExtractorConfig, OrArray } from '../../types.js';
+import { addKey } from '../add-key.js';
+import { resolveAliasAndKey } from '../utils/resolvers.utils.js';
+import { notNil } from '../../utils/validators.utils.js';
+import { coerceArray } from '../../utils/collection.utils.js';
 
-import { TemplateExtractorConfig } from './types';
-import { parseTemplate, resolveKeysFromLiteralMap } from './utils';
+import { TemplateExtractorConfig } from './types.js';
+import { parseTemplate, resolveKeysFromLiteralMap } from './utils.js';
 
 export function pipeExtractor(config: TemplateExtractorConfig) {
   const parsedTemplate = parseTemplate(config);

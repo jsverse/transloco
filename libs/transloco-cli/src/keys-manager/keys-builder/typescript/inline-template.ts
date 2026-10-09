@@ -1,7 +1,7 @@
-import { ExtractorConfig } from '../../types';
-import { templateExtractor } from '../template';
+import { ExtractorConfig } from '../../types.js';
+import { templateExtractor } from '../template/index.js';
 
-import { SourceFileScan } from './scan-source-file';
+import { SourceFileScan } from './scan-source-file.js';
 
 export function inlineTemplateExtractor(
   { inlineTemplates }: SourceFileScan,

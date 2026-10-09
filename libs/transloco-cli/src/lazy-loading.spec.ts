@@ -4,7 +4,7 @@ import path from 'node:path';
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { collectOutput } from './tests/program-harness';
+import { collectOutput } from './tests/program-harness.js';
 
 /**
  * Tripwires: a mock factory only runs when something imports its module, so
@@ -38,7 +38,9 @@ const stubbed: Record<string, () => object> = {
 /** `src/validator/index.ts` => `./validator/index.js`, for every module below the directory. */
 function modulesOf(directory: string): string[] {
   return fs
-    .readdirSync(path.join(__dirname, directory), { withFileTypes: true })
+    .readdirSync(path.join(import.meta.dirname, directory), {
+      withFileTypes: true,
+    })
     .flatMap((entry) => {
       const entryPath = `${directory}/${entry.name}`;
 
@@ -75,6 +77,7 @@ const recorded = [
   'cosmiconfig',
   'chokidar',
   'fs-extra',
+  'fs-extra/esm',
   'chalk',
   'ora',
   'cli-table3',
@@ -91,7 +94,7 @@ function nameOf(id: string) {
 
 /** Commander exits after printing the help or the version, here it throws instead. */
 async function run(...args: string[]) {
-  const { createProgram } = await import('./program');
+  const { createProgram } = await import('./program.js');
   const program = createProgram();
 
   collectOutput(program);
@@ -145,7 +148,7 @@ describe('lazy loading', () => {
   it(`GIVEN the program was only created
       WHEN nothing has run yet
       THEN no runner and none of their packages were loaded with it`, async () => {
-    const { createProgram } = await import('./program');
+    const { createProgram } = await import('./program.js');
 
     createProgram();
 

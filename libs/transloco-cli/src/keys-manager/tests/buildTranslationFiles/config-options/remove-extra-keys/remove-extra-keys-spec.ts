@@ -9,10 +9,10 @@ import {
   removeI18nFolder,
   sourceRoot,
   TranslationTestCase,
-} from '../../build-translation-utils';
-import { mockResolveProjectBasePath } from '../../../spec-utils';
-import { getCurrentTranslation } from '../../../../keys-builder/utils/get-current-translation';
-import { Config, Translation } from '../../../../types';
+} from '../../build-translation-utils.js';
+import { mockResolveProjectBasePath } from '../../../spec-utils.js';
+import { getCurrentTranslation } from '../../../../keys-builder/utils/get-current-translation.js';
+import { Config, Translation } from '../../../../types.js';
 
 mockResolveProjectBasePath(sourceRoot);
 
@@ -21,7 +21,8 @@ mockResolveProjectBasePath(sourceRoot);
  * This thing is still in WIP at Jest, so keep an eye on it.
  * @see https://jestjs.io/docs/ecmascript-modules#module-mocking-in-esm
  */
-const { buildTranslationFiles } = await import('../../../../keys-builder');
+const { buildTranslationFiles } =
+  await import('../../../../keys-builder/index.js');
 
 export function testRemoveExtraKeysConfig(fileFormat: Config['fileFormat']) {
   describe('Remove extra keys', () => {

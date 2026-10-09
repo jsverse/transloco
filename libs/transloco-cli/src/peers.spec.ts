@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { CliError } from './errors';
-import { assertKeysManagerPeers } from './peers';
+import { CliError } from './errors.js';
+import { assertKeysManagerPeers } from './peers.js';
 
 function notFound(name: string) {
   return Object.assign(new Error(`Cannot find module '${name}'`), {

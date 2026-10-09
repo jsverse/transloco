@@ -2,7 +2,7 @@
 import { getGlobalConfig } from '@jsverse/transloco-cli';
 import commandLineArgs from 'command-line-args';
 
-import run from './lib/transloco-scoped-libs';
+import run from './lib/transloco-scoped-libs.js';
 
 const optionDefinitions: commandLineArgs.OptionDefinition[] = [
   { name: 'watch', alias: 'w', type: Boolean, defaultValue: false },

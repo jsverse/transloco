@@ -4,11 +4,11 @@ import path from 'node:path';
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { resetScopes } from './keys-manager/keys-builder/utils/scope.utils';
-import type { Config } from './keys-manager/types';
-import { resolveConfig } from './keys-manager/utils/resolve-config';
-import { createProgram } from './program';
-import { collectOutput } from './tests/program-harness';
+import { resetScopes } from './keys-manager/keys-builder/utils/scope.utils.js';
+import type { Config } from './keys-manager/types.js';
+import { resolveConfig } from './keys-manager/utils/resolve-config.js';
+import { createProgram } from './program.js';
+import { collectOutput } from './tests/program-harness.js';
 
 /**
  * The runners are the real ones here, only the two entry points of the keys

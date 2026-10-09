@@ -1,4 +1,4 @@
-import { TranslocoGlobalConfig } from '../config';
+import { TranslocoGlobalConfig } from '../config/index.js';
 
 type ScopeStrategy = 'join' | 'default';
 

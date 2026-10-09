@@ -2,6 +2,7 @@
   "name": "@jsverse/transloco-keys-manager",
   "version": "9.0.0-alpha.4",
   "description": "Extract translatable keys from projects that uses Transloco",
+  "type": "module",
   "exports": {
     "./marker": {
       "types": "./src/lib/marker.d.mts",

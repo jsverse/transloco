@@ -2,7 +2,9 @@
   "name": "@jsverse/transloco-scoped-libs",
   "version": "9.0.0-alpha.4",
   "description": "Transloco support tool for libraries with translations",
+  "type": "module",
   "main": "src/lib/transloco-scoped-libs.js",
+  "module": "src/lib/transloco-scoped-libs.js",
   "engines": {
     "node": "^22.18.0 || >=24"
   },

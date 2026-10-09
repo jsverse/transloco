@@ -1,4 +1,4 @@
-import { sanitizeForRegex } from './string.utils';
+import { sanitizeForRegex } from './string.utils.js';
 
 export const regexFactoryMap = {
   ts: {

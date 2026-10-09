@@ -1,8 +1,8 @@
-import { commandSpecificOptions } from '../cli-options';
-import { messages } from '../messages';
-import { Config } from '../types';
+import { commandSpecificOptions } from '../cli-options.js';
+import { messages } from '../messages.js';
+import { Config } from '../types.js';
 
-import { getLogger } from './logger';
+import { getLogger } from './logger.js';
 
 /**
  * Warns about options the invoked command doesn't read.

@@ -2,6 +2,7 @@
   "name": "@jsverse/transloco-cli",
   "version": "9.0.0-alpha.4",
   "description": "The unified Transloco command line: extract, find, validate, optimize and scoped-libs",
+  "type": "module",
   "main": "src/index.js",
   "exports": {
     ".": "./src/index.js",

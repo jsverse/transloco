@@ -11,22 +11,22 @@ import {
 } from 'vitest';
 import chalk from 'chalk';
 
-import { defaultConfig as _defaultConfig } from '../../config';
-import { messages } from '../../messages';
-import { spyOnConsole, spyOnProcess } from '../spec-utils';
-import { resolveConfig } from '../../utils/resolve-config';
-import { resolveProjectBasePath } from '../../utils/resolve-project-base-path';
+import { defaultConfig as _defaultConfig } from '../../config.js';
+import { messages } from '../../messages.js';
+import { spyOnConsole, spyOnProcess } from '../spec-utils.js';
+import { resolveConfig } from '../../utils/resolve-config.js';
+import { resolveProjectBasePath } from '../../utils/resolve-project-base-path.js';
 
 const sourceRoot = 'libs/transloco-cli/src/keys-manager/tests/resolveConfig';
 let mockedGlobalConfig = {};
 
-vi.mock('../../utils/resolve-project-base-path', () => ({
+vi.mock('../../utils/resolve-project-base-path.js', () => ({
   resolveProjectBasePath: vi.fn().mockReturnValue({
     projectBasePath: 'libs/transloco-cli/src/keys-manager/tests/resolveConfig',
   }),
 }));
 
-vi.mock('../../../config', () => ({
+vi.mock('../../../config/index.js', () => ({
   getGlobalConfig: () => mockedGlobalConfig,
 }));
 

@@ -1,4 +1,4 @@
-import { isUndefined } from './validators.utils';
+import { isUndefined } from './validators.utils.js';
 
 export function coerceArray<T>(value: T | T[]): NonNullable<T>[];
 export function coerceArray<T>(
