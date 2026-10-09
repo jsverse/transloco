@@ -66,7 +66,7 @@ function TSExtractor(
   config: ExtractorConfig,
   routeTitles: RouteTitleCollector,
 ): ScopeMap {
-  const { file, scopes, defaultValue, scopeToKeys } = config;
+  const { file, scopes, defaultValue, scopeToKeys, serviceNames } = config;
   const content = readFile(file);
   const baseParams = { scopeToKeys, scopes, defaultValue };
   const commentParams = {
@@ -80,10 +80,17 @@ function TSExtractor(
   const hasRouteTitle = routeTitleProperty.test(content);
   const mentionsProvider =
     !routeTitles.providerUsed && mentionsTitleStrategyProvider(content);
+  const hasCustomService =
+    serviceNames?.some((name) => content.includes(name)) ?? false;
 
   // Both import regexes contain "transloco", so this single check is enough
   // to skip the expensive AST parse for files that cannot hold any key.
-  if (!content.includes('transloco') && !hasRouteTitle && !mentionsProvider) {
+  if (
+    !content.includes('transloco') &&
+    !hasCustomService &&
+    !hasRouteTitle &&
+    !mentionsProvider
+  ) {
     addCommentSectionKeys(commentParams);
     return scopeToKeys;
   }
@@ -91,13 +98,17 @@ function TSExtractor(
   const extractors: TSExtractor[] = [];
   if (translocoImport.test(content)) {
     extractors.push(serviceExtractor, pureFunctionExtractor, signalExtractor);
+  } else if (hasCustomService) {
+    // Custom wrapper services live behind arbitrary import paths, so the
+    // transloco import gate doesn't apply to them.
+    extractors.push(serviceExtractor);
   }
   if (translocoKeysManagerImport.test(content)) {
     extractors.push(markerExtractor);
   }
 
   const ast = parseTsSource(content, file);
-  const scan = scanSourceFile(ast);
+  const scan = scanSourceFile(ast, serviceNames);
 
   const addExtractedKeys = (results: TSExtractorResult) => {
     for (const { key, lang, params } of results) {

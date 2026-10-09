@@ -10,7 +10,8 @@ const serviceMethods = new Set(['translate', 'selectTranslate']);
 
 /**
  * `this.transloco.translate(...)`, `transloco.selectTranslate(...)` and any
- * other call on a local name bound to a `TranslocoService`.
+ * other call on a local name bound to a `TranslocoService` (or a configured
+ * wrapper service).
  */
 export function serviceExtractor({
   calls,
