@@ -58,6 +58,7 @@ module.exports = {
   scopes: [
     '',
     'transloco',
+    'cli',
     'keys-manager',
     'locale',
     'messageformat',
