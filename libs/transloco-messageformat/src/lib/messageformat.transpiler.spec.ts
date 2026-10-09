@@ -6,7 +6,7 @@ import {
   TranslocoConfig,
   TranspileParams,
 } from '@jsverse/transloco';
-import { CustomFormatter } from '@messageformat/core';
+import MessageFormat, { CustomFormatter } from '@messageformat/core';
 import { TestBed } from '@angular/core/testing';
 
 import { MessageFormatTranspiler } from './messageformat.transpiler';
@@ -105,6 +105,229 @@ describe('MessageFormatTranspiler', () => {
       transpiler.transpile(getTranspilerParams(polishKey, { params })),
     ).toBe('2 things');
   });
+
+  it(`GIVEN transpiler with custom formatters (prop)
+      WHEN transpiling with an object param and a string param containing braces
+      THEN passes the object to the formatter untouched and renders the string literally`, () => {
+    const transpiler = getTranspiler({
+      customFormatters: {
+        prop: (v, _lc, p) => (v as Record<string, unknown>)[p as string],
+      },
+    });
+    const parsed = transpiler.transpile(
+      getTranspilerParams('Answer: {obj, prop, a} for {{ id }}', {
+        params: { obj: { q: 3, a: 42 }, id: '{1234-5678}' },
+      }),
+    );
+    expect(parsed).toEqual('Answer: 42 for {1234-5678}');
+  });
+
+  it(`GIVEN transpiler configured with requireAllArguments
+      WHEN transpiling with a param value containing braces
+      THEN renders the value literally and still requires the real arguments`, () => {
+    const transpiler = getTranspiler({ requireAllArguments: true });
+    const value = 'UUID: {{ value }} {count, number}';
+    expect(
+      transpiler.transpile(
+        getTranspilerParams(value, {
+          params: { value: '{1234-5678}', count: 3 },
+        }),
+      ),
+    ).toEqual('UUID: {1234-5678} 3');
+    expect(() =>
+      transpiler.transpile(
+        getTranspilerParams(value, { params: { value: '{1234-5678}' } }),
+      ),
+    ).toThrowError();
+  });
+
+  it(`KNOWN LIMITATION - GIVEN a custom formatter reached through a referenced
+      translation key
+      WHEN transpiling with a param value containing braces used only by
+      that formatter
+      THEN the formatter does not receive the raw value
+      (see protectParams's doc comment)`, () => {
+    const transpiler = getTranspiler({
+      customFormatters: { upcase: (v) => (v as string).toUpperCase() },
+    });
+    const parsed = transpiler.transpile(
+      getTranspilerParams('Hello {{ ref }}', {
+        params: { name: '{secret}' },
+        translation: { ref: '{name, upcase}' },
+      }),
+    );
+    // Desired output would be 'Hello {SECRET}', matching pre-#898-fix
+    // behavior for this specific shape; documented as out of scope. A param
+    // value containing only '#' (no braces) is unaffected by this limit,
+    // since it never needs protecting in the first place (see PROTECT_CHARS).
+    expect(parsed).toEqual('Hello undefined');
+  });
+
+  it(`GIVEN a params object with a circular reference
+      WHEN transpiling with a param value containing braces
+      THEN protects the value without recursing forever`, () => {
+    const transpiler = getTranspiler({});
+    const user: Record<string, unknown> = { id: '{1234-5678}' };
+    user['self'] = user;
+    const parsed = transpiler.transpile(
+      getTranspilerParams('UUID: {{ user.id }}', { params: { user } }),
+    );
+    expect(parsed).toEqual('UUID: {1234-5678}');
+  });
+
+  it(`GIVEN a params object with a circular reference walked before its
+      value containing braces
+      WHEN transpiling that value through the cycle
+      THEN protects it on that path too`, () => {
+    const transpiler = getTranspiler({});
+    const user: Record<string, unknown> = {};
+    user['self'] = user;
+    user['id'] = '{1234-5678}';
+    const parsed = transpiler.transpile(
+      getTranspilerParams('UUID: {{ user.self.self.id }}', {
+        params: { user },
+      }),
+    );
+    expect(parsed).toEqual('UUID: {1234-5678}');
+  });
+
+  it(`GIVEN two params objects that reference each other
+      WHEN transpiling a value containing braces through the cycle
+      THEN protects it on that path too`, () => {
+    const transpiler = getTranspiler({});
+    const user: Record<string, unknown> = { id: '{1234-5678}' };
+    user['team'] = { owner: user };
+    const parsed = transpiler.transpile(
+      getTranspilerParams('Owner: {{ user.team.owner.id }}', {
+        params: { user },
+      }),
+    );
+    expect(parsed).toEqual('Owner: {1234-5678}');
+  });
+
+  it(`GIVEN a params object where the same nested object is referenced by two keys
+      WHEN transpiling with a param value containing braces
+      THEN protects the value through both references`, () => {
+    const transpiler = getTranspiler({});
+    const shared = { id: '{1234-5678}' };
+    const parsed = transpiler.transpile(
+      getTranspilerParams('{{ a.id }} / {{ b.id }}', {
+        params: { a: shared, b: shared },
+      }),
+    );
+    expect(parsed).toEqual('{1234-5678} / {1234-5678}');
+  });
+
+  it(`GIVEN a param literally named like a generated placeholder
+      WHEN transpiling with another param value containing braces
+      THEN keeps the literally-named param's own value intact`, () => {
+    const transpiler = getTranspiler({});
+    const parsed = transpiler.transpile(
+      getTranspilerParams('{{ name }}: {{ __translocoParam0 }}', {
+        params: { name: '{secret}', __translocoParam0: 'ordinary' },
+      }),
+    );
+    expect(parsed).toEqual('{secret}: ordinary');
+  });
+
+  it(`GIVEN an unused param whose value contains braces
+      WHEN transpiling a message that already quotes text shaped like a
+      generated placeholder
+      THEN leaves that quoted text exactly as written`, () => {
+    const transpiler = getTranspiler({});
+    const parsed = transpiler.transpile(
+      getTranspilerParams("'{__translocoParam0}'", {
+        params: { unused: '{oops}' },
+      }),
+    );
+    expect(parsed).toEqual('{__translocoParam0}');
+  });
+
+  it(`GIVEN an unused param whose value contains braces
+      WHEN transpiling a message that references our reserved name as a real
+      ICU argument with whitespace and requireAllArguments enabled
+      THEN still reports it missing instead of silently supplying it`, () => {
+    const transpiler = getTranspiler({ requireAllArguments: true });
+    expect(() =>
+      transpiler.transpile(
+        getTranspilerParams('{ __translocoParam0 }', {
+          params: { unused: '{secret}' },
+        }),
+      ),
+    ).toThrowError();
+  });
+
+  it(`GIVEN a params object shaped like a DAG where each level shares its
+      child with a sibling (so the object graph is linear in size, not
+      exponential)
+      WHEN transpiling with a param value containing braces deep in the graph
+      THEN completes quickly instead of re-traversing shared nodes
+      exponentially`, () => {
+    const transpiler = getTranspiler({});
+    let node: Record<string, unknown> = { leaf: '{deep}' };
+    for (let i = 0; i < 22; i++) {
+      node = { a: node, b: node };
+    }
+    const start = performance.now();
+    const parsed = transpiler.transpile(
+      getTranspilerParams('Hi', { params: { root: node } }),
+    );
+    const elapsed = performance.now() - start;
+    expect(parsed).toEqual('Hi');
+    expect(elapsed).toBeLessThan(500);
+  });
+
+  it(`GIVEN hand-authored text shaped like a generated placeholder, quoted to
+      show a literal brace
+      WHEN transpiling with no params
+      THEN leaves it exactly as written instead of treating it as one of ours`, () => {
+    const transpiler = getTranspiler({});
+    const parsed = transpiler.transpile(
+      getTranspilerParams("'{__translocoParam0}'", { params: {} }),
+    );
+    expect(parsed).toEqual('{__translocoParam0}');
+  });
+
+  it(`GIVEN a transpiler with caching enabled
+      WHEN transpiling the same template and param value containing braces twice
+      THEN compiles the underlying message only once`, () => {
+    // cachedFactory wraps MessageFormat#compile and only calls through to it
+    // on a cache miss, keyed by the fully-interpolated text. Placeholder
+    // names must therefore be stable across calls for the same input, or
+    // every call would produce different text and never hit the cache.
+    const compileSpy = vi.spyOn(MessageFormat.prototype, 'compile');
+    const transpiler = getTranspiler({});
+    const params = { name: '{secret}' };
+    transpiler.transpile(getTranspilerParams('Hi {{ name }}', { params }));
+    transpiler.transpile(getTranspilerParams('Hi {{ name }}', { params }));
+    expect(compileSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it(`GIVEN a param value containing only '#' (a MessageFormat number-skeleton
+      pattern), interpolated into a 'number' argument's pattern position
+      WHEN transpiling with an amount
+      THEN keeps the pattern as ICU syntax so it still formats at compile time`, () => {
+    const transpiler = getTranspiler({});
+    const parsed = transpiler.transpile(
+      getTranspilerParams('{amount, number, {{ fmt }}}', {
+        params: { amount: 12, fmt: '¤#,##0.00' },
+      }),
+    );
+    expect(parsed).toEqual('$12.00');
+  });
+
+  it(`GIVEN nested translation object with an entry that has no params of its own
+      WHEN transpiling
+      THEN leaves that entry unchanged instead of throwing`, () => {
+    const transpiler = getTranspiler({});
+    const parsed = transpiler.transpile(
+      getTranspilerParams(
+        { foo: 'Hi', bar: 'UUID: {{ value }}' },
+        { params: { foo: undefined, bar: { value: '{1234-5678}' } } },
+      ),
+    );
+    expect(parsed).toEqual({ foo: 'Hi', bar: 'UUID: {1234-5678}' });
+  });
 });
 
 function assertParser(description: string, config: MessageformatConfig) {
@@ -129,6 +352,17 @@ function assertParser(description: string, config: MessageformatConfig) {
         ),
       );
       expect(parsedMale).toEqual('The smart boy named Henkie won his race');
+    });
+
+    it(`GIVEN transpiler with custom interpolation markers (<<< >>>)
+        WHEN transpiling with a param value containing braces
+        THEN renders the value as literal text`, () => {
+      const parsed = transpiler.transpile(
+        getTranspilerParams('UUID: <<< value >>>', {
+          params: { value: '{1234-5678}' },
+        }),
+      );
+      expect(parsed).toEqual('UUID: {1234-5678}');
     });
   });
 
@@ -313,6 +547,247 @@ function assertParser(description: string, config: MessageformatConfig) {
           projects: 'project',
         },
       });
+    });
+
+    it(`GIVEN string with a param placeholder
+        WHEN transpiling with a param value wrapped in braces (#898)
+        THEN renders the value as literal text`, () => {
+      const parsed = transpiler.transpile(
+        getTranspilerParams('UUID: {{value}}', {
+          params: { value: '{1234-5678}' },
+        }),
+      );
+      expect(parsed).toEqual('UUID: {1234-5678}');
+    });
+
+    it(`GIVEN string with a param placeholder
+        WHEN transpiling twice with different param values containing braces
+        THEN renders each value literally`, () => {
+      const value = 'UUID: {{ value }}';
+      expect(
+        transpiler.transpile(
+          getTranspilerParams(value, { params: { value: '{1234-5678}' } }),
+        ),
+      ).toEqual('UUID: {1234-5678}');
+      expect(
+        transpiler.transpile(
+          getTranspilerParams(value, { params: { value: '{8765-4321}' } }),
+        ),
+      ).toEqual('UUID: {8765-4321}');
+    });
+
+    it(`GIVEN SELECT messageformat string with a param placeholder inside a case
+        WHEN transpiling with a param value containing braces
+        THEN renders the value literally inside the selected case`, () => {
+      const value =
+        'The {gender, select, male {boy {{ tag }} won his} other {person {{ tag }} won their}} race';
+      const parsed = transpiler.transpile(
+        getTranspilerParams(value, {
+          params: { gender: 'male', tag: '{1234-5678}' },
+        }),
+      );
+      expect(parsed).toEqual('The boy {1234-5678} won his race');
+    });
+
+    it(`GIVEN PLURAL messageformat string with a param placeholder inside a case
+        WHEN transpiling with a param value containing braces
+        THEN renders the value literally and still replaces the case '#'`, () => {
+      const value =
+        '{count, plural, one {# item for {{ ref }}} other {# items for {{ ref }}}}';
+      const parsed = transpiler.transpile(
+        getTranspilerParams(value, { params: { count: 2, ref: '{ref#7}' } }),
+      );
+      expect(parsed).toEqual('2 items for {ref#7}');
+    });
+
+    it(`KNOWN LIMITATION - GIVEN PLURAL messageformat string with a param
+        placeholder inside a case
+        WHEN transpiling with a param value containing only '#' (no braces)
+        THEN the case's own '#' AND the value's '#' are both replaced by the
+        count, corrupting the value, instead of only the case's own
+        (see PROTECT_CHARS's comment: needed to avoid breaking MessageFormat
+        number-skeleton patterns, which also rely on a bare '#')`, () => {
+      const value =
+        '{count, plural, one {# item for {{ ref }}} other {# items for {{ ref }}}}';
+      const parsed = transpiler.transpile(
+        getTranspilerParams(value, { params: { count: 2, ref: 'ref#7' } }),
+      );
+      // Desired output would be '2 items for ref#7', matching pre-#898-fix
+      // behavior for this specific shape; documented as out of scope.
+      expect(parsed).toEqual('2 items for ref27');
+    });
+
+    it(`GIVEN string with an apostrophe right after a param placeholder
+        WHEN transpiling with a param value containing braces
+        THEN keeps the apostrophe and renders the value literally`, () => {
+      const parsed = transpiler.transpile(
+        getTranspilerParams("Order {{ id }}'s status", {
+          params: { id: '{1234-5678}' },
+        }),
+      );
+      expect(parsed).toEqual("Order {1234-5678}'s status");
+    });
+
+    it(`GIVEN string with an apostrophe right before a param placeholder and another one later
+        WHEN transpiling with a param value containing braces
+        THEN keeps both apostrophes and renders the value literally`, () => {
+      const parsed = transpiler.transpile(
+        getTranspilerParams("L'{{ item }} n'est pas disponible", {
+          params: { item: '{1234-5678}' },
+        }),
+      );
+      expect(parsed).toEqual("L'{1234-5678} n'est pas disponible");
+    });
+
+    it(`GIVEN a translation that already uses ICU quoting to show a literal brace,
+        followed by a param placeholder
+        WHEN transpiling with a param value containing braces
+        THEN leaves the existing quoting untouched and renders the value literally`, () => {
+      const parsed = transpiler.transpile(
+        getTranspilerParams("'{x}'{{ name }}", {
+          params: { name: '{secret}' },
+        }),
+      );
+      expect(parsed).toEqual('{x}{secret}');
+    });
+
+    it(`GIVEN a translation that quotes an escaped apostrophe inside literal braces,
+        followed by a param placeholder
+        THEN leaves the existing quoting untouched and renders the value literally`, () => {
+      const parsed = transpiler.transpile(
+        getTranspilerParams("'{x''y}'{{ name }}", {
+          params: { name: '{secret}' },
+        }),
+      );
+      expect(parsed).toEqual("{x'y}{secret}");
+    });
+
+    it(`GIVEN two adjacent param placeholders separated only by an apostrophe
+        WHEN transpiling with both param values containing braces
+        THEN renders both values literally with the apostrophe intact`, () => {
+      const parsed = transpiler.transpile(
+        getTranspilerParams("{{ a }}'{{ b }}", {
+          params: { a: '{1}', b: '{2}' },
+        }),
+      );
+      expect(parsed).toEqual("{1}'{2}");
+    });
+
+    it(`KNOWN LIMITATION - GIVEN a param placeholder fully enclosed by ICU quoting
+        on both sides (escaping literal braces)
+        WHEN transpiling with a param value containing braces
+        THEN the placeholder stays quoted and unresolved instead of literal
+        (see protectParams's doc comment)`, () => {
+      const parsed = transpiler.transpile(
+        getTranspilerParams("'{ {{ name }} }'", {
+          params: { name: '{secret}' },
+        }),
+      );
+      // Desired output would be '{ {secret} }', matching pre-#898-fix
+      // behavior for this specific shape; documented as out of scope.
+      expect(parsed).toEqual('{ {__translocoParam0} }');
+    });
+
+    it(`GIVEN nested translation object with a param placeholder
+        WHEN transpiling with a nested-key param value containing braces
+        THEN renders the value literally in the nested key`, () => {
+      const translations = { nested: { uuid: 'UUID: {{ value }}' } };
+      expect(
+        transpiler.transpile(
+          getTranspilerParams(translations, {
+            params: { 'nested.uuid': { value: '{1234-5678}' } },
+          }),
+        ),
+      ).toEqual({ nested: { uuid: 'UUID: {1234-5678}' } });
+    });
+
+    it(`GIVEN string with a dotted param placeholder
+        WHEN transpiling with a nested object param or a literal dotted key containing braces
+        THEN renders the value literally in both cases`, () => {
+      const value = 'UUID: {{ user.id }}';
+      expect(
+        transpiler.transpile(
+          getTranspilerParams(value, {
+            params: { user: { id: '{1234-5678}' } },
+          }),
+        ),
+      ).toEqual('UUID: {1234-5678}');
+      expect(
+        transpiler.transpile(
+          getTranspilerParams(value, {
+            params: { 'user.id': '{1234-5678}' },
+          }),
+        ),
+      ).toEqual('UUID: {1234-5678}');
+    });
+
+    it(`GIVEN string referencing a translation key that interpolates a param
+        WHEN transpiling with a param value containing braces
+        THEN renders the value literally through the referenced key`, () => {
+      const parsed = transpiler.transpile(
+        getTranspilerParams('Hello {{ uuid }}', {
+          params: { value: '{1234-5678}' },
+          translation: { uuid: 'UUID: {{ value }}' },
+        }),
+      );
+      expect(parsed).toEqual('Hello UUID: {1234-5678}');
+    });
+
+    it(`GIVEN string with a param placeholder that is also a SELECT selector
+        WHEN transpiling with a selector value containing braces
+        THEN renders the value literally and selects the 'other' case`, () => {
+      const value = '{{ gender }}: {gender, select, male {he} other {they}}';
+      const parsed = transpiler.transpile(
+        getTranspilerParams(value, { params: { gender: '{x}' } }),
+      );
+      expect(parsed).toEqual('{x}: they');
+    });
+
+    it(`GIVEN strings with param placeholders next to apostrophes
+        WHEN transpiling with param values without messageformat characters
+        THEN interpolates them unchanged`, () => {
+      expect(
+        transpiler.transpile(
+          getTranspilerParams("Order {{ id }}'s status", {
+            params: { id: 'A1' },
+          }),
+        ),
+      ).toEqual("Order A1's status");
+      expect(
+        transpiler.transpile(
+          getTranspilerParams("L'{{ item }} n'est pas disponible", {
+            params: { item: 'eau' },
+          }),
+        ),
+      ).toEqual("L'eau n'est pas disponible");
+      expect(
+        transpiler.transpile(
+          getTranspilerParams('Hello {{ name }}', {
+            params: { name: "O'Brien" },
+          }),
+        ),
+      ).toEqual("Hello O'Brien");
+    });
+
+    it(`GIVEN string with param placeholders and PLURAL/SELECT arguments
+        WHEN transpiling with number and boolean params
+        THEN leaves the non-string params untouched`, () => {
+      expect(
+        transpiler.transpile(
+          getTranspilerParams(
+            '{{ count }}: {count, plural, one {# item} other {# items}}',
+            { params: { count: 2 } },
+          ),
+        ),
+      ).toEqual('2: 2 items');
+      expect(
+        transpiler.transpile(
+          getTranspilerParams(
+            '{{ flag }} {flag, select, true {yes} other {no}}',
+            { params: { flag: true } },
+          ),
+        ),
+      ).toEqual('true yes');
     });
   });
 }
