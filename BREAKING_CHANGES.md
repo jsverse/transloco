@@ -28,6 +28,17 @@ nx migrate @jsverse/transloco  # Nx
 - The package moved into the main repo and joined the shared version line, so it jumps from `8.1.1` to `9.0.0`.
 - `@angular/compiler` peer dependency is now `>=v20` and `typescript` is now `>=5.8`.
 
+## Transloco Scoped Libs
+
+- Removed `TranslocoScopedLibsWebpackPlugin` (`@jsverse/transloco-scoped-libs/webpack.plugin`, documented as `/webpack`), since Angular's default builder no longer uses webpack. `ng update` lists the files that still reference it. All the plugin did was start the watcher, so drop it from your webpack config and run `transloco-scoped-libs --watch` (or `transloco scoped-libs --watch` with `@jsverse/transloco-cli`) yourself instead, in a second terminal or through a parallel script runner, so that it keeps running at the same time as your dev server:
+
+  ```json
+  "scripts": {
+    "start": "ng serve",
+    "transloco:extract-scoped-libs": "transloco-scoped-libs --watch"
+  }
+  ```
+
 ## Transloco Keys Manager, Optimize, Scoped Libs, Utils & Validator
 
 - Node.js `>=22` is now required.
