@@ -50,7 +50,7 @@ The core `transloco` library is the foundation. All plugin libraries depend on i
 - **transloco-persist-translations** - Cache translations locally
 - **transloco-preload-langs** - Preload languages on app init
 - **transloco-scoped-libs** - Scoped translations for lazy-loaded features
-- **transloco-optimize** - Build-time optimization webpack plugin
+- **transloco-optimize** - CLI to flatten and minify the translation files of a production build
 - **transloco-cli** - Unified `transloco` CLI (extract/find/validate/optimize/scoped-libs)
 - **transloco-keys-manager** - CLI to extract/manage translation keys
 - **transloco-schematics** - `ng add`/`ng generate` schematics

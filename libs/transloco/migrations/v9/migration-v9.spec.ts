@@ -14,6 +14,7 @@ import {
   usesGlobalTranslateFn,
 } from './global-translate-fn';
 import { migrateMarkerImportSource } from './marker-import';
+import { referencesScopedLibsWebpackPlugin } from './scoped-libs-webpack-plugin';
 import {
   findStrippingError,
   migrateConfigTypeImportSource,
@@ -861,6 +862,43 @@ describe('migrateMarkerImportSource', () => {
   });
 });
 
+describe('referencesScopedLibsWebpackPlugin', () => {
+  it.each([
+    `const Plugin = require('@jsverse/transloco-scoped-libs/webpack');`,
+    `const Plugin = require('@jsverse/transloco-scoped-libs/webpack.plugin');`,
+    `const Plugin = require("@jsverse/transloco-scoped-libs/webpack.js");`,
+    `const Plugin = require('@jsverse/transloco-scoped-libs/webpack.plugin.js');`,
+    `import Plugin from '@jsverse/transloco-scoped-libs/webpack';`,
+    `import Plugin from "@jsverse/transloco-scoped-libs/webpack.plugin";`,
+    `import Plugin from '@jsverse/transloco-scoped-libs/webpack.js';`,
+    `import Plugin from '@jsverse/transloco-scoped-libs/webpack.plugin.js';`,
+    `const Plugin = await import('@jsverse/transloco-scoped-libs/webpack.plugin.js');`,
+    `module.exports = { plugins: [new TranslocoScopedLibsWebpackPlugin()] };`,
+  ])(
+    `GIVEN %s
+      WHEN it is checked
+      THEN it counts as a reference to the removed plugin`,
+    (source) => {
+      expect(referencesScopedLibsWebpackPlugin(source)).toBe(true);
+    },
+  );
+
+  it.each([
+    `import run from '@jsverse/transloco-scoped-libs';`,
+    `const run = require('@jsverse/transloco-scoped-libs');`,
+    `const { version } = require('@jsverse/transloco-scoped-libs/package.json');`,
+    `const { TranslocoExtractKeysWebpackPlugin } = require('@jsverse/transloco-keys-manager');`,
+    `module.exports = { plugins: [] };`,
+  ])(
+    `GIVEN %s
+      WHEN it is checked
+      THEN it does not count as a reference to the removed plugin`,
+    (source) => {
+      expect(referencesScopedLibsWebpackPlugin(source)).toBe(false);
+    },
+  );
+});
+
 describe('migrateConfigTypeImportSource', () => {
   it(`GIVEN the config v8's schematics generated
       WHEN it is migrated
@@ -1201,6 +1239,124 @@ describe('migration-v9', () => {
     );
 
     expect(warnings.join('\n')).not.toContain('root entry point');
+  });
+
+  it.each([
+    [
+      '/webpack.config.js',
+      `const Plugin = require('@jsverse/transloco-scoped-libs/webpack');\nmodule.exports = { plugins: [new Plugin()] };`,
+    ],
+    [
+      '/webpack-dev.config.js',
+      `const Plugin = require('@jsverse/transloco-scoped-libs/webpack.plugin');\nmodule.exports = { plugins: [new Plugin()] };`,
+    ],
+    [
+      '/projects/bar/webpack.config.cjs',
+      `const Plugin = require("@jsverse/transloco-scoped-libs/webpack.js");\nmodule.exports = { plugins: [new Plugin()] };`,
+    ],
+    [
+      '/projects/bar/extra-webpack.config.js',
+      `const Plugin = require('@jsverse/transloco-scoped-libs/webpack.plugin.js');\nmodule.exports = { plugins: [new Plugin()] };`,
+    ],
+    [
+      '/webpack.config.ts',
+      `import Plugin from '@jsverse/transloco-scoped-libs/webpack';\nexport default { plugins: [new Plugin()] };`,
+    ],
+    [
+      '/webpack.config.mjs',
+      `import Plugin from '@jsverse/transloco-scoped-libs/webpack.plugin.js';\nexport default { plugins: [new Plugin()] };`,
+    ],
+    [
+      '/tools/webpack/plugins.js',
+      `module.exports = (TranslocoScopedLibsWebpackPlugin) => [new TranslocoScopedLibsWebpackPlugin()];`,
+    ],
+  ])(
+    `GIVEN %s loading the removed scoped-libs webpack plugin
+      WHEN the migration runs
+      THEN the file is left untouched and reported with the command to run instead`,
+    async (path, config) => {
+      const warnings: string[] = [];
+      schematicRunner.logger.subscribe((entry) => {
+        if (entry.level === 'warn') warnings.push(entry.message);
+      });
+
+      const tree = await run((host) => host.create(path, config));
+
+      expect(tree.readContent(path)).toBe(config);
+      const reported = warnings.join('\n');
+      expect(reported).toContain(`    - ${path}`);
+      expect(reported).toContain(
+        `TranslocoScopedLibsWebpackPlugin was removed from '@jsverse/transloco-scoped-libs'`,
+      );
+      expect(reported).toContain(`'transloco-scoped-libs --watch'`);
+      expect(reported).toContain(`'transloco scoped-libs --watch'`);
+    },
+  );
+
+  it(`GIVEN two configs loading the removed scoped-libs webpack plugin
+      WHEN the migration runs
+      THEN both are listed in a single report`, async () => {
+    const warnings: string[] = [];
+    schematicRunner.logger.subscribe((entry) => {
+      if (entry.level === 'warn') warnings.push(entry.message);
+    });
+
+    await run((host) => {
+      host.create(
+        '/webpack.config.js',
+        `const Plugin = require('@jsverse/transloco-scoped-libs/webpack');`,
+      );
+      host.create(
+        '/webpack-dev.config.js',
+        `const Plugin = require('@jsverse/transloco-scoped-libs/webpack');`,
+      );
+    });
+
+    const reports = warnings.filter((warning) =>
+      warning.includes('TranslocoScopedLibsWebpackPlugin'),
+    );
+    expect(reports).toHaveLength(1);
+    expect(reports[0]).toContain('    - /webpack.config.js');
+    expect(reports[0]).toContain('    - /webpack-dev.config.js');
+  });
+
+  it(`GIVEN a workspace that never references the scoped-libs webpack plugin
+      WHEN the migration runs
+      THEN no plugin removal is reported`, async () => {
+    const warnings: string[] = [];
+    schematicRunner.logger.subscribe((entry) => {
+      if (entry.level === 'warn') warnings.push(entry.message);
+    });
+
+    await run((host) =>
+      host.create('/webpack.config.js', `module.exports = { plugins: [] };`),
+    );
+
+    const reported = warnings.join('\n');
+    expect(reported).not.toContain('TranslocoScopedLibsWebpackPlugin');
+    expect(reported).not.toContain('/webpack.config.js');
+  });
+
+  it(`GIVEN a script using the scoped-libs package without its webpack plugin
+      WHEN the migration runs
+      THEN the file is left untouched and not reported`, async () => {
+    const script = [
+      `import run from '@jsverse/transloco-scoped-libs';`,
+      `const { version } = require('@jsverse/transloco-scoped-libs/package.json');`,
+    ].join('\n');
+    const warnings: string[] = [];
+    schematicRunner.logger.subscribe((entry) => {
+      if (entry.level === 'warn') warnings.push(entry.message);
+    });
+
+    const tree = await run((host) =>
+      host.create('/tools/copy-translations.ts', script),
+    );
+
+    expect(tree.readContent('/tools/copy-translations.ts')).toBe(script);
+    const reported = warnings.join('\n');
+    expect(reported).not.toContain('TranslocoScopedLibsWebpackPlugin');
+    expect(reported).not.toContain('/tools/copy-translations.ts');
   });
 
   it(`GIVEN a root transloco.config.ts importing TranslocoGlobalConfig as a value
