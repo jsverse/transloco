@@ -10,7 +10,7 @@ const SUBPATH = `${PACKAGE}/marker`;
 const ROOT_SPECIFIER = /(['"`])@jsverse\/transloco-keys-manager\1/;
 
 /** Extensions carrying an `import` this migration can rewrite. */
-const SCANNED = ['.ts', '.mts', '.cts', '.js', '.mjs', '.cjs'];
+export const SCANNED = ['.ts', '.mts', '.cts', '.js', '.mjs', '.cjs'];
 
 interface Edit {
   start: number;
