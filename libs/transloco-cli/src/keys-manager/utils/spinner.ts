@@ -41,6 +41,11 @@ const successSymbol = tty.WriteStream.prototype.hasColors()
   ? `\u001B[32m${mark}\u001B[39m`
   : mark;
 
+// The braille frames of the default spinner need Unicode, so the plain line spinner stands in
+const spinnerStyle = isUnicodeSupported()
+  ? undefined
+  : { frames: ['-', '\\', '|', '/'], interval: 130 };
+
 function isInteractive() {
   return Boolean(
     stream.isTTY && process.env['TERM'] !== 'dumb' && !('CI' in process.env),
@@ -122,7 +127,12 @@ export function startSpinner(text: string): Spinner {
     showCursorWhenAborted();
     // Its own handling of signals ends with the step, and a signal sent during
     // the step would be lost with it.
-    spinner = yoctoSpinner({ text, stream, handleSignals: false }).start();
+    spinner = yoctoSpinner({
+      text,
+      stream,
+      handleSignals: false,
+      ...(spinnerStyle && { spinner: spinnerStyle }),
+    }).start();
     hidingCursor.add(spinner);
   } else if (text) {
     stream.write(`- ${text}\n`);

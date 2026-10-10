@@ -311,6 +311,37 @@ describe('startSpinner', () => {
       expect(written).toEqual([]);
     });
 
+    it(`GIVEN stderr is a terminal of the Linux console
+        WHEN a step starts
+        THEN the spinner is started with the ASCII line frames and their interval`, async () => {
+      vi.stubEnv('TERM', 'linux');
+      const startSpinner = await load();
+
+      startSpinner('Extracting');
+
+      expect(yocto.create).toHaveBeenCalledWith({
+        text: 'Extracting',
+        stream: process.stderr,
+        handleSignals: false,
+        spinner: { frames: ['-', '\\', '|', '/'], interval: 130 },
+      });
+    });
+
+    it(`GIVEN stderr is a terminal that can show Unicode
+        WHEN a step starts
+        THEN the spinner is started without frames of its own, keeping the default ones`, async () => {
+      vi.stubEnv('TERM', 'xterm-256color');
+      const startSpinner = await load();
+
+      startSpinner('Extracting');
+
+      expect(yocto.create).toHaveBeenCalledExactlyOnceWith({
+        text: 'Extracting',
+        stream: process.stderr,
+        handleSignals: false,
+      });
+    });
+
     it(`GIVEN a running spinner
         WHEN the step succeeds
         THEN the spinner is stopped with the check mark and the text as its last line`, async () => {
