@@ -89,6 +89,8 @@ If you have a custom pipeline, run the same command as one of its steps. `transl
 transloco optimize dist/my-app/assets/i18n --comments-key note
 ```
 
+The CLI has no public API to import. Until v10 the deprecated `@jsverse/transloco-optimize` package still exports `getTranslationsFolder`, `getTranslationFiles` and `optimizeFiles` by name, but its default export is gone.
+
 {% hint style="info" %}
 `ng update` doesn't edit `project.json` files or CI pipelines. If yours still run `transloco-optimize`, change them to `transloco optimize` by hand.
 {% endhint %}

@@ -13,7 +13,7 @@ Transloco v9 also requires **rxjs `^6.5.3 || ^7.4.0`**.
 {% hint style="info" %}
 **Node.js `^22.18.0 || >=24`** is required by the command-line packages: `@jsverse/transloco-cli`, `@jsverse/transloco-keys-manager`, `@jsverse/transloco-optimize`, `@jsverse/transloco-scoped-libs`, `@jsverse/transloco-utils` and `@jsverse/transloco-validator`.
 
-`@jsverse/transloco-keys-manager` additionally requires `@angular/compiler >=20` and `typescript >=5.8`.
+`@jsverse/transloco-cli` and `@jsverse/transloco-keys-manager` additionally need `@angular/compiler >=20 <23` and `typescript >=5.8 <7` for `transloco extract` and `transloco find`. They are optional peer dependencies of `@jsverse/transloco-cli`, so the other commands run without them.
 {% endhint %}
 
 {% hint style="warning" %}

@@ -47,13 +47,13 @@ Sets the translation file format (`json` or `pot`). Defaults to `json`.
 
 #### **`--langs -l`**
 
-Defines the languages for which translation files are generated. Defaults to `[en]`.
+Defines the languages for which translation files are generated, as separate arguments: `--langs en es`. A comma inside a value (`--langs en,es`) is rejected. Defaults to `[en]`.
 
 #### **`--marker -m`**
 
 Specifies the marker sign for dynamic values. Defaults to `t`.
 
-#### **`--sort`**
+#### **`--sort -s`**
 
 Sort the keys using JavaScript’s `sort()` method. Defaults to `false`.
 

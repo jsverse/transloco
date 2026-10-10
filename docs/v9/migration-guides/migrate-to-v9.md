@@ -128,7 +128,7 @@ v9 adds the [`transloco` command line](../developer-tools/transloco-cli.md) (`@j
 
 ### What `ng update` does
 
-`ng update @jsverse/transloco` moves the npm scripts that run the old bins to the `transloco` bin, in every `package.json` outside `node_modules`, `dist` and the dot-folders, and adds `@jsverse/transloco-cli` to `devDependencies`. It rewrites the `marker`, `TranslocoGlobalConfig` and `getGlobalConfig` imports as well. The rest of a script stays byte for byte, and options are respelled where they differ: `--commentsKey` of `transloco-optimize` becomes `--comments-key`, and `-m` of `transloco-scoped-libs` becomes `--skip-gitignore`.
+`ng update @jsverse/transloco` moves the npm scripts that run the old bins to the `transloco` bin, in every `package.json` outside `node_modules`, `dist` and the dot-folders, and adds `@jsverse/transloco-cli` to `devDependencies`. It rewrites the `marker`, `TranslocoGlobalConfig` and `getGlobalConfig` imports as well. The rest of a script stays byte for byte, and options are respelled where they differ: `--commentsKey` of `transloco-optimize` becomes `--comments-key`, and `-m` of `transloco-scoped-libs` becomes `--skip-gitignore`. Options the old command accepted but never read are dropped from the rewritten script: `--output`, `--langs`, `--replace` and `--remove-extra-keys` for `find`, and `--translations-path`, `--add-missing-keys` and `--emit-error-on-extra-keys` for `extract`.
 
 ### What `ng update` leaves alone
 
