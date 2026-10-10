@@ -18,4 +18,8 @@ Commands:
                              production build, dropping the translator comments
   scoped-libs [options]      Copy the translation files of scoped libraries into
                              the application
+  join [options]             Join the translation files of all scopes into one
+                             file per language
+  split [options]            Split joined translation files back into the scope
+                             folders
   help [command]             Display help for the command

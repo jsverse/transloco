@@ -1,0 +1,14 @@
+{
+  "title": "Titulo editado",
+  "nav": {
+    "home": "Inicio"
+  },
+  "admin": {
+    "users": "Usuarios"
+  },
+  "shop": {
+    "cart": {
+      "empty": "Vacio"
+    }
+  }
+}

@@ -196,6 +196,56 @@ export function createProgram() {
       await runScopedLibs(options);
     });
 
+  program
+    .command('join')
+    .description(
+      'Join the translation files of all scopes into one file per language',
+    )
+    .helpOption(helpFlags, helpDescription)
+    .option(
+      '--translations-path <dir>',
+      'The folder of the root translation files (defaults to `rootTranslationsPath` of the config)',
+    )
+    .option(
+      '-o, --out-dir <dir>',
+      'The folder the joined files are written to, it is emptied first',
+      'dist-i18n',
+    )
+    .option(
+      '--default-lang <lang>',
+      'The default language of the project (defaults to `defaultLang` of the config)',
+    )
+    .option(
+      '--include-default-lang',
+      'Join the default language as well, it is left out otherwise',
+    )
+    .option('-c, --config <path>', 'Path to a custom transloco config')
+    .action(async (options) => {
+      const { runJoin } = await import('./commands/join.js');
+
+      runJoin(options);
+    });
+
+  program
+    .command('split')
+    .description('Split joined translation files back into the scope folders')
+    .helpOption(helpFlags, helpDescription)
+    .option(
+      '--translations-path <dir>',
+      'The folder of the root translation files (defaults to `rootTranslationsPath` of the config)',
+    )
+    .option(
+      '--source <dir>',
+      'The folder holding the joined translation files',
+      'dist-i18n',
+    )
+    .option('-c, --config <path>', 'Path to a custom transloco config')
+    .action(async (options) => {
+      const { runSplit } = await import('./commands/split.js');
+
+      runSplit(options);
+    });
+
   // Last, so that it covers every command and option declared above.
   enforceOptionRules(program);
 

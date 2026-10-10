@@ -1,0 +1,14 @@
+{
+  "title": "Title",
+  "nav": {
+    "home": "Home"
+  },
+  "admin": {
+    "users": "Users"
+  },
+  "shop": {
+    "cart": {
+      "empty": "Empty"
+    }
+  }
+}
