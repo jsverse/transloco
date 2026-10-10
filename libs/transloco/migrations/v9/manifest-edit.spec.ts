@@ -125,6 +125,59 @@ describe('addDevDependency', () => {
     },
   );
 
+  it.each<[string, string | number]>([
+    ['two spaces', 2],
+    ['four spaces', 4],
+    ['tabs', '\t'],
+  ])(
+    `GIVEN a package.json written with %s and a devDependencies section
+      WHEN the CLI is added first, in the middle and last
+      THEN the line of the entry is indented like its siblings and ends with a comma unless it is last`,
+    (_, indent) => {
+      const unit = typeof indent === 'number' ? ' '.repeat(indent) : indent;
+      const sections = {
+        first: { '@zzz/last': '1', typescript: '1' },
+        middle: { '@angular/cli': '1', typescript: '1' },
+        last: { '@angular/cli': '1', '@jsverse/transloco': '1' },
+      };
+
+      for (const [position, devDependencies] of Object.entries(sections)) {
+        const input = manifest({ ...base, devDependencies }, { indent });
+        const output = addDevDependency(input, CLI, RANGE) as string;
+        const lines = output.split('\n');
+        const index = lines.findIndex((line) => line.includes(`"${CLI}"`));
+        const sibling = lines.find((line) =>
+          line.includes(`"${Object.keys(devDependencies)[0]}"`),
+        )!;
+
+        expect(lines[index]).toBe(
+          `${unit}${unit}"${CLI}": "${RANGE}"${position === 'last' ? '' : ','}`,
+        );
+        expect(lines[index].match(/^\s*/)![0]).toBe(sibling.match(/^\s*/)![0]);
+        // the neighbours are as they were, but for the comma the last one gains
+        const rest = lines.filter((_, i) => i !== index);
+
+        if (position === 'last') rest[index - 1] = rest[index - 1].slice(0, -1);
+
+        expect(rest).toEqual(input.split('\n'));
+      }
+    },
+  );
+
+  it.each(['', '^8.0.0', 'workspace:*'])(
+    `GIVEN a CLI entry with the range %j in devDependencies
+      WHEN the CLI is added
+      THEN the text is returned as it is`,
+    (range) => {
+      const input = manifest({
+        ...base,
+        devDependencies: { ...base.devDependencies, [CLI]: range },
+      });
+
+      expect(addDevDependency(input, CLI, RANGE)).toBe(input);
+    },
+  );
+
   it(`GIVEN a package.json without devDependencies
       WHEN the CLI is added
       THEN the section follows dependencies`, () => {

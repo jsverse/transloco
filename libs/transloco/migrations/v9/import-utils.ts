@@ -157,7 +157,7 @@ function installedVersion(): string | null {
   }
 }
 
-/** Whether the root `package.json` lists `name`, or `null` when it can't be read. */
+/** Whether the root `package.json` has a key `name` in a dependency section, or `null` when it can't be read. */
 function isListed(tree: Tree, name: string): boolean | null {
   try {
     // `JSON.parse` rejects a byte order mark, which editors on Windows put at the start of a file
@@ -167,7 +167,16 @@ function isListed(tree: Tree, name: string): boolean | null {
     if (!manifest || typeof manifest !== 'object' || Array.isArray(manifest))
       return null;
 
-    return DEPENDENCY_SECTIONS.some((section) => manifest[section]?.[name]);
+    // Whatever the range, even an empty one, a key of that name is a listing
+    return DEPENDENCY_SECTIONS.some((section) => {
+      const listed = manifest[section];
+
+      return (
+        !!listed &&
+        typeof listed === 'object' &&
+        Object.prototype.hasOwnProperty.call(listed, name)
+      );
+    });
   } catch {
     return null;
   }

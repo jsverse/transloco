@@ -124,6 +124,9 @@ export function addDevDependency(
       const { members, close } = readMembers(source, section.valueStart);
 
       if (members.length) {
+        // Already there, with whatever range
+        if (members.some((member) => member.key === name)) return source;
+
         const next = members.find(
           (member) => member.key.localeCompare(name, 'en') > 0,
         );

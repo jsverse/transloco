@@ -3897,13 +3897,18 @@ describe('migration-v9 keeps the formatting of package.json', () => {
     expect(nodePackageTasks(runner)).toHaveLength(1);
   });
 
-  it.each(['dependencies', 'devDependencies'])(
-    `GIVEN a package.json that lists the CLI in %s
+  it.each([
+    ['dependencies', '^9.0.0'],
+    ['devDependencies', '^9.0.0'],
+    ['dependencies', ''],
+    ['devDependencies', ''],
+  ])(
+    `GIVEN a package.json that lists the CLI in %s with the range %j
       WHEN the migration runs
       THEN the file is not touched and nothing is installed`,
-    async (section) => {
+    async (section, range) => {
       const input = manifest(
-        { ...app, [section]: { ...(app as any)[section], [CLI]: '^9.0.0' } },
+        { ...app, [section]: { ...(app as any)[section], [CLI]: range } },
         { indent: 4 },
       );
 
