@@ -689,6 +689,23 @@ describe('translateScript', () => {
       'transloco-keys-manager extract --input "src, "',
       '--input holds an empty path',
     ],
+    // a comma makes one language of two on the legacy bin, the new bin refuses it
+    [
+      'transloco-keys-manager extract --langs en,es',
+      "--langs is given 'en,es', a comma would make it one language",
+    ],
+    [
+      'transloco-keys-manager extract -l en,es',
+      "-l is given 'en,es', a comma would make it one language",
+    ],
+    [
+      'transloco-keys-manager extract --langs=en,es',
+      "--langs is given 'en,es', a comma would make it one language",
+    ],
+    [
+      'transloco-keys-manager extract --langs en es,fr',
+      "--langs is given 'es,fr', a comma would make it one language",
+    ],
     // validator and optimize
     ['transloco-validator', 'is given no file'],
     ['transloco-validator --help', 'is taken as a file by transloco-validator'],

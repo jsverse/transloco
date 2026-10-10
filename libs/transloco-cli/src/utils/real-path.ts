@@ -44,6 +44,20 @@ export function lstat(target: string) {
   }
 }
 
+/**
+ * What a name is when it is neither a file, a folder nor a link: a FIFO, a
+ * socket or a device. Opening one waits for whoever is at its other end.
+ */
+export function specialKind(stats: fs.Stats) {
+  if (stats.isFIFO()) return 'a FIFO';
+
+  if (stats.isSocket()) return 'a socket';
+
+  if (stats.isCharacterDevice() || stats.isBlockDevice()) return 'a device';
+
+  return undefined;
+}
+
 /** Whether `child` is `parent` or lies below it. */
 export function contains(parent: string, child: string) {
   const fold = (value: string) =>

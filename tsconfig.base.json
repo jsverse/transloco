@@ -56,9 +56,6 @@
       "@jsverse/transloco-preload-langs": [
         "./libs/transloco-preload-langs/src/index.ts"
       ],
-      "@jsverse/transloco-schematics": [
-        "./libs/transloco-schematics/src/index.ts"
-      ],
       "@jsverse/transloco-scoped-libs": [
         "./libs/transloco-scoped-libs/src/index.ts"
       ],

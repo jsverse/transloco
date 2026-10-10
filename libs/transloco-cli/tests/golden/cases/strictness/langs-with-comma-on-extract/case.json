@@ -1,0 +1,13 @@
+{
+  "description": "GIVEN a comma in a language typed for extract WHEN the keys are extracted THEN it is rejected with the way to separate languages, nothing is written and it exits with 1",
+  "args": [
+    "extract",
+    "--langs",
+    "en,es"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

@@ -188,6 +188,40 @@ describe('createProgram', () => {
         langs: ['en', 'es', 'it'],
       });
     });
+
+    it.each([
+      [['--langs', 'en,es'], 'en,es', 'en es'],
+      [['-l', 'en,es'], 'en,es', 'en es'],
+      [['--langs=en,es'], 'en,es', 'en es'],
+      [['--langs', 'en', 'es,fr'], 'es,fr', 'es fr'],
+      [['--langs', 'en', '--langs', 'es,fr'], 'es,fr', 'es fr'],
+    ])(
+      `GIVEN a comma in a language typed as %j
+       WHEN the program runs
+       THEN it is refused with the way to write several languages, and nothing runs`,
+      async (args, value, hint) => {
+        const { run, output } = setup();
+
+        await expect(run('extract', ...args)).rejects.toMatchObject({
+          exitCode: 1,
+        });
+
+        expect(output.stderr).toContain(
+          `error: option '-l, --langs <langs...>' argument '${value}' holds a comma. Separate the languages with spaces, e.g. --langs ${hint}`,
+        );
+        expect(runners.runExtract).not.toHaveBeenCalled();
+      },
+    );
+
+    it(`GIVEN a comma in a language
+        WHEN migrate angular-i18n runs
+        THEN the program lets it through, as the command checks its languages itself`, async () => {
+      await setup().run('migrate', 'angular-i18n', '--langs', 'en,es');
+
+      expect(runners.runMigrateAngularI18n).toHaveBeenCalledExactlyOnceWith(
+        expect.objectContaining({ langs: ['en,es'] }),
+      );
+    });
   });
 
   describe('find', () => {

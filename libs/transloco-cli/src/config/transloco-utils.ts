@@ -3,6 +3,7 @@ import * as path from 'node:path';
 
 import { cosmiconfigSync, type CosmiconfigResult } from 'cosmiconfig';
 
+import { nameConfigFile } from './load-error.js';
 import { TranslocoGlobalConfig } from './transloco-utils.types.js';
 
 export function getGlobalConfig(searchPath = ''): TranslocoGlobalConfig {
@@ -24,9 +25,9 @@ export function getGlobalConfig(searchPath = ''): TranslocoGlobalConfig {
  * A directory outside of the working directory is followed by the working
  * directory itself. When the working directory holds no `package.json` the
  * search carries on above it, up to the first directory that does, which is
- * the root of the package the working directory belongs to, the way
- * `findGlobalConfigFile` stops. Without such a directory nothing above the
- * working directory is looked at.
+ * the root of the package the working directory belongs to. Without such a
+ * directory nothing above the working directory is looked at. A config that
+ * fails to load is reported with the file it is in.
  */
 export function searchGlobalConfig(dir = ''): {
   config: TranslocoGlobalConfig;
@@ -35,7 +36,13 @@ export function searchGlobalConfig(dir = ''): {
   const explorer = cosmiconfigSync('transloco');
 
   for (const searchDir of searchDirs(dir)) {
-    const configSearch = explorer.search(searchDir);
+    let configSearch: CosmiconfigResult;
+
+    try {
+      configSearch = explorer.search(searchDir);
+    } catch (error) {
+      throw nameConfigFile(error, searchDir);
+    }
 
     if (configSearch) {
       return {
@@ -46,19 +53,6 @@ export function searchGlobalConfig(dir = ''): {
   }
 
   return { config: {} };
-}
-
-/**
- * The config file a search from the directory finds, `undefined` when there
- * is none. The search goes up through the parent directories until it has
- * looked in the first one holding a `package.json`, which is the root of the
- * project the directory belongs to. An empty file isn't found, the way it
- * isn't by `getGlobalConfig`.
- */
-export function findGlobalConfigFile(dir = ''): string | undefined {
-  return cosmiconfigSync('transloco', { searchStrategy: 'project' }).search(
-    path.resolve(process.cwd(), dir),
-  )?.filepath;
 }
 
 const MODULE_CONFIG = /\.[cm]?[jt]s$/;

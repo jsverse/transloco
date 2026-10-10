@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN a config in src WHEN init runs with --yes THEN it is refused naming the config extract would read first, and nothing is written",
+  "args": [
+    "init",
+    "--yes"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

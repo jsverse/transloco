@@ -46,6 +46,7 @@ interface TableOption {
   choices?: string[];
   allowEmpty?: boolean;
   list?: boolean;
+  noComma?: boolean;
 }
 
 interface TableInvocation {
@@ -418,6 +419,53 @@ describe('the table of the script migration', () => {
         ]);
 
         expect(error).toMatch(/empty/);
+      },
+    );
+
+    it.each(
+      kept.filter(({ noComma }) => noComma).map((option) => [option.name]),
+    )(
+      `GIVEN the option %s whose values are separate arguments
+        WHEN the new bin gets a comma in a value
+        THEN it refuses it, which is why the migration leaves such a script`,
+      async (name) => {
+        const option = invocation.options.find((entry) => entry.name === name)!;
+        const target = Object.values(option.spellings).find(Boolean)!;
+        const { error } = await parse([
+          command,
+          ...operandsOf(invocation, option),
+          target,
+          'alpha,beta',
+        ]);
+
+        expect(error).toMatch(/comma/);
+        expect(runnerOf[command]).not.toHaveBeenCalled();
+      },
+    );
+
+    it.each(
+      kept
+        .filter(
+          ({ takesValue, noComma, list, choices }) =>
+            takesValue && !noComma && !list && !choices,
+        )
+        .map((option) => [option.name]),
+    )(
+      `GIVEN the option %s that the table does not mark as refusing a comma
+        WHEN the new bin gets a comma in a value
+        THEN it runs, so the migration may leave such a script as it is`,
+      async (name) => {
+        const option = invocation.options.find((entry) => entry.name === name)!;
+        const target = Object.values(option.spellings).find(Boolean)!;
+        const { error } = await parse([
+          command,
+          ...operandsOf(invocation, option),
+          target,
+          'alpha,beta',
+        ]);
+
+        expect(error).toBeUndefined();
+        expect(runnerOf[command]).toHaveBeenCalledTimes(1);
       },
     );
 

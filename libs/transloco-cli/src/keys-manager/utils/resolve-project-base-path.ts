@@ -41,7 +41,14 @@ function logNotFound(searchPlaces: string[]) {
   );
 }
 
-export function resolveProjectBasePath(projectName?: string): {
+/**
+ * The source root of the project, `quiet` leaves out the notice printed when
+ * it has to fall back to the default.
+ */
+export function resolveProjectBasePath(
+  projectName?: string,
+  { quiet = false }: { quiet?: boolean } = {},
+): {
   projectBasePath: string;
   projectType?: ProjectType;
 } {
@@ -50,7 +57,13 @@ export function resolveProjectBasePath(projectName?: string): {
   const projectConfig = resolveProjectConfig(projectName);
 
   if (!angularConfig && !workspaceConfig && !projectConfig) {
-    logNotFound([...angularConfigFile, workspaceConfigFile, projectConfigFile]);
+    if (!quiet) {
+      logNotFound([
+        ...angularConfigFile,
+        workspaceConfigFile,
+        projectConfigFile,
+      ]);
+    }
 
     return { projectBasePath: defaultSourceRoot };
   }
@@ -65,12 +78,14 @@ export function resolveProjectBasePath(projectName?: string): {
   }
 
   if (!resolved) {
-    console.log(
-      style(
-        ['black', 'bgRed'],
-        `Unable to resolve \`projectBasePath\` from configuration. Defaulting source root to '${defaultSourceRoot}'`,
-      ),
-    );
+    if (!quiet) {
+      console.log(
+        style(
+          ['black', 'bgRed'],
+          `Unable to resolve \`projectBasePath\` from configuration. Defaulting source root to '${defaultSourceRoot}'`,
+        ),
+      );
+    }
 
     return { projectBasePath: defaultSourceRoot };
   }

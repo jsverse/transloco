@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -6,6 +7,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { CliError } from '../errors.js';
 import { generateConfigFile } from '../init/plan.js';
+import { resolveConfig } from '../keys-manager/utils/resolve-config.js';
 import { createProgram } from '../program.js';
 import { collectOutput } from '../tests/program-harness.js';
 
@@ -682,49 +684,122 @@ describe('runInit', () => {
   });
 
   describe('a file system problem that the check could not see', () => {
+    // Fails the first write only, so that what undoes it is not stopped by it
     const fail = (match: string) => {
+      const writeFile = fs.writeFileSync;
+      let failed = false;
+
+      vi.spyOn(fs, 'writeFileSync').mockImplementation(((
+        file: fs.PathOrFileDescriptor,
+        ...rest: [string]
+      ) => {
+        if (String(file).endsWith(match) && !failed) {
+          failed = true;
+
+          throw new Error('EIO: boom');
+        }
+
+        return writeFile(file, ...rest);
+      }) as typeof fs.writeFileSync);
+    };
+
+    /** Lets the write of the file through and fails it all the same, as a disk that runs full does. */
+    const failAfterWriting = (match: string) => {
+      const writeFile = fs.writeFileSync;
+      let failed = false;
+
+      vi.spyOn(fs, 'writeFileSync').mockImplementation(((
+        file: fs.PathOrFileDescriptor,
+        ...rest: [string]
+      ) => {
+        writeFile(file, ...rest);
+
+        if (String(file).endsWith(match) && !failed) {
+          failed = true;
+
+          throw new Error('ENOSPC: full');
+        }
+      }) as typeof fs.writeFileSync);
+    };
+
+    it(`GIVEN a translation file that fails to be written after the config
+        WHEN init runs with --yes
+        THEN the error names the file, and the config and the folders are gone again`, async () => {
+      const before = tree();
+
+      fail('en.json');
+
+      await expect(runInit(options())).rejects.toThrow(
+        new CliError(
+          'Transloco Init: could not write src/assets/i18n/en.json: EIO: boom. Nothing was changed.',
+        ),
+      );
+      expect(tree()).toEqual(before);
+      expect(printed()).toEqual([]);
+    });
+
+    it(`GIVEN a translations path with a folder that was there
+        WHEN a file fails to be written
+        THEN the folders init made are removed and the one that was there stays`, async () => {
+      write('src/keep.txt', 'mine');
+      const before = tree();
+
+      fail('de.json');
+
+      await expect(runInit(options({ langs: ['en', 'de'] }))).rejects.toThrow(
+        'Nothing was changed.',
+      );
+      expect(tree()).toEqual(before);
+    });
+
+    it(`GIVEN a folder that init made and that something else has put a file in
+        WHEN a file fails to be written
+        THEN the folder and the file in it stay, and the error says so`, async () => {
       const writeFile = fs.writeFileSync;
 
       vi.spyOn(fs, 'writeFileSync').mockImplementation(((
         file: fs.PathOrFileDescriptor,
         ...rest: [string]
       ) => {
-        if (String(file).endsWith(match)) throw new Error('EIO: boom');
+        if (String(file).endsWith('de.json')) {
+          writeFile(path.join(dir, 'src', 'assets', 'i18n', 'other.txt'), 'x');
+
+          throw new Error('EIO: boom');
+        }
 
         return writeFile(file, ...rest);
       }) as typeof fs.writeFileSync);
-    };
 
-    it(`GIVEN a translation file that fails to be written after the config
-        WHEN init runs with --yes
-        THEN the error names the file and the files that were written before`, async () => {
-      fail('en.json');
-
-      await expect(runInit(options())).rejects.toThrow(
+      await expect(runInit(options({ langs: ['en', 'de'] }))).rejects.toThrow(
         new CliError(
-          'Transloco Init: could not write src/assets/i18n/en.json: EIO: boom. Already written: transloco.config.ts.',
+          'Transloco Init: could not write src/assets/i18n/de.json: EIO: boom. Undoing it failed, these were left behind: src/assets/i18n (folder not removed), src/assets (folder not removed), src (folder not removed).',
         ),
       );
-      expect(exists('transloco.config.ts')).toBe(true);
+      expect(exists('src/assets/i18n/other.txt')).toBe(true);
+      expect(exists('transloco.config.ts')).toBe(false);
+      expect(exists('src/assets/i18n/en.json')).toBe(false);
     });
 
     it(`GIVEN the config fails to be written
         WHEN init runs with --yes
-        THEN the error names it and says nothing was written`, async () => {
+        THEN the error names it and says nothing was changed`, async () => {
       fail('transloco.config.ts');
 
       await expect(runInit(options())).rejects.toThrow(
         new CliError(
-          'Transloco Init: could not write transloco.config.ts: EIO: boom. Nothing was written.',
+          'Transloco Init: could not write transloco.config.ts: EIO: boom. Nothing was changed.',
         ),
       );
+      expect(tree()).toEqual({});
     });
 
     it(`GIVEN the package.json fails to be written
         WHEN init runs and asks
-        THEN the error lists everything that was written before it`, async () => {
+        THEN everything written before it is undone, and nothing was reported`, async () => {
       setTerminal(true);
       write('package.json', packageJson);
+      const before = tree();
+
       ui.askInit.mockResolvedValue({
         langs: ['en'],
         translationsPath: 'i18n',
@@ -734,9 +809,95 @@ describe('runInit', () => {
       fail('package.json');
 
       await expect(runInit({ scripts: true })).rejects.toThrow(
-        'Transloco Init: could not write package.json: EIO: boom. Already written: transloco.config.ts, i18n/en.json.',
+        'Transloco Init: could not write package.json: EIO: boom. Nothing was changed.',
       );
-      expect(ui.reportStep).toHaveBeenCalledTimes(2);
+      expect(tree()).toEqual(before);
+      expect(ui.reportStep).not.toHaveBeenCalled();
+    });
+
+    it(`GIVEN an existing config and a package.json
+        WHEN init runs with --force and the package.json is written only partly
+        THEN both are back as they were and nothing else is left`, async () => {
+      write('transloco.config.ts', 'export default { langs: ["fr"] };');
+      write('package.json', packageJson);
+      const before = tree();
+
+      failAfterWriting('package.json');
+
+      await expect(runInit(options({ force: true }))).rejects.toThrow(
+        'Transloco Init: could not write package.json: ENOSPC: full. Nothing was changed.',
+      );
+      expect(tree()).toEqual(before);
+    });
+
+    it(`GIVEN a language name that the file system refuses
+        WHEN init runs with --yes
+        THEN it fails while writing, and the folder is as it was`, async () => {
+      write('package.json', packageJson);
+      const before = tree();
+
+      await expect(
+        runInit(options({ langs: ['a'.repeat(300)] })),
+      ).rejects.toThrow(
+        /^Transloco Init: could not write .+\. Nothing was changed\.$/,
+      );
+      expect(tree()).toEqual(before);
+    });
+
+    it(`GIVEN the config that was written fails to be removed again
+        WHEN a later file fails to be written
+        THEN the error says which paths were left behind`, async () => {
+      fail('en.json');
+      const remove = fs.rmSync;
+
+      vi.spyOn(fs, 'rmSync').mockImplementation(((
+        file: fs.PathLike,
+        ...rest: [fs.RmOptions]
+      ) => {
+        if (String(file).endsWith('transloco.config.ts')) {
+          throw new Error('EBUSY: busy');
+        }
+
+        return remove(file, ...rest);
+      }) as typeof fs.rmSync);
+
+      await expect(runInit(options())).rejects.toThrow(
+        new CliError(
+          'Transloco Init: could not write src/assets/i18n/en.json: EIO: boom. Undoing it failed, these were left behind: transloco.config.ts (not removed).',
+        ),
+      );
+      expect(exists('transloco.config.ts')).toBe(true);
+      expect(exists('src')).toBe(false);
+    });
+
+    it(`GIVEN an overwritten config that fails to be put back
+        WHEN a later file fails to be written
+        THEN the error names it`, async () => {
+      write('transloco.config.ts', 'export default { langs: ["fr"] };');
+      const writeFile = fs.writeFileSync;
+      let configWrites = 0;
+
+      vi.spyOn(fs, 'writeFileSync').mockImplementation(((
+        file: fs.PathOrFileDescriptor,
+        ...rest: [string]
+      ) => {
+        if (String(file).endsWith('en.json')) throw new Error('EIO: boom');
+
+        if (
+          String(file).endsWith('transloco.config.ts') &&
+          ++configWrites > 1
+        ) {
+          throw new Error('EIO: again');
+        }
+
+        return writeFile(file, ...rest);
+      }) as typeof fs.writeFileSync);
+
+      await expect(runInit(options({ force: true }))).rejects.toThrow(
+        new CliError(
+          'Transloco Init: could not write src/assets/i18n/en.json: EIO: boom. Undoing it failed, these were left behind: transloco.config.ts (could not be restored).',
+        ),
+      );
     });
   });
 
@@ -933,6 +1094,394 @@ describe('runInit', () => {
       );
       expect(exists('transloco.config.ts')).toBe(true);
     });
+  });
+
+  describe('a package.json that cannot be read', () => {
+    it.skipIf(asRoot || process.platform === 'win32').each([[true], [false]])(
+      `GIVEN a package.json without the right to read it
+       WHEN init runs with --yes (scripts: %j)
+       THEN it is refused with one line naming the file, and nothing is written`,
+      async (scripts) => {
+        write('package.json', packageJson);
+
+        const target = path.join(dir, 'package.json');
+
+        locked.push(target);
+        fs.chmodSync(target, 0o000);
+
+        await expect(runInit(options({ scripts }))).rejects.toThrow(
+          new CliError(
+            'Transloco Init: could not read package.json: EACCES: permission denied',
+          ),
+        );
+        expect(fs.readdirSync(dir)).toEqual(['package.json']);
+      },
+    );
+  });
+
+  describe('a transloco.config.ts that is a link', () => {
+    let outside: string;
+
+    beforeEach(() => {
+      outside = fs.realpathSync(
+        fs.mkdtempSync(path.join(os.tmpdir(), 'transloco-cli-init-out-')),
+      );
+    });
+
+    afterEach(() => {
+      fs.rmSync(outside, { recursive: true, force: true });
+    });
+
+    it(`GIVEN a link to a config inside the folder
+        WHEN init runs with --force
+        THEN the file it leads to is overwritten and the link stays`, async () => {
+      write('shared/config.ts', 'export default { langs: ["fr"] };');
+      fs.symlinkSync(
+        path.join('shared', 'config.ts'),
+        path.join(dir, 'transloco.config.ts'),
+      );
+
+      await runInit(options({ force: true }));
+
+      expect(fs.readlinkSync(path.join(dir, 'transloco.config.ts'))).toBe(
+        path.join('shared', 'config.ts'),
+      );
+      expect(read('shared/config.ts')).toBe(config('src/assets/i18n', ['en']));
+    });
+
+    it.each([[false], [true]])(
+      `GIVEN a link to a config outside the folder
+       WHEN init runs (force: %j)
+       THEN it is refused, and the file it leads to and the folder are as they were`,
+      async (force) => {
+        const target = path.join(outside, 'config.ts');
+
+        fs.writeFileSync(target, 'export default { langs: ["fr"] };');
+        fs.symlinkSync(target, path.join(dir, 'transloco.config.ts'));
+
+        const before = tree();
+
+        await expect(runInit(options({ force }))).rejects.toThrow(
+          new CliError(
+            'Transloco Init: transloco.config.ts is a link that leads outside the folder, and writing it would overwrite the file it leads to. Nothing was written.',
+          ),
+        );
+        expect(fs.readFileSync(target, 'utf-8')).toBe(
+          'export default { langs: ["fr"] };',
+        );
+        expect(tree()).toEqual(before);
+      },
+    );
+  });
+
+  describe('what is neither a file nor a folder', () => {
+    // Opening a FIFO waits for the other end, which nothing here provides. So
+    // the calls that would open one throw instead, which makes a test fail
+    // where it would hang.
+    beforeEach(() => {
+      const stat = fs.statSync;
+      const waits = (file: unknown) => {
+        try {
+          return typeof file === 'string' && stat(file).isFIFO();
+        } catch {
+          return false;
+        }
+      };
+
+      for (const name of [
+        'readFileSync',
+        'openSync',
+        'writeFileSync',
+      ] as const) {
+        const original = fs[name] as (...args: unknown[]) => unknown;
+
+        vi.spyOn(fs, name).mockImplementation(((
+          file: unknown,
+          ...rest: unknown[]
+        ) => {
+          if (waits(file)) {
+            throw new Error(`waits for the other end of ${String(file)}`);
+          }
+
+          return original(file, ...rest);
+        }) as never);
+      }
+    });
+
+    const makeFifo = (file: string) => {
+      const target = path.join(dir, file);
+
+      fs.mkdirSync(path.dirname(target), { recursive: true });
+      execFileSync('mkfifo', [target]);
+
+      return target;
+    };
+
+    it
+      .skipIf(process.platform === 'win32')
+      .each([['package.json'], ['transloco.config.ts']])(
+      `GIVEN a FIFO named %s
+       WHEN init runs with --yes
+       THEN it is refused before the config is looked for, and nothing is written`,
+      async (name) => {
+        makeFifo(name);
+
+        await expect(runInit(options({ scripts: false }))).rejects.toThrow(
+          new CliError(
+            `Transloco Init: cannot use ${name}, it is a FIFO. Nothing was written.`,
+          ),
+        );
+        expect(fs.readdirSync(dir)).toEqual([name]);
+      },
+      5000,
+    );
+
+    it.skipIf(process.platform === 'win32')(
+      `GIVEN a package.json that is a link to a FIFO
+       WHEN init runs with --yes
+       THEN it is refused, and says it is a link`,
+      async () => {
+        const fifo = makeFifo('queue');
+
+        fs.symlinkSync(fifo, path.join(dir, 'package.json'));
+
+        await expect(runInit(options())).rejects.toThrow(
+          'Transloco Init: cannot use package.json, it is a link to a FIFO. Nothing was written.',
+        );
+      },
+      5000,
+    );
+
+    it.skipIf(process.platform === 'win32')(
+      `GIVEN a FIFO where a translation file goes
+       WHEN init runs with --yes
+       THEN it is refused instead of being kept, and nothing is written`,
+      async () => {
+        makeFifo('src/assets/i18n/en.json');
+
+        await expect(runInit(options())).rejects.toThrow(
+          'Transloco Init: cannot use src/assets/i18n/en.json, it is a FIFO. Nothing was written.',
+        );
+        expect(exists('transloco.config.ts')).toBe(false);
+      },
+      5000,
+    );
+
+    it.skipIf(process.platform === 'win32')(
+      `GIVEN a FIFO where a translation file goes
+       WHEN init asks and the answers lead to it
+       THEN it is refused before anything is written`,
+      async () => {
+        setTerminal(true);
+        makeFifo('i18n/en.json');
+        ui.askInit.mockResolvedValue({
+          langs: ['en'],
+          translationsPath: 'i18n',
+          createTranslationFiles: true,
+          addScripts: false,
+        });
+
+        await expect(runInit({ scripts: true })).rejects.toThrow(
+          'Transloco Init: cannot use i18n/en.json, it is a FIFO. Nothing was written.',
+        );
+        expect(exists('transloco.config.ts')).toBe(false);
+      },
+      5000,
+    );
+
+    it.skipIf(process.platform === 'win32')(
+      `GIVEN a FIFO on the way to the translations path
+       WHEN init runs with --yes
+       THEN it is refused saying what it is, and nothing is written`,
+      async () => {
+        makeFifo('src');
+
+        await expect(runInit(options())).rejects.toThrow(
+          'The translations path src/assets/i18n is, or lies inside, a FIFO',
+        );
+        expect(exists('transloco.config.ts')).toBe(false);
+      },
+      5000,
+    );
+  });
+
+  describe('the config that extract would find', () => {
+    const found = (file: string) =>
+      new RegExp(`found in ${file.replace(/[.\\/]/g, '\\$&')}`);
+    // The temp folder is taken to have no package.json in it or above it, which
+    // is true of a machine whose temp folder lies under system folders only.
+    const noManifestAbove = (folder: string) => {
+      for (let current = folder; ; current = path.dirname(current)) {
+        if (fs.existsSync(path.join(current, 'package.json'))) return false;
+
+        if (path.dirname(current) === current) return true;
+      }
+    };
+    const tmpIsClean = noManifestAbove(os.tmpdir());
+
+    it.each([[false], [true]])(
+      `GIVEN a config in src
+       WHEN init runs (force: %j)
+       THEN it is refused naming it, as extract reads it first, and nothing is written`,
+      async (force) => {
+        write('src/transloco.config.js', 'module.exports = { langs: ["en"] };');
+        const before = tree();
+
+        await expect(runInit(options({ force }))).rejects.toThrow(
+          found(path.join('src', 'transloco.config.js')),
+        );
+        expect(tree()).toEqual(before);
+      },
+    );
+
+    it(`GIVEN a config in src and a transloco.config.ts in the folder
+        WHEN init runs with --force
+        THEN the config in src is the one named, as it is the one that applies`, async () => {
+      write('src/.translocorc.json', '{"langs": ["en"]}');
+      write('transloco.config.ts', 'export default {};');
+
+      await expect(runInit(options({ force: true }))).rejects.toThrow(
+        found(path.join('src', '.translocorc.json')),
+      );
+      expect(read('transloco.config.ts')).toBe('export default {};');
+    });
+
+    it(`GIVEN a config in src that throws when it is loaded
+        WHEN init runs with --force
+        THEN it is refused with one line naming that file, and nothing is written`, async () => {
+      write('src/transloco.config.js', 'throw new Error("boom at import");');
+      const before = tree();
+
+      await expect(runInit(options({ force: true }))).rejects.toThrow(
+        new CliError(
+          `Transloco Init: could not read ${path.join('src', 'transloco.config.js')} while looking for an existing Transloco config: boom at import`,
+        ),
+      );
+      expect(tree()).toEqual(before);
+    });
+
+    it(`GIVEN a config in the source root of the default project
+        WHEN init runs
+        THEN it is the one found`, async () => {
+      write(
+        'angular.json',
+        JSON.stringify({
+          projects: { app: { sourceRoot: 'projects/app/src' } },
+        }),
+      );
+      write(
+        'projects/app/src/transloco.config.js',
+        'module.exports = { langs: ["en"] };',
+      );
+
+      await expect(runInit(options())).rejects.toThrow(
+        found(path.join('projects', 'app', 'src', 'transloco.config.js')),
+      );
+    });
+
+    it(`GIVEN no workspace config
+        WHEN init runs
+        THEN nothing is said about the source root it falls back to`, async () => {
+      await runInit(options());
+
+      expect(printed().join('\n')).not.toContain('Unable to load workspace');
+    });
+
+    it.skipIf(!tmpIsClean)(
+      `GIVEN a config above a folder, and no package.json anywhere
+       WHEN init runs in the folder
+       THEN the config is none of its business`,
+      async () => {
+        write('transloco.config.js', 'module.exports = { langs: ["en"] };');
+        write('app/src/.gitkeep', '');
+        process.chdir(path.join(dir, 'app'));
+
+        await runInit(options());
+
+        expect(exists('app/transloco.config.ts')).toBe(true);
+      },
+    );
+
+    describe.each([
+      {
+        layout: 'a config in the working directory',
+        files: ['app/transloco.config.js'],
+        cwd: 'app',
+        expected: 'transloco.config.js',
+      },
+      {
+        layout: 'a config in src',
+        files: ['app/src/transloco.config.js'],
+        cwd: 'app',
+        expected: path.join('src', 'transloco.config.js'),
+      },
+      {
+        layout: 'a package.json in the working directory and a config above',
+        files: ['app/package.json', 'transloco.config.js'],
+        cwd: 'app',
+        expected: undefined,
+      },
+      {
+        layout: 'a package.json and a config above the working directory',
+        files: ['package.json', 'transloco.config.js'],
+        cwd: 'app',
+        expected: path.join('..', 'transloco.config.js'),
+      },
+      {
+        layout: 'a package.json one level up and a config two levels up',
+        files: ['x/package.json', 'transloco.config.js'],
+        cwd: 'x/app',
+        expected: undefined,
+      },
+      {
+        layout: 'a config above and no package.json anywhere',
+        files: ['transloco.config.js'],
+        cwd: 'app',
+        expected: undefined,
+        needsCleanTmp: true,
+      },
+    ])(
+      'the keys manager and init on $layout',
+      ({ files, cwd, expected, needsCleanTmp }) => {
+        it.skipIf(needsCleanTmp && !tmpIsClean)(
+          `GIVEN the layout
+           WHEN the keys manager resolves its config and init runs
+           THEN they agree on whether there is a config, and on which`,
+          async () => {
+            for (const file of files) {
+              write(
+                file,
+                file.endsWith('package.json')
+                  ? '{"name": "app"}'
+                  : 'module.exports = { langs: ["zz"] };',
+              );
+            }
+
+            fs.mkdirSync(path.join(dir, cwd, 'src', 'app'), {
+              recursive: true,
+            });
+            process.chdir(path.join(dir, cwd));
+
+            // What `transloco extract` goes by: its languages are the ones of
+            // the config, when it found one
+            const extractFound = resolveConfig({
+              command: 'extract',
+            }).langs?.includes('zz');
+            const outcome = await runInit(options({ force: true })).then(
+              () => undefined,
+              (error: Error) => error.message,
+            );
+
+            expect(extractFound).toBe(expected !== undefined);
+            expect(outcome === undefined).toBe(expected === undefined);
+
+            if (expected !== undefined) {
+              expect(outcome).toContain(`found in ${expected}`);
+            }
+          },
+        );
+      },
+    );
   });
 
   describe('with questions', () => {
