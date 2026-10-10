@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { joinTranslations } from './join.js';
+import { joinTranslations, type JoinOptions } from './join.js';
 import { splitTranslations } from './split.js';
 import {
   applyPlannedFiles,
@@ -11,95 +11,179 @@ import {
 
 const root = 'src/assets/i18n';
 
-/** Joins the files with every language included, then splits what was joined. */
-function joinThenSplit(files: MemoryFiles) {
-  const joined = applyPlannedFiles(
-    files,
-    joinTranslations(createMemoryReader(files), {
-      root,
-      outDir: 'dist-i18n',
-      defaultLang: 'en',
-      includeDefaultLang: true,
-    }),
-  );
+/** Joins the files with every language included. */
+const joinAll = (
+  files: MemoryFiles,
+  scopePathMap?: JoinOptions['scopePathMap'],
+) =>
+  joinTranslations(createMemoryReader(files), {
+    root,
+    outDir: 'dist-i18n',
+    defaultLang: 'en',
+    includeDefaultLang: true,
+    scopePathMap,
+  });
 
-  return applyPlannedFiles(
+/** Joins the files, splits what was joined, and joins the result once more. */
+function roundTrip(
+  files: MemoryFiles,
+  scopePathMap?: JoinOptions['scopePathMap'],
+) {
+  const firstJoin = joinAll(files, scopePathMap);
+  const joined = applyPlannedFiles(files, firstJoin);
+  const result = applyPlannedFiles(
     joined,
     splitTranslations(createMemoryReader(joined), {
       root,
       source: 'dist-i18n',
+      scopePathMap,
     }),
   );
+
+  return { firstJoin, result, secondJoin: joinAll(result, scopePathMap) };
+}
+
+/** The en and es file of the folder, each holding its own value. */
+const pair = (dir: string, en: unknown, es: unknown): MemoryFiles => ({
+  [`${dir}/en.json`]: json(en),
+  [`${dir}/es.json`]: json(es),
+});
+
+function expectInverse(
+  files: MemoryFiles,
+  scopePathMap?: JoinOptions['scopePathMap'],
+) {
+  const { firstJoin, result, secondJoin } = roundTrip(files, scopePathMap);
+
+  for (const [file, content] of Object.entries(files)) {
+    expect(result[file], file).toBe(content);
+  }
+  expect(secondJoin).toEqual(firstJoin);
 }
 
 describe('join then split', () => {
   it(`GIVEN root files and scope folders written as the commands write them
       WHEN they are joined and then split
       THEN every file holds its original bytes again`, () => {
-    const files: MemoryFiles = {
-      [`${root}/en.json`]: json({ hello: 'hello', bye: 'bye' }),
-      [`${root}/es.json`]: json({ hello: 'hola', bye: 'adios' }),
-      [`${root}/admin/en.json`]: json({ title: { main: 'Admin' } }),
-      [`${root}/admin/es.json`]: json({ title: { main: 'Administrador' } }),
-      [`${root}/shop/en.json`]: json({ cart: 'Cart' }),
-      [`${root}/shop/es.json`]: json({ cart: 'Carrito' }),
-    };
-
-    const result = joinThenSplit(files);
-
-    for (const [file, content] of Object.entries(files)) {
-      expect(result[file]).toBe(content);
-    }
+    expectInverse({
+      ...pair(
+        root,
+        { hello: 'hello', bye: 'bye' },
+        { hello: 'hola', bye: 'adios' },
+      ),
+      ...pair(
+        `${root}/admin`,
+        { title: { main: 'Admin' } },
+        { title: { main: 'Administrador' } },
+      ),
+      ...pair(`${root}/shop`, { cart: 'Cart' }, { cart: 'Carrito' }),
+    });
   });
 
-  // Join keys a nested folder as one dotted key beside its parent, while split
-  // looks for it inside the parent, so the nested folder is never given its
-  // translations back and they end up in the root file instead. This pins what
-  // the schematics have always done, it isn't a contract.
   it(`GIVEN a scope folder nested in another one
       WHEN they are joined and then split
-      THEN the nested files are not rewritten and the root file keeps their keys`, () => {
-    const files: MemoryFiles = {
-      [`${root}/es.json`]: json({ hello: 'hola' }),
-      [`${root}/scope/es.json`]: json({ a: 1 }),
-      [`${root}/scope/nested/es.json`]: json({ b: 2 }),
-    };
+      THEN every file holds its original bytes again and a second join gives the same files`, () => {
+    expectInverse({
+      ...pair(root, { hello: 'hello' }, { hello: 'hola' }),
+      ...pair(`${root}/admin`, { a: 1 }, { a: 2 }),
+      ...pair(`${root}/admin/users`, { b: { c: 3 } }, { b: { c: 4 } }),
+    });
+  });
 
-    const result = joinThenSplit(files);
+  it(`GIVEN scope folders nested three levels deep
+      WHEN they are joined and then split
+      THEN every file holds its original bytes again and a second join gives the same files`, () => {
+    expectInverse({
+      ...pair(root, { hello: 'hello' }, { hello: 'hola' }),
+      ...pair(`${root}/admin`, { a: 1 }, { a: 2 }),
+      ...pair(`${root}/admin/users`, { b: 1 }, { b: 2 }),
+      ...pair(`${root}/admin/users/roles`, { c: 1 }, { c: 2 }),
+      ...pair(`${root}/shop`, { d: 1 }, { d: 2 }),
+      ...pair(`${root}/shop/cart`, { e: 1 }, { e: 2 }),
+    });
+  });
 
-    expect(result[`${root}/scope/es.json`]).toBe(
-      files[`${root}/scope/es.json`],
-    );
-    expect(result[`${root}/scope/nested/es.json`]).toBe(
-      files[`${root}/scope/nested/es.json`],
-    );
-    expect(result[`${root}/es.json`]).toBe(
-      json({ hello: 'hola', 'scope.nested': { b: 2 } }),
+  it(`GIVEN a scopePathMap with a nested folder
+      WHEN they are joined and then split
+      THEN every file holds its original bytes again and a second join gives the same files`, () => {
+    expectInverse(
+      {
+        ...pair(root, { hello: 'hello' }, { hello: 'hola' }),
+        ...pair('libs/admin/i18n', { a: 1 }, { a: 2 }),
+        ...pair('libs/admin/i18n/users', { b: 1 }, { b: 2 }),
+        ...pair('libs/admin/i18n/users/roles', { c: 1 }, { c: 2 }),
+      },
+      { admin: 'libs/admin/i18n' },
     );
   });
 
-  it(`GIVEN a scope folder nested in another one and edited joined files
+  it(`GIVEN a nested folder inside a folder with no files of its own
+      WHEN they are joined and then split
+      THEN the nested files are given their translations back`, () => {
+    expectInverse({
+      ...pair(root, { hello: 'hello' }, { hello: 'hola' }),
+      ...pair(`${root}/admin/users`, { b: 1 }, { b: 2 }),
+    });
+  });
+
+  it(`GIVEN a nested folder with a file for one language only
+      WHEN they are joined and then split
+      THEN every file holds its original bytes again`, () => {
+    expectInverse({
+      ...pair(root, { hello: 'hello' }, { hello: 'hola' }),
+      ...pair(`${root}/admin`, { a: 1 }, { a: 2 }),
+      [`${root}/admin/users/es.json`]: json({ b: 2 }),
+    });
+  });
+
+  it(`GIVEN a scope with a key named like its nested folder
+      WHEN they are joined and then split
+      THEN the key stays in the scope and the folder gets its own file back`, () => {
+    expectInverse({
+      ...pair(root, { hello: 'hello' }, { hello: 'hola' }),
+      ...pair(`${root}/admin`, { users: 'Users' }, { users: 'Usuarios' }),
+      ...pair(`${root}/admin/users`, { b: 1 }, { b: 2 }),
+    });
+  });
+
+  it(`GIVEN a scope with a key named like a nested folder that has no file for the language
+      WHEN they are joined and then split
+      THEN the key stays in the scope`, () => {
+    expectInverse({
+      ...pair(root, { hello: 'hello' }, { hello: 'hola' }),
+      ...pair(`${root}/admin`, { users: 'Users' }, { users: 'Usuarios' }),
+      [`${root}/admin/users/en.json`]: json({ b: 1 }),
+    });
+  });
+
+  it(`GIVEN a nested folder and edited joined files
       WHEN they are split
-      THEN the edit of the nested folder is not written back to it`, () => {
+      THEN the edit is written to the nested folder`, () => {
     const files: MemoryFiles = {
-      [`${root}/es.json`]: json({ hello: 'hola' }),
-      [`${root}/scope/es.json`]: json({ a: 1 }),
-      [`${root}/scope/nested/es.json`]: json({ b: 2 }),
+      ...pair(root, { hello: 'hello' }, { hello: 'hola' }),
+      ...pair(`${root}/admin`, { a: 1 }, { a: 2 }),
+      ...pair(`${root}/admin/users`, { b: 1 }, { b: 2 }),
+    };
+    const joined = applyPlannedFiles(files, joinAll(files));
+    const edited = {
+      ...joined,
       'dist-i18n/es.json': json({
         hello: 'hola',
-        scope: { a: 1 },
-        'scope.nested': { b: 3 },
+        admin: { a: 2 },
+        'admin.users': { b: 20 },
       }),
     };
 
     const result = applyPlannedFiles(
-      files,
-      splitTranslations(createMemoryReader(files), {
+      edited,
+      splitTranslations(createMemoryReader(edited), {
         root,
         source: 'dist-i18n',
       }),
     );
 
-    expect(result[`${root}/scope/nested/es.json`]).toBe(json({ b: 2 }));
+    expect(result[`${root}/admin/users/es.json`]).toBe(json({ b: 20 }));
+    expect(result[`${root}/admin/es.json`]).toBe(json({ a: 2 }));
+    expect(result[`${root}/es.json`]).toBe(json({ hello: 'hola' }));
   });
 });

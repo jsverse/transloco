@@ -69,7 +69,7 @@ export function runJoin({
 
   // Everything that can fail has by now, so what is in the folder is only
   // removed for the files that are about to take its place.
-  fs.rmSync(outDir, { recursive: true, force: true });
+  fs.rmSync(path.resolve(outDir), { recursive: true, force: true });
 
   for (const file of files) {
     outputFile(file.path, file.content);
@@ -85,39 +85,100 @@ export function runJoin({
  * holds anything else: the working directory, a folder above it or outside of
  * it, and the translations or the scopes the files come from, nor any folder
  * above or below them, where the joined files would be taken for a scope.
+ *
+ * A link can lead anywhere, so all of this is judged on real paths, and the
+ * folder itself must not be a link, as emptying it would replace the link.
  */
 function assertOutDirIsSafe(
   outDir: string,
   root: string,
   scopePathMap: Record<string, string> | undefined,
 ) {
-  const out = path.resolve(outDir);
   const refuse = (reason: string) => {
     throw new CliError(
       `Transloco ${name}: Refusing to empty ${outDir}, ${reason}`,
     );
   };
 
-  if (contains(out, process.cwd())) {
+  if (lstat(path.resolve(outDir))?.isSymbolicLink()) {
+    refuse('it is a symbolic link');
+  }
+
+  const out = locate(outDir);
+  const cwd = fs.realpathSync(process.cwd());
+  const realRoot = locate(root).real;
+
+  if (out.unresolvable) {
+    refuse('its real location cannot be resolved');
+  }
+
+  if (contains(out.real, cwd)) {
     refuse('it is the current directory or one of its parents');
   }
 
-  if (!contains(process.cwd(), out)) {
+  if (!contains(cwd, out.real)) {
     refuse('it is not inside the current directory');
   }
 
-  if (contains(out, root) || contains(root, out)) {
+  if (contains(out.real, realRoot) || contains(realRoot, out.real)) {
     refuse(`it is, holds or lies inside the translations folder ${root}`);
   }
 
   for (const [scope, scopePath] of Object.entries(scopePathMap ?? {})) {
-    if (contains(out, scopePath) || contains(scopePath, out)) {
+    const realScope = locate(scopePath).real;
+
+    if (contains(out.real, realScope) || contains(realScope, out.real)) {
       refuse(`it is, holds or lies inside the folder of the scope ${scope}`);
     }
   }
 
-  if (fs.statSync(out, { throwIfNoEntry: false })?.isFile()) {
-    refuse('it is a file');
+  if (!fs.statSync(out.existing).isDirectory()) {
+    refuse(
+      out.existing === out.real ? 'it is a file' : 'it lies inside a file',
+    );
+  }
+}
+
+/**
+ * The real path of something that may not exist yet: the real path of its
+ * deepest ancestor that does, followed by the names that don't exist.
+ * `unresolvable` is set when a link on the way can't be followed.
+ */
+function locate(target: string) {
+  const missing: string[] = [];
+  let unresolvable = false;
+  let current = path.resolve(target);
+
+  for (;;) {
+    try {
+      const existing = fs.realpathSync(current);
+
+      return {
+        existing,
+        real: path.join(existing, ...missing),
+        unresolvable,
+      };
+    } catch (error) {
+      const parent = path.dirname(current);
+
+      if (parent === current) throw error;
+
+      // Something is there, but cannot be followed: a link to nowhere or in a loop.
+      unresolvable ||= isThere(current);
+      missing.unshift(path.basename(current));
+      current = parent;
+    }
+  }
+}
+
+const isThere = (target: string) => !!lstat(target);
+
+/** What is at the path itself, without following a link. Nothing is `undefined`. */
+function lstat(target: string) {
+  try {
+    return fs.lstatSync(target);
+  } catch {
+    return undefined;
   }
 }
 

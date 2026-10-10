@@ -1,8 +1,17 @@
+import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+  type TestContext,
+} from 'vitest';
 
 import { CliError } from '../errors.js';
 
@@ -384,6 +393,185 @@ describe('runJoin', () => {
       runJoin(options({ outDir: 'apps/out' }));
 
       expect(exists('apps/out/sentinel.txt')).toBe(false);
+      expect(exists('apps/out/es.json')).toBe(true);
+    });
+  });
+
+  describe('the out folder and symbolic links', () => {
+    // A sibling of the working directory, to link to from inside of it.
+    let outside: string;
+
+    beforeEach(() => {
+      outside = `${dir}-outside`;
+      fs.mkdirSync(path.join(outside, 'sub'), { recursive: true });
+      fs.writeFileSync(path.join(outside, 'sub', 'keep.json'), '{"a":1}');
+      writeTranslations();
+      write('src/i18n/admin/en.json', { title: 'Admin' });
+      write('src/i18n/admin/es.json', { title: 'Administrador' });
+      write('sentinel.txt', 'keep');
+    });
+
+    afterEach(() => {
+      fs.rmSync(outside, { recursive: true, force: true });
+    });
+
+    /** Links created on a system that doesn't allow them skip the test. */
+    function link(ctx: TestContext, target: string, file: string) {
+      try {
+        fs.symlinkSync(target, path.join(dir, file));
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code === 'EPERM') ctx.skip();
+
+        throw error;
+      }
+    }
+
+    /** Every folder, link and file of the trees, with the content of the files hashed. */
+    function listing() {
+      const lines: string[] = [];
+      const visit = (entry: string) => {
+        const stats = fs.lstatSync(entry);
+
+        if (stats.isSymbolicLink()) {
+          lines.push(`${entry} -> ${fs.readlinkSync(entry)}`);
+        } else if (stats.isDirectory()) {
+          lines.push(`${entry}/`);
+          fs.readdirSync(entry)
+            .sort()
+            .forEach((name) => visit(path.join(entry, name)));
+        } else {
+          const hash = createHash('sha1')
+            .update(fs.readFileSync(entry))
+            .digest('hex');
+
+          lines.push(`${entry} ${hash}`);
+        }
+      };
+
+      [dir, outside].forEach(visit);
+
+      return lines.join('\n');
+    }
+
+    async function expectRefused(outDir: string, reason: string) {
+      const before = listing();
+
+      const error = await failure({ outDir });
+
+      expect(error).toBeInstanceOf(CliError);
+      expect(error.exitCode).toBe(1);
+      expect(error.message).toBe(
+        `Transloco Join: Refusing to empty ${outDir}, ${reason}`,
+      );
+      expect(listing()).toBe(before);
+    }
+
+    it(`GIVEN a folder inside a link to the translations root as the out folder
+        WHEN it runs
+        THEN it is refused and nothing changes`, async (ctx) => {
+      link(ctx, 'src/i18n', 'linkroot');
+
+      await expectRefused(
+        'linkroot/admin',
+        'it is, holds or lies inside the translations folder src/i18n',
+      );
+    });
+
+    it(`GIVEN a folder inside a link to a folder outside of the working directory as the out folder
+        WHEN it runs
+        THEN it is refused and nothing changes`, async (ctx) => {
+      link(ctx, `../${path.basename(outside)}`, 'linkout');
+
+      await expectRefused(
+        'linkout/sub',
+        'it is not inside the current directory',
+      );
+    });
+
+    it.each([
+      { target: 'src/i18n', scenario: 'the translations root' },
+      {
+        target: () => `../${path.basename(outside)}`,
+        scenario: 'a folder outside',
+      },
+      { target: '.', scenario: 'the working directory' },
+      { target: 'nowhere', scenario: 'nothing' },
+    ])(
+      `GIVEN a link to $scenario as the out folder
+       WHEN it runs
+       THEN it is refused and nothing changes`,
+      async ({ target }, ctx: TestContext) => {
+        link(ctx, typeof target === 'function' ? target() : target, 'linkdir');
+
+        await expectRefused('linkdir', 'it is a symbolic link');
+        expect(fs.lstatSync(path.join(dir, 'linkdir')).isSymbolicLink()).toBe(
+          true,
+        );
+      },
+    );
+
+    it(`GIVEN a folder inside a link that leads nowhere as the out folder
+        WHEN it runs
+        THEN it is refused and nothing changes`, async (ctx) => {
+      link(ctx, 'nowhere', 'linkgone');
+
+      await expectRefused(
+        'linkgone/sub',
+        'its real location cannot be resolved',
+      );
+    });
+
+    it(`GIVEN a folder inside a file as the out folder
+        WHEN it runs
+        THEN it is refused and nothing changes`, async () => {
+      await expectRefused('sentinel.txt/sub', 'it lies inside a file');
+    });
+
+    it(`GIVEN the scope folders reached through a link, and the folder they are in as the out folder
+        WHEN it runs
+        THEN it is refused and nothing changes`, async (ctx) => {
+      link(ctx, '.', 'here');
+      writeConfig({
+        scopePathMap: { ui: path.join(dir, 'here', 'libs/ui/i18n') },
+      });
+      write('libs/ui/i18n/es.json', { ok: 'vale' });
+
+      await expectRefused(
+        'libs/ui',
+        'it is, holds or lies inside the folder of the scope ui',
+      );
+    });
+
+    it(`GIVEN the working directory reached through a link and an out folder written through it
+        WHEN it runs
+        THEN the folder is joined into`, async (ctx) => {
+      const viaLink = `${dir}-link`;
+
+      try {
+        fs.symlinkSync(dir, viaLink);
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code === 'EPERM') ctx.skip();
+
+        throw error;
+      }
+
+      try {
+        runJoin(options({ outDir: path.join(viaLink, 'dist-i18n') }));
+
+        expect(exists('dist-i18n/es.json')).toBe(true);
+      } finally {
+        fs.rmSync(viaLink, { force: true });
+      }
+    });
+
+    it(`GIVEN a link inside the working directory to a real folder inside it as the parent of the out folder
+        WHEN it runs
+        THEN the folder is joined into`, async (ctx) => {
+      fs.mkdirSync(path.join(dir, 'apps'));
+      link(ctx, 'apps', 'linkapps');
+
+      runJoin(options({ outDir: 'linkapps/out' }));
+
       expect(exists('apps/out/es.json')).toBe(true);
     });
   });

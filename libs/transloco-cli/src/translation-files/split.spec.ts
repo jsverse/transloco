@@ -249,13 +249,101 @@ describe('splitTranslations', () => {
     });
   });
 
-  // The nested folder is looked up inside the scope, so a key of the scope
-  // that shares its name is taken for the translations of that folder. This
-  // pins what the schematic has always done, it isn't a contract.
-  describe('a nested folder named like a key of its scope', () => {
-    it(`GIVEN a scope key with the name of a folder nested in the scope
+  describe('nested scope folders', () => {
+    it(`GIVEN a nested folder keyed beside its scope, the way join writes it
         WHEN it runs
-        THEN the value of the key is written to the files of that folder`, () => {
+        THEN the folder gets that key and the scope keeps only its own`, () => {
+      const files = {
+        ...merged({}, { shop: { a: 1 }, 'shop.cart': { b: 2 } }),
+        [`${root}/es.json`]: '',
+        [`${root}/shop/es.json`]: '',
+        [`${root}/shop/cart/es.json`]: '',
+      };
+
+      const result = afterSplit(files);
+
+      expect(result[`${root}/shop/cart/es.json`]).toBe(json({ b: 2 }));
+      expect(result[`${root}/shop/es.json`]).toBe(json({ a: 1 }));
+      expect(result[`${root}/es.json`]).toBe(json({}));
+    });
+
+    it(`GIVEN folders nested three levels deep and keyed beside each other
+        WHEN it runs
+        THEN every folder gets the key made of the names down to it`, () => {
+      const files = {
+        ...merged(
+          {},
+          {
+            a: { x: 1 },
+            'a.b': { y: 2 },
+            'a.b.c': { z: 3 },
+          },
+        ),
+        [`${root}/es.json`]: '',
+        [`${root}/a/es.json`]: '',
+        [`${root}/a/b/es.json`]: '',
+        [`${root}/a/b/c/es.json`]: '',
+      };
+
+      const result = afterSplit(files);
+
+      expect(result[`${root}/a/es.json`]).toBe(json({ x: 1 }));
+      expect(result[`${root}/a/b/es.json`]).toBe(json({ y: 2 }));
+      expect(result[`${root}/a/b/c/es.json`]).toBe(json({ z: 3 }));
+      expect(result[`${root}/es.json`]).toBe(json({}));
+    });
+
+    it(`GIVEN a nested folder inside a scope folder that holds no files
+        WHEN it runs
+        THEN the nested folder gets its key and the scope has none to take`, () => {
+      const files = {
+        ...merged({}, { 'shop.cart': { b: 2 } }),
+        [`${root}/es.json`]: '',
+        [`${root}/shop/cart/es.json`]: '',
+      };
+
+      const result = afterSplit(files);
+
+      expect(result[`${root}/shop/cart/es.json`]).toBe(json({ b: 2 }));
+      expect(result[`${root}/es.json`]).toBe(json({}));
+    });
+
+    it(`GIVEN a scope key with the name of its nested folder next to the key of that folder
+        WHEN it runs
+        THEN the key stays in the scope and the folder gets its own key`, () => {
+      const files = {
+        ...merged({}, { shop: { cart: 'Carrito' }, 'shop.cart': { b: 2 } }),
+        [`${root}/shop/es.json`]: '',
+        [`${root}/shop/cart/es.json`]: '',
+      };
+
+      const result = afterSplit(files);
+
+      expect(result[`${root}/shop/es.json`]).toBe(json({ cart: 'Carrito' }));
+      expect(result[`${root}/shop/cart/es.json`]).toBe(json({ b: 2 }));
+    });
+
+    it(`GIVEN a scopePathMap and a folder nested in a mapped one
+        WHEN it runs
+        THEN the nested folder gets the key made of the scope and its name`, () => {
+      const files = {
+        ...merged({}, { ui: { a: 1 }, 'ui.forms': { b: 2 } }),
+        [`${root}/es.json`]: '',
+        'libs/ui/es.json': '',
+        'libs/ui/forms/es.json': '',
+      };
+
+      const result = afterSplit(files, { scopePathMap: { ui: 'libs/ui' } });
+
+      expect(result['libs/ui/es.json']).toBe(json({ a: 1 }));
+      expect(result['libs/ui/forms/es.json']).toBe(json({ b: 2 }));
+    });
+
+    // The shape split took before join keyed a nested folder beside its scope,
+    // which the schematics are still held to.
+    it(`GIVEN a nested folder given inside its scope, with no key of its own
+        WHEN it runs
+        THEN the value is written to the files of that folder`, () => {
       const files = {
         ...merged({}, { shop: { cart: 'Carrito' } }),
         [`${root}/shop/es.json`]: '',
@@ -266,6 +354,38 @@ describe('splitTranslations', () => {
 
       expect(result[`${root}/shop/cart/es.json`]).toBe(json('Carrito'));
       expect(result[`${root}/shop/es.json`]).toBe(json({}));
+    });
+
+    it(`GIVEN a scope key named like a nested folder that has no file for the language
+        WHEN it runs
+        THEN the key stays in the scope file`, () => {
+      const files = {
+        ...merged({}, { shop: { cart: 'Carrito' } }),
+        [`${root}/shop/es.json`]: '',
+        [`${root}/shop/cart/en.json`]: '',
+      };
+
+      const result = afterSplit(files);
+
+      expect(result[`${root}/shop/es.json`]).toBe(json({ cart: 'Carrito' }));
+      expect(result[`${root}/shop/cart/en.json`]).toBe('');
+    });
+
+    it(`GIVEN a folder named like a property every object has
+        WHEN it runs
+        THEN nothing is taken from the prototype`, () => {
+      const files = {
+        ...merged({}, { shop: { a: 1 } }),
+        [`${root}/shop/es.json`]: '',
+        [`${root}/shop/constructor/es.json`]: '',
+        [`${root}/shop/__proto__/es.json`]: '',
+      };
+
+      const result = afterSplit(files);
+
+      expect(result[`${root}/shop/es.json`]).toBe(json({ a: 1 }));
+      expect(result[`${root}/shop/constructor/es.json`]).toBe('');
+      expect(result[`${root}/shop/__proto__/es.json`]).toBe('');
     });
   });
 

@@ -25,6 +25,9 @@ export interface SplitOptions {
  * Hands the translations of every scope back to the file of its folder, and what
  * is left of a joined file to the root file of the language.
  *
+ * It undoes the join: a scope folder nested in another one gets back the key
+ * join gave it, `scope.nested`, at any depth.
+ *
  * Only the files that exist are written. The translations of a scope whose
  * folder holds no file for the language are dropped, those of a folder with no
  * files at all stay with the root file. A language with no root file, and a root
@@ -70,36 +73,53 @@ function splitScope(
   key: string,
   files: PlannedFile[],
 ) {
+  const scopeValue = own(translation, key);
+
+  // The nested folders go first, so that what is left under the key is the
+  // part of this scope alone.
+  for (const subDir of reader.listDirs(dir)) {
+    const nestedKey = getTranslationKey(key, subDir);
+    const nestedDir = join(dir, subDir);
+
+    // A nested folder is keyed beside its scope, `scope.nested`, the way join
+    // writes it. Before join did, split took it from inside the scope,
+    // `scope: { nested: … }`, which still works when there is no such key.
+    const nestedInScope =
+      own(translation, nestedKey) === undefined &&
+      holdsLanguage(reader, nestedDir, lang) &&
+      isObject(scopeValue) &&
+      own(scopeValue, subDir) !== undefined;
+
+    if (nestedInScope) {
+      splitScope(reader, nestedDir, scopeValue, lang, subDir, files);
+    } else {
+      splitScope(reader, nestedDir, translation, lang, nestedKey, files);
+    }
+  }
+
   const fileNames = reader.listFiles(dir);
 
   if (!fileNames.length) return;
 
-  for (const subDir of reader.listDirs(dir)) {
-    const nestedKeyPath = getTranslationKey(key, subDir);
-    const nestedKey = nestedKeyPath.split('.').at(-1) ?? nestedKeyPath;
-    const scopeTranslation = translation[key];
-
-    if (scopeTranslation) {
-      splitScope(
-        reader,
-        join(dir, subDir),
-        scopeTranslation,
-        lang,
-        nestedKey,
-        files,
-      );
-      delete translation[key][nestedKey];
-    }
-  }
-
   for (const fileName of fileNames) {
-    if (!fileName.includes(`${lang}.json`) || !translation[key]) continue;
-
-    files.push({
-      path: join(dir, fileName),
-      content: toJson(translation[key]),
-    });
+    if (fileName.includes(`${lang}.json`) && scopeValue) {
+      files.push({ path: join(dir, fileName), content: toJson(scopeValue) });
+    }
   }
 
   delete translation[key];
 }
+
+/** The value of the key, leaving out what an object inherits. */
+const own = (value: Translation, key: string) =>
+  Object.hasOwn(value, key) ? value[key] : undefined;
+
+const isObject = (value: unknown): value is Translation =>
+  typeof value === 'object' && value !== null;
+
+const holdsLanguage = (
+  reader: TranslationFileReader,
+  dir: string,
+  lang: string,
+) =>
+  reader.listFiles(dir).some((fileName) => fileName.includes(`${lang}.json`));
