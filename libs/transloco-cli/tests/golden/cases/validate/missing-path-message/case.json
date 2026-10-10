@@ -1,0 +1,6 @@
+{
+  "description": "GIVEN a path that does not exist WHEN it is validated THEN one line on stderr says it does not exist, without the error of the file system, and it exits with 1",
+  "args": ["validate", "i18n/nope.json"],
+  "exitCode": 1,
+  "snapshot": ["stdout", "stderr"]
+}

@@ -156,13 +156,14 @@ function createTranslationFiles(
 }
 
 function extractModuleOptions({
+  name,
   path,
   project,
   routing,
   flat,
   commonModule,
 }: SchemaOptions) {
-  return { path, project, routing, flat, commonModule };
+  return { name, path, project, routing, flat, commonModule };
 }
 
 export default function (options: SchemaOptions): Rule {
@@ -194,8 +195,9 @@ export default function (options: SchemaOptions): Rule {
       (tree) => {
         const moduleAction = tree.actions.find(
           (action) =>
-            !!action.path.match(/\.module\.ts/) &&
-            !action.path.match(/-routing\.module\.ts/),
+            // Angular 20 names the files `x-module.ts`, before it was `x.module.ts`
+            !!action.path.match(/[.-]module\.ts/) &&
+            !action.path.match(/-routing[.-]module\.ts/),
         );
         if (!moduleAction) {
           throw new Error('Could not find the generated module file.');

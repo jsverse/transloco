@@ -22,5 +22,5 @@ Migrating TS files 📜
               🌵 Done! 🌵
 Welcome to a better translation experience 🌐
 
-For more information about this script please visit 👉 https://jsverse.github.io/transloco/docs/migration/ngx
+For more information about this script please visit 👉 https://jsverse.gitbook.io/transloco/migration-guides/migrate-from-ngx-translate
 

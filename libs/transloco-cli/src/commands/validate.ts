@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+
 import { CliError } from '../errors.js';
 import validator from '../validator/index.js';
 
@@ -6,6 +8,13 @@ export function runValidate(translationFilePaths: string[]) {
   const problems: string[] = [];
 
   for (const path of translationFilePaths) {
+    const notAFile = describeNotAFile(path);
+
+    if (notAFile) {
+      problems.push(`${notAFile} (${path})`);
+      continue;
+    }
+
     try {
       validator([path]);
     } catch (error) {
@@ -15,6 +24,21 @@ export function runValidate(translationFilePaths: string[]) {
 
   if (problems.length) {
     throw new CliError(problems.join('\n'));
+  }
+}
+
+/** What is wrong with a path that can't be read as a file, if anything. */
+function describeNotAFile(path: string) {
+  try {
+    return fs.statSync(path).isDirectory()
+      ? 'The path is a folder, not a file'
+      : undefined;
+  } catch (error) {
+    const { code } = error as NodeJS.ErrnoException;
+
+    return code === 'ENOENT' || code === 'ENOTDIR'
+      ? 'The path does not exist'
+      : undefined;
   }
 }
 
