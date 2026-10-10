@@ -12,7 +12,7 @@ Add a script to your `package.json`:
 
 ```json
 "scripts": {
-  "extract": "transloco-keys-manager extract"
+  "extract": "transloco extract"
 }
 ```
 
@@ -173,7 +173,7 @@ The extracted keys for the code above will be:
 If you want to extract some standalone strings that are not part of any translation call (via the template or service) you can wrap them with the marker function to tell the keys manager to extract them:
 
 ```typescript
-import { marker } from '@jsverse/transloco-keys-manager';
+import { marker } from '@jsverse/transloco-cli/marker';
 
 class MyClass {
   static titles = {
@@ -184,10 +184,10 @@ class MyClass {
 }
 ```
 
-The marker function will return the string which was passed to it. You can alias the marker function if needed:
+The marker function will return the string which was passed to it. `@jsverse/transloco-keys-manager/marker` still works and is deprecated, and `ng update` rewrites it to `@jsverse/transloco-cli/marker`. You can alias the marker function if needed:
 
 ```typescript
-import { marker as _ } from '@jsverse/transloco-keys-manager';
+import { marker as _ } from '@jsverse/transloco-cli/marker';
 
 class MyClass {
   static titles = {

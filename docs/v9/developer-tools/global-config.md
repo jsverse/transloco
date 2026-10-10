@@ -4,12 +4,12 @@ icon: gear
 
 # Global Config
 
-This config is used by tools & plugins such as the scoped lib extractor and the keys manager.
+This config is used by the [Transloco CLI](./transloco-cli.md), for example by the scoped lib extractor and the keys manager.
 
 If you installed Transloco via the schematics, a `transloco.config.ts` should have been created. Otherwise, you can just create a `transloco.config.ts` in the project's root folder and add the configuration in it:
 
 ```typescript
-import type { TranslocoGlobalConfig } from "@jsverse/transloco-utils";
+import type { TranslocoGlobalConfig } from "@jsverse/transloco";
 
 const config: TranslocoGlobalConfig = {
   rootTranslationsPath?: string;
@@ -50,7 +50,7 @@ export default config;
 
 ### Translation Path Mapping
 
-- **`scopePathMap`** - Custom mappings between scope names and their file system paths. Used by the [join](./schematics/join.md) and [split](./schematics/split.md) schematics when your translation files don't follow the default directory structure.
+- **`scopePathMap`** - Custom mappings between scope names and their file system paths. Used by [`transloco join`](./transloco-cli.md#join) and [`transloco split`](./transloco-cli.md#split) (and by the deprecated [join](./schematics/join.md) and [split](./schematics/split.md) schematics) when your translation files don't follow the default directory structure.
 
   Example:
 

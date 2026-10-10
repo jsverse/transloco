@@ -14,7 +14,7 @@ Displays the help menu for the Transloco Keys Manager.
 
 #### **`--config -c`**
 
-Defines the root search directory for the Transloco configuration file. The default is `process.cwd()`.
+Names the Transloco configuration file to read, or a folder to search for one. The path has to exist, otherwise the command fails. Without it the configuration is looked up in the source root of the project, then in each parent directory up to the working directory, see [Config file](../transloco-cli.md#config-file).
 
 #### **`--project`**
 
@@ -29,8 +29,8 @@ If no `angular.json` file is present, `sourceRoot` defaults to `src`.
 Specifies the source directory for all files using translation keys. Defaults to `[${sourceRoot}/app']`.
 
 ```bash
-transloco-keys-manager extract -i src/my/path  
-transloco-keys-manager extract -i src/my/path,project/another/path  
+transloco extract -i src/my/path  
+transloco extract -i src/my/path,project/another/path  
 ```
 
 {% hint style="info" %}
@@ -41,7 +41,7 @@ If a project is provided, the default input value is determined by `projectType`
 
 Specifies the target directory for generated translation files. Defaults to `${sourceRoot}/assets/i18n`.
 
-#### **`--fileFormat -f`**
+#### **`--file-format -f`**
 
 Sets the translation file format (`json` or `pot`). Defaults to `json`.
 
@@ -67,9 +67,9 @@ When using unflattened files, "parent" keys cannot hold separate translation val
 During extraction, warnings will highlight keys requiring attention.
 {% endhint %}
 
-#### **`--defaultValue -d`**
+#### **`--default-value -d`**
 
-Defines the default value for generated keys. Defaults to `Missing value for {{key}}`.
+Defines the default value for generated keys. Defaults to `Missing value for '<key>'`.
 
 Supported replaceable placeholders:
 
@@ -86,20 +86,26 @@ Replaces the contents of a translation file if it already exists. Defaults to `f
 
 Removes extra keys from existing translation files. Defaults to `false`.
 
+### **Find Command**
+
+The `find` command also takes `--project`, `--config`, `--input`, `--file-format`, `--marker`, `--sort`, `--unflat` and `--default-value`, which work as they do for `extract`.
+
 #### **`--add-missing-keys -a`**
 
 Adds missing keys identified by the `detective`. Defaults to `false`.
 
-### **Find Command**
-
 #### **`--emit-error-on-extra-keys -e`**
 
-It emits an error and exits the process if extra keys are found. Defaults to `false`.
+It emits an error and exits the process with code `2` if extra keys are found. Defaults to `false`.
 
 {% hint style="info" %}
 **Extra keys** are those present in translations but not used in the code.
 {% endhint %}
 
-#### **`--translationsPath -p`**
+#### **`--translations-path -p`**
 
-Defines the root directory path for translation files. Defaults to `${sourceRoot}/assets/i18n`.
+Defines the root directory path for translation files. Defaults to `rootTranslationsPath` of the config, then to `${sourceRoot}/assets/i18n`.
+
+{% hint style="info" %}
+The `transloco` command rejects an option it doesn't read, so `--add-missing-keys`, `--emit-error-on-extra-keys` and `--translations-path` only work with `find`. See [Strict arguments](../transloco-cli.md#strict-arguments).
+{% endhint %}

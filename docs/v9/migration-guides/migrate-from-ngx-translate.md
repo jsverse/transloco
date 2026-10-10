@@ -6,6 +6,37 @@ icon: box-open
 
 ## Command
 
+Install the [Transloco CLI](../developer-tools/transloco-cli.md) and run the migration. It rewrites your files in place, so commit your work first.
+
+{% tabs %}
+{% tab title="pnpm" %}
+```bash
+pnpm add @jsverse/transloco-cli@next --save-dev
+pnpm exec transloco migrate ngx-translate --input src/app
+```
+{% endtab %}
+
+{% tab title="yarn" %}
+```bash
+yarn add @jsverse/transloco-cli@next --dev
+yarn transloco migrate ngx-translate --input src/app
+```
+{% endtab %}
+
+{% tab title="npm" %}
+```bash
+npm install @jsverse/transloco-cli@next --save-dev
+npx transloco migrate ngx-translate --input src/app
+```
+{% endtab %}
+{% endtabs %}
+
+`--input` is the folder to migrate, `src/app` unless you say otherwise.
+
+### The deprecated schematic
+
+The `ngx-migrate` schematic still works until Transloco v10 and logs a deprecation warning. Use `transloco migrate ngx-translate` instead.
+
 {% tabs %}
 {% tab title="Angular CLI" %}
 ```bash

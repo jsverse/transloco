@@ -1,5 +1,9 @@
 # Join Schematic
 
+{% hint style="warning" %}
+**Deprecated in v9:** the `join` schematic is replaced by `transloco join` of the [Transloco CLI](../transloco-cli.md#join), for example `transloco join --translations-path src/assets/i18n --out-dir dist-i18n`. The schematic keeps working until Transloco v10 and logs a deprecation warning.
+{% endhint %}
+
 This schematic merges all your translation files into a single file for each language.
 
 ***

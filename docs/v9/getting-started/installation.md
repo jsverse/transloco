@@ -153,11 +153,11 @@ Transloco creates boilerplate files for the requested languages with an empty JS
 
 ### **Transloco Global Config**[**​**](https://jsverse.github.io/transloco/docs/getting-started/installation?app-type=ng-module#transloco-global-config)
 
-This config is used by tools & plugins such as the scoped lib extractor and the keys manager.
+This config is used by the [Transloco CLI](../developer-tools/transloco-cli.md), for example by the scoped lib extractor and the keys manager.
 
 {% code title="transloco.config.ts" %}
 ```typescript
-import type { TranslocoGlobalConfig } from '@jsverse/transloco-utils';
+import type { TranslocoGlobalConfig } from '@jsverse/transloco';
 
 const config: TranslocoGlobalConfig = {
   rootTranslationsPath: 'src/assets/i18n/',
