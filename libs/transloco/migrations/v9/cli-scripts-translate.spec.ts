@@ -1031,6 +1031,32 @@ describe('translateScript with a --config path', () => {
       },
     );
 
+    // `find` drops --langs, so a comma in it is no reason to leave the script
+    it.runIf(command === 'extract')(
+      `GIVEN a --config path that does not exist and a comma in --langs
+        WHEN it is translated
+        THEN the script is left once, with the reason of the option written first`,
+      () => {
+        const first = translateScript(
+          `transloco-keys-manager ${command} --config missing.config.js --langs en,es`,
+          { pathExists },
+        );
+        const second = translateScript(
+          `transloco-keys-manager ${command} --langs en,es --config missing.config.js`,
+          { pathExists },
+        );
+
+        expect(first).toMatchObject({
+          kind: 'left',
+          reason: expect.stringContaining('which was not found'),
+        });
+        expect(second).toMatchObject({
+          kind: 'left',
+          reason: expect.stringContaining('a comma would make it one language'),
+        });
+      },
+    );
+
     it.each(['missing.config.js', './conf/other.js', 'conf/x/'])(
       `GIVEN a --config path that does not exist: %s
        WHEN it is translated
