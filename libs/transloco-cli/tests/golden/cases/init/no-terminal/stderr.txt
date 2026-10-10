@@ -1,0 +1,1 @@
+Transloco Init: transloco init needs a terminal to ask its questions. Pass --yes to accept the defaults, together with --langs and --translations-path as needed.

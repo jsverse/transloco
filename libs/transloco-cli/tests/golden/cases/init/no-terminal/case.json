@@ -1,0 +1,11 @@
+{
+  "description": "GIVEN no terminal WHEN init runs without --yes THEN it says it needs one and writes nothing",
+  "args": [
+    "init"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

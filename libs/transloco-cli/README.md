@@ -34,6 +34,7 @@ Asking for the help is the one thing that comes before all of it. A help request
 | `transloco join`                | Joins the translation files of all scopes into one file per language.                |
 | `transloco split`               | Splits joined translation files back into the scope folders.                         |
 | `transloco migrate`             | Migrates a project to Transloco, from `ngx-translate` or from the Angular `i18n`.    |
+| `transloco init`                | Prepares a project for the CLI: the config, the translation files and the scripts.   |
 
 ### extract
 
@@ -108,6 +109,32 @@ transloco migrate angular-i18n --input src/app --langs en es
 Replaces the marked text of the HTML templates below `--input`, `src/app` unless it says otherwise, with the `transloco` pipe, and writes the texts to one translation file per language of `--langs`. The files go to `--translations-path`, then `rootTranslationsPath` of the config (`--config` names another one), then `src/assets/i18n`. A key is made of the custom id of the mark or else of its text, and a meaning and a description are kept as the comment of the key. Exits with `1` when the input doesn't exist or holds no `.html` file.
 
 Both migrations only read the marks and the names they know, so go through the diff before you keep it. They replace the `ng g @jsverse/transloco:ngx-migrate` and `ng g @jsverse/transloco:ng-migrate` schematics, which are deprecated.
+
+### init
+
+```bash
+transloco init
+```
+
+Prepares a project for the CLI. It writes `transloco.config.ts` in the working directory, creates the translation files that don't exist yet and adds the `i18n:extract` and `i18n:find` scripts to `package.json`. It installs nothing and changes no source code. The config is the one `ng add @jsverse/transloco` generates, holding `rootTranslationsPath` and `langs`, and each translation file is `{}` until `transloco extract` fills it.
+
+In a terminal it asks for what the options didn't give: the languages (separated by spaces or commas, `en` unless you type others), the translations folder (`src/assets/i18n`), whether to create the missing translation files and whether to add the scripts. Nothing is written before the last question is answered, and cancelling one with Ctrl-C or Esc writes nothing and exits with `130`.
+
+```bash
+transloco init --yes --langs en es --translations-path projects/shop/src/assets/i18n
+```
+
+`--yes` (`-y`) asks nothing and takes the defaults for what the options didn't give: `en`, `src/assets/i18n`, the missing translation files created and the scripts added. Without a terminal and without `--yes` the command exits with `1`, as there is nobody to ask.
+
+| Option                      | Meaning                                                                                    |
+| --------------------------- | ------------------------------------------------------------------------------------------ |
+| `-l, --langs <langs...>`    | The languages, as separate arguments: `--langs en es`. A comma separated list is rejected. |
+| `--translations-path <dir>` | The folder of the translation files, which has to be inside the working directory.         |
+| `--no-scripts`              | Leaves `package.json` alone.                                                               |
+| `-y, --yes`                 | Asks nothing and takes the defaults.                                                       |
+| `--force`                   | Overwrites an existing `transloco.config.ts`.                                              |
+
+An existing translation file is never touched, and neither is a script of the same name: both are kept and reported as such. `package.json` keeps its indentation, line endings, key order and final line break, and the command stops with `1`, before writing anything, when it is not valid JSON or cannot take a `scripts` object. An existing `transloco.config.ts` is refused unless `--force` is passed. A Transloco config anywhere else (another file name, the `transloco` key of `package.json`) is always refused, as a second one would make it ambiguous which applies.
 
 ### Running from another directory
 

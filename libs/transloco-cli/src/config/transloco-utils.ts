@@ -29,6 +29,15 @@ export function getGlobalConfig(searchPath = ''): TranslocoGlobalConfig {
     : config;
 }
 
+/**
+ * The config file a search from the directory finds, `undefined` when there
+ * is none. An empty file isn't found, the way it isn't by `getGlobalConfig`.
+ */
+export function findGlobalConfigFile(dir = ''): string | undefined {
+  return cosmiconfigSync('transloco').search(path.resolve(process.cwd(), dir))
+    ?.filepath;
+}
+
 const MODULE_CONFIG = /\.[cm]?[jt]s$/;
 
 // Any stat error (ENOENT, ENOTDIR, EACCES, ...) falls through to `search()`, which reports it as before.

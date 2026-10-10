@@ -25,6 +25,17 @@ const stubbed: Record<string, () => object> = {
   // Loads `typescript` with `require`, which a mock of the package wouldn't see.
   './keys-manager/utils/typescript.js': () => ({ default: {} }),
   cheerio: () => ({}),
+  // The questions of `init`, which would wait for a terminal. Each of them is
+  // cancelled, which ends the command.
+  '@clack/prompts': () => ({
+    intro: vi.fn(),
+    outro: vi.fn(),
+    cancel: vi.fn(),
+    log: { success: vi.fn(), info: vi.fn() },
+    text: vi.fn().mockResolvedValue(Symbol('cancelled')),
+    confirm: vi.fn().mockResolvedValue(Symbol('cancelled')),
+    isCancel: () => true,
+  }),
   './keys-manager/index.js': () => ({}),
   './keys-manager/keys-builder/index.js': () => ({
     buildTranslationFiles: vi.fn(),
@@ -70,6 +81,7 @@ const recorded = [
     'scoped-libs',
     'translation-files',
     'migrate',
+    'init',
     'config',
     'utils',
   ]
@@ -84,6 +96,7 @@ const recorded = [
   './commands/split.js',
   './commands/migrate-ngx-translate.js',
   './commands/migrate-angular-i18n.js',
+  './commands/init.js',
   './commands/translation-folders.js',
   './peers.js',
   'find-duplicated-property-keys',
@@ -185,6 +198,8 @@ describe('lazy loading', () => {
       ['migrate', '--help'],
       ['migrate', 'ngx-translate', '--help'],
       ['migrate', 'angular-i18n', '--help'],
+      ['init', '--help'],
+      ['help', 'init'],
       ['help', 'migrate', 'ngx-translate'],
       // rejected by the argument parser
       ['extract', '--add-missing-keys'],
@@ -194,6 +209,8 @@ describe('lazy loading', () => {
       ['migrate', 'translate'],
       ['migrate', 'angular-i18n'],
       ['migrate', 'ngx-translate', '--langs', 'en'],
+      ['init', '--config', 'a'],
+      ['init', '--translations-path', ''],
     ].map((args) => [args.join(' '), args] as const),
   )(
     `GIVEN the arguments "%s"
@@ -271,6 +288,7 @@ describe('lazy loading', () => {
         'translation-files/shared',
         'translation-files/split',
         'utils/file-system',
+        'utils/real-path',
       ]);
     });
 
@@ -375,6 +393,117 @@ describe('lazy loading', () => {
         'translation-files/split',
         'utils/file-system',
       ]);
+    });
+  });
+
+  describe('init', () => {
+    const originalCwd = process.cwd();
+    const isTTY = {
+      stdin: Object.getOwnPropertyDescriptor(process.stdin, 'isTTY'),
+      stdout: Object.getOwnPropertyDescriptor(process.stdout, 'isTTY'),
+    };
+    /** Everything `init` needs to decide, and to do without asking. */
+    const initModules = [
+      'commands/init',
+      'config/index',
+      'config/transloco-utils',
+      'cosmiconfig',
+      'init/manifest',
+      'init/plan',
+      'init/validation',
+      'jsonc-parser',
+      'utils/file-system',
+      'utils/real-path',
+    ];
+
+    function setTerminal(value: boolean) {
+      for (const stream of [process.stdin, process.stdout]) {
+        Object.defineProperty(stream, 'isTTY', { value, configurable: true });
+      }
+    }
+
+    beforeEach(() => {
+      setTerminal(false);
+    });
+
+    afterEach(() => {
+      process.chdir(originalCwd);
+      process.exitCode = undefined;
+
+      for (const [name, stream] of [
+        ['stdin', process.stdin],
+        ['stdout', process.stdout],
+      ] as const) {
+        if (isTTY[name]) {
+          Object.defineProperty(stream, 'isTTY', isTTY[name]);
+        } else {
+          delete (stream as { isTTY?: boolean }).isTTY;
+        }
+      }
+    });
+
+    it(`GIVEN a folder
+        WHEN init runs with --yes
+        THEN the questions are not loaded`, async () => {
+      await run('--cwd', dir, 'init', '--yes');
+
+      expect(fs.existsSync(path.join(dir, 'src/assets/i18n/en.json'))).toBe(
+        true,
+      );
+      expect([...loaded].sort()).toEqual(initModules);
+    });
+
+    it.each([
+      ['without a terminal and without --yes', []],
+      ['with a language that is no file name', ['--yes', '--langs', 'a/b']],
+      [
+        'with a path outside the folder',
+        ['--yes', '--translations-path', '..'],
+      ],
+    ])(
+      `GIVEN a folder
+       WHEN init runs %s
+       THEN it is refused and the questions are not loaded`,
+      async (_, args) => {
+        // `run` takes a CLI error for the end of the command
+        await run('--cwd', dir, 'init', ...args);
+
+        expect(fs.readdirSync(dir)).toEqual(['en.json']);
+        expect(loaded).not.toContain('@clack/prompts');
+        expect(loaded).not.toContain('init/prompts');
+      },
+    );
+
+    it(`GIVEN a config that is there
+        WHEN init runs in a terminal
+        THEN it is refused before the questions are loaded`, async () => {
+      setTerminal(true);
+      fs.writeFileSync(
+        path.join(dir, 'transloco.config.ts'),
+        'export default {};',
+      );
+
+      await run('--cwd', dir, 'init');
+
+      expect(fs.readdirSync(dir).sort()).toEqual([
+        'en.json',
+        'transloco.config.ts',
+      ]);
+      expect(loaded).not.toContain('@clack/prompts');
+    });
+
+    it(`GIVEN a terminal
+        WHEN init runs and the questions are cancelled
+        THEN the library of the questions is loaded, which proves the tripwire is armed`, async () => {
+      setTerminal(true);
+
+      await run('--cwd', dir, 'init');
+
+      expect([...loaded].sort()).toEqual(
+        [...initModules, '@clack/prompts', 'init/prompts'].sort(),
+      );
+      expect(process.exitCode).toBe(130);
+      expect(fs.readdirSync(dir)).toEqual(['en.json']);
     });
   });
 

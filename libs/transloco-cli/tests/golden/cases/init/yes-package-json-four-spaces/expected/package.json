@@ -1,0 +1,8 @@
+{
+    "name": "app",
+    "scripts": {
+        "start": "ng serve",
+        "i18n:extract": "transloco extract",
+        "i18n:find": "transloco find"
+    }
+}

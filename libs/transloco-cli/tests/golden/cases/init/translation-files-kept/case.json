@@ -1,0 +1,15 @@
+{
+  "description": "GIVEN translation files that exist WHEN init runs with --yes THEN they are kept as they are and the missing ones are created",
+  "args": [
+    "init",
+    "--yes",
+    "--langs",
+    "en",
+    "es"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

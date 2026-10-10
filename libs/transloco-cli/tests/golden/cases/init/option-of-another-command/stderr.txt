@@ -1,0 +1,2 @@
+error: unknown option '--config'
+(add --help for additional information)

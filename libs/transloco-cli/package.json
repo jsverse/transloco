@@ -59,6 +59,7 @@
     }
   },
   "dependencies": {
+    "@clack/prompts": "1.8.1",
     "@commander-js/extra-typings": "15.0.0",
     "@jsverse/angular-utils": "1.0.0-beta.6",
     "cheerio": "1.2.0",
