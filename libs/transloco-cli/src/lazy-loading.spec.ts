@@ -324,6 +324,7 @@ describe('lazy loading', () => {
         'translation-files/shared',
         'translation-files/split',
         'utils/file-system',
+        'utils/real-path',
       ]);
     });
   });
@@ -397,6 +398,7 @@ describe('lazy loading', () => {
         'translation-files/shared',
         'translation-files/split',
         'utils/file-system',
+        'utils/real-path',
       ]);
     });
   });

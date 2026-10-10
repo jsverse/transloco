@@ -9,6 +9,7 @@ import { CliError } from '../errors.js';
 import { generateConfigFile } from '../init/plan.js';
 import { resolveConfig } from '../keys-manager/utils/resolve-config.js';
 import { createProgram } from '../program.js';
+import { refuseToOpenWhatIsNoFile } from '../tests/fifo-guard.js';
 import { collectOutput } from '../tests/program-harness.js';
 
 import { runInit, type InitCommandOptions } from './init.js';
@@ -1175,38 +1176,8 @@ describe('runInit', () => {
   });
 
   describe('what is neither a file nor a folder', () => {
-    // Opening a FIFO waits for the other end, which nothing here provides. So
-    // the calls that would open one throw instead, which makes a test fail
-    // where it would hang.
-    beforeEach(() => {
-      const stat = fs.statSync;
-      const waits = (file: unknown) => {
-        try {
-          return typeof file === 'string' && stat(file).isFIFO();
-        } catch {
-          return false;
-        }
-      };
-
-      for (const name of [
-        'readFileSync',
-        'openSync',
-        'writeFileSync',
-      ] as const) {
-        const original = fs[name] as (...args: unknown[]) => unknown;
-
-        vi.spyOn(fs, name).mockImplementation(((
-          file: unknown,
-          ...rest: unknown[]
-        ) => {
-          if (waits(file)) {
-            throw new Error(`waits for the other end of ${String(file)}`);
-          }
-
-          return original(file, ...rest);
-        }) as never);
-      }
-    });
+    // A test that would hang fails instead, as the guard throws
+    beforeEach(refuseToOpenWhatIsNoFile);
 
     const makeFifo = (file: string) => {
       const target = path.join(dir, file);

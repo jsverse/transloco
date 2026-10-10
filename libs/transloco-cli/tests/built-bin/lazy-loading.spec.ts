@@ -70,16 +70,13 @@ const translationFolders: Allowed = {
     'src/translation-files/shared.js',
     'src/translation-files/split.js',
     'src/utils/file-system.js',
+    'src/utils/real-path.js',
   ],
   packages: [...program.packages, 'cosmiconfig', 'env-paths'],
 };
 const join: Allowed = {
   ...translationFolders,
-  files: [
-    ...translationFolders.files,
-    'src/commands/join.js',
-    'src/utils/real-path.js',
-  ],
+  files: [...translationFolders.files, 'src/commands/join.js'],
 };
 const split: Allowed = {
   ...translationFolders,
@@ -122,6 +119,7 @@ const migrateAngularI18n: Allowed = {
     'src/migrate/angular-i18n/migrate-angular-i18n.js',
     'src/migrate/angular-i18n/template.js',
     'src/utils/file-system.js',
+    'src/utils/real-path.js',
   ],
   packages: [...migrate.packages, 'cosmiconfig', 'env-paths'],
 };

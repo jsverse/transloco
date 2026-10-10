@@ -54,7 +54,7 @@ export function translationsPathProblem(value: string, cwd = process.cwd()) {
     return outside;
   }
 
-  const stats = fs.statSync(target.existing);
+  const stats = nearestStats(target.existing);
 
   if (!stats.isDirectory()) {
     return `The translations path ${value} is, or lies inside, ${specialKind(stats) ?? 'a file'}`;
@@ -120,6 +120,20 @@ export function writeProblem(file: string, cwd = process.cwd()) {
   return can(ancestor, fs.constants.W_OK | fs.constants.X_OK)
     ? undefined
     : `the folder ${name} is read-only`;
+}
+
+/**
+ * What the path is, or the closest thing above it that can be looked at: a
+ * link may lead to a file, and nothing lies below a file.
+ */
+function nearestStats(target: string): fs.Stats {
+  for (let current = target; ; current = path.dirname(current)) {
+    try {
+      return fs.statSync(current);
+    } catch (error) {
+      if (path.dirname(current) === current) throw error;
+    }
+  }
 }
 
 function statOrUndefined(target: string) {

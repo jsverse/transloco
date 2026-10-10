@@ -2,6 +2,11 @@ import path from 'path';
 
 import { cosmiconfigSync } from 'cosmiconfig';
 
+import {
+  assertExplorerCanBeMade,
+  assertRegularFile,
+  assertSearchPlacesAreFiles,
+} from '../../config/load-error.js';
 import { style } from '../../utils/style.js';
 import { ProjectType } from '../config.js';
 
@@ -20,13 +25,23 @@ function searchConfig(searchPlaces: string[] | string, searchFrom = '') {
   const cwd = process.cwd();
   const resolvePath = path.resolve(cwd, searchFrom);
   const stopDir = path.resolve(cwd, '../');
+  const places = coerceArray(searchPlaces);
+
+  // The search opens what it finds, which a FIFO or a device would not survive
+  assertExplorerCanBeMade();
+
+  for (let dir = resolvePath; ; dir = path.dirname(dir)) {
+    assertSearchPlacesAreFiles(dir, places);
+
+    if (dir === stopDir || path.dirname(dir) === dir) break;
+  }
 
   return cosmiconfigSync('', {
     stopDir,
     loaders: {
       '.json': jsoncParser,
     },
-    searchPlaces: coerceArray(searchPlaces),
+    searchPlaces: places,
   }).search(resolvePath)?.config;
 }
 
@@ -126,6 +141,9 @@ function resolveProjectConfig(projectName?: string) {
       // relative paths; resolving them ourselves keeps the subsequent read
       // consistent even when `process.cwd()` is mocked (e.g. in tests)
       const resolvedConfigPath = path.resolve(configPath);
+
+      assertRegularFile(resolvedConfigPath);
+
       const isDirectoryMatch =
         !directoryMatch &&
         path.basename(path.dirname(resolvedConfigPath)) === projectName;

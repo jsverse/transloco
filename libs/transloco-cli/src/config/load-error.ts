@@ -1,9 +1,11 @@
-import fs from 'node:fs';
-import path from 'node:path';
+// Namespace imports, as the schematics load this module through a plain `require`
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 
 import { cosmiconfigSync, getDefaultSearchPlacesSync } from 'cosmiconfig';
 
 import { CliError } from '../errors.js';
+import { specialKind } from '../utils/real-path.js';
 
 const moduleName = 'transloco';
 /** How cosmiconfig puts the file in front of the reason, when that file is JSON. */
@@ -22,6 +24,51 @@ export class ConfigLoadError extends CliError {
     );
     this.name = 'ConfigLoadError';
   }
+}
+
+/**
+ * Refuses a path that is there and is neither a regular file nor a folder,
+ * links followed: a FIFO, a socket or a device. The readers of a config open
+ * what a search finds, which waits for the other end of a FIFO for good and
+ * has no end at `/dev/zero`. The path is only looked at, never opened. A folder
+ * of that name is left alone, as the search skips it.
+ */
+export function assertRegularFile(file: string) {
+  let stats: fs.Stats;
+
+  try {
+    stats = fs.statSync(file);
+  } catch {
+    // Not there, or not reachable: for whoever reads it to report
+    return;
+  }
+
+  if (stats.isFile() || stats.isDirectory()) return;
+
+  throw new ConfigLoadError(
+    path.resolve(file),
+    `it is not a regular file, it is ${specialKind(stats) ?? 'something else'}`,
+  );
+}
+
+/** Every place in the folder that a search with these places would open. */
+export function assertSearchPlacesAreFiles(dir: string, places: string[]) {
+  for (const place of places) {
+    assertRegularFile(path.join(dir, place));
+  }
+}
+
+/** The places a search for a Transloco config opens in a folder. */
+export function assertConfigPlacesAreFiles(dir: string) {
+  assertSearchPlacesAreFiles(dir, getDefaultSearchPlacesSync(moduleName));
+}
+
+/**
+ * Making an explorer reads the settings of cosmiconfig itself, among others
+ * from the `package.json` of the working directory.
+ */
+export function assertExplorerCanBeMade() {
+  assertRegularFile(path.join(process.cwd(), 'package.json'));
 }
 
 /**

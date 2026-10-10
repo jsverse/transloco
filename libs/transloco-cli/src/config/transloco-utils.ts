@@ -3,12 +3,23 @@ import * as path from 'node:path';
 
 import { cosmiconfigSync, type CosmiconfigResult } from 'cosmiconfig';
 
-import { nameConfigFile } from './load-error.js';
+import {
+  assertConfigPlacesAreFiles,
+  assertExplorerCanBeMade,
+  assertRegularFile,
+  nameConfigFile,
+} from './load-error.js';
 import { TranslocoGlobalConfig } from './transloco-utils.types.js';
 
 export function getGlobalConfig(searchPath = ''): TranslocoGlobalConfig {
-  const explorer = cosmiconfigSync('transloco');
   const resolvedPath = path.resolve(process.cwd(), searchPath);
+
+  // Whatever is no regular file is refused before anything is opened
+  assertExplorerCanBeMade();
+  assertRegularFile(resolvedPath);
+  assertConfigPlacesAreFiles(resolvedPath);
+
+  const explorer = cosmiconfigSync('transloco');
   // cosmiconfig 9+ treats a search path as a directory, so a config file path must be loaded directly.
   const configSearch = isFile(resolvedPath)
     ? explorer.load(resolvedPath)
@@ -33,10 +44,14 @@ export function searchGlobalConfig(dir = ''): {
   config: TranslocoGlobalConfig;
   filepath?: string;
 } {
+  assertExplorerCanBeMade();
+
   const explorer = cosmiconfigSync('transloco');
 
   for (const searchDir of searchDirs(dir)) {
     let configSearch: CosmiconfigResult;
+
+    assertConfigPlacesAreFiles(searchDir);
 
     try {
       configSearch = explorer.search(searchDir);
