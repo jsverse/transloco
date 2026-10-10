@@ -37,6 +37,21 @@ describe('runMigrateNgxTranslate', () => {
 
   const read = (file: string) => fs.readFileSync(path.join(dir, file), 'utf-8');
 
+  /** Where the system allows symlinks: the link at `link` to `target`, which is relative to the link. */
+  function symlink(target: string, link: string) {
+    try {
+      fs.symlinkSync(target, path.join(dir, link));
+
+      return true;
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === 'EPERM') {
+        return false;
+      }
+
+      throw error;
+    }
+  }
+
   it(`GIVEN a folder with templates and sources
       WHEN the command runs
       THEN they are migrated and the greeting is printed`, () => {
@@ -136,5 +151,59 @@ describe('runMigrateNgxTranslate', () => {
     } finally {
       fs.rmSync(outside, { recursive: true, force: true });
     }
+  });
+
+  describe('symlinks', () => {
+    beforeEach(() => {
+      write('src/shared/shared.html', `<p>{{ 'x' | translate }}</p>\n`);
+      write(
+        'src/shared/shared.ts',
+        `import { TranslateModule } from '@ngx-translate/core';\n`,
+      );
+      write('src/app/a.html', `<p>{{ 'y' | translate }}</p>\n`);
+    });
+
+    it(`GIVEN an input that is a symlink to a folder
+        WHEN the command runs
+        THEN the files behind the link are migrated`, (ctx) => {
+      if (!symlink('src/app', 'linkroot')) {
+        return ctx.skip();
+      }
+
+      runMigrateNgxTranslate({ input: 'linkroot' });
+
+      expect(read('src/app/a.html')).toBe(`<p>{{ 'y' | transloco }}</p>\n`);
+    });
+
+    it(`GIVEN a symlinked folder below the input
+        WHEN the command runs
+        THEN the files behind the link are migrated`, (ctx) => {
+      if (!symlink('../shared', 'src/app/linked')) {
+        return ctx.skip();
+      }
+
+      runMigrateNgxTranslate({ input: 'src/app' });
+
+      expect(read('src/shared/shared.html')).toBe(
+        `<p>{{ 'x' | transloco }}</p>\n`,
+      );
+      expect(read('src/shared/shared.ts')).toBe(
+        `import { TranslocoModule } from '@jsverse/transloco';\n`,
+      );
+    });
+
+    it(`GIVEN a symlinked file below the input
+        WHEN the command runs
+        THEN the file behind the link is migrated`, (ctx) => {
+      if (!symlink('../shared/shared.html', 'src/app/linked.html')) {
+        return ctx.skip();
+      }
+
+      runMigrateNgxTranslate({ input: 'src/app' });
+
+      expect(read('src/shared/shared.html')).toBe(
+        `<p>{{ 'x' | transloco }}</p>\n`,
+      );
+    });
   });
 });

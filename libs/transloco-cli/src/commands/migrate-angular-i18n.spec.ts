@@ -196,4 +196,55 @@ describe('runMigrateAngularI18n', () => {
       expect(exists('src/assets')).toBe(false);
     });
   });
+
+  describe('symlinks', () => {
+    /** Where the system allows symlinks: the link at `link` to `target`, which is relative to the link. */
+    function symlink(target: string, link: string) {
+      try {
+        fs.symlinkSync(target, path.join(dir, link));
+
+        return true;
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code === 'EPERM') {
+          return false;
+        }
+
+        throw error;
+      }
+    }
+
+    it(`GIVEN an input that is a symlink to a folder
+        WHEN the command runs
+        THEN the templates behind the link are migrated and their texts written`, (ctx) => {
+      writeTemplate();
+      if (!symlink('src/app', 'linkroot')) {
+        return ctx.skip();
+      }
+
+      runMigrateAngularI18n(options({ input: 'linkroot' }));
+
+      expect(read('src/app/a.html')).toBe(`<p>{{ 'one' | transloco }}</p>`);
+      expect(read('src/assets/i18n/en.json')).toBe('{\n  "one": "One"\n}\n');
+    });
+
+    it(`GIVEN a symlinked folder below the input
+        WHEN the command runs
+        THEN the templates behind the link are migrated and their texts written`, (ctx) => {
+      writeTemplate();
+      write('src/shared/shared.html', '<p i18n>Shared</p>');
+      if (!symlink('../shared', 'src/app/linked')) {
+        return ctx.skip();
+      }
+
+      runMigrateAngularI18n(options());
+
+      expect(read('src/shared/shared.html')).toBe(
+        `<p>{{ 'shared' | transloco }}</p>`,
+      );
+      expect(JSON.parse(read('src/assets/i18n/en.json'))).toEqual({
+        one: 'One',
+        shared: 'Shared',
+      });
+    });
+  });
 });

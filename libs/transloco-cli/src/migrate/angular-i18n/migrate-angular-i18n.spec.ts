@@ -3,6 +3,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { stripVTControlCharacters } from 'node:util';
 
+import { globSync } from 'glob';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { findFiles } from '../find-files.js';
@@ -14,6 +15,12 @@ vi.mock('../find-files.js', async (importOriginal) => ({
     (await importOriginal<typeof import('../find-files.js')>()).findFiles,
   ),
 }));
+
+vi.mock('glob', async (importOriginal) => {
+  const original = await importOriginal<typeof import('glob')>();
+
+  return { ...original, globSync: vi.fn(original.globSync) };
+});
 
 const fixtures = path.join(import.meta.dirname, 'tests/fixtures');
 
@@ -212,6 +219,37 @@ describe('migrateAngularI18n', () => {
       expect(JSON.parse(read('one/en.json'))).toEqual({ key: 'From b' });
       expect(JSON.parse(read('other/en.json'))).toEqual({ key: 'From a' });
     });
+
+    it.each([
+      ['in path order', (files: string[]) => [...files].sort()],
+      [
+        'in reverse path order',
+        (files: string[]) => [...files].sort().reverse(),
+      ],
+      ['shuffled', (files: string[]) => [files[1], files[2], files[0]]],
+    ])(
+      `GIVEN the same key in three templates, and a file system that lists them %s
+       WHEN the migration runs
+       THEN the template last in path order supplies the text`,
+      (_, reorder) => {
+        write('app/b.html', '<p i18n="@@key">From b</p>');
+        write('app/c.html', '<p i18n="@@key">From c</p>');
+        write('app/a.html', '<p i18n="@@key">From a</p>');
+        const listed = vi.mocked(globSync).getMockImplementation() as (
+          ...args: unknown[]
+        ) => string[];
+
+        vi.mocked(globSync).mockImplementationOnce(((...args: unknown[]) =>
+          reorder(listed(...args))) as typeof globSync);
+        migrateAngularI18n({
+          input: path.join(dir, 'app'),
+          output: path.join(dir, 'i18n'),
+          langs: ['en'],
+        });
+
+        expect(JSON.parse(read('i18n/en.json'))).toEqual({ key: 'From c' });
+      },
+    );
 
     it(`GIVEN the same meaning in two templates
         WHEN the migration runs

@@ -92,6 +92,9 @@ const recorded = [
   'cosmiconfig',
   'chokidar',
   'yocto-spinner',
+  // Recorded though the keys manager loads it with `require`, which a mock of
+  // the package doesn't see: this catches a `typescript` import of anything else.
+  'typescript',
   'cli-table3',
   'gettext-parser',
   'deep-diff',
