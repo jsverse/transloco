@@ -121,9 +121,24 @@ describe('resolveConfig config lookup', () => {
 
   it(`GIVEN a config in the working directory and --config pointing at a missing path
       WHEN the config is resolved
-      THEN the config of the working directory is not used`, () => {
+      THEN the config found by the lookup without --config is used`, () => {
     writeConfig('.', { langs: ['en', 'es'] });
 
+    expect(langs({ config: 'missing' })).toEqual(['en', 'es']);
+  });
+
+  it(`GIVEN configs in the source root and in the working directory and --config pointing at a missing path
+      WHEN the config is resolved
+      THEN the config of the source root wins, as without --config`, () => {
+    writeConfig('.', { langs: ['en', 'es'] });
+    writeConfig('apps/web/src', { langs: ['fr'] });
+
+    expect(langs({ config: 'missing/transloco.config.js' })).toEqual(['fr']);
+  });
+
+  it(`GIVEN no config at all and --config pointing at a missing path
+      WHEN the config is resolved
+      THEN the defaults are used`, () => {
     expect(langs({ config: 'missing' })).toEqual(['en']);
   });
 
@@ -147,7 +162,7 @@ describe('resolveConfig config lookup', () => {
     project.sourceRoot = 'src';
 
     expect(langs()).toEqual(['en', 'es']);
-    expect(langs({ config: 'missing' })).toEqual(['en']);
+    expect(langs({ config: 'missing' })).toEqual(['en', 'es']);
   });
 
   it(`GIVEN a source root outside the working directory

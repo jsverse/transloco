@@ -101,6 +101,20 @@ describe('Join', () => {
       expect(tree.files).toEqual(['/dist-i18n/es.json', '/dist-i18n/en.json']);
     });
 
+    it(`GIVEN no default language in the options or the global config
+        WHEN join schematic runs with includeDefaultLang option enabled
+        THEN all language files are merged to dist`, async () => {
+      mockGlobalConfig({});
+
+      const tree = await schematicRunner.runSchematic(
+        'join',
+        { ...options, includeDefaultLang: true },
+        appTree,
+      );
+
+      expect(tree.files).toEqual(['/dist-i18n/es.json', '/dist-i18n/en.json']);
+    });
+
     it(`GIVEN translation files with nested scopes
         WHEN join schematic runs
         THEN scoped translations are correctly merged into single files`, async () => {

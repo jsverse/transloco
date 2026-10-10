@@ -25,7 +25,7 @@ export function migrateNgxTranslate({ input }: MigrateNgxTranslateOptions) {
   console.log('\n              🌵 Done! 🌵');
   console.log('Welcome to a better translation experience 🌐');
   console.log(
-    '\nFor more information about this script please visit 👉 https://jsverse.github.io/transloco/docs/migration/ngx\n',
+    '\nFor more information about this script please visit 👉 https://jsverse.gitbook.io/transloco/migration-guides/migrate-from-ngx-translate\n',
   );
 }
 

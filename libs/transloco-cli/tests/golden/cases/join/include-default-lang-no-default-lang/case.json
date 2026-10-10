@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN no default language in the options or the config WHEN the files are joined with --include-default-lang THEN every language is joined",
+  "args": [
+    "join",
+    "--translations-path",
+    "src/assets/i18n",
+    "--include-default-lang"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  "description": "GIVEN a config with rootTranslationsPath and no output, as ng add writes it WHEN the keys are extracted THEN a file per configured language is written to the folder of rootTranslationsPath",
+  "args": ["extract", "--default-value", "missing"],
+  "exitCode": 0
+}
