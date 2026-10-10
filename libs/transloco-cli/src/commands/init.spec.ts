@@ -292,6 +292,47 @@ describe('runInit', () => {
       },
     );
 
+    it.each([
+      ['transloco.config.ts'],
+      ['transloco.config.js'],
+      ['.translocorc.json'],
+    ])(
+      `GIVEN a folder inside a project with %s at its root
+       WHEN init runs in the folder, with or without --force
+       THEN it is refused naming the config above, and nothing is written`,
+      async (file) => {
+        write(
+          file,
+          file.endsWith('json') ? '{"langs": ["en"]}' : 'export default {};',
+        );
+        write('package.json', '{"name": "app"}');
+        write('src/app/.gitkeep', '');
+        process.chdir(path.join(dir, 'src', 'app'));
+
+        for (const force of [false, true]) {
+          await expect(runInit(options({ force }))).rejects.toThrow(
+            `found in ${path.join('..', '..', file)}`,
+          );
+        }
+
+        expect(fs.readdirSync(path.join(dir, 'src', 'app'))).toEqual([
+          '.gitkeep',
+        ]);
+      },
+    );
+
+    it(`GIVEN a folder with a package.json of its own below a config
+        WHEN init runs in the folder
+        THEN the config above is none of its business`, async () => {
+      write('transloco.config.ts', 'export default {};');
+      write('libs/ui/package.json', '{"name": "ui"}');
+      process.chdir(path.join(dir, 'libs', 'ui'));
+
+      await runInit(options());
+
+      expect(exists('libs/ui/transloco.config.ts')).toBe(true);
+    });
+
     it(`GIVEN a config that is found
         WHEN init runs and could ask
         THEN it is refused before anything is asked`, async () => {

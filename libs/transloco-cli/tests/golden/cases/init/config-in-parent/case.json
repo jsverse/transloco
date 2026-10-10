@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN a folder inside a project that has a config at its root WHEN init runs in the folder THEN it is refused naming the config above and nothing is written",
+  "args": [
+    "--cwd",
+    "sub",
+    "init",
+    "--yes"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

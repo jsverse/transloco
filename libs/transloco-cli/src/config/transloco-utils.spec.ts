@@ -163,6 +163,26 @@ describe('findGlobalConfigFile', () => {
     expect(findGlobalConfigFile(dir)).toBeUndefined();
   });
 
+  it(`GIVEN a folder inside a project that has a config at its root
+      WHEN the config file is looked for from the folder
+      THEN the config of the project is found`, () => {
+    const file = write('transloco.config.ts', TS_CONFIG);
+    write('package.json', '{"name": "app"}');
+    fs.mkdirSync(path.join(dir, 'src', 'app'), { recursive: true });
+
+    expect(findGlobalConfigFile(path.join(dir, 'src', 'app'))).toBe(file);
+  });
+
+  it(`GIVEN a folder with a package.json of its own below a config
+      WHEN the config file is looked for from the folder
+      THEN the search stops at that package.json`, () => {
+    write('transloco.config.ts', TS_CONFIG);
+    fs.mkdirSync(path.join(dir, 'libs', 'ui'), { recursive: true });
+    fs.writeFileSync(path.join(dir, 'libs', 'ui', 'package.json'), '{}');
+
+    expect(findGlobalConfigFile(path.join(dir, 'libs', 'ui'))).toBeUndefined();
+  });
+
   it(`GIVEN a relative directory
       WHEN the config file is looked for
       THEN it is resolved against the working directory`, () => {

@@ -31,11 +31,15 @@ export function getGlobalConfig(searchPath = ''): TranslocoGlobalConfig {
 
 /**
  * The config file a search from the directory finds, `undefined` when there
- * is none. An empty file isn't found, the way it isn't by `getGlobalConfig`.
+ * is none. The search goes up through the parent directories until it has
+ * looked in the first one holding a `package.json`, which is the root of the
+ * project the directory belongs to. An empty file isn't found, the way it
+ * isn't by `getGlobalConfig`.
  */
 export function findGlobalConfigFile(dir = ''): string | undefined {
-  return cosmiconfigSync('transloco').search(path.resolve(process.cwd(), dir))
-    ?.filepath;
+  return cosmiconfigSync('transloco', { searchStrategy: 'project' }).search(
+    path.resolve(process.cwd(), dir),
+  )?.filepath;
 }
 
 const MODULE_CONFIG = /\.[cm]?[jt]s$/;
