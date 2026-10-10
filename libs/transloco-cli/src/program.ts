@@ -334,10 +334,12 @@ export function createProgram() {
 /**
  * The commands an option's rules are about, for the options that mean
  * something else elsewhere: the `--input` of the keys manager is a comma
- * separated list of paths, the one of `migrate` is a single folder.
+ * separated list of paths, the one of `migrate` is a single folder. The
+ * `--langs` of `init` and `migrate` are checked by the commands themselves.
  */
 const ruleScope: Record<string, ReadonlySet<string>> = {
   input: new Set(['extract', 'find']),
+  langs: new Set(['extract']),
 };
 
 const inRuleScope = (command: CommandUnknownOpts, name: string) =>
@@ -362,6 +364,12 @@ const valueProblems: Record<string, (value: string) => string | undefined> = {
   input: (value) =>
     value.split(',').some((path) => path.trim() === '')
       ? 'holds an empty path. Separate the paths with a single comma, e.g. --input src/app,projects/ui/src'
+      : undefined,
+  // A language is the name of the file written for it, which `en,es` would be
+  // one of. The several languages are separate arguments.
+  langs: (value) =>
+    value.includes(',')
+      ? `holds a comma. Separate the languages with spaces, e.g. --langs ${value.split(',').filter(Boolean).join(' ')}`
       : undefined,
 };
 

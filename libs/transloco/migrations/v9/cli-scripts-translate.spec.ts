@@ -689,6 +689,23 @@ describe('translateScript', () => {
       'transloco-keys-manager extract --input "src, "',
       '--input holds an empty path',
     ],
+    // a comma makes one language of two on the legacy bin, the new bin refuses it
+    [
+      'transloco-keys-manager extract --langs en,es',
+      "--langs is given 'en,es', a comma would make it one language",
+    ],
+    [
+      'transloco-keys-manager extract -l en,es',
+      "-l is given 'en,es', a comma would make it one language",
+    ],
+    [
+      'transloco-keys-manager extract --langs=en,es',
+      "--langs is given 'en,es', a comma would make it one language",
+    ],
+    [
+      'transloco-keys-manager extract --langs en es,fr',
+      "--langs is given 'es,fr', a comma would make it one language",
+    ],
     // validator and optimize
     ['transloco-validator', 'is given no file'],
     ['transloco-validator --help', 'is taken as a file by transloco-validator'],
@@ -1177,6 +1194,28 @@ describe('translateScript with a --config path', () => {
       expect(translateScript(script, { pathExists }).kind).toBe('left');
     },
   );
+
+  it(`GIVEN a --config path that does not exist and a comma in --langs
+      WHEN it is translated
+      THEN the script is left once, with the reason of the option written first`, () => {
+    const first = translateScript(
+      'transloco-keys-manager extract --config missing.config.js --langs en,es',
+      { pathExists },
+    );
+    const second = translateScript(
+      'transloco-keys-manager extract --langs en,es --config missing.config.js',
+      { pathExists },
+    );
+
+    expect(first).toMatchObject({
+      kind: 'left',
+      reason: expect.stringContaining('which was not found'),
+    });
+    expect(second).toMatchObject({
+      kind: 'left',
+      reason: expect.stringContaining('a comma would make it one language'),
+    });
+  });
 });
 
 describe('stillRunsBin', () => {

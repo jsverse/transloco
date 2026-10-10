@@ -3,9 +3,9 @@ import path from 'node:path';
 
 import { cosmiconfigSync, getDefaultSearchPlacesSync } from 'cosmiconfig';
 
+import { fileNamedIn, oneLine } from '../config/load-error.js';
+
 const moduleName = 'transloco';
-/** How cosmiconfig puts the file in front of the reason, when that file is JSON. */
-const jsonError = /^JSON Error in (.+):\n/;
 
 export interface UnreadableConfig {
   /** The file that could not be read, when it is known. */
@@ -61,20 +61,10 @@ export function findUnreadableConfig(
 }
 
 function describe(error: unknown): UnreadableConfig {
-  const file = jsonError.exec(message(error))?.[1];
+  const file = fileNamedIn(error);
 
   return { file, reason: oneLine(file, error) };
 }
-
-const message = (error: unknown) =>
-  error instanceof Error ? error.message : String(error);
-
-/** The reason in a single line, without the `JSON Error in <file>:` the JSON loader puts in front. */
-const oneLine = (file: string | undefined, error: unknown) =>
-  message(error)
-    .replace(file === undefined ? '' : `JSON Error in ${file}:`, '')
-    .replace(/\s+/g, ' ')
-    .trim();
 
 function isFile(file: string) {
   try {
