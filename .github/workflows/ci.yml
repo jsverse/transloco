@@ -87,8 +87,8 @@ jobs:
         run: pnpm ci:e2e
         shell: bash
 
-  # keys-manager's peer ranges are far wider than the versions the workspace
-  # pins, and Angular 21.1 reshaped template AST nodes its extractors read.
+  # The CLI's peer ranges are far wider than the versions the workspace pins,
+  # and Angular 21.1 reshaped template AST nodes its extractors read.
   keys-manager-compat:
     # Checks out and runs pull-request code; the steps below only ever read the
     # repository, so the token is narrowed to match.
@@ -120,8 +120,8 @@ jobs:
       - name: Setup
         uses: ./.github/actions/step-setup
 
-      - name: Build keys-manager
-        run: pnpm exec nx build transloco-keys-manager
+      - name: Build the CLI
+        run: pnpm exec nx build transloco-cli
         shell: bash
 
       - name: Verify key extraction
