@@ -13,6 +13,8 @@ nx migrate @jsverse/transloco  # Nx
 - `translate()` and `translateObject()` now require `provideGlobalTranslateFn()` in the providers. Without it they return `''` / `[]` and warn in dev mode. Omit it in SSR and multi-instance MFE setups.
 - `@angular/core` peer dependency is now `>=v20`.
 - `rxjs` peer dependency is now `^6.5.3 || ^7.4.0`.
+- `@jsverse/transloco` no longer depends on `@jsverse/transloco-utils`. The `TranslocoGlobalConfig` type is now exported by `@jsverse/transloco`, and `getGlobalConfig` by `@jsverse/transloco-cli`. `ng update` rewrites these imports, and adds `@jsverse/transloco-cli` to `devDependencies` when it starts importing it. The config the `ng-add` schematic generates imports the type from `@jsverse/transloco`.
+- `@jsverse/transloco-utils` is deprecated and keeps working, unchanged. Both of its exports are marked `@deprecated`.
 
 ## Transloco Locale & Messageformat
 
