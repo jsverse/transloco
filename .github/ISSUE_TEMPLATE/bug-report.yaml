@@ -28,6 +28,7 @@ body:
         - Scoped Libs
         - Keys Manager
         - Validator
+        - CLI
         - Don't know / other
       multiple: true
     validations:
@@ -89,6 +90,7 @@ body:
       value: |
         Transloco: 
         Transloco Keys Manager: 
+        Transloco CLI: 
         Angular: 
         Node: 
         Package Manager: 
