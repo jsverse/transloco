@@ -6,7 +6,7 @@ After installing the library, you should see the following script in your projec
 
 ```json
 "scripts": {
-  "i18n:find": "transloco-keys-manager find"
+  "i18n:find": "transloco find"
 }
 ```
 

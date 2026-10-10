@@ -6,6 +6,37 @@ icon: a
 
 ## Command
 
+Install the [Transloco CLI](../developer-tools/transloco-cli.md) and run the migration. It rewrites your templates in place, so commit your work first.
+
+{% tabs %}
+{% tab title="pnpm" %}
+```bash
+pnpm add @jsverse/transloco-cli@next --save-dev
+pnpm exec transloco migrate angular-i18n --input src/app --langs en es
+```
+{% endtab %}
+
+{% tab title="yarn" %}
+```bash
+yarn add @jsverse/transloco-cli@next --dev
+yarn transloco migrate angular-i18n --input src/app --langs en es
+```
+{% endtab %}
+
+{% tab title="npm" %}
+```bash
+npm install @jsverse/transloco-cli@next --save-dev
+npx transloco migrate angular-i18n --input src/app --langs en es
+```
+{% endtab %}
+{% endtabs %}
+
+`--input` is the folder holding the templates, `src/app` unless you say otherwise. `--langs` is required and lists the languages to create a translation file for, as separate arguments (`--langs en es`). The files are written to `rootTranslationsPath` of your [config](../developer-tools/global-config.md), or to `src/assets/i18n`. Pass `--translations-path` to write them somewhere else.
+
+### The deprecated schematic
+
+The `ng-migrate` schematic still works until Transloco v10 and logs a deprecation warning. Use `transloco migrate angular-i18n` instead.
+
 {% tabs %}
 {% tab title="Angular CLI" %}
 ```bash

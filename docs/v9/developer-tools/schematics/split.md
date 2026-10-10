@@ -1,5 +1,9 @@
 # Split Schematic
 
+{% hint style="warning" %}
+**Deprecated in v9:** the `split` schematic is replaced by `transloco split` of the [Transloco CLI](../transloco-cli.md#split), for example `transloco split --translations-path src/assets/i18n --source dist-i18n`. The schematic keeps working until Transloco v10 and logs a deprecation warning.
+{% endhint %}
+
 This schematic splits a merged translation file back into individual scope translation files, based on the project's translation configuration.
 
 ***

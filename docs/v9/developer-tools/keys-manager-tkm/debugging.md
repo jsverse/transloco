@@ -4,8 +4,8 @@ You can extend the keys manager default logs by setting the `DEBUG` environment 
 
 ```json
 "scripts": {
-  "i18n:extract": "DEBUG=tkm:config,tkm:paths transloco-keys-manager extract",
-  "i18n:find": "DEBUG=* transloco-keys-manager find"
+  "i18n:extract": "DEBUG=tkm:config,tkm:paths transloco extract",
+  "i18n:find": "DEBUG=* transloco find"
 }
 ```
 
