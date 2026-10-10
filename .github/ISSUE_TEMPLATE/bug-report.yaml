@@ -28,6 +28,7 @@ body:
         - Scoped Libs
         - Keys Manager
         - Validator
+        - CLI
         - Don't know / other
       multiple: true
     validations:
@@ -79,7 +80,7 @@ body:
     attributes:
       label: Debug Logs
       render: markdown
-      placeholder: If this bug is related to the Keys Manager, run it in debug mode and add any relevant information
+      placeholder: If this bug is related to `transloco extract` or `transloco find` (or the Keys Manager), run it with `DEBUG=tkm:*` and add any relevant information
 
   - type: textarea
     id: environment
@@ -89,6 +90,7 @@ body:
       value: |
         Transloco: 
         Transloco Keys Manager: 
+        Transloco CLI: 
         Angular: 
         Node: 
         Package Manager: 

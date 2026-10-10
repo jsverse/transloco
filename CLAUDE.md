@@ -41,7 +41,7 @@ pnpm e2e                           # Playwright E2E (local, dev serve)
 
 ### Library Dependency Graph
 
-The core `transloco` library is the foundation. All plugin libraries depend on it:
+The core `transloco` library is the foundation. The runtime plugin libraries depend on it; the CLI and the tool packages built on it do not:
 
 - **transloco** - Core i18n: service, directive, pipe, signal API, transpiler, loader, interceptor
 - **transloco-locale** - Number/date localization using native `Intl` APIs
@@ -49,12 +49,12 @@ The core `transloco` library is the foundation. All plugin libraries depend on i
 - **transloco-persist-lang** - Persist active language (localStorage/cookie/custom)
 - **transloco-persist-translations** - Cache translations locally
 - **transloco-preload-langs** - Preload languages on app init
-- **transloco-scoped-libs** - Scoped translations for lazy-loaded features
-- **transloco-optimize** - CLI to flatten and minify the translation files of a production build
-- **transloco-cli** - Unified `transloco` CLI (extract/find/validate/optimize/scoped-libs)
-- **transloco-keys-manager** - CLI to extract/manage translation keys
-- **transloco-schematics** - `ng add`/`ng generate` schematics
-- **transloco-validator** - CLI to validate translation files
+- **transloco-scoped-libs** - Deprecated shim over `transloco-cli`: the `transloco-scoped-libs` bin prints a deprecation notice, keeps its own argument parsing and calls the code behind `transloco scoped-libs`
+- **transloco-optimize** - Deprecated shim over `transloco-cli`: the `transloco-optimize` bin prints a deprecation notice, keeps its own argument parsing and calls the code behind `transloco optimize` (it still exits 0 on failure)
+- **transloco-cli** - Unified `transloco` CLI with the commands `extract`, `find`, `validate`, `optimize`, `scoped-libs`, `join`, `split`, `migrate ngx-translate`, `migrate angular-i18n` and `init`; also exports `marker` (`@jsverse/transloco-cli/marker`) and `getGlobalConfig`
+- **transloco-keys-manager** - Deprecated shim over `transloco-cli`: the `transloco-keys-manager` bin prints a deprecation notice, keeps its own argument parsing and calls the code behind `transloco extract` / `transloco find`; its `marker` export is deprecated in favour of `@jsverse/transloco-cli/marker`
+- **transloco-schematics** - `ng add`/`ng generate` schematics; its `join`, `split`, `ngx-migrate` and `ng-migrate` schematics are deprecated in favour of the CLI commands
+- **transloco-validator** - Deprecated shim over `transloco-cli`: the `transloco-validator` bin prints a deprecation notice, keeps its own argument parsing and calls the code behind `transloco validate`
 - **transloco-utils** - Deprecated, frozen config reader (`getGlobalConfig`) kept for existing consumers. The `TranslocoGlobalConfig` type now lives in `transloco`, and `getGlobalConfig` in `transloco-cli`
 - **schematics-core** - Shared schematics utilities (internal, not published)
 
@@ -76,6 +76,8 @@ The core `transloco` library is the foundation. All plugin libraries depend on i
 All libraries and the playground use **Vitest** for unit tests, via the `@nx/vitest:test` executor. Each project's `vitest.config.ts` calls the `defineAngularProject`/`defineNodeProject` factory in `tools/vitest/define-project.ts` (which merges the shared `tools/vitest/vitest.base.ts`) and passes only what it owns (`name`, `root`, `coverageDir`, `include`, `setupFiles`). Angular libs compile through `@analogjs/vite-plugin-angular` in a `jsdom` environment; Node/CLI libs use the `node` environment. The playground uses **Playwright** for E2E.
 
 Test utility: `@ngneat/spectator` (imported from `@ngneat/spectator/vitest`) for Angular component testing. Schematic tests (`SchematicTestRunner`) load `.ts` factories through a `@swc-node/register` require hook in `tools/vitest/setup-schematics.ts`.
+
+The CLI also has a black-box golden suite (`nx run transloco-cli:test-golden`, or `pnpm ci:golden`): every case under `libs/transloco-cli/tests/golden/cases` runs the built `transloco` bin in a throwaway directory and compares the files it wrote, its exit code and, where it is part of the contract, its output. Cases are regenerated with `GOLDEN_UPDATE=1` (see `libs/transloco-cli/tests/golden/README.md`), and existing golden cases are not edited unless the behaviour they pin down is meant to change.
 
 ### TypeScript Path Aliases
 
