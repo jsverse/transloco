@@ -50,20 +50,20 @@ Without `--config`, `extract` and `find` look for the config in the source root 
 
 An option that is not on the command line is taken from the config (the `keysManager` block, `langs`, and `rootTranslationsPath` for `--translations-path`) and else from its default:
 
-| Option                        | Meaning                                                                                                                                                                                                                   |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--project <name>`            | The project whose source root and type give the defaults below. Defaults to the default project, or else the first one, of `angular.json`, `workspace.json` or `project.json`, and to a source root of `src` without any. |
-| `-c, --config <path>`         | A config file, or a folder to search for one, instead of the lookup above. It has to exist.                                                                                                                               |
-| `-i, --input <paths>`         | The folders holding the sources, several separated by commas. Defaults to `<source root>/app`, and `<source root>/lib` for a library.                                                                                     |
-| `-o, --output <path>`         | The folder the translation files are written to. Defaults to `<source root>/assets/i18n`.                                                                                                                                 |
-| `-l, --langs <langs...>`      | The languages to generate, as separate arguments. Defaults to `en`.                                                                                                                                                       |
-| `-f, --file-format <format>`  | The format of the translation files, `json` or `pot`. Defaults to `json`.                                                                                                                                                 |
-| `-m, --marker <name>`         | The marker sign for dynamic values. Defaults to `t`.                                                                                                                                                                      |
-| `-s, --sort`                  | Sorts the keys. Off by default.                                                                                                                                                                                           |
-| `-u, --unflat`                | Writes the translation files unflattened. Off by default.                                                                                                                                                                 |
-| `-d, --default-value <value>` | The value of a new key, where `{{key}}`, `{{keyWithoutScope}}`, `{{params}}` and `{{scope}}` are replaced. Defaults to `Missing value for '<key>'`.                                                                       |
-| `-r, --replace`               | Replaces the content of an existing translation file with the extracted keys instead of merging them. Off by default.                                                                                                     |
-| `-R, --remove-extra-keys`     | Removes the keys that are no longer in the sources from the existing translation files. Off by default.                                                                                                                   |
+| Option                        | Meaning                                                                                                                                                                                                                                        |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--project <name>`            | The project whose source root and type give the defaults below. Defaults to the default project, or else the first one, of `angular.json` (or `.angular.json`), `workspace.json` or `project.json`, and to a source root of `src` without any. |
+| `-c, --config <path>`         | A config file, or a folder to search for one, instead of the lookup above. It has to exist.                                                                                                                                                    |
+| `-i, --input <paths>`         | The folders holding the sources, several separated by commas. Defaults to `<source root>/app`, and `<source root>/lib` for a library.                                                                                                          |
+| `-o, --output <path>`         | The folder the translation files are written to. Defaults to `<source root>/assets/i18n`.                                                                                                                                                      |
+| `-l, --langs <langs...>`      | The languages to generate, as separate arguments. Defaults to `en`.                                                                                                                                                                            |
+| `-f, --file-format <format>`  | The format of the translation files, `json` or `pot`. Defaults to `json`.                                                                                                                                                                      |
+| `-m, --marker <name>`         | The marker sign for dynamic values. Defaults to `t`.                                                                                                                                                                                           |
+| `-s, --sort`                  | Sorts the keys. Off by default.                                                                                                                                                                                                                |
+| `-u, --unflat`                | Writes the translation files unflattened. Off by default.                                                                                                                                                                                      |
+| `-d, --default-value <value>` | The value of a new key, where `{{key}}`, `{{keyWithoutScope}}`, `{{params}}` and `{{scope}}` are replaced. Defaults to `Missing value for '<key>'`.                                                                                            |
+| `-r, --replace`               | Replaces the content of an existing translation file with the extracted keys instead of merging them. Off by default.                                                                                                                          |
+| `-R, --remove-extra-keys`     | Removes the keys that are no longer in the sources from the existing translation files. Off by default.                                                                                                                                        |
 
 ### find
 
@@ -171,7 +171,7 @@ Replaces the marked text of the HTML templates below `--input`, `src/app` unless
 | `--translations-path <dir>` | The folder the translation files are written to. Defaults to `rootTranslationsPath` of the config, then `src/assets/i18n`. |
 | `-c, --config <path>`       | A config file, or a folder to look for one in, which has to exist.                                                         |
 
-Both migrations only read the marks and the names they know, so go through the diff before you keep it. They replace the `ng g @jsverse/transloco:ngx-migrate` and `ng g @jsverse/transloco:ng-migrate` schematics, which are deprecated.
+Both migrations only read the marks and the names they know, so go through the diff before you keep it. They replace the `ngx-migrate` and `ng-migrate` schematics of `@jsverse/transloco-schematics` (`ng g @jsverse/transloco-schematics:ngx-migrate`, `ng g @jsverse/transloco-schematics:ng-migrate`), which are deprecated.
 
 ### init
 
@@ -215,20 +215,20 @@ Marks a key for `extract` and `find` when it is not read by a translate call, an
 
 ### Replacing the old tools
 
-The tools that `transloco` replaces are deprecated, keep working until Transloco v10 and print a deprecation notice on stderr when they start, which `NODE_OPTIONS=--no-deprecation` silences. `ng update @jsverse/transloco` moves the npm scripts that run the old bins to the `transloco` bin.
+The tools that `transloco` replaces are deprecated and keep working until Transloco v10. The bins print a deprecation notice on stderr when they start, which `NODE_OPTIONS=--no-deprecation` silences, and the schematics log a deprecation warning through the Angular CLI logger. `ng update @jsverse/transloco` moves the npm scripts that run the old bins to the `transloco` bin.
 
-| Deprecated                                             | Use instead                                                            |
-| ------------------------------------------------------ | ---------------------------------------------------------------------- |
-| `transloco-keys-manager extract`                       | `transloco extract`                                                    |
-| `transloco-keys-manager find`                          | `transloco find`                                                       |
-| `transloco-validator`                                  | `transloco validate`                                                   |
-| `transloco-optimize`                                   | `transloco optimize`                                                   |
-| `transloco-scoped-libs`                                | `transloco scoped-libs`                                                |
-| `ng g @jsverse/transloco:join` and `split`             | `transloco join` and `transloco split`                                 |
-| `ng g @jsverse/transloco:ngx-migrate` and `ng-migrate` | `transloco migrate ngx-translate` and `transloco migrate angular-i18n` |
-| `marker` of `@jsverse/transloco-keys-manager/marker`   | `marker` of `@jsverse/transloco-cli/marker`                            |
-| `getGlobalConfig` of `@jsverse/transloco-utils`        | `getGlobalConfig` of `@jsverse/transloco-cli`                          |
-| `TranslocoGlobalConfig` of `@jsverse/transloco-utils`  | `TranslocoGlobalConfig` of `@jsverse/transloco`                        |
+| Deprecated                                                                   | Use instead                                                            |
+| ---------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `transloco-keys-manager extract`                                             | `transloco extract`                                                    |
+| `transloco-keys-manager find`                                                | `transloco find`                                                       |
+| `transloco-validator`                                                        | `transloco validate`                                                   |
+| `transloco-optimize`                                                         | `transloco optimize`                                                   |
+| `transloco-scoped-libs`                                                      | `transloco scoped-libs`                                                |
+| `join` and `split` schematics of `@jsverse/transloco-schematics`             | `transloco join` and `transloco split`                                 |
+| `ngx-migrate` and `ng-migrate` schematics of `@jsverse/transloco-schematics` | `transloco migrate ngx-translate` and `transloco migrate angular-i18n` |
+| `marker` of `@jsverse/transloco-keys-manager/marker`                         | `marker` of `@jsverse/transloco-cli/marker`                            |
+| `getGlobalConfig` of `@jsverse/transloco-utils`                              | `getGlobalConfig` of `@jsverse/transloco-cli`                          |
+| `TranslocoGlobalConfig` of `@jsverse/transloco-utils`                        | `TranslocoGlobalConfig` of `@jsverse/transloco`                        |
 
 ### Running from another directory
 

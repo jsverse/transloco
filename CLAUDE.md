@@ -49,12 +49,12 @@ The core `transloco` library is the foundation. The runtime plugin libraries dep
 - **transloco-persist-lang** - Persist active language (localStorage/cookie/custom)
 - **transloco-persist-translations** - Cache translations locally
 - **transloco-preload-langs** - Preload languages on app init
-- **transloco-scoped-libs** - Deprecated shim over `transloco-cli`: the `transloco-scoped-libs` bin prints a deprecation notice and runs `transloco scoped-libs`
-- **transloco-optimize** - Deprecated shim over `transloco-cli`: the `transloco-optimize` bin prints a deprecation notice and runs `transloco optimize`
+- **transloco-scoped-libs** - Deprecated shim over `transloco-cli`: the `transloco-scoped-libs` bin prints a deprecation notice, keeps its own argument parsing and calls the code behind `transloco scoped-libs`
+- **transloco-optimize** - Deprecated shim over `transloco-cli`: the `transloco-optimize` bin prints a deprecation notice, keeps its own argument parsing and calls the code behind `transloco optimize` (it still exits 0 on failure)
 - **transloco-cli** - Unified `transloco` CLI with the commands `extract`, `find`, `validate`, `optimize`, `scoped-libs`, `join`, `split`, `migrate ngx-translate`, `migrate angular-i18n` and `init`; also exports `marker` (`@jsverse/transloco-cli/marker`) and `getGlobalConfig`
-- **transloco-keys-manager** - Deprecated shim over `transloco-cli`: the `transloco-keys-manager` bin prints a deprecation notice and runs `transloco extract` / `transloco find`; its `marker` export is deprecated in favour of `@jsverse/transloco-cli/marker`
+- **transloco-keys-manager** - Deprecated shim over `transloco-cli`: the `transloco-keys-manager` bin prints a deprecation notice, keeps its own argument parsing and calls the code behind `transloco extract` / `transloco find`; its `marker` export is deprecated in favour of `@jsverse/transloco-cli/marker`
 - **transloco-schematics** - `ng add`/`ng generate` schematics; its `join`, `split`, `ngx-migrate` and `ng-migrate` schematics are deprecated in favour of the CLI commands
-- **transloco-validator** - Deprecated shim over `transloco-cli`: the `transloco-validator` bin prints a deprecation notice and runs `transloco validate`
+- **transloco-validator** - Deprecated shim over `transloco-cli`: the `transloco-validator` bin prints a deprecation notice, keeps its own argument parsing and calls the code behind `transloco validate`
 - **transloco-utils** - Deprecated, frozen config reader (`getGlobalConfig`) kept for existing consumers. The `TranslocoGlobalConfig` type now lives in `transloco`, and `getGlobalConfig` in `transloco-cli`
 - **schematics-core** - Shared schematics utilities (internal, not published)
 
