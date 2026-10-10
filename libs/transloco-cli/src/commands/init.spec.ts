@@ -476,6 +476,18 @@ describe('runInit', () => {
       expect(fs.readdirSync(dir)).toEqual([]);
     });
 
+    it.each([[['en', 'es,fr']], [['en,es', 'fr']]])(
+      `GIVEN the languages %j, one of them with a comma
+       WHEN init runs
+       THEN it is refused, wherever the comma stands`,
+      async (langs) => {
+        await expect(runInit(options({ langs }))).rejects.toThrow(
+          'The languages are separate arguments, not a comma separated list',
+        );
+        expect(fs.readdirSync(dir)).toEqual([]);
+      },
+    );
+
     it.each([['../en'], ['en/es'], ['a b']])(
       `GIVEN the language %s that is no file name
        WHEN init runs

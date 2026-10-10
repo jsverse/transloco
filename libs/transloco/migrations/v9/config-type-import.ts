@@ -203,6 +203,40 @@ export function referencesConfigPackage(
 }
 
 /**
+ * Runs `callback` without the one warning Node prints the first time its type
+ * stripper is used. The migration needs the stripper itself, to see what the CLI
+ * will hit, and the warning would show up on every `ng update` for nothing the
+ * user can act on. Any other warning goes through, and `emitWarning` is put
+ * back afterwards.
+ */
+export function withoutStripperWarning<T>(callback: () => T): T {
+  const { emitWarning } = process;
+
+  process.emitWarning = ((warning: string | Error, ...args: unknown[]) => {
+    const type =
+      typeof args[0] === 'string'
+        ? args[0]
+        : (args[0] as { type?: string } | undefined)?.type;
+    const message = typeof warning === 'string' ? warning : warning?.message;
+
+    if (type === 'ExperimentalWarning' && /stripTypeScriptTypes/.test(message))
+      return;
+
+    return (emitWarning as (...rest: unknown[]) => void).call(
+      process,
+      warning,
+      ...args,
+    );
+  }) as typeof process.emitWarning;
+
+  try {
+    return callback();
+  } finally {
+    process.emitWarning = emitWarning;
+  }
+}
+
+/**
  * Why Node's type stripping rejects `source`, or `null` when it loads fine.
  *
  * Uses the same stripper cosmiconfig 10 ends up running, so `enum`,
@@ -219,7 +253,7 @@ export function findStrippingError(source: string): string | null {
   if (!strip) return null;
 
   try {
-    strip(source);
+    withoutStripperWarning(() => strip(source));
     return null;
   } catch (error) {
     return (error as Error).message.split('\n')[0];
@@ -298,7 +332,6 @@ export function migrateConfigTypeImport(): Rule {
       );
     }
 
-    if (readers)
-      return addCliDependency(tree, context, importsFromCli(READER_EXPORT));
+    if (readers) addCliDependency(tree, context, importsFromCli(READER_EXPORT));
   };
 }

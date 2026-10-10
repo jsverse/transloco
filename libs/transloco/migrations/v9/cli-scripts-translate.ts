@@ -35,15 +35,18 @@ export const LEGACY_BINS: readonly LegacyBin[] = [
 ];
 
 const BIN_ALTERNATIVES = LEGACY_BINS.join('|');
+/** The suffixes Windows gives to the launcher of a bin. */
+const LAUNCHER_SUFFIX = '\\.(?:[Cc][Mm][Dd]|[Pp][Ss]1|[Ee][Xx][Ee])';
 /** Whether a text so much as names one of the bins. */
 const NAMES_A_BIN = new RegExp(BIN_ALTERNATIVES);
 /**
  * A bin standing on its own in a text, and not as a part of a path, a package or another name:
  * not behind a word character, `@`, `/`, `.` or `-` (but behind `.bin/`), and not in front of
- * a word character, `-`, `/` or a dot and a word character (`transloco-validator.log`).
+ * a word character, `-`, `/` or a dot and a word character (`transloco-validator.log`). The
+ * `.cmd`, `.ps1` and `.exe` launchers of Windows count as the bin.
  */
 const BIN_AS_A_WORD = new RegExp(
-  `(?:(?<![\\w@/.-])|(?<=\\.bin/))(?:${BIN_ALTERNATIVES})(?![\\w/-]|\\.\\w)`,
+  `(?:(?<![\\w@/.-])|(?<=\\.bin/))(?:${BIN_ALTERNATIVES})(?:${LAUNCHER_SUFFIX})?(?![\\w/-]|\\.\\w)`,
 );
 /**
  * `npx @jsverse/transloco-validator a.json`, `node node_modules/@jsverse/transloco-validator/src/index.js`:
@@ -57,7 +60,7 @@ const RUNS_A_PACKAGE = new RegExp(
  * or of `sh -c "cd app && npx transloco-validator a.json"` does.
  */
 const RUNS_A_BIN = new RegExp(
-  `(?:^|[;&|(])\\s*(?:(?:npx|bunx|pnpm exec|yarn(?: run)?|npm exec)\\s+(?:-\\S+\\s+)*)?(?:\\S*/)?(?:${BIN_ALTERNATIVES})(?:\\s|$)`,
+  `(?:^|[;&|(])\\s*(?:(?:npx|bunx|pnpm exec|yarn(?: run)?|npm exec)\\s+(?:-\\S+\\s+)*)?(?:\\S*/)?(?:${BIN_ALTERNATIVES})(?:${LAUNCHER_SUFFIX})?(?:\\s|$)`,
 );
 /** `@jsverse/transloco-validator@9`, `transloco-optimize@latest`: a package to fetch, not a bin to run. */
 const PACKAGE_SPEC = new RegExp(
@@ -74,6 +77,10 @@ export const stillRunsBin = (script: string) =>
 
 const BIN_PATH = new RegExp(
   `^(?:.*/)?node_modules/\\.bin/(${BIN_ALTERNATIVES})$`,
+);
+/** `transloco-optimize.cmd`, `node_modules/.bin/transloco-optimize.ps1`: the launcher Windows runs for a bin. */
+const LAUNCHER = new RegExp(
+  `^(?:.*[\\\\/])?(${BIN_ALTERNATIVES})(${LAUNCHER_SUFFIX})$`,
 );
 /** `-s`: a flag that can share its dash with others. */
 const SHORT_FLAG = /^-[^-]$/;
@@ -237,6 +244,15 @@ function findCandidate(command: SimpleCommand): Lookup {
     : LEGACY_BINS.includes(word.value as LegacyBin)
       ? { bin: word.value as LegacyBin, nameStart: word.start }
       : undefined;
+
+  const launcher = LAUNCHER.exec(word.value);
+
+  if (!named && launcher) {
+    return {
+      kind: 'unsupported',
+      reason: `${launcher[1]} is run through its ${launcher[2]} launcher, which this migration does not rewrite`,
+    };
+  }
 
   if (!named) {
     if (!runner) return { kind: 'none' };
@@ -427,7 +443,7 @@ function checkPathExists(
   pathExists: NonNullable<TranslateOptions['pathExists']>,
   folderChanged: boolean,
 ) {
-  const stops = `'transloco ${invocation.command}' stops when the --config path does not exist, where ${candidate.bin} ignored it`;
+  const stops = `'transloco ${invocation.command}' stops when the --config path does not exist, where ${candidate.bin} ignores a missing path and uses the configuration it finds`;
   const unchecked = folderChanged
     ? 'the script changes folder before this command'
     : whyNotChecked(value);

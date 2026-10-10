@@ -1,8 +1,9 @@
 import * as nodeModule from 'node:module';
 
-import { Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
+import { SchematicContext, Tree } from '@angular-devkit/schematics';
+import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
 
-import { loadDependencyRules } from './lazy-deps';
+import { addDevDependency } from './manifest-edit';
 
 type TypeScript = typeof import('typescript');
 type ImportSpecifier = import('typescript').ImportSpecifier;
@@ -172,11 +173,17 @@ function isListed(tree: Tree, name: string): boolean | null {
   }
 }
 
+/** The runs that have scheduled the install already. */
+const scheduled = new WeakSet<SchematicContext>();
+
 /**
  * Adds the CLI to the workspace's `devDependencies` when it isn't listed yet,
  * at the range of the `@jsverse/transloco` v9 that is installed, and schedules
  * the install. `usage` says what in the workspace needs it now, for the
  * message that asks for the dependency when it can't be added.
+ *
+ * The entry is inserted into the text of the `package.json`, so the rest of
+ * the file stays as the user wrote it.
  *
  * Every step that needs the CLI calls this. The first one that finds it
  * missing adds it, and since the rules of a chain run one after the other on
@@ -186,25 +193,30 @@ export function addCliDependency(
   tree: Tree,
   context: SchematicContext,
   usage: string,
-): Rule | void {
+): void {
   const manual = `  ↳ Add '${CLI_PACKAGE}' to your devDependencies: ${usage}.`;
 
   const listed = isListed(tree, CLI_PACKAGE);
   if (listed) return;
 
   const version = installedVersion();
-  const rules = loadDependencyRules();
-  if (listed === null || !version || !rules) {
+  const source = tree.read('/package.json')?.toString();
+  const content =
+    version && source
+      ? addDevDependency(source, CLI_PACKAGE, `^${version}`)
+      : null;
+  if (listed === null || content === null) {
     context.logger.warn(manual);
     return;
   }
 
+  tree.overwrite('/package.json', content);
   context.logger.info(
     `  ↳ Added '${CLI_PACKAGE}@^${version}' to devDependencies.`,
   );
 
-  return rules.addDependency(CLI_PACKAGE, `^${version}`, {
-    type: rules.DependencyType.Dev,
-    existing: rules.ExistingBehavior.Skip,
-  });
+  if (!scheduled.has(context)) {
+    scheduled.add(context);
+    context.addTask(new NodePackageInstallTask({ workingDirectory: '/' }));
+  }
 }
