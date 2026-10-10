@@ -4,7 +4,11 @@ import path from 'node:path';
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
-import { findGlobalConfigFile, getGlobalConfig } from './transloco-utils.js';
+import {
+  findGlobalConfigFile,
+  getGlobalConfig,
+  searchGlobalConfig,
+} from './transloco-utils.js';
 
 const TS_CONFIG = `export default { rootTranslationsPath: 'src/assets/i18n/', langs: ['en', 'es'] };`;
 
@@ -103,6 +107,15 @@ describe('getGlobalConfig', () => {
       WHEN the config is resolved
       THEN it returns an empty config`, () => {
     expect(getGlobalConfig(dir)).toEqual({});
+  });
+
+  it(`GIVEN a config in the parent of the directory
+      WHEN the config is resolved from the directory
+      THEN the parent is not searched`, () => {
+    write('transloco.config.ts', TS_CONFIG);
+    fs.mkdirSync(path.join(dir, 'src'));
+
+    expect(getGlobalConfig(path.join(dir, 'src'))).toEqual({});
   });
 });
 
@@ -204,5 +217,175 @@ describe('findGlobalConfigFile', () => {
     } finally {
       process.chdir(cwd);
     }
+  });
+});
+
+describe('searchGlobalConfig', () => {
+  let dir: string;
+  let cwd: string;
+
+  beforeEach(() => {
+    cwd = process.cwd();
+    // the real path, as the working directory always is one (/var is /private/var on macOS)
+    dir = fs.realpathSync(
+      fs.mkdtempSync(path.join(os.tmpdir(), 'transloco-utils-search-')),
+    );
+    process.chdir(dir);
+  });
+
+  afterEach(() => {
+    process.chdir(cwd);
+    fs.rmSync(dir, { recursive: true, force: true });
+  });
+
+  function write(file: string, content: string) {
+    const filePath = path.resolve(dir, file);
+
+    fs.mkdirSync(path.dirname(filePath), { recursive: true });
+    fs.writeFileSync(filePath, content, 'utf-8');
+
+    return filePath;
+  }
+
+  function config(...langs: string[]) {
+    return `export default { langs: ${JSON.stringify(langs)} };`;
+  }
+
+  it(`GIVEN a config in the directory
+      WHEN the config is searched from the directory
+      THEN the config and its file are returned`, () => {
+    const file = write('src/transloco.config.ts', config('en', 'es'));
+
+    expect(searchGlobalConfig('src')).toEqual({
+      config: { langs: ['en', 'es'] },
+      filepath: file,
+    });
+  });
+
+  it(`GIVEN a config in the working directory only
+      WHEN the config is searched from a directory below it
+      THEN the config of the working directory is found`, () => {
+    const file = write('transloco.config.ts', config('en', 'es'));
+    fs.mkdirSync(path.join(dir, 'apps/web/src'), { recursive: true });
+
+    expect(searchGlobalConfig('apps/web/src')).toEqual({
+      config: { langs: ['en', 'es'] },
+      filepath: file,
+    });
+  });
+
+  it(`GIVEN configs in the directory and in the working directory
+      WHEN the config is searched from the directory
+      THEN the config of the directory wins`, () => {
+    write('transloco.config.ts', config('en'));
+    const file = write('apps/web/src/transloco.config.ts', config('fr'));
+
+    expect(searchGlobalConfig('apps/web/src')).toEqual({
+      config: { langs: ['fr'] },
+      filepath: file,
+    });
+  });
+
+  it(`GIVEN configs in two parents of the directory
+      WHEN the config is searched from the directory
+      THEN the closest one wins`, () => {
+    write('transloco.config.ts', config('en'));
+    const file = write('apps/web/transloco.config.ts', config('de'));
+    fs.mkdirSync(path.join(dir, 'apps/web/src'), { recursive: true });
+
+    expect(searchGlobalConfig('apps/web/src')).toEqual({
+      config: { langs: ['de'] },
+      filepath: file,
+    });
+  });
+
+  it(`GIVEN an empty config in the directory and a config in the working directory
+      WHEN the config is searched from the directory
+      THEN the empty file is skipped`, () => {
+    write('src/transloco.config.ts', '');
+    const file = write('transloco.config.ts', config('en', 'es'));
+
+    expect(searchGlobalConfig('src')).toEqual({
+      config: { langs: ['en', 'es'] },
+      filepath: file,
+    });
+  });
+
+  it(`GIVEN a package.json with a transloco key in the working directory
+      WHEN the config is searched from a directory below it
+      THEN the package.json is the file`, () => {
+    const file = write('package.json', '{"transloco": {"langs": ["it"]}}');
+    fs.mkdirSync(path.join(dir, 'src'));
+
+    expect(searchGlobalConfig('src')).toEqual({
+      config: { langs: ['it'] },
+      filepath: file,
+    });
+  });
+
+  it(`GIVEN no config below the working directory
+      WHEN the config is searched
+      THEN an empty config without a file is returned`, () => {
+    fs.mkdirSync(path.join(dir, 'src'));
+
+    expect(searchGlobalConfig('src')).toEqual({ config: {} });
+  });
+
+  it(`GIVEN a config above the working directory
+      WHEN the config is searched from a directory below the working directory
+      THEN the config above is not used`, () => {
+    write('transloco.config.ts', config('en', 'es'));
+    const workspace = fs.mkdtempSync(path.join(dir, 'workspace-'));
+    fs.mkdirSync(path.join(workspace, 'src'));
+    process.chdir(workspace);
+
+    expect(searchGlobalConfig('src')).toEqual({ config: {} });
+  });
+
+  it(`GIVEN a directory outside the working directory
+      WHEN the config is searched from it
+      THEN its parents are skipped and the working directory is searched next`, () => {
+    const outside = fs.mkdtempSync(path.join(dir, 'outside-'));
+    const workspace = fs.mkdtempSync(path.join(dir, 'workspace-'));
+    fs.mkdirSync(path.join(outside, 'src'));
+    write(path.join(outside, 'transloco.config.ts'), config('fr'));
+    process.chdir(workspace);
+
+    expect(searchGlobalConfig(path.join(outside, 'src'))).toEqual({
+      config: {},
+    });
+
+    const file = write(
+      path.join(workspace, 'transloco.config.ts'),
+      config('en', 'es'),
+    );
+
+    expect(searchGlobalConfig(path.join(outside, 'src'))).toEqual({
+      config: { langs: ['en', 'es'] },
+      filepath: file,
+    });
+  });
+
+  it(`GIVEN a directory whose name starts with two dots inside the working directory
+      WHEN the config is searched from it
+      THEN it is not taken for a directory outside the working directory`, () => {
+    const file = write('transloco.config.ts', config('en', 'es'));
+    fs.mkdirSync(path.join(dir, '..src'));
+
+    expect(searchGlobalConfig('..src')).toEqual({
+      config: { langs: ['en', 'es'] },
+      filepath: file,
+    });
+  });
+
+  it(`GIVEN no directory
+      WHEN the config is searched
+      THEN the working directory is searched`, () => {
+    const file = write('transloco.config.ts', config('en', 'es'));
+
+    expect(searchGlobalConfig()).toEqual({
+      config: { langs: ['en', 'es'] },
+      filepath: file,
+    });
   });
 });

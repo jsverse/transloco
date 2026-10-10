@@ -1,7 +1,7 @@
 import { statSync } from 'node:fs';
 import * as path from 'node:path';
 
-import { cosmiconfigSync } from 'cosmiconfig';
+import { cosmiconfigSync, type CosmiconfigResult } from 'cosmiconfig';
 
 import { TranslocoGlobalConfig } from './transloco-utils.types.js';
 
@@ -13,20 +13,35 @@ export function getGlobalConfig(searchPath = ''): TranslocoGlobalConfig {
     ? explorer.load(resolvedPath)
     : explorer.search(resolvedPath);
 
-  // `load()` reports an empty file as `isEmpty` instead of skipping it like `search()` does.
-  if (!configSearch || configSearch.isEmpty) {
-    return {};
+  return configSearch ? unwrapConfig(configSearch) : {};
+}
+
+/**
+ * The config of a project whose sources are in the directory, together with
+ * the file it was read from. Unlike `getGlobalConfig`, which looks in the
+ * directory alone, the search goes up through the parent directories, up to
+ * and including the working directory, and uses the first config it finds.
+ * A directory outside of the working directory is followed by the working
+ * directory itself. Nothing above the working directory is ever looked at.
+ */
+export function searchGlobalConfig(dir = ''): {
+  config: TranslocoGlobalConfig;
+  filepath?: string;
+} {
+  const explorer = cosmiconfigSync('transloco');
+
+  for (const searchDir of searchDirs(dir)) {
+    const configSearch = explorer.search(searchDir);
+
+    if (configSearch) {
+      return {
+        config: unwrapConfig(configSearch),
+        filepath: configSearch.filepath,
+      };
+    }
   }
 
-  const { config, filepath } = configSearch;
-
-  // cosmiconfig 10+ no longer unwraps the default export of a TS config.
-  return MODULE_CONFIG.test(filepath) &&
-    config &&
-    typeof config === 'object' &&
-    'default' in config
-    ? config.default
-    : config;
+  return { config: {} };
 }
 
 /**
@@ -43,6 +58,49 @@ export function findGlobalConfigFile(dir = ''): string | undefined {
 }
 
 const MODULE_CONFIG = /\.[cm]?[jt]s$/;
+
+function unwrapConfig({
+  config,
+  filepath,
+  isEmpty,
+}: NonNullable<CosmiconfigResult>): TranslocoGlobalConfig {
+  // `load()` reports an empty file as `isEmpty` instead of skipping it like `search()` does.
+  if (isEmpty) {
+    return {};
+  }
+
+  // cosmiconfig 10+ no longer unwraps the default export of a TS config.
+  return MODULE_CONFIG.test(filepath) &&
+    config &&
+    typeof config === 'object' &&
+    'default' in config
+    ? config.default
+    : config;
+}
+
+/** The directory, then its parents up to the working directory. */
+function searchDirs(dir: string): string[] {
+  const cwd = process.cwd();
+  const start = path.resolve(cwd, dir);
+  const relative = path.relative(cwd, start);
+
+  if (
+    relative === '..' ||
+    relative.startsWith(`..${path.sep}`) ||
+    path.isAbsolute(relative)
+  ) {
+    return [start, cwd];
+  }
+
+  const dirs = [start];
+
+  for (let current = start; current !== cwd;) {
+    current = path.dirname(current);
+    dirs.push(current);
+  }
+
+  return dirs;
+}
 
 // Any stat error (ENOENT, ENOTDIR, EACCES, ...) falls through to `search()`, which reports it as before.
 function isFile(filePath: string): boolean {

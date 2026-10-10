@@ -16,6 +16,7 @@ vi.mock('../utils/resolve-config.js', () => ({
     addMissingKeys: false,
     emitErrorOnExtraKeys: false,
     unflat: false,
+    scopePathMap: { admin: 'libs/admin/i18n' },
   }),
 }));
 
@@ -77,6 +78,7 @@ describe('findMissingKeys', () => {
       emitErrorOnExtraKeys: false,
       fileFormat: 'json',
       unflat: false,
+      scopePathMap: { admin: 'libs/admin/i18n' },
     });
   });
 });

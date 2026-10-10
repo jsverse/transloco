@@ -31,10 +31,6 @@ vi.mock('../utils/file.utils.js', () => ({
   writeFile: vi.fn(),
 }));
 
-vi.mock('../../config/index.js', () => ({
-  getGlobalConfig: () => ({ scopePathMap: {} }),
-}));
-
 describe('compareKeysToFiles', () => {
   const mockBuildTable = vi.mocked(buildTable);
   const mockNormalizedGlob = vi.mocked(normalizedGlob);
@@ -177,6 +173,54 @@ describe('compareKeysToFiles', () => {
         }),
       }),
     );
+  });
+
+  it('should compare the files of a scope to the keys extracted for it when the scope has a path in scopePathMap', () => {
+    mockNormalizedGlob.mockImplementation(((pattern: string) =>
+      pattern === 'libs/admin/i18n/*.json'
+        ? ['libs/admin/i18n/en.json']
+        : []) as any);
+    mockReadFile.mockImplementation(((path: string, opts?: any) => {
+      if (opts?.parse) return { key: 'value' };
+      return '{"key":"value"}';
+    }) as any);
+
+    compareKeysToFiles({
+      scopeToKeys: {
+        __global: {},
+        admin: { key: 'value', newKey: 'new' },
+      },
+      translationsPath: '/tmp/i18n',
+      addMissingKeys: false,
+      emitErrorOnExtraKeys: false,
+      fileFormat: 'json',
+      unflat: false,
+      scopePathMap: { admin: 'libs/admin/i18n' },
+    });
+
+    expect(mockBuildTable).toHaveBeenCalledWith(
+      expect.objectContaining({
+        langs: ['admin/en'],
+        diffsPerLang: expect.objectContaining({
+          'admin/en': expect.objectContaining({
+            missing: [expect.objectContaining({ path: ['newKey'] })],
+          }),
+        }),
+      }),
+    );
+  });
+
+  it('should leave the scoped files alone when no scopePathMap is given', () => {
+    compareKeysToFiles({
+      scopeToKeys: { __global: {}, admin: { key: 'value' } },
+      translationsPath: '/tmp/i18n',
+      addMissingKeys: false,
+      emitErrorOnExtraKeys: false,
+      fileFormat: 'json',
+      unflat: false,
+    });
+
+    expect(mockNormalizedGlob).not.toHaveBeenCalled();
   });
 
   it('should unflatten translation before writing when unflat is true', () => {

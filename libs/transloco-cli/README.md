@@ -44,6 +44,8 @@ transloco extract --input src/app --output src/assets/i18n --langs en es
 
 `extract` and `find` need `@angular/compiler` and `typescript`, which every Angular project has. The other commands run without them.
 
+Without `--config`, `extract` and `find` look for the config in the source root of the project first, then in each parent directory up to the working directory, and use the first one they find, so the `transloco.config.ts` that `ng add` and `transloco init` write to the workspace root is found. A source root outside of the working directory is followed by the working directory. Nothing above the working directory is searched. `--config` names the one file, or the one directory, to read, and nothing else is searched.
+
 ### find
 
 ```bash

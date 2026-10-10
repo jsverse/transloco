@@ -1,6 +1,10 @@
 import { existsSync } from 'fs';
 
-import { getGlobalConfig, TranslocoGlobalConfig } from '../../config/index.js';
+import {
+  getGlobalConfig,
+  searchGlobalConfig,
+  TranslocoGlobalConfig,
+} from '../../config/index.js';
 import { style } from '../../utils/style.js';
 import { defaultConfig } from '../config.js';
 import { getScopes } from '../keys-builder/utils/scope.utils.js';
@@ -18,7 +22,13 @@ export function resolveConfig(inlineConfig: Partial<Config>): Config {
     inlineConfig.project,
   );
   const defaults = defaultConfig({ projectType, sourceRoot });
-  const fileConfig = getGlobalConfig(inlineConfig.config || sourceRoot);
+  // `--config` names the one place to look in, otherwise the source root and its parents are searched
+  const { config: fileConfig, filepath: configFile } = inlineConfig.config
+    ? {
+        config: getGlobalConfig(inlineConfig.config),
+        filepath: inlineConfig.config,
+      }
+    : searchGlobalConfig(sourceRoot);
   const userConfig = { ...flatFileConfig(fileConfig), ...inlineConfig };
   const mergedConfig = {
     ...defaults,
@@ -29,6 +39,7 @@ export function resolveConfig(inlineConfig: Partial<Config>): Config {
   devlog('config', 'Config', {
     Default: defaults,
     'Transloco file': flatFileConfig(fileConfig),
+    'Transloco file path': configFile,
     Inline: inlineConfig,
     Merged: mergedConfig,
   });
