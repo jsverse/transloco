@@ -2,8 +2,17 @@ import * as nodeModule from 'node:module';
 
 import { Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
 
-import { loadDependencyRules, loadTypeScript } from './lazy-deps';
-import { SCANNED } from './marker-import';
+import {
+  addCliDependency,
+  applyEdits,
+  CLI_PACKAGE,
+  Edit,
+  importsUnaliased,
+  namedImports,
+  replaceImport,
+  SCANNED_WITH_JSX,
+} from './import-utils';
+import { loadTypeScript } from './lazy-deps';
 import { collectFiles } from './workspace-utils';
 
 const PACKAGE = '@jsverse/transloco-utils';
@@ -13,7 +22,7 @@ const TYPE_PACKAGE = '@jsverse/transloco';
 const TYPE_EXPORT = 'TranslocoGlobalConfig';
 
 /** Where the config reader lives as of v9. */
-const READER_PACKAGE = '@jsverse/transloco-cli';
+const READER_PACKAGE = CLI_PACKAGE;
 const READER_EXPORT = 'getGlobalConfig';
 
 /** The TS files cosmiconfig loads a Transloco config from by default. */
@@ -22,25 +31,8 @@ const CONFIG_FILE =
 
 const TS_FILE = /\.[mc]?ts$/;
 
-/** The files scanned for imports: the marker migration's list, plus the JSX ones. */
-const CONFIG_SCANNED = [...SCANNED, '.tsx', '.jsx'];
-
 /** An `import('@jsverse/transloco-utils')`, which also appears in JSDoc types. */
 const IMPORT_CALL = /import\(\s*(['"`])@jsverse\/transloco-utils\1\s*\)/;
-
-/** The sections of a `package.json` that make a package available to the workspace. */
-const DEPENDENCY_SECTIONS = [
-  'dependencies',
-  'devDependencies',
-  'optionalDependencies',
-  'peerDependencies',
-];
-
-interface Edit {
-  start: number;
-  end: number;
-  text: string;
-}
 
 export interface ConfigTypeImportResult {
   content: string;
@@ -51,38 +43,6 @@ export interface ConfigTypeImportResult {
 }
 
 type ImportSpecifier = import('typescript').ImportSpecifier;
-
-/**
- * The braces of an import with only `group` in them. The original text is kept
- * whenever the group is the whole import, so spacing and the like survive.
- */
-function namedImports(
-  group: ImportSpecifier[],
-  all: readonly ImportSpecifier[],
-  original: string,
-  dropTypeModifier: boolean,
-): string {
-  const unchanged =
-    group.length === all.length &&
-    !(dropTypeModifier && group.some((element) => element.isTypeOnly));
-  if (unchanged) return original;
-
-  const names = group.map((element) =>
-    dropTypeModifier
-      ? element.getText().replace(/^type\s+/, '')
-      : element.getText(),
-  );
-
-  return `{ ${names.join(', ')} }`;
-}
-
-/** The line ending around `start`-`end`: the one after the statement, else the one before it. */
-function lineEndingAround(source: string, start: number, end: number): string {
-  const after = source.indexOf('\n', end);
-  const newline = after !== -1 ? after : source.lastIndexOf('\n', start);
-
-  return newline > 0 && source[newline - 1] === '\r' ? '\r\n' : '\n';
-}
 
 /**
  * Moves the imports of `TranslocoGlobalConfig` and `getGlobalConfig` off
@@ -119,20 +79,13 @@ export function migrateConfigTypeImportSource(
     true,
   );
 
-  const importsUnaliased = (packageName: string, name: string) =>
-    file.statements.some(
-      (statement) =>
-        ts.isImportDeclaration(statement) &&
-        ts.isStringLiteral(statement.moduleSpecifier) &&
-        statement.moduleSpecifier.text === packageName &&
-        !!statement.importClause?.namedBindings &&
-        ts.isNamedImports(statement.importClause.namedBindings) &&
-        statement.importClause.namedBindings.elements.some(
-          (element) => !element.propertyName && element.name.text === name,
-        ),
-    );
-  let typeImported = importsUnaliased(TYPE_PACKAGE, TYPE_EXPORT);
-  let readerImported = importsUnaliased(READER_PACKAGE, READER_EXPORT);
+  let typeImported = importsUnaliased(ts, file, TYPE_PACKAGE, TYPE_EXPORT);
+  let readerImported = importsUnaliased(
+    ts,
+    file,
+    READER_PACKAGE,
+    READER_EXPORT,
+  );
 
   const edits: Edit[] = [];
   let types = 0;
@@ -206,51 +159,16 @@ export function migrateConfigTypeImportSource(
       );
     }
 
-    const start = statement.getStart();
-    const end = statement.getEnd();
-    const lineStart = source.lastIndexOf('\n', start - 1) + 1;
-    // A BOM is whitespace to the scanner, but it belongs to the file, not the indent.
-    const beforeStatement = source
-      .slice(lineStart, start)
-      .replace('\uFEFF', '');
-    const indent = /^\s*$/.test(beforeStatement) ? beforeStatement : '';
-
-    if (!statements.length) {
-      // Nothing is left to import: drop the whole line when nothing else is on it.
-      const lineEnd = source.indexOf('\n', end);
-      const rest = source.slice(end, lineEnd === -1 ? undefined : lineEnd);
-      const alone =
-        /^\s*$/.test(source.slice(lineStart, start)) && /^\s*$/.test(rest);
-      const bom = source[lineStart] === '\uFEFF' ? 1 : 0;
-
-      edits.push(
-        alone
-          ? {
-              start: lineStart + bom,
-              end: lineEnd === -1 ? source.length : lineEnd + 1,
-              text: '',
-            }
-          : { start, end, text: '' },
-      );
-      continue;
-    }
-
-    edits.push({
-      start,
-      end,
-      text: statements.join(`${lineEndingAround(source, start, end)}${indent}`),
-    });
+    edits.push(replaceImport(source, statement, statements));
   }
 
   if (!edits.length) return null;
 
-  let content = source;
-  for (const edit of edits.sort((a, b) => b.start - a.start)) {
-    content =
-      content.slice(0, edit.start) + edit.text + content.slice(edit.end);
-  }
-
-  return { content, migrated: types + readers, readers };
+  return {
+    content: applyEdits(source, edits),
+    migrated: types + readers,
+    readers,
+  };
 }
 
 /**
@@ -307,60 +225,6 @@ export function findStrippingError(source: string): string | null {
   }
 }
 
-/** The version of this `@jsverse/transloco`, which `ng update` has installed by the time it runs. */
-function installedVersion(): string | null {
-  try {
-    const manifest = nodeModule.createRequire(__filename)(
-      '../../package.json',
-    ) as { version?: string };
-
-    return manifest.version ?? null;
-  } catch {
-    return null;
-  }
-}
-
-/** Whether the root `package.json` lists `name`, or `null` when it can't be read. */
-function isListed(tree: Tree, name: string): boolean | null {
-  try {
-    const manifest = JSON.parse(tree.read('/package.json')?.toString() ?? '');
-    if (!manifest || typeof manifest !== 'object' || Array.isArray(manifest))
-      return null;
-
-    return DEPENDENCY_SECTIONS.some((section) => manifest[section]?.[name]);
-  } catch {
-    return null;
-  }
-}
-
-/**
- * Adds the CLI to the workspace's `devDependencies` when it isn't listed yet,
- * at the range of the `@jsverse/transloco` v9 that is installed, and schedules
- * the install.
- */
-function addReaderPackage(tree: Tree, context: SchematicContext): Rule | void {
-  const manual = `  ↳ Add '${READER_PACKAGE}' to your devDependencies: files in your workspace import getGlobalConfig from it now.`;
-
-  const listed = isListed(tree, READER_PACKAGE);
-  if (listed) return;
-
-  const version = installedVersion();
-  const rules = loadDependencyRules();
-  if (listed === null || !version || !rules) {
-    context.logger.warn(manual);
-    return;
-  }
-
-  context.logger.info(
-    `  ↳ Added '${READER_PACKAGE}@^${version}' to devDependencies.`,
-  );
-
-  return rules.addDependency(READER_PACKAGE, `^${version}`, {
-    type: rules.DependencyType.Dev,
-    existing: rules.ExistingBehavior.Skip,
-  });
-}
-
 /**
  * Walks the tree moving the config type and reader imports off
  * `@jsverse/transloco-utils`, reports what it could not move, and then reports
@@ -382,7 +246,7 @@ export function migrateConfigTypeImport(): Rule {
     const leftovers: string[] = [];
     const unloadable: string[] = [];
 
-    for (const path of collectFiles(tree, '', CONFIG_SCANNED)) {
+    for (const path of collectFiles(tree, '', SCANNED_WITH_JSX)) {
       const isConfig = CONFIG_FILE.test(path);
       let source = tree.read(path)?.toString();
       if (!source) continue;
@@ -433,6 +297,6 @@ export function migrateConfigTypeImport(): Rule {
       );
     }
 
-    if (readers) return addReaderPackage(tree, context);
+    if (readers) return addCliDependency(tree, context, READER_EXPORT);
   };
 }

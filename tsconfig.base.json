@@ -17,6 +17,7 @@
       "@jsverse/transloco": ["./libs/transloco/src/index.ts"],
       "@jsverse/transloco/router": ["./libs/transloco/router/src/index.ts"],
       "@jsverse/transloco-cli": ["./libs/transloco-cli/src/index.ts"],
+      "@jsverse/transloco-cli/marker": ["./libs/transloco-cli/src/marker.ts"],
       "@jsverse/transloco-cli/internal/deprecation": [
         "./libs/transloco-cli/src/deprecation/index.ts"
       ],
