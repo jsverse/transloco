@@ -337,6 +337,7 @@ describe('searchGlobalConfig', () => {
     write('transloco.config.ts', config('en', 'es'));
     const workspace = fs.mkdtempSync(path.join(dir, 'workspace-'));
     fs.mkdirSync(path.join(workspace, 'src'));
+    write(path.join(workspace, 'package.json'), '{}');
     process.chdir(workspace);
 
     expect(searchGlobalConfig('src')).toEqual({ config: {} });
@@ -349,6 +350,7 @@ describe('searchGlobalConfig', () => {
     const workspace = fs.mkdtempSync(path.join(dir, 'workspace-'));
     fs.mkdirSync(path.join(outside, 'src'));
     write(path.join(outside, 'transloco.config.ts'), config('fr'));
+    write(path.join(workspace, 'package.json'), '{}');
     process.chdir(workspace);
 
     expect(searchGlobalConfig(path.join(outside, 'src'))).toEqual({
@@ -375,6 +377,100 @@ describe('searchGlobalConfig', () => {
     expect(searchGlobalConfig('..src')).toEqual({
       config: { langs: ['en', 'es'] },
       filepath: file,
+    });
+  });
+
+  describe('from a working directory inside a repository', () => {
+    const shop = 'repo/apps/shop';
+
+    beforeEach(() => {
+      fs.mkdirSync(path.join(dir, shop, 'src'), { recursive: true });
+      process.chdir(path.join(dir, shop));
+    });
+
+    it(`GIVEN a working directory without a package.json and a config beside a package.json two levels up
+        WHEN the config is searched from a directory below the working directory
+        THEN that config is found`, () => {
+      write('repo/package.json', '{}');
+      const file = write('repo/transloco.config.ts', config('en', 'es'));
+
+      expect(searchGlobalConfig('src')).toEqual({
+        config: { langs: ['en', 'es'] },
+        filepath: file,
+      });
+    });
+
+    it(`GIVEN a package.json one level up and a config two levels up
+        WHEN the config is searched
+        THEN the search stops at that package.json and the config is not found`, () => {
+      write('repo/apps/package.json', '{}');
+      write('repo/package.json', '{}');
+      write('repo/transloco.config.ts', config('en', 'es'));
+
+      expect(searchGlobalConfig('src')).toEqual({ config: {} });
+    });
+
+    it(`GIVEN a package.json in the working directory and a config above it
+        WHEN the config is searched
+        THEN nothing above the working directory is searched`, () => {
+      write(`${shop}/package.json`, '{}');
+      write('repo/package.json', '{}');
+      write('repo/transloco.config.ts', config('en', 'es'));
+
+      expect(searchGlobalConfig('src')).toEqual({ config: {} });
+    });
+
+    it(`GIVEN a config above the working directory and no package.json anywhere above it
+        WHEN the config is searched
+        THEN the config is not found`, () => {
+      write('repo/transloco.config.ts', config('en', 'es'));
+
+      expect(searchGlobalConfig('src')).toEqual({ config: {} });
+    });
+
+    it(`GIVEN a config in a directory between the working directory and the package.json
+        WHEN the config is searched
+        THEN it wins over the config beside the package.json`, () => {
+      write('repo/package.json', '{}');
+      write('repo/transloco.config.ts', config('en'));
+      const file = write('repo/apps/transloco.config.ts', config('fr'));
+
+      expect(searchGlobalConfig('src')).toEqual({
+        config: { langs: ['fr'] },
+        filepath: file,
+      });
+    });
+
+    it(`GIVEN configs in the source root, the working directory and beside the package.json
+        WHEN the config is searched
+        THEN the nearest one wins`, () => {
+      write('repo/package.json', '{}');
+      const root = write('repo/transloco.config.ts', config('en'));
+      const cwdFile = write(`${shop}/transloco.config.ts`, config('es'));
+      const sourceRoot = write(`${shop}/src/transloco.config.ts`, config('it'));
+
+      expect(searchGlobalConfig('src').filepath).toBe(sourceRoot);
+
+      fs.rmSync(sourceRoot);
+
+      expect(searchGlobalConfig('src').filepath).toBe(cwdFile);
+
+      fs.rmSync(cwdFile);
+
+      expect(searchGlobalConfig('src').filepath).toBe(root);
+    });
+
+    it(`GIVEN a directory outside the working directory and a config beside the package.json above the working directory
+        WHEN the config is searched from it
+        THEN the working directory is searched next and then up to the package.json`, () => {
+      const outside = fs.mkdtempSync(path.join(dir, 'outside-'));
+      write('repo/package.json', '{}');
+      const file = write('repo/transloco.config.ts', config('en', 'es'));
+
+      expect(searchGlobalConfig(outside)).toEqual({
+        config: { langs: ['en', 'es'] },
+        filepath: file,
+      });
     });
   });
 

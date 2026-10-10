@@ -131,10 +131,23 @@ describe('resolveConfig config lookup', () => {
       WHEN the config is resolved without --config
       THEN the config above is not used`, () => {
     writeConfig('.', { langs: ['en', 'es'] });
+    fs.writeFileSync(path.resolve(dir, 'apps/package.json'), '{}');
     process.chdir(path.resolve(dir, 'apps'));
     project.sourceRoot = 'web/src';
 
     expect(langs()).toEqual(['en']);
+  });
+
+  it(`GIVEN a config beside the package.json above the working directory
+      WHEN the config is resolved without --config
+      THEN that config is found`, () => {
+    writeConfig('.', { langs: ['en', 'es'] });
+    fs.writeFileSync(path.resolve(dir, 'package.json'), '{}');
+    process.chdir(path.resolve(dir, 'apps/web'));
+    project.sourceRoot = 'src';
+
+    expect(langs()).toEqual(['en', 'es']);
+    expect(langs({ config: 'missing' })).toEqual(['en']);
   });
 
   it(`GIVEN a source root outside the working directory
@@ -145,6 +158,7 @@ describe('resolveConfig config lookup', () => {
     mkdir('outside/src/app');
     mkdir('workspace');
     writeConfig('outside', { langs: ['fr'] });
+    fs.writeFileSync(path.resolve(workspace, 'package.json'), '{}');
     process.chdir(workspace);
     project.sourceRoot = path.join(outside, 'src');
 

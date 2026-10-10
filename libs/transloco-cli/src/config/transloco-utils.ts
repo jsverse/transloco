@@ -1,4 +1,4 @@
-import { statSync } from 'node:fs';
+import { existsSync, statSync } from 'node:fs';
 import * as path from 'node:path';
 
 import { cosmiconfigSync, type CosmiconfigResult } from 'cosmiconfig';
@@ -22,7 +22,11 @@ export function getGlobalConfig(searchPath = ''): TranslocoGlobalConfig {
  * directory alone, the search goes up through the parent directories, up to
  * and including the working directory, and uses the first config it finds.
  * A directory outside of the working directory is followed by the working
- * directory itself. Nothing above the working directory is ever looked at.
+ * directory itself. When the working directory holds no `package.json` the
+ * search carries on above it, up to the first directory that does, which is
+ * the root of the package the working directory belongs to, the way
+ * `findGlobalConfigFile` stops. Without such a directory nothing above the
+ * working directory is looked at.
  */
 export function searchGlobalConfig(dir = ''): {
   config: TranslocoGlobalConfig;
@@ -78,15 +82,19 @@ function unwrapConfig({
     : config;
 }
 
+function searchDirs(dir: string): string[] {
+  const cwd = process.cwd();
+
+  return [...dirsUpToCwd(path.resolve(cwd, dir), cwd), ...dirsAboveCwd(cwd)];
+}
+
 /**
  * The directory, then its parents up to the working directory. A directory
  * that is not below the working directory is followed by the working directory
  * alone, which is what walking up to the filesystem root without meeting it
  * means.
  */
-function searchDirs(dir: string): string[] {
-  const cwd = process.cwd();
-  const start = path.resolve(cwd, dir);
+function dirsUpToCwd(start: string, cwd: string): string[] {
   const dirs: string[] = [];
 
   for (let current = start; ;) {
@@ -104,6 +112,32 @@ function searchDirs(dir: string): string[] {
 
     current = parent;
   }
+}
+
+/**
+ * The parents of the working directory up to the first one holding a
+ * `package.json`, none when the working directory holds one itself or when
+ * no parent does.
+ */
+function dirsAboveCwd(cwd: string): string[] {
+  const dirs: string[] = [];
+
+  for (let current = cwd; !hasPackageJson(current);) {
+    const parent = path.dirname(current);
+
+    if (parent === current) {
+      return [];
+    }
+
+    dirs.push(parent);
+    current = parent;
+  }
+
+  return dirs;
+}
+
+function hasPackageJson(dir: string): boolean {
+  return existsSync(path.join(dir, 'package.json'));
 }
 
 // Windows paths are not case sensitive.
