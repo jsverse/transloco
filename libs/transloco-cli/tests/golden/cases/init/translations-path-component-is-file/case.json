@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN a file on the way to the default translations path WHEN init runs with --yes THEN it is refused with one line and nothing is written",
+  "args": [
+    "init",
+    "--yes"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

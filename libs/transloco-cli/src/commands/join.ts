@@ -9,6 +9,7 @@ import {
 } from '../translation-files/index.js';
 import { nodeFileReader } from '../translation-files/node-file-reader.js';
 import { outputFile } from '../utils/file-system.js';
+import { contains, locate, lstat } from '../utils/real-path.js';
 
 import { assertConfigPathExists } from './config-path.js';
 import {
@@ -137,64 +138,4 @@ function assertOutDirIsSafe(
       out.existing === out.real ? 'it is a file' : 'it lies inside a file',
     );
   }
-}
-
-/**
- * The real path of something that may not exist yet: the real path of its
- * deepest ancestor that does, followed by the names that don't exist.
- * `unresolvable` is set when a link on the way can't be followed.
- */
-function locate(target: string) {
-  const missing: string[] = [];
-  let unresolvable = false;
-  let current = path.resolve(target);
-
-  for (;;) {
-    try {
-      const existing = fs.realpathSync(current);
-
-      return {
-        existing,
-        real: path.join(existing, ...missing),
-        unresolvable,
-      };
-    } catch (error) {
-      const parent = path.dirname(current);
-
-      if (parent === current) throw error;
-
-      // Something is there, but cannot be followed: a link to nowhere or in a loop.
-      unresolvable ||= isThere(current);
-      missing.unshift(path.basename(current));
-      current = parent;
-    }
-  }
-}
-
-const isThere = (target: string) => !!lstat(target);
-
-/** What is at the path itself, without following a link. Nothing is `undefined`. */
-function lstat(target: string) {
-  try {
-    return fs.lstatSync(target);
-  } catch {
-    return undefined;
-  }
-}
-
-/** Whether `child` is `parent` or lies below it. */
-function contains(parent: string, child: string) {
-  const fold = (value: string) =>
-    process.platform === 'linux' ? value : value.toLowerCase();
-  const relative = path.relative(
-    fold(path.resolve(parent)),
-    fold(path.resolve(child)),
-  );
-
-  return (
-    relative === '' ||
-    (relative !== '..' &&
-      !relative.startsWith(`..${path.sep}`) &&
-      !path.isAbsolute(relative))
-  );
 }

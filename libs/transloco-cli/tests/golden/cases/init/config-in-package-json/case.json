@@ -1,0 +1,13 @@
+{
+  "description": "GIVEN a config in the transloco key of package.json WHEN init runs with --force THEN it is refused naming package.json",
+  "args": [
+    "init",
+    "--yes",
+    "--force"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

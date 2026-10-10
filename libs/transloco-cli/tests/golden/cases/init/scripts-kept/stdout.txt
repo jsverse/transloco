@@ -1,0 +1,5 @@
+Created transloco.config.ts
+Created src/assets/i18n/en.json
+Kept the script i18n:extract, package.json already defines it
+Kept the script i18n:find, package.json already defines it
+Done. Run `transloco extract` to collect the keys of your project into the translation files.

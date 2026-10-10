@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN a comma separated list of languages WHEN init runs with --yes THEN it is refused saying the languages are separate arguments",
+  "args": [
+    "init",
+    "--yes",
+    "--langs",
+    "en,es"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

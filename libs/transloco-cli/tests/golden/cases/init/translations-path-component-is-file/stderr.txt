@@ -1,0 +1,1 @@
+Transloco Init: The translations path src/assets/i18n is, or lies inside, a file

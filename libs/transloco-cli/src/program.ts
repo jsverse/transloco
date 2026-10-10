@@ -296,6 +296,35 @@ export function createProgram() {
       runMigrateAngularI18n(options);
     });
 
+  program
+    .command('init')
+    .description(
+      'Prepare the project for the CLI: write the config, create the translation files and add the scripts',
+    )
+    .helpOption(helpFlags, helpDescription)
+    .option(
+      '-l, --langs <langs...>',
+      'The languages of the project (asked for when left out)',
+    )
+    .option(
+      '--translations-path <dir>',
+      'The folder of the translation files (asked for when left out)',
+    )
+    .option(
+      '--no-scripts',
+      `Don't add the i18n:extract and i18n:find scripts to package.json`,
+    )
+    .option(
+      '-y, --yes',
+      'Ask nothing: what was not given is `en` for the languages, `src/assets/i18n` for the folder, and the files and scripts are added',
+    )
+    .option('--force', 'Overwrite an existing transloco.config.ts')
+    .action(async (options) => {
+      const { runInit } = await import('./commands/init.js');
+
+      await runInit(options);
+    });
+
   // Last, so that it covers every command and option declared above.
   enforceOptionRules(program);
 

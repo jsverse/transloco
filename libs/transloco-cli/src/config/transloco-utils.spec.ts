@@ -4,7 +4,7 @@ import path from 'node:path';
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
-import { getGlobalConfig } from './transloco-utils.js';
+import { findGlobalConfigFile, getGlobalConfig } from './transloco-utils.js';
 
 const TS_CONFIG = `export default { rootTranslationsPath: 'src/assets/i18n/', langs: ['en', 'es'] };`;
 
@@ -103,5 +103,106 @@ describe('getGlobalConfig', () => {
       WHEN the config is resolved
       THEN it returns an empty config`, () => {
     expect(getGlobalConfig(dir)).toEqual({});
+  });
+});
+
+describe('findGlobalConfigFile', () => {
+  let dir: string;
+
+  beforeEach(() => {
+    dir = fs.mkdtempSync(path.join(os.tmpdir(), 'transloco-utils-find-'));
+  });
+
+  afterEach(() => {
+    fs.rmSync(dir, { recursive: true, force: true });
+  });
+
+  function write(name: string, content: string) {
+    const filePath = path.join(dir, name);
+
+    fs.writeFileSync(filePath, content, 'utf-8');
+
+    return filePath;
+  }
+
+  it(`GIVEN a directory containing a transloco.config.ts
+      WHEN the config file is looked for
+      THEN its path is returned`, () => {
+    const file = write('transloco.config.ts', TS_CONFIG);
+
+    expect(findGlobalConfigFile(dir)).toBe(file);
+  });
+
+  it(`GIVEN a config in the transloco key of package.json
+      WHEN the config file is looked for
+      THEN the package.json is the file`, () => {
+    const file = write('package.json', '{"transloco": {"langs": ["en"]}}');
+
+    expect(findGlobalConfigFile(dir)).toBe(file);
+  });
+
+  it(`GIVEN a package.json with no transloco key
+      WHEN the config file is looked for
+      THEN there is none`, () => {
+    write('package.json', '{"name": "app"}');
+
+    expect(findGlobalConfigFile(dir)).toBeUndefined();
+  });
+
+  it(`GIVEN an empty transloco.config.ts
+      WHEN the config file is looked for
+      THEN there is none, as the config is empty`, () => {
+    write('transloco.config.ts', '');
+
+    expect(findGlobalConfigFile(dir)).toBeUndefined();
+  });
+
+  it(`GIVEN a directory without a transloco config
+      WHEN the config file is looked for
+      THEN there is none`, () => {
+    expect(findGlobalConfigFile(dir)).toBeUndefined();
+  });
+
+  it(`GIVEN a folder inside a project that has a config at its root
+      WHEN the config file is looked for from the folder
+      THEN the config of the project is found`, () => {
+    const file = write('transloco.config.ts', TS_CONFIG);
+    write('package.json', '{"name": "app"}');
+    fs.mkdirSync(path.join(dir, 'src', 'app'), { recursive: true });
+
+    expect(findGlobalConfigFile(path.join(dir, 'src', 'app'))).toBe(file);
+  });
+
+  it(`GIVEN a folder with a package.json of its own below a config
+      WHEN the config file is looked for from the folder
+      THEN the search stops at that package.json`, () => {
+    write('transloco.config.ts', TS_CONFIG);
+    fs.mkdirSync(path.join(dir, 'libs', 'ui'), { recursive: true });
+    fs.writeFileSync(path.join(dir, 'libs', 'ui', 'package.json'), '{}');
+
+    expect(findGlobalConfigFile(path.join(dir, 'libs', 'ui'))).toBeUndefined();
+  });
+
+  it(`GIVEN a relative directory
+      WHEN the config file is looked for
+      THEN it is resolved against the working directory`, () => {
+    const file = write('transloco.config.ts', TS_CONFIG);
+
+    expect(findGlobalConfigFile(path.relative(process.cwd(), dir))).toBe(file);
+  });
+
+  it(`GIVEN no directory
+      WHEN the config file is looked for
+      THEN the working directory is searched`, () => {
+    const cwd = process.cwd();
+
+    try {
+      process.chdir(dir);
+      const file = write('transloco.config.ts', TS_CONFIG);
+
+      expect(findGlobalConfigFile()).toBe(fs.realpathSync(file));
+    } finally {
+      process.chdir(cwd);
+    }
   });
 });

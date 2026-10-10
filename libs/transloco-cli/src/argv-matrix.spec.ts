@@ -30,6 +30,7 @@ const runners = vi.hoisted(() => ({
   runSplit: vi.fn(),
   runMigrateNgxTranslate: vi.fn(),
   runMigrateAngularI18n: vi.fn(),
+  runInit: vi.fn(),
 }));
 
 vi.mock('./commands/extract.js', () => ({ runExtract: runners.runExtract }));
@@ -51,6 +52,7 @@ vi.mock('./commands/migrate-ngx-translate.js', () => ({
 vi.mock('./commands/migrate-angular-i18n.js', () => ({
   runMigrateAngularI18n: runners.runMigrateAngularI18n,
 }));
+vi.mock('./commands/init.js', () => ({ runInit: runners.runInit }));
 
 interface OptionInfo {
   /** The commands leading to the option, none for a program option. */
@@ -61,6 +63,8 @@ interface OptionInfo {
   long: string;
   short?: string;
   variadic: boolean;
+  /** A flag that is on by default and turned off by typing it, `--no-scripts`. */
+  negate: boolean;
   /** Two values the option accepts. */
   samples: [string, string];
   /** The arguments the command needs next to the option to be runnable. */
@@ -108,6 +112,7 @@ function readOptions(
           long: option.long as string,
           short: option.short,
           variadic: option.variadic,
+          negate: option.negate,
           samples: (choices
             ? [choices[0], choices[1] ?? choices[0]]
             : name === 'cwd'
@@ -1001,7 +1006,8 @@ describe('argv matrix', () => {
     }
 
     for (const flag of shape.flags ?? []) {
-      if (argument[flag.key] !== true) {
+      // Typing a negated flag turns its setting off
+      if (argument[flag.key] !== !flag.negate) {
         return `ran without ${flag.long}`;
       }
     }
@@ -1029,10 +1035,11 @@ describe('argv matrix', () => {
         'split',
         'migrate ngx-translate',
         'migrate angular-i18n',
+        'init',
       ]),
     );
-    expect(discovered.values.length).toBeGreaterThanOrEqual(24);
-    expect(discovered.flags.length).toBeGreaterThanOrEqual(10);
+    expect(discovered.values.length).toBeGreaterThanOrEqual(26);
+    expect(discovered.flags.length).toBeGreaterThanOrEqual(13);
     expect(countOf(matrix)).toBeGreaterThan(3600);
   });
 

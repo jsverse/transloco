@@ -1,0 +1,1 @@
+Transloco Init: A Transloco config was found in ../transloco.config.js, and a second one would make it ambiguous which applies. Remove it first, or keep using it.

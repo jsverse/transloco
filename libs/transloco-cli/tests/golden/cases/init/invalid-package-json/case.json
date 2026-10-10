@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN a package.json that is no valid JSON WHEN init runs with --yes THEN it is refused before anything is written",
+  "args": [
+    "init",
+    "--yes"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout"
+  ],
+  "stderrMatches": "^Transloco Init: package\\.json is not valid JSON: .+$"
+}

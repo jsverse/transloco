@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN an empty folder WHEN init runs with --yes THEN the config and the English file are written with the defaults",
+  "args": [
+    "init",
+    "--yes"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

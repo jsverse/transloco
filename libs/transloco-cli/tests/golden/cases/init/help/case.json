@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN the help flag WHEN init runs THEN it prints the options of init alone",
+  "args": [
+    "init",
+    "--help"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}
