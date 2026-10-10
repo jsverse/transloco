@@ -98,7 +98,7 @@ A case with `requires` is skipped, and so not regenerated, unless the binary res
 
 ## Stricter than the legacy bins
 
-A legacy bin prints a deprecation notice on stderr, which the quiet stderr cases reject, so it has to run with `process.noDeprecation` set, which is what Node's `--no-deprecation` flag does: point `TRANSLOCO_BIN` at a `.mjs` file that sets it and imports the bin, as the runner removes `NODE_OPTIONS` from the environment.
+A legacy bin prints a deprecation notice on stderr, which the quiet stderr cases reject, so it has to run with `process.noDeprecation` set, which is what Node's `--no-deprecation` flag does: set `TRANSLOCO_BIN` to the absolute path of `node` and start `TRANSLOCO_BIN_ARGS` with `--no-deprecation` followed by the bin's path, as the runner removes `NODE_OPTIONS` from the environment. A bare `node` does not work, because the runner resolves `TRANSLOCO_BIN` as a path.
 
 The `strictness` cases pin down what this binary rejects, with exit code 1 and before anything is written. The legacy bins (`transloco-keys-manager`, `transloco-optimize`, `transloco-scoped-libs`) accept most of it, which is why those cases aren't part of a comparison with them:
 

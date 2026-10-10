@@ -29,6 +29,7 @@ nx migrate @jsverse/transloco  # Nx
 
 - The package moved into the main repo and joined the shared version line, so it jumps from `8.1.1` to `9.0.0`.
 - `@angular/compiler` peer dependency is now `>=v20` and `typescript` is now `>=5.8`.
+- `marker` is now imported from `@jsverse/transloco-cli/marker`. `@jsverse/transloco-keys-manager/marker` still works and is deprecated. The package root `@jsverse/transloco-keys-manager` has no entry point anymore, so a `marker` import from it no longer resolves, although the extractor still reads the keys of one. `ng update` rewrites the imports from both paths and adds `@jsverse/transloco-cli` to `devDependencies`.
 
 ## Transloco Scoped Libs
 

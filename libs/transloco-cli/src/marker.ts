@@ -3,8 +3,6 @@
  * If you want to extract some standalone strings that are not part of any translation call you can wrap them with the marker function to tell the keys manager to extract them.
  * The function will simply return the first "key" argument passed into it.
  *
- * @deprecated Import `marker` from `@jsverse/transloco-cli/marker` instead.
- *
  * @param key The translation key to extract.
  * @param params This parameter does nothing, but is required for compatipility reasons.
  * @param scope The scope to when extracting the translation key.

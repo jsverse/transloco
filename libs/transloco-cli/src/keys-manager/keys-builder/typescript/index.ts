@@ -59,7 +59,7 @@ export function extractTSKeys(config: Config): ExtractionResult {
 type TSExtractor = (scan: SourceFileScan) => TSExtractorResult;
 
 const translocoImport = /@jsverse\/transloco/;
-const translocoKeysManagerImport = /@jsverse\/transloco-keys-manager/;
+const markerPackageImport = /@jsverse\/transloco-(?:keys-manager|cli\/marker)/;
 const routeTitleProperty = /\btitle\s*:/;
 
 function TSExtractor(
@@ -92,7 +92,7 @@ function TSExtractor(
   if (translocoImport.test(content)) {
     extractors.push(serviceExtractor, pureFunctionExtractor, signalExtractor);
   }
-  if (translocoKeysManagerImport.test(content)) {
+  if (markerPackageImport.test(content)) {
     extractors.push(markerExtractor);
   }
 
