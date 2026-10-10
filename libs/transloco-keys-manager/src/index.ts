@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import commandLineArgs from 'command-line-args';
 import commandLineUsage from 'command-line-usage';
+import { warnDeprecatedBin } from '@jsverse/transloco-cli/internal/deprecation';
 import {
   buildTranslationFiles,
   Config,
@@ -9,6 +10,8 @@ import {
   sections,
   warnUnsupportedOptions,
 } from '@jsverse/transloco-cli/internal/keys-manager';
+
+warnDeprecatedBin('transloco-keys-manager', process.argv[2]);
 
 const mainDefinitions = [{ name: 'command', defaultOption: true }];
 

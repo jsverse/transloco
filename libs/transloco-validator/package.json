@@ -5,6 +5,7 @@
   "type": "module",
   "main": "src/lib/transloco-validator.js",
   "module": "src/lib/transloco-validator.js",
+  "types": "src/lib/transloco-validator.d.ts",
   "engines": {
     "node": "^22.18.0 || >=24"
   },
