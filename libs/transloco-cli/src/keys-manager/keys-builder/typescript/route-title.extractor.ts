@@ -1,7 +1,8 @@
-import ts, { SourceFile } from 'typescript';
+import type { PropertyAssignment, PropertyName, SourceFile } from 'typescript';
 
 import { Scopes } from '../../types.js';
 import { findDescendants } from '../../utils/ts-ast.utils.js';
+import ts from '../../utils/typescript.js';
 import { resolveAliasAndKey } from '../utils/resolvers.utils.js';
 
 import { TSExtractorResult } from './types.js';
@@ -71,7 +72,7 @@ export function routeTitleExtractor(
 
     let hasLocator = false;
     let hasShaper = false;
-    let titleProperty: ts.PropertyAssignment | undefined;
+    let titleProperty: PropertyAssignment | undefined;
 
     for (const property of node.properties) {
       if (ts.isShorthandPropertyAssignment(property)) {
@@ -116,7 +117,7 @@ export function routeTitleExtractor(
  * (`path: ...`) or a quoted string/no-substitution template literal
  * (`'path': ...`). Returns `undefined` for computed or numeric names, which
  * are never valid route locator/shaper/title property names. */
-function resolvePropertyName(name: ts.PropertyName): string | undefined {
+function resolvePropertyName(name: PropertyName): string | undefined {
   if (
     ts.isIdentifier(name) ||
     ts.isStringLiteral(name) ||

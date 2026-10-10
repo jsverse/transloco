@@ -1,12 +1,17 @@
-import ts, {
+import type {
   CallExpression,
+  Decorator,
   ImportDeclaration,
   Node,
   NoSubstitutionTemplateLiteral,
+  ParameterDeclaration,
+  PropertyDeclaration,
   SourceFile,
+  VariableDeclaration,
 } from 'typescript';
 
 import { hasDescendant, isNamed, nameText } from '../../utils/ts-ast.utils.js';
+import ts from '../../utils/typescript.js';
 
 /**
  * Everything the TS extractors need, collected in a single walk of the AST so
@@ -54,7 +59,7 @@ export function scanSourceFile(ast: SourceFile): SourceFileScan {
 }
 
 // `constructor(private transloco: TranslocoService)`
-function isTranslocoServiceParam(param: ts.ParameterDeclaration) {
+function isTranslocoServiceParam(param: ParameterDeclaration) {
   return (
     !!param.type &&
     ts.isConstructorDeclaration(param.parent) &&
@@ -79,7 +84,7 @@ function isInjectTranslocoService(call: CallExpression) {
 // The property or variable an `inject(...)` call initializes, if any.
 function resolveInjectTarget(
   call: CallExpression,
-): ts.PropertyDeclaration | ts.VariableDeclaration | undefined {
+): PropertyDeclaration | VariableDeclaration | undefined {
   let node: Node | undefined = call.parent;
   while (node && !ts.isSourceFile(node)) {
     if (ts.isPropertyDeclaration(node) || ts.isVariableDeclaration(node)) {
@@ -94,7 +99,7 @@ function resolveInjectTarget(
 // `@Component({ template: \`...\` })`; substitution templates are skipped as
 // their content cannot be resolved statically.
 function resolveInlineTemplates(
-  decorator: ts.Decorator,
+  decorator: Decorator,
 ): NoSubstitutionTemplateLiteral[] {
   const call = decorator.expression;
   if (!ts.isCallExpression(call) || !isComponentDecorator(call)) return [];

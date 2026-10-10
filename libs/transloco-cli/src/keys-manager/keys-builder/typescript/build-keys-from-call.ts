@@ -1,10 +1,13 @@
-import ts, {
+import type {
   CallExpression,
   Node,
+  ObjectLiteralExpression,
   StringLiteral,
   NoSubstitutionTemplateLiteral,
 } from 'typescript';
 import { flatten } from 'flat';
+
+import ts from '../../utils/typescript.js';
 
 import { TSExtractorResult } from './types.js';
 
@@ -39,13 +42,11 @@ function isStringNode(
   );
 }
 
-function resolveParams(params: ts.ObjectLiteralExpression): string[] {
+function resolveParams(params: ObjectLiteralExpression): string[] {
   return Object.keys(flatten(traverseParams(params)));
 }
 
-function traverseParams(
-  params: ts.ObjectLiteralExpression,
-): Record<string, any> {
+function traverseParams(params: ObjectLiteralExpression): Record<string, any> {
   const properties: Record<string, any> = {};
 
   for (const property of params.properties) {

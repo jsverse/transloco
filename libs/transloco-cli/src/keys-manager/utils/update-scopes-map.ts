@@ -1,4 +1,4 @@
-import ts, { Node, ObjectLiteralExpression } from 'typescript';
+import type { Node, ObjectLiteralExpression } from 'typescript';
 
 import { addScope, hasScope } from '../keys-builder/utils/scope.utils.js';
 import { Scopes } from '../types.js';
@@ -6,6 +6,7 @@ import { Scopes } from '../types.js';
 import { readFile } from './file.utils.js';
 import { toCamelCase } from './string.utils.js';
 import { normalizedGlob } from './normalize-glob-path.js';
+import ts from './typescript.js';
 import {
   findDescendant,
   findDescendants,

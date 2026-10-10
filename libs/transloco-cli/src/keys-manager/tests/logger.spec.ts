@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import debug from 'debug';
 
-vi.mock('ora', () => {
+vi.mock('yocto-spinner', () => {
   const mockSpinner = {
     start: vi.fn().mockReturnThis(),
-    succeed: vi.fn().mockReturnThis(),
+    stop: vi.fn().mockReturnThis(),
   };
   return { default: vi.fn(() => mockSpinner) };
 });

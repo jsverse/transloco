@@ -246,9 +246,6 @@ importers:
       bootstrap:
         specifier: ^5.3.8
         version: 5.3.8(@popperjs/core@2.11.8)
-      chalk:
-        specifier: 6.0.0
-        version: 6.0.0
       chokidar:
         specifier: ^5.0.0
         version: 5.0.0
@@ -291,15 +288,15 @@ importers:
       jsonc-parser:
         specifier: 3.3.1
         version: 3.3.1
-      ora:
-        specifier: 9.4.1
-        version: 9.4.1
       rxjs:
         specifier: ^7.8.2
         version: 7.8.2
       tslib:
         specifier: ^2.8.1
         version: 2.8.1
+      yocto-spinner:
+        specifier: 1.2.2
+        version: 1.2.2
       zone.js:
         specifier: 0.16.2
         version: 0.16.2
@@ -4530,10 +4527,6 @@ packages:
     resolution: {integrity: sha512-7NzBL0rN6fMUW+f7A6Io4h40qQlG+xGmtMxfbnH/K7TAtt8JQWVQK+6g0UXKMeVJoyV5EkkNsErQ8pVD3bLHbA==}
     engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
 
-  chalk@6.0.0:
-    resolution: {integrity: sha512-2uNTXIuTTxk7ciZgAU1BQcgnchcG0xXnrs6jzkQfj9SsRa9M2s5zE8WT96hS6KmG4MzWHSrvH43DF1m4XRkrFg==}
-    engines: {node: '>=22'}
-
   chardet@2.2.0:
     resolution: {integrity: sha512-rddelWYNPRrXq6PtNEN2S3f6t9ILzvqaN5pVgi4kqt9jHQaXIial9PznB5iSPVlQSLNaaH22ItWz3EJtQ10+OA==}
 
@@ -8244,6 +8237,10 @@ packages:
   yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+
+  yocto-spinner@1.2.2:
+    resolution: {integrity: sha512-DODGl1wJjA/s5pnJFKau9lIYHT81lnhob1i3e1TjxZRxEhWRKl74nTbWE6H5KlkViQQTo/Z29YFdxzTZAMY3ng==}
+    engines: {node: '>=18.19'}
 
   yoctocolors-cjs@2.1.3:
     resolution: {integrity: sha512-U/PBtDf35ff0D8X8D0jfdzHYEPFxAI7jJlxZXwCSez5M3190m+QobIfh+sWDWSHMCWWJN2AWamkegn6vr6YBTw==}
@@ -12512,8 +12509,6 @@ snapshots:
 
   chalk@5.6.2: {}
 
-  chalk@6.0.0: {}
-
   chardet@2.2.0: {}
 
   cheerio-select@2.1.0:
@@ -16643,6 +16638,10 @@ snapshots:
   yn@3.1.1: {}
 
   yocto-queue@0.1.0: {}
+
+  yocto-spinner@1.2.2:
+    dependencies:
+      yoctocolors: 2.2.0
 
   yoctocolors-cjs@2.1.3: {}
 

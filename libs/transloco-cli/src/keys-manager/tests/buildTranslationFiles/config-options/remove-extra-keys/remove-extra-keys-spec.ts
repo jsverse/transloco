@@ -1,6 +1,6 @@
+import fs from 'node:fs';
 import nodePath from 'node:path';
 
-import fs from 'fs-extra';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import {
@@ -154,13 +154,17 @@ export function testRemoveExtraKeysConfig(fileFormat: Config['fileFormat']) {
 
         it('should drop only the extra keys and keep the existing translations', () => {
           fs.copyFileSync(missingKeyTpl, testHtmlFile);
-          fs.outputJsonSync(enPath, {
-            '1': 'translated 1',
-            '2': 'translated 2',
-            group1: { '2': 'translated group1.2' },
-            group2: { '1': 'translated group2.1' },
-            group3: { '2': 'translated group3.2' },
-          });
+          fs.mkdirSync(nodePath.dirname(enPath), { recursive: true });
+          fs.writeFileSync(
+            enPath,
+            JSON.stringify({
+              '1': 'translated 1',
+              '2': 'translated 2',
+              group1: { '2': 'translated group1.2' },
+              group2: { '1': 'translated group2.1' },
+              group3: { '2': 'translated group3.2' },
+            }) + '\n',
+          );
 
           buildTranslationFiles({
             ...buildConfig({ type, config: { unflat: false, fileFormat } }),

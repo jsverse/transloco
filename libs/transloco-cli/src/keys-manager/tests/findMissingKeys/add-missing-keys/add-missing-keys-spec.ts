@@ -1,6 +1,6 @@
+import fs from 'node:fs';
 import nodePath from 'node:path';
 
-import fs from 'fs-extra';
 import { unflatten } from 'flat';
 import { describe, beforeEach, it } from 'vitest';
 
@@ -52,7 +52,7 @@ export function testAddMissingKeysConfig(
     beforeEach(() => removeI18nFolder(sourceRoot));
 
     it('should add missing keys to translation', () => {
-      fs.ensureFileSync(translationPath);
+      fs.mkdirSync(nodePath.dirname(translationPath), { recursive: true });
       fs.writeFileSync(translationPath, JSON.stringify(missingJson));
       findMissingKeys(config);
       assertTranslation({
@@ -63,7 +63,7 @@ export function testAddMissingKeysConfig(
     });
 
     it('should respect unflat option', () => {
-      fs.ensureFileSync(translationPath);
+      fs.mkdirSync(nodePath.dirname(translationPath), { recursive: true });
       fs.writeFileSync(translationPath, JSON.stringify(unflatten(missingJson)));
       findMissingKeys({ ...config, unflat: true });
       assertTranslation({
