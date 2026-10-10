@@ -1,8 +1,7 @@
 import { existsSync } from 'fs';
 
-import chalk from 'chalk';
-
 import { getGlobalConfig, TranslocoGlobalConfig } from '../../config/index.js';
+import { style } from '../../utils/style.js';
 import { defaultConfig } from '../config.js';
 import { getScopes } from '../keys-builder/utils/scope.utils.js';
 import { messages } from '../messages.js';
@@ -80,7 +79,7 @@ function validateDirectories({ input, translationsPath, command }: Config) {
     const msg = existsSync(path)
       ? messages.pathIsNotDir
       : messages.pathDoesntExist;
-    console.log(chalk.bgRed.black(`${prop} ${msg}`));
+    console.log(style(['bgRed', 'black'], `${prop} ${msg}`));
   };
 
   for (const path of input) {

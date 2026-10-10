@@ -1,8 +1,8 @@
 import { performance } from 'node:perf_hooks';
 import path from 'node:path';
 import os from 'node:os';
+import fs from 'node:fs';
 
-import fs from 'fs-extra';
 import {
   describe,
   it,
@@ -136,7 +136,7 @@ describe('Performance Benchmarks', () => {
   const LARGE_JSON_KEYS = 10000;
 
   beforeAll(() => {
-    fs.ensureDirSync(PERF_TMP);
+    fs.mkdirSync(PERF_TMP, { recursive: true });
     // Set global config needed by comments extractor
     setConfig({
       marker: 't',
@@ -183,7 +183,7 @@ describe('Performance Benchmarks', () => {
   });
 
   afterAll(() => {
-    fs.removeSync(PERF_TMP);
+    fs.rmSync(PERF_TMP, { recursive: true, force: true });
     vi.restoreAllMocks();
   });
 
@@ -278,7 +278,7 @@ describe('Performance Benchmarks', () => {
   it(`should parse and read a ${LARGE_JSON_KEYS}-key JSON file`, () => {
     const jsonPath = path.join(PERF_TMP, 'large.json');
     const data = generateLargeJson(LARGE_JSON_KEYS);
-    fs.writeJsonSync(jsonPath, data);
+    fs.writeFileSync(jsonPath, JSON.stringify(data) + '\n');
 
     const start = performance.now();
     const result = readFile(jsonPath, { parse: true });

@@ -1,8 +1,8 @@
 import path from 'path';
 
-import chalk from 'chalk';
 import { cosmiconfigSync } from 'cosmiconfig';
 
+import { style } from '../../utils/style.js';
 import { ProjectType } from '../config.js';
 
 import { coerceArray } from './collection.utils.js';
@@ -32,7 +32,8 @@ function searchConfig(searchPlaces: string[] | string, searchFrom = '') {
 
 function logNotFound(searchPlaces: string[]) {
   console.log(
-    chalk.black.bgRed(
+    style(
+      ['black', 'bgRed'],
       `Unable to load workspace config from ${searchPlaces.join(
         ', ',
       )}. Defaulting source root to '${defaultSourceRoot}'`,
@@ -65,7 +66,8 @@ export function resolveProjectBasePath(projectName?: string): {
 
   if (!resolved) {
     console.log(
-      chalk.black.bgRed(
+      style(
+        ['black', 'bgRed'],
         `Unable to resolve \`projectBasePath\` from configuration. Defaulting source root to '${defaultSourceRoot}'`,
       ),
     );

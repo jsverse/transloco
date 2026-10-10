@@ -22,7 +22,8 @@ const stubbed: Record<string, () => object> = {
   '@angular/compiler': () => ({}),
   // Requires @angular/compiler as a peer, so loading it loads the compiler too.
   '@jsverse/angular-utils': () => ({}),
-  typescript: () => ({ default: {} }),
+  // Loads `typescript` with `require`, which a mock of the package wouldn't see.
+  './keys-manager/utils/typescript.js': () => ({ default: {} }),
   cheerio: () => ({}),
   './keys-manager/index.js': () => ({}),
   './keys-manager/keys-builder/index.js': () => ({
@@ -62,7 +63,7 @@ function modulesOf(directory: string): string[] {
  * by one is what catches a runner importing a single helper from it.
  */
 const recorded = [
-  ...['keys-manager', 'validator', 'optimize', 'scoped-libs', 'config']
+  ...['keys-manager', 'validator', 'optimize', 'scoped-libs', 'config', 'utils']
     .flatMap(modulesOf)
     .filter((id) => !(id in stubbed)),
   './commands/extract.js',
@@ -76,10 +77,7 @@ const recorded = [
   'flat',
   'cosmiconfig',
   'chokidar',
-  'fs-extra',
-  'fs-extra/esm',
-  'chalk',
-  'ora',
+  'yocto-spinner',
   'cli-table3',
   'gettext-parser',
   'deep-diff',
