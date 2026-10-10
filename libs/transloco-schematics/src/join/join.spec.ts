@@ -5,7 +5,7 @@ import {
   SchematicTestRunner,
   UnitTestTree,
 } from '@angular-devkit/schematics/testing';
-import type { TranslocoGlobalConfig } from '@jsverse/transloco-utils';
+import type { TranslocoGlobalConfig } from '@jsverse/transloco-cli';
 
 import {
   createWorkspace,

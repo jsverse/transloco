@@ -12,5 +12,5 @@
   "lib": {
     "entryFile": "src/index.ts"
   },
-  "allowedNonPeerDependencies": ["@jsverse/utils", "@jsverse/transloco-utils"]
+  "allowedNonPeerDependencies": ["@jsverse/utils"]
 }

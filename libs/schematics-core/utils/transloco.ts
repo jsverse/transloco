@@ -3,7 +3,7 @@ import { Tree } from '@angular-devkit/schematics';
 import {
   getGlobalConfig as _getGlobalConfig,
   TranslocoGlobalConfig,
-} from '@jsverse/transloco-utils';
+} from '@jsverse/transloco-cli';
 
 import { generateConfigFile, NAMES } from './schematic';
 

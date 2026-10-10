@@ -1,6 +1,9 @@
 /**
- * @deprecated Import the `TranslocoGlobalConfig` type from `@jsverse/transloco`
- * instead. `@jsverse/transloco-utils` keeps working but will not change.
+ * The shape of `transloco.config.ts`, the file the Transloco tooling reads:
+ * the schematics, `@jsverse/transloco-cli` and the keys manager.
+ *
+ * Type-only: import it with `import type` so Node's type stripping erases it
+ * when the CLI loads the config.
  */
 export interface TranslocoGlobalConfig {
   rootTranslationsPath?: string;
