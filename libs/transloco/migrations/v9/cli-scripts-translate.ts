@@ -18,6 +18,15 @@ export type ScriptTranslation =
   /** It runs one, in a way that can't be moved to the new bin without changing what it does. */
   | { kind: 'left'; reason: string };
 
+export interface TranslateOptions {
+  /**
+   * Whether a path, written the way the script writes it, exists: `undefined`
+   * when it can't be told from here. The options whose path the new bin
+   * insists on are only checked when this is given.
+   */
+  pathExists?: (path: string) => boolean | undefined;
+}
+
 export const LEGACY_BINS: readonly LegacyBin[] = [
   'transloco-keys-manager',
   'transloco-validator',
@@ -28,9 +37,20 @@ export const LEGACY_BINS: readonly LegacyBin[] = [
 const BIN_ALTERNATIVES = LEGACY_BINS.join('|');
 /** Whether a text so much as names one of the bins. */
 const NAMES_A_BIN = new RegExp(BIN_ALTERNATIVES);
-/** A bin standing on its own in a text, and not as a part of a path, a package or another name. */
+/**
+ * A bin standing on its own in a text, and not as a part of a path, a package or another name:
+ * not behind a word character, `@`, `/`, `.` or `-` (but behind `.bin/`), and not in front of
+ * a word character, `-`, `/` or a dot and a word character (`transloco-validator.log`).
+ */
 const BIN_AS_A_WORD = new RegExp(
-  `(?:(?<![\\w@/.-])|(?<=\\.bin/))(?:${BIN_ALTERNATIVES})(?![\\w-])`,
+  `(?:(?<![\\w@/.-])|(?<=\\.bin/))(?:${BIN_ALTERNATIVES})(?![\\w/-]|\\.\\w)`,
+);
+/**
+ * `npx @jsverse/transloco-validator a.json`, `node node_modules/@jsverse/transloco-validator/src/index.js`:
+ * the package is fetched or its file is run.
+ */
+const RUNS_A_PACKAGE = new RegExp(
+  `(?:(?:npx|bunx|pnpm (?:exec|dlx)|yarn(?: dlx| run)?|npm exec)\\s+(?:-\\S+\\s+)*@jsverse/(?:${BIN_ALTERNATIVES})(?![\\w-])|node\\s+(?:-\\S+\\s+)*\\S*node_modules/@jsverse/(?:${BIN_ALTERNATIVES})/)`,
 );
 /**
  * A text that runs a bin, as the quoted argument of `concurrently "transloco-optimize dist"`
@@ -45,6 +65,12 @@ const PACKAGE_SPEC = new RegExp(
 );
 /** Whether a text, a CI file, a Makefile, runs or names one of the bins on its own. */
 export const mentionsBin = (text: string) => BIN_AS_A_WORD.test(text);
+/**
+ * Whether a script still holds a bin, as a whole word anywhere in it or as the
+ * package that is fetched to run it, whatever the way it is run in.
+ */
+export const stillRunsBin = (script: string) =>
+  BIN_AS_A_WORD.test(script) || RUNS_A_PACKAGE.test(script);
 
 const BIN_PATH = new RegExp(
   `^(?:.*/)?node_modules/\\.bin/(${BIN_ALTERNATIVES})$`,
@@ -172,7 +198,8 @@ function findCandidate(command: SimpleCommand): Lookup {
 
     if (KEYWORDS.has(head)) {
       index++;
-    } else if (head === 'cross-env') {
+    } else if (head === 'cross-env' || head === 'sudo' || head === 'env') {
+      // `env` is followed by its assignments, which the loop skips
       index++;
     } else if (head === 'node') {
       // Only a bin of node_modules is a script of the package to run through node
@@ -267,6 +294,16 @@ function findCandidate(command: SimpleCommand): Lookup {
       args: command.slice(index + 1),
     },
   };
+}
+
+/** Whether the command is a `cd` or a `pushd`. */
+function changesFolder(command: SimpleCommand) {
+  const head = command.find(
+    (token): token is Word =>
+      isWord(token) && !ASSIGNMENT.test(token.raw) && !KEYWORDS.has(token.raw),
+  );
+
+  return head?.value === 'cd' || head?.value === 'pushd';
 }
 
 /** The first word that runs a bin from inside something this migration doesn't parse: a quoted argument, a substitution. */
@@ -364,6 +401,48 @@ function checkValue(entry: CliOptionEntry, spelling: string, value: string) {
   return undefined;
 }
 
+/** Why a path can't be looked up in the workspace from the way it is written, or `undefined` when it can. */
+function whyNotChecked(value: string): string | undefined {
+  if (/[$`]/.test(value)) return 'it holds a $ or a backtick';
+  if (/[*?[\]{}]/.test(value)) return 'it holds a glob character';
+  if (value.startsWith('~')) return 'the shell expands the ~';
+  if (value.includes('\\')) return 'it holds a backslash';
+  if (/^(?:\/|[A-Za-z]:)/.test(value)) {
+    return 'it is an absolute path, and only the workspace is visible here';
+  }
+
+  return undefined;
+}
+
+/** The reason to leave a script whose path option may not exist for the new bin, or `undefined` when it does. */
+function checkPathExists(
+  candidate: Candidate,
+  invocation: CliInvocation,
+  name: string,
+  value: string,
+  pathExists: NonNullable<TranslateOptions['pathExists']>,
+  folderChanged: boolean,
+) {
+  const stops = `'transloco ${invocation.command}' stops when the --config path does not exist, where ${candidate.bin} ignored it`;
+  const unchecked = folderChanged
+    ? 'the script changes folder before this command'
+    : whyNotChecked(value);
+
+  if (unchecked) {
+    return `${name} points at '${value}', which can't be checked here (${unchecked}). ${stops}`;
+  }
+
+  const exists = pathExists(value);
+
+  if (exists === undefined) {
+    return `${name} points at '${value}', which is outside the workspace and can't be checked here. ${stops}`;
+  }
+
+  return exists
+    ? undefined
+    : `${name} points at '${value}', which was not found. ${stops}`;
+}
+
 function lookupOption(invocation: CliInvocation, spelling: string) {
   return invocation.options.find((entry) =>
     Object.prototype.hasOwnProperty.call(entry.spellings, spelling),
@@ -371,7 +450,11 @@ function lookupOption(invocation: CliInvocation, spelling: string) {
 }
 
 /** Works out the edits that move one bin invocation to the transloco bin, or why it can't. */
-function translateCandidate(candidate: Candidate): Outcome {
+function translateCandidate(
+  candidate: Candidate,
+  { pathExists }: TranslateOptions,
+  folderChanged: boolean,
+): Outcome {
   const { args } = candidate;
   const firstRedirect = args.findIndex((token) => token.kind === 'redirect');
 
@@ -576,6 +659,19 @@ function translateCandidate(candidate: Candidate): Outcome {
         const problem = checkValue(entry, name, value);
 
         if (problem) return stopAt(problem);
+
+        if (entry.mustExist && pathExists) {
+          const missing = checkPathExists(
+            candidate,
+            invocation,
+            name,
+            value,
+            pathExists,
+            folderChanged,
+          );
+
+          if (missing) return stopAt(missing);
+        }
       }
 
       if (entry.name === 'dist' && ++positionals > 1) {
@@ -614,7 +710,10 @@ function translateCandidate(candidate: Candidate): Outcome {
  * returned byte for byte. A script that runs a bin in any way that isn't read
  * to the last token is left whole, with the reason why.
  */
-export function translateScript(script: string): ScriptTranslation {
+export function translateScript(
+  script: string,
+  options: TranslateOptions = {},
+): ScriptTranslation {
   if (!NAMES_A_BIN.test(script)) return { kind: 'none' };
 
   const commands = parseScript(script);
@@ -628,6 +727,8 @@ export function translateScript(script: string): ScriptTranslation {
 
   const edits: Edit[] = [];
   const bins: LegacyBin[] = [];
+  /** Whether a command in front of the one at hand moved to another folder, where a relative path is no longer the one of the `package.json`. */
+  let folderChanged = false;
 
   for (const command of commands) {
     const lookup = findCandidate(command);
@@ -640,10 +741,16 @@ export function translateScript(script: string): ScriptTranslation {
 
       if (hidden) return { kind: 'left', reason: hidden };
 
+      folderChanged ||= changesFolder(command);
+
       continue;
     }
 
-    const outcome = translateCandidate(lookup.candidate);
+    const outcome = translateCandidate(
+      lookup.candidate,
+      options,
+      folderChanged,
+    );
 
     if ('reason' in outcome) return { kind: 'left', reason: outcome.reason };
 

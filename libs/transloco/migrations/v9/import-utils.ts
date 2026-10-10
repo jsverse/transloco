@@ -159,7 +159,10 @@ function installedVersion(): string | null {
 /** Whether the root `package.json` lists `name`, or `null` when it can't be read. */
 function isListed(tree: Tree, name: string): boolean | null {
   try {
-    const manifest = JSON.parse(tree.read('/package.json')?.toString() ?? '');
+    // `JSON.parse` rejects a byte order mark, which editors on Windows put at the start of a file
+    const manifest = JSON.parse(
+      (tree.read('/package.json')?.toString() ?? '').replace(/^\uFEFF/, ''),
+    );
     if (!manifest || typeof manifest !== 'object' || Array.isArray(manifest))
       return null;
 

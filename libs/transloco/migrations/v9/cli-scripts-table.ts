@@ -15,6 +15,12 @@ export interface CliOptionEntry {
   allowEmpty?: boolean;
   /** The value is a comma separated list that can't hold an empty part. */
   list?: boolean;
+  /**
+   * The value is a path the new bin stops on when nothing is there, where the
+   * legacy bin carried on with the default configuration. A script is only
+   * moved when the path is known to exist.
+   */
+  mustExist?: boolean;
   /** Why the option is dropped or left. */
   reason?: string;
 }
@@ -84,7 +90,8 @@ export const CLI_SCRIPTS_TABLE: CliScriptsTable = {
             "-c": "-c"
           },
           "outcome": "same",
-          "takesValue": true
+          "takesValue": true,
+          "mustExist": true
         },
         {
           "name": "input",
@@ -239,7 +246,8 @@ export const CLI_SCRIPTS_TABLE: CliScriptsTable = {
             "-c": "-c"
           },
           "outcome": "same",
-          "takesValue": true
+          "takesValue": true,
+          "mustExist": true
         },
         {
           "name": "input",

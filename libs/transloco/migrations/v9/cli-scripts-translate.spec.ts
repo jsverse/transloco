@@ -1,6 +1,6 @@
 import { CLI_SCRIPTS_TABLE, CliInvocation } from './cli-scripts-table';
 import { parseScript } from './cli-scripts-shell';
-import { translateScript } from './cli-scripts-translate';
+import { stillRunsBin, translateScript } from './cli-scripts-translate';
 
 describe('parseScript', () => {
   const values = (script: string) =>
@@ -109,6 +109,66 @@ describe('translateScript', () => {
       'transloco extract --default-value ""',
     ],
     ["transloco-keys-manager extract -d ''", "transloco extract -d ''"],
+    // quoted values keep their quotes, whatever the form they are given in
+    [
+      'transloco-optimize dist --commentsKey="a b"',
+      'transloco optimize dist --comments-key="a b"',
+    ],
+    [
+      'transloco-optimize dist --commentsKey "a b"',
+      'transloco optimize dist --comments-key "a b"',
+    ],
+    [
+      "transloco-optimize dist --commentsKey 'a b'",
+      "transloco optimize dist --comments-key 'a b'",
+    ],
+    [
+      "transloco-optimize dist --commentsKey='a b'",
+      "transloco optimize dist --comments-key='a b'",
+    ],
+    ["transloco-optimize dist -k 'a b'", "transloco optimize dist -k 'a b'"],
+    ['transloco-optimize dist -k "a b"', 'transloco optimize dist -k "a b"'],
+    [
+      'transloco-optimize dist --commentsKey "say \\"hi\\""',
+      'transloco optimize dist --comments-key "say \\"hi\\""',
+    ],
+    [
+      'transloco-optimize dist --commentsKey="say \\"hi\\""',
+      'transloco optimize dist --comments-key="say \\"hi\\""',
+    ],
+    ['transloco-optimize dist -k a\\ b', 'transloco optimize dist -k a\\ b'],
+    [
+      'transloco-keys-manager extract --default-value="a b"',
+      'transloco extract --default-value="a b"',
+    ],
+    [
+      'transloco-keys-manager extract --default-value "a b"',
+      'transloco extract --default-value "a b"',
+    ],
+    ["transloco-keys-manager extract -d 'a b'", "transloco extract -d 'a b'"],
+    [
+      'transloco-keys-manager extract --default-value "say \\"hi\\""',
+      'transloco extract --default-value "say \\"hi\\""',
+    ],
+    [
+      "transloco-keys-manager extract -p x -d 'a b'",
+      "transloco extract -d 'a b'",
+    ],
+    // wrappers whose arguments are the bin and its arguments
+    ['sudo transloco-validator a.json', 'sudo transloco validate a.json'],
+    ['env CI=1 transloco-optimize dist', 'env CI=1 transloco optimize dist'],
+    [
+      'env A=1 B="x y" transloco-keys-manager extract -s',
+      'env A=1 B="x y" transloco extract -s',
+    ],
+    [
+      'sudo env A=1 transloco-scoped-libs -m',
+      'sudo env A=1 transloco scoped-libs --skip-gitignore',
+    ],
+    [
+      'sudo npx transloco-validator a.json',
+      'sudo npx transloco validate a.json',
+    ],
     [
       'transloco-keys-manager find --translations-path src/assets/i18n --add-missing-keys --emit-error-on-extra-keys',
       'transloco find --translations-path src/assets/i18n --add-missing-keys --emit-error-on-extra-keys',
@@ -916,4 +976,259 @@ describe('translateScript', () => {
       },
     );
   });
+});
+
+describe('translateScript with a --config path', () => {
+  const existing = new Set(['conf/transloco.config.js', 'conf', 'a.config.js']);
+  const pathExists = (path: string) => {
+    if (path.includes('outside')) return undefined;
+
+    return existing.has(path.replace(/^\.\//, '').replace(/\/$/, ''));
+  };
+
+  const stops = (command: string) =>
+    `'transloco ${command}' stops when the --config path does not exist, where transloco-keys-manager ignored it`;
+
+  const spellings = (path: string) => [
+    `--config ${path}`,
+    `--config=${path}`,
+    `-c ${path}`,
+  ];
+
+  describe.each(['extract', 'find'])('%s', (command) => {
+    it.each(['conf/transloco.config.js', './a.config.js', 'conf', 'conf/'])(
+      `GIVEN a --config path that exists: %s
+       WHEN it is translated
+       THEN the script is rewritten in every spelling`,
+      (path) => {
+        for (const option of spellings(path)) {
+          expect(
+            translateScript(`transloco-keys-manager ${command} ${option}`, {
+              pathExists,
+            }),
+          ).toMatchObject({
+            kind: 'rewritten',
+            script: `transloco ${command} ${option}`,
+          });
+        }
+      },
+    );
+
+    it.each(['missing.config.js', './conf/other.js', 'conf/x/'])(
+      `GIVEN a --config path that does not exist: %s
+       WHEN it is translated
+       THEN the script is left in every spelling, with the path not found and the new bin stopping on it`,
+      (path) => {
+        for (const option of spellings(path)) {
+          const result = translateScript(
+            `transloco-keys-manager ${command} ${option}`,
+            { pathExists },
+          );
+
+          expect(result.kind).toBe('left');
+          expect(result).toMatchObject({
+            reason: expect.stringContaining(`'${path}', which was not found`),
+          });
+          expect(result).toMatchObject({
+            reason: expect.stringContaining(stops(command)),
+          });
+        }
+      },
+    );
+
+    it.each([
+      ["'$CONFIG'", 'a $ or a backtick'],
+      ["'conf/*.js'", 'a glob character'],
+      ["'conf/{a,b}.js'", 'a glob character'],
+      ["'~/transloco.config.js'", 'the shell expands the ~'],
+      ['/etc/transloco.config.js', 'an absolute path'],
+      ["'C:/conf/transloco.config.js'", 'an absolute path'],
+      ["'conf\\\\transloco.config.js'", 'a backslash'],
+    ])(
+      `GIVEN the --config path %s that can't be checked statically
+       WHEN it is translated
+       THEN the script is left, with the reason it can't be checked`,
+      (path, why) => {
+        const result = translateScript(
+          `transloco-keys-manager ${command} --config ${path}`,
+          { pathExists: () => true },
+        );
+
+        expect(result.kind).toBe('left');
+        expect(result).toMatchObject({
+          reason: expect.stringContaining(`can't be checked here`),
+        });
+        expect(result).toMatchObject({
+          reason: expect.stringContaining(why),
+        });
+        expect(result).toMatchObject({
+          reason: expect.stringContaining(stops(command)),
+        });
+      },
+    );
+
+    it.each(['$CONFIG', '"$DIR/transloco.config.js"', 'conf/*.js'])(
+      `GIVEN the --config path %s the shell works out
+       WHEN it is translated
+       THEN the script is left even when every path exists`,
+      (path) => {
+        expect(
+          translateScript(`transloco-keys-manager ${command} -c ${path}`, {
+            pathExists: () => true,
+          }).kind,
+        ).toBe('left');
+      },
+    );
+
+    it(`GIVEN a --config path outside of the workspace
+        WHEN it is translated
+        THEN the script is left, with the reason it can't be checked`, () => {
+      const result = translateScript(
+        `transloco-keys-manager ${command} --config ../outside/a.js`,
+        { pathExists },
+      );
+
+      expect(result).toMatchObject({
+        kind: 'left',
+        reason: expect.stringContaining('outside the workspace'),
+      });
+    });
+
+    it(`GIVEN a script with a missing --config path and another bin
+        WHEN it is translated
+        THEN none of it is rewritten`, () => {
+      const result = translateScript(
+        `transloco-validator a.json && transloco-keys-manager ${command} -c missing.js`,
+        { pathExists },
+      );
+
+      expect(result.kind).toBe('left');
+    });
+  });
+
+  it.each([
+    'cd app && transloco-keys-manager extract -c conf/transloco.config.js',
+    'pushd app; transloco-keys-manager find --config=conf',
+    'cd app\ntransloco-keys-manager find -c conf',
+    '(cd app && transloco-keys-manager extract --config conf)',
+    'FOO=1 cd app && npx transloco-keys-manager extract -c conf',
+    'cd a && transloco-validator x.json && cd .. && transloco-keys-manager extract -c conf',
+  ])(
+    `GIVEN the script %j that changes folder before it uses a --config path
+      WHEN it is translated
+      THEN it is left, as the path is not the one of the package.json`,
+    (script) => {
+      const result = translateScript(script, { pathExists: () => true });
+
+      expect(result).toMatchObject({
+        kind: 'left',
+        reason: expect.stringContaining(
+          'the script changes folder before this command',
+        ),
+      });
+    },
+  );
+
+  it.each([
+    [
+      'transloco-keys-manager extract -c conf/transloco.config.js && cd app',
+      'transloco extract -c conf/transloco.config.js && cd app',
+    ],
+    [
+      'cd app && transloco-keys-manager extract -i src',
+      'cd app && transloco extract -i src',
+    ],
+    [
+      'echo cd && transloco-keys-manager find -c conf',
+      'echo cd && transloco find -c conf',
+    ],
+  ])(
+    `GIVEN the script %j where no folder is changed in front of a --config path
+      WHEN it is translated
+      THEN it is rewritten`,
+    (script, expected) => {
+      expect(translateScript(script, { pathExists })).toMatchObject({
+        kind: 'rewritten',
+        script: expected,
+      });
+    },
+  );
+
+  it(`GIVEN no way to look paths up
+      WHEN a script with a --config path is translated
+      THEN the path is not checked`, () => {
+    expect(
+      translateScript('transloco-keys-manager extract --config missing.js'),
+    ).toMatchObject({
+      kind: 'rewritten',
+      script: 'transloco extract --config missing.js',
+    });
+  });
+
+  it.each([
+    'transloco-validator --config a.json',
+    'transloco-optimize dist --config a.js',
+    'transloco-scoped-libs --config a.js',
+  ])(
+    `GIVEN the script %s of a bin that takes no config path
+      WHEN it is translated
+      THEN it is left, as it is for any option the bin doesn't know`,
+    (script) => {
+      expect(translateScript(script, { pathExists }).kind).toBe('left');
+    },
+  );
+});
+
+describe('stillRunsBin', () => {
+  it.each([
+    'transloco-validator a.json',
+    'sudo -u bob transloco-validator a.json',
+    'nodemon --exec transloco-optimize dist',
+    'nodemon --exec "transloco-optimize dist"',
+    'pnpm --filter x exec transloco-validator a.json',
+    'yarn workspace x run transloco-validator a.json',
+    'cross-env-shell "transloco-validator a.json"',
+    'echo transloco-keys-manager',
+    'npm run transloco-scoped-libs -- --watch',
+    './node_modules/.bin/transloco-optimize dist',
+    'transloco-optimize;',
+    'x && transloco-validator',
+    'npx @jsverse/transloco-validator a.json',
+    'pnpm dlx @jsverse/transloco-keys-manager@9 extract',
+    'yarn dlx -q @jsverse/transloco-optimize dist',
+    'node node_modules/@jsverse/transloco-validator/src/index.js a.json',
+    'node --no-warnings ./node_modules/@jsverse/transloco-optimize/src/index.js dist',
+  ])(
+    `GIVEN the script %j
+      WHEN it is looked at for a bin
+      THEN the bin is found`,
+    (script) => {
+      expect(stillRunsBin(script)).toBe(true);
+    },
+  );
+
+  it.each([
+    'my-transloco-validator a.json',
+    'transloco-validator-extra a.json',
+    'transloco-optimizer dist',
+    'transloco_optimize dist',
+    'transloco-validators a.json',
+    'rimraf dist/transloco-optimize/x',
+    'cp transloco-validator/a.json b',
+    'git add transloco-validator.log',
+    'node tools/transloco-optimize.js',
+    'pnpm add @jsverse/transloco-keys-manager',
+    'echo @jsverse/transloco-validator',
+    'cat ./node_modules/@jsverse/transloco-keys-manager/README.md',
+    'transloco extract -i src',
+    'transloco validate a.json',
+    '',
+  ])(
+    `GIVEN the script %j
+      WHEN it is looked at for a bin
+      THEN no bin is found`,
+    (script) => {
+      expect(stillRunsBin(script)).toBe(false);
+    },
+  );
 });

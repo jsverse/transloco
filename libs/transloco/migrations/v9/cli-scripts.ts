@@ -1,7 +1,13 @@
+import { posix } from 'node:path';
+
 import { Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
 
 import { LegacyBin } from './cli-scripts-table';
-import { mentionsBin, translateScript } from './cli-scripts-translate';
+import {
+  mentionsBin,
+  stillRunsBin,
+  translateScript,
+} from './cli-scripts-translate';
 import { addCliDependency, CLI_PACKAGE } from './import-utils';
 import { collectMatching } from './workspace-utils';
 
@@ -150,7 +156,20 @@ const COMMAND_FILES = [
   /(^|\/)Makefile$/,
   /\.sh$/,
   /(^|\/)(project|\.?angular)\.json$/,
+  /(^|\/)\.circleci\/config\.ya?ml$/,
+  /(^|\/)bitbucket-pipelines\.ya?ml$/,
+  // The hooks sit right in the folder, `.husky/_` holds the ones husky generates
+  /(^|\/)\.husky\/[^/]+$/,
+  /(^|\/)\.lintstagedrc[^/]*$/,
+  /(^|\/)lint-staged\.config\.[^/]+$/,
+  /(^|\/)Dockerfile[^/]*$/,
+  /(^|\/)docker-compose[^/]*\.ya?ml$/,
+  /(^|\/)Taskfile\.ya?ml$/,
+  /(^|\/)[Jj]ustfile$/,
 ];
+
+/** The hooks husky generates, which are not the user's: only the ones right in `.husky` are. */
+const GENERATED = /(^|\/)\.husky\/_\//;
 
 const isManifest = (path: string) =>
   /(^|\/)package\.json$/.test(path) && !/\/\.[^/]+\//.test(path);
@@ -164,6 +183,37 @@ interface Kept extends Moved {
   reason: string;
 }
 
+const STILL_USED =
+  'the old bin is still used here and could not be rewritten automatically';
+
+/**
+ * Whether `path`, as a script of the `package.json` at `manifest` writes it,
+ * is a file or a folder of the tree. A script runs in the folder of its
+ * `package.json`. `undefined` for a path that leaves the workspace.
+ */
+function pathChecker(tree: Tree, manifest: string) {
+  const base = posix.dirname(manifest).replace(/^\//, '');
+
+  return (path: string) => {
+    const joined = posix.join(base, path);
+
+    if (joined === '..' || joined.startsWith('../')) return undefined;
+
+    const absolute = `/${joined}`.replace(/\/$/, '') || '/';
+
+    // A path that ends with a slash names a folder, whatever else is there
+    if (!path.endsWith('/') && tree.exists(absolute)) return true;
+
+    try {
+      const dir = tree.getDir(absolute);
+
+      return dir.subfiles.length > 0 || dir.subdirs.length > 0;
+    } catch {
+      return false;
+    }
+  };
+}
+
 const REPLACEMENTS = `'transloco extract', 'transloco find', 'transloco validate', 'transloco optimize' and 'transloco scoped-libs'`;
 
 /**
@@ -175,7 +225,12 @@ const REPLACEMENTS = `'transloco extract', 'transloco find', 'transloco validate
  * option, with the table the CLI project holds to the real program. A script
  * is only rewritten when every one of its invocations is understood to the
  * last token and has an equivalent on the new bin. The others are left as
- * they are and reported, with the reason.
+ * they are and reported, with the reason. So is a script that still names a
+ * bin once it was read, in a shape this migration doesn't parse.
+ *
+ * A `--config` path is looked up in the tree, from the folder of the
+ * `package.json` that holds the script: the new bin stops on a path that does
+ * not exist, the old one ignored it.
  *
  * Only the text of the scripts changes in a `package.json`. Other files that
  * run the bins, the CI pipelines and the like, are reported and never edited.
@@ -193,7 +248,8 @@ export function migrateCliScripts(): Rule {
     const files = collectMatching(
       tree,
       (path) =>
-        isManifest(path) || COMMAND_FILES.some((file) => file.test(path)),
+        !GENERATED.test(path) &&
+        (isManifest(path) || COMMAND_FILES.some((file) => file.test(path))),
     );
 
     for (const path of files) {
@@ -208,11 +264,21 @@ export function migrateCliScripts(): Rule {
       }
 
       const edits: Array<{ start: number; end: number; text: string }> = [];
+      const pathExists = pathChecker(tree, path);
 
       for (const script of findScripts(source) ?? []) {
-        const result = translateScript(script.value);
+        const result = translateScript(script.value, { pathExists });
 
-        if (result.kind === 'rewritten') {
+        if (result.kind === 'left') {
+          kept.push({ path, name: script.name, reason: result.reason });
+        } else if (
+          stillRunsBin(
+            result.kind === 'rewritten' ? result.script : script.value,
+          )
+        ) {
+          // A shape that wasn't read: the script stays whole, even if a part of it could move
+          kept.push({ path, name: script.name, reason: STILL_USED });
+        } else if (result.kind === 'rewritten') {
           edits.push({
             start: script.start,
             end: script.end,
@@ -220,8 +286,6 @@ export function migrateCliScripts(): Rule {
           });
           moved.push({ path, name: script.name });
           result.bins.forEach((bin) => bins.add(bin));
-        } else if (result.kind === 'left') {
-          kept.push({ path, name: script.name, reason: result.reason });
         }
       }
 
