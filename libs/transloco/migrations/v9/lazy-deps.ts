@@ -18,7 +18,6 @@ const resolve = createRequire(__filename);
 
 type CompilerModule = typeof import('@angular/compiler');
 type TypeScriptModule = typeof import('typescript');
-type DependencyModule = typeof import('@schematics/angular/utility/dependency');
 
 interface StandaloneRules {
   addRootProvider: (
@@ -35,7 +34,6 @@ interface StandaloneRules {
 let compiler: CompilerModule | null | undefined;
 let typescript: TypeScriptModule | null | undefined;
 let standalone: StandaloneRules | null | undefined;
-let dependency: DependencyModule | null | undefined;
 
 function attempt<T>(load: () => T): T | null {
   try {
@@ -81,16 +79,4 @@ export function loadStandaloneRules(): StandaloneRules | null {
   }
 
   return standalone;
-}
-
-/** The helper that adds a package to `package.json` and schedules the install. */
-export function loadDependencyRules(): DependencyModule | null {
-  if (dependency === undefined) {
-    dependency = attempt(
-      () =>
-        resolve('@schematics/angular/utility/dependency') as DependencyModule,
-    );
-  }
-
-  return dependency;
 }

@@ -75,4 +75,48 @@ describe('scope', () => {
       tree.files.some((file) => file.endsWith('reports/transloco.loader.ts')),
     ).toBe(true);
   });
+
+  it.each([
+    ['en,es', ['en', 'es']],
+    ['en, es', ['en', 'es']],
+    [' en ,es,', ['en', 'es']],
+    ['fr', ['fr']],
+  ])(
+    `GIVEN the langs option %j
+      WHEN the scope schematic runs
+      THEN a translation file is created per language`,
+    async (langs, expected) => {
+      const tree = await schematicRunner.runSchematic(
+        'scope',
+        { name: 'reports', project: 'bar', langs },
+        appTree,
+      );
+      const created = tree.files
+        .filter((file) =>
+          file.startsWith('/projects/bar/src/assets/i18n/reports/'),
+        )
+        .sort();
+
+      expect(created).toEqual(
+        expected.map(
+          (lang) => `/projects/bar/src/assets/i18n/reports/${lang}.json`,
+        ),
+      );
+    },
+  );
+
+  it(`GIVEN a comma separated langs option and the inline loader
+      WHEN the scope schematic runs
+      THEN the loader lists each language on its own`, async () => {
+    const tree = await schematicRunner.runSchematic(
+      'scope',
+      { name: 'reports', project: 'bar', langs: 'en, es', inlineLoader: true },
+      appTree,
+    );
+    const loader = tree.files.find((file) =>
+      file.endsWith('reports/transloco.loader.ts'),
+    );
+
+    expect(tree.readContent(loader!)).toContain(`['en', 'es']`);
+  });
 });

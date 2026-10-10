@@ -1004,7 +1004,7 @@ describe('translateScript with a --config path', () => {
   };
 
   const stops = (command: string) =>
-    `'transloco ${command}' stops when the --config path does not exist, where transloco-keys-manager ignored it`;
+    `'transloco ${command}' stops when the --config path does not exist, where transloco-keys-manager ignores a missing path and uses the configuration it finds`;
 
   const spellings = (path: string) => [
     `--config ${path}`,

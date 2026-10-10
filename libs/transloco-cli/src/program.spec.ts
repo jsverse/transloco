@@ -222,6 +222,31 @@ describe('createProgram', () => {
         expect.objectContaining({ langs: ['en,es'] }),
       );
     });
+
+    it.each([
+      [['--langs', 'en,es'], ['en,es']],
+      [['--langs=en,es'], ['en,es']],
+      [['-l', 'en,es'], ['en,es']],
+      [
+        ['--langs', 'en', 'es,fr'],
+        ['en', 'es,fr'],
+      ],
+    ])(
+      `GIVEN a comma in a language typed as %j
+       WHEN init or migrate angular-i18n runs
+       THEN every spelling hands the command the same languages, for it to refuse`,
+      async (args, langs) => {
+        await setup().run('init', ...args);
+        await setup().run('migrate', 'angular-i18n', '--input', 'x', ...args);
+
+        expect(runners.runInit).toHaveBeenCalledExactlyOnceWith(
+          expect.objectContaining({ langs }),
+        );
+        expect(runners.runMigrateAngularI18n).toHaveBeenCalledExactlyOnceWith(
+          expect.objectContaining({ langs }),
+        );
+      },
+    );
   });
 
   describe('find', () => {

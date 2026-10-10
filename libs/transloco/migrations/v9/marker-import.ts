@@ -154,6 +154,58 @@ export function referencesPackageRoot(source: string): boolean {
   return ROOT_SPECIFIER.test(source);
 }
 
+/**
+ * What `source` imports or re-exports by name from the package root, for the
+ * report. A `require()`, an `import()` and the like name nothing.
+ */
+export function namesFromPackageRoot(source: string, fileName: string) {
+  const ts = loadTypeScript();
+  if (!ts) return [];
+
+  const file = ts.createSourceFile(
+    fileName,
+    source,
+    ts.ScriptTarget.Latest,
+    true,
+  );
+  const names = new Set<string>();
+
+  for (const statement of file.statements) {
+    if (
+      !(
+        ts.isImportDeclaration(statement) || ts.isExportDeclaration(statement)
+      ) ||
+      !statement.moduleSpecifier ||
+      !ts.isStringLiteral(statement.moduleSpecifier) ||
+      statement.moduleSpecifier.text !== PACKAGE
+    )
+      continue;
+
+    const bindings = ts.isImportDeclaration(statement)
+      ? statement.importClause?.namedBindings
+      : statement.exportClause;
+
+    if (ts.isImportDeclaration(statement) && statement.importClause?.name) {
+      names.add('the default export');
+    }
+
+    if (!bindings) {
+      if (ts.isExportDeclaration(statement)) names.add('everything');
+    } else if (
+      ts.isNamespaceImport(bindings) ||
+      ts.isNamespaceExport(bindings)
+    ) {
+      names.add('everything');
+    } else {
+      bindings.elements.forEach((element) =>
+        names.add((element.propertyName ?? element.name).text),
+      );
+    }
+  }
+
+  return [...names];
+}
+
 /** Whether `source` still references the old `/marker` subpath. */
 export function referencesOldSubpath(source: string): boolean {
   return OLD_SUBPATH_SPECIFIER.test(source);
@@ -181,7 +233,7 @@ export function migrateMarkerImport(): Rule {
   return (tree: Tree, context: SchematicContext) => {
     let migrated = 0;
     let introduced = 0;
-    const rootReferences: string[] = [];
+    const rootReferences: Array<{ path: string; names: string[] }> = [];
     const subpathReferences: string[] = [];
 
     for (const path of collectFiles(tree, '', SCANNED_WITH_JSX)) {
@@ -196,7 +248,12 @@ export function migrateMarkerImport(): Rule {
         source = result.content;
       }
 
-      if (referencesPackageRoot(source)) rootReferences.push(path);
+      if (referencesPackageRoot(source)) {
+        rootReferences.push({
+          path,
+          names: namesFromPackageRoot(source, path),
+        });
+      }
       if (referencesOldSubpath(source)) subpathReferences.push(path);
     }
 
@@ -212,8 +269,13 @@ export function migrateMarkerImport(): Rule {
 
     if (rootReferences.length) {
       context.logger.warn(
-        `  ↳ '${PACKAGE}' no longer has a root entry point, but these files still reference it:\n` +
-          rootReferences.map((path) => `    - ${path}`).join('\n') +
+        `  ↳ '${PACKAGE}' no longer exports anything from its root, but these files still reference it (the names they import are listed):\n` +
+          rootReferences
+            .map(
+              ({ path, names }) =>
+                `    - ${path}${names.length ? `: ${names.join(', ')}` : ''}`,
+            )
+            .join('\n') +
           `\n    Import marker from '${TARGET}'. TranslocoExtractKeysWebpackPlugin was removed;` +
           ` run 'transloco extract' instead.`,
       );
@@ -227,7 +289,6 @@ export function migrateMarkerImport(): Rule {
       );
     }
 
-    if (introduced)
-      return addCliDependency(tree, context, importsFromCli(EXPORT));
+    if (introduced) addCliDependency(tree, context, importsFromCli(EXPORT));
   };
 }
