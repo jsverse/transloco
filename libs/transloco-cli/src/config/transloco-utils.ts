@@ -78,28 +78,39 @@ function unwrapConfig({
     : config;
 }
 
-/** The directory, then its parents up to the working directory. */
+/**
+ * The directory, then its parents up to the working directory. A directory
+ * that is not below the working directory is followed by the working directory
+ * alone, which is what walking up to the filesystem root without meeting it
+ * means.
+ */
 function searchDirs(dir: string): string[] {
   const cwd = process.cwd();
   const start = path.resolve(cwd, dir);
-  const relative = path.relative(cwd, start);
+  const dirs: string[] = [];
 
-  if (
-    relative === '..' ||
-    relative.startsWith(`..${path.sep}`) ||
-    path.isAbsolute(relative)
-  ) {
-    return [start, cwd];
-  }
-
-  const dirs = [start];
-
-  for (let current = start; current !== cwd;) {
-    current = path.dirname(current);
+  for (let current = start; ;) {
     dirs.push(current);
-  }
 
-  return dirs;
+    if (isSamePath(current, cwd)) {
+      return dirs;
+    }
+
+    const parent = path.dirname(current);
+
+    if (parent === current) {
+      return [start, cwd];
+    }
+
+    current = parent;
+  }
+}
+
+// Windows paths are not case sensitive.
+function isSamePath(a: string, b: string): boolean {
+  return process.platform === 'win32'
+    ? a.toLowerCase() === b.toLowerCase()
+    : a === b;
 }
 
 // Any stat error (ENOENT, ENOTDIR, EACCES, ...) falls through to `search()`, which reports it as before.

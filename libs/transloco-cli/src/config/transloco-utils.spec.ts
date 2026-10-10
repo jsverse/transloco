@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
 import {
   findGlobalConfigFile,
@@ -375,6 +375,54 @@ describe('searchGlobalConfig', () => {
     expect(searchGlobalConfig('..src')).toEqual({
       config: { langs: ['en', 'es'] },
       filepath: file,
+    });
+  });
+
+  describe('on a platform with case insensitive paths', () => {
+    const platform = Object.getOwnPropertyDescriptor(process, 'platform')!;
+
+    beforeEach(() => {
+      Object.defineProperty(process, 'platform', {
+        ...platform,
+        value: 'win32',
+      });
+    });
+
+    afterEach(() => {
+      Object.defineProperty(process, 'platform', platform);
+      vi.restoreAllMocks();
+    });
+
+    it(`GIVEN a directory that differs from the working directory in case only
+        WHEN the config is searched from it
+        THEN the search ends at the working directory`, () => {
+      const file = write('transloco.config.ts', config('en', 'es'));
+      fs.mkdirSync(path.join(dir, 'src'));
+      vi.spyOn(process, 'cwd').mockReturnValue(dir.toUpperCase());
+
+      expect(searchGlobalConfig(path.join(dir, 'src'))).toEqual({
+        config: { langs: ['en', 'es'] },
+        filepath: file,
+      });
+    });
+
+    it(`GIVEN a directory that is not below the working directory
+        WHEN the config is searched from it
+        THEN the search ends at the filesystem root and the working directory is searched next`, () => {
+      const outside = fs.mkdtempSync(path.join(dir, 'outside-'));
+      const workspace = fs.mkdtempSync(path.join(dir, 'workspace-'));
+      fs.mkdirSync(path.join(outside, 'src'));
+      write('transloco.config.ts', config('fr'));
+      const file = write(
+        path.join(workspace, 'transloco.config.ts'),
+        config('en', 'es'),
+      );
+      vi.spyOn(process, 'cwd').mockReturnValue(workspace);
+
+      expect(searchGlobalConfig(path.join(outside, 'src'))).toEqual({
+        config: { langs: ['en', 'es'] },
+        filepath: file,
+      });
     });
   });
 
