@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN a scope mapped to its own directory through scopePathMap in a config outside the working directory root WHEN the keys are searched with --config naming that config THEN the files of the mapped directory are compared, as the config read is the one scopePathMap comes from",
+  "args": [
+    "find",
+    "--config",
+    "config/transloco.config.js",
+    "-e"
+  ],
+  "exitCode": 1,
+  "stdoutIncludes": [
+    "File Name Missing Keys Extra Keys",
+    "admin/en 'users.add' 'users.removed'"
+  ]
+}

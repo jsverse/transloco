@@ -30,7 +30,7 @@ export function findMissingKeys(inlineConfig: Config) {
   const result = buildKeys(config);
   logger.success(`${messages.extract} 🗝`);
 
-  const { addMissingKeys, emitErrorOnExtraKeys, unflat } = config;
+  const { addMissingKeys, emitErrorOnExtraKeys, unflat, scopePathMap } = config;
   compareKeysToFiles({
     scopeToKeys: result.scopeToKeys,
     translationsPath,
@@ -38,5 +38,6 @@ export function findMissingKeys(inlineConfig: Config) {
     emitErrorOnExtraKeys,
     fileFormat,
     unflat,
+    scopePathMap,
   });
 }

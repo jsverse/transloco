@@ -28,6 +28,7 @@ vi.mock('../../utils/resolve-project-base-path.js', () => ({
 
 vi.mock('../../../config/index.js', () => ({
   getGlobalConfig: () => mockedGlobalConfig,
+  searchGlobalConfig: () => ({ config: mockedGlobalConfig }),
 }));
 
 describe('resolveConfig', () => {
