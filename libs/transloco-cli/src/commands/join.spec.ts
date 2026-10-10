@@ -510,6 +510,25 @@ describe('runJoin', () => {
       },
     );
 
+    it(`GIVEN a translations root reached through a symbolic link and an out folder given by the real path of the root
+        WHEN it runs
+        THEN it is refused and nothing changes`, async (ctx) => {
+      link(ctx, 'src/i18n', 'linkroot');
+      const before = listing();
+
+      const error = await failure({
+        translationsPath: 'linkroot',
+        outDir: 'src/i18n',
+      });
+
+      expect(error).toBeInstanceOf(CliError);
+      expect(error.exitCode).toBe(1);
+      expect(error.message).toBe(
+        'Transloco Join: Refusing to empty src/i18n, it is, holds or lies inside the translations folder linkroot',
+      );
+      expect(listing()).toBe(before);
+    });
+
     it(`GIVEN a folder inside a link that leads nowhere as the out folder
         WHEN it runs
         THEN it is refused and nothing changes`, async (ctx) => {

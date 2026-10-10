@@ -12,6 +12,7 @@
     },
     "./internal/deprecation": "./src/deprecation/index.js",
     "./internal/keys-manager": "./src/keys-manager/index.js",
+    "./internal/migrate": "./src/migrate/index.js",
     "./internal/optimize": "./src/optimize/index.js",
     "./internal/scoped-libs": "./src/scoped-libs/index.js",
     "./internal/translation-files": "./src/translation-files/index.js",

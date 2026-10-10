@@ -81,6 +81,45 @@ const split: Allowed = {
   files: [...translationFolders.files, 'src/commands/split.js'],
 };
 
+const migrate: Allowed = {
+  files: [
+    ...program.files,
+    'src/commands/translation-folders.js',
+    'src/migrate/find-files.js',
+    'src/translation-files/index.js',
+    'src/translation-files/join.js',
+    'src/translation-files/shared.js',
+    'src/translation-files/split.js',
+  ],
+  packages: [...program.packages, 'glob'],
+};
+const migrateNgxTranslate: Allowed = {
+  ...migrate,
+  files: [
+    ...migrate.files,
+    'src/commands/migrate-ngx-translate.js',
+    'src/migrate/ngx-translate/apply-matcher.js',
+    'src/migrate/ngx-translate/migrate-ngx-translate.js',
+    'src/migrate/ngx-translate/migration-matchers.js',
+    'src/utils/style.js',
+  ],
+};
+const migrateAngularI18n: Allowed = {
+  ...migrate,
+  files: [
+    ...migrate.files,
+    'src/commands/migrate-angular-i18n.js',
+    'src/commands/config-path.js',
+    'src/config/index.js',
+    'src/config/transloco-utils.js',
+    'src/migrate/angular-i18n/dasherize.js',
+    'src/migrate/angular-i18n/migrate-angular-i18n.js',
+    'src/migrate/angular-i18n/template.js',
+    'src/utils/file-system.js',
+  ],
+  packages: [...migrate.packages, 'cosmiconfig', 'env-paths'],
+};
+
 /** `.../node_modules/@scope/name/lib/a.js` => `@scope/name`, for a pnpm store path as well. */
 function packageName(file: string) {
   const [, inPackage] = file.split(/.*[\\/]node_modules[\\/]/);
@@ -123,6 +162,20 @@ describe.skipIf(Boolean(process.env['TRANSLOCO_BIN']))(
       fs.mkdirSync(path.join(dir, 'split-i18n', 'scope'), { recursive: true });
       fs.writeFileSync(path.join(dir, 'split-i18n', 'es.json'), '');
       fs.writeFileSync(path.join(dir, 'split-i18n', 'scope', 'es.json'), '');
+      fs.mkdirSync(path.join(dir, 'migrate-ngx'));
+      fs.writeFileSync(
+        path.join(dir, 'migrate-ngx', 'a.html'),
+        `<p>{{ 'a' | translate }}</p>`,
+      );
+      fs.writeFileSync(
+        path.join(dir, 'migrate-ngx', 'a.ts'),
+        `import { TranslateService } from '@ngx-translate/core';`,
+      );
+      fs.mkdirSync(path.join(dir, 'migrate-ng'));
+      fs.writeFileSync(
+        path.join(dir, 'migrate-ng', 'a.html'),
+        `<p i18n>One</p>`,
+      );
       fs.mkdirSync(path.join(dir, 'joined'));
       fs.writeFileSync(
         path.join(dir, 'joined', 'es.json'),
@@ -207,6 +260,10 @@ describe.skipIf(Boolean(process.env['TRANSLOCO_BIN']))(
         ['scoped-libs', '--help'],
         ['join', '--help'],
         ['split', '--help'],
+        ['migrate', '--help'],
+        ['migrate', 'ngx-translate', '--help'],
+        ['migrate', 'angular-i18n', '--help'],
+        ['help', 'migrate', 'ngx-translate'],
       ].map((args) => [args.join(' '), args] as const),
     )(
       `GIVEN the arguments "%s"
@@ -229,6 +286,9 @@ describe.skipIf(Boolean(process.env['TRANSLOCO_BIN']))(
         ['extract', '-c=transloco.config.js'],
         ['optimize', ''],
         ['translate'],
+        ['migrate', 'translate'],
+        ['migrate', 'angular-i18n'],
+        ['migrate', 'ngx-translate', '--langs', 'en'],
       ].map((args) => [JSON.stringify(args), args] as const),
     )(
       `GIVEN the rejected arguments %s
@@ -286,6 +346,35 @@ describe.skipIf(Boolean(process.env['TRANSLOCO_BIN']))(
 
       expect(unexpected(loaded, split)).toEqual(nothing);
       expect(loaded.files).toEqual([...split.files].sort());
+      expect(loaded.status).toBe(0);
+    });
+
+    it(`GIVEN a folder of sources
+        WHEN the built bin migrates it from ngx-translate
+        THEN it loads the migration on top of the program, and nothing else`, () => {
+      const loaded = run('migrate', 'ngx-translate', '--input', 'migrate-ngx');
+
+      expect(unexpected(loaded, migrateNgxTranslate)).toEqual(nothing);
+      expect(loaded.files).toEqual([...migrateNgxTranslate.files].sort());
+      expect(loaded.status).toBe(0);
+    });
+
+    it(`GIVEN a folder of templates
+        WHEN the built bin migrates it from the Angular i18n
+        THEN it loads the migration on top of the program, and nothing else`, () => {
+      const loaded = run(
+        'migrate',
+        'angular-i18n',
+        '--input',
+        'migrate-ng',
+        '--translations-path',
+        'migrate-i18n',
+        '--langs',
+        'en',
+      );
+
+      expect(unexpected(loaded, migrateAngularI18n)).toEqual(nothing);
+      expect(loaded.files).toEqual([...migrateAngularI18n.files].sort());
       expect(loaded.status).toBe(0);
     });
 

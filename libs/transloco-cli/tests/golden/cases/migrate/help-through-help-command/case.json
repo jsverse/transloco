@@ -1,0 +1,13 @@
+{
+  "description": "GIVEN the help command with the names of migrate and a sub-command WHEN the binary runs THEN it prints the help of the sub-command",
+  "args": [
+    "help",
+    "migrate",
+    "ngx-translate"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

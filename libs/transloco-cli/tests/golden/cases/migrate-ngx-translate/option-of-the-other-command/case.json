@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN the languages option of angular-i18n WHEN it is given to ngx-translate THEN the option is rejected and nothing is written",
+  "args": [
+    "migrate",
+    "ngx-translate",
+    "--langs",
+    "en"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

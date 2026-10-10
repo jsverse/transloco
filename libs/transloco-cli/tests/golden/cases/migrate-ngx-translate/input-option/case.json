@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN the sources of a project in another folder WHEN the folder is given with --input THEN only that folder is migrated",
+  "args": [
+    "migrate",
+    "ngx-translate",
+    "--input",
+    "projects/shop/src"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

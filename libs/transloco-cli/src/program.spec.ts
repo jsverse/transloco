@@ -16,6 +16,8 @@ const runners = vi.hoisted(() => ({
   runScopedLibs: vi.fn(),
   runJoin: vi.fn(),
   runSplit: vi.fn(),
+  runMigrateNgxTranslate: vi.fn(),
+  runMigrateAngularI18n: vi.fn(),
 }));
 
 vi.mock('./commands/extract.js', () => ({ runExtract: runners.runExtract }));
@@ -31,6 +33,12 @@ vi.mock('./commands/scoped-libs.js', () => ({
 }));
 vi.mock('./commands/join.js', () => ({ runJoin: runners.runJoin }));
 vi.mock('./commands/split.js', () => ({ runSplit: runners.runSplit }));
+vi.mock('./commands/migrate-ngx-translate.js', () => ({
+  runMigrateNgxTranslate: runners.runMigrateNgxTranslate,
+}));
+vi.mock('./commands/migrate-angular-i18n.js', () => ({
+  runMigrateAngularI18n: runners.runMigrateAngularI18n,
+}));
 
 const { version } = JSON.parse(
   fs.readFileSync(path.join(import.meta.dirname, '../package.json'), 'utf-8'),
@@ -489,6 +497,330 @@ describe('createProgram', () => {
     });
   });
 
+  describe('migrate ngx-translate', () => {
+    it(`GIVEN the input option
+        WHEN the program runs
+        THEN the runner gets it`, async () => {
+      await setup().run('migrate', 'ngx-translate', '--input', 'projects/app');
+
+      expect(runners.runMigrateNgxTranslate).toHaveBeenCalledExactlyOnceWith({
+        input: 'projects/app',
+      });
+    });
+
+    it(`GIVEN the input alias
+        WHEN the program runs
+        THEN the runner gets the same option as with the long name`, async () => {
+      await setup().run('migrate', 'ngx-translate', '-i', 'projects/app');
+
+      expect(runners.runMigrateNgxTranslate).toHaveBeenCalledExactlyOnceWith({
+        input: 'projects/app',
+      });
+    });
+
+    it(`GIVEN no options
+        WHEN the program runs
+        THEN the runner gets the default input folder alone`, async () => {
+      await setup().run('migrate', 'ngx-translate');
+
+      expect(runners.runMigrateNgxTranslate).toHaveBeenCalledExactlyOnceWith({
+        input: 'src/app',
+      });
+      expect(runners.runMigrateAngularI18n).not.toHaveBeenCalled();
+    });
+
+    it(`GIVEN an input with a comma in it
+        WHEN the program runs
+        THEN it is the name of one folder, as the input is no list of paths here`, async () => {
+      await setup().run('migrate', 'ngx-translate', '--input', 'src,');
+
+      expect(runners.runMigrateNgxTranslate).toHaveBeenCalledExactlyOnceWith({
+        input: 'src,',
+      });
+    });
+
+    it(`GIVEN the input given twice
+        WHEN the program runs
+        THEN the error does not point at a comma separated form it doesn't have`, async () => {
+      const { run, output } = setup();
+
+      await expect(
+        run('migrate', 'ngx-translate', '-i', 'a', '-i', 'b'),
+      ).rejects.toMatchObject({ exitCode: 1 });
+
+      expect(output.stderr).toContain(
+        `error: option '-i, --input <dir>' was given more than once.`,
+      );
+      expect(output.stderr).not.toContain('Separate several paths');
+    });
+  });
+
+  describe('migrate angular-i18n', () => {
+    it(`GIVEN every option of the command by its long name
+        WHEN the program runs
+        THEN the runner gets them`, async () => {
+      await setup().run(
+        'migrate',
+        'angular-i18n',
+        '--input',
+        'projects/app',
+        '--translations-path',
+        'public/i18n',
+        '--langs',
+        'en',
+        'es',
+        '--config',
+        'transloco.config.js',
+      );
+
+      expect(runners.runMigrateAngularI18n).toHaveBeenCalledExactlyOnceWith({
+        input: 'projects/app',
+        translationsPath: 'public/i18n',
+        langs: ['en', 'es'],
+        config: 'transloco.config.js',
+      });
+      expect(runners.runMigrateNgxTranslate).not.toHaveBeenCalled();
+    });
+
+    it(`GIVEN the aliases
+        WHEN the program runs
+        THEN the runner gets the same options as with the long names`, async () => {
+      await setup().run(
+        'migrate',
+        'angular-i18n',
+        '-i',
+        'projects/app',
+        '-l',
+        'en',
+        '-c',
+        'transloco.config.js',
+      );
+
+      expect(runners.runMigrateAngularI18n).toHaveBeenCalledExactlyOnceWith({
+        input: 'projects/app',
+        langs: ['en'],
+        config: 'transloco.config.js',
+      });
+    });
+
+    it(`GIVEN the languages alone
+        WHEN the program runs
+        THEN the runner gets them with the default input folder and no translations path`, async () => {
+      await setup().run('migrate', 'angular-i18n', '--langs', 'en');
+
+      expect(runners.runMigrateAngularI18n).toHaveBeenCalledExactlyOnceWith({
+        input: 'src/app',
+        langs: ['en'],
+      });
+    });
+
+    it(`GIVEN the languages given in several occurrences
+        WHEN the program runs
+        THEN the runner gets all of them, as with extract`, async () => {
+      await setup().run(
+        'migrate',
+        'angular-i18n',
+        '-l',
+        'en',
+        '-l',
+        'es',
+        'fr',
+      );
+
+      expect(runners.runMigrateAngularI18n).toHaveBeenCalledExactlyOnceWith({
+        input: 'src/app',
+        langs: ['en', 'es', 'fr'],
+      });
+    });
+
+    it(`GIVEN no languages
+        WHEN the program runs
+        THEN it fails saying they are required and runs nothing`, async () => {
+      const { run, output } = setup();
+
+      await expect(run('migrate', 'angular-i18n')).rejects.toMatchObject({
+        exitCode: 1,
+      });
+
+      expect(output.stderr).toContain(
+        `error: required option '-l, --langs <langs...>' not specified`,
+      );
+      expect(output.stdout).toBe('');
+      expectNoRunnerCalled();
+    });
+  });
+
+  describe('migrate', () => {
+    it(`GIVEN no sub-command
+        WHEN the program runs
+        THEN it prints the help of migrate as an error and runs nothing`, async () => {
+      const { run, output } = setup();
+
+      await expect(run('migrate')).rejects.toMatchObject({ exitCode: 1 });
+
+      expect(output.stderr).toContain(
+        'Usage: transloco migrate [options] [command]',
+      );
+      expect(output.stdout).toBe('');
+      expectNoRunnerCalled();
+    });
+
+    it(`GIVEN an option and no sub-command
+        WHEN the program runs
+        THEN it fails on the option, as migrate has none`, async () => {
+      const { run, output } = setup();
+
+      await expect(run('migrate', '--input', 'src')).rejects.toMatchObject({
+        exitCode: 1,
+      });
+
+      expect(output.stderr).toContain(`error: unknown option '--input'`);
+      expectNoRunnerCalled();
+    });
+
+    it(`GIVEN the help command of migrate
+        WHEN the program runs
+        THEN it prints the help of the sub-command it names`, async () => {
+      const { run, output } = setup();
+
+      await expect(
+        run('migrate', 'help', 'angular-i18n'),
+      ).rejects.toMatchObject({ exitCode: 0 });
+
+      expect(output.stdout).toContain(
+        'Usage: transloco migrate angular-i18n [options]',
+      );
+    });
+
+    it(`GIVEN the help command of the program with the names of both commands
+        WHEN the program runs
+        THEN it prints the help of the sub-command`, async () => {
+      const { run, output } = setup();
+
+      await expect(
+        run('help', 'migrate', 'ngx-translate'),
+      ).rejects.toMatchObject({ exitCode: 0 });
+
+      expect(output.stdout).toContain(
+        'Usage: transloco migrate ngx-translate [options]',
+      );
+    });
+
+    it.each([
+      {
+        scenario: 'an unknown sub-command',
+        args: ['migrate', 'frobnicate'],
+        error: `error: unknown command 'frobnicate'`,
+      },
+      {
+        scenario: 'an option of angular-i18n on ngx-translate',
+        args: ['migrate', 'ngx-translate', '--langs', 'en'],
+        error: `error: unknown option '--langs'`,
+      },
+      {
+        scenario: 'the translations path on ngx-translate',
+        args: ['migrate', 'ngx-translate', '--translations-path', 'i18n'],
+        error: `error: unknown option '--translations-path'`,
+      },
+      {
+        scenario: 'the config on ngx-translate',
+        args: ['migrate', 'ngx-translate', '-c', 'transloco.config.js'],
+        error: `error: unknown option '-c'`,
+      },
+      {
+        scenario:
+          'an option before the sub-command, which migrate does not have',
+        args: ['migrate', '-i', 'src', 'ngx-translate'],
+        error: `error: unknown option '-i'`,
+      },
+      {
+        scenario: 'an option of extract on angular-i18n',
+        args: ['migrate', 'angular-i18n', '-l', 'en', '--output', 'i18n'],
+        error: `error: unknown option '--output'`,
+      },
+      {
+        scenario: 'a program option after the sub-command',
+        args: ['migrate', 'ngx-translate', '--cwd', '.'],
+        error: `error: unknown option '--cwd'`,
+      },
+      {
+        scenario: 'an argument ngx-translate does not take',
+        args: ['migrate', 'ngx-translate', 'src'],
+        error: `error: too many arguments for 'ngx-translate'`,
+      },
+      {
+        scenario: 'an option missing its value',
+        args: ['migrate', 'angular-i18n', '-l', 'en', '--input'],
+        error: `error: option '-i, --input <dir>' argument missing`,
+      },
+    ])(
+      `GIVEN $scenario
+       WHEN the program runs
+       THEN it fails with a non-zero exit code and runs nothing`,
+      async ({ args, error }) => {
+        const { run, output } = setup();
+
+        await expect(run(...args)).rejects.toMatchObject({ exitCode: 1 });
+
+        expect(output.stderr).toContain(error);
+        expect(output.stdout).toBe('');
+        expectNoRunnerCalled();
+      },
+    );
+
+    it.each([
+      ['migrate', '--help'],
+      ['migrate', '-h'],
+      ['migrate', 'ngx-translate', '--help'],
+      ['migrate', 'angular-i18n', '-h'],
+      ['migrate', '--help', 'ngx-translate'],
+      ['migrate', '-h', 'angular-i18n', '--bogus'],
+      ['help', 'migrate'],
+      ['migrate', 'help'],
+    ])(
+      `GIVEN the arguments %j
+       WHEN the program runs
+       THEN it prints a help and runs nothing`,
+      async (...args) => {
+        const { run, output } = setup();
+
+        await expect(run(...args)).rejects.toMatchObject({ exitCode: 0 });
+
+        expect(output.stdout).toContain('Usage: transloco migrate');
+        expect(output.stderr).toBe('');
+        expectNoRunnerCalled();
+      },
+    );
+
+    it(`GIVEN the help flag in front of a sub-command
+        WHEN the program runs
+        THEN it asks for the help of migrate, not of the sub-command`, async () => {
+      const { run, output } = setup();
+
+      await expect(
+        run('migrate', '--help', 'ngx-translate'),
+      ).rejects.toMatchObject({ exitCode: 0 });
+
+      expect(output.stdout).toContain(
+        'Usage: transloco migrate [options] [command]',
+      );
+    });
+
+    it(`GIVEN the help flag behind a sub-command with a wrong option
+        WHEN the program runs
+        THEN it asks for the help of the sub-command, whatever else was typed`, async () => {
+      const { run, output } = setup();
+
+      await expect(
+        run('migrate', 'ngx-translate', '--langs', '--help'),
+      ).rejects.toMatchObject({ exitCode: 0 });
+
+      expect(output.stdout).toContain(
+        'Usage: transloco migrate ngx-translate [options]',
+      );
+    });
+  });
+
   describe('strictness', () => {
     it.each([
       {
@@ -655,6 +987,23 @@ describe('createProgram', () => {
       ],
       ['split', ['--source', 'a', '--source', 'b'], '--source <dir>'],
       ['split', ['-c', 'a', '-c', 'b'], '-c, --config <path>'],
+      // migrate
+      [
+        'migrate ngx-translate',
+        ['-i', 'a', '--input', 'b'],
+        '-i, --input <dir>',
+      ],
+      ['migrate angular-i18n', ['-i', 'a', '-i', 'b'], '-i, --input <dir>'],
+      [
+        'migrate angular-i18n',
+        ['--translations-path', 'a', '--translations-path', 'b'],
+        '--translations-path <dir>',
+      ],
+      [
+        'migrate angular-i18n',
+        ['-c', 'a', '--config', 'b'],
+        '-c, --config <path>',
+      ],
     ])(
       `GIVEN the %s command and the arguments %j
        WHEN the program runs
@@ -662,9 +1011,11 @@ describe('createProgram', () => {
       async (command, args, flags) => {
         const { run, output } = setup();
 
-        await expect(run(command, ...args)).rejects.toMatchObject({
-          exitCode: 1,
-        });
+        await expect(run(...command.split(' '), ...args)).rejects.toMatchObject(
+          {
+            exitCode: 1,
+          },
+        );
 
         expect(output.stderr).toContain(once(flags));
         expect(output.stdout).toBe('');
@@ -823,6 +1174,26 @@ describe('createProgram', () => {
       ['split', ['--translations-path='], empty('--translations-path <dir>')],
       ['split', ['--source', ''], empty('--source <dir>')],
       ['split', ['-c', ' '], empty('-c, --config <path>')],
+      // migrate
+      ['migrate ngx-translate', ['-i', ''], empty('-i, --input <dir>')],
+      ['migrate ngx-translate', ['--input='], empty('-i, --input <dir>')],
+      ['migrate angular-i18n', ['--input', '  '], empty('-i, --input <dir>')],
+      [
+        'migrate angular-i18n',
+        ['--translations-path', ''],
+        empty('--translations-path <dir>'),
+      ],
+      ['migrate angular-i18n', ['-l', ''], empty('-l, --langs <langs...>')],
+      [
+        'migrate angular-i18n',
+        ['-l', 'en', ' '],
+        empty('-l, --langs <langs...>'),
+      ],
+      [
+        'migrate angular-i18n',
+        ['-l', 'en', '-c', ''],
+        empty('-c, --config <path>'),
+      ],
     ])(
       `GIVEN the %s command and the arguments %j
        WHEN the program runs
@@ -830,9 +1201,11 @@ describe('createProgram', () => {
       async (command, args, error) => {
         const { run, output } = setup();
 
-        await expect(run(command, ...args)).rejects.toMatchObject({
-          exitCode: 1,
-        });
+        await expect(run(...command.split(' '), ...args)).rejects.toMatchObject(
+          {
+            exitCode: 1,
+          },
+        );
 
         expect(output.stderr).toContain(error);
         expect(output.stdout).toBe('');
@@ -1486,6 +1859,9 @@ describe('createProgram', () => {
           'scoped-libs',
           'join',
           'split',
+          'migrate',
+          'migrate ngx-translate',
+          'migrate angular-i18n',
         ]),
       );
     });
@@ -1646,6 +2022,9 @@ describe('createProgram', () => {
         'transloco scoped-libs',
         'transloco join',
         'transloco split',
+        'transloco migrate',
+        'transloco migrate ngx-translate',
+        'transloco migrate angular-i18n',
       ]);
       expect(commands.map(({ help }) => help)).toEqual(commands.map(() => 'h'));
     });
@@ -2268,9 +2647,14 @@ describe('createProgram', () => {
           'join translations-path',
           'join out-dir',
           'split source',
+          'migrate ngx-translate input',
+          'migrate angular-i18n input',
+          'migrate angular-i18n translations-path',
+          'migrate angular-i18n langs',
+          'migrate angular-i18n config',
         ]),
       );
-      expect(found.length).toBeGreaterThanOrEqual(19);
+      expect(found.length).toBeGreaterThanOrEqual(28);
     });
 
     it.each(discovered.map((option) => [title(option), option] as const))(
@@ -2437,6 +2821,7 @@ describe('createProgram', () => {
         'scoped-libs [options]',
         'join [options]',
         'split [options]',
+        'migrate Migrate a project to Transloco',
         'help [command]',
         '-V, --version',
         '-C, --cwd <dir>',
@@ -2549,6 +2934,43 @@ describe('createProgram', () => {
         ],
         unexpected: ['--out-dir', '--include-default-lang'],
       },
+      {
+        command: 'migrate',
+        expected: [
+          'Usage: transloco migrate [options] [command]',
+          'ngx-translate [options]',
+          'angular-i18n [options]',
+          'help [command]',
+          '-h, --help',
+        ],
+        unexpected: ['--input', '--langs'],
+      },
+      {
+        command: 'migrate ngx-translate',
+        expected: [
+          'Usage: transloco migrate ngx-translate [options]',
+          'Rewrites the files in place; commit your work first.',
+          '-i, --input <dir>',
+          '(default: "src/app")',
+          '-h, --help',
+        ],
+        unexpected: ['--langs', '--translations-path', '--config'],
+      },
+      {
+        command: 'migrate angular-i18n',
+        expected: [
+          'Usage: transloco migrate angular-i18n [options]',
+          'Rewrites the files in place; commit your work first.',
+          '-i, --input <dir>',
+          '(default: "src/app")',
+          '--translations-path <dir>',
+          'rootTranslationsPath',
+          '-l, --langs <langs...>',
+          '-c, --config <path>',
+          '-h, --help',
+        ],
+        unexpected: ['--out-dir', '--watch'],
+      },
     ])(
       `GIVEN the help flag on the $command command
        WHEN the program runs
@@ -2556,7 +2978,9 @@ describe('createProgram', () => {
       async ({ command, expected, unexpected }) => {
         const { run, output } = setup();
 
-        await expect(run(command, '--help')).rejects.toMatchObject({
+        await expect(
+          run(...command.split(' '), '--help'),
+        ).rejects.toMatchObject({
           exitCode: 0,
         });
 

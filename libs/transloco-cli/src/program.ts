@@ -246,11 +246,73 @@ export function createProgram() {
       runSplit(options);
     });
 
+  const migrate = program
+    .command('migrate')
+    .description('Migrate a project to Transloco')
+    .helpOption(helpFlags, helpDescription);
+
+  migrate
+    .command('ngx-translate')
+    .description(
+      'Migrate the HTML and TS files from ngx-translate. Rewrites the files in place; commit your work first.',
+    )
+    .helpOption(helpFlags, helpDescription)
+    .option(
+      '-i, --input <dir>',
+      'The folder holding the files to migrate',
+      'src/app',
+    )
+    .action(async (options) => {
+      const { runMigrateNgxTranslate } =
+        await import('./commands/migrate-ngx-translate.js');
+
+      runMigrateNgxTranslate(options);
+    });
+
+  migrate
+    .command('angular-i18n')
+    .description(
+      'Migrate the HTML templates from the Angular i18n and create their translation files. Rewrites the files in place; commit your work first.',
+    )
+    .helpOption(helpFlags, helpDescription)
+    .option(
+      '-i, --input <dir>',
+      'The folder holding the templates to migrate',
+      'src/app',
+    )
+    .option(
+      '--translations-path <dir>',
+      'The folder the translation files are written to (defaults to `rootTranslationsPath` of the config, or `src/assets/i18n`)',
+    )
+    .requiredOption(
+      '-l, --langs <langs...>',
+      'The languages to create a translation file for',
+    )
+    .option('-c, --config <path>', 'Path to a custom transloco config')
+    .action(async (options) => {
+      const { runMigrateAngularI18n } =
+        await import('./commands/migrate-angular-i18n.js');
+
+      runMigrateAngularI18n(options);
+    });
+
   // Last, so that it covers every command and option declared above.
   enforceOptionRules(program);
 
   return program;
 }
+
+/**
+ * The commands an option's rules are about, for the options that mean
+ * something else elsewhere: the `--input` of the keys manager is a comma
+ * separated list of paths, the one of `migrate` is a single folder.
+ */
+const ruleScope: Record<string, ReadonlySet<string>> = {
+  input: new Set(['extract', 'find']),
+};
+
+const inRuleScope = (command: CommandUnknownOpts, name: string) =>
+  ruleScope[name]?.has(command.name()) ?? true;
 
 /** What to do instead of repeating an option, for the ones that have an answer. */
 const repeatHints: Record<string, string> = {
@@ -300,12 +362,13 @@ function enforceOptionRules(command: CommandUnknownOpts) {
 
     const name = option.name();
     const flags = `option '${option.flags}'`;
+    const scoped = inRuleScope(command, name);
     let given = false;
 
     command.on(`option:${name}`, (value: unknown) => {
       if (given && !option.variadic) {
         command.error(
-          `error: ${flags} was given more than once.${repeatHints[name] ?? ''}`,
+          `error: ${flags} was given more than once.${(scoped && repeatHints[name]) || ''}`,
         );
       }
 
@@ -317,7 +380,7 @@ function enforceOptionRules(command: CommandUnknownOpts) {
         command.error(`error: ${flags} argument cannot be empty`);
       }
 
-      const problem = valueProblems[name]?.(value);
+      const problem = scoped ? valueProblems[name]?.(value) : undefined;
 
       if (problem) {
         command.error(`error: ${flags} argument '${value}' ${problem}`);
@@ -399,7 +462,9 @@ function isHelpRequest(command: CommandUnknownOpts, token: string) {
  * arguments: a subcommand is looked for as long as the command knows all that
  * stands before it. `--frobnicate extract -h` and `translate -h` therefore
  * ask for the help of the program, and `help extract -h` for the one of
- * `extract`, as `help extract` does.
+ * `extract`, as `help extract` does. The names behind the one of a command
+ * with subcommands ask for the help of a subcommand: `help migrate
+ * ngx-translate`.
  *
  * @returns the names leading from this command to the one whose help is asked
  * for, none when it's its own, and `undefined` when there is no request
@@ -428,6 +493,13 @@ function helpRequestPath(
       );
 
       if (subcommand) {
+        // Commander's help command stops at the first name. The names behind
+        // it ask for the help of a command further down.
+        const deeper =
+          token === helpCommand ? subcommandPath(subcommand, below) : [];
+
+        if (deeper.length) return [subcommand.name(), ...deeper];
+
         const path = helpRequestPath(subcommand, below);
 
         return path && [subcommand.name(), ...path];
@@ -457,6 +529,22 @@ function helpRequestPath(
   }
 
   return undefined;
+}
+
+/** The names of the commands below the command that the arguments lead through, as far as they do. */
+function subcommandPath(
+  command: CommandUnknownOpts,
+  args: readonly string[],
+): string[] {
+  const [name, ...rest] = args;
+  const subcommand = command.commands.find(
+    (candidate) =>
+      candidate.name() === name || candidate.aliases().includes(name),
+  );
+
+  return subcommand
+    ? [subcommand.name(), ...subcommandPath(subcommand, rest)]
+    : [];
 }
 
 /**
