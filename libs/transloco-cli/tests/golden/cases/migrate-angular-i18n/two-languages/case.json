@@ -1,0 +1,19 @@
+{
+  "description": "GIVEN another input, another translations path and two languages WHEN the templates are migrated THEN both languages get the same file in that path",
+  "args": [
+    "migrate",
+    "angular-i18n",
+    "--input",
+    "projects/shop/src",
+    "--translations-path",
+    "projects/shop/public/i18n",
+    "--langs",
+    "en",
+    "es"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

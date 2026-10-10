@@ -50,6 +50,7 @@ nx migrate @jsverse/transloco  # Nx
 ## Transloco Schematics
 
 - The `join` and `split` schematics are deprecated in favour of `transloco join` and `transloco split` of `@jsverse/transloco-cli`. They keep working until Transloco v10 and log a deprecation warning. They now ignore the files that are not `.json` in the translations root and in the source folder, which used to fail the run, and `split` skips a root file whose language has no joined file instead of writing `undefined` into it. `split` also restores a scope folder nested in another one from the dotted key `join` stores it under, such as `admin.users`; before, the nested folder was left stale and the next `join` failed with a duplicate key.
+- The `ngx-migrate` and `ng-migrate` schematics are deprecated in favour of `transloco migrate ngx-translate` and `transloco migrate angular-i18n` of `@jsverse/transloco-cli`. They keep working until Transloco v10 and log a deprecation warning.
 
 ## Transloco Keys Manager, Optimize, Scoped Libs & Validator
 

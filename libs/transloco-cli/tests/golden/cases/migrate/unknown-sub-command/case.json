@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN a sub-command migrate does not have WHEN the binary runs THEN it is an unknown command and exits with 1",
+  "args": [
+    "migrate",
+    "angular"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

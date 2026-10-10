@@ -69,6 +69,7 @@ const recorded = [
     'optimize',
     'scoped-libs',
     'translation-files',
+    'migrate',
     'config',
     'utils',
   ]
@@ -81,6 +82,8 @@ const recorded = [
   './commands/scoped-libs.js',
   './commands/join.js',
   './commands/split.js',
+  './commands/migrate-ngx-translate.js',
+  './commands/migrate-angular-i18n.js',
   './commands/translation-folders.js',
   './peers.js',
   'find-duplicated-property-keys',
@@ -176,10 +179,18 @@ describe('lazy loading', () => {
       ['scoped-libs', '--help'],
       ['join', '--help'],
       ['split', '--help'],
+      ['migrate', '--help'],
+      ['migrate', 'ngx-translate', '--help'],
+      ['migrate', 'angular-i18n', '--help'],
+      ['help', 'migrate', 'ngx-translate'],
       // rejected by the argument parser
       ['extract', '--add-missing-keys'],
       ['find', '--replace'],
       ['translate'],
+      ['migrate'],
+      ['migrate', 'translate'],
+      ['migrate', 'angular-i18n'],
+      ['migrate', 'ngx-translate', '--langs', 'en'],
     ].map((args) => [args.join(' '), args] as const),
   )(
     `GIVEN the arguments "%s"
@@ -285,6 +296,78 @@ describe('lazy loading', () => {
         'translation-files/index',
         'translation-files/join',
         'translation-files/node-file-reader',
+        'translation-files/shared',
+        'translation-files/split',
+        'utils/file-system',
+      ]);
+    });
+  });
+
+  describe('migrate', () => {
+    const originalCwd = process.cwd();
+
+    beforeEach(() => {
+      fs.mkdirSync(path.join(dir, 'app'));
+      fs.writeFileSync(path.join(dir, 'app', 'a.html'), '<p i18n>One</p>');
+    });
+
+    afterEach(() => {
+      process.chdir(originalCwd);
+    });
+
+    it(`GIVEN a folder of sources
+        WHEN it is migrated from ngx-translate
+        THEN only the runner, the folder check, the migration and the glob are loaded`, async () => {
+      await run('--cwd', dir, 'migrate', 'ngx-translate', '--input', 'app');
+
+      expect([...loaded].sort()).toEqual([
+        'commands/migrate-ngx-translate',
+        'commands/translation-folders',
+        'glob',
+        'migrate/find-files',
+        'migrate/ngx-translate/apply-matcher',
+        'migrate/ngx-translate/migrate-ngx-translate',
+        'migrate/ngx-translate/migration-matchers',
+        'translation-files/index',
+        'translation-files/join',
+        'translation-files/shared',
+        'translation-files/split',
+        'utils/style',
+      ]);
+    });
+
+    it(`GIVEN a folder of templates
+        WHEN it is migrated from the Angular i18n
+        THEN only the runner, the folder check, the config reader, the migration and the glob are loaded`, async () => {
+      await run(
+        '--cwd',
+        dir,
+        'migrate',
+        'angular-i18n',
+        '--input',
+        'app',
+        '--translations-path',
+        'i18n',
+        '--langs',
+        'en',
+      );
+
+      expect(
+        JSON.parse(fs.readFileSync(path.join(dir, 'i18n', 'en.json'), 'utf-8')),
+      ).toEqual({ one: 'One' });
+      expect([...loaded].sort()).toEqual([
+        'commands/migrate-angular-i18n',
+        'commands/translation-folders',
+        'config/index',
+        'config/transloco-utils',
+        'cosmiconfig',
+        'glob',
+        'migrate/angular-i18n/dasherize',
+        'migrate/angular-i18n/migrate-angular-i18n',
+        'migrate/angular-i18n/template',
+        'migrate/find-files',
+        'translation-files/index',
+        'translation-files/join',
         'translation-files/shared',
         'translation-files/split',
         'utils/file-system',

@@ -34,5 +34,13 @@ export function asSchematicsException<T>(run: () => T) {
   }
 }
 
-export const deprecationWarning = (name: 'join' | 'split') =>
-  `The "${name}" schematic is deprecated and will be removed in Transloco v10. Run "transloco ${name}" from @jsverse/transloco-cli instead.`;
+/** The command of the CLI that replaces each of the deprecated schematics. */
+const replacements = {
+  join: 'join',
+  split: 'split',
+  'ngx-migrate': 'migrate ngx-translate',
+  'ng-migrate': 'migrate angular-i18n',
+};
+
+export const deprecationWarning = (name: keyof typeof replacements) =>
+  `The "${name}" schematic is deprecated and will be removed in Transloco v10. Run "transloco ${replacements[name]}" from @jsverse/transloco-cli instead.`;

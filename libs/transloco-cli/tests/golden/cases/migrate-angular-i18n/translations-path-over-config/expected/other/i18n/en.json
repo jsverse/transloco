@@ -1,0 +1,16 @@
+{
+  "described-text": "Described text",
+  "described-text.comment": "Just a description",
+  "footer note": {
+    "footer-note": "All rights reserved",
+    "footer-note.comment": "Shown on every page"
+  },
+  "hello-world": "Hello world",
+  "logo": "Logo",
+  "only-id": "Only an id",
+  "site header": {
+    "introduction-header": "Hello i18n!",
+    "introduction-header.comment": "An introduction header"
+  },
+  "welcome-to-the-app": "Welcome to the app"
+}

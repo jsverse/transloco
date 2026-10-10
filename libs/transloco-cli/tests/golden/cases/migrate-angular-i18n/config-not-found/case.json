@@ -1,0 +1,16 @@
+{
+  "description": "GIVEN a --config path that does not exist WHEN the command runs THEN stderr names the path and nothing is written",
+  "args": [
+    "migrate",
+    "angular-i18n",
+    "--langs",
+    "en",
+    "--config",
+    "nope.config.js"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

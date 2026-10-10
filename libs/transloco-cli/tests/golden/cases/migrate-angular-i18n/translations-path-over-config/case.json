@@ -1,0 +1,16 @@
+{
+  "description": "GIVEN a config with a root translations path and the option WHEN the templates are migrated THEN the option wins",
+  "args": [
+    "migrate",
+    "angular-i18n",
+    "--langs",
+    "en",
+    "--translations-path",
+    "other/i18n"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}
