@@ -115,13 +115,15 @@ describe('startSpinner', () => {
 
     it(`GIVEN stderr is piped
         WHEN a step starts
-        THEN no signal is listened for, an interruption ends the process right away`, async () => {
+        THEN no signal and no exit is listened for, an interruption ends the process right away`, async () => {
       const once = vi.spyOn(process, 'once');
+      const on = vi.spyOn(process, 'on');
       const startSpinner = await load();
 
       startSpinner('Extracting');
 
       expect(once).not.toHaveBeenCalled();
+      expect(on).not.toHaveBeenCalled();
     });
 
     it(`GIVEN a step that already succeeded
@@ -248,16 +250,49 @@ describe('startSpinner', () => {
   });
 
   describe('on a terminal', () => {
-    let listeners: Map<string | symbol, () => void>;
+    const showCursor = '\u001B[?25h';
+    const common = ['SIGHUP', 'SIGINT', 'SIGTERM'];
+    const posix = [
+      'SIGALRM',
+      'SIGABRT',
+      'SIGVTALRM',
+      'SIGXCPU',
+      'SIGXFSZ',
+      'SIGUSR2',
+      'SIGTRAP',
+      'SIGSYS',
+      'SIGQUIT',
+      'SIGIOT',
+    ];
+    const linux = ['SIGIO', 'SIGPOLL', 'SIGPWR', 'SIGSTKFLT'];
+    const handled = {
+      win32: common,
+      darwin: [...common, ...posix],
+      linux: [...common, ...posix, ...linux],
+    } as const;
+    const events = ['exit', ...handled.linux];
+    let before: Map<string, unknown[]>;
+
+    /** The listeners a step registered, the ones that were there before it not included. */
+    function added(event: string) {
+      return process
+        .rawListeners(event)
+        .filter((listener) => !before.get(event)?.includes(listener)) as Array<
+        () => void
+      >;
+    }
 
     beforeEach(() => {
       setIsTTY(true);
-      listeners = new Map();
-      vi.spyOn(process, 'once').mockImplementation((event, listener) => {
-        listeners.set(event, listener as () => void);
+      before = new Map(events.map((e) => [e, process.rawListeners(e)]));
+    });
 
-        return process;
-      });
+    afterEach(() => {
+      for (const event of events) {
+        for (const listener of added(event)) {
+          process.removeListener(event, listener);
+        }
+      }
     });
 
     it(`GIVEN stderr is a terminal
@@ -302,32 +337,136 @@ describe('startSpinner', () => {
       expect(written).toEqual([`${green('✔')} Added all missing keys\n\n`]);
     });
 
-    it(`GIVEN several steps
-        WHEN they start
-        THEN the process listens for an interruption and a termination, once for all of them`, async () => {
+    it.each(Object.keys(handled) as Array<keyof typeof handled>)(
+      `GIVEN %s
+       WHEN several steps start
+       THEN the process listens for the end of it and for the signals that end it, once for all of them`,
+      async (platform) => {
+        setPlatform(platform);
+        const startSpinner = await load();
+
+        startSpinner('Extracting').succeed('Extracted');
+        startSpinner('Checking');
+
+        expect(added('exit')).toHaveLength(1);
+        for (const signal of handled[platform]) {
+          expect(added(signal), signal).toHaveLength(1);
+        }
+        for (const signal of handled.linux.filter(
+          (s) => !handled[platform].includes(s as never),
+        )) {
+          expect(added(signal), signal).toHaveLength(0);
+        }
+      },
+    );
+
+    it(`GIVEN a signal the process can't listen for
+        WHEN a step starts
+        THEN the other signals are still listened for and nothing throws`, async () => {
+      const once = process.once.bind(process);
+      vi.spyOn(process, 'once').mockImplementation(((event, listener) => {
+        if (event === 'SIGHUP') throw new Error('uv_signal_start EINVAL');
+
+        return once(event, listener);
+      }) as typeof process.once);
+      const startSpinner = await load();
+
+      expect(() => startSpinner('Extracting')).not.toThrow();
+
+      expect(added('SIGINT')).toHaveLength(1);
+      expect(added('SIGTERM')).toHaveLength(1);
+      expect(yocto.spinner.start).toHaveBeenCalledTimes(1);
+    });
+
+    it(`GIVEN 50 steps that start and succeed
+        WHEN they are done
+        THEN the listeners of the process are those of the first one`, async () => {
       const startSpinner = await load();
 
       startSpinner('Extracting').succeed('Extracted');
-      startSpinner('Checking');
+      const counts = events.map((e) => process.listenerCount(e));
+      for (let i = 0; i < 50; i++) {
+        startSpinner(`Step ${i}`).succeed(`Step ${i} done`);
+      }
 
-      expect(process.once).toHaveBeenCalledTimes(2);
-      expect([...listeners.keys()]).toEqual(['SIGINT', 'SIGTERM']);
+      expect(events.map((e) => process.listenerCount(e))).toEqual(counts);
     });
 
-    it.each(['SIGINT', 'SIGTERM'] as const)(
+    it(`GIVEN a step in progress
+        WHEN the process exits, whatever the reason
+        THEN the cursor is shown again, once`, async () => {
+      const startSpinner = await load();
+      startSpinner('Extracting');
+
+      for (const listener of added('exit')) listener();
+
+      expect(written).toEqual([showCursor]);
+    });
+
+    it(`GIVEN a step that succeeded
+        WHEN the process exits
+        THEN nothing is written, the spinner showed the cursor when it stopped`, async () => {
+      const startSpinner = await load();
+      startSpinner('Extracting').succeed('Extracted');
+
+      for (const listener of added('exit')) listener();
+
+      expect(written).toEqual([]);
+    });
+
+    it(`GIVEN a step that succeeded and another one in progress
+        WHEN the process exits
+        THEN the cursor is shown again`, async () => {
+      const startSpinner = await load();
+      startSpinner('Extracting').succeed('Extracted');
+      startSpinner('Checking');
+
+      for (const listener of added('exit')) listener();
+
+      expect(written).toEqual([showCursor]);
+    });
+
+    it(`GIVEN stderr is piped
+        WHEN a step starts and the process exits
+        THEN no listener is added and no escape sequence is written`, async () => {
+      setIsTTY(false);
+      const startSpinner = await load();
+
+      startSpinner('Extracting').succeed('Extracted');
+
+      expect(events.flatMap((e) => added(e))).toEqual([]);
+      expect(written.join('')).not.toContain('\u001B[?');
+    });
+
+    it.each(handled.linux)(
       `GIVEN a step in progress
        WHEN the process receives %s
        THEN the cursor is shown again and the signal is sent on, so the process ends by it`,
       async (signal) => {
+        setPlatform('linux');
         const kill = vi.spyOn(process, 'kill').mockImplementation(() => true);
         const startSpinner = await load();
         startSpinner('Extracting');
 
-        listeners.get(signal)?.();
+        added(signal)[0]();
 
-        expect(written).toEqual(['\u001B[?25h']);
-        expect(kill).toHaveBeenCalledWith(process.pid, signal);
+        expect(written).toEqual([showCursor]);
+        expect(kill).toHaveBeenCalledExactlyOnceWith(process.pid, signal);
+        expect(added(signal)).toHaveLength(0);
       },
     );
+
+    it(`GIVEN a step that succeeded
+        WHEN the process receives a signal
+        THEN the signal is sent on and nothing is written`, async () => {
+      const kill = vi.spyOn(process, 'kill').mockImplementation(() => true);
+      const startSpinner = await load();
+      startSpinner('Extracting').succeed('Extracted');
+
+      added('SIGTERM')[0]();
+
+      expect(written).toEqual([]);
+      expect(kill).toHaveBeenCalledWith(process.pid, 'SIGTERM');
+    });
   });
 });

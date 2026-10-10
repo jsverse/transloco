@@ -47,24 +47,64 @@ function isInteractive() {
   );
 }
 
-let showsCursorWhenInterrupted = false;
+// The signals that end a process, the ones `signal-exit` handles. A platform
+// that doesn't know one of them has no signal of that name to send.
+const signals = ['SIGHUP', 'SIGINT', 'SIGTERM'];
+
+if (process.platform !== 'win32') {
+  signals.push(
+    'SIGALRM',
+    'SIGABRT',
+    'SIGVTALRM',
+    'SIGXCPU',
+    'SIGXFSZ',
+    'SIGUSR2',
+    'SIGTRAP',
+    'SIGSYS',
+    'SIGQUIT',
+    'SIGIOT',
+  );
+}
+
+if (process.platform === 'linux') {
+  signals.push('SIGIO', 'SIGPOLL', 'SIGPWR', 'SIGSTKFLT');
+}
+
+const showCursor = '\u001B[?25h';
+/** The spinners that hid the cursor and haven't stopped, so haven't shown it again. */
+const hidingCursor = new Set<object>();
+let showsCursorWhenAborted = false;
 
 /**
- * A spinner hides the cursor, and the steps it is shown for keep the process
- * busy without a pause. An interruption is therefore only seen once the step
- * is over: the cursor is shown again and the signal takes its course, so the
- * process ends the way it would have without anyone listening.
+ * A spinner hides the cursor and shows it when it stops. A process that ends
+ * before that, by an error, `process.exit` or a signal, would leave the
+ * terminal without a cursor. The steps a spinner is shown for keep the process
+ * busy without a pause, so a signal is only seen once the step is over: the
+ * cursor is shown again and the signal takes its course, so the process ends
+ * the way it would have without anyone listening.
  */
-function showCursorWhenInterrupted() {
-  if (showsCursorWhenInterrupted) return;
+function showCursorWhenAborted() {
+  if (showsCursorWhenAborted) return;
 
-  showsCursorWhenInterrupted = true;
+  showsCursorWhenAborted = true;
 
-  for (const signal of ['SIGINT', 'SIGTERM'] as const) {
-    process.once(signal, () => {
-      stream.write('\u001B[?25h');
-      process.kill(process.pid, signal);
-    });
+  process.on('exit', () => {
+    if (hidingCursor.size) {
+      stream.write(showCursor);
+    }
+  });
+
+  for (const signal of signals) {
+    try {
+      process.once(signal, () => {
+        if (hidingCursor.size) {
+          stream.write(showCursor);
+        }
+        process.kill(process.pid, signal);
+      });
+    } catch {
+      // A signal this platform can't listen for
+    }
   }
 }
 
@@ -79,10 +119,11 @@ export function startSpinner(text: string): Spinner {
   let spinner: ReturnType<typeof yoctoSpinner> | undefined;
 
   if (isInteractive()) {
-    showCursorWhenInterrupted();
+    showCursorWhenAborted();
     // Its own handling of signals ends with the step, and a signal sent during
     // the step would be lost with it.
     spinner = yoctoSpinner({ text, stream, handleSignals: false }).start();
+    hidingCursor.add(spinner);
   } else if (text) {
     stream.write(`- ${text}\n`);
   }
@@ -93,6 +134,7 @@ export function startSpinner(text: string): Spinner {
 
       if (spinner?.isSpinning) {
         spinner.stop(line);
+        hidingCursor.delete(spinner);
       } else {
         stream.write(`${line}\n`);
       }
