@@ -17,6 +17,10 @@ export const SCANNED = ['.ts', '.mts', '.cts', '.js', '.mjs', '.cjs'];
 /** `SCANNED`, plus the JSX ones. */
 export const SCANNED_WITH_JSX = [...SCANNED, '.tsx', '.jsx'];
 
+/** The usage that asks for the CLI when a workspace imports `name` from it. */
+export const importsFromCli = (name: string) =>
+  `files in your workspace import ${name} from it now`;
+
 /** The sections of a `package.json` that make a package available to the workspace. */
 const DEPENDENCY_SECTIONS = [
   'dependencies',
@@ -155,7 +159,10 @@ function installedVersion(): string | null {
 /** Whether the root `package.json` lists `name`, or `null` when it can't be read. */
 function isListed(tree: Tree, name: string): boolean | null {
   try {
-    const manifest = JSON.parse(tree.read('/package.json')?.toString() ?? '');
+    // `JSON.parse` rejects a byte order mark, which editors on Windows put at the start of a file
+    const manifest = JSON.parse(
+      (tree.read('/package.json')?.toString() ?? '').replace(/^\uFEFF/, ''),
+    );
     if (!manifest || typeof manifest !== 'object' || Array.isArray(manifest))
       return null;
 
@@ -168,7 +175,8 @@ function isListed(tree: Tree, name: string): boolean | null {
 /**
  * Adds the CLI to the workspace's `devDependencies` when it isn't listed yet,
  * at the range of the `@jsverse/transloco` v9 that is installed, and schedules
- * the install. `imported` names what the workspace now imports from it.
+ * the install. `usage` says what in the workspace needs it now, for the
+ * message that asks for the dependency when it can't be added.
  *
  * Every step that needs the CLI calls this. The first one that finds it
  * missing adds it, and since the rules of a chain run one after the other on
@@ -177,9 +185,9 @@ function isListed(tree: Tree, name: string): boolean | null {
 export function addCliDependency(
   tree: Tree,
   context: SchematicContext,
-  imported: string,
+  usage: string,
 ): Rule | void {
-  const manual = `  ↳ Add '${CLI_PACKAGE}' to your devDependencies: files in your workspace import ${imported} from it now.`;
+  const manual = `  ↳ Add '${CLI_PACKAGE}' to your devDependencies: ${usage}.`;
 
   const listed = isListed(tree, CLI_PACKAGE);
   if (listed) return;

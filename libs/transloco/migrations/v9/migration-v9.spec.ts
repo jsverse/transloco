@@ -22,6 +22,7 @@ import {
   referencesConfigPackage,
 } from './config-type-import';
 import { findVersionFloorWarnings } from './report-version-floors';
+import { findScripts } from './cli-scripts';
 
 const collectionPath = nodePath.join(__dirname, '../migration.json');
 
@@ -1731,6 +1732,7 @@ describe('migration-v9', () => {
     );
     const reported = warnings.join('\n');
     expect(reported).toContain('TranslocoExtractKeysWebpackPlugin');
+    expect(reported).toContain(`run 'transloco extract' instead`);
     expect(reported).toContain('/projects/bar/src/app/keys.ts');
   });
 
@@ -2496,6 +2498,1046 @@ describe('migration-v9', () => {
     const reported = warnings.join('\n');
     expect(reported).toContain('/.config/translocorc.ts');
     expect(reported).toContain('type stripping');
+  });
+});
+
+describe('findScripts', () => {
+  it(`GIVEN a package.json with scripts
+      WHEN the scripts are located
+      THEN every value is found with its span in the file`, () => {
+    const source = `{ "name": "a", "scripts": { "x": "echo 1", "y": "echo \\"2\\"" }, "version": "1" }`;
+    const scripts = findScripts(source);
+
+    expect(scripts?.map(({ name, value }) => [name, value])).toEqual([
+      ['x', 'echo 1'],
+      ['y', 'echo "2"'],
+    ]);
+    expect(scripts?.map(({ start, end }) => source.slice(start, end))).toEqual([
+      `"echo 1"`,
+      `"echo \\"2\\""`,
+    ]);
+  });
+
+  it(`GIVEN a scripts key inside another object
+      WHEN the scripts are located
+      THEN only the top-level one counts`, () => {
+    const source = `{ "config": { "scripts": { "a": "b" } }, "scripts": { "c": "d" } }`;
+
+    expect(findScripts(source)?.map(({ name }) => name)).toEqual(['c']);
+  });
+
+  it(`GIVEN a byte order mark in front of the file
+      WHEN the scripts are located
+      THEN it is skipped`, () => {
+    expect(findScripts('\uFEFF{ "scripts": { "a": "b" } }')).toHaveLength(1);
+  });
+
+  it(`GIVEN scripts that are not all strings
+      WHEN the scripts are located
+      THEN only the strings are returned`, () => {
+    expect(
+      findScripts(`{ "scripts": { "a": "b", "c": 1, "d": null, "e": ["f"] } }`),
+    ).toHaveLength(1);
+  });
+
+  it.each([
+    ['empty', ''],
+    ['an array', '[]'],
+    ['cut short', '{ "scripts": { "a": '],
+    ['holding a trailing comma', '{ "scripts": { "a": "b", } }'],
+    ['followed by text', '{ "scripts": {} } x'],
+  ])(
+    `GIVEN a package.json that is %s
+      WHEN the scripts are located
+      THEN it is not read`,
+    (_, source) => {
+      expect(findScripts(source)).toBeNull();
+    },
+  );
+
+  it(`GIVEN no scripts
+      WHEN the scripts are located
+      THEN there are none`, () => {
+    expect(findScripts(`{ "name": "a" }`)).toEqual([]);
+  });
+});
+
+describe('migration-v9 npm scripts', () => {
+  const CLI = '@jsverse/transloco-cli';
+
+  interface Layout {
+    indent?: string;
+    eol?: string;
+    bom?: string;
+    trailing?: boolean;
+    listCli?: boolean;
+    /** Packages listed next to the CLI, the deprecated ones that is. */
+    devDependencies?: Record<string, string>;
+    /** The root package.json as it is written, instead of one built from the scripts. */
+    raw?: string;
+  }
+
+  function manifest(scripts: Record<string, string>, layout: Layout = {}) {
+    const { indent = '  ', eol = '\n', bom = '', trailing = true } = layout;
+    const json = JSON.stringify(
+      {
+        name: 'app',
+        version: '1.0.0',
+        scripts,
+        devDependencies: {
+          ...layout.devDependencies,
+          ...(layout.listCli ? { [CLI]: '^9.0.0' } : {}),
+        },
+      },
+      null,
+      indent,
+    ).replace(/\n/g, eol);
+
+    return bom + json + (trailing ? eol : '');
+  }
+
+  async function runWith(
+    files: Record<string, string>,
+    rootScripts?: Record<string, string>,
+    layout: Layout = {},
+  ) {
+    const runner = new SchematicTestRunner('migrations', collectionPath);
+    const warnings: string[] = [];
+    const infos: string[] = [];
+    runner.logger.subscribe((entry) => {
+      if (entry.level === 'warn') warnings.push(entry.message);
+      if (entry.level === 'info') infos.push(entry.message);
+    });
+    const tree = await createWorkspace(runner);
+
+    if (layout.raw !== undefined) {
+      tree.overwrite('/package.json', layout.raw);
+    } else if (rootScripts) {
+      tree.overwrite('/package.json', manifest(rootScripts, layout));
+    }
+
+    for (const [path, content] of Object.entries(files)) {
+      tree.create(path, content);
+    }
+
+    const migrated = await runner.runSchematic('migration-v9', {}, tree);
+
+    return { runner, migrated, warnings, infos };
+  }
+
+  const scriptsOf = (tree: UnitTestTree, path = '/package.json') =>
+    JSON.parse(tree.readContent(path)).scripts;
+  const nodePackageTasks = (runner: SchematicTestRunner) =>
+    runner.tasks.filter((task) => task.name === 'node-package');
+
+  const legacy = {
+    'i18n:extract': 'transloco-keys-manager extract',
+    'i18n:find': 'transloco-keys-manager find',
+    lint: 'ng lint',
+  };
+
+  it(`GIVEN scripts running the deprecated bins
+      WHEN the migration runs
+      THEN they run the transloco bin and the other scripts stay as they are`, async () => {
+    const { migrated } = await runWith({}, legacy, { listCli: true });
+
+    expect(migrated.readContent('/package.json')).toBe(
+      manifest(
+        {
+          'i18n:extract': 'transloco extract',
+          'i18n:find': 'transloco find',
+          lint: 'ng lint',
+        },
+        { listCli: true },
+      ),
+    );
+  });
+
+  it.each([
+    ['tabs', { indent: '\t' }],
+    ['four spaces', { indent: '    ' }],
+    ['windows line endings', { eol: '\r\n' }],
+    ['a byte order mark', { bom: '\uFEFF' }],
+    ['no newline at the end', { trailing: false }],
+    [
+      'all of it',
+      { indent: '\t', eol: '\r\n', bom: '\uFEFF', trailing: false },
+    ],
+  ])(
+    `GIVEN a package.json written with %s
+      WHEN its scripts are migrated
+      THEN the file keeps that layout`,
+    async (_, layout: Layout) => {
+      const { migrated } = await runWith(
+        {},
+        { 'i18n:find': 'transloco-keys-manager find -r -i src' },
+        { ...layout, listCli: true },
+      );
+
+      expect(migrated.readContent('/package.json')).toBe(
+        manifest(
+          { 'i18n:find': 'transloco find -i src' },
+          { ...layout, listCli: true },
+        ),
+      );
+    },
+  );
+
+  it(`GIVEN a package.json formatted by hand
+      WHEN its scripts are migrated
+      THEN only the migrated script values change`, async () => {
+    const before = [
+      `{`,
+      `    "name"   :  "app",`,
+      `  "keywords": [ "a",   "b" ],`,
+      `  "description": "caf\\u00e9 \\/ done",`,
+      `  "scripts" : {`,
+      `      "keep":"transloco-keys-manager --bogus",`,
+      `      "move":"transloco-validator a.json",`,
+      `   "build": "ng build"`,
+      `  },`,
+      `  "devDependencies": { "${CLI}": "^9.0.0" }`,
+      `}`,
+    ].join('\n');
+    const { migrated } = await runWith({ '/packages/a/package.json': before });
+
+    expect(migrated.readContent('/packages/a/package.json')).toBe(
+      before.replace(
+        `"transloco-validator a.json"`,
+        `"transloco validate a.json"`,
+      ),
+    );
+  });
+
+  it(`GIVEN package.json files in the workspace folders
+      WHEN the migration runs
+      THEN the scripts of each are migrated`, async () => {
+    const nested = (name: string) =>
+      manifest({ [name]: 'transloco-optimize dist/ui', build: 'ng build' });
+    const { migrated, infos } = await runWith({
+      '/packages/ui/package.json': nested('postbuild'),
+      '/projects/bar/tools/package.json': nested('optimize'),
+    });
+
+    expect(scriptsOf(migrated, '/packages/ui/package.json')).toEqual({
+      postbuild: 'transloco optimize dist/ui',
+      build: 'ng build',
+    });
+    expect(scriptsOf(migrated, '/projects/bar/tools/package.json')).toEqual({
+      optimize: 'transloco optimize dist/ui',
+      build: 'ng build',
+    });
+    expect(infos.join('\n')).toContain('/packages/ui/package.json: postbuild');
+  });
+
+  it.each([
+    '/node_modules/dep/package.json',
+    '/projects/bar/node_modules/dep/package.json',
+    '/dist/pkg/package.json',
+    '/.cache/package.json',
+    '/projects/.tmp/package.json',
+  ])(
+    `GIVEN a package.json in %s
+      WHEN the migration runs
+      THEN it is not read`,
+    async (path) => {
+      const content = manifest({ x: 'transloco-validator a.json' });
+      const { migrated, infos, warnings } = await runWith({ [path]: content });
+
+      expect(migrated.readContent(path)).toBe(content);
+      expect([...infos, ...warnings].join('\n')).not.toContain(path);
+    },
+  );
+
+  it(`GIVEN a workspace that does not list the CLI
+      WHEN scripts are migrated
+      THEN the CLI is added to devDependencies and installed`, async () => {
+    const { migrated, runner, infos } = await runWith({}, legacy);
+
+    expect(
+      JSON.parse(migrated.readContent('/package.json')).devDependencies[CLI],
+    ).toMatch(/^\^9\./);
+    expect(infos.join('\n')).toContain(`Added '${CLI}@^`);
+    expect(nodePackageTasks(runner)).toHaveLength(1);
+  });
+
+  it(`GIVEN scripts and a marker import that both need the CLI
+      WHEN the migration runs
+      THEN it is added once`, async () => {
+    const { runner, infos } = await runWith(
+      {
+        '/src/keys.ts': `import { marker } from '@jsverse/transloco-keys-manager';\nexport const key = marker('a');`,
+      },
+      legacy,
+    );
+
+    expect(
+      infos.filter((message) => message.includes(`Added '${CLI}@`)),
+    ).toHaveLength(1);
+    expect(nodePackageTasks(runner)).toHaveLength(1);
+  });
+
+  it(`GIVEN a workspace that lists the CLI
+      WHEN scripts are migrated
+      THEN the dependencies are not touched`, async () => {
+    const { runner, infos } = await runWith({}, legacy, { listCli: true });
+
+    expect(infos.join('\n')).not.toContain('Added');
+    expect(runner.tasks).toHaveLength(0);
+  });
+
+  it(`GIVEN the migration ran already
+      WHEN it runs on the result
+      THEN nothing changes and nothing is reported`, async () => {
+    const first = await runWith({}, legacy, { listCli: true });
+    const runner = new SchematicTestRunner('migrations', collectionPath);
+    const lines: string[] = [];
+    runner.logger.subscribe((entry) => {
+      if (entry.level === 'warn' || entry.level === 'info') {
+        lines.push(entry.message);
+      }
+    });
+
+    const second = await runner.runSchematic(
+      'migration-v9',
+      {},
+      first.migrated,
+    );
+
+    expect(second.readContent('/package.json')).toBe(
+      first.migrated.readContent('/package.json'),
+    );
+    expect(lines.filter((line) => /script|bin/.test(line))).toEqual([]);
+    expect(runner.tasks).toHaveLength(0);
+  });
+
+  it(`GIVEN a transloco-optimize script
+      WHEN it is migrated
+      THEN the user is told that the exit code on failure is different now`, async () => {
+    const { infos } = await runWith(
+      {},
+      { optimize: 'transloco-optimize dist/app' },
+      { listCli: true },
+    );
+
+    expect(infos.join('\n')).toContain(
+      `'transloco optimize' exits with code 1 when it fails, where 'transloco-optimize' exited with 0`,
+    );
+    expect(
+      infos.filter((message) => message.includes('exits with code 1')),
+    ).toHaveLength(1);
+  });
+
+  it(`GIVEN several transloco-optimize scripts
+      WHEN they are migrated
+      THEN the exit code is mentioned once`, async () => {
+    const { infos } = await runWith(
+      {
+        '/packages/ui/package.json': manifest({ o: 'transloco-optimize dist' }),
+      },
+      {
+        optimize: 'transloco-optimize dist/app',
+        other: 'transloco-optimize x',
+      },
+      { listCli: true },
+    );
+
+    expect(
+      infos.filter((message) => message.includes('exits with code 1')),
+    ).toHaveLength(1);
+  });
+
+  it(`GIVEN scripts of the other bins only
+      WHEN they are migrated
+      THEN the exit code is not mentioned`, async () => {
+    const { infos } = await runWith({}, legacy, { listCli: true });
+
+    expect(infos.join('\n')).not.toContain('exits with code 1');
+  });
+
+  it(`GIVEN scripts that were migrated
+      WHEN the migration reports
+      THEN it says that the deprecated packages can go once nothing runs them`, async () => {
+    const { infos } = await runWith({}, legacy, { listCli: true });
+
+    expect(infos.join('\n')).toContain(
+      'Remove them once nothing runs their bins anymore',
+    );
+  });
+
+  it(`GIVEN scripts that were migrated
+      WHEN the dependencies are read
+      THEN the deprecated packages are still listed`, async () => {
+    const { migrated } = await runWith({}, legacy, {
+      devDependencies: { '@jsverse/transloco-keys-manager': '^8.0.0' },
+    });
+
+    expect(
+      JSON.parse(migrated.readContent('/package.json')).devDependencies,
+    ).toMatchObject({
+      '@jsverse/transloco-keys-manager': '^8.0.0',
+      [CLI]: expect.any(String),
+    });
+  });
+
+  it(`GIVEN a script that can't be moved and one that can
+      WHEN the migration runs
+      THEN the first is left and reported, and the second is moved`, async () => {
+    const { migrated, warnings } = await runWith(
+      {},
+      {
+        'i18n:extract': 'transloco-keys-manager extract --translationsPath src',
+        'i18n:find': 'transloco-keys-manager find',
+      },
+      { listCli: true },
+    );
+
+    expect(scriptsOf(migrated)).toEqual({
+      'i18n:extract': 'transloco-keys-manager extract --translationsPath src',
+      'i18n:find': 'transloco find',
+    });
+
+    const reported = warnings.join('\n');
+
+    expect(reported).toContain('/package.json: i18n:extract');
+    expect(reported).toContain('--translationsPath is not an option');
+    expect(reported).not.toContain('i18n:find');
+    expect(reported).toContain("'transloco extract'");
+  });
+
+  it(`GIVEN scripts that can't be moved only
+      WHEN the migration runs
+      THEN the CLI is not added`, async () => {
+    const { runner, migrated } = await runWith(
+      {},
+      { find: 'transloco-keys-manager find --bogus' },
+    );
+
+    expect(scriptsOf(migrated).find).toBe(
+      'transloco-keys-manager find --bogus',
+    );
+    expect(
+      JSON.parse(migrated.readContent('/package.json')).devDependencies,
+    ).not.toHaveProperty([CLI]);
+    expect(runner.tasks).toHaveLength(0);
+  });
+
+  it(`GIVEN files of a pipeline that run the deprecated bins
+      WHEN the migration runs
+      THEN each is reported once and none is edited`, async () => {
+    const files: Record<string, string> = {
+      '/.github/workflows/ci.yml': `steps:\n  - run: npx transloco-keys-manager find\n  - run: transloco-validator a.json\n`,
+      '/.gitlab-ci.yml': `script:\n  - transloco-optimize dist\n`,
+      '/azure-pipelines.yml': `- script: transloco-scoped-libs\n`,
+      '/Jenkinsfile': `sh 'transloco-validator a.json'\n`,
+      '/Makefile': `i18n:\n\t./node_modules/.bin/transloco-keys-manager extract\n`,
+      '/scripts/build.sh': `#!/bin/sh\ntransloco-optimize dist\n`,
+      '/project.json': `{ "targets": { "i18n": { "executor": "nx:run-commands", "options": { "command": "transloco-keys-manager extract" } } } }`,
+      '/projects/bar/project.json': `{ "targets": { "i18n": { "options": { "command": "transloco-validator a.json" } } } }`,
+    };
+    const { migrated, warnings } = await runWith(files);
+
+    const lines = warnings
+      .join('\n')
+      .split('\n')
+      .map((line) => line.trim());
+
+    for (const [path, content] of Object.entries(files)) {
+      expect(migrated.readContent(path)).toBe(content);
+      expect(lines.filter((line) => line === `- ${path}`)).toHaveLength(1);
+    }
+  });
+
+  it(`GIVEN files that only mention the bins as a name or a package
+      WHEN the migration runs
+      THEN they are not reported`, async () => {
+    const files: Record<string, string> = {
+      '/.github/workflows/ci.yml': `steps:\n  - run: rimraf dist/transloco-optimize\n  - run: pnpm add @jsverse/transloco-keys-manager\n`,
+      '/Makefile': `clean:\n\trm -rf out/transloco-validator.log\n`,
+      '/scripts/build.sh': `echo "ng build"\n`,
+      '/notes.md': `Run transloco-keys-manager extract before building.`,
+      '/docs.txt': `transloco-validator`,
+    };
+    const { warnings } = await runWith(files);
+
+    const reported = warnings.join('\n');
+
+    for (const path of Object.keys(files)) {
+      expect(reported).not.toContain(path);
+    }
+  });
+
+  it(`GIVEN a workspace with nothing to migrate
+      WHEN the migration runs
+      THEN the scripts step says nothing and the package.json is untouched`, async () => {
+    const scripts = { build: 'ng build', i18n: 'transloco extract -i src' };
+    const { migrated, warnings, infos, runner } = await runWith({}, scripts, {
+      listCli: true,
+    });
+
+    expect(migrated.readContent('/package.json')).toBe(
+      manifest(scripts, { listCli: true }),
+    );
+    expect(
+      [...warnings, ...infos].filter((line) =>
+        /npm script|deprecated bin|exits with code/.test(line),
+      ),
+    ).toEqual([]);
+    expect(runner.tasks).toHaveLength(0);
+  });
+
+  it.each([
+    ['unparsable', '{ "scripts": '],
+    ['without scripts', '{ "name": "a" }'],
+    ['an array', '[]'],
+  ])(
+    `GIVEN a nested package.json that is %s
+      WHEN the migration runs
+      THEN it is left as it is`,
+    async (_, content) => {
+      const { migrated } = await runWith({
+        '/packages/a/package.json': content,
+      });
+
+      expect(migrated.readContent('/packages/a/package.json')).toBe(content);
+    },
+  );
+
+  it(`GIVEN a script holding quotes and a line break
+      WHEN it is migrated
+      THEN the value is written back as valid JSON`, async () => {
+    const script = `transloco-keys-manager extract --default-value "Say \\"hi\\"" -p x\necho 'done'`;
+    const { migrated } = await runWith({}, { i18n: script }, { listCli: true });
+
+    expect(scriptsOf(migrated).i18n).toBe(
+      `transloco extract --default-value "Say \\"hi\\""\necho 'done'`,
+    );
+  });
+
+  describe('a --config path', () => {
+    const MISSING = 'was not found';
+    const STOPS = 'stops when the --config path does not exist';
+
+    /** The scripts of a package.json that were reported, by name. */
+    const reportedScripts = (warnings: string[], path = '/package.json') =>
+      warnings
+        .join('\n')
+        .split('\n')
+        .map((line) => line.trim())
+        .filter((line) => line.startsWith(`- ${path}: `))
+        .map((line) => line.slice(`- ${path}: `.length));
+
+    it.each(['extract', 'find'])(
+      `GIVEN a --config path to a file of the workspace
+       WHEN the %s script is migrated
+       THEN it is rewritten in every spelling`,
+      async (command) => {
+        const scripts = {
+          a: `transloco-keys-manager ${command} --config tools/conf.js`,
+          b: `transloco-keys-manager ${command} --config=./tools/conf.js`,
+          c: `transloco-keys-manager ${command} -c tools/conf.js`,
+        };
+        const { migrated, warnings } = await runWith(
+          { '/tools/conf.js': 'module.exports = {};' },
+          scripts,
+          { listCli: true },
+        );
+
+        expect(scriptsOf(migrated)).toEqual({
+          a: `transloco ${command} --config tools/conf.js`,
+          b: `transloco ${command} --config=./tools/conf.js`,
+          c: `transloco ${command} -c tools/conf.js`,
+        });
+        expect(warnings.join('\n')).not.toContain('deprecated bin');
+      },
+    );
+
+    it(`GIVEN a --config path to a folder of the workspace
+        WHEN the script is migrated
+        THEN it is rewritten`, async () => {
+      const { migrated } = await runWith(
+        { '/tools/transloco.config.js': 'module.exports = {};' },
+        { i18n: 'transloco-keys-manager extract --config tools' },
+        { listCli: true },
+      );
+
+      expect(scriptsOf(migrated).i18n).toBe('transloco extract --config tools');
+    });
+
+    it.each([
+      ['--config missing.config.js', 'missing.config.js'],
+      ['--config=missing.config.js', 'missing.config.js'],
+      ['-c missing.config.js', 'missing.config.js'],
+      ['--config ./tools/nope', './tools/nope'],
+      ['-c tools/conf.js/', 'tools/conf.js/'],
+    ])(
+      `GIVEN the option %s, a path that is not in the workspace
+       WHEN the extract and find scripts are migrated
+       THEN they are left, and reported with the path not found and the new bin stopping on it`,
+      async (option, path) => {
+        const extract = `transloco-keys-manager extract ${option}`;
+        const find = `transloco-keys-manager find ${option}`;
+        const { migrated, warnings, runner } = await runWith(
+          { '/tools/conf.js': '' },
+          { extract, find },
+          { listCli: true },
+        );
+
+        expect(scriptsOf(migrated)).toEqual({ extract, find });
+
+        const reported = warnings.join('\n');
+
+        expect(reportedScripts(warnings)).toHaveLength(2);
+        expect(reported).toContain(`'${path}', which ${MISSING}`);
+        expect(reported).toContain(STOPS);
+        expect(reported).toContain('where transloco-keys-manager ignored it');
+        expect(runner.tasks).toHaveLength(0);
+      },
+    );
+
+    it(`GIVEN a script of a nested package.json with a --config path
+        WHEN the migration runs
+        THEN the path is looked up in the folder of that package.json`, async () => {
+      const here = manifest({
+        found: 'transloco-keys-manager extract -c conf/t.js',
+        lost: 'transloco-keys-manager extract -c ../conf/t.js',
+      });
+      const { migrated, warnings } = await runWith(
+        {
+          '/packages/a/package.json': here,
+          '/packages/a/conf/t.js': '',
+          // next to the root package.json, where the first one is not looked for
+          '/conf/t.js': '',
+        },
+        undefined,
+        { listCli: true },
+      );
+
+      expect(scriptsOf(migrated, '/packages/a/package.json')).toEqual({
+        found: 'transloco extract -c conf/t.js',
+        lost: 'transloco-keys-manager extract -c ../conf/t.js',
+      });
+      expect(reportedScripts(warnings, '/packages/a/package.json')).toEqual([
+        expect.stringMatching(
+          /^lost: -c points at '..\/conf\/t.js', which was not found/,
+        ),
+      ]);
+    });
+
+    it(`GIVEN a nested package.json whose --config path exists only at the root
+        WHEN the migration runs
+        THEN the script is left`, async () => {
+      const { migrated } = await runWith(
+        {
+          '/packages/a/package.json': manifest({
+            i18n: 'transloco-keys-manager find --config conf/t.js',
+          }),
+          '/conf/t.js': '',
+        },
+        undefined,
+        { listCli: true },
+      );
+
+      expect(scriptsOf(migrated, '/packages/a/package.json').i18n).toBe(
+        'transloco-keys-manager find --config conf/t.js',
+      );
+    });
+
+    it.each([
+      ['a variable', '$CONFIG'],
+      ['a variable in quotes', '"$DIR/conf.js"'],
+      ['a literal dollar', "'$CONFIG'"],
+      ['a glob', "'tools/*.js'"],
+      ['a home folder', "'~/conf.js'"],
+      ['an absolute path', '/etc/transloco/conf.js'],
+      ['a path out of the workspace', '../../conf.js'],
+    ])(
+      `GIVEN a --config path that is %s
+       WHEN the script is migrated
+       THEN it is left, even though a file may be there`,
+      async (_, path) => {
+        const script = `transloco-keys-manager extract --config ${path}`;
+        const { migrated, warnings } = await runWith(
+          { '/tools/conf.js': '' },
+          { i18n: script },
+          { listCli: true },
+        );
+
+        expect(scriptsOf(migrated).i18n).toBe(script);
+        expect(reportedScripts(warnings)).toHaveLength(1);
+      },
+    );
+
+    it(`GIVEN a script that changes folder before using a --config path found at the root
+        WHEN the migration runs
+        THEN it is left, as the bin runs in the other folder`, async () => {
+      const script = 'cd app && transloco-keys-manager extract -c conf.js';
+      const { migrated, warnings } = await runWith(
+        { '/conf.js': '', '/app/keep.txt': '' },
+        { i18n: script },
+        { listCli: true },
+      );
+
+      expect(scriptsOf(migrated).i18n).toBe(script);
+      expect(reportedScripts(warnings)).toEqual([
+        expect.stringContaining(
+          'the script changes folder before this command',
+        ),
+      ]);
+    });
+
+    it(`GIVEN a script that was left for its --config path
+        WHEN the migration runs on the result
+        THEN the script is the same and is reported again`, async () => {
+      const first = await runWith(
+        {},
+        { i18n: 'transloco-keys-manager extract -c nope.js' },
+        { listCli: true },
+      );
+      const runner = new SchematicTestRunner('migrations', collectionPath);
+      const warnings: string[] = [];
+      runner.logger.subscribe((entry) => {
+        if (entry.level === 'warn') warnings.push(entry.message);
+      });
+      const second = await runner.runSchematic(
+        'migration-v9',
+        {},
+        first.migrated,
+      );
+
+      expect(second.readContent('/package.json')).toBe(
+        first.migrated.readContent('/package.json'),
+      );
+      expect(reportedScripts(warnings)).toEqual([
+        expect.stringContaining(`which ${MISSING}`),
+      ]);
+    });
+  });
+
+  describe('a bin that is still used', () => {
+    const STILL_USED =
+      'the old bin is still used here and could not be rewritten automatically';
+
+    const reportedLines = (warnings: string[]) =>
+      warnings
+        .join('\n')
+        .split('\n')
+        .map((line) => line.trim())
+        .filter((line) => line.startsWith('- /package.json: '));
+
+    it.each([
+      'sudo -u bob transloco-validator a.json',
+      'env -i transloco-optimize dist',
+      'nodemon --exec transloco-optimize dist',
+      'nodemon --exec "transloco-optimize dist"',
+      'nodemon --watch src --exec "npx transloco-keys-manager extract"',
+      'pnpm --filter x exec transloco-validator a.json',
+      'yarn workspace x run transloco-validator a.json',
+      'cross-env-shell "transloco-validator a.json"',
+      'cross-env-shell transloco-validator a.json',
+      'echo transloco-keys-manager',
+      'npm run transloco-scoped-libs -- --watch',
+      'npx @jsverse/transloco-validator a.json',
+      'node node_modules/@jsverse/transloco-validator/src/index.js a.json',
+    ])(
+      `GIVEN the script %s
+       WHEN the migration runs
+       THEN it is left as it is and reported once`,
+      async (script) => {
+        const { migrated, warnings } = await runWith(
+          {},
+          { i18n: script },
+          { listCli: true },
+        );
+
+        expect(scriptsOf(migrated).i18n).toBe(script);
+        expect(reportedLines(warnings)).toHaveLength(1);
+        expect(reportedLines(warnings)[0]).toMatch(/^- \/package.json: i18n: /);
+      },
+    );
+
+    it.each([
+      'sudo -u bob transloco-validator a.json',
+      'env -i transloco-optimize dist',
+      'nodemon --exec transloco-optimize dist',
+      'pnpm --filter x exec transloco-validator a.json',
+      'yarn workspace x run transloco-validator a.json',
+      'echo transloco-keys-manager',
+    ])(
+      `GIVEN the script %s that was not read at all
+       WHEN the migration runs
+       THEN the reason is that the old bin is still used`,
+      async (script) => {
+        const { warnings } = await runWith(
+          {},
+          { i18n: script },
+          { listCli: true },
+        );
+
+        expect(reportedLines(warnings)).toEqual([
+          `- /package.json: i18n: ${STILL_USED}`,
+        ]);
+      },
+    );
+
+    it(`GIVEN a script that was left for another reason and holds the bin by name
+        WHEN the migration runs
+        THEN it is reported once, with the first reason`, async () => {
+      const { warnings } = await runWith(
+        {},
+        { i18n: 'transloco-keys-manager extract --bogus' },
+        { listCli: true },
+      );
+
+      expect(reportedLines(warnings)).toEqual([
+        expect.stringContaining('--bogus is not an option'),
+      ]);
+      expect(warnings.join('\n')).not.toContain(STILL_USED);
+    });
+
+    it(`GIVEN a script with a command that can be moved and a shape that can't
+        WHEN the migration runs
+        THEN the whole script is left and reported once`, async () => {
+      const script =
+        'transloco-validator a.json && nodemon --exec transloco-optimize dist';
+      const { migrated, warnings } = await runWith(
+        {},
+        { i18n: script },
+        { listCli: true },
+      );
+
+      expect(scriptsOf(migrated).i18n).toBe(script);
+      expect(reportedLines(warnings)).toEqual([
+        `- /package.json: i18n: ${STILL_USED}`,
+      ]);
+    });
+
+    it.each([
+      'my-transloco-validator a.json',
+      'transloco-validator-extra a.json',
+      'transloco-optimizer dist',
+      'rimraf dist/transloco-optimize/x',
+      'cp transloco-validator/a.json b',
+      'git add transloco-validator.log',
+      'node tools/transloco-optimize.js',
+      'pnpm add @jsverse/transloco-keys-manager',
+      'echo @jsverse/transloco-validator',
+    ])(
+      `GIVEN the script %s that holds a bin only as a part of another word, a path or a package name
+       WHEN the migration runs
+       THEN it is not reported`,
+      async (script) => {
+        const { migrated, warnings } = await runWith(
+          {},
+          { i18n: script },
+          { listCli: true },
+        );
+
+        expect(scriptsOf(migrated).i18n).toBe(script);
+        expect(warnings.join('\n')).not.toContain('i18n');
+        expect(warnings.join('\n')).not.toContain('deprecated bin');
+      },
+    );
+
+    it(`GIVEN scripts run with sudo and with env
+        WHEN the migration runs
+        THEN they are rewritten and nothing is reported`, async () => {
+      const { migrated, warnings } = await runWith(
+        {},
+        {
+          validate: 'sudo transloco-validator a.json',
+          optimize: 'env CI=1 transloco-optimize dist',
+          extract: 'sudo env A=1 transloco-keys-manager extract -i src',
+        },
+        { listCli: true },
+      );
+
+      expect(scriptsOf(migrated)).toEqual({
+        validate: 'sudo transloco validate a.json',
+        optimize: 'env CI=1 transloco optimize dist',
+        extract: 'sudo env A=1 transloco extract -i src',
+      });
+      expect(warnings.join('\n')).not.toContain('deprecated bin');
+    });
+
+    it(`GIVEN the sudo and env scripts were migrated
+        WHEN the migration runs on the result
+        THEN nothing changes and nothing is reported`, async () => {
+      const first = await runWith(
+        {},
+        {
+          validate: 'sudo transloco-validator a.json',
+          optimize: 'env CI=1 transloco-optimize dist',
+        },
+        { listCli: true },
+      );
+      const runner = new SchematicTestRunner('migrations', collectionPath);
+      const lines: string[] = [];
+      runner.logger.subscribe((entry) => {
+        if (entry.level === 'warn' || entry.level === 'info') {
+          lines.push(entry.message);
+        }
+      });
+      const second = await runner.runSchematic(
+        'migration-v9',
+        {},
+        first.migrated,
+      );
+
+      expect(second.readContent('/package.json')).toBe(
+        first.migrated.readContent('/package.json'),
+      );
+      expect(lines.filter((line) => /script|bin/.test(line))).toEqual([]);
+    });
+  });
+
+  describe('the other files of a pipeline', () => {
+    const files: Record<string, string> = {
+      '/.circleci/config.yml': `jobs:\n  i18n:\n    steps:\n      - run: npx transloco-keys-manager find\n`,
+      '/bitbucket-pipelines.yml': `pipelines:\n  default:\n    - step:\n        script:\n          - transloco-validator a.json\n`,
+      '/.husky/pre-commit': `#!/bin/sh\nnpx transloco-keys-manager find\n`,
+      '/.lintstagedrc': `{ "*.json": "transloco-validator" }`,
+      '/.lintstagedrc.json': `{ "*.json": "transloco-validator" }`,
+      '/.lintstagedrc.js': `module.exports = { '*.json': 'transloco-validator' };`,
+      '/lint-staged.config.mjs': `export default { '*.json': 'transloco-validator' };`,
+      '/Dockerfile': `FROM node\nRUN npx transloco-optimize dist\n`,
+      '/Dockerfile.prod': `FROM node\nRUN transloco-optimize dist\n`,
+      '/docker-compose.yml': `services:\n  i18n:\n    command: transloco-keys-manager extract\n`,
+      '/docker-compose.override.yml': `services:\n  i18n:\n    command: transloco-keys-manager extract\n`,
+      '/Taskfile.yml': `tasks:\n  i18n:\n    cmds:\n      - transloco-scoped-libs\n`,
+      '/justfile': `i18n:\n    transloco-keys-manager extract\n`,
+      '/apps/web/Dockerfile': `RUN transloco-optimize dist\n`,
+    };
+
+    it.each(Object.keys(files))(
+      `GIVEN the file %s that runs a deprecated bin
+       WHEN the migration runs
+       THEN it is reported once and not edited`,
+      async (path) => {
+        const { migrated, warnings } = await runWith({ [path]: files[path] });
+        const lines = warnings
+          .join('\n')
+          .split('\n')
+          .map((line) => line.trim());
+
+        expect(migrated.readContent(path)).toBe(files[path]);
+        expect(lines.filter((line) => line === `- ${path}`)).toHaveLength(1);
+      },
+    );
+
+    it.each([
+      '/.husky/_/husky.sh',
+      '/.husky/_/pre-commit',
+      '/.husky/hooks/pre-commit',
+    ])(
+      `GIVEN the file %s deeper in the husky folder
+       WHEN the migration runs
+       THEN it is not reported`,
+      async (path) => {
+        const { warnings } = await runWith({
+          [path]: `npx transloco-keys-manager find\n`,
+        });
+
+        expect(warnings.join('\n')).not.toContain(path);
+      },
+    );
+
+    it.each([
+      '/.circleci/config.yml',
+      '/.husky/pre-commit',
+      '/Dockerfile.prod',
+      '/justfile',
+    ])(
+      `GIVEN the file %s that only names a bin as a part of a path
+       WHEN the migration runs
+       THEN it is not reported`,
+      async (path) => {
+        const { warnings } = await runWith({
+          [path]: `run: rimraf dist/transloco-optimize\n`,
+        });
+
+        expect(warnings.join('\n')).not.toContain(path);
+      },
+    );
+  });
+
+  describe('a package.json that starts with a byte order mark', () => {
+    const MANUAL = `Add '${CLI}' to your devDependencies`;
+
+    /** A root package.json with a BOM, running a deprecated bin. */
+    const bomManifest = (dependencies: Record<string, unknown> = {}) =>
+      '\uFEFF' +
+      JSON.stringify(
+        {
+          name: 'app',
+          scripts: { i18n: 'transloco-keys-manager extract' },
+          ...dependencies,
+        },
+        null,
+        2,
+      ) +
+      '\n';
+
+    it(`GIVEN a root package.json with a BOM that does not list the CLI
+        WHEN the scripts are migrated
+        THEN the CLI is added without asking the user to add it`, async () => {
+      const { migrated, runner, infos, warnings } = await runWith(
+        {},
+        undefined,
+        { raw: bomManifest() },
+      );
+
+      expect(warnings.join('\n')).not.toContain(MANUAL);
+      expect(infos.join('\n')).toContain(`Added '${CLI}@^`);
+      expect(nodePackageTasks(runner)).toHaveLength(1);
+      // Adding the dependency goes through the helper of Angular, which writes the file without the BOM
+      const written = JSON.parse(
+        migrated.readContent('/package.json').replace('\uFEFF', ''),
+      );
+
+      expect(written.devDependencies[CLI]).toMatch(/^\^9\./);
+      expect(written.scripts.i18n).toBe('transloco extract');
+    });
+
+    it.each(['dependencies', 'devDependencies'])(
+      `GIVEN a root package.json with a BOM that lists the CLI in %s
+       WHEN the scripts are migrated
+       THEN the dependencies are not touched and the user is not asked to add it`,
+      async (section) => {
+        const raw = bomManifest({ [section]: { [CLI]: '^9.0.0' } });
+        const { migrated, runner, infos, warnings } = await runWith(
+          {},
+          undefined,
+          { raw },
+        );
+
+        expect(warnings.join('\n')).not.toContain(MANUAL);
+        expect(infos.join('\n')).not.toContain('Added');
+        expect(runner.tasks).toHaveLength(0);
+        expect(migrated.readContent('/package.json')).toBe(
+          raw.replace(
+            '"transloco-keys-manager extract"',
+            '"transloco extract"',
+          ),
+        );
+      },
+    );
+
+    it(`GIVEN a root package.json that cannot be read
+        WHEN the scripts are migrated
+        THEN the user is asked to add the CLI`, async () => {
+      const { warnings } = await runWith(
+        {
+          '/packages/a/package.json': manifest({
+            i18n: 'transloco-keys-manager extract',
+          }),
+        },
+        undefined,
+        { raw: '\uFEFF{ "scripts": ' },
+      );
+
+      expect(warnings.join('\n')).toContain(MANUAL);
+    });
   });
 });
 
