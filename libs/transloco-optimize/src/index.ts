@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { warnDeprecatedBin } from '@jsverse/transloco-cli/internal/deprecation';
 import commandLineArgs from 'command-line-args';
 
 import {
@@ -6,6 +7,8 @@ import {
   optimizeFiles,
   getTranslationsFolder,
 } from './lib/transloco-optimize.js';
+
+warnDeprecatedBin('transloco-optimize');
 
 const optionDefinitions: commandLineArgs.OptionDefinition[] = [
   { name: 'commentsKey', alias: 'k', type: String, defaultValue: 'comment' },

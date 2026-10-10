@@ -5,6 +5,7 @@
   "type": "module",
   "main": "src/lib/transloco-scoped-libs.js",
   "module": "src/lib/transloco-scoped-libs.js",
+  "types": "src/lib/transloco-scoped-libs.d.ts",
   "engines": {
     "node": "^22.18.0 || >=24"
   },

@@ -6,6 +6,7 @@
   "main": "src/index.js",
   "exports": {
     ".": "./src/index.js",
+    "./internal/deprecation": "./src/deprecation/index.js",
     "./internal/keys-manager": "./src/keys-manager/index.js",
     "./internal/optimize": "./src/optimize/index.js",
     "./internal/scoped-libs": "./src/scoped-libs/index.js",

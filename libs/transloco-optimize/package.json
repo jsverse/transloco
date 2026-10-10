@@ -5,6 +5,7 @@
   "type": "module",
   "main": "src/lib/transloco-optimize.js",
   "module": "src/lib/transloco-optimize.js",
+  "types": "src/lib/transloco-optimize.d.ts",
   "engines": {
     "node": "^22.18.0 || >=24"
   },
