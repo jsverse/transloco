@@ -13,12 +13,14 @@ import {
   planInit,
   translationFile,
 } from '../init/plan.js';
+import { findUnreadableConfig } from '../init/unreadable-config.js';
 import {
   languageProblem,
   translationsPathProblem,
+  writeProblem,
 } from '../init/validation.js';
 import { outputFile } from '../utils/file-system.js';
-import { lstat } from '../utils/real-path.js';
+import { contains, lstat } from '../utils/real-path.js';
 
 const name = 'Init';
 const cancelledExitCode = 130;
@@ -55,7 +57,7 @@ export async function runInit({
     );
   }
 
-  const manifest = readManifest();
+  const { text: manifest, skipped } = readManifest();
 
   // A `package.json` that can't take the scripts is found before anything is
   // asked, and before the search for a config reads it as well.
@@ -66,22 +68,28 @@ export async function runInit({
   assertConfigCanBeWritten(force);
 
   const exists = (file: string) => lstat(path.resolve(file)) !== undefined;
-  const state = { exists, manifest };
+  const state = {
+    exists,
+    manifest,
+    // Said only when the scripts were wanted
+    manifestSkipped: scripts ? skipped : undefined,
+  };
 
   if (!interactive) {
     const steps = planInit(
       {
         langs: given.langs ?? defaultLangs,
-        translationsPath: given.translationsPath ?? defaultTranslationsPath,
+        translationsPath:
+          given.translationsPath ??
+          assertTranslationsPath(defaultTranslationsPath),
         createTranslationFiles: true,
         addScripts: scripts,
       },
       state,
     );
 
-    for (const step of steps) {
-      console.log(apply(step));
-    }
+    assertPlanCanBeWritten(steps);
+    applySteps(steps, ({ message }) => console.log(message));
 
     console.log(nextStep);
 
@@ -108,18 +116,18 @@ export async function runInit({
     return;
   }
 
+  // The prompt rejects a folder that can't be used, so this is the same check
+  // for the answer that comes from anywhere else.
   const planned = planInit(
     {
       ...answers,
-      translationsPath: relativeToCwd(answers.translationsPath),
+      translationsPath: assertTranslationsPath(answers.translationsPath),
     },
     state,
   );
 
-  for (const step of planned) {
-    apply(step);
-    ui.reportStep(step);
-  }
+  assertPlanCanBeWritten(planned);
+  applySteps(planned, ui.reportStep);
 
   ui.endPrompts(nextStep);
 }
@@ -127,13 +135,46 @@ export async function runInit({
 const nextStep =
   'Done. Run `transloco extract` to collect the keys of your project into the translation files.';
 
-/** Does what the step is about and tells what it was. */
-function apply({ message, write }: InitStep) {
-  if (write) {
-    outputFile(path.resolve(write.file), write.content);
-  }
+/**
+ * Nothing is written unless everything can be: a file system problem found
+ * while writing would leave a part of the result behind.
+ */
+function assertPlanCanBeWritten(steps: InitStep[]) {
+  for (const { write } of steps) {
+    const problem = write && writeProblem(write.file);
 
-  return message;
+    if (problem) {
+      throw new CliError(
+        `Transloco ${name}: cannot write ${write.file}, ${problem}. Nothing was written.`,
+      );
+    }
+  }
+}
+
+/** Does what each step is about and tells what it was, as it goes. */
+function applySteps(steps: InitStep[], report: (step: InitStep) => void) {
+  const written: string[] = [];
+
+  for (const step of steps) {
+    if (step.write) {
+      try {
+        outputFile(path.resolve(step.write.file), step.write.content);
+      } catch (error) {
+        // The check before can't see what happens in between
+        throw new CliError(
+          `Transloco ${name}: could not write ${step.write.file}: ${(error as Error).message}. ${
+            written.length
+              ? `Already written: ${written.join(', ')}.`
+              : 'Nothing was written.'
+          }`,
+        );
+      }
+
+      written.push(step.write.file);
+    }
+
+    report(step);
+  }
 }
 
 function assertLangs(langs: string[]) {
@@ -183,8 +224,15 @@ function assertConfigCanBeWritten(force: boolean) {
   try {
     found = findGlobalConfigFile();
   } catch (error) {
-    // A config that can't be loaded still stands where it is
-    if (!targetExists) throw error;
+    const { file, reason } = findUnreadableConfig(error);
+
+    // A config that can't be loaded still stands where it is. Any other file
+    // might hold the config, which makes it unknown whether there is one.
+    if (!targetExists || file === undefined || path.resolve(file) !== target) {
+      throw new CliError(
+        `Transloco ${name}: could not read ${file === undefined ? 'a config file' : path.relative('', file)} while looking for an existing Transloco config: ${reason}`,
+      );
+    }
   }
 
   if (found !== undefined && path.resolve(found) !== target) {
@@ -200,8 +248,35 @@ function assertConfigCanBeWritten(force: boolean) {
   }
 }
 
-function readManifest() {
+/**
+ * The text of the `package.json`, when there is a file to put the scripts in.
+ * A link is followed when it leads to a file inside the working directory, as
+ * writing to it changes that file and leaves the link where it is. Where it
+ * leads anywhere else, `skipped` says why it is left alone.
+ */
+function readManifest(): { text?: string; skipped?: string } {
   const file = path.resolve(manifestFileName);
+  const stats = lstat(file);
 
-  return lstat(file)?.isFile() ? fs.readFileSync(file, 'utf8') : undefined;
+  if (stats?.isFile()) {
+    return { text: fs.readFileSync(file, 'utf8') };
+  }
+
+  if (!stats?.isSymbolicLink()) return {};
+
+  let real: string;
+
+  try {
+    real = fs.realpathSync(file);
+  } catch {
+    return { skipped: 'it is a link that leads nowhere' };
+  }
+
+  if (!contains(fs.realpathSync(process.cwd()), real)) {
+    return { skipped: 'it is a link that leads outside the folder' };
+  }
+
+  return fs.statSync(real).isFile()
+    ? { text: fs.readFileSync(real, 'utf8') }
+    : { skipped: 'it is a link to something that is not a file' };
 }

@@ -26,6 +26,8 @@ export interface InitState {
   exists: (file: string) => boolean;
   /** The text of the `package.json`, when there is one. */
   manifest?: string;
+  /** Why the scripts can't go to a `package.json` that is there, which the plan reports. */
+  manifestSkipped?: string;
 }
 
 /** One thing init does: what it tells the user, along with the file it writes when it does write. */
@@ -90,6 +92,11 @@ export function planInit(answers: InitAnswers, state: InitState): InitStep[] {
 
   if (answers.addScripts && state.manifest !== undefined) {
     steps.push(...planScripts(state.manifest));
+  } else if (state.manifestSkipped !== undefined) {
+    steps.push({
+      message: `Left ${manifestFileName} alone, ${state.manifestSkipped}`,
+      kept: true,
+    });
   }
 
   return steps;

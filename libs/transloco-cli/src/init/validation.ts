@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { contains, locate } from '../utils/real-path.js';
+import { contains, locate, lstat } from '../utils/real-path.js';
 
 /** A language is the name of the file written for it, which rules these out. */
 const notInFileName = /[\\/:*?"<>|\0\s]/;
@@ -59,4 +59,60 @@ export function translationsPathProblem(value: string, cwd = process.cwd()) {
   }
 
   return undefined;
+}
+
+/**
+ * Why the file can't be written, `undefined` when it can: it is there and
+ * writable, or the folder it goes in can be made below the deepest folder that
+ * exists and takes new entries. The reason reads after the file name.
+ */
+export function writeProblem(file: string, cwd = process.cwd()) {
+  const target = path.resolve(cwd, file);
+
+  if (lstat(target)) {
+    // A link is followed, as the write goes through it
+    const stats = statOrUndefined(target);
+
+    if (!stats) return 'it is a link that leads nowhere';
+
+    if (!stats.isFile()) return 'it is a folder';
+
+    return can(target, fs.constants.W_OK) ? undefined : 'it is read-only';
+  }
+
+  // Below a file the name is no more there than below a missing folder
+  let ancestor = path.dirname(target);
+
+  while (!lstat(ancestor)) {
+    ancestor = path.dirname(ancestor);
+  }
+
+  const name = path.relative(cwd, ancestor) || '.';
+  const stats = statOrUndefined(ancestor);
+
+  if (!stats) return `${name} is a link that leads nowhere`;
+
+  if (!stats.isDirectory()) return `${name} is a file`;
+
+  return can(ancestor, fs.constants.W_OK | fs.constants.X_OK)
+    ? undefined
+    : `the folder ${name} is read-only`;
+}
+
+function statOrUndefined(target: string) {
+  try {
+    return fs.statSync(target);
+  } catch {
+    return undefined;
+  }
+}
+
+function can(target: string, mode: number) {
+  try {
+    fs.accessSync(target, mode);
+
+    return true;
+  } catch {
+    return false;
+  }
 }

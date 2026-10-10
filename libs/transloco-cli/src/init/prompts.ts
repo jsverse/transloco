@@ -113,8 +113,9 @@ function askTranslationsPath() {
       message: 'Where do the translation files live?',
       placeholder: defaultTranslationsPath,
       defaultValue: defaultTranslationsPath,
-      // Nothing typed is the default
-      validate: (value) => (value ? translationsPathProblem(value) : undefined),
+      // Nothing typed is the default, which has to be usable as well
+      validate: (value) =>
+        translationsPathProblem(value || defaultTranslationsPath),
     }),
   );
 }

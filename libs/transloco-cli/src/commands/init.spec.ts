@@ -26,6 +26,9 @@ describe('runInit', () => {
     stdin: Object.getOwnPropertyDescriptor(process.stdin, 'isTTY'),
     stdout: Object.getOwnPropertyDescriptor(process.stdout, 'isTTY'),
   };
+  // Nothing stops a user that can write anywhere
+  const asRoot = process.getuid?.() === 0;
+  const locked: string[] = [];
   let dir: string;
   let log: ReturnType<typeof vi.spyOn>;
 
@@ -67,8 +70,41 @@ describe('runInit', () => {
     }
 
     vi.restoreAllMocks();
+
+    // A folder that can't be written can't be removed either
+    for (const target of locked.splice(0)) {
+      fs.chmodSync(target, fs.statSync(target).isDirectory() ? 0o755 : 0o644);
+    }
+
     fs.rmSync(dir, { recursive: true, force: true });
   });
+
+  /** Takes the right to write away, which `afterEach` gives back. */
+  function lock(file: string) {
+    const target = path.join(dir, file);
+
+    locked.push(target);
+    fs.chmodSync(target, fs.statSync(target).isDirectory() ? 0o555 : 0o444);
+  }
+
+  /** Everything below the folder: the content of a file, `null` for a folder, the target of a link. */
+  function tree() {
+    return Object.fromEntries(
+      fs.readdirSync(dir, { recursive: true }).map((entry) => {
+        const file = path.join(dir, entry);
+        const stats = fs.lstatSync(file);
+
+        return [
+          entry,
+          stats.isSymbolicLink()
+            ? `-> ${fs.readlinkSync(file)}`
+            : stats.isDirectory()
+              ? null
+              : fs.readFileSync(file, 'utf-8'),
+        ];
+      }),
+    );
+  }
 
   function write(file: string, content: string) {
     const filePath = path.join(dir, file);
@@ -448,6 +484,455 @@ describe('runInit', () => {
         expect(fs.readdirSync(dir)).toEqual([]);
       },
     );
+  });
+
+  describe('what is checked before the first file is written', () => {
+    const inTheWay =
+      'Transloco Init: The translations path src/assets/i18n is, or lies inside, a file';
+
+    it.each([['src'], ['src/assets'], ['src/assets/i18n']])(
+      `GIVEN the file %s on the way to the default translations path
+       WHEN init runs with --yes
+       THEN it is refused with one line and nothing is written`,
+      async (file) => {
+        write(file, '');
+        const before = tree();
+
+        await expect(runInit(options())).rejects.toThrow(
+          new CliError(inTheWay),
+        );
+        expect(tree()).toEqual(before);
+        expect(log).not.toHaveBeenCalled();
+      },
+    );
+
+    it(`GIVEN a file on the way to the translations path that was answered
+        WHEN init runs and asks
+        THEN it is refused after the answers, and nothing is written or reported`, async () => {
+      setTerminal(true);
+      write('texts', '');
+      ui.askInit.mockResolvedValue({
+        langs: ['en'],
+        translationsPath: 'texts/i18n',
+        createTranslationFiles: true,
+        addScripts: false,
+      });
+      const before = tree();
+
+      await expect(runInit({ scripts: true })).rejects.toThrow(
+        new CliError(
+          'Transloco Init: The translations path texts/i18n is, or lies inside, a file',
+        ),
+      );
+      expect(tree()).toEqual(before);
+      expect(ui.reportStep).not.toHaveBeenCalled();
+    });
+
+    it(`GIVEN a file on the way to the default translations path and another folder given
+        WHEN init runs with --yes
+        THEN the default is none of its business`, async () => {
+      write('src', '');
+
+      await runInit(options({ translationsPath: 'texts' }));
+
+      expect(exists('texts/en.json')).toBe(true);
+    });
+
+    it.skipIf(asRoot)(
+      `GIVEN the folder src/assets/i18n is read-only
+       WHEN init runs with --yes
+       THEN it is refused naming the file and the folder, and nothing is written`,
+      async () => {
+        fs.mkdirSync(path.join(dir, 'src/assets/i18n'), { recursive: true });
+        lock('src/assets/i18n');
+        const before = tree();
+
+        await expect(runInit(options())).rejects.toThrow(
+          new CliError(
+            `Transloco Init: cannot write src/assets/i18n/en.json, the folder ${path.join('src', 'assets', 'i18n')} is read-only. Nothing was written.`,
+          ),
+        );
+        expect(tree()).toEqual(before);
+        expect(exists('transloco.config.ts')).toBe(false);
+      },
+    );
+
+    it.skipIf(asRoot)(
+      `GIVEN the folder src is read-only
+       WHEN init runs with --yes
+       THEN it is refused naming the file and the folder, and nothing is written`,
+      async () => {
+        fs.mkdirSync(path.join(dir, 'src'));
+        lock('src');
+        const before = tree();
+
+        await expect(runInit(options())).rejects.toThrow(
+          new CliError(
+            'Transloco Init: cannot write src/assets/i18n/en.json, the folder src is read-only. Nothing was written.',
+          ),
+        );
+        expect(tree()).toEqual(before);
+        expect(exists('transloco.config.ts')).toBe(false);
+      },
+    );
+
+    it.skipIf(asRoot)(
+      `GIVEN the working directory is read-only
+       WHEN init runs with --yes
+       THEN it is refused naming the config`,
+      async () => {
+        lock('.');
+
+        await expect(runInit(options())).rejects.toThrow(
+          new CliError(
+            'Transloco Init: cannot write transloco.config.ts, the folder . is read-only. Nothing was written.',
+          ),
+        );
+        expect(fs.readdirSync(dir)).toEqual([]);
+      },
+    );
+
+    it.skipIf(asRoot)(
+      `GIVEN a package.json that is read-only
+       WHEN init runs with --yes
+       THEN it is refused before the config and the translation file are written`,
+      async () => {
+        write('package.json', packageJson);
+        lock('package.json');
+        const before = tree();
+
+        await expect(runInit(options())).rejects.toThrow(
+          new CliError(
+            'Transloco Init: cannot write package.json, it is read-only. Nothing was written.',
+          ),
+        );
+        expect(tree()).toEqual(before);
+      },
+    );
+
+    it.skipIf(asRoot)(
+      `GIVEN a package.json that is read-only
+       WHEN init runs with --no-scripts
+       THEN it is not written to, and the rest is done`,
+      async () => {
+        write('package.json', packageJson);
+        lock('package.json');
+
+        await runInit(options({ scripts: false }));
+
+        expect(read('package.json')).toBe(packageJson);
+        expect(exists('transloco.config.ts')).toBe(true);
+      },
+    );
+
+    it.skipIf(asRoot)(
+      `GIVEN a transloco.config.ts that is read-only
+       WHEN init runs with --force
+       THEN it is refused and nothing is written`,
+      async () => {
+        write('transloco.config.ts', 'export default {};');
+        lock('transloco.config.ts');
+        const before = tree();
+
+        await expect(runInit(options({ force: true }))).rejects.toThrow(
+          new CliError(
+            'Transloco Init: cannot write transloco.config.ts, it is read-only. Nothing was written.',
+          ),
+        );
+        expect(tree()).toEqual(before);
+      },
+    );
+
+    it.skipIf(asRoot)(
+      `GIVEN a folder that is read-only
+       WHEN init runs and asks
+       THEN it is refused after the answers, before anything is written or reported`,
+      async () => {
+        setTerminal(true);
+        fs.mkdirSync(path.join(dir, 'texts'));
+        lock('texts');
+        ui.askInit.mockResolvedValue({
+          langs: ['en'],
+          translationsPath: 'texts',
+          createTranslationFiles: true,
+          addScripts: false,
+        });
+
+        await expect(runInit({ scripts: true })).rejects.toThrow(
+          'Transloco Init: cannot write texts/en.json, the folder texts is read-only. Nothing was written.',
+        );
+        expect(exists('transloco.config.ts')).toBe(false);
+        expect(ui.reportStep).not.toHaveBeenCalled();
+      },
+    );
+
+    it.skipIf(asRoot)(
+      `GIVEN translation files that exist in a read-only folder
+       WHEN init runs with --yes
+       THEN nothing is written there, so nothing is refused`,
+      async () => {
+        write('src/assets/i18n/en.json', '{}');
+        lock('src/assets/i18n');
+
+        await runInit(options());
+
+        expect(exists('transloco.config.ts')).toBe(true);
+      },
+    );
+  });
+
+  describe('a file system problem that the check could not see', () => {
+    const fail = (match: string) => {
+      const writeFile = fs.writeFileSync;
+
+      vi.spyOn(fs, 'writeFileSync').mockImplementation(((
+        file: fs.PathOrFileDescriptor,
+        ...rest: [string]
+      ) => {
+        if (String(file).endsWith(match)) throw new Error('EIO: boom');
+
+        return writeFile(file, ...rest);
+      }) as typeof fs.writeFileSync);
+    };
+
+    it(`GIVEN a translation file that fails to be written after the config
+        WHEN init runs with --yes
+        THEN the error names the file and the files that were written before`, async () => {
+      fail('en.json');
+
+      await expect(runInit(options())).rejects.toThrow(
+        new CliError(
+          'Transloco Init: could not write src/assets/i18n/en.json: EIO: boom. Already written: transloco.config.ts.',
+        ),
+      );
+      expect(exists('transloco.config.ts')).toBe(true);
+    });
+
+    it(`GIVEN the config fails to be written
+        WHEN init runs with --yes
+        THEN the error names it and says nothing was written`, async () => {
+      fail('transloco.config.ts');
+
+      await expect(runInit(options())).rejects.toThrow(
+        new CliError(
+          'Transloco Init: could not write transloco.config.ts: EIO: boom. Nothing was written.',
+        ),
+      );
+    });
+
+    it(`GIVEN the package.json fails to be written
+        WHEN init runs and asks
+        THEN the error lists everything that was written before it`, async () => {
+      setTerminal(true);
+      write('package.json', packageJson);
+      ui.askInit.mockResolvedValue({
+        langs: ['en'],
+        translationsPath: 'i18n',
+        createTranslationFiles: true,
+        addScripts: true,
+      });
+      fail('package.json');
+
+      await expect(runInit({ scripts: true })).rejects.toThrow(
+        'Transloco Init: could not write package.json: EIO: boom. Already written: transloco.config.ts, i18n/en.json.',
+      );
+      expect(ui.reportStep).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('a file that cannot be read while looking for a config', () => {
+    const unreadable = (file: string) =>
+      new RegExp(
+        `^Transloco Init: could not read ${file.replaceAll('.', '\\.')} while looking for an existing Transloco config: .+$`,
+      );
+    const withBom = '﻿{\n  "name": "app",\n  "version": "1.0.0"\n}\n';
+
+    it.each([[true], [false]])(
+      `GIVEN a package.json that starts with a BOM
+       WHEN init runs with --yes (scripts: %j)
+       THEN it is refused with one line naming the file, and nothing is written`,
+      async (scripts) => {
+        write('package.json', withBom);
+        const before = tree();
+
+        await expect(runInit(options({ scripts }))).rejects.toThrow(
+          unreadable('package.json'),
+        );
+        expect(tree()).toEqual(before);
+      },
+    );
+
+    it(`GIVEN a package.json that is no valid JSON
+        WHEN init runs with --no-scripts
+        THEN it is refused with one line naming the file, and nothing is written`, async () => {
+      write('package.json', '{\n  "name": \n}\n');
+
+      await expect(runInit(options({ scripts: false }))).rejects.toThrow(
+        unreadable('package.json'),
+      );
+      expect(fs.readdirSync(dir)).toEqual(['package.json']);
+    });
+
+    it(`GIVEN a config of another name that throws when it is loaded
+        WHEN init runs with --yes
+        THEN it is refused with one line naming that file`, async () => {
+      write('transloco.config.js', 'module.exports = {');
+
+      await expect(runInit(options())).rejects.toThrow(
+        unreadable('transloco.config.js'),
+      );
+      expect(fs.readdirSync(dir)).toEqual(['transloco.config.js']);
+    });
+
+    it(`GIVEN a config in a folder above that throws when it is loaded
+        WHEN init runs with --yes
+        THEN the file is named relative to the working directory`, async () => {
+      write('package.json', '{"name": "app"}');
+      write('.translocorc.json', '{\n  "langs": \n}');
+      write('src/app/.gitkeep', '');
+      process.chdir(path.join(dir, 'src', 'app'));
+
+      await expect(runInit(options())).rejects.toThrow(
+        unreadable(path.join('..', '..', '.translocorc.json')),
+      );
+    });
+
+    it(`GIVEN a transloco.config.ts and a package.json starting with a BOM
+        WHEN init runs with --force
+        THEN the package.json is the file that is named, the config is not to blame`, async () => {
+      write('transloco.config.ts', 'export default {};');
+      write('package.json', withBom);
+
+      await expect(runInit(options({ force: true }))).rejects.toThrow(
+        unreadable('package.json'),
+      );
+      expect(read('transloco.config.ts')).toBe('export default {};');
+    });
+
+    it(`GIVEN a package.json starting with a BOM
+        WHEN init could ask
+        THEN it is refused before the first question`, async () => {
+      setTerminal(true);
+      write('package.json', withBom);
+
+      await expect(runInit({ scripts: true })).rejects.toThrow(
+        unreadable('package.json'),
+      );
+      expect(ui.startPrompts).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('a package.json that is a link', () => {
+    let outside: string;
+
+    beforeEach(() => {
+      outside = fs.realpathSync(
+        fs.mkdtempSync(path.join(os.tmpdir(), 'transloco-cli-init-out-')),
+      );
+    });
+
+    afterEach(() => {
+      fs.rmSync(outside, { recursive: true, force: true });
+    });
+
+    const linkToOutside = () => {
+      fs.writeFileSync(path.join(outside, 'package.json'), packageJson);
+      fs.symlinkSync(
+        path.join(outside, 'package.json'),
+        path.join(dir, 'package.json'),
+      );
+    };
+
+    it(`GIVEN a link to a package.json inside the folder
+        WHEN init runs with --yes
+        THEN the scripts go into the file it leads to and the link stays`, async () => {
+      write('shared/package.json', packageJson);
+      fs.symlinkSync(
+        path.join('shared', 'package.json'),
+        path.join(dir, 'package.json'),
+      );
+
+      await runInit(options());
+
+      expect(
+        fs.lstatSync(path.join(dir, 'package.json')).isSymbolicLink(),
+      ).toBe(true);
+      expect(fs.readlinkSync(path.join(dir, 'package.json'))).toBe(
+        path.join('shared', 'package.json'),
+      );
+      expect(JSON.parse(read('shared/package.json')).scripts).toEqual({
+        build: 'tsc',
+        'i18n:extract': 'transloco extract',
+        'i18n:find': 'transloco find',
+      });
+      expect(printed()).toContain(
+        'Added the script i18n:extract to package.json',
+      );
+    });
+
+    it(`GIVEN a link to a package.json outside the folder
+        WHEN init runs with --yes
+        THEN the file is left alone and a line says why`, async () => {
+      linkToOutside();
+
+      await runInit(options());
+
+      expect(fs.readFileSync(path.join(outside, 'package.json'), 'utf-8')).toBe(
+        packageJson,
+      );
+      expect(printed()).toEqual([
+        'Created transloco.config.ts',
+        'Created src/assets/i18n/en.json',
+        'Left package.json alone, it is a link that leads outside the folder',
+        closing,
+      ]);
+    });
+
+    it(`GIVEN a link to a package.json outside the folder
+        WHEN init runs with --no-scripts
+        THEN nothing is said about it`, async () => {
+      linkToOutside();
+
+      await runInit(options({ scripts: false }));
+
+      expect(printed().join('\n')).not.toContain('package.json');
+    });
+
+    it(`GIVEN a link to a package.json outside the folder
+        WHEN init runs and asks
+        THEN the scripts are not asked about, and the line is reported as a step`, async () => {
+      setTerminal(true);
+      linkToOutside();
+      ui.askInit.mockResolvedValue({
+        langs: ['en'],
+        translationsPath: 'i18n',
+        createTranslationFiles: true,
+        addScripts: false,
+      });
+
+      await runInit({ scripts: true });
+
+      expect(ui.askInit.mock.calls[0][0]).toMatchObject({ askScripts: false });
+      expect(ui.reportStep.mock.calls.map(([step]) => step.message)).toContain(
+        'Left package.json alone, it is a link that leads outside the folder',
+      );
+    });
+
+    it(`GIVEN a link to nowhere
+        WHEN init runs with --yes
+        THEN the file is left alone and a line says why`, async () => {
+      fs.symlinkSync(
+        path.join(outside, 'missing.json'),
+        path.join(dir, 'package.json'),
+      );
+
+      await runInit(options());
+
+      expect(printed()).toContain(
+        'Left package.json alone, it is a link that leads nowhere',
+      );
+      expect(exists('transloco.config.ts')).toBe(true);
+    });
   });
 
   describe('with questions', () => {

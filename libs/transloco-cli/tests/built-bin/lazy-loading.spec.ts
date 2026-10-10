@@ -133,6 +133,7 @@ const init: Allowed = {
     'src/config/transloco-utils.js',
     'src/init/manifest.js',
     'src/init/plan.js',
+    'src/init/unreadable-config.js',
     'src/init/validation.js',
     'src/utils/file-system.js',
     'src/utils/real-path.js',

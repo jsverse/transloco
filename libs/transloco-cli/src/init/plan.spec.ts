@@ -261,6 +261,22 @@ describe('planInit', () => {
       },
     );
 
+    it(`GIVEN a package.json the scripts can't go to
+        WHEN init is planned
+        THEN a step says why it is left alone, and nothing is written for it`, () => {
+      const steps = planInit(answers({ createTranslationFiles: false }), {
+        ...state(),
+        manifestSkipped: 'it is a link that leads outside the folder',
+      });
+
+      expect(summarize(steps)).toEqual([
+        'Created transloco.config.ts => transloco.config.ts',
+        'Left package.json alone, it is a link that leads outside the folder',
+      ]);
+      expect(steps[1]).toMatchObject({ kept: true });
+      expect(steps[1].write).toBeUndefined();
+    });
+
     it(`GIVEN a package.json with Windows line endings and four spaces
         WHEN init is planned
         THEN the scripts are added in that style`, () => {

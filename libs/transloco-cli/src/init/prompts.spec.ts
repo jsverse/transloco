@@ -1,4 +1,8 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const cancelled = vi.hoisted(() => Symbol('cancelled'));
 const clack = vi.hoisted(() => ({
@@ -181,6 +185,22 @@ describe('askInit', () => {
   });
 
   describe('validation', () => {
+    const originalCwd = process.cwd();
+    let dir: string;
+
+    // The folder is judged against what is on disk
+    beforeEach(() => {
+      dir = fs.realpathSync(
+        fs.mkdtempSync(path.join(os.tmpdir(), 'transloco-cli-init-prompt-')),
+      );
+      process.chdir(dir);
+    });
+
+    afterEach(() => {
+      process.chdir(originalCwd);
+      fs.rmSync(dir, { recursive: true, force: true });
+    });
+
     const validatorOf = async (index: 0 | 1) => {
       clack.text.mockResolvedValue('x');
       clack.confirm.mockResolvedValue(true);
@@ -262,6 +282,34 @@ describe('askInit', () => {
         THEN there is no problem`, async () => {
       expect((await validatorOf(1))('src/i18n')).toBeUndefined();
     });
+
+    it.each([['src'], ['src/assets'], ['src/assets/i18n']])(
+      `GIVEN a folder that has the file %s in its way
+       WHEN it is validated
+       THEN the message says so, which makes the prompt ask again`,
+      async (file) => {
+        fs.mkdirSync(path.dirname(path.join(dir, file)), { recursive: true });
+        fs.writeFileSync(path.join(dir, file), '');
+
+        expect((await validatorOf(1))('src/assets/i18n')).toBe(
+          'The translations path src/assets/i18n is, or lies inside, a file',
+        );
+      },
+    );
+
+    it.each([[undefined], ['']])(
+      `GIVEN nothing is typed (%j) and the default folder has a file in its way
+       WHEN the folder is validated
+       THEN the problem of the default is the message`,
+      async (value) => {
+        fs.mkdirSync(path.join(dir, 'src'));
+        fs.writeFileSync(path.join(dir, 'src', 'assets'), '');
+
+        expect((await validatorOf(1))(value)).toBe(
+          'The translations path src/assets/i18n is, or lies inside, a file',
+        );
+      },
+    );
   });
 
   describe('cancelling', () => {

@@ -104,18 +104,6 @@ describe('addScripts', () => {
     expect(result.replaceAll('\r\n', '')).not.toContain('\n');
   });
 
-  it(`GIVEN a package.json that starts with a BOM
-      WHEN scripts are added
-      THEN the BOM is kept, once`, () => {
-    const text = `\uFEFF{\n  "scripts": {}\n}\n`;
-
-    const result = addScripts(text, { 'i18n:find': 'transloco find' });
-
-    expect(result).toBe(
-      `\uFEFF{\n  "scripts": {\n    "i18n:find": "transloco find"\n  }\n}\n`,
-    );
-  });
-
   it(`GIVEN a package.json with no line break at its end
       WHEN scripts are added
       THEN it still has none`, () => {

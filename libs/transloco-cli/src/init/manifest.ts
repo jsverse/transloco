@@ -2,8 +2,6 @@ import { applyEdits, modify } from 'jsonc-parser';
 
 import { CliError } from '../errors.js';
 
-const bom = '\uFEFF';
-
 export interface Manifest {
   /** The scripts that are already there, with their values. */
   scripts: Record<string, unknown>;
@@ -14,6 +12,8 @@ export function parseManifest(text: string): Manifest {
   let manifest: unknown;
 
   try {
+    // A BOM is let through: the search for a config can't read such a file
+    // either, and `init` reports that, with its reason, where it looks for one.
     manifest = JSON.parse(text.replace(/^\uFEFF/, ''));
   } catch (error) {
     throw new CliError(
@@ -38,11 +38,10 @@ export function parseManifest(text: string): Manifest {
 
 /**
  * Adds the scripts to the text of the `package.json` and leaves everything
- * else as it was: the indentation, the line endings, the BOM, the order of the
- * keys and whether the file ends with a line break.
+ * else as it was: the indentation, the line endings, the order of the keys and
+ * whether the file ends with a line break.
  */
 export function addScripts(text: string, scripts: Record<string, string>) {
-  const hasBom = text.startsWith(bom);
   const indent = /^([ \t]+)"/m.exec(text)?.[1];
   // A file on a single line stays on it
   const formattingOptions = indent
@@ -51,7 +50,7 @@ export function addScripts(text: string, scripts: Record<string, string>) {
         tabSize: indent.startsWith('\t') ? 1 : indent.length,
       }
     : undefined;
-  let result = hasBom ? text.slice(bom.length) : text;
+  let result = text;
 
   for (const [name, command] of Object.entries(scripts)) {
     result = applyEdits(
@@ -60,7 +59,7 @@ export function addScripts(text: string, scripts: Record<string, string>) {
     );
   }
 
-  return hasBom ? `${bom}${result}` : result;
+  return result;
 }
 
 const isObject = (value: unknown): value is Record<string, unknown> =>

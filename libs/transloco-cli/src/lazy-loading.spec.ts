@@ -410,6 +410,7 @@ describe('lazy loading', () => {
       'cosmiconfig',
       'init/manifest',
       'init/plan',
+      'init/unreadable-config',
       'init/validation',
       'jsonc-parser',
       'utils/file-system',
