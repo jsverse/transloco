@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN the help of the join command is asked for WHEN the binary runs THEN it lists the options and exits with 0",
+  "args": [
+    "join",
+    "--help"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

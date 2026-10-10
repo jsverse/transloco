@@ -1,0 +1,13 @@
+{
+  "description": "GIVEN a config holding the root WHEN joined files are split with no options THEN the root of the config is split into",
+  "args": [
+    "split",
+    "--config",
+    "transloco.config.js"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

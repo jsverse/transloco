@@ -1,0 +1,13 @@
+{
+  "description": "GIVEN a source folder that does not exist WHEN the files are split THEN stderr names the folder, nothing is written and it exits with 1",
+  "args": [
+    "split",
+    "--translations-path",
+    "i18n"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

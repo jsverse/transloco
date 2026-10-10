@@ -1,0 +1,11 @@
+{
+  "description": "GIVEN no root as an option and none in the config WHEN the files are split THEN it asks for one and exits with 1",
+  "args": [
+    "split"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

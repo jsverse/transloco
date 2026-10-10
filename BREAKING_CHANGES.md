@@ -47,6 +47,10 @@ nx migrate @jsverse/transloco  # Nx
 - Node.js `^22.18.0 || >=24` is now required. `ng update` warns when it runs on a Node.js version outside that range. `@jsverse/transloco-schematics` reads the Transloco config through `@jsverse/transloco-cli` and now needs the same Node versions.
 - The watcher of Transloco Scoped Libs moved from `chokidar` 3 to 5, which is ESM-only. It now comes with `@jsverse/transloco-cli`, which Scoped Libs runs on.
 
+## Transloco Schematics
+
+- The `join` and `split` schematics are deprecated in favour of `transloco join` and `transloco split` of `@jsverse/transloco-cli`. They keep working until Transloco v10 and log a deprecation warning. They now ignore the files that are not `.json` in the translations root and in the source folder, which used to fail the run, and `split` skips a root file whose language has no joined file instead of writing `undefined` into it. `split` also restores a scope folder nested in another one from the dotted key `join` stores it under, such as `admin.users`; before, the nested folder was left stale and the next `join` failed with a duplicate key.
+
 ## Transloco Keys Manager, Optimize, Scoped Libs & Validator
 
 - The packages are ES modules now, and so is the new `@jsverse/transloco-cli`. The commands, their flags, their output and their exit codes are unchanged. What Node.js itself prints when one of the old bins fails on an uncaught error is different: the stack trace, and its own "cannot find" message when `@angular/compiler` is not installed, whose code is now `ERR_MODULE_NOT_FOUND`.

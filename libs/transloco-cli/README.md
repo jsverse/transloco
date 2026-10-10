@@ -31,6 +31,8 @@ Asking for the help is the one thing that comes before all of it. A help request
 | `transloco validate <files...>` | Verifies the translation files are valid JSON without duplicate keys.                |
 | `transloco optimize [dist]`     | Flattens and minifies the built translation files, dropping the translator comments. |
 | `transloco scoped-libs`         | Copies the translation files of scoped libraries into the application.               |
+| `transloco join`                | Joins the translation files of all scopes into one file per language.                |
+| `transloco split`               | Splits joined translation files back into the scope folders.                         |
 
 ### extract
 
@@ -69,6 +71,24 @@ Exits with `1` when there is nothing to optimize or a file can't be processed.
 ```bash
 transloco scoped-libs --watch --config configs/transloco.config.js
 ```
+
+### join
+
+```bash
+transloco join --translations-path src/assets/i18n --default-lang en --out-dir dist-i18n
+```
+
+Merges the translation files of every scope into the root file of the same language and writes one file per language to the out folder, `dist-i18n` unless `--out-dir` says otherwise. A scope is a folder of the translations root, or a folder of the `scopePathMap` of the config. A scope folder nested in another one is stored under a dotted key beside its parent, such as `admin.users` for `admin/users`, and `split` restores it. The default language is left out unless `--include-default-lang` is set, and the command stops with `1` when that leaves nothing to join, which is when only the default language is found.
+
+The root is `--translations-path`, then `rootTranslationsPath` of the config, and the default language is `--default-lang`, then `defaultLang` of the config. The out folder is emptied first, so it has to be a real folder inside the working directory that does not overlap the translations: the command refuses to run when it is the working directory or a folder above it, a folder outside of it, a symbolic link or a folder reached through one that leads out, a file, or the translations root or a scope folder, or a folder above or below one. Links are followed before any of this is judged, and nothing is changed when the folder is refused. Only `.json` files count as translations. Exits with `1` when the root doesn't exist or holds no translation file, when two files define the same key or a file is not valid JSON, and nothing is written.
+
+### split
+
+```bash
+transloco split --translations-path src/assets/i18n --source dist-i18n
+```
+
+Hands the translations of every scope in the joined files, `dist-i18n` unless `--source` says otherwise, back to the files of its folder, and what is left to the root file of the language. Only the files that exist are written, none is created. The root comes from `--translations-path` or `rootTranslationsPath` of the config, and the scopes are found the way `join` finds them. A scope folder nested in another one, at any depth, gets back the dotted key `join` stored it under, such as `admin.users`, so that `join` followed by `split` leaves every file as it was. Exits with `1` when the root or the source doesn't exist or holds no translation file, or a joined file is not valid JSON, and nothing is written.
 
 ### Running from another directory
 

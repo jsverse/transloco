@@ -1,0 +1,12 @@
+{
+  "title": "Titulo",
+  "nav": {
+    "home": "Inicio"
+  },
+  "ui": {
+    "ok": "Vale"
+  },
+  "checkout": {
+    "pay": "Pagar"
+  }
+}

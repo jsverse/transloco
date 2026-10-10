@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN a scope file that is not valid JSON WHEN the files are joined THEN stderr names the file and it exits with 1",
+  "args": [
+    "join",
+    "--translations-path",
+    "i18n",
+    "--default-lang",
+    "en"
+  ],
+  "exitCode": 1,
+  "stderrMatches": "^Transloco Join: Invalid JSON in i18n/admin/es\\.json: .+$"
+}

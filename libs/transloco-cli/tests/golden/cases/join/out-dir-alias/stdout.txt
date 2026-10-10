@@ -1,0 +1,1 @@
+Transloco Join: Joined es, fr into build/i18n

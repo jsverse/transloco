@@ -14,6 +14,7 @@
     "./internal/keys-manager": "./src/keys-manager/index.js",
     "./internal/optimize": "./src/optimize/index.js",
     "./internal/scoped-libs": "./src/scoped-libs/index.js",
+    "./internal/translation-files": "./src/translation-files/index.js",
     "./internal/validator": "./src/validator/index.js",
     "./package.json": "./package.json"
   },

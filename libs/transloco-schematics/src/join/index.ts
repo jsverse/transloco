@@ -1,63 +1,23 @@
 import {
   EmptyTree,
   Rule,
-  SchematicsException,
+  SchematicContext,
   Tree,
 } from '@angular-devkit/schematics';
-import { normalize } from '@angular-devkit/core';
+import { joinTranslations } from '@jsverse/transloco-cli/internal/translation-files';
 import { existsSync, removeSync } from 'fs-extra';
 
+import { getGlobalConfig, getTranslationsRoot } from '../../schematics-core';
 import {
-  getGlobalConfig,
-  getJsonFileContent,
-  getTranslationEntryPaths,
-  getTranslationFiles,
-  getTranslationKey,
-  getTranslationsRoot,
-  hasFiles,
-  hasSubdirs,
-} from '../../schematics-core';
+  asSchematicsException,
+  createTreeFileReader,
+  deprecationWarning,
+} from '../translation-files';
 
 import { SchemaOptions } from './schema';
 
 function getDefaultLang(options: SchemaOptions) {
   return options.defaultLang || getGlobalConfig().defaultLang;
-}
-
-function reduceTranslations(
-  host: Tree,
-  dirPath: string,
-  translationJson: Record<string, unknown>,
-  lang: string,
-  key = '',
-) {
-  const dir = host.getDir(dirPath);
-  if (!hasFiles(dir) && !hasSubdirs(dir)) return translationJson;
-  dir.subfiles
-    .filter((fileName) => fileName.includes(`${lang}.json`))
-    .forEach((fileName) => {
-      if (translationJson[key]) {
-        throw new SchematicsException(
-          `key: ${key} already exist in translation file, please rename it and rerun the command.`,
-        );
-      }
-      translationJson[key] = getJsonFileContent(fileName, dir);
-    });
-  if (hasSubdirs(dir)) {
-    dir.subdirs.forEach((subDirName) => {
-      const subDir = dir.dir(subDirName);
-      const nestedKey = getTranslationKey(key, subDirName);
-      reduceTranslations(
-        host,
-        normalize(subDir.path).slice(1),
-        translationJson,
-        lang,
-        nestedKey,
-      );
-    });
-  }
-
-  return translationJson;
 }
 
 function deletePrevFiles(host: Tree, options: SchemaOptions) {
@@ -66,48 +26,23 @@ function deletePrevFiles(host: Tree, options: SchemaOptions) {
   }
 }
 
-function jsonBuilder(
-  tree: Tree,
-  path: string,
-  content: Record<string, unknown>,
-) {
-  tree.create(`${path}.json`, JSON.stringify(content, null, 2));
-}
-
 export default function (options: SchemaOptions): Rule {
-  return (host: Tree) => {
+  return (host: Tree, context: SchematicContext) => {
+    context.logger.warn(deprecationWarning('join'));
     deletePrevFiles(host, options);
     const root = getTranslationsRoot(host, options);
-    const defaultLang = getDefaultLang(options);
-    if (options.includeDefaultLang && !defaultLang) {
-      throw new SchematicsException(
-        `Please specify the default project's language using --default-Lang or in transloco.config.ts file.`,
-      );
-    }
-    let rootTranslations = getTranslationFiles(host, root);
-    const translationEntryPaths = getTranslationEntryPaths(host, root);
-
-    if (!options.includeDefaultLang) {
-      rootTranslations = rootTranslations.filter((t) => t.lang !== defaultLang);
-    }
-
-    const output = rootTranslations.map((t) => ({
-      lang: t.lang,
-      translation: translationEntryPaths.reduce((acc, entryPath) => {
-        return reduceTranslations(
-          host,
-          entryPath.path,
-          t.translation,
-          t.lang,
-          entryPath.scope,
-        );
-      }, t.translation),
-    }));
+    const files = asSchematicsException(() =>
+      joinTranslations(createTreeFileReader(host), {
+        root,
+        outDir: options.outDir,
+        defaultLang: getDefaultLang(options),
+        includeDefaultLang: options.includeDefaultLang,
+        scopePathMap: getGlobalConfig().scopePathMap,
+      }),
+    );
 
     const treeSource = new EmptyTree();
-    output.forEach((o) => {
-      jsonBuilder(treeSource, `${options.outDir}/${o.lang}`, o.translation);
-    });
+    files.forEach(({ path, content }) => treeSource.create(path, content));
 
     return treeSource;
   };
