@@ -24,6 +24,9 @@
     "Angular CLI"
   ],
   "license": "MIT",
+  "engines": {
+    "node": "^22.18.0 || >=24"
+  },
   "dependencies": {
     "@jsverse/transloco-cli": "^9.0.0-alpha.4",
     "glob": "13.0.6",

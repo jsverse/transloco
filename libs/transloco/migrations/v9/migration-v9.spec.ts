@@ -1050,6 +1050,8 @@ describe('migrateConfigTypeImportSource', () => {
     `const utils = await import('@jsverse/transloco-utils');`,
     `import utils = require('@jsverse/transloco-utils');`,
     `export { getGlobalConfig } from '@jsverse/transloco-utils';`,
+    `/** @type {import('@jsverse/transloco-utils').TranslocoGlobalConfig} */\nexport default {};`,
+    `type Config = import('@jsverse/transloco-utils').TranslocoGlobalConfig;`,
   ])(
     `GIVEN %s
       WHEN it is migrated
@@ -1066,6 +1068,8 @@ describe('migrateConfigTypeImportSource', () => {
     `import { getGlobalConfig } from '@jsverse/transloco-cli';`,
     `import { getGlobalConfig } from '@jsverse/transloco-utils-extra';`,
     `// import { getGlobalConfig } from '@jsverse/transloco-utils';`,
+    `/** @type {import('@jsverse/transloco-utils-extra').Config} */\nexport default {};`,
+    `const utils = require('@jsverse/transloco-utils-extra');`,
   ])(
     `GIVEN %s
       WHEN it is migrated
@@ -1075,6 +1079,149 @@ describe('migrateConfigTypeImportSource', () => {
       expect(referencesConfigPackage(source)).toBe(false);
     },
   );
+
+  it(`GIVEN a CRLF file with an import holding both
+      WHEN it is split
+      THEN every line break of the file is a CRLF`, () => {
+    const result = migrateConfigTypeImportSource(
+      [
+        `import { getGlobalConfig, TranslocoGlobalConfig } from '@jsverse/transloco-utils';`,
+        `export default {} as TranslocoGlobalConfig;`,
+        ``,
+      ].join('\r\n'),
+    );
+
+    expect(result?.content).toBe(
+      [
+        `import type { TranslocoGlobalConfig } from '@jsverse/transloco';`,
+        `import { getGlobalConfig } from '@jsverse/transloco-cli';`,
+        `export default {} as TranslocoGlobalConfig;`,
+        ``,
+      ].join('\r\n'),
+    );
+    expect(result?.content).not.toMatch(/(?<!\r)\n/);
+  });
+
+  it(`GIVEN a CRLF file whose last line is the import
+      WHEN it is split
+      THEN the added line break is a CRLF`, () => {
+    const result = migrateConfigTypeImportSource(
+      `// config\r\nimport { getGlobalConfig, TranslocoGlobalConfig } from '@jsverse/transloco-utils';`,
+    );
+
+    expect(result?.content).not.toMatch(/(?<!\r)\n/);
+    expect(result?.content.split('\r\n')).toHaveLength(3);
+  });
+
+  it(`GIVEN a file starting with a BOM
+      WHEN its first import is split
+      THEN the BOM stays once, at offset 0`, () => {
+    const result = migrateConfigTypeImportSource(
+      `\uFEFFimport { getGlobalConfig, TranslocoGlobalConfig } from '@jsverse/transloco-utils';\nexport default {} as TranslocoGlobalConfig;`,
+    );
+
+    expect(result?.content).toBe(
+      [
+        `\uFEFFimport type { TranslocoGlobalConfig } from '@jsverse/transloco';`,
+        `import { getGlobalConfig } from '@jsverse/transloco-cli';`,
+        `export default {} as TranslocoGlobalConfig;`,
+      ].join('\n'),
+    );
+    expect(result?.content.split('\uFEFF')).toHaveLength(2);
+    expect(result?.content.indexOf('\uFEFF')).toBe(0);
+  });
+
+  it(`GIVEN a file that already imports the type from @jsverse/transloco
+      WHEN the utils import is migrated
+      THEN the name only leaves the utils import`, () => {
+    const result = migrateConfigTypeImportSource(
+      [
+        `import type { TranslocoGlobalConfig } from '@jsverse/transloco';`,
+        `import { getGlobalConfig, TranslocoGlobalConfig } from '@jsverse/transloco-utils';`,
+      ].join('\n'),
+    );
+
+    expect(result?.content).toBe(
+      [
+        `import type { TranslocoGlobalConfig } from '@jsverse/transloco';`,
+        `import { getGlobalConfig } from '@jsverse/transloco-cli';`,
+      ].join('\n'),
+    );
+    expect(result?.migrated).toBe(2);
+  });
+
+  it(`GIVEN a file that already imports getGlobalConfig from the CLI
+      WHEN the utils import is migrated
+      THEN the name only leaves the utils import`, () => {
+    const result = migrateConfigTypeImportSource(
+      [
+        `import { getGlobalConfig } from '@jsverse/transloco-cli';`,
+        `import { getGlobalConfig, TranslocoGlobalConfig } from '@jsverse/transloco-utils';`,
+      ].join('\n'),
+    );
+
+    expect(result?.content).toBe(
+      [
+        `import { getGlobalConfig } from '@jsverse/transloco-cli';`,
+        `import type { TranslocoGlobalConfig } from '@jsverse/transloco';`,
+      ].join('\n'),
+    );
+  });
+
+  it(`GIVEN a utils import whose names are all imported already
+      WHEN it is migrated
+      THEN the whole import line is removed`, () => {
+    const result = migrateConfigTypeImportSource(
+      [
+        `import { getGlobalConfig } from '@jsverse/transloco-cli';`,
+        `  import { getGlobalConfig } from '@jsverse/transloco-utils';`,
+        `run(getGlobalConfig());`,
+      ].join('\r\n'),
+    );
+
+    expect(result?.content).toBe(
+      [
+        `import { getGlobalConfig } from '@jsverse/transloco-cli';`,
+        `run(getGlobalConfig());`,
+      ].join('\r\n'),
+    );
+  });
+
+  it(`GIVEN a file importing other names from the new packages
+      WHEN the utils import is migrated
+      THEN a separate import is added and the existing ones are left alone`, () => {
+    const result = migrateConfigTypeImportSource(
+      [
+        `import { provideTransloco } from '@jsverse/transloco';`,
+        `import { run } from '@jsverse/transloco-cli';`,
+        `import { getGlobalConfig, TranslocoGlobalConfig } from '@jsverse/transloco-utils';`,
+      ].join('\n'),
+    );
+
+    expect(result?.content).toBe(
+      [
+        `import { provideTransloco } from '@jsverse/transloco';`,
+        `import { run } from '@jsverse/transloco-cli';`,
+        `import type { TranslocoGlobalConfig } from '@jsverse/transloco';`,
+        `import { getGlobalConfig } from '@jsverse/transloco-cli';`,
+      ].join('\n'),
+    );
+  });
+
+  it(`GIVEN an aliased type next to the same name imported plain
+      WHEN the utils import is migrated
+      THEN the aliased import is still added`, () => {
+    const result = migrateConfigTypeImportSource(
+      [
+        `import type { TranslocoGlobalConfig } from '@jsverse/transloco';`,
+        `import { TranslocoGlobalConfig as Config } from '@jsverse/transloco-utils';`,
+      ].join('\n'),
+    );
+
+    expect(result?.content).toContain(
+      `import type { TranslocoGlobalConfig as Config } from '@jsverse/transloco';`,
+    );
+  });
 
   it(`GIVEN source that was already migrated
       WHEN it is migrated again
@@ -1141,7 +1288,7 @@ describe('findVersionFloorWarnings', () => {
       expect(warnings).toHaveLength(1);
       expect(warnings[0]).toContain('^22.18.0 || >=24');
       expect(warnings[0]).toContain(
-        '@jsverse/transloco-optimize, @jsverse/transloco-validator require the same range',
+        '@jsverse/transloco-optimize, @jsverse/transloco-schematics, @jsverse/transloco-validator require the same range',
       );
       expect(warnings[0]).toContain('@jsverse/transloco-cli');
     },
@@ -1173,6 +1320,7 @@ describe('findVersionFloorWarnings', () => {
       for (const name of [
         'keys-manager',
         'optimize',
+        'schematics',
         'scoped-libs',
         'utils',
         'validator',
@@ -1668,6 +1816,94 @@ describe('migration-v9', () => {
       );
       expect(runner.tasks).toHaveLength(0);
     });
+
+    it(`GIVEN a .tsx file importing the type from the utils package
+        WHEN the migration runs
+        THEN it imports from @jsverse/transloco`, async () => {
+      const runner = new SchematicTestRunner('migrations', collectionPath);
+      const tree = await createWorkspace(runner);
+      tree.create(
+        '/src/config.tsx',
+        `import { TranslocoGlobalConfig } from '@jsverse/transloco-utils';\nexport const config: TranslocoGlobalConfig = { langs: [] };\nexport const view = <div>{config.langs}</div>;`,
+      );
+
+      const migrated = await runner.runSchematic('migration-v9', {}, tree);
+
+      expect(migrated.readContent('/src/config.tsx')).toBe(
+        `import type { TranslocoGlobalConfig } from '@jsverse/transloco';\nexport const config: TranslocoGlobalConfig = { langs: [] };\nexport const view = <div>{config.langs}</div>;`,
+      );
+    });
+
+    it(`GIVEN a migrated file that still has a JSDoc import() of the utils package
+        WHEN the migration runs
+        THEN the file is reported once`, async () => {
+      const warnings: string[] = [];
+      const runner = new SchematicTestRunner('migrations', collectionPath);
+      runner.logger.subscribe((entry) => {
+        if (entry.level === 'warn') warnings.push(entry.message);
+      });
+      const tree = await createWorkspace(runner);
+      tree.create(
+        '/scripts/jsdoc.mjs',
+        `import { getGlobalConfig } from '@jsverse/transloco-utils';\n/** @type {import('@jsverse/transloco-utils').TranslocoGlobalConfig} */\nexport const config = getGlobalConfig();`,
+      );
+
+      const migrated = await runner.runSchematic('migration-v9', {}, tree);
+
+      expect(migrated.readContent('/scripts/jsdoc.mjs')).toContain(
+        `from '@jsverse/transloco-cli'`,
+      );
+      expect(warnings.join('\n').split('/scripts/jsdoc.mjs')).toHaveLength(2);
+    });
+
+    it(`GIVEN a file using a package named after the utils one
+        WHEN the migration runs
+        THEN nothing is reported about it`, async () => {
+      const warnings: string[] = [];
+      const runner = new SchematicTestRunner('migrations', collectionPath);
+      runner.logger.subscribe((entry) => {
+        if (entry.level === 'warn') warnings.push(entry.message);
+      });
+      const tree = await createWorkspace(runner);
+      tree.create(
+        '/scripts/extra.mjs',
+        `/** @type {import('@jsverse/transloco-utils-extra').Config} */\nexport const config = {};\nimport('@jsverse/transloco-utils-extra');`,
+      );
+
+      await runner.runSchematic('migration-v9', {}, tree);
+
+      expect(warnings.join('\n')).not.toContain('/scripts/extra.mjs');
+    });
+
+    it.each([
+      ['an array', '[]'],
+      ['unparsable', '{ "devDependencies": '],
+    ])(
+      `GIVEN a root package.json that is %s
+        WHEN a getGlobalConfig import is moved to the CLI
+        THEN the user is asked to add the package and no addition is logged`,
+      async (_, manifest) => {
+        const warnings: string[] = [];
+        const infos: string[] = [];
+        const runner = new SchematicTestRunner('migrations', collectionPath);
+        runner.logger.subscribe((entry) => {
+          if (entry.level === 'warn') warnings.push(entry.message);
+          if (entry.level === 'info') infos.push(entry.message);
+        });
+        const tree = await createWorkspace(runner);
+        tree.overwrite('/package.json', manifest);
+        tree.create('/scripts/show-config.mjs', script);
+
+        const migrated = await runner.runSchematic('migration-v9', {}, tree);
+
+        expect(migrated.readContent('/package.json')).toBe(manifest);
+        expect(warnings.join('\n')).toContain(
+          `Add '@jsverse/transloco-cli' to your devDependencies`,
+        );
+        expect(infos.join('\n')).not.toContain(`Added '@jsverse/transloco-cli`);
+        expect(runner.tasks).toHaveLength(0);
+      },
+    );
 
     it(`GIVEN a workspace that was already migrated
         WHEN the migration runs again

@@ -22,6 +22,12 @@ const CONFIG_FILE =
 
 const TS_FILE = /\.[mc]?ts$/;
 
+/** The files scanned for imports: the marker migration's list, plus the JSX ones. */
+const CONFIG_SCANNED = [...SCANNED, '.tsx', '.jsx'];
+
+/** An `import('@jsverse/transloco-utils')`, which also appears in JSDoc types. */
+const IMPORT_CALL = /import\(\s*(['"`])@jsverse\/transloco-utils\1\s*\)/;
+
 /** The sections of a `package.json` that make a package available to the workspace. */
 const DEPENDENCY_SECTIONS = [
   'dependencies',
@@ -70,6 +76,14 @@ function namedImports(
   return `{ ${names.join(', ')} }`;
 }
 
+/** The line ending around `start`-`end`: the one after the statement, else the one before it. */
+function lineEndingAround(source: string, start: number, end: number): string {
+  const after = source.indexOf('\n', end);
+  const newline = after !== -1 ? after : source.lastIndexOf('\n', start);
+
+  return newline > 0 && source[newline - 1] === '\r' ? '\r\n' : '\n';
+}
+
 /**
  * Moves the imports of `TranslocoGlobalConfig` and `getGlobalConfig` off
  * `@jsverse/transloco-utils`.
@@ -85,20 +99,40 @@ function namedImports(
  * An import holding both is split in two. Aliases, an inline `type` modifier,
  * the quote style and the semicolon survive; any other name stays on an import
  * of the utils package, and so does a default or namespace import. Only the
- * touched statements are rewritten, so the rest of the file stays as it was.
+ * touched statements are rewritten, so the rest of the file stays as it was,
+ * line endings and BOM included.
+ *
+ * A name the file already imports, unaliased, from its new package is not
+ * imported a second time: it only leaves the utils import.
  */
 export function migrateConfigTypeImportSource(
   source: string,
+  fileName = 'config-type-import.ts',
 ): ConfigTypeImportResult | null {
   const ts = loadTypeScript();
   if (!ts) return null;
 
   const file = ts.createSourceFile(
-    'config-type-import.ts',
+    fileName,
     source,
     ts.ScriptTarget.Latest,
     true,
   );
+
+  const importsUnaliased = (packageName: string, name: string) =>
+    file.statements.some(
+      (statement) =>
+        ts.isImportDeclaration(statement) &&
+        ts.isStringLiteral(statement.moduleSpecifier) &&
+        statement.moduleSpecifier.text === packageName &&
+        !!statement.importClause?.namedBindings &&
+        ts.isNamedImports(statement.importClause.namedBindings) &&
+        statement.importClause.namedBindings.elements.some(
+          (element) => !element.propertyName && element.name.text === name,
+        ),
+    );
+  let typeImported = importsUnaliased(TYPE_PACKAGE, TYPE_EXPORT);
+  let readerImported = importsUnaliased(READER_PACKAGE, READER_EXPORT);
 
   const edits: Edit[] = [];
   let types = 0;
@@ -146,15 +180,24 @@ export function migrateConfigTypeImportSource(
       `from ${quote}${specifier}${quote}${semicolon}`;
     const original = bindings.getText();
 
+    const typesToAdd = typeElements.filter(
+      (element) => element.propertyName || !typeImported,
+    );
+    const readersToAdd = readerElements.filter(
+      (element) => element.propertyName || !readerImported,
+    );
+    typeImported ||= typesToAdd.some((element) => !element.propertyName);
+    readerImported ||= readersToAdd.some((element) => !element.propertyName);
+
     const statements: string[] = [];
-    if (typeElements.length) {
+    if (typesToAdd.length) {
       statements.push(
-        `import type ${namedImports(typeElements, elements, original, true)} ${from(TYPE_PACKAGE)}`,
+        `import type ${namedImports(typesToAdd, elements, original, true)} ${from(TYPE_PACKAGE)}`,
       );
     }
-    if (readerElements.length) {
+    if (readersToAdd.length) {
       statements.push(
-        `${runtimeKeyword} ${namedImports(readerElements, elements, original, false)} ${from(READER_PACKAGE)}`,
+        `${runtimeKeyword} ${namedImports(readersToAdd, elements, original, false)} ${from(READER_PACKAGE)}`,
       );
     }
     if (kept.length) {
@@ -164,15 +207,38 @@ export function migrateConfigTypeImportSource(
     }
 
     const start = statement.getStart();
+    const end = statement.getEnd();
     const lineStart = source.lastIndexOf('\n', start - 1) + 1;
-    const indent = /^\s*$/.test(source.slice(lineStart, start))
-      ? source.slice(lineStart, start)
-      : '';
+    // A BOM is whitespace to the scanner, but it belongs to the file, not the indent.
+    const beforeStatement = source
+      .slice(lineStart, start)
+      .replace('\uFEFF', '');
+    const indent = /^\s*$/.test(beforeStatement) ? beforeStatement : '';
+
+    if (!statements.length) {
+      // Nothing is left to import: drop the whole line when nothing else is on it.
+      const lineEnd = source.indexOf('\n', end);
+      const rest = source.slice(end, lineEnd === -1 ? undefined : lineEnd);
+      const alone =
+        /^\s*$/.test(source.slice(lineStart, start)) && /^\s*$/.test(rest);
+      const bom = source[lineStart] === '\uFEFF' ? 1 : 0;
+
+      edits.push(
+        alone
+          ? {
+              start: lineStart + bom,
+              end: lineEnd === -1 ? source.length : lineEnd + 1,
+              text: '',
+            }
+          : { start, end, text: '' },
+      );
+      continue;
+    }
 
     edits.push({
       start,
-      end: statement.getEnd(),
-      text: statements.join(`\n${indent}`),
+      end,
+      text: statements.join(`${lineEndingAround(source, start, end)}${indent}`),
     });
   }
 
@@ -190,9 +256,13 @@ export function migrateConfigTypeImportSource(
 /**
  * Whether `source` still names `@jsverse/transloco-utils` as a module:
  * a default or namespace import, a name that has no new home, a `require()`,
- * an `import()` or a re-export. Those are left as they are.
+ * an `import()` - a JSDoc type included - or a re-export. Those are left as
+ * they are.
  */
-export function referencesConfigPackage(source: string): boolean {
+export function referencesConfigPackage(
+  source: string,
+  fileName = 'config-type-import.ts',
+): boolean {
   if (!source.includes(PACKAGE)) return false;
 
   const ts = loadTypeScript();
@@ -200,7 +270,7 @@ export function referencesConfigPackage(source: string): boolean {
   if (!ts) return true;
 
   const file = ts.createSourceFile(
-    'config-type-import.ts',
+    fileName,
     source,
     ts.ScriptTarget.Latest,
     true,
@@ -209,7 +279,8 @@ export function referencesConfigPackage(source: string): boolean {
     (ts.isStringLiteralLike(node) && node.text === PACKAGE) ||
     (ts.forEachChild(node, (child) => mentions(child) || undefined) ?? false);
 
-  return mentions(file);
+  // JSDoc types are not part of the tree the walk above visits.
+  return mentions(file) || IMPORT_CALL.test(source);
 }
 
 /**
@@ -253,7 +324,8 @@ function installedVersion(): string | null {
 function isListed(tree: Tree, name: string): boolean | null {
   try {
     const manifest = JSON.parse(tree.read('/package.json')?.toString() ?? '');
-    if (!manifest || typeof manifest !== 'object') return null;
+    if (!manifest || typeof manifest !== 'object' || Array.isArray(manifest))
+      return null;
 
     return DEPENDENCY_SECTIONS.some((section) => manifest[section]?.[name]);
   } catch {
@@ -310,14 +382,14 @@ export function migrateConfigTypeImport(): Rule {
     const leftovers: string[] = [];
     const unloadable: string[] = [];
 
-    for (const path of collectFiles(tree, '', SCANNED)) {
+    for (const path of collectFiles(tree, '', CONFIG_SCANNED)) {
       const isConfig = CONFIG_FILE.test(path);
       let source = tree.read(path)?.toString();
       if (!source) continue;
       if (!isConfig && !source.includes(PACKAGE)) continue;
 
       const result = source.includes(PACKAGE)
-        ? migrateConfigTypeImportSource(source)
+        ? migrateConfigTypeImportSource(source, path)
         : null;
       if (result) {
         tree.overwrite(path, result.content);
@@ -326,7 +398,7 @@ export function migrateConfigTypeImport(): Rule {
         source = result.content;
       }
 
-      if (referencesConfigPackage(source)) leftovers.push(path);
+      if (referencesConfigPackage(source, path)) leftovers.push(path);
 
       if (!TS_FILE.test(path) || (!isConfig && !result)) continue;
 

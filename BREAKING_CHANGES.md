@@ -43,7 +43,7 @@ nx migrate @jsverse/transloco  # Nx
 
 ## Transloco Keys Manager, Optimize, Scoped Libs, Utils & Validator
 
-- Node.js `^22.18.0 || >=24` is now required. `ng update` warns when it runs on a Node.js version outside that range.
+- Node.js `^22.18.0 || >=24` is now required. `ng update` warns when it runs on a Node.js version outside that range. `@jsverse/transloco-schematics` reads the Transloco config through `@jsverse/transloco-cli` and now needs the same Node versions.
 - The watcher of Transloco Scoped Libs moved from `chokidar` 3 to 5, which is ESM-only. It now comes with `@jsverse/transloco-cli`, which Scoped Libs runs on.
 
 ## Transloco Keys Manager, Optimize, Scoped Libs & Validator
