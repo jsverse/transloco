@@ -2,33 +2,32 @@
   "name": "@jsverse/transloco-schematics",
   "version": "9.0.0-alpha.4",
   "description": "Transloco's Angular schematics",
-  "schematics": "./src/collection.json",
-  "publishConfig": {
-    "access": "public"
-  },
-  "bugs": {
-    "url": "https://github.com/jsverse/transloco/issues"
-  },
-  "homepage": "https://jsverse.gitbook.io/transloco/schematics",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/jsverse/transloco"
   },
-  "keywords": [
-    "Angular",
-    "i18n",
-    "Translate",
-    "Angular Translate",
-    "Transloco",
-    "Schematics",
-    "Angular CLI"
-  ],
-  "license": "MIT",
+  "homepage": "https://jsverse.gitbook.io/transloco/schematics",
+  "bugs": "https://github.com/jsverse/transloco/issues",
   "engines": {
     "node": "^22.18.0 || >=24"
   },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "angular",
+    "i18n",
+    "translate",
+    "angular translate",
+    "transloco",
+    "schematics",
+    "angular cli"
+  ],
   "dependencies": {
     "@jsverse/transloco-cli": "^9.0.0-alpha.4",
-    "fs-extra": "11.4.0"
-  }
+    "fs-extra": "11.4.0",
+    "tslib": "^2.8.1"
+  },
+  "schematics": "./src/collection.json"
 }
