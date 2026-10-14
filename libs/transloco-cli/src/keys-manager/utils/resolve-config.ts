@@ -5,6 +5,7 @@ import {
   searchGlobalConfig,
   TranslocoGlobalConfig,
 } from '../../config/index.js';
+import { nameConfigFile } from '../../config/load-error.js';
 import { style } from '../../utils/style.js';
 import { defaultConfig } from '../config.js';
 import { getScopes } from '../keys-builder/utils/scope.utils.js';
@@ -25,7 +26,7 @@ export function resolveConfig(inlineConfig: Partial<Config>): Config {
   // `--config` names the one place to look in, otherwise the source root and its parents are searched
   const { config: fileConfig, filepath: configFile } = inlineConfig.config
     ? {
-        config: getGlobalConfig(inlineConfig.config),
+        config: loadConfig(inlineConfig.config),
         filepath: inlineConfig.config,
       }
     : searchGlobalConfig(sourceRoot);
@@ -61,6 +62,14 @@ export function resolveConfig(inlineConfig: Partial<Config>): Config {
   });
 
   return { ...mergedConfig, scopes: getScopes() };
+}
+
+function loadConfig(config: string) {
+  try {
+    return getGlobalConfig(config);
+  } catch (error) {
+    throw nameConfigFile(error, config);
+  }
 }
 
 function flatFileConfig({

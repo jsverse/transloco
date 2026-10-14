@@ -29,6 +29,13 @@
     },
     "test": {
       "executor": "@nx/vitest:test",
+      "inputs": [
+        "default",
+        "^production",
+        "{workspaceRoot}/tools/vitest/**/*",
+        { "env": "CI" },
+        "{workspaceRoot}/libs/transloco/migrations/v9/cli-scripts-table.ts"
+      ],
       "outputs": ["{workspaceRoot}/coverage/libs/transloco-cli"],
       "options": {
         "configFile": "libs/transloco-cli/vitest.config.ts"

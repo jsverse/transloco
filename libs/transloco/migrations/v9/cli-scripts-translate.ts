@@ -398,6 +398,10 @@ function checkValue(entry: CliOptionEntry, spelling: string, value: string) {
     return `${spelling} holds an empty path, which the transloco bin rejects`;
   }
 
+  if (entry.noComma && value.includes(',')) {
+    return `${spelling} is given '${value}', a comma would make it one language, the transloco bin takes the languages as separate arguments`;
+  }
+
   return undefined;
 }
 

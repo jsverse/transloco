@@ -1,13 +1,17 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { findGlobalConfigFile } from '../config/index.js';
+import { searchGlobalConfig } from '../config/index.js';
+import { ConfigLoadError } from '../config/load-error.js';
 import { CliError } from '../errors.js';
+import { resolveProjectBasePath } from '../keys-manager/utils/resolve-project-base-path.js';
+import { applySteps } from '../init/apply.js';
 import { parseManifest } from '../init/manifest.js';
 import {
   configFileName,
   defaultLangs,
   defaultTranslationsPath,
+  type InitAnswers,
   type InitStep,
   manifestFileName,
   planInit,
@@ -16,10 +20,10 @@ import {
 import { findUnreadableConfig } from '../init/unreadable-config.js';
 import {
   languageProblem,
+  specialFileProblem,
   translationsPathProblem,
   writeProblem,
 } from '../init/validation.js';
-import { outputFile } from '../utils/file-system.js';
 import { contains, lstat } from '../utils/real-path.js';
 
 const name = 'Init';
@@ -57,6 +61,10 @@ export async function runInit({
     );
   }
 
+  // Looking for the config opens these, which a FIFO makes wait for good
+  assertIsNotSpecial(manifestFileName);
+  assertIsNotSpecial(configFileName);
+
   const { text: manifest, skipped } = readManifest();
 
   // A `package.json` that can't take the scripts is found before anything is
@@ -76,17 +84,18 @@ export async function runInit({
   };
 
   if (!interactive) {
-    const steps = planInit(
-      {
-        langs: given.langs ?? defaultLangs,
-        translationsPath:
-          given.translationsPath ??
-          assertTranslationsPath(defaultTranslationsPath),
-        createTranslationFiles: true,
-        addScripts: scripts,
-      },
-      state,
-    );
+    const answers = {
+      langs: given.langs ?? defaultLangs,
+      translationsPath:
+        given.translationsPath ??
+        assertTranslationsPath(defaultTranslationsPath),
+      createTranslationFiles: true,
+      addScripts: scripts,
+    };
+
+    assertTranslationFilesAreFiles(answers);
+
+    const steps = planInit(answers, state);
 
     assertPlanCanBeWritten(steps);
     applySteps(steps, ({ message }) => console.log(message));
@@ -118,13 +127,14 @@ export async function runInit({
 
   // The prompt rejects a folder that can't be used, so this is the same check
   // for the answer that comes from anywhere else.
-  const planned = planInit(
-    {
-      ...answers,
-      translationsPath: assertTranslationsPath(answers.translationsPath),
-    },
-    state,
-  );
+  const confirmed = {
+    ...answers,
+    translationsPath: assertTranslationsPath(answers.translationsPath),
+  };
+
+  assertTranslationFilesAreFiles(confirmed);
+
+  const planned = planInit(confirmed, state);
 
   assertPlanCanBeWritten(planned);
   applySteps(planned, ui.reportStep);
@@ -134,6 +144,30 @@ export async function runInit({
 
 const nextStep =
   'Done. Run `transloco extract` to collect the keys of your project into the translation files.';
+
+/** Whether the file can be opened without waiting, if it is there. */
+function assertIsNotSpecial(file: string) {
+  const problem = specialFileProblem(path.resolve(file));
+
+  if (problem) {
+    throw new CliError(
+      `Transloco ${name}: cannot use ${file}, ${problem}. Nothing was written.`,
+    );
+  }
+}
+
+/** The files that are there stay as they are, and are not looked into, which is as far as a FIFO is a file. */
+function assertTranslationFilesAreFiles({
+  langs,
+  translationsPath,
+  createTranslationFiles,
+}: InitAnswers) {
+  if (!createTranslationFiles) return;
+
+  for (const lang of langs) {
+    assertIsNotSpecial(translationFile(translationsPath, lang));
+  }
+}
 
 /**
  * Nothing is written unless everything can be: a file system problem found
@@ -148,32 +182,6 @@ function assertPlanCanBeWritten(steps: InitStep[]) {
         `Transloco ${name}: cannot write ${write.file}, ${problem}. Nothing was written.`,
       );
     }
-  }
-}
-
-/** Does what each step is about and tells what it was, as it goes. */
-function applySteps(steps: InitStep[], report: (step: InitStep) => void) {
-  const written: string[] = [];
-
-  for (const step of steps) {
-    if (step.write) {
-      try {
-        outputFile(path.resolve(step.write.file), step.write.content);
-      } catch (error) {
-        // The check before can't see what happens in between
-        throw new CliError(
-          `Transloco ${name}: could not write ${step.write.file}: ${(error as Error).message}. ${
-            written.length
-              ? `Already written: ${written.join(', ')}.`
-              : 'Nothing was written.'
-          }`,
-        );
-      }
-
-      written.push(step.write.file);
-    }
-
-    report(step);
   }
 }
 
@@ -218,13 +226,19 @@ const relativeToCwd = (folder: string) =>
  */
 function assertConfigCanBeWritten(force: boolean) {
   const target = path.resolve(configFileName);
-  const targetExists = lstat(target) !== undefined;
+  const stats = lstat(target);
+  const targetExists = stats !== undefined;
   let found: string | undefined;
 
+  if (stats?.isSymbolicLink()) {
+    assertLinkStaysInside(target);
+  }
+
   try {
-    found = findGlobalConfigFile();
+    found = findExistingConfig();
   } catch (error) {
-    const { file, reason } = findUnreadableConfig(error);
+    const { file, reason } =
+      error instanceof ConfigLoadError ? error : findUnreadableConfig(error);
 
     // A config that can't be loaded still stands where it is. Any other file
     // might hold the config, which makes it unknown whether there is one.
@@ -249,6 +263,40 @@ function assertConfigCanBeWritten(force: boolean) {
 }
 
 /**
+ * The config `transloco extract` would read, which is also the one that the
+ * other commands use: it is looked for from the source root of the default
+ * project, up to where the package of the working directory ends.
+ */
+function findExistingConfig() {
+  const { projectBasePath } = resolveProjectBasePath(undefined, {
+    quiet: true,
+  });
+
+  return searchGlobalConfig(projectBasePath).filepath;
+}
+
+/**
+ * Writing the config overwrites the file the link leads to, which `init` does
+ * only inside the working directory, as it does for the `package.json`. A link
+ * that leads nowhere is refused when the file is written.
+ */
+function assertLinkStaysInside(link: string) {
+  let real: string;
+
+  try {
+    real = fs.realpathSync(link);
+  } catch {
+    return;
+  }
+
+  if (!contains(fs.realpathSync(process.cwd()), real)) {
+    throw new CliError(
+      `Transloco ${name}: ${configFileName} is a link that leads outside the folder, and writing it would overwrite the file it leads to. Nothing was written.`,
+    );
+  }
+}
+
+/**
  * The text of the `package.json`, when there is a file to put the scripts in.
  * A link is followed when it leads to a file inside the working directory, as
  * writing to it changes that file and leaves the link where it is. Where it
@@ -259,7 +307,7 @@ function readManifest(): { text?: string; skipped?: string } {
   const stats = lstat(file);
 
   if (stats?.isFile()) {
-    return { text: fs.readFileSync(file, 'utf8') };
+    return { text: readText(file) };
   }
 
   if (!stats?.isSymbolicLink()) return {};
@@ -277,6 +325,17 @@ function readManifest(): { text?: string; skipped?: string } {
   }
 
   return fs.statSync(real).isFile()
-    ? { text: fs.readFileSync(real, 'utf8') }
+    ? { text: readText(real) }
     : { skipped: 'it is a link to something that is not a file' };
+}
+
+function readText(file: string) {
+  try {
+    return fs.readFileSync(file, 'utf8');
+  } catch (error) {
+    throw new CliError(
+      // The reason without the file, which is named before it
+      `Transloco ${name}: could not read ${manifestFileName}: ${(error as Error).message.replace(/, \w+ '.*'$/, '')}`,
+    );
+  }
 }

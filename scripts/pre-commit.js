@@ -1,5 +1,5 @@
 const { execSync } = require('child_process');
-const chalk = require('chalk');
+const { styleText } = require('node:util');
 
 const fileExtensions = {
   ts: /\.ts$/,
@@ -24,7 +24,7 @@ const words = {
 };
 
 let status = 0;
-for (let [word, { extension, matcher }] of Object.entries(words)) {
+for (const [word, { extension, matcher }] of Object.entries(words)) {
   const gitCommand = `git diff --staged -G"${matcher}" --name-only`;
   const failedFiles = execSync(gitCommand).toString();
   const filesAsArray = failedFiles.split('\n');
@@ -35,10 +35,10 @@ for (let [word, { extension, matcher }] of Object.entries(words)) {
   if (supportedFiles.length) {
     status = 1;
     console.log(
-      chalk.bgRed.whiteBright('Error:'),
+      styleText(['bgRed', 'whiteBright'], 'Error:'),
       `The following files contains '${word}' in them:`,
     );
-    console.log(chalk.white(supportedFiles.join('\n')));
+    console.log(styleText('white', supportedFiles.join('\n')));
   }
 }
 process.exit(status);
