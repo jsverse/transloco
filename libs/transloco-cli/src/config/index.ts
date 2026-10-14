@@ -1,2 +1,2 @@
-export { getGlobalConfig } from './transloco-utils';
-export type { TranslocoGlobalConfig } from './transloco-utils.types';
+export { getGlobalConfig } from './transloco-utils.js';
+export type { TranslocoGlobalConfig } from './transloco-utils.types.js';

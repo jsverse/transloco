@@ -6,7 +6,8 @@
     "sourceMap": false,
     "declaration": true,
     "lib": ["es2022"],
-    "module": "nodenext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "target": "ES2021",
     "allowSyntheticDefaultImports": true
   },

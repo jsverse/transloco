@@ -11,12 +11,28 @@
   "bugs": {
     "url": "https://github.com/jsverse/transloco/issues"
   },
+  "type": "module",
   "exports": {
-    ".": "./src/index.js",
-    "./internal/keys-manager": "./src/keys-manager/index.js",
-    "./internal/optimize": "./src/optimize/index.js",
-    "./internal/scoped-libs": "./src/scoped-libs/index.js",
-    "./internal/validator": "./src/validator/index.js",
+    ".": {
+      "types": "./src/index.d.ts",
+      "default": "./src/index.js"
+    },
+    "./internal/keys-manager": {
+      "types": "./src/keys-manager/index.d.ts",
+      "default": "./src/keys-manager/index.js"
+    },
+    "./internal/optimize": {
+      "types": "./src/optimize/index.d.ts",
+      "default": "./src/optimize/index.js"
+    },
+    "./internal/scoped-libs": {
+      "types": "./src/scoped-libs/index.d.ts",
+      "default": "./src/scoped-libs/index.js"
+    },
+    "./internal/validator": {
+      "types": "./src/validator/index.d.ts",
+      "default": "./src/validator/index.js"
+    },
     "./package.json": "./package.json"
   },
   "main": "src/index.js",

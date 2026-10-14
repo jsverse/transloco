@@ -2,16 +2,16 @@ import type { DiffDeleted, DiffNew } from 'deep-diff';
 import df from 'deep-diff';
 import { flatten, unflatten } from 'flat';
 
-import { getGlobalConfig } from '../../config';
-import { messages } from '../messages';
-import { Config, ScopeMap } from '../types';
-import { readFile, writeFile } from '../utils/file.utils';
-import { getLogger } from '../utils/logger';
-import { getScopeAndLangFromPath } from '../utils/path.utils';
-import { normalizedGlob } from '../utils/normalize-glob-path';
+import { getGlobalConfig } from '../../config/index.js';
+import { messages } from '../messages.js';
+import { Config, ScopeMap } from '../types.js';
+import { readFile, writeFile } from '../utils/file.utils.js';
+import { getLogger } from '../utils/logger.js';
+import { getScopeAndLangFromPath } from '../utils/path.utils.js';
+import { normalizedGlob } from '../utils/normalize-glob-path.js';
 
-import { buildTable } from './build-table';
-import { getTranslationFilesPath } from './get-translation-files-path';
+import { buildTable } from './build-table.js';
+import { getTranslationFilesPath } from './get-translation-files-path.js';
 
 interface Result {
   keys: Record<string, string>;

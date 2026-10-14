@@ -4,9 +4,9 @@ import path from 'node:path';
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { CliError } from '../errors';
+import { CliError } from '../errors.js';
 
-import { runScopedLibs } from './scoped-libs';
+import { runScopedLibs } from './scoped-libs.js';
 
 const run = vi.hoisted(() => vi.fn());
 

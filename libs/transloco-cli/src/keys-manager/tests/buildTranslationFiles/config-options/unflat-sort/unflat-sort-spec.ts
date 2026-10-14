@@ -10,10 +10,13 @@ import {
   removeI18nFolder,
   sourceRoot,
   TranslationTestCase,
-} from '../../build-translation-utils';
-import { defaultValue, mockResolveProjectBasePath } from '../../../spec-utils';
-import { Config } from '../../../../types';
-import { getCurrentTranslation } from '../../../../keys-builder/utils/get-current-translation';
+} from '../../build-translation-utils.js';
+import {
+  defaultValue,
+  mockResolveProjectBasePath,
+} from '../../../spec-utils.js';
+import { Config } from '../../../../types.js';
+import { getCurrentTranslation } from '../../../../keys-builder/utils/get-current-translation.js';
 
 mockResolveProjectBasePath(sourceRoot);
 
@@ -22,7 +25,8 @@ mockResolveProjectBasePath(sourceRoot);
  * This thing is still in WIP at Jest, so keep an eye on it.
  * @see https://jestjs.io/docs/ecmascript-modules#module-mocking-in-esm
  */
-const { buildTranslationFiles } = await import('../../../../keys-builder');
+const { buildTranslationFiles } =
+  await import('../../../../keys-builder/index.js');
 
 export function testUnflatSortExtraction(fileFormat: Config['fileFormat']) {
   describe('unflat-sort', () => {

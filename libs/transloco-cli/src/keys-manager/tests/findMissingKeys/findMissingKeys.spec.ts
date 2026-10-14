@@ -1,9 +1,9 @@
 import { describe, beforeAll, afterEach } from 'vitest';
 
-import { resetScopes } from '../../keys-builder/utils/scope.utils';
-import { spyOnConsole, spyOnProcess } from '../spec-utils';
+import { resetScopes } from '../../keys-builder/utils/scope.utils.js';
+import { spyOnConsole, spyOnProcess } from '../spec-utils.js';
 
-import { testAddMissingKeysConfig } from './add-missing-keys/add-missing-keys-spec';
+import { testAddMissingKeysConfig } from './add-missing-keys/add-missing-keys-spec.js';
 
 describe('findMissingKeys', () => {
   beforeAll(() => {

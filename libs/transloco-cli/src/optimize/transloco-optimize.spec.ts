@@ -4,7 +4,7 @@ import path from 'node:path';
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
-import { optimizeFiles } from './transloco-optimize';
+import { optimizeFiles } from './transloco-optimize.js';
 
 const BOM = '\uFEFF';
 

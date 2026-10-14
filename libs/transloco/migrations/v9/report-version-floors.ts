@@ -1,9 +1,12 @@
 import { Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
 
-/** Node major required by the CLI packages as of v9 (was `>=18`). */
+/** First Node major the CLI packages run on as of v9 (was `>=18`). */
 const REQUIRED_NODE_MAJOR = 22;
 
-/** The CLI packages whose `engines.node` moved to `>=22`. */
+/** The `engines.node` of the CLI packages as of v9, see {@link findVersionFloorWarnings}. */
+const REQUIRED_NODE_RANGE = '^22.18.0 || >=24';
+
+/** The CLI packages whose `engines.node` moved to {@link REQUIRED_NODE_RANGE}. */
 const NODE_PACKAGES = [
   '@jsverse/transloco-keys-manager',
   '@jsverse/transloco-optimize',
@@ -12,10 +15,7 @@ const NODE_PACKAGES = [
   '@jsverse/transloco-validator',
 ];
 
-/** Range of the packages that read the Transloco config through cosmiconfig 10. */
-const TYPE_STRIPPING_RANGE = '^22.18.0 || >=24';
-
-/** The CLI packages whose `engines.node` moved to {@link TYPE_STRIPPING_RANGE}. */
+/** The ones the range comes from: they read the Transloco config through cosmiconfig 10. */
 const TYPE_STRIPPING_PACKAGES = [
   '@jsverse/transloco-keys-manager',
   '@jsverse/transloco-scoped-libs',
@@ -23,20 +23,31 @@ const TYPE_STRIPPING_PACKAGES = [
 ];
 
 /**
+ * The CLI packages that load no config themselves and still moved to
+ * {@link REQUIRED_NODE_RANGE}: they are ES modules running on
+ * `@jsverse/transloco-cli`, which has that range.
+ */
+const CLI_BACKED_PACKAGES = [
+  '@jsverse/transloco-optimize',
+  '@jsverse/transloco-validator',
+];
+
+/**
  * The warnings a Node `version` gets against the v9 floors, if any.
  *
  * cosmiconfig 10 loads TS configs with Node's own type stripping, unflagged
  * from 22.18 on, and declares 23 unsupported - hence the range rather than a
- * major.
+ * major. The packages that only run on `@jsverse/transloco-cli` share its
+ * range, so they are reported along with it.
  */
 export function findVersionFloorWarnings(version: string): string[] {
   const [major, minor] = version.split('.').map(Number);
 
   if (major < REQUIRED_NODE_MAJOR) {
     return [
-      `  ↳ Node ${version} detected. The Transloco CLI packages now require Node >=${REQUIRED_NODE_MAJOR}:\n` +
+      `  ↳ Node ${version} detected. The Transloco CLI packages now require Node ${REQUIRED_NODE_RANGE}:\n` +
         `    ${NODE_PACKAGES.join(', ')}.\n` +
-        `    chokidar was also bumped 3 -> 5 (ESM-only) in transloco-scoped-libs.`,
+        `    The watcher of transloco-scoped-libs also moved from chokidar 3 to 5 (ESM-only), which it now gets through @jsverse/transloco-cli.`,
     ];
   }
 
@@ -44,9 +55,11 @@ export function findVersionFloorWarnings(version: string): string[] {
   if (stripsTypes) return [];
 
   return [
-    `  ↳ Node ${version} detected. These packages now require Node ${TYPE_STRIPPING_RANGE}:\n` +
+    `  ↳ Node ${version} detected. These packages now require Node ${REQUIRED_NODE_RANGE}:\n` +
       `    ${TYPE_STRIPPING_PACKAGES.join(', ')}.\n` +
-      `    They load TS Transloco configs through cosmiconfig 10, which relies on Node's type stripping.`,
+      `    They load TS Transloco configs through cosmiconfig 10, which relies on Node's type stripping.\n` +
+      `    ${CLI_BACKED_PACKAGES.join(', ')} require the same range:\n` +
+      `    they run on @jsverse/transloco-cli, which has it.`,
   ];
 }
 

@@ -7,13 +7,17 @@ import {
   removeI18nFolder,
   sourceRoot,
   TranslationTestCase,
-} from '../../build-translation-utils';
-import { generateKeys, mockResolveProjectBasePath } from '../../../spec-utils';
-import { Config } from '../../../../types';
+} from '../../build-translation-utils.js';
+import {
+  generateKeys,
+  mockResolveProjectBasePath,
+} from '../../../spec-utils.js';
+import { Config } from '../../../../types.js';
 
 mockResolveProjectBasePath(sourceRoot);
 
-const { buildTranslationFiles } = await import('../../../../keys-builder');
+const { buildTranslationFiles } =
+  await import('../../../../keys-builder/index.js');
 
 /** `@boundary`/`@error` blocks only parse on Angular versions that ship them (22.2+). */
 const supportsBoundaryBlock = 'TmplAstBoundaryBlock' in angularCompiler;

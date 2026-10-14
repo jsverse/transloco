@@ -61,11 +61,14 @@ interface RunResult {
 
 type Tree = Map<string, Buffer>;
 
-const CASES_ROOT = path.join(__dirname, 'cases');
+const CASES_ROOT = path.join(import.meta.dirname, 'cases');
 /** The sources of the in-process specs, shared so both suites read the same input. */
-const FIXTURES_ROOT = path.resolve(__dirname, '../../src/keys-manager/tests');
+const FIXTURES_ROOT = path.resolve(
+  import.meta.dirname,
+  '../../src/keys-manager/tests',
+);
 const DEFAULT_BIN = path.resolve(
-  __dirname,
+  import.meta.dirname,
   '../../../../dist/libs/transloco-cli/src/bin.js',
 );
 

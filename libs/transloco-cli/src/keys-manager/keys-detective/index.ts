@@ -1,12 +1,12 @@
-import { setConfig } from '../config';
-import { buildKeys } from '../keys-builder/build-keys';
-import { messages } from '../messages';
-import { Config } from '../types';
-import { getLogger } from '../utils/logger';
-import { resolveConfig } from '../utils/resolve-config';
+import { setConfig } from '../config.js';
+import { buildKeys } from '../keys-builder/build-keys.js';
+import { messages } from '../messages.js';
+import { Config } from '../types.js';
+import { getLogger } from '../utils/logger.js';
+import { resolveConfig } from '../utils/resolve-config.js';
 
-import { compareKeysToFiles } from './compare-keys-to-files';
-import { getTranslationFilesPath } from './get-translation-files-path';
+import { compareKeysToFiles } from './compare-keys-to-files.js';
+import { getTranslationFilesPath } from './get-translation-files-path.js';
 
 export function findMissingKeys(inlineConfig: Config) {
   const logger = getLogger();

@@ -1,8 +1,8 @@
-import { defineNodeProject } from '../../tools/vitest/define-project';
+import { defineNodeProject } from '../../tools/vitest/define-project.js';
 
 export default defineNodeProject({
   name: 'transloco-cli',
-  root: __dirname,
+  root: import.meta.dirname,
   coverageDir: '../../coverage/libs/transloco-cli',
   // The keys-manager specs install spies in `beforeAll` (e.g.
   // spyOnProcess('exit')) and rely on them persisting across the block's

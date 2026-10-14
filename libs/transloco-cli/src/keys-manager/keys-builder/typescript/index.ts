@@ -4,30 +4,30 @@ import {
   ExtractorConfig,
   ScopeMap,
   Scopes,
-} from '../../types';
-import { readFile } from '../../utils/file.utils';
-import { regexFactoryMap } from '../../utils/regexs.utils';
-import { parseTsSource } from '../../utils/ts-ast.utils';
-import { addCommentSectionKeys } from '../add-comment-section-keys';
-import { addKey } from '../add-key';
-import { extractKeys } from '../utils/extract-keys';
+} from '../../types.js';
+import { readFile } from '../../utils/file.utils.js';
+import { regexFactoryMap } from '../../utils/regexs.utils.js';
+import { parseTsSource } from '../../utils/ts-ast.utils.js';
+import { addCommentSectionKeys } from '../add-comment-section-keys.js';
+import { addKey } from '../add-key.js';
+import { extractKeys } from '../utils/extract-keys.js';
 import {
   resolveAliasAndKey,
   resolveScopeAlias,
-} from '../utils/resolvers.utils';
+} from '../utils/resolvers.utils.js';
 
-import { inlineTemplateExtractor } from './inline-template';
-import { markerExtractor } from './marker.extractor';
-import { pureFunctionExtractor } from './pure-function.extractor';
-import { routeTitleExtractor } from './route-title.extractor';
-import { scanSourceFile, SourceFileScan } from './scan-source-file';
-import { serviceExtractor } from './service.extractor';
-import { signalExtractor } from './signal.extractor';
+import { inlineTemplateExtractor } from './inline-template.js';
+import { markerExtractor } from './marker.extractor.js';
+import { pureFunctionExtractor } from './pure-function.extractor.js';
+import { routeTitleExtractor } from './route-title.extractor.js';
+import { scanSourceFile, SourceFileScan } from './scan-source-file.js';
+import { serviceExtractor } from './service.extractor.js';
+import { signalExtractor } from './signal.extractor.js';
 import {
   importsTitleStrategyProvider,
   mentionsTitleStrategyProvider,
-} from './title-strategy-provider.detector';
-import { TSExtractorResult } from './types';
+} from './title-strategy-provider.detector.js';
+import { TSExtractorResult } from './types.js';
 
 /**
  * Route title keys are collected while extracting, but only applied once some

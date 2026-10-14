@@ -9,6 +9,7 @@
   },
   "homepage": "https://jsverse.gitbook.io/transloco/tools/keys-manager-tkm",
   "bugs": "https://github.com/jsverse/transloco/issues",
+  "type": "module",
   "exports": {
     "./marker": {
       "types": "./src/lib/marker.d.mts",

@@ -13,13 +13,13 @@ import {
   isTmplAstBoundaryBlock,
   isTmplAstBoundaryErrorBlock,
   resolveSwitchBlockChildren,
-} from '../keys-builder/template/compiler-compat';
+} from '../keys-builder/template/compiler-compat.js';
 import {
   isBlockNode,
   isBlockWithChildren,
   resolveBlockChildNodes,
   resolveKeysFromLiteralMap,
-} from '../keys-builder/template/utils';
+} from '../keys-builder/template/utils.js';
 
 /**
  * Only one `@angular/compiler` is ever installed, so the pre-21.1 shapes are

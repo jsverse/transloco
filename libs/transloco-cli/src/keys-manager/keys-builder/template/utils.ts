@@ -23,9 +23,9 @@ import {
 } from '@angular/compiler';
 import { isLiteralMap } from '@jsverse/angular-utils';
 
-import { readFile } from '../../utils/file.utils';
+import { readFile } from '../../utils/file.utils.js';
 
-import { TemplateExtractorConfig } from './types';
+import { TemplateExtractorConfig } from './types.js';
 import {
   isLiteralMapPropertyKey,
   isSwitchCaseChildrenOwner,
@@ -35,7 +35,7 @@ import {
   SwitchCaseChildrenOwner,
   TmplAstBoundaryBlock,
   TmplAstBoundaryErrorBlock,
-} from './compiler-compat';
+} from './compiler-compat.js';
 
 export function isTemplate(node: unknown): node is TmplAstTemplate {
   return node instanceof TmplAstTemplate;

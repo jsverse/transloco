@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
-import { Scopes } from '../../types';
-import { parseTsSource } from '../../utils/ts-ast.utils';
+import { Scopes } from '../../types.js';
+import { parseTsSource } from '../../utils/ts-ast.utils.js';
 
-import { routeTitleExtractor } from './route-title.extractor';
+import { routeTitleExtractor } from './route-title.extractor.js';
 
 const noScopes: Scopes = { scopeToAlias: {}, aliasToScope: {} };
 const adminScopes: Scopes = {
