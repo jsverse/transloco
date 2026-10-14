@@ -2,6 +2,7 @@
   "$schema": "http://json-schema.org/schema",
   "$id": "SchematicsTranslocoNgMigrate",
   "title": "Migrate from Angular i18n to Transloco",
+  "description": "Deprecated: use `transloco migrate angular-i18n`. Migrate from Angular i18n to Transloco",
   "type": "object",
   "properties": {
     "langs": {

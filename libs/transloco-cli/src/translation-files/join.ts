@@ -19,7 +19,7 @@ export interface JoinOptions {
   /** Where the joined files belong. */
   outDir: string;
   defaultLang?: string;
-  /** The default language is left out unless this is set. */
+  /** The default language is left out unless this is set, which is the only use of `defaultLang`. */
   includeDefaultLang?: boolean;
   /** The folder of each scope, when the scopes are not the folders of the root. */
   scopePathMap?: Record<string, string>;
@@ -42,12 +42,6 @@ export function joinTranslations(
     scopePathMap,
   }: JoinOptions,
 ): PlannedFile[] {
-  if (includeDefaultLang && !defaultLang) {
-    throw new TranslationFilesError(
-      `Please specify the default language of the project using --default-lang or the defaultLang option of the Transloco config.`,
-    );
-  }
-
   const entries = getScopeEntries(reader, root, scopePathMap);
 
   return findTranslationFiles(reader, root)

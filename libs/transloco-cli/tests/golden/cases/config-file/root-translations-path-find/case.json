@@ -1,0 +1,5 @@
+{
+  "description": "GIVEN the files extract writes for a config with rootTranslationsPath and no output WHEN the keys are searched THEN nothing is missing or extra and it exits with 0",
+  "args": ["find", "-e"],
+  "exitCode": 0
+}

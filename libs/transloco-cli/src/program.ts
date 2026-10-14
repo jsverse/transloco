@@ -86,7 +86,7 @@ export function createProgram() {
   )
     .option(
       '-o, --output <path>',
-      'The target directory for all generated translation files',
+      'The target directory for all generated translation files (defaults to `rootTranslationsPath` of the config, or `<source root>/assets/i18n`)',
     )
     .option('-l, --langs <langs...>', 'The languages files to generate')
     .option(

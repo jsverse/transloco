@@ -15,7 +15,9 @@ Options:
   -u, --unflat                 Unflat the translation file
   -d, --default-value <value>  The default value of a generated key
   -o, --output <path>          The target directory for all generated
-                               translation files
+                               translation files (defaults to
+                               `rootTranslationsPath` of the config, or `<source
+                               root>/assets/i18n`)
   -l, --langs <langs...>       The languages files to generate
   -r, --replace                Replace the contents of a translation file (if it
                                exists) with the generated one (default value is

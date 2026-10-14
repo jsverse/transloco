@@ -223,19 +223,15 @@ describe('runJoin', () => {
 
     it(`GIVEN includeDefaultLang and no default language anywhere
         WHEN it runs
-        THEN it fails and leaves the out folder as it was`, async () => {
+        THEN every language is written`, async () => {
       writeTranslations();
-      write('dist-i18n/keep.json', '{}');
 
-      const error = await failure({
-        defaultLang: undefined,
-        includeDefaultLang: true,
-      });
+      runJoin(options({ defaultLang: undefined, includeDefaultLang: true }));
 
-      expect(error.message).toBe(
-        'Transloco Join: Please specify the default language of the project using --default-lang or the defaultLang option of the Transloco config.',
-      );
-      expect(exists('dist-i18n/keep.json')).toBe(true);
+      expect(fs.readdirSync(path.join(dir, 'dist-i18n')).sort()).toEqual([
+        'en.json',
+        'es.json',
+      ]);
     });
 
     it(`GIVEN a config path that does not exist

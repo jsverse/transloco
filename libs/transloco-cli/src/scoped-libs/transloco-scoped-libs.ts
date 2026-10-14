@@ -1,7 +1,7 @@
 import path from 'node:path';
 
 import { glob } from 'glob';
-import chokidar from 'chokidar';
+import chokidar, { type FSWatcher } from 'chokidar';
 
 import { TranslocoGlobalConfig } from '../config/index.js';
 import { makeDir } from '../utils/file-system.js';
@@ -50,6 +50,8 @@ const packageJsoni18nExample = `
  * skipGitIgnoreUpdate - if false tries to add an entry to the .gitignore for each of the translation files
  * rootTranslationsPath - the root directory of the translation files.
  * scopedLibs - list of all translation scoped project paths.
+ *
+ * @returns a function that stops the watchers, which there are in watch mode
  */
 export default async function run({
   watch,
@@ -57,6 +59,10 @@ export default async function run({
   rootTranslationsPath,
   scopedLibs,
 }: ScopedLibsOptions) {
+  const watchers: FSWatcher[] = [];
+  const stopWatching = async () => {
+    await Promise.all(watchers.map((watcher) => watcher.close()));
+  };
   const scopedLibsArr = coerceScopedLibs(scopedLibs, rootTranslationsPath);
   const startMsg = watch
     ? 'Running Transloco Scoped Libs in watch mode'
@@ -69,7 +75,7 @@ export default async function run({
         style('red', `Please specify the library's src.`, libSrcExample),
       );
 
-      return;
+      return stopWatching;
     }
 
     const pkg = getPackageJson(lib.src);
@@ -82,7 +88,7 @@ export default async function run({
         ),
       );
 
-      return;
+      return stopWatching;
     }
 
     if (!lib.dist?.length) {
@@ -94,7 +100,7 @@ export default async function run({
         ),
       );
 
-      return;
+      return stopWatching;
     }
 
     const outputs = lib.dist.map((o) => path.resolve(o));
@@ -130,7 +136,10 @@ export default async function run({
       }
 
       if (watch) {
-        chokidar.watch(files).on('change', (file) => {
+        // The folder is watched, not the files found now, to pick up a file added later
+        const copyFile = (file: string) => {
+          if (!file.endsWith('.json')) return;
+
           for (const output of outputs) {
             // TODO should we skip the git ignore update here?
             copyScopes({
@@ -141,10 +150,19 @@ export default async function run({
               scope,
             });
           }
-        });
+        };
+
+        watchers.push(
+          chokidar
+            .watch(path.join(input, scopeConfig.path), { ignoreInitial: true })
+            .on('add', copyFile)
+            .on('change', copyFile),
+        );
       }
     }
   }
+
+  return stopWatching;
 }
 
 function coerceScopedLibs(

@@ -55,7 +55,7 @@ describe('migrateNgxTranslate', () => {
   const done = [
     '\n              🌵 Done! 🌵',
     'Welcome to a better translation experience 🌐',
-    '\nFor more information about this script please visit 👉 https://jsverse.github.io/transloco/docs/migration/ngx\n',
+    '\nFor more information about this script please visit 👉 https://jsverse.gitbook.io/transloco/migration-guides/migrate-from-ngx-translate\n',
   ];
 
   describe('templates', () => {

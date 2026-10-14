@@ -54,6 +54,6 @@ export function migrateAngularI18n({
   console.log('\n              🌵 Done! 🌵');
   console.log('Welcome to a better translation experience 🌐');
   console.log(
-    '\nFor more information about this script please visit 👉 https://jsverse.github.io/transloco/docs/migration/angular\n',
+    '\nFor more information about this script please visit 👉 https://jsverse.gitbook.io/transloco/migration-guides/migrate-from-angulars-i18n\n',
   );
 }

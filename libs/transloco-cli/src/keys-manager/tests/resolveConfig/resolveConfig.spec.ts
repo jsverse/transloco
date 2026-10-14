@@ -136,6 +136,75 @@ describe('resolveConfig', () => {
     });
   });
 
+  describe('output of extract', () => {
+    const rootTranslationsPaths = [
+      `${sourceRoot}/public/i18n/`,
+      `${sourceRoot}/public/i18n`,
+      `./${sourceRoot}/public/i18n`,
+      '${sourceRoot}/public/i18n',
+      '${sourceRoot}/../public/i18n',
+      path.resolve(process.cwd(), sourceRoot, 'absolute/i18n'),
+    ];
+
+    afterAll(() => {
+      mockedGlobalConfig = {};
+    });
+
+    it.each(rootTranslationsPaths)(
+      'should write to the folder find reads, given rootTranslationsPath %s and no output',
+      (rootTranslationsPath) => {
+        mockedGlobalConfig = { rootTranslationsPath, keysManager: {} };
+
+        const { output } = resolveConfig({ command: 'extract' });
+        const { translationsPath } = resolveConfig({ command: 'find' });
+
+        expect(output).toBe(translationsPath);
+        expect(output).toBe(
+          path.resolve(
+            process.cwd(),
+            rootTranslationsPath.replace('${sourceRoot}', sourceRoot),
+          ),
+        );
+      },
+    );
+
+    it('should write to the default folder given a config without rootTranslationsPath', () => {
+      mockedGlobalConfig = { langs: ['en', 'es'], keysManager: {} };
+
+      const { output } = resolveConfig({ command: 'extract' });
+
+      expect(output).toBe(resolvePath(defaultConfig.output));
+    });
+
+    it('should write to the output of the config given rootTranslationsPath too', () => {
+      mockedGlobalConfig = {
+        rootTranslationsPath: `${sourceRoot}/public/i18n`,
+        keysManager: { output: `${sourceRoot}/out/i18n` },
+      };
+
+      const { output, translationsPath } = resolveConfig({
+        command: 'extract',
+      });
+
+      expect(output).toBe(resolvePath(`${sourceRoot}/out/i18n`));
+      expect(translationsPath).toBe(resolvePath(`${sourceRoot}/public/i18n`));
+    });
+
+    it('should write to the inline output given rootTranslationsPath and an output in the config', () => {
+      mockedGlobalConfig = {
+        rootTranslationsPath: `${sourceRoot}/public/i18n`,
+        keysManager: { output: `${sourceRoot}/out/i18n` },
+      };
+
+      const { output } = resolveConfig({
+        command: 'extract',
+        output: `${sourceRoot}/inline/i18n`,
+      });
+
+      expect(output).toBe(resolvePath(`${sourceRoot}/inline/i18n`));
+    });
+  });
+
   describe('validate directories', () => {
     function shouldFail(prop: string, msg: 'pathDoesntExist' | 'pathIsNotDir') {
       const [processExitSpy, consoleLogSpy] = spies;

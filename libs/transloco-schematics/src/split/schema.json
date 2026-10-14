@@ -2,6 +2,7 @@
   "$schema": "http://json-schema.org/schema",
   "$id": "SchematicsTranslocoSplit",
   "title": "Split translated files between the project's translation files.",
+  "description": "Deprecated: use `transloco split`. Split translated files between the project's translation files.",
   "type": "object",
   "properties": {
     "translationPath": {

@@ -1,0 +1,6 @@
+{
+  "description": "GIVEN a folder instead of a file WHEN it is validated THEN one line on stderr says it is a folder, without the error of the file system, and it exits with 1",
+  "args": ["validate", "i18n"],
+  "exitCode": 1,
+  "snapshot": ["stdout", "stderr"]
+}

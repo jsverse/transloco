@@ -23,16 +23,24 @@ export function resolveConfig(inlineConfig: Partial<Config>): Config {
     inlineConfig.project,
   );
   const defaults = defaultConfig({ projectType, sourceRoot });
-  // `--config` names the one place to look in, otherwise the source root and its parents are searched
-  const { config: fileConfig, filepath: configFile } = inlineConfig.config
-    ? {
-        config: loadConfig(inlineConfig.config),
-        filepath: inlineConfig.config,
-      }
-    : searchGlobalConfig(sourceRoot);
-  const userConfig = { ...flatFileConfig(fileConfig), ...inlineConfig };
+  // `--config` names the one place to look in, otherwise the source root and its parents are searched.
+  // A path that isn't there counts as none, as in v8. The transloco command refuses it earlier.
+  const { config: fileConfig, filepath: configFile } =
+    inlineConfig.config && existsSync(inlineConfig.config)
+      ? {
+          config: loadConfig(inlineConfig.config),
+          filepath: inlineConfig.config,
+        }
+      : searchGlobalConfig(sourceRoot);
+  const fileOptions = flatFileConfig(fileConfig);
+  const userConfig = { ...fileOptions, ...inlineConfig };
+  // Unless an output is given, extract writes where find reads
+  const outputDefault = fileOptions.translationsPath
+    ? { output: fileOptions.translationsPath }
+    : {};
   const mergedConfig = {
     ...defaults,
+    ...outputDefault,
     ...userConfig,
     __sourceRoot: sourceRoot,
   } as Config;

@@ -1,0 +1,3 @@
+The path does not exist (i18n/nope.json)
+The path is a folder, not a file (i18n)
+Found duplicate keys: a (i18n/duplicate.json)

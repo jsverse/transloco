@@ -2,6 +2,7 @@
   "$schema": "http://json-schema.org/schema",
   "$id": "SchematicsTranslocoJoin",
   "title": "Merge all of the project's translation files into one.",
+  "description": "Deprecated: use `transloco join`. Merge all of the project's translation files into one.",
   "type": "object",
   "properties": {
     "translationPath": {
