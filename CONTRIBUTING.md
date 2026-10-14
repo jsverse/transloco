@@ -15,6 +15,7 @@ The Transloco project is a monorepo managed by nx with the following structure:
 Packages:
 
 - transloco
+- transloco-cli
 - transloco-keys-manager
 - transloco-locale
 - transloco-messageformat
