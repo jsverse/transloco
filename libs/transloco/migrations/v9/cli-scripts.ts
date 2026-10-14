@@ -340,7 +340,7 @@ export function migrateCliScripts(): Rule {
         `  ↳ The packages of the deprecated bins are still in your dependencies. Remove them once nothing runs their bins anymore.`,
       );
 
-      return addCliDependency(
+      addCliDependency(
         tree,
         context,
         `npm scripts in your workspace run its 'transloco' bin now`,

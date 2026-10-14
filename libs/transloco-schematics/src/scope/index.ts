@@ -102,16 +102,27 @@ function getTranslationFilesFromAssets(
   );
 }
 
+/** `--langs en,fr` is one comma separated string, as in `ng add`. */
+function splitLangs(langs: string | string[] | undefined): string[] {
+  return coerceArray(langs ?? [])
+    .flatMap((lang) => lang.split(','))
+    .map((lang) => lang.trim())
+    .filter(Boolean);
+}
+
 function getTranslationFiles(
   options: SchemaOptions,
   host: Tree,
   translationsPath: string,
 ): string[] {
-  return coerceArray(
-    options.langs ||
-      getGlobalConfig().langs ||
-      getTranslationFilesFromAssets(host, translationsPath),
-  );
+  const fromOption = splitLangs(options.langs);
+
+  return fromOption.length
+    ? fromOption
+    : coerceArray(
+        getGlobalConfig().langs ||
+          getTranslationFilesFromAssets(host, translationsPath),
+      );
 }
 
 function addInlineLoader(

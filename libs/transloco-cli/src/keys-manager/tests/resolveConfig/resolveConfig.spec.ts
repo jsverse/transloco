@@ -176,6 +176,18 @@ describe('resolveConfig', () => {
       expect(output).toBe(resolvePath(defaultConfig.output));
     });
 
+    it('should write to the translations path of keysManager given no output and no rootTranslationsPath', () => {
+      mockedGlobalConfig = {
+        keysManager: { translationsPath: `${sourceRoot}/public/i18n` },
+      };
+
+      const { output } = resolveConfig({ command: 'extract' });
+      const { translationsPath } = resolveConfig({ command: 'find' });
+
+      expect(output).toBe(resolvePath(`${sourceRoot}/public/i18n`));
+      expect(output).toBe(translationsPath);
+    });
+
     it('should write to the output of the config given rootTranslationsPath too', () => {
       mockedGlobalConfig = {
         rootTranslationsPath: `${sourceRoot}/public/i18n`,
