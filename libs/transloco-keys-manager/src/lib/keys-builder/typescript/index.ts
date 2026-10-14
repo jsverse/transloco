@@ -66,7 +66,7 @@ function TSExtractor(
   config: ExtractorConfig,
   routeTitles: RouteTitleCollector,
 ): ScopeMap {
-  const { file, scopes, defaultValue, scopeToKeys } = config;
+  const { file, scopes, defaultValue, scopeToKeys, langs } = config;
   const content = readFile(file);
   const baseParams = { scopeToKeys, scopes, defaultValue };
   const commentParams = {
@@ -105,6 +105,7 @@ function TSExtractor(
         key,
         lang,
         scopes,
+        langs,
       );
       addKey({
         scopeAlias,
@@ -153,13 +154,14 @@ function resolveAliasAndKeyFromService(
   key: string,
   scopePath: string,
   scopes: Scopes,
+  langs: string[],
 ): [string, string | null] {
   // No explicit scope: a known alias prefix selects the scope, as in templates
   if (!scopePath) {
     return resolveAliasAndKey(key, scopes);
   }
 
-  const scopeAlias = resolveScopeAlias({ scopePath, scopes });
+  const scopeAlias = resolveScopeAlias({ scopePath, scopes, langs });
 
-  return [key, scopeAlias];
+  return [key, scopeAlias ?? null];
 }
