@@ -2,7 +2,6 @@ import type { DiffDeleted, DiffNew } from 'deep-diff';
 import df from 'deep-diff';
 import { flatten, unflatten } from 'flat';
 
-import { getGlobalConfig } from '../../config/index.js';
 import { messages } from '../messages.js';
 import { Config, ScopeMap } from '../types.js';
 import { readFile, writeFile } from '../utils/file.utils.js';
@@ -27,6 +26,7 @@ interface CompareKeysOptions extends Pick<
   | 'addMissingKeys'
   | 'emitErrorOnExtraKeys'
   | 'translationsPath'
+  | 'scopePathMap'
 > {
   scopeToKeys: ScopeMap;
 }
@@ -38,6 +38,7 @@ export function compareKeysToFiles({
   emitErrorOnExtraKeys,
   fileFormat,
   unflat,
+  scopePathMap = {},
 }: CompareKeysOptions) {
   const logger = getLogger();
   logger.startSpinner(`${messages.checkMissing} ✨`);
@@ -57,8 +58,7 @@ export function compareKeysToFiles({
   );
 
   const result: Result[] = [];
-  const scopePaths = getGlobalConfig().scopePathMap || {};
-  for (const [scope, path] of Object.entries(scopePaths)) {
+  for (const [scope, path] of Object.entries(scopePathMap)) {
     const keys = scopeToKeys[scope];
     if (keys) {
       const res: Omit<Result, 'files'> = {

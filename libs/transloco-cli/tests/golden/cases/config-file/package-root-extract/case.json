@@ -1,0 +1,11 @@
+{
+  "description": "GIVEN a transloco.config.js beside the package.json of a repository and a project in a sub directory WHEN the keys are extracted with --cwd naming the project THEN the config is found above the working directory and, as every path resolves against the working directory, the files of the project are written",
+  "args": [
+    "--cwd",
+    "apps/shop",
+    "extract",
+    "--default-value",
+    "missing"
+  ],
+  "exitCode": 0
+}
