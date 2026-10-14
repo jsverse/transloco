@@ -1,5 +1,8 @@
 # Transloco Keys Manager
 
+> [!WARNING]
+> The `transloco-keys-manager` bin is deprecated and will be removed in Transloco v10. Use `transloco extract` and `transloco find` from `@jsverse/transloco-cli` instead.
+
 Extract translatable keys from projects that use Transloco.
 
 > This library is being migrated from [jsverse/transloco-keys-manager](https://github.com/jsverse/transloco-keys-manager) into this monorepo.

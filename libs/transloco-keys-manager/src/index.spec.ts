@@ -17,15 +17,22 @@ vi.mock('@jsverse/transloco-cli/internal/keys-manager', async (original) => ({
 
 describe('transloco-keys-manager bin', () => {
   const originalArgv = process.argv;
+  const originalNoDeprecation = process.noDeprecation;
+  const notice = (replacement: string) =>
+    `DeprecationWarning: transloco-keys-manager is deprecated and will be removed in Transloco v10. Run "${replacement}" from @jsverse/transloco-cli instead.\n`;
+  let stderr: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
     vi.clearAllMocks();
     vi.spyOn(console, 'log').mockImplementation(() => undefined);
     vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    stderr = vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
+    process.noDeprecation = false;
   });
 
   afterEach(() => {
     process.argv = originalArgv;
+    process.noDeprecation = originalNoDeprecation;
   });
 
   async function runBin(...args: string[]) {
@@ -109,5 +116,76 @@ describe('transloco-keys-manager bin', () => {
       '$ transloco-keys-manager extract',
     );
     expect(exit).toHaveBeenCalledExactlyOnceWith();
+  });
+
+  it.each([
+    [['extract', '--langs', 'en'], 'transloco extract'],
+    [['find'], 'transloco find'],
+    [['--input', 'src'], 'transloco'],
+    [['translate'], 'transloco'],
+  ])(
+    `GIVEN the arguments %j
+     WHEN the bin runs
+     THEN the notice pointing to "%s" is the only thing written to stderr`,
+    async (args, replacement) => {
+      await runBin(...args);
+
+      expect(stderr).toHaveBeenCalledExactlyOnceWith(notice(replacement));
+    },
+  );
+
+  it(`GIVEN the extract command
+      WHEN the bin runs
+      THEN the notice is written before the extractor starts and stdout is untouched`, async () => {
+    const stdout = vi
+      .spyOn(process.stdout, 'write')
+      .mockImplementation(() => true);
+    buildTranslationFiles.mockImplementationOnce(() =>
+      expect(stderr).toHaveBeenCalledOnce(),
+    );
+
+    await runBin('extract');
+
+    expect(buildTranslationFiles).toHaveBeenCalledOnce();
+    expect(stdout).not.toHaveBeenCalled();
+    expect(console.log).not.toHaveBeenCalled();
+  });
+
+  it(`GIVEN the help flag
+      WHEN the bin runs
+      THEN the notice comes before the usage and the exit is the same`, async () => {
+    const exit = vi
+      .spyOn(process, 'exit')
+      .mockImplementation(() => undefined as never);
+
+    await runBin('extract', '--help');
+
+    expect(stderr).toHaveBeenCalledExactlyOnceWith(notice('transloco extract'));
+    expect(stderr.mock.invocationCallOrder[0]).toBeLessThan(
+      vi.mocked(console.log).mock.invocationCallOrder[0],
+    );
+    expect(exit).toHaveBeenCalledExactlyOnceWith();
+  });
+
+  it(`GIVEN an option the parser rejects
+      WHEN the bin runs
+      THEN the notice is written and the error still escapes`, async () => {
+    await expect(runBin('extract', '--bogus')).rejects.toThrow('--bogus');
+
+    expect(stderr).toHaveBeenCalledExactlyOnceWith(notice('transloco extract'));
+    expect(buildTranslationFiles).not.toHaveBeenCalled();
+  });
+
+  it(`GIVEN deprecation warnings are turned off
+      WHEN the bin runs
+      THEN no notice is written and the command still runs`, async () => {
+    process.noDeprecation = true;
+
+    await runBin('find');
+
+    expect(stderr).not.toHaveBeenCalled();
+    expect(findMissingKeys).toHaveBeenCalledExactlyOnceWith({
+      command: 'find',
+    });
   });
 });

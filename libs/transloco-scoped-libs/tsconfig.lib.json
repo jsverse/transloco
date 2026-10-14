@@ -4,7 +4,7 @@
     "esModuleInterop": true,
     "outDir": "../../dist/out-tsc",
     "sourceMap": false,
-    "declaration": false,
+    "declaration": true,
     "lib": ["ES2021"],
     "module": "esnext",
     "moduleResolution": "bundler",
@@ -12,5 +12,5 @@
     "allowSyntheticDefaultImports": true
   },
   "include": ["**/*.ts"],
-  "exclude": ["**/*.spec.ts", "vitest.config*.ts"]
+  "exclude": ["**/*.spec.ts", "src/test-setup.ts", "vitest.config*.ts"]
 }

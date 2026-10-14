@@ -12,6 +12,7 @@
   "type": "module",
   "main": "src/lib/transloco-scoped-libs.js",
   "module": "src/lib/transloco-scoped-libs.js",
+  "types": "src/lib/transloco-scoped-libs.d.ts",
   "bin": {
     "transloco-scoped-libs": "src/index.js"
   },
