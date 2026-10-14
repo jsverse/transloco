@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 import commandLineArgs from 'command-line-args';
 import commandLineUsage from 'command-line-usage';
-
-import { optionDefinitions, sections } from './lib/cli-options';
-import { buildTranslationFiles } from './lib/keys-builder';
-import { findMissingKeys } from './lib/keys-detective';
-import { Config } from './lib/types';
-import { warnUnsupportedOptions } from './lib/utils/warn-unsupported-options';
+import {
+  buildTranslationFiles,
+  Config,
+  findMissingKeys,
+  optionDefinitions,
+  sections,
+  warnUnsupportedOptions,
+} from '@jsverse/transloco-cli/internal/keys-manager';
 
 const mainDefinitions = [{ name: 'command', defaultOption: true }];
 

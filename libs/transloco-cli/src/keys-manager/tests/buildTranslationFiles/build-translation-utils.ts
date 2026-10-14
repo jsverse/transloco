@@ -10,7 +10,7 @@ import {
 } from '../spec-utils';
 
 export const sourceRoot =
-  'libs/transloco-keys-manager/src/lib/tests/buildTranslationFiles';
+  'libs/transloco-cli/src/keys-manager/tests/buildTranslationFiles';
 
 export type TranslationTestCase =
   | 'template-extraction/pipe'

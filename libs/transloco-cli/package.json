@@ -11,10 +11,19 @@
   "bugs": {
     "url": "https://github.com/jsverse/transloco/issues"
   },
+  "exports": {
+    ".": "./src/index.js",
+    "./internal/keys-manager": "./src/keys-manager/index.js",
+    "./internal/optimize": "./src/optimize/index.js",
+    "./internal/scoped-libs": "./src/scoped-libs/index.js",
+    "./internal/validator": "./src/validator/index.js",
+    "./package.json": "./package.json"
+  },
   "main": "src/index.js",
   "bin": {
     "transloco": "src/bin.js"
   },
+  "sideEffects": false,
   "engines": {
     "node": "^22.18.0 || >=24"
   },
@@ -31,6 +40,25 @@
     "tool"
   ],
   "dependencies": {
+    "@jsverse/angular-utils": "1.0.0-beta.6",
+    "chalk": "6.0.0",
+    "cheerio": "1.2.0",
+    "chokidar": "^5.0.0",
+    "cli-table3": "0.6.1",
+    "cosmiconfig": "10.0.0",
+    "debug": "4.4.3",
+    "deep-diff": "1.0.2",
+    "find-duplicated-property-keys": "1.2.9",
+    "flat": "6.0.1",
+    "fs-extra": "11.4.0",
+    "gettext-parser": "8.0.0",
+    "glob": "13.0.6",
+    "jsonc-parser": "3.3.1",
+    "ora": "9.4.1",
     "tslib": "^2.8.1"
+  },
+  "peerDependencies": {
+    "@angular/compiler": ">= 20.0.0 < 23.0.0",
+    "typescript": ">= 5.8.0 < 7.0.0"
   }
 }

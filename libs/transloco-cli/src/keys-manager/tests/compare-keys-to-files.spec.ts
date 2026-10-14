@@ -31,7 +31,7 @@ vi.mock('../utils/file.utils', () => ({
   writeFile: vi.fn(),
 }));
 
-vi.mock('@jsverse/transloco-utils', () => ({
+vi.mock('../../config', () => ({
   getGlobalConfig: () => ({ scopePathMap: {} }),
 }));
 

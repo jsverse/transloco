@@ -1,8 +1,8 @@
-import { getGlobalConfig } from '@jsverse/transloco-utils';
 import type { DiffDeleted, DiffNew } from 'deep-diff';
 import df from 'deep-diff';
 import { flatten, unflatten } from 'flat';
 
+import { getGlobalConfig } from '../../config';
 import { messages } from '../messages';
 import { Config, ScopeMap } from '../types';
 import { readFile, writeFile } from '../utils/file.utils';
