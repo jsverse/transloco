@@ -1,6 +1,6 @@
 import { Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
 
-import { SCANNED } from './marker-import';
+import { SCANNED } from './import-utils';
 import { collectFiles } from './workspace-utils';
 
 const PACKAGE = '@jsverse/transloco-scoped-libs';
