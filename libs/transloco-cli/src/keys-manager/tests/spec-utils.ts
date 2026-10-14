@@ -1,6 +1,6 @@
+import fs from 'node:fs';
 import nodePath from 'node:path';
 
-import fs from 'fs-extra';
 import { expect, vi } from 'vitest';
 
 import { Config } from '../types.js';
@@ -71,7 +71,7 @@ export function paramsTestConfig(config: Config) {
 }
 
 export function removeI18nFolder(root = sourceRoot) {
-  fs.removeSync(nodePath.join(root, 'i18n'));
+  fs.rmSync(nodePath.join(root, 'i18n'), { recursive: true, force: true });
 }
 
 export interface AssertTranslationParams extends Pick<Config, 'fileFormat'> {

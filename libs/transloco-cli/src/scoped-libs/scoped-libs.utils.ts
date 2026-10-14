@@ -1,8 +1,8 @@
 import path from 'node:path';
 import fs from 'fs';
 
-import { readJSONSync, writeJSONSync } from 'fs-extra/esm';
-import chalk from 'chalk';
+import { readJsonFile, writeJsonFile } from '../utils/file-system.js';
+import { style } from '../utils/style.js';
 
 export function toLinuxFormat(p: string) {
   return p.split(path.sep).join('/');
@@ -38,16 +38,16 @@ export function insertPathToGitIgnore(route: string) {
 
 export function readJson(path: string) {
   try {
-    return fs.existsSync(path) ? readJSONSync(path, { encoding: 'utf8' }) : {};
+    return fs.existsSync(path) ? readJsonFile(path) : {};
   } catch (e) {
-    console.log(chalk.red(e));
+    console.log(style('red', e));
 
     return null;
   }
 }
 
 export function writeJson(path: string, content: string) {
-  writeJSONSync(path, content, { spaces: 2, encoding: 'utf8' });
+  writeJsonFile(path, content, 2);
 }
 
 export function coerceArray<T>(val: T): T[] {

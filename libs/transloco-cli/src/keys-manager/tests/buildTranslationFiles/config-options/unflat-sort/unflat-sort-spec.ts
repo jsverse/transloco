@@ -1,7 +1,7 @@
+import fs from 'node:fs';
 import nodePath from 'node:path';
 
 import { flatten } from 'flat';
-import fs from 'fs-extra';
 import { describe, beforeEach, expect, it } from 'vitest';
 
 import {

@@ -1,6 +1,6 @@
-import chalk from 'chalk';
 import Table from 'cli-table3';
 
+import { style } from '../../utils/style.js';
 import { messages } from '../messages.js';
 import { getLogger } from '../utils/logger.js';
 
@@ -35,7 +35,7 @@ export function buildTable({
         border: ['white'],
       },
       head: ['File Name', 'Missing Keys', 'Extra Keys'].map((h) =>
-        chalk.cyan(h),
+        style('cyan', h),
       ),
     });
 
@@ -47,7 +47,7 @@ export function buildTable({
 
       if (!(hasExtra || hasMissing)) continue;
 
-      row.push(chalk.blueBright(langs[i]));
+      row.push(style('blueBright', langs[i]));
 
       if (hasMissing) {
         row.push(mapDiffToKeys(missing, 'rhs'));

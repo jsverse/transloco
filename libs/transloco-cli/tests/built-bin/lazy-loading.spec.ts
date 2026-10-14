@@ -36,7 +36,7 @@ const program: Allowed = {
     'src/package-info.js',
     'src/program.js',
   ],
-  packages: ['@commander-js/extra-typings', 'commander', 'tslib'],
+  packages: ['@commander-js/extra-typings', 'commander'],
 };
 const validate: Allowed = {
   files: [

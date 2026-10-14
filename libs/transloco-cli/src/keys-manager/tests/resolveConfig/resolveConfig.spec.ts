@@ -1,4 +1,5 @@
 import path from 'node:path';
+import { styleText } from 'node:util';
 
 import {
   vi,
@@ -9,7 +10,6 @@ import {
   describe,
   it,
 } from 'vitest';
-import chalk from 'chalk';
 
 import { defaultConfig as _defaultConfig } from '../../config.js';
 import { messages } from '../../messages.js';
@@ -140,7 +140,9 @@ describe('resolveConfig', () => {
       const [processExitSpy, consoleLogSpy] = spies;
       expect(processExitSpy).toHaveBeenCalledWith(1);
       expect(consoleLogSpy).toHaveBeenCalledWith(
-        chalk.bgRed.black(`${prop} ${messages[msg]}`),
+        styleText(['bgRed', 'black'], `${prop} ${messages[msg]}`, {
+          stream: process.stdout,
+        }),
       );
       clearSpies();
     }

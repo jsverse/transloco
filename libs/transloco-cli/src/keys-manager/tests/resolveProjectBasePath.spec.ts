@@ -1,7 +1,7 @@
+import fs from 'fs';
 import os from 'os';
 import path from 'path';
 
-import fs from 'fs-extra';
 import {
   afterAll,
   afterEach,
@@ -22,7 +22,7 @@ import { spyOnConsole } from './spec-utils.js';
 // against `process.cwd()`. Under `nx test` that's the workspace root, so
 // running these fs read/write/remove calls against the *real* cwd would read
 // and delete real repository files/folders (e.g. a project path fixture of
-// 'apps/myProject' would `fs.removeSync` the real `apps/` directory). Sandbox
+// 'apps/myProject' would `fs.rmSync` the real `apps/` directory). Sandbox
 // everything in an isolated temp dir instead.
 const TEST_DIR = path.join(
   os.tmpdir(),
@@ -41,13 +41,13 @@ const defaultConfig = {
 
 describe('resolveProjectBasePath', () => {
   beforeAll(() => {
-    fs.ensureDirSync(TEST_DIR);
+    fs.mkdirSync(TEST_DIR, { recursive: true });
     vi.spyOn(process, 'cwd').mockReturnValue(TEST_DIR);
   });
 
   afterAll(() => {
     vi.restoreAllMocks();
-    fs.removeSync(TEST_DIR);
+    fs.rmSync(TEST_DIR, { recursive: true, force: true });
   });
 
   it('should return the default "src"', () => {
@@ -367,7 +367,7 @@ function addProjectConfig({
   path: string;
   config?: any;
 }) {
-  fs.mkdirsSync(resolvePath(path));
+  fs.mkdirSync(resolvePath(path), { recursive: true });
   fs.writeFileSync(
     jsonFile('project', path),
     // a raw string lets a spec control the exact formatting written to disk
@@ -377,7 +377,7 @@ function addProjectConfig({
 
 function removeProjectConfig(path: string) {
   removeConfigFile('project', path);
-  fs.removeSync(resolvePath(path.split('/')[0]));
+  fs.rmSync(resolvePath(path.split('/')[0]), { recursive: true, force: true });
 }
 
 function addRootConfig({
@@ -400,7 +400,7 @@ function addInvalidRootAngularConfig() {
 }
 
 function removeConfigFile(configType: string, path?: string) {
-  fs.removeSync(jsonFile(configType, path));
+  fs.rmSync(jsonFile(configType, path), { recursive: true, force: true });
 }
 
 function assertDefaultProject() {

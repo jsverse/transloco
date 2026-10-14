@@ -1,7 +1,8 @@
 import debug from 'debug';
-import ora, { Ora } from 'ora';
 
-let spinner: Ora;
+import { Spinner, startSpinner } from './spinner.js';
+
+let spinner: Spinner;
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function -- intentional no-op for production builds
 function noop() {}
@@ -11,7 +12,8 @@ const defaultLogger = {
   log: (...msg: string[]) => (isProd ? noop : console.log(...msg)),
   warn: (msg: string) => (isProd ? noop : console.warn(`⚠️  ${msg}`)),
   success: (msg: string) => (isProd ? noop : spinner.succeed(msg)),
-  startSpinner: (msg: string) => (isProd ? noop : (spinner = ora().start(msg))),
+  startSpinner: (msg: string) =>
+    isProd ? noop : (spinner = startSpinner(msg)),
 };
 
 export function getLogger() {

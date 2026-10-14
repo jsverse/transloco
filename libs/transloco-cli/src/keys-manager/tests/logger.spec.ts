@@ -1,13 +1,15 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import debug from 'debug';
 
-vi.mock('ora', () => {
-  const mockSpinner = {
-    start: vi.fn().mockReturnThis(),
-    succeed: vi.fn().mockReturnThis(),
-  };
-  return { default: vi.fn(() => mockSpinner) };
+const spinnerModule = vi.hoisted(() => {
+  const spinner = { succeed: vi.fn() };
+
+  return { spinner, startSpinner: vi.fn(() => spinner) };
 });
+
+vi.mock('../utils/spinner.js', () => ({
+  startSpinner: spinnerModule.startSpinner,
+}));
 
 describe('logger', () => {
   const originalEnv = process.env.PRODUCTION;
@@ -15,6 +17,8 @@ describe('logger', () => {
   afterEach(() => {
     process.env.PRODUCTION = originalEnv;
     vi.restoreAllMocks();
+    spinnerModule.startSpinner.mockClear();
+    spinnerModule.spinner.succeed.mockClear();
   });
 
   describe('getLogger', () => {
@@ -35,6 +39,33 @@ describe('logger', () => {
 
       expect(warnSpy).toHaveBeenCalledWith(
         expect.stringContaining('something is off'),
+      );
+    });
+  });
+
+  describe('spinner', () => {
+    beforeEach(() => {
+      vi.resetModules();
+      delete process.env.PRODUCTION;
+    });
+
+    it('should start the spinner of the spinner module with the message', async () => {
+      const { getLogger } = await import('../utils/logger.js');
+
+      getLogger().startSpinner('x');
+
+      expect(spinnerModule.startSpinner).toHaveBeenCalledExactlyOnceWith('x');
+    });
+
+    it('should succeed the spinner that was started, with the message', async () => {
+      const { getLogger } = await import('../utils/logger.js');
+      const logger = getLogger();
+      logger.startSpinner('x');
+
+      logger.success('y');
+
+      expect(spinnerModule.spinner.succeed).toHaveBeenCalledExactlyOnceWith(
+        'y',
       );
     });
   });

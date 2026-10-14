@@ -1,6 +1,7 @@
-import ts, { Node } from 'typescript';
+import type { Node } from 'typescript';
 
 import { hasDescendant, nameText } from '../../utils/ts-ast.utils.js';
+import ts from '../../utils/typescript.js';
 
 import { buildKeysFromCall } from './build-keys-from-call.js';
 import { SourceFileScan } from './scan-source-file.js';
