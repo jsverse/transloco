@@ -2,7 +2,15 @@
   "name": "@jsverse/transloco-cli",
   "version": "9.0.0-alpha.4",
   "description": "The unified Transloco command line: extract, find, validate, optimize and scoped-libs",
-  "main": "src/index.js",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jsverse/transloco"
+  },
+  "homepage": "https://jsverse.gitbook.io/transloco/",
+  "bugs": {
+    "url": "https://github.com/jsverse/transloco/issues"
+  },
   "exports": {
     ".": "./src/index.js",
     "./internal/keys-manager": "./src/keys-manager/index.js",
@@ -11,37 +19,26 @@
     "./internal/validator": "./src/validator/index.js",
     "./package.json": "./package.json"
   },
-  "engines": {
-    "node": "^22.18.0 || >=24"
-  },
+  "main": "src/index.js",
   "bin": {
     "transloco": "src/bin.js"
+  },
+  "sideEffects": false,
+  "engines": {
+    "node": "^22.18.0 || >=24"
   },
   "publishConfig": {
     "access": "public"
   },
-  "bugs": {
-    "url": "https://github.com/jsverse/transloco/issues"
-  },
-  "homepage": "https://jsverse.gitbook.io/transloco/",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/jsverse/transloco"
-  },
   "keywords": [
-    "Angular",
+    "angular",
     "i18n",
-    "Translate",
-    "Angular Translate",
-    "Transloco",
-    "CLI",
-    "Tool"
+    "translate",
+    "angular translate",
+    "transloco",
+    "cli",
+    "tool"
   ],
-  "license": "MIT",
-  "peerDependencies": {
-    "@angular/compiler": ">= 20.0.0 < 23.0.0",
-    "typescript": ">= 5.8.0 < 7.0.0"
-  },
   "dependencies": {
     "@jsverse/angular-utils": "1.0.0-beta.6",
     "chalk": "6.0.0",
@@ -59,5 +56,9 @@
     "jsonc-parser": "3.3.1",
     "ora": "9.4.1",
     "tslib": "^2.8.1"
+  },
+  "peerDependencies": {
+    "@angular/compiler": ">= 20.0.0 < 23.0.0",
+    "typescript": ">= 5.8.0 < 7.0.0"
   }
 }
