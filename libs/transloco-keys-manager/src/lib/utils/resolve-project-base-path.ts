@@ -122,6 +122,16 @@ function resolveProjectConfig(projectName?: string) {
 
       const config = parseProjectConfig(configPath, content);
 
+      if (config && !config.sourceRoot) {
+        // Modern Nx `project.json` files usually omit `sourceRoot`; Nx defaults
+        // it to `<projectRoot>/src`. Without this the base path falls back to the
+        // workspace-root `src`, so keys in libs go undetected (#952).
+        const projectRoot =
+          config.root || path.dirname(configPath).replace(/\\/g, '/');
+        config.sourceRoot =
+          projectRoot && projectRoot !== '.' ? `${projectRoot}/src` : 'src';
+      }
+
       if (config?.name === projectName) {
         return config;
       }
