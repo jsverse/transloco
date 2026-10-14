@@ -1,7 +1,7 @@
 {
   "name": "@jsverse/transloco-cli",
   "version": "9.0.0-alpha.4",
-  "description": "The unified Transloco command line: extract, find, validate, optimize and scoped-libs",
+  "description": "The unified Transloco command line: extract, find, validate, optimize, scoped-libs, join, split, migrate and init",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -69,7 +69,17 @@
     "angular translate",
     "transloco",
     "cli",
-    "tool"
+    "tool",
+    "keys manager",
+    "extract",
+    "find",
+    "validate",
+    "optimize",
+    "scoped-libs",
+    "join",
+    "split",
+    "migrate",
+    "init"
   ],
   "dependencies": {
     "@clack/prompts": "1.8.1",
