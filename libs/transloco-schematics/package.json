@@ -26,7 +26,6 @@
   ],
   "dependencies": {
     "@jsverse/transloco-cli": "^9.0.0-alpha.4",
-    "@jsverse/transloco-utils": "^9.0.0-alpha.4",
     "fs-extra": "11.4.0",
     "glob": "13.0.6",
     "tslib": "^2.8.1"
