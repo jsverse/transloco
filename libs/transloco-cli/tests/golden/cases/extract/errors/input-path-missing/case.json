@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN an input directory that does not exist WHEN the keys are extracted THEN it reports the path, writes nothing and exits with 1",
+  "args": [
+    "extract",
+    "--input",
+    "nope",
+    "--output",
+    "i18n"
+  ],
+  "exitCode": 1,
+  "stdoutIncludes": [
+    "Input path provided doesn't exist!"
+  ]
+}

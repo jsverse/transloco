@@ -1,0 +1,2 @@
+error: unknown option '--frobnicate'
+(add --help for additional information)

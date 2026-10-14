@@ -1,0 +1,2 @@
+error: option '-f, --file-format <format>' argument 'xliff' is invalid. Allowed choices are json, pot.
+(add --help for additional information)

@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN an option no command knows WHEN extract runs THEN it is rejected on stderr, nothing is written and it exits with 1",
+  "args": [
+    "extract",
+    "--frobnicate"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

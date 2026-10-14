@@ -1,0 +1,23 @@
+msgid ""
+msgstr ""
+"mime-version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "app.menu.design_system"
+msgstr "missing"
+
+msgid "app.menu.matched_route"
+msgstr "missing"
+
+msgid "app.menu.nested"
+msgstr "missing"
+
+msgid "app.menu.reports"
+msgstr "missing"
+
+msgid "app.menu.reports_summary"
+msgstr "missing"
+
+msgid "app.menu.settings"
+msgstr "missing"

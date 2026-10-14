@@ -1,0 +1,2 @@
+error: unknown option '--translations-path'
+(add --help for additional information)

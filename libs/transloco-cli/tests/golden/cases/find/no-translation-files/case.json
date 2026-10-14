@@ -1,0 +1,17 @@
+{
+  "description": "GIVEN a translations directory without translation files WHEN the keys are searched THEN it says so and exits with 0",
+  "args": [
+    "find",
+    "--input",
+    "src",
+    "--translations-path",
+    "i18n"
+  ],
+  "exitCode": 0,
+  "fixtures": {
+    "src": "findMissingKeys/add-missing-keys/src"
+  },
+  "stdoutIncludes": [
+    "No translation files found."
+  ]
+}

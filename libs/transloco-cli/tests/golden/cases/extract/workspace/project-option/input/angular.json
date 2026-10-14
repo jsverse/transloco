@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "projects": {
+    "shop": {
+      "projectType": "application",
+      "root": "",
+      "sourceRoot": "src"
+    },
+    "ui": {
+      "projectType": "library",
+      "root": "projects/ui",
+      "sourceRoot": "projects/ui/src"
+    }
+  }
+}

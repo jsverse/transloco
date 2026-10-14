@@ -1,0 +1,11 @@
+{
+  "shared": {
+    "ok": "OK"
+  },
+  "core": {
+    "title": "Core",
+    "actions": {
+      "close": "Close"
+    }
+  }
+}

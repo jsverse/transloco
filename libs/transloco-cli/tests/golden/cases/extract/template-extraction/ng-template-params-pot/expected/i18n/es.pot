@@ -1,0 +1,26 @@
+msgid ""
+msgstr ""
+"mime-version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "2"
+msgstr "missing{{2}}"
+
+msgid "3"
+msgstr "missing{{3}}"
+
+msgid "4"
+msgstr "missing{{4}}"
+
+msgid "5"
+msgstr "missing{{5}}"
+
+msgid "6"
+msgstr "missing{{6}}"
+
+msgid "7"
+msgstr "missing"
+
+msgid "8"
+msgstr "missing"

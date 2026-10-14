@@ -1,0 +1,7 @@
+{
+  "description": "GIVEN a config in the working directory listing a library with a scope WHEN the scoped libs are copied THEN the translation files land under the scope in the root translations path and the directory is added to .gitignore",
+  "args": [
+    "scoped-libs"
+  ],
+  "exitCode": 0
+}

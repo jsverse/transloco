@@ -15,7 +15,11 @@
         "tsConfig": "libs/transloco-cli/tsconfig.lib.json",
         "assets": [
           "libs/transloco-cli/*.md",
-          { "input": ".", "glob": "LICENSE", "output": "." }
+          {
+            "input": ".",
+            "glob": "LICENSE",
+            "output": "."
+          }
         ]
       }
     },
@@ -28,6 +32,14 @@
       "outputs": ["{workspaceRoot}/coverage/libs/transloco-cli"],
       "options": {
         "configFile": "libs/transloco-cli/vitest.config.ts"
+      }
+    },
+    "test-golden": {
+      "executor": "@nx/vitest:test",
+      "dependsOn": ["build"],
+      "cache": false,
+      "options": {
+        "configFile": "libs/transloco-cli/vitest.config.golden.ts"
       }
     }
   }

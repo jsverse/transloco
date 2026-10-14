@@ -1,0 +1,15 @@
+{
+  "description": "GIVEN --dist twice WHEN optimize runs THEN it is rejected, no file is touched and it exits with 1",
+  "args": [
+    "optimize",
+    "-d",
+    "a",
+    "-d",
+    "b"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

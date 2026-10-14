@@ -1,0 +1,5 @@
+<ng-container *transloco="let t">
+  <h1>{{ t('home.title') }}</h1>
+  <p>{{ t('home.greeting', { name: user.name }) }}</p>
+</ng-container>
+<button [title]="'actions.save' | transloco">Save</button>

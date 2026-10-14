@@ -1,0 +1,13 @@
+{
+  "description": "GIVEN --langs, which only extract reads WHEN find runs THEN it is rejected and it exits with 1",
+  "args": [
+    "find",
+    "--langs",
+    "en"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

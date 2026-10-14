@@ -1,0 +1,2 @@
+error: option '-i, --input <paths>' was given more than once. Separate several paths with a comma instead, e.g. --input src/app,projects/ui/src
+(add --help for additional information)

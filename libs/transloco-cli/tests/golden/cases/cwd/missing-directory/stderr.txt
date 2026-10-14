@@ -1,0 +1,2 @@
+error: the --cwd directory does not exist: packages/nope
+(add --help for additional information)

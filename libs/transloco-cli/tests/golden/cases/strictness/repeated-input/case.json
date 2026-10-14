@@ -1,0 +1,18 @@
+{
+  "description": "GIVEN --input twice together with --remove-extra-keys, and translation files holding the keys of both directories WHEN extract runs THEN it is rejected pointing at the comma separated form, nothing is written and it exits with 1",
+  "args": [
+    "extract",
+    "-i",
+    "src/app",
+    "-i",
+    "lib/src",
+    "-o",
+    "out",
+    "-R"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

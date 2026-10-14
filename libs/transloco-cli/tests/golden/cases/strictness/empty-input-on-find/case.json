@@ -1,0 +1,16 @@
+{
+  "description": "GIVEN an empty --input together with --add-missing-keys WHEN find runs THEN it is rejected, the translation files are untouched and it exits with 1",
+  "args": [
+    "find",
+    "-i",
+    "",
+    "-p",
+    "out",
+    "-a"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

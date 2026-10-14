@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN a --config path that does not exist WHEN extract runs with --remove-extra-keys THEN the path is reported instead of the defaults being used, the translation files are untouched and it exits with 1",
+  "args": [
+    "extract",
+    "-R",
+    "--config",
+    "missing.config.js"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

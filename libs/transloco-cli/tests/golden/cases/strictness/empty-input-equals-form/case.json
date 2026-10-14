@@ -1,0 +1,15 @@
+{
+  "description": "GIVEN --input= without a value WHEN extract runs THEN it is rejected, the translation files are untouched and it exits with 1",
+  "args": [
+    "extract",
+    "--input=",
+    "-o",
+    "out",
+    "-R"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

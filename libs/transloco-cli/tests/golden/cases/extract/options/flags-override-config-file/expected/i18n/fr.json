@@ -1,0 +1,11 @@
+{
+  "actions": {
+    "cancel": "missing",
+    "save": "missing"
+  },
+  "home": {
+    "documentTitle": "missing",
+    "greeting": "missing",
+    "title": "missing"
+  }
+}

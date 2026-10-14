@@ -1,0 +1,25 @@
+{
+  "description": "GIVEN the config-options/unflat-problematic-keys/src fixture of the in-process specs WHEN its keys are extracted to pot with --unflat THEN the generated translation files match",
+  "args": [
+    "extract",
+    "--input",
+    "src",
+    "--output",
+    "i18n",
+    "--file-format",
+    "pot",
+    "--default-value",
+    "missing",
+    "--unflat",
+    "--langs",
+    "en",
+    "es"
+  ],
+  "exitCode": 0,
+  "fixtures": {
+    "src": "buildTranslationFiles/config-options/unflat-problematic-keys/src"
+  },
+  "stdoutIncludes": [
+    "The following keys won't be accessible when unflatting the object:\n\"a\", \"a.b\", \"a.c\", \"b\", \"b.a\", \"b.b\", \"f\", \"f.a\", \"f.a.a\", \"f.a.b\", \"f.b\", \"f.b.a.a\""
+  ]
+}

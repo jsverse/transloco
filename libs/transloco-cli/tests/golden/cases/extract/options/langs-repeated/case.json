@@ -1,0 +1,17 @@
+{
+  "description": "GIVEN --langs repeated, each time with one language WHEN the keys are extracted THEN a file is written per language, as the option collects its values",
+  "args": [
+    "extract",
+    "-i",
+    "src/app",
+    "-o",
+    "i18n",
+    "-d",
+    "missing",
+    "-l",
+    "en",
+    "-l",
+    "es"
+  ],
+  "exitCode": 0
+}

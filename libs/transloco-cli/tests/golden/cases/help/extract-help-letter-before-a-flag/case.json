@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN -hs, the help letter in front of a flag behind one dash WHEN extract runs THEN it prints the same usage as --help, extracts nothing and exits with 0",
+  "args": [
+    "extract",
+    "-hs"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

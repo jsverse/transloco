@@ -1,0 +1,16 @@
+{
+  "description": "GIVEN --langs with one language, followed by -R WHEN the keys are extracted THEN the flag ends the list: one language is written and the unused key is removed",
+  "args": [
+    "extract",
+    "-i",
+    "src/app",
+    "-o",
+    "i18n",
+    "-d",
+    "missing",
+    "-l",
+    "en",
+    "-R"
+  ],
+  "exitCode": 0
+}

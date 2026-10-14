@@ -1,0 +1,15 @@
+{
+  "description": "GIVEN --project directly followed by -R WHEN extract runs THEN the value is reported missing instead of -R being taken for the project, the translation files are untouched and it exits with 1",
+  "args": [
+    "extract",
+    "-c",
+    "configs/transloco.config.js",
+    "--project",
+    "-R"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

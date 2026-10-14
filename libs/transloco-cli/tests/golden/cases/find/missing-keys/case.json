@@ -1,0 +1,18 @@
+{
+  "description": "GIVEN an en.json missing two keys next to a complete es.json WHEN the keys are searched THEN the summary lists the missing keys of en alone, nothing is written and it exits with 1",
+  "args": [
+    "find",
+    "--input",
+    "src",
+    "--translations-path",
+    "i18n"
+  ],
+  "exitCode": 1,
+  "fixtures": {
+    "src": "findMissingKeys/add-missing-keys/src"
+  },
+  "stdoutIncludes": [
+    "File Name Missing Keys Extra Keys",
+    "en '4' --\n'c.d'"
+  ]
+}

@@ -1,0 +1,2 @@
+error: too many arguments for 'extract'. Expected 0 arguments but got 1: src/app.
+(add --help for additional information)

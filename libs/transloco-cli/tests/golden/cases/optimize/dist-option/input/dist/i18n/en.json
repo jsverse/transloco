@@ -1,0 +1,13 @@
+{
+  "home": {
+    "title": "Welcome",
+    "comment": "Shown on the landing page",
+    "greeting": "Hello {{name}}"
+  },
+  "comment": "A note at the top level",
+  "note": "A regular key",
+  "actions": {
+    "save": "Save",
+    "save.comment": "A flat comment key"
+  }
+}

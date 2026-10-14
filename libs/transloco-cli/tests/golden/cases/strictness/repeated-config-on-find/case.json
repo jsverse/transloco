@@ -1,0 +1,15 @@
+{
+  "description": "GIVEN --config twice WHEN find runs THEN it is rejected and it exits with 1",
+  "args": [
+    "find",
+    "-c",
+    "a.config.js",
+    "-c",
+    "b.config.js"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

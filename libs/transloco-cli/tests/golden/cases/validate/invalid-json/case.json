@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN a translation file that is not valid JSON WHEN it is validated THEN a single line on stderr ends with the file, without a stack trace, and it exits with 1",
+  "args": [
+    "validate",
+    "i18n/en.json"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout"
+  ],
+  "stderrMatches": "^[^\\n]+ \\(i18n/en\\.json\\)$"
+}

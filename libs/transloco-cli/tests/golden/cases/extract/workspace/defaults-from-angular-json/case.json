@@ -1,0 +1,7 @@
+{
+  "description": "GIVEN an Angular workspace and no options at all WHEN the keys are extracted THEN the source root of the workspace gives the input and the output, en is the only language and the values are the \"Missing value for\" placeholder",
+  "args": [
+    "extract"
+  ],
+  "exitCode": 0
+}

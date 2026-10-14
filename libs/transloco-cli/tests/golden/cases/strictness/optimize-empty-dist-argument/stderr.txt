@@ -1,0 +1,2 @@
+error: 'dist' cannot be empty
+(add --help for additional information)

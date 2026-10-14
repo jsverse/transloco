@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN an --input that is a file instead of a directory WHEN the keys are extracted THEN it says a directory is required, writes nothing and exits with 1",
+  "args": [
+    "extract",
+    "--input",
+    "src/app/home.component.html",
+    "--output",
+    "i18n"
+  ],
+  "exitCode": 1,
+  "stdoutIncludes": [
+    "Input requires a directory."
+  ]
+}

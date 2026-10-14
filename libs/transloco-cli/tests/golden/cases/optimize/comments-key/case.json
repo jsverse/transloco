@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN the same files WHEN they are optimized with --comments-key note THEN the \"note\" keys are dropped and the \"comment\" ones are kept",
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ],
+  "args": [
+    "optimize",
+    "dist/i18n",
+    "--comments-key",
+    "note"
+  ]
+}

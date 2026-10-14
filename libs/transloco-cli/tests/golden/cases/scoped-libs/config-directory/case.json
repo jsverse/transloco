@@ -1,0 +1,10 @@
+{
+  "description": "GIVEN a --config naming a directory that holds a transloco config WHEN the scoped libs are copied THEN the config found in that directory is used",
+  "args": [
+    "scoped-libs",
+    "--config",
+    "configs",
+    "--skip-gitignore"
+  ],
+  "exitCode": 0
+}

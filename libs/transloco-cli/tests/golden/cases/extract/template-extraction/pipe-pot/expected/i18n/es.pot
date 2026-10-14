@@ -1,0 +1,245 @@
+msgid ""
+msgstr ""
+"mime-version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "1"
+msgstr "missing"
+
+msgid "10"
+msgstr "missing"
+
+msgid "11"
+msgstr "missing"
+
+msgid "12"
+msgstr "missing"
+
+msgid "13"
+msgstr "missing"
+
+msgid "14"
+msgstr "missing"
+
+msgid "15"
+msgstr "missing"
+
+msgid "16"
+msgstr "missing"
+
+msgid "17"
+msgstr "missing"
+
+msgid "18"
+msgstr "missing"
+
+msgid "19"
+msgstr "missing"
+
+msgid "2"
+msgstr "missing"
+
+msgid "20"
+msgstr "missing"
+
+msgid "21"
+msgstr "missing"
+
+msgid "22"
+msgstr "missing"
+
+msgid "23"
+msgstr "missing"
+
+msgid "24"
+msgstr "missing"
+
+msgid "25"
+msgstr "missing"
+
+msgid "26"
+msgstr "missing"
+
+msgid "27"
+msgstr "missing"
+
+msgid "28"
+msgstr "missing"
+
+msgid "29"
+msgstr "missing"
+
+msgid "3"
+msgstr "missing"
+
+msgid "30"
+msgstr "missing"
+
+msgid "31"
+msgstr "missing"
+
+msgid "32"
+msgstr "missing"
+
+msgid "33"
+msgstr "missing"
+
+msgid "34"
+msgstr "missing"
+
+msgid "35"
+msgstr "missing"
+
+msgid "36"
+msgstr "missing"
+
+msgid "37"
+msgstr "missing"
+
+msgid "38"
+msgstr "missing"
+
+msgid "39"
+msgstr "missing"
+
+msgid "4"
+msgstr "missing"
+
+msgid "40"
+msgstr "missing"
+
+msgid "41"
+msgstr "missing"
+
+msgid "42"
+msgstr "missing"
+
+msgid "43"
+msgstr "missing"
+
+msgid "44"
+msgstr "missing"
+
+msgid "45"
+msgstr "missing"
+
+msgid "46"
+msgstr "missing"
+
+msgid "47"
+msgstr "missing"
+
+msgid "48"
+msgstr "missing"
+
+msgid "49.50.51.52"
+msgstr "missing"
+
+msgid "5"
+msgstr "missing"
+
+msgid "53"
+msgstr "missing"
+
+msgid "54"
+msgstr "missing"
+
+msgid "55"
+msgstr "missing"
+
+msgid "56"
+msgstr "missing"
+
+msgid "57"
+msgstr "missing"
+
+msgid "58"
+msgstr "missing"
+
+msgid "59"
+msgstr "missing"
+
+msgid "6"
+msgstr "missing"
+
+msgid "60"
+msgstr "missing"
+
+msgid "61"
+msgstr "missing"
+
+msgid "62"
+msgstr "missing"
+
+msgid "63.64.65"
+msgstr "missing"
+
+msgid "66"
+msgstr "missing"
+
+msgid "67"
+msgstr "missing"
+
+msgid "68"
+msgstr "missing"
+
+msgid "69"
+msgstr "missing"
+
+msgid "7"
+msgstr "missing"
+
+msgid "70"
+msgstr "missing"
+
+msgid "71"
+msgstr "missing"
+
+msgid "72"
+msgstr "missing"
+
+msgid "73"
+msgstr "missing"
+
+msgid "74"
+msgstr "missing"
+
+msgid "75"
+msgstr "missing"
+
+msgid "76"
+msgstr "missing"
+
+msgid "77"
+msgstr "missing"
+
+msgid "78"
+msgstr "missing"
+
+msgid "79"
+msgstr "missing"
+
+msgid "8"
+msgstr "missing"
+
+msgid "9"
+msgstr "missing"
+
+msgid "Processing archive..."
+msgstr "missing"
+
+msgid "Restore Options"
+msgstr "missing"
+
+msgid "admin.1"
+msgstr "missing"
+
+msgid "admin.2"
+msgstr "missing"
+
+msgid "admin.3"
+msgstr "missing"
+
+msgid "{{count}} items"
+msgstr "missing"

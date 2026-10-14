@@ -1,0 +1,13 @@
+{
+  "description": "GIVEN a file format other than json and pot WHEN extract runs THEN the allowed choices are reported and it exits with 1",
+  "args": [
+    "extract",
+    "--file-format",
+    "xliff"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

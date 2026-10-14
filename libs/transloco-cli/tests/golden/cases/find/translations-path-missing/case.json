@@ -1,0 +1,17 @@
+{
+  "description": "GIVEN a translations path that does not exist WHEN the keys are searched THEN it reports the path and exits with 1",
+  "args": [
+    "find",
+    "--input",
+    "src",
+    "--translations-path",
+    "i18n"
+  ],
+  "exitCode": 1,
+  "fixtures": {
+    "src": "findMissingKeys/add-missing-keys/src"
+  },
+  "stdoutIncludes": [
+    "Translations path provided doesn't exist!"
+  ]
+}

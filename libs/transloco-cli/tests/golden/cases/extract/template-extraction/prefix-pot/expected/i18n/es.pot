@@ -1,0 +1,218 @@
+msgid ""
+msgstr ""
+"mime-version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "1"
+msgstr "missing"
+
+msgid "2"
+msgstr "missing"
+
+msgid "3"
+msgstr "missing"
+
+msgid "nested.1"
+msgstr "missing"
+
+msgid "nested.2"
+msgstr "missing"
+
+msgid "nested.translation.1"
+msgstr "missing"
+
+msgid "nested.translation.2"
+msgstr "missing"
+
+msgid "nested.translation.3"
+msgstr "missing"
+
+msgid "right-pane.actions.1"
+msgstr "missing"
+
+msgid "right-pane.actions.10"
+msgstr "missing"
+
+msgid "right-pane.actions.2"
+msgstr "missing"
+
+msgid "right-pane.actions.3"
+msgstr "missing"
+
+msgid "right-pane.actions.4"
+msgstr "missing"
+
+msgid "right-pane.actions.5"
+msgstr "missing"
+
+msgid "right-pane.actions.6"
+msgstr "missing"
+
+msgid "right-pane.actions.7"
+msgstr "missing"
+
+msgid "right-pane.actions.8"
+msgstr "missing"
+
+msgid "right-pane.actions.9"
+msgstr "missing"
+
+msgid "shadowing.inner.1"
+msgstr "missing"
+
+msgid "shadowing.outer.1"
+msgstr "missing"
+
+msgid "shadowing.outer.2"
+msgstr "missing"
+
+msgid "shadowing.template.1"
+msgstr "missing"
+
+msgid "shadowing.unprefixed.1"
+msgstr "missing"
+
+msgid "shadowing.unprefixed.2"
+msgstr "missing"
+
+msgid "shadowing.unprefixed.3"
+msgstr "missing"
+
+msgid "site-header.navigation.1"
+msgstr "missing"
+
+msgid "site-header.navigation.2"
+msgstr "missing"
+
+msgid "site-header.navigation.3"
+msgstr "missing"
+
+msgid "site-header.navigation.4"
+msgstr "missing"
+
+msgid "site-header.navigation.5"
+msgstr "missing"
+
+msgid "site-header.navigation.route.1"
+msgstr "missing"
+
+msgid "site-header.navigation.route.10"
+msgstr "missing"
+
+msgid "site-header.navigation.route.11"
+msgstr "missing"
+
+msgid "site-header.navigation.route.12"
+msgstr "missing"
+
+msgid "site-header.navigation.route.13"
+msgstr "missing"
+
+msgid "site-header.navigation.route.14"
+msgstr "missing"
+
+msgid "site-header.navigation.route.15"
+msgstr "missing"
+
+msgid "site-header.navigation.route.16"
+msgstr "missing"
+
+msgid "site-header.navigation.route.17"
+msgstr "missing"
+
+msgid "site-header.navigation.route.18"
+msgstr "missing"
+
+msgid "site-header.navigation.route.19"
+msgstr "missing"
+
+msgid "site-header.navigation.route.2"
+msgstr "missing"
+
+msgid "site-header.navigation.route.20"
+msgstr "missing"
+
+msgid "site-header.navigation.route.21"
+msgstr "missing"
+
+msgid "site-header.navigation.route.22"
+msgstr "missing"
+
+msgid "site-header.navigation.route.23"
+msgstr "missing"
+
+msgid "site-header.navigation.route.3"
+msgstr "missing"
+
+msgid "site-header.navigation.route.4"
+msgstr "missing"
+
+msgid "site-header.navigation.route.5"
+msgstr "missing"
+
+msgid "site-header.navigation.route.6"
+msgstr "missing"
+
+msgid "site-header.navigation.route.7"
+msgstr "missing"
+
+msgid "site-header.navigation.route.8"
+msgstr "missing"
+
+msgid "site-header.navigation.route.9"
+msgstr "missing"
+
+msgid "site-header.navigation.route.nested.1"
+msgstr "missing"
+
+msgid "site-header.navigation.route.nested.2"
+msgstr "missing"
+
+msgid "some.other.nested.that-is-tested.1"
+msgstr "missing"
+
+msgid "some.other.nested.that-is-tested.2"
+msgstr "missing"
+
+msgid "some.other.nested.that-is-tested.3"
+msgstr "missing"
+
+msgid "templates.translations.1"
+msgstr "missing"
+
+msgid "ternary.nested.1"
+msgstr "missing"
+
+msgid "ternary.nested.10"
+msgstr "missing"
+
+msgid "ternary.nested.11"
+msgstr "missing"
+
+msgid "ternary.nested.12"
+msgstr "missing"
+
+msgid "ternary.nested.2"
+msgstr "missing"
+
+msgid "ternary.nested.3"
+msgstr "missing"
+
+msgid "ternary.nested.4"
+msgstr "missing"
+
+msgid "ternary.nested.5"
+msgstr "missing"
+
+msgid "ternary.nested.6"
+msgstr "missing"
+
+msgid "ternary.nested.7"
+msgstr "missing"
+
+msgid "ternary.nested.8"
+msgstr "missing"
+
+msgid "ternary.nested.9"
+msgstr "missing"

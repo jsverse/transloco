@@ -1,0 +1,11 @@
+{
+  "description": "GIVEN --version WHEN the binary runs THEN it prints a semantic version alone and exits with 0",
+  "args": [
+    "--version"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stderr"
+  ],
+  "stdoutMatches": "^\\d+\\.\\d+\\.\\d+(-[0-9A-Za-z.-]+)?$"
+}

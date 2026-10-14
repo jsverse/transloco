@@ -1,0 +1,11 @@
+{
+  "description": "GIVEN neither the dist argument nor --dist WHEN optimize runs THEN the missing argument is reported and it exits with 1",
+  "args": [
+    "optimize"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

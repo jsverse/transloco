@@ -1,0 +1,45 @@
+{
+  "description": "GIVEN a config file setting every option of both commands, and an en file holding a translation and an unused key WHEN the keys are extracted with nothing but --config THEN the options extract reads apply (output, langs, replace, sort, defaultValue), the ones only find reads are no error and nothing is said about them on either stream",
+  "args": [
+    "extract",
+    "--config",
+    "transloco.config.js"
+  ],
+  "exitCode": 0,
+  "stderrQuiet": true,
+  "stdoutExcludes": [
+    "warning",
+    "Warning",
+    "WARN",
+    "⚠",
+    "not supported",
+    "ignored",
+    "unknown option",
+    "error:",
+    "addMissingKeys",
+    "add-missing-keys",
+    "emitErrorOnExtraKeys",
+    "emit-error-on-extra-keys",
+    "translationsPath",
+    "translations-path",
+    "rootTranslationsPath"
+  ],
+  "stderrExcludes": [
+    "warning",
+    "Warning",
+    "WARN",
+    "⚠",
+    "not supported",
+    "ignored",
+    "unknown option",
+    "error:",
+    "addMissingKeys",
+    "add-missing-keys",
+    "emitErrorOnExtraKeys",
+    "emit-error-on-extra-keys",
+    "translationsPath",
+    "translations-path",
+    "rootTranslationsPath"
+  ],
+  "sameStreamsAs": "provenance/own-config-extract"
+}

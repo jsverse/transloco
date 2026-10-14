@@ -1,0 +1,2 @@
+error: option '-o, --output <path>' argument missing
+(add --help for additional information)

@@ -1,0 +1,2 @@
+error: option '-c, --config <path>' takes a value, so it can't share a dash with anything else ('-cconfigs/transloco.config.js'): write '-c <path>' or '--config=<path>'
+(add --help for additional information)

@@ -1,0 +1,4 @@
+{
+  "users.add": "key=admin.users.add keyWithoutScope=users.add scope=admin params=",
+  "users.title": "key=admin.users.title keyWithoutScope=users.title scope=admin params="
+}

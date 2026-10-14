@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN a translation file with a BOM defining a key twice WHEN it is validated THEN the duplicate is still reported and it exits with 1",
+  "args": [
+    "validate",
+    "i18n/en.json"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

@@ -1,0 +1,9 @@
+Usage: transloco validate [options] <files...>
+
+Verify the translation files are valid JSON and hold no duplicate keys
+
+Arguments:
+  files       The translation files to validate
+
+Options:
+  -h, --help  Display help for the command

@@ -1,0 +1,13 @@
+{
+  "description": "GIVEN -h followed by an option extract does not have WHEN the binary runs THEN it prints the usage of extract, extracts nothing and exits with 0",
+  "args": [
+    "extract",
+    "-h",
+    "--bogus"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

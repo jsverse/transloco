@@ -1,0 +1,2 @@
+error: option '-c, --config <path>' was given more than once.
+(add --help for additional information)

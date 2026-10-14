@@ -1,0 +1,21 @@
+{
+  "description": "GIVEN the template-extraction/directive/with-params fixture of the in-process specs WHEN its keys are extracted to json THEN the generated translation files match",
+  "args": [
+    "extract",
+    "--input",
+    "src",
+    "--output",
+    "i18n",
+    "--file-format",
+    "json",
+    "--default-value",
+    "missing{{params}}",
+    "--langs",
+    "en",
+    "es"
+  ],
+  "exitCode": 0,
+  "fixtures": {
+    "src": "buildTranslationFiles/template-extraction/directive/with-params"
+  }
+}

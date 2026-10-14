@@ -1,0 +1,2 @@
+error: unknown option '-output' (did you mean '--output'?)
+(add --help for additional information)

@@ -1,0 +1,7 @@
+{
+  "actions.save": "Missing value for 'actions.save'",
+  "home.title": "Missing value for 'home.title'",
+  "home.greeting": "Missing value for 'home.greeting'",
+  "home.documentTitle": "Missing value for 'home.documentTitle'",
+  "actions.cancel": "Missing value for 'actions.cancel'"
+}

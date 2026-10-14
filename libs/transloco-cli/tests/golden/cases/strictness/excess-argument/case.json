@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN an argument extract does not take WHEN it runs THEN it is rejected, nothing is written and it exits with 1",
+  "args": [
+    "extract",
+    "src/app"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

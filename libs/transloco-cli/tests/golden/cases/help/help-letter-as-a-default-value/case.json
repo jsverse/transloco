@@ -1,0 +1,17 @@
+{
+  "description": "GIVEN a default value that looks like a request for the help, written as --default-value=-h WHEN the keys are extracted THEN it is taken for the value: the new keys get -h and no usage is printed",
+  "args": [
+    "extract",
+    "-i",
+    "src/app",
+    "-o",
+    "i18n",
+    "--default-value=-h",
+    "--langs",
+    "en"
+  ],
+  "exitCode": 0,
+  "stdoutExcludes": [
+    "Usage:"
+  ]
+}

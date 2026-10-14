@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN three translation files where the second defines a key twice WHEN they are validated THEN only that file is reported and it exits with 1",
+  "args": [
+    "validate",
+    "i18n/en.json",
+    "i18n/es.json",
+    "i18n/it.json"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

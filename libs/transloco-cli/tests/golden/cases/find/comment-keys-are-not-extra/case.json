@@ -1,0 +1,18 @@
+{
+  "description": "GIVEN an en.json with a translator note under a \".comment\" key WHEN the keys are searched with -e THEN the note is not reported as an extra key and it exits with 0",
+  "args": [
+    "find",
+    "--input",
+    "src",
+    "--translations-path",
+    "i18n",
+    "-e"
+  ],
+  "exitCode": 0,
+  "fixtures": {
+    "src": "findMissingKeys/add-missing-keys/src"
+  },
+  "stdoutIncludes": [
+    "No missing keys were found"
+  ]
+}

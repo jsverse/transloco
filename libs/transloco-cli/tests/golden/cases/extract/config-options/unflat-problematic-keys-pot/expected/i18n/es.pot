@@ -1,0 +1,56 @@
+msgid ""
+msgstr ""
+"mime-version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "a"
+msgstr "missing"
+
+msgid "a.b"
+msgstr "missing"
+
+msgid "a.c"
+msgstr "missing"
+
+msgid "b.a"
+msgstr "missing"
+
+msgid "b.b"
+msgstr "missing"
+
+msgid "b"
+msgstr "missing"
+
+msgid "c"
+msgstr "missing"
+
+msgid "d.1"
+msgstr "missing"
+
+msgid "d.2"
+msgstr "missing"
+
+msgid "e.a"
+msgstr "missing"
+
+msgid "e.aa"
+msgstr "missing"
+
+msgid "f"
+msgstr "missing"
+
+msgid "f.a"
+msgstr "missing"
+
+msgid "f.b"
+msgstr "missing"
+
+msgid "f.a.a"
+msgstr "missing"
+
+msgid "f.a.b"
+msgstr "missing"
+
+msgid "f.b.a.a"
+msgstr "missing"
