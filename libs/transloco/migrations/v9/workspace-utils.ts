@@ -48,6 +48,20 @@ export function getProjects(tree: Tree): WorkspaceProject[] {
   }));
 }
 
+/** Paths in the tree that `accept` takes, minus build and dependency dirs. One visit of the tree for any number of file kinds. */
+export function collectMatching(
+  tree: Tree,
+  accept: (path: string) => boolean,
+): string[] {
+  const paths: string[] = [];
+
+  tree.getDir('/').visit((path) => {
+    if (!IGNORED.test(path) && accept(path)) paths.push(path);
+  });
+
+  return paths;
+}
+
 /** Paths under `root` matching `extensions`, minus build and dependency dirs. */
 export function collectFiles(
   tree: Tree,

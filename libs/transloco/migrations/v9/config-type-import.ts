@@ -7,6 +7,7 @@ import {
   applyEdits,
   CLI_PACKAGE,
   Edit,
+  importsFromCli,
   importsUnaliased,
   namedImports,
   replaceImport,
@@ -297,6 +298,7 @@ export function migrateConfigTypeImport(): Rule {
       );
     }
 
-    if (readers) return addCliDependency(tree, context, READER_EXPORT);
+    if (readers)
+      return addCliDependency(tree, context, importsFromCli(READER_EXPORT));
   };
 }

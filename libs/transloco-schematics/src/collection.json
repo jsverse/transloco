@@ -23,7 +23,7 @@
       "aliases": ["km"],
       "factory": "./keys-manager/index",
       "schema": "./keys-manager/schema.json",
-      "description": "Add TKM (Transloco Keys Manager) plugin to your project."
+      "description": "Add the Transloco CLI to your project, with the scripts that extract and find the translation keys."
     },
     "join": {
       "aliases": ["build"],
