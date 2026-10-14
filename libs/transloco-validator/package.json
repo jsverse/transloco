@@ -2,39 +2,38 @@
   "name": "@jsverse/transloco-validator",
   "version": "9.0.0-alpha.4",
   "description": "Transloco translation files validator",
-  "type": "module",
-  "main": "src/lib/transloco-validator.js",
-  "module": "src/lib/transloco-validator.js",
-  "types": "src/lib/transloco-validator.d.ts",
-  "engines": {
-    "node": "^22.18.0 || >=24"
-  },
-  "bin": {
-    "transloco-validator": "src/index.js"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "bugs": {
-    "url": "https://github.com/jsverse/transloco/issues"
-  },
-  "homepage": "https://jsverse.gitbook.io/transloco/tools/validator",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/jsverse/transloco"
   },
+  "homepage": "https://jsverse.gitbook.io/transloco/tools/validator",
+  "bugs": "https://github.com/jsverse/transloco/issues",
+  "type": "module",
+  "main": "src/lib/transloco-validator.js",
+  "module": "src/lib/transloco-validator.js",
+  "types": "src/lib/transloco-validator.d.ts",
+  "bin": {
+    "transloco-validator": "src/index.js"
+  },
+  "engines": {
+    "node": "^22.18.0 || >=24"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "keywords": [
-    "Angular",
+    "angular",
     "i18n",
-    "Translate",
-    "Angular Translate",
-    "Transloco",
-    "Translation Validator",
-    "JSON validator",
-    "Validator"
+    "translate",
+    "angular translate",
+    "transloco",
+    "translation validator",
+    "json validator",
+    "validator"
   ],
-  "license": "MIT",
   "dependencies": {
-    "@jsverse/transloco-cli": "^9.0.0-alpha.4"
+    "@jsverse/transloco-cli": "^9.0.0-alpha.4",
+    "tslib": "^2.8.1"
   }
 }
