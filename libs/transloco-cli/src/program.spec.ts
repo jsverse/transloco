@@ -18,6 +18,7 @@ const runners = vi.hoisted(() => ({
   runSplit: vi.fn(),
   runMigrateNgxTranslate: vi.fn(),
   runMigrateAngularI18n: vi.fn(),
+  runInit: vi.fn(),
 }));
 
 vi.mock('./commands/extract.js', () => ({ runExtract: runners.runExtract }));
@@ -39,6 +40,7 @@ vi.mock('./commands/migrate-ngx-translate.js', () => ({
 vi.mock('./commands/migrate-angular-i18n.js', () => ({
   runMigrateAngularI18n: runners.runMigrateAngularI18n,
 }));
+vi.mock('./commands/init.js', () => ({ runInit: runners.runInit }));
 
 const { version } = JSON.parse(
   fs.readFileSync(path.join(import.meta.dirname, '../package.json'), 'utf-8'),
@@ -494,6 +496,78 @@ describe('createProgram', () => {
       expect(runners.runSplit).toHaveBeenCalledExactlyOnceWith({
         source: 'dist-i18n',
       });
+    });
+  });
+
+  describe('init', () => {
+    it(`GIVEN every option of the command
+        WHEN the program runs
+        THEN the runner gets them`, async () => {
+      await setup().run(
+        'init',
+        '--langs',
+        'en',
+        'es',
+        '--translations-path',
+        'src/i18n',
+        '--no-scripts',
+        '--yes',
+        '--force',
+      );
+
+      expect(runners.runInit).toHaveBeenCalledExactlyOnceWith({
+        langs: ['en', 'es'],
+        translationsPath: 'src/i18n',
+        scripts: false,
+        yes: true,
+        force: true,
+      });
+    });
+
+    it(`GIVEN the aliases
+        WHEN the program runs
+        THEN the runner gets the same options as with the long names`, async () => {
+      await setup().run('init', '-y', '-l', 'en');
+
+      expect(runners.runInit).toHaveBeenCalledExactlyOnceWith({
+        langs: ['en'],
+        scripts: true,
+        yes: true,
+      });
+    });
+
+    it(`GIVEN no options
+        WHEN the program runs
+        THEN the runner gets that the scripts are to be added, and nothing else`, async () => {
+      await setup().run('init');
+
+      expect(runners.runInit).toHaveBeenCalledExactlyOnceWith({
+        scripts: true,
+      });
+    });
+
+    it(`GIVEN the languages repeated
+        WHEN the program runs
+        THEN they are all given, as the option is variadic`, async () => {
+      await setup().run('init', '-l', 'en', '-l', 'es');
+
+      expect(runners.runInit).toHaveBeenCalledExactlyOnceWith({
+        langs: ['en', 'es'],
+        scripts: true,
+      });
+    });
+
+    it(`GIVEN an option of another command
+        WHEN the program runs
+        THEN it is rejected and nothing runs`, async () => {
+      const { run, output } = setup();
+
+      await expect(run('init', '--config', 'a')).rejects.toMatchObject({
+        exitCode: 1,
+      });
+
+      expect(output.stderr).toContain("unknown option '--config'");
+      expect(runners.runInit).not.toHaveBeenCalled();
     });
   });
 
@@ -1004,6 +1078,12 @@ describe('createProgram', () => {
         ['-c', 'a', '--config', 'b'],
         '-c, --config <path>',
       ],
+      // init
+      [
+        'init',
+        ['--translations-path', 'a', '--translations-path', 'b'],
+        '--translations-path <dir>',
+      ],
     ])(
       `GIVEN the %s command and the arguments %j
        WHEN the program runs
@@ -1194,6 +1274,11 @@ describe('createProgram', () => {
         ['-l', 'en', '-c', ''],
         empty('-c, --config <path>'),
       ],
+      // init
+      ['init', ['-l', ''], empty('-l, --langs <langs...>')],
+      ['init', ['-l', 'en', ' '], empty('-l, --langs <langs...>')],
+      ['init', ['--translations-path', ''], empty('--translations-path <dir>')],
+      ['init', ['--translations-path= '], empty('--translations-path <dir>')],
     ])(
       `GIVEN the %s command and the arguments %j
        WHEN the program runs
@@ -1862,6 +1947,7 @@ describe('createProgram', () => {
           'migrate',
           'migrate ngx-translate',
           'migrate angular-i18n',
+          'init',
         ]),
       );
     });
@@ -2025,6 +2111,7 @@ describe('createProgram', () => {
         'transloco migrate',
         'transloco migrate ngx-translate',
         'transloco migrate angular-i18n',
+        'transloco init',
       ]);
       expect(commands.map(({ help }) => help)).toEqual(commands.map(() => 'h'));
     });
@@ -2652,9 +2739,11 @@ describe('createProgram', () => {
           'migrate angular-i18n translations-path',
           'migrate angular-i18n langs',
           'migrate angular-i18n config',
+          'init langs',
+          'init translations-path',
         ]),
       );
-      expect(found.length).toBeGreaterThanOrEqual(28);
+      expect(found.length).toBeGreaterThanOrEqual(30);
     });
 
     it.each(discovered.map((option) => [title(option), option] as const))(
@@ -2822,6 +2911,7 @@ describe('createProgram', () => {
         'join [options]',
         'split [options]',
         'migrate Migrate a project to Transloco',
+        'init [options]',
         'help [command]',
         '-V, --version',
         '-C, --cwd <dir>',
@@ -2970,6 +3060,19 @@ describe('createProgram', () => {
           '-h, --help',
         ],
         unexpected: ['--out-dir', '--watch'],
+      },
+      {
+        command: 'init',
+        expected: [
+          'Usage: transloco init [options]',
+          '-l, --langs <langs...>',
+          '--translations-path <dir>',
+          '--no-scripts',
+          '-y, --yes',
+          '--force',
+          '-h, --help',
+        ],
+        unexpected: ['--config', '--input', '--out-dir'],
       },
     ])(
       `GIVEN the help flag on the $command command

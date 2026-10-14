@@ -1,0 +1,13 @@
+{
+  "description": "GIVEN a package.json WHEN init runs with --no-scripts THEN the file is not touched",
+  "args": [
+    "init",
+    "--yes",
+    "--no-scripts"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN a package.json that starts with a BOM WHEN init runs with --yes THEN it is refused with one line naming the file and nothing is written",
+  "args": [
+    "init",
+    "--yes"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout"
+  ],
+  "stderrMatches": "^Transloco Init: could not read package\\.json while looking for an existing Transloco config: .+$"
+}

@@ -1,0 +1,16 @@
+{
+  "description": "GIVEN a transloco.config.ts WHEN init runs with --force THEN it is overwritten",
+  "args": [
+    "init",
+    "--yes",
+    "--force",
+    "--langs",
+    "en",
+    "es"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

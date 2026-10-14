@@ -1,0 +1,8 @@
+{
+	"name": "app",
+	"private": true,
+	"scripts": {
+		"i18n:extract": "transloco extract",
+		"i18n:find": "transloco find"
+	}
+}

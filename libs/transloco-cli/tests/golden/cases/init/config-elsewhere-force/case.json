@@ -1,0 +1,13 @@
+{
+  "description": "GIVEN a config in another file WHEN init runs with --force THEN it is refused all the same",
+  "args": [
+    "init",
+    "--yes",
+    "--force"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

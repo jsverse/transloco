@@ -1,0 +1,6 @@
+{
+  "name": "app",
+  "scripts": {
+    "i18n:find": "transloco find --emit-error-on-extra-keys"
+  }
+}
