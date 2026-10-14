@@ -6,21 +6,15 @@ export {
   getWorkspace,
   setWorkspace,
 } from './utils/workspace';
-export {
-  createGlobalConfig,
-  getGlobalConfig,
-  updateGlobalConfig,
-} from './utils/transloco';
+export { createGlobalConfig } from './utils/transloco';
 export {
   createTranslateFiles,
   checkIfTranslationFilesExist,
 } from './utils/translation';
 
 export {
-  getTranslationEntryPaths,
   getTranslationFiles,
   getTranslationKey,
-  getTranslationsRoot,
   createTranslateFilesFromOptions,
 } from './utils/translation';
 export {
