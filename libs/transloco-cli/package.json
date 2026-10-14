@@ -2,62 +2,75 @@
   "name": "@jsverse/transloco-cli",
   "version": "9.0.0-alpha.4",
   "description": "The unified Transloco command line: extract, find, validate, optimize and scoped-libs",
-  "type": "module",
-  "main": "src/index.js",
-  "exports": {
-    ".": "./src/index.js",
-    "./marker": {
-      "types": "./src/marker.d.ts",
-      "default": "./src/marker.js"
-    },
-    "./internal/deprecation": "./src/deprecation/index.js",
-    "./internal/keys-manager": "./src/keys-manager/index.js",
-    "./internal/migrate": "./src/migrate/index.js",
-    "./internal/optimize": "./src/optimize/index.js",
-    "./internal/scoped-libs": "./src/scoped-libs/index.js",
-    "./internal/translation-files": "./src/translation-files/index.js",
-    "./internal/validator": "./src/validator/index.js",
-    "./package.json": "./package.json"
-  },
-  "engines": {
-    "node": "^22.18.0 || >=24"
-  },
-  "bin": {
-    "transloco": "src/bin.js"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "bugs": {
-    "url": "https://github.com/jsverse/transloco/issues"
-  },
-  "homepage": "https://jsverse.gitbook.io/transloco/",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/jsverse/transloco"
   },
-  "keywords": [
-    "Angular",
-    "i18n",
-    "Translate",
-    "Angular Translate",
-    "Transloco",
-    "CLI",
-    "Tool"
-  ],
-  "license": "MIT",
-  "peerDependencies": {
-    "@angular/compiler": ">= 20.0.0 < 23.0.0",
-    "typescript": ">= 5.8.0 < 7.0.0"
+  "homepage": "https://jsverse.gitbook.io/transloco/",
+  "bugs": {
+    "url": "https://github.com/jsverse/transloco/issues"
   },
-  "peerDependenciesMeta": {
-    "@angular/compiler": {
-      "optional": true
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "default": "./src/index.js"
     },
-    "typescript": {
-      "optional": true
+    "./internal/keys-manager": {
+      "types": "./src/keys-manager/index.d.ts",
+      "default": "./src/keys-manager/index.js"
+    },
+    "./internal/optimize": {
+      "types": "./src/optimize/index.d.ts",
+      "default": "./src/optimize/index.js"
+    },
+    "./internal/scoped-libs": {
+      "types": "./src/scoped-libs/index.d.ts",
+      "default": "./src/scoped-libs/index.js"
+    },
+    "./internal/validator": {
+      "types": "./src/validator/index.d.ts",
+      "default": "./src/validator/index.js"
+    },
+    "./package.json": "./package.json",
+    "./internal/deprecation": {
+      "types": "./src/deprecation/index.d.ts",
+      "default": "./src/deprecation/index.js"
+    },
+    "./marker": {
+      "types": "./src/marker.d.ts",
+      "default": "./src/marker.js"
+    },
+    "./internal/translation-files": {
+      "types": "./src/translation-files/index.d.ts",
+      "default": "./src/translation-files/index.js"
+    },
+    "./internal/migrate": {
+      "types": "./src/migrate/index.d.ts",
+      "default": "./src/migrate/index.js"
     }
   },
+  "main": "src/index.js",
+  "bin": {
+    "transloco": "src/bin.js"
+  },
+  "sideEffects": false,
+  "engines": {
+    "node": "^22.18.0 || >=24"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "angular",
+    "i18n",
+    "translate",
+    "angular translate",
+    "transloco",
+    "cli",
+    "tool"
+  ],
   "dependencies": {
     "@clack/prompts": "1.8.1",
     "@commander-js/extra-typings": "15.0.0",
@@ -75,5 +88,17 @@
     "glob": "13.0.6",
     "jsonc-parser": "3.3.1",
     "yocto-spinner": "1.2.2"
+  },
+  "peerDependencies": {
+    "@angular/compiler": ">= 20.0.0 < 23.0.0",
+    "typescript": ">= 5.8.0 < 7.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@angular/compiler": {
+      "optional": true
+    },
+    "typescript": {
+      "optional": true
+    }
   }
 }
