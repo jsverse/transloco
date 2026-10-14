@@ -2,34 +2,34 @@
   "name": "@jsverse/transloco-cli",
   "version": "9.0.0-alpha.4",
   "description": "The unified Transloco command line: extract, find, validate, optimize and scoped-libs",
-  "main": "src/index.js",
-  "engines": {
-    "node": "^22.18.0 || >=24"
-  },
-  "bin": {
-    "transloco": "src/bin.js"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "bugs": {
-    "url": "https://github.com/jsverse/transloco/issues"
-  },
-  "homepage": "https://jsverse.gitbook.io/transloco/",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/jsverse/transloco"
   },
+  "homepage": "https://jsverse.gitbook.io/transloco/",
+  "bugs": {
+    "url": "https://github.com/jsverse/transloco/issues"
+  },
+  "main": "src/index.js",
+  "bin": {
+    "transloco": "src/bin.js"
+  },
+  "engines": {
+    "node": "^22.18.0 || >=24"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "keywords": [
-    "Angular",
+    "angular",
     "i18n",
-    "Translate",
-    "Angular Translate",
-    "Transloco",
-    "CLI",
-    "Tool"
+    "translate",
+    "angular translate",
+    "transloco",
+    "cli",
+    "tool"
   ],
-  "license": "MIT",
   "dependencies": {
     "tslib": "^2.8.1"
   }
