@@ -41,6 +41,16 @@ describe('selectTranslateObject', () => {
       expect(spy).toHaveBeenCalledWith({ a: { b: 'a.b spanish' } });
     }));
 
+    it(`GIVEN a scope object for a file that has not been loaded
+        WHEN subscribing to selectTranslateObject with that scope object
+        THEN should load the scope file and emit the translation object`, fakeAsync(() => {
+      service
+        .selectTranslateObject('obj', {}, { scope: 'lazy-page' })
+        .subscribe(spy);
+      runLoader();
+      expect(spy).toHaveBeenCalledWith({ a: { b: 'a.b english' } });
+    }));
+
     it(`GIVEN a TranslocoService with English translations loaded
         WHEN subscribing to selectTranslateObject with a nested path key
         THEN should emit the nested translation object`, fakeAsync(() => {
