@@ -1,0 +1,73 @@
+{
+  "\n--attributes-on-separate-lines\n": "Attributes on separate lines",
+  "@@card-header": "@@cardHeader",
+  "@@go-home": "@@goHome",
+  "@@search-placeholder": "@@searchPlaceholder",
+  "abcdef": "Upper start",
+  "apos": "Don't \"stop\" believing",
+  "close-action|closes-the-dialog@@close-dialog": "close action|Closes the dialog@@closeDialog",
+  "crlf": "First linesecond line",
+  "described-id": "Description and id",
+  "described-id.comment": "description with id",
+  "described-text": "Described text",
+  "described-text.comment": "Just a description",
+  "dollar": "Costs $5 and $& and $1 for \\n real",
+  "dotted.id.here": "Dotted id",
+  "empty-value": "Empty value",
+  "footer note": {
+    "footer-note": "All rights reserved",
+    "footer-note.comment": "Shown on every page"
+  },
+  "gender": "{gender, select, male {he} female {she} other {they}}",
+  "go-home": "Go home",
+  "hello-world": "Hello world",
+  "hello-{{-name-}},-you-have-{{-count-}}-messages": "Hello {{ name }}, you have {{ count }} messages",
+  "home": "Home",
+  "it's-a-\"quote\"-&amp;-more-&lt;stuff&gt;": "It's a \"quote\" &amp; more &lt;stuff&gt;",
+  "items": "{count, plural, =0 {No items} =1 {One item} other {{{count}} items}}",
+  "label-text": "Label text",
+  "logo": "Logo",
+  "meaning only": {
+    "empty-description": "Empty description"
+  },
+  "mentions-i18n-only-in-a-class": "Mentions i18n only in a class",
+  "menu-about": "About",
+  "menu-home": "Home",
+  "multi line meaning": {
+    "multi-line": "This text spans  several lines  and has indentation",
+    "multi-line.comment": "multi line description"
+  },
+  "nested-span": "Nested span",
+  "one": "One",
+  "only-a": "Only in A",
+  "only-b": "Only in B",
+  "only-id": "Only an id",
+  "open-link": "Open link",
+  "outer-text-<b-i18n>inner-bold</b>-after": "Outer text <b i18n>inner bold</b> after",
+  "plain-text-with-capitals": "Plain Text With Capitals",
+  "privacy": "Privacy",
+  "same-plain-text": "Same plain text",
+  "save-it": "Save it",
+  "section": "<p i18n=\"@@paragraph\">Paragraph in section</p>",
+  "shared": "Shared text",
+  "single-id": "Single quotes",
+  "single-id.comment": "single quoted",
+  "site header": {
+    "introduction-header": "Hello i18n!",
+    "introduction-header.comment": "An introduction header for this sample"
+  },
+  "some-camel-case-key": "Camel case id",
+  "tabs\tand---multiple----spaces": "Tabs\tand   multiple    spaces",
+  "three": "Three",
+  "two": "Two",
+  "unicode:-ünï-çödé-—-日本語-🎉": "Unicode: ünï çödé — 日本語 🎉",
+  "updated-{{-date-|-date:-'short'-}}-by-{{-user.name-}}": "Updated {{ date | date: 'short' }} by {{ user.name }}",
+  "user greeting": {
+    "greet": "Hi there",
+    "greet.comment": "Greets the user"
+  },
+  "welcome-to-the-app": "Welcome to the app",
+  "windows-line-endings": "Windows line endings",
+  "with-space-id": "Space id",
+  "with-underscore-id": "Underscore id"
+}

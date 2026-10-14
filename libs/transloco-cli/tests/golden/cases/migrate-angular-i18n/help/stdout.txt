@@ -1,0 +1,14 @@
+Usage: transloco migrate angular-i18n [options]
+
+Migrate the HTML templates from the Angular i18n and create their translation
+files. Rewrites the files in place; commit your work first.
+
+Options:
+  -i, --input <dir>          The folder holding the templates to migrate
+                             (default: "src/app")
+  --translations-path <dir>  The folder the translation files are written to
+                             (defaults to `rootTranslationsPath` of the config,
+                             or `src/assets/i18n`)
+  -l, --langs <langs...>     The languages to create a translation file for
+  -c, --config <path>        Path to a custom transloco config
+  -h, --help                 Display help for the command

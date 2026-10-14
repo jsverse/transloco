@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN the alias of the input option WHEN the sources are migrated THEN it works like the long name",
+  "args": [
+    "migrate",
+    "ngx-translate",
+    "-i",
+    "libs/ui"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

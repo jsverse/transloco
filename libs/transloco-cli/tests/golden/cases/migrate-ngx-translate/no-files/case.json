@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN an input folder without an .html or .ts file WHEN the command runs THEN stderr says which extensions were looked for and it exits with 1",
+  "args": [
+    "migrate",
+    "ngx-translate"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

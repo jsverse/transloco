@@ -28,6 +28,8 @@ const runners = vi.hoisted(() => ({
   runScopedLibs: vi.fn(),
   runJoin: vi.fn(),
   runSplit: vi.fn(),
+  runMigrateNgxTranslate: vi.fn(),
+  runMigrateAngularI18n: vi.fn(),
 }));
 
 vi.mock('./commands/extract.js', () => ({ runExtract: runners.runExtract }));
@@ -43,6 +45,12 @@ vi.mock('./commands/scoped-libs.js', () => ({
 }));
 vi.mock('./commands/join.js', () => ({ runJoin: runners.runJoin }));
 vi.mock('./commands/split.js', () => ({ runSplit: runners.runSplit }));
+vi.mock('./commands/migrate-ngx-translate.js', () => ({
+  runMigrateNgxTranslate: runners.runMigrateNgxTranslate,
+}));
+vi.mock('./commands/migrate-angular-i18n.js', () => ({
+  runMigrateAngularI18n: runners.runMigrateAngularI18n,
+}));
 
 interface OptionInfo {
   /** The commands leading to the option, none for a program option. */
@@ -105,10 +113,17 @@ function readOptions(
             : name === 'cwd'
               ? [os.tmpdir(), os.homedir()]
               : ['alpha', 'beta/gamma']) as [string, string],
-          // An argument named like the option is the same setting given the other way
-          operands: command.registeredArguments
-            .filter((argument) => argument.name() !== name)
-            .map((argument) => `${argument.name()}-operand`),
+          operands: [
+            // An argument named like the option is the same setting given the other way
+            ...command.registeredArguments
+              .filter((argument) => argument.name() !== name)
+              .map((argument) => `${argument.name()}-operand`),
+            // An option that has to be given is part of a command line that runs
+            ...command.options
+              .filter(({ mandatory }) => mandatory)
+              .filter((other) => other !== option)
+              .flatMap((other) => [other.long as string, 'alpha']),
+          ],
         },
       };
     });
@@ -132,6 +147,10 @@ function readOptions(
 }
 
 const discovered = readOptions(createProgram());
+
+/** The `--input` of the keys manager is a comma separated list of paths, the one of `migrate` is a folder. */
+const isPathList = ({ path, name }: OptionInfo) =>
+  name === 'input' && ['extract', 'find'].includes(path[0]);
 const samePath = (a: OptionInfo, b: OptionInfo) =>
   a.path.join(' ') === b.path.join(' ');
 
@@ -498,7 +517,7 @@ function shapesOfValueOption(option: OptionInfo): Shape[] {
   }
 
   // Lists
-  if (option.name === 'input') {
+  if (isPathList(option)) {
     for (const value of [
       'a,b',
       'a,',
@@ -793,21 +812,42 @@ function withHelpRequest(shapes: Shape[]): Shape[] {
   return shapes.flatMap(({ group, args }) => {
     const end = args.includes('--') ? args.indexOf('--') : args.length;
     const nameAt = args.slice(0, end).findIndex(isCommand);
+    const named = tree.commands.find(
+      (command) => command.name() === args[nameAt],
+    ) as CommandUnknownOpts;
+    // The commands a command line starts with: `migrate`, then `ngx-translate`
+    const chain: CommandUnknownOpts[] = [];
+
+    for (let current = tree, index = 0; nameAt === 0 && index < end; index++) {
+      const next = current.commands.find(
+        (command) => command.name() === args[index],
+      );
+
+      if (!next) break;
+
+      chain.push(next);
+      current = next;
+    }
 
     return Array.from({ length: end + 1 }, (_, position) => {
       const inProgram = nameAt === -1 || position <= nameAt;
-      const named = tree.commands.find(
-        (command) => command.name() === args[nameAt],
-      ) as CommandUnknownOpts;
-      // A request in front of the name of the command is one for the help of
-      // the program, and one after a command line starting with that name is
-      // for the help of the command. After options of the program it depends
-      // on them, which is left to the rule to tell.
-      const path = inProgram ? [] : nameAt === 0 ? [named.name()] : undefined;
-      const { long, short } = helpOptionOf(inProgram ? tree : named);
+      // The commands named before the request: a request in front of the name
+      // of the command is one for the help of the program, and one after a
+      // command line starting with that name is for the help of the command, or
+      // of the subcommand when it stands behind the name of that one. After
+      // options of the program it depends on them, which is left to the rule to
+      // tell.
+      const above = chain.slice(0, position);
+      const path = inProgram
+        ? []
+        : nameAt === 0
+          ? above.map((command) => command.name())
+          : undefined;
+      const owner = inProgram ? tree : (above.at(-1) ?? named);
+      const { long, short } = helpOptionOf(owner);
       const letter = short.slice(1);
       const [flag = letter] = path
-        ? (inProgram ? tree : named).options.flatMap((option) =>
+        ? owner.options.flatMap((option) =>
             option.short && !takesValue(option) ? [option.short.slice(1)] : [],
           )
         : [];
@@ -951,7 +991,7 @@ describe('argv matrix', () => {
       const actual = received(option, argument);
       const honoured = option.variadic
         ? Array.isArray(actual) && actual.includes(value)
-        : option.name === 'input'
+        : isPathList(option)
           ? JSON.stringify(actual) === JSON.stringify(value.split(','))
           : actual === value;
 
@@ -987,11 +1027,13 @@ describe('argv matrix', () => {
         'scoped-libs',
         'join',
         'split',
+        'migrate ngx-translate',
+        'migrate angular-i18n',
       ]),
     );
-    expect(discovered.values.length).toBeGreaterThanOrEqual(19);
+    expect(discovered.values.length).toBeGreaterThanOrEqual(24);
     expect(discovered.flags.length).toBeGreaterThanOrEqual(10);
-    expect(countOf(matrix)).toBeGreaterThan(2800);
+    expect(countOf(matrix)).toBeGreaterThan(3600);
   });
 
   it(`GIVEN the command lines of the matrix
@@ -1013,7 +1055,7 @@ describe('argv matrix', () => {
         .map(({ args }) => args),
     ).toEqual([]);
     expect(asking.length).toBeGreaterThanOrEqual(countOf(helpMatrix));
-    expect(countOf(helpMatrix)).toBeGreaterThan(40_000);
+    expect(countOf(helpMatrix)).toBeGreaterThan(50_000);
   });
 
   it.each(matrix.map(({ title, shapes }) => [title, shapes] as const))(

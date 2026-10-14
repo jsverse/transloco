@@ -2,7 +2,7 @@
 
 **Note:** some manual changes might still be needed after the script ran.
 
-`ng g @jsverse/transloco:migrate`
+`transloco migrate ngx-translate`
 
 ## What will be done?
 

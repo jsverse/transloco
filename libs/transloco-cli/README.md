@@ -22,7 +22,7 @@ A command line either runs with everything that was typed or it is rejected with
 - A short option is one dash and one letter. When it takes a value, the value is the next argument (`-c path`); `=` goes with the long form (`--config=path`). Several letters behind one dash are flags and nothing else (`-su`), so a value glued to its option (`-cpath`, `-c=path`), an option taking a value inside a cluster (`-sc path`) and a long option written with one dash (`-output`) are all rejected.
 - A `--config` path has to exist. It may be a directory, which is then searched for a config.
 
-Asking for the help is the one thing that comes before all of it. A help request anywhere before `--` prints the help and exits with code 0, ahead of the version and of any other argument error, and nothing runs: `transloco extract --frobnicate -h` and `transloco -V -h` both print the help. A request is `--help`, `-h`, or the letter among flags behind one dash (`-sh`), and it gets the help of the command it follows. That is the program when it stands before the command, or when what precedes it doesn't name one (`transloco translate -h`, `transloco --frobnicate extract -h`). What only looks like one stays what it is: the value in `--default-value=-h`, whatever comes after `--`, and the letter next to anything but flags (`-hc`, `-h=1`).
+Asking for the help is the one thing that comes before all of it. A help request anywhere before `--` prints the help and exits with code 0, ahead of the version and of any other argument error, and nothing runs: `transloco extract --frobnicate -h` and `transloco -V -h` both print the help. A request is `--help`, `-h`, or the letter among flags behind one dash (`-sh`), and it gets the help of the command it follows. That is the program when it stands before the command, or when what precedes it doesn't name one (`transloco translate -h`, `transloco --frobnicate extract -h`). What only looks like one stays what it is: the value in `--default-value=-h`, whatever comes after `--`, and the letter next to anything but flags (`-hc`, `-h=1`). The same goes one level down: `transloco migrate ngx-translate -h` and `transloco help migrate ngx-translate` print the help of `ngx-translate`, while `transloco migrate -h ngx-translate` prints the one of `migrate`.
 
 | Command                         | What it does                                                                         |
 | ------------------------------- | ------------------------------------------------------------------------------------ |
@@ -33,6 +33,7 @@ Asking for the help is the one thing that comes before all of it. A help request
 | `transloco scoped-libs`         | Copies the translation files of scoped libraries into the application.               |
 | `transloco join`                | Joins the translation files of all scopes into one file per language.                |
 | `transloco split`               | Splits joined translation files back into the scope folders.                         |
+| `transloco migrate`             | Migrates a project to Transloco, from `ngx-translate` or from the Angular `i18n`.    |
 
 ### extract
 
@@ -89,6 +90,24 @@ transloco split --translations-path src/assets/i18n --source dist-i18n
 ```
 
 Hands the translations of every scope in the joined files, `dist-i18n` unless `--source` says otherwise, back to the files of its folder, and what is left to the root file of the language. Only the files that exist are written, none is created. The root comes from `--translations-path` or `rootTranslationsPath` of the config, and the scopes are found the way `join` finds them. A scope folder nested in another one, at any depth, gets back the dotted key `join` stored it under, such as `admin.users`, so that `join` followed by `split` leaves every file as it was. Exits with `1` when the root or the source doesn't exist or holds no translation file, or a joined file is not valid JSON, and nothing is written.
+
+### migrate
+
+`migrate` has one command per library to migrate from. Both rewrite the files of your project in place, so commit your work first.
+
+```bash
+transloco migrate ngx-translate --input src/app
+```
+
+Rewrites the HTML and TS files below `--input`, `src/app` unless it says otherwise: the `translate` directive and pipe, the `TranslateModule`, the `TranslateService` with its injection and its calls, and the `TranslatePipe`, all for their Transloco counterparts. Some changes may still be needed by hand afterwards, see the [list of replacements](https://github.com/jsverse/transloco/blob/master/libs/transloco-schematics/src/ngx-migrate/ngx-translate-migration.md). Exits with `1` when the input doesn't exist or holds no `.html` or `.ts` file.
+
+```bash
+transloco migrate angular-i18n --input src/app --langs en es
+```
+
+Replaces the marked text of the HTML templates below `--input`, `src/app` unless it says otherwise, with the `transloco` pipe, and writes the texts to one translation file per language of `--langs`. The files go to `--translations-path`, then `rootTranslationsPath` of the config (`--config` names another one), then `src/assets/i18n`. A key is made of the custom id of the mark or else of its text, and a meaning and a description are kept as the comment of the key. Exits with `1` when the input doesn't exist or holds no `.html` file.
+
+Both migrations only read the marks and the names they know, so go through the diff before you keep it. They replace the `ng g @jsverse/transloco:ngx-migrate` and `ng g @jsverse/transloco:ng-migrate` schematics, which are deprecated.
 
 ### Running from another directory
 

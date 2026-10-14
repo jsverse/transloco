@@ -24,3 +24,6 @@ BREAKING_CHANGES.md
 
 # Inputs and expected outputs of the CLI golden suite, compared byte for byte
 /libs/transloco-cli/tests/golden/cases
+
+# Inputs and recorded results of the Angular i18n migration, compared byte for byte
+/libs/transloco-cli/src/migrate/angular-i18n/tests/fixtures

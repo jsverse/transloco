@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN templates with Angular i18n marks in the default src/app WHEN they are migrated for one language THEN the templates use the pipe and the translation file lands in src/assets/i18n",
+  "args": [
+    "migrate",
+    "angular-i18n",
+    "--langs",
+    "en"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

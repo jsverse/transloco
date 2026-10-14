@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN --cwd pointing at an application folder WHEN the default input is migrated THEN the input is looked for below that folder",
+  "args": [
+    "--cwd",
+    "apps/shop",
+    "migrate",
+    "ngx-translate"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

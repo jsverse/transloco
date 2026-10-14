@@ -1,0 +1,1 @@
+Transloco Migrate: The languages are separate arguments, not a comma separated list: 'en,es'. Run with --langs en es

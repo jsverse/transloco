@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN the languages as one comma separated value WHEN the command runs THEN stderr points at separate arguments and nothing is written",
+  "args": [
+    "migrate",
+    "angular-i18n",
+    "--langs",
+    "en,es"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

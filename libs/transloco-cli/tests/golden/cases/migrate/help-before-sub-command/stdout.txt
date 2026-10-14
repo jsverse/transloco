@@ -1,0 +1,14 @@
+Usage: transloco migrate [options] [command]
+
+Migrate a project to Transloco
+
+Options:
+  -h, --help               Display help for the command
+
+Commands:
+  ngx-translate [options]  Migrate the HTML and TS files from ngx-translate.
+                           Rewrites the files in place; commit your work first.
+  angular-i18n [options]   Migrate the HTML templates from the Angular i18n and
+                           create their translation files. Rewrites the files in
+                           place; commit your work first.
+  help [command]           Display help for the command
