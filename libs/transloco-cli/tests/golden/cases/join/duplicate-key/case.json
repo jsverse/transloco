@@ -1,0 +1,15 @@
+{
+  "description": "GIVEN a key that the root file and a scope both define WHEN the files are joined THEN stderr names the key and both files, the out folder is left alone and it exits with 1",
+  "args": [
+    "join",
+    "--translations-path",
+    "i18n",
+    "--default-lang",
+    "en"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

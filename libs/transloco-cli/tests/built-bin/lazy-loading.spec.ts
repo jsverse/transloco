@@ -56,6 +56,30 @@ const optimize: Allowed = {
   ],
   packages: [...program.packages, 'flat', 'glob'],
 };
+const translationFolders: Allowed = {
+  files: [
+    ...program.files,
+    'src/commands/config-path.js',
+    'src/commands/translation-folders.js',
+    'src/config/index.js',
+    'src/config/transloco-utils.js',
+    'src/translation-files/index.js',
+    'src/translation-files/join.js',
+    'src/translation-files/node-file-reader.js',
+    'src/translation-files/shared.js',
+    'src/translation-files/split.js',
+    'src/utils/file-system.js',
+  ],
+  packages: [...program.packages, 'cosmiconfig', 'env-paths'],
+};
+const join: Allowed = {
+  ...translationFolders,
+  files: [...translationFolders.files, 'src/commands/join.js'],
+};
+const split: Allowed = {
+  ...translationFolders,
+  files: [...translationFolders.files, 'src/commands/split.js'],
+};
 
 /** `.../node_modules/@scope/name/lib/a.js` => `@scope/name`, for a pnpm store path as well. */
 function packageName(file: string) {
@@ -90,6 +114,20 @@ describe.skipIf(Boolean(process.env['TRANSLOCO_BIN']))(
       );
       fs.writeFileSync(path.join(dir, 'en.json'), '{"a": {"b": "c"}}');
       fs.writeFileSync(path.join(dir, 'dist', 'en.json'), '{"a": {"b": "c"}}');
+      fs.mkdirSync(path.join(dir, 'i18n', 'scope'), { recursive: true });
+      fs.writeFileSync(path.join(dir, 'i18n', 'es.json'), '{"a": "b"}');
+      fs.writeFileSync(
+        path.join(dir, 'i18n', 'scope', 'es.json'),
+        '{"c": "d"}',
+      );
+      fs.mkdirSync(path.join(dir, 'split-i18n', 'scope'), { recursive: true });
+      fs.writeFileSync(path.join(dir, 'split-i18n', 'es.json'), '');
+      fs.writeFileSync(path.join(dir, 'split-i18n', 'scope', 'es.json'), '');
+      fs.mkdirSync(path.join(dir, 'joined'));
+      fs.writeFileSync(
+        path.join(dir, 'joined', 'es.json'),
+        '{"a": "b", "scope": {"c": "d"}}',
+      );
     });
 
     afterAll(() => {
@@ -167,6 +205,8 @@ describe.skipIf(Boolean(process.env['TRANSLOCO_BIN']))(
         ['validate', '--help'],
         ['optimize', '--help'],
         ['scoped-libs', '--help'],
+        ['join', '--help'],
+        ['split', '--help'],
       ].map((args) => [args.join(' '), args] as const),
     )(
       `GIVEN the arguments "%s"
@@ -220,6 +260,32 @@ describe.skipIf(Boolean(process.env['TRANSLOCO_BIN']))(
 
       expect(unexpected(loaded, optimize)).toEqual(nothing);
       expect(loaded.files).toEqual([...optimize.files].sort());
+      expect(loaded.status).toBe(0);
+    });
+
+    it(`GIVEN a folder of translation files
+        WHEN the built bin joins them
+        THEN it loads the core on top of the program, and nothing else`, () => {
+      const loaded = run('join', '--translations-path', 'i18n');
+
+      expect(unexpected(loaded, join)).toEqual(nothing);
+      expect(loaded.files).toEqual([...join.files].sort());
+      expect(loaded.status).toBe(0);
+    });
+
+    it(`GIVEN joined translation files
+        WHEN the built bin splits them
+        THEN it loads the core on top of the program, and nothing else`, () => {
+      const loaded = run(
+        'split',
+        '--translations-path',
+        'split-i18n',
+        '--source',
+        'joined',
+      );
+
+      expect(unexpected(loaded, split)).toEqual(nothing);
+      expect(loaded.files).toEqual([...split.files].sort());
       expect(loaded.status).toBe(0);
     });
 

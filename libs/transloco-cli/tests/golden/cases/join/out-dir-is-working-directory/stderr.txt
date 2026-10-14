@@ -1,0 +1,1 @@
+Transloco Join: Refusing to empty ., it is the current directory or one of its parents

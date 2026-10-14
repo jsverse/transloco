@@ -26,6 +26,8 @@ const runners = vi.hoisted(() => ({
   runValidate: vi.fn(),
   runOptimize: vi.fn(),
   runScopedLibs: vi.fn(),
+  runJoin: vi.fn(),
+  runSplit: vi.fn(),
 }));
 
 vi.mock('./commands/extract.js', () => ({ runExtract: runners.runExtract }));
@@ -39,6 +41,8 @@ vi.mock('./commands/optimize.js', () => ({
 vi.mock('./commands/scoped-libs.js', () => ({
   runScopedLibs: runners.runScopedLibs,
 }));
+vi.mock('./commands/join.js', () => ({ runJoin: runners.runJoin }));
+vi.mock('./commands/split.js', () => ({ runSplit: runners.runSplit }));
 
 interface OptionInfo {
   /** The commands leading to the option, none for a program option. */
@@ -981,6 +985,8 @@ describe('argv matrix', () => {
         'find',
         'optimize',
         'scoped-libs',
+        'join',
+        'split',
       ]),
     );
     expect(discovered.values.length).toBeGreaterThanOrEqual(19);

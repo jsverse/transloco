@@ -1,0 +1,17 @@
+{
+  "description": "GIVEN the working directory as the out folder WHEN the files are joined THEN it is refused, nothing is touched and it exits with 1",
+  "args": [
+    "join",
+    "--translations-path",
+    "i18n",
+    "--default-lang",
+    "en",
+    "--out-dir",
+    "."
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

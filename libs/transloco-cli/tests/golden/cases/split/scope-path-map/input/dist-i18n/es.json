@@ -1,0 +1,9 @@
+{
+  "title": "Titulo editado",
+  "ui": {
+    "ok": "Vale editado"
+  },
+  "checkout": {
+    "pay": "Pagar editado"
+  }
+}

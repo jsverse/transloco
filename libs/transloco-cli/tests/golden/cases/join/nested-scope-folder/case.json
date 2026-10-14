@@ -1,0 +1,15 @@
+{
+  "description": "GIVEN a scope folder nested in another one WHEN the files are joined THEN the nested scope is keyed with both folder names next to its parent",
+  "args": [
+    "join",
+    "--translations-path",
+    "i18n",
+    "--default-lang",
+    "en"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

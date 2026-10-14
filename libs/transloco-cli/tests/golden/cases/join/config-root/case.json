@@ -1,0 +1,13 @@
+{
+  "description": "GIVEN a config holding the root and the default language WHEN the files are joined with no options THEN the root and the default language of the config are used",
+  "args": [
+    "join",
+    "--config",
+    "transloco.config.js"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

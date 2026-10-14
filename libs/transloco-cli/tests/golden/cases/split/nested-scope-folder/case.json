@@ -1,0 +1,13 @@
+{
+  "description": "GIVEN joined files that key a scope folder nested in another one beside its parent WHEN they are split THEN the nested folder gets its own key back and the parent keeps only its own",
+  "args": [
+    "split",
+    "--translations-path",
+    "i18n"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

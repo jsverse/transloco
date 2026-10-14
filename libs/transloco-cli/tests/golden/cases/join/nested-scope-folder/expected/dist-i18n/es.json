@@ -1,0 +1,12 @@
+{
+  "title": "Titulo",
+  "nav": {
+    "home": "Inicio"
+  },
+  "admin": {
+    "users": "Usuarios"
+  },
+  "admin.audit": {
+    "log": "Registro"
+  }
+}

@@ -14,6 +14,8 @@ const runners = vi.hoisted(() => ({
   runValidate: vi.fn(),
   runOptimize: vi.fn(),
   runScopedLibs: vi.fn(),
+  runJoin: vi.fn(),
+  runSplit: vi.fn(),
 }));
 
 vi.mock('./commands/extract.js', () => ({ runExtract: runners.runExtract }));
@@ -27,6 +29,8 @@ vi.mock('./commands/optimize.js', () => ({
 vi.mock('./commands/scoped-libs.js', () => ({
   runScopedLibs: runners.runScopedLibs,
 }));
+vi.mock('./commands/join.js', () => ({ runJoin: runners.runJoin }));
+vi.mock('./commands/split.js', () => ({ runSplit: runners.runSplit }));
 
 const { version } = JSON.parse(
   fs.readFileSync(path.join(import.meta.dirname, '../package.json'), 'utf-8'),
@@ -394,6 +398,97 @@ describe('createProgram', () => {
     });
   });
 
+  describe('join', () => {
+    it(`GIVEN every option of the command
+        WHEN the program runs
+        THEN the runner gets them`, async () => {
+      await setup().run(
+        'join',
+        '--translations-path',
+        'src/i18n',
+        '--out-dir',
+        'out',
+        '--default-lang',
+        'en',
+        '--include-default-lang',
+        '--config',
+        'transloco.config.js',
+      );
+
+      expect(runners.runJoin).toHaveBeenCalledExactlyOnceWith({
+        translationsPath: 'src/i18n',
+        outDir: 'out',
+        defaultLang: 'en',
+        includeDefaultLang: true,
+        config: 'transloco.config.js',
+      });
+    });
+
+    it(`GIVEN the option aliases
+        WHEN the program runs
+        THEN the runner gets the same options as with the long names`, async () => {
+      await setup().run('join', '-o', 'out', '-c', 'transloco.config.js');
+
+      expect(runners.runJoin).toHaveBeenCalledExactlyOnceWith({
+        outDir: 'out',
+        config: 'transloco.config.js',
+      });
+    });
+
+    it(`GIVEN no options
+        WHEN the program runs
+        THEN the runner gets the default output folder alone`, async () => {
+      await setup().run('join');
+
+      expect(runners.runJoin).toHaveBeenCalledExactlyOnceWith({
+        outDir: 'dist-i18n',
+      });
+    });
+  });
+
+  describe('split', () => {
+    it(`GIVEN every option of the command
+        WHEN the program runs
+        THEN the runner gets them`, async () => {
+      await setup().run(
+        'split',
+        '--translations-path',
+        'src/i18n',
+        '--source',
+        'joined',
+        '--config',
+        'transloco.config.js',
+      );
+
+      expect(runners.runSplit).toHaveBeenCalledExactlyOnceWith({
+        translationsPath: 'src/i18n',
+        source: 'joined',
+        config: 'transloco.config.js',
+      });
+    });
+
+    it(`GIVEN the config alias
+        WHEN the program runs
+        THEN the runner gets the same options as with the long name`, async () => {
+      await setup().run('split', '-c', 'transloco.config.js');
+
+      expect(runners.runSplit).toHaveBeenCalledExactlyOnceWith({
+        source: 'dist-i18n',
+        config: 'transloco.config.js',
+      });
+    });
+
+    it(`GIVEN no options
+        WHEN the program runs
+        THEN the runner gets the default source folder alone`, async () => {
+      await setup().run('split');
+
+      expect(runners.runSplit).toHaveBeenCalledExactlyOnceWith({
+        source: 'dist-i18n',
+      });
+    });
+  });
+
   describe('strictness', () => {
     it.each([
       {
@@ -539,6 +634,27 @@ describe('createProgram', () => {
       ['optimize', ['dist', '-k', 'a', '-k', 'b'], '-k, --comments-key <key>'],
       // scoped-libs
       ['scoped-libs', ['-c', 'a', '--config', 'b'], '-c, --config <path>'],
+      // join
+      [
+        'join',
+        ['--translations-path', 'a', '--translations-path', 'b'],
+        '--translations-path <dir>',
+      ],
+      ['join', ['-o', 'a', '--out-dir', 'b'], '-o, --out-dir <dir>'],
+      [
+        'join',
+        ['--default-lang', 'en', '--default-lang', 'es'],
+        '--default-lang <lang>',
+      ],
+      ['join', ['-c', 'a', '-c', 'b'], '-c, --config <path>'],
+      // split
+      [
+        'split',
+        ['--translations-path', 'a', '--translations-path', 'b'],
+        '--translations-path <dir>',
+      ],
+      ['split', ['--source', 'a', '--source', 'b'], '--source <dir>'],
+      ['split', ['-c', 'a', '-c', 'b'], '-c, --config <path>'],
     ])(
       `GIVEN the %s command and the arguments %j
        WHEN the program runs
@@ -697,6 +813,16 @@ describe('createProgram', () => {
       // scoped-libs
       ['scoped-libs', ['-c', ''], empty('-c, --config <path>')],
       ['scoped-libs', ['--config='], empty('-c, --config <path>')],
+      // join
+      ['join', ['--translations-path', ''], empty('--translations-path <dir>')],
+      ['join', ['-o', ' '], empty('-o, --out-dir <dir>')],
+      ['join', ['--out-dir='], empty('-o, --out-dir <dir>')],
+      ['join', ['--default-lang', ''], empty('--default-lang <lang>')],
+      ['join', ['-c', ''], empty('-c, --config <path>')],
+      // split
+      ['split', ['--translations-path='], empty('--translations-path <dir>')],
+      ['split', ['--source', ''], empty('--source <dir>')],
+      ['split', ['-c', ' '], empty('-c, --config <path>')],
     ])(
       `GIVEN the %s command and the arguments %j
        WHEN the program runs
@@ -1358,6 +1484,8 @@ describe('createProgram', () => {
           'validate',
           'optimize',
           'scoped-libs',
+          'join',
+          'split',
         ]),
       );
     });
@@ -1516,6 +1644,8 @@ describe('createProgram', () => {
         'transloco validate',
         'transloco optimize',
         'transloco scoped-libs',
+        'transloco join',
+        'transloco split',
       ]);
       expect(commands.map(({ help }) => help)).toEqual(commands.map(() => 'h'));
     });
@@ -2135,6 +2265,9 @@ describe('createProgram', () => {
           'optimize dist',
           'optimize comments-key',
           'scoped-libs config',
+          'join translations-path',
+          'join out-dir',
+          'split source',
         ]),
       );
       expect(found.length).toBeGreaterThanOrEqual(19);
@@ -2302,6 +2435,8 @@ describe('createProgram', () => {
         'validate <files...>',
         'optimize [options] [dist]',
         'scoped-libs [options]',
+        'join [options]',
+        'split [options]',
         'help [command]',
         '-V, --version',
         '-C, --cwd <dir>',
@@ -2387,6 +2522,32 @@ describe('createProgram', () => {
           '-h, --help',
         ],
         unexpected: ['--dist'],
+      },
+      {
+        command: 'join',
+        expected: [
+          'Usage: transloco join [options]',
+          '--translations-path <dir>',
+          '-o, --out-dir <dir>',
+          '(default: "dist-i18n")',
+          '--default-lang <lang>',
+          '--include-default-lang',
+          '-c, --config <path>',
+          '-h, --help',
+        ],
+        unexpected: ['--source', '--watch'],
+      },
+      {
+        command: 'split',
+        expected: [
+          'Usage: transloco split [options]',
+          '--translations-path <dir>',
+          '--source <dir>',
+          '(default: "dist-i18n")',
+          '-c, --config <path>',
+          '-h, --help',
+        ],
+        unexpected: ['--out-dir', '--include-default-lang'],
       },
     ])(
       `GIVEN the help flag on the $command command

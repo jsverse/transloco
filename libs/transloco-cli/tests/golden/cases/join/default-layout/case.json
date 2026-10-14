@@ -1,0 +1,15 @@
+{
+  "description": "GIVEN a root with two scope folders and three languages WHEN they are joined with the default language given THEN the default language is left out and the others get the scopes under their folder names",
+  "args": [
+    "join",
+    "--translations-path",
+    "src/assets/i18n",
+    "--default-lang",
+    "en"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

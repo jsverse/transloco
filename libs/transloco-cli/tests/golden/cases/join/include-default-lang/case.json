@@ -1,0 +1,16 @@
+{
+  "description": "GIVEN the same files WHEN they are joined with --include-default-lang THEN the default language is joined as well",
+  "args": [
+    "join",
+    "--translations-path",
+    "src/assets/i18n",
+    "--default-lang",
+    "en",
+    "--include-default-lang"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

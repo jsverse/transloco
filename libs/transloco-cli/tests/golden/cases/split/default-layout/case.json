@@ -1,0 +1,13 @@
+{
+  "description": "GIVEN joined files and a root with two scope folders WHEN they are split THEN each scope folder and the root file of every joined language get their part",
+  "args": [
+    "split",
+    "--translations-path",
+    "src/assets/i18n"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}
