@@ -199,6 +199,41 @@ describe('Multiple fallbacks', () => {
       expect(error).toBeInstanceOf(TranslationLoadError);
     }));
 
+    it(`GIVEN a fallback lang that is already loaded
+        WHEN a scoped lang fails to load
+        THEN should load the scoped fallback`, fakeAsync(() => {
+      const scopedLoader = class TestLoader implements TranslocoLoader {
+        getTranslation(lang: string) {
+          return timer(1000).pipe(
+            map(() => {
+              if (lang.endsWith('notExists')) {
+                throw new Error('error');
+              }
+
+              return mockLangs[lang];
+            }),
+          );
+        }
+      };
+      const service = createService(
+        {
+          prodMode: true,
+          fallbackLang: 'es',
+          failedRetries: 0,
+        },
+        { loader: scopedLoader },
+      );
+
+      service.load('es').subscribe();
+      runLoader(1);
+
+      let translation: unknown;
+      service.load('admin-page/notExists').subscribe((t) => (translation = t));
+      runLoader(2);
+
+      expect(translation).toEqual(mockLangs['admin-page/es']);
+    }));
+
     it(`GIVEN a scoped lang that fails to load AND all fallbacks fail
     THEN the error should contain a scope misspelling hint`, fakeAsync(() => {
       const service = createService(

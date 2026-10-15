@@ -825,7 +825,8 @@ export class TranslocoService {
 
     // This handles the case where a loaded fallback language is requested again.
     // The cache also holds failed and in-flight loads, so check the translation.
-    if (this.isLoadedTranslation(nextLang)) {
+    // A scoped lang needs its scoped fallback, which the path below resolves.
+    if (splitted.length === 1 && this.isLoadedTranslation(nextLang)) {
       const translation = this.getTranslation(nextLang);
       this.handleSuccess(nextLang, translation);
       return of(translation);
