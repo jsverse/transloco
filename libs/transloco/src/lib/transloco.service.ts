@@ -813,12 +813,6 @@ export class TranslocoService {
     const nextLang = fallbacks![loadOptions.failedCounter!];
     this.failedLangs.add(lang);
 
-    // This handles the case where a loaded fallback language is requested again
-    if (this.cache.has(nextLang)) {
-      this.handleSuccess(nextLang, this.getTranslation(nextLang));
-      return EMPTY;
-    }
-
     const isFallbackLang = nextLang === splitted[splitted.length - 1];
 
     if (!nextLang || isFallbackLang) {
@@ -827,6 +821,15 @@ export class TranslocoService {
         fallbacks ?? [],
         splitted.length > 1,
       );
+    }
+
+    // This handles the case where a loaded fallback language is requested again.
+    // The cache also holds failed and in-flight loads, so check the translation.
+    // A scoped lang needs its scoped fallback, which the path below resolves.
+    if (splitted.length === 1 && this.isLoadedTranslation(nextLang)) {
+      const translation = this.getTranslation(nextLang);
+      this.handleSuccess(nextLang, translation);
+      return of(translation);
     }
 
     let resolveLang = nextLang;
