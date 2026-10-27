@@ -11,6 +11,18 @@ import { dasherize } from './dasherize.js';
 
 export type Translation = Record<string, unknown>;
 
+/** A text a mark holds, as it goes into the translation. */
+export interface Message {
+  /** The meaning of the mark, the key goes below it. */
+  meaning?: string;
+  key: string;
+  text: string;
+  /** The description of the mark. */
+  comment?: string;
+  /** The line of the mark, from 1. */
+  line: number;
+}
+
 export interface TemplateWarning {
   /** The line of the mark, from 1. */
   line: number;
@@ -38,8 +50,14 @@ type Tag = Pick<
  * convert, on an element without a text, around other elements or an
  * interpolation, is left as it is with a warning, so is a template that
  * doesn't parse.
+ *
+ * When a key comes twice with different texts, the first text is kept.
+ * `onMessage` is called with every text, the ones not kept too.
  */
-export function migrateTemplate(template: string) {
+export function migrateTemplate(
+  template: string,
+  onMessage?: (message: Message) => void,
+) {
   const { rootNodes, errors } = new HtmlParser().parse(template, 'template', {
     tokenizeExpansionForms: true,
   });
@@ -57,9 +75,14 @@ export function migrateTemplate(template: string) {
 
   const edits: Edit[] = [];
 
-  visit(rootNodes, (tag) =>
-    migrateTag(template, tag, translation, edits, warnings),
-  );
+  const add = (message: Message) => {
+    addMessage(translation, message);
+    onMessage?.(message);
+
+    return pathOf(message);
+  };
+
+  visit(rootNodes, (tag) => migrateTag(template, tag, add, edits, warnings));
 
   return {
     template: applyEdits(template, edits),
@@ -84,7 +107,7 @@ function visit(nodes: Node[], onTag: (tag: Tag) => void) {
 function migrateTag(
   template: string,
   tag: Tag,
-  translation: Translation,
+  add: (message: Message) => string,
   edits: Edit[],
   warnings: TemplateWarning[],
 ) {
@@ -100,7 +123,7 @@ function migrateTag(
         continue;
       }
 
-      const key = addTranslation(translation, mark.value, text.text);
+      const key = add(messageOf(mark.value, text.text, line));
 
       edits.push(removal(template, mark), {
         ...text.range,
@@ -129,7 +152,7 @@ function migrateTag(
       continue;
     }
 
-    const key = addTranslation(translation, mark.value, text);
+    const key = add(messageOf(mark.value, text, line));
     // An ARIA or data attribute is no property of the element.
     const target = /^(aria|data)-/.test(name) ? `attr.${name}` : name;
 
@@ -221,20 +244,43 @@ function describe(meta: string) {
   };
 }
 
-/** Adds the text to the translation, below its meaning, and returns its key. */
-function addTranslation(translation: Translation, meta: string, text: string) {
+/** The message of a mark. Its key is the custom id as it's written, or else made of the text. */
+function messageOf(meta: string, text: string, line: number): Message {
   const { id, context, comment } = describe(meta);
-  const key = id === undefined ? keyOf(text) : dasherize(id);
-  const target = context
-    ? ((translation[context] ??= {}) as Translation)
-    : translation;
 
-  target[key] = text;
+  return {
+    ...(context ? { meaning: context } : {}),
+    key: id ?? keyOf(text),
+    text,
+    ...(comment ? { comment } : {}),
+    line,
+  };
+}
+
+/**
+ * The key the template reads the message with. Transloco flattens the
+ * translation, so the key below a meaning is read as `meaning.key`.
+ */
+export function pathOf({ meaning, key }: Pick<Message, 'meaning' | 'key'>) {
+  return meaning ? `${meaning}.${key}` : key;
+}
+
+/**
+ * Adds the message to the translation, below its meaning, unless its key is
+ * there already: the first text of a key is the one kept.
+ */
+export function addMessage(
+  translation: Translation,
+  { meaning, key, text, comment }: Message,
+) {
+  const target = meaning ? (translation[meaning] ??= {}) : translation;
+
+  if (typeof target !== 'object' || target === null || key in target) return;
+
+  (target as Translation)[key] = text;
   if (comment) {
-    target[`${key}.comment`] = comment;
+    (target as Translation)[`${key}.comment`] = comment;
   }
-
-  return key;
 }
 
 /** The key made of a text: dasherized, without what can't stand in a template string. */

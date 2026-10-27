@@ -76,10 +76,11 @@ describe('generateMatchers', () => {
 
   it(`GIVEN the matchers of the migration
       WHEN they are generated
-      THEN the steps of the sources keep their order, none takes the declaration files and only the modules, the imports and the specs take the spec files`, () => {
+      THEN the steps of the sources keep their order, none takes the declaration files and only the inline templates, the modules, the imports and the specs take the spec files`, () => {
     const { tsReplacements } = generateMatchers();
 
     expect(describeSteps(tsReplacements)).toEqual([
+      ['inline templates', [['.ts', '.d.ts']]],
       ['modules', [['.ts', '.d.ts']]],
       ['imports', [['.ts', '.d.ts']]],
       ['constructor injections', [['.ts', '.spec.ts', '.d.ts']]],

@@ -196,6 +196,17 @@ describe('transloco-keys-manager bin', () => {
     expect(buildTranslationFiles).not.toHaveBeenCalled();
   });
 
+  it(`GIVEN an option given twice
+      WHEN the bin runs
+      THEN the generic notice is written and the error still escapes`, async () => {
+    await expect(
+      runBin('extract', '--input', 'a', '--input', 'b'),
+    ).rejects.toThrow('input');
+
+    expect(stderr).toHaveBeenCalledExactlyOnceWith(notice('transloco'));
+    expect(buildTranslationFiles).not.toHaveBeenCalled();
+  });
+
   it(`GIVEN deprecation warnings are turned off
       WHEN the bin runs
       THEN no notice is written and the command still runs`, async () => {
