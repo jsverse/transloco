@@ -299,7 +299,6 @@ const functionsMap: Record<string, string> = {
   get: 'selectTranslate',
   stream: 'selectTranslate',
   use: 'setActiveLang',
-  set: 'setTranslation',
 };
 
 /** The properties of the TranslateService and their counterparts. */
@@ -314,6 +313,8 @@ const propsMap: Record<string, string> = {
  * the names of members of the TranslocoService, so they can't be told apart.
  */
 const withoutCounterpart = [
+  // `set(key, value, lang)` is no `setTranslation(translation, lang)`.
+  'set',
   'addLangs',
   'getLangs',
   'langs',

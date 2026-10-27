@@ -125,7 +125,7 @@ describe('migrateNgxTranslate', () => {
   describe('sources', () => {
     it(`GIVEN a component injecting the TranslateService
         WHEN the migration runs
-        THEN the import, the injection and every use of the service are rewritten`, () => {
+        THEN the import, the injection and every use of the service with a counterpart are rewritten, and set() is left and printed`, () => {
       write(
         'app/app.component.ts',
         `import { Component } from '@angular/core';
@@ -164,10 +164,13 @@ export class AppComponent {
     this.translate.selectTranslate('app.stream').subscribe();
     const lang = this.translate.getActiveLang();
     this.translate.langChanges$.subscribe(() => {});
-    this.translate.setTranslation('k', 'v');
+    this.translate.set('k', 'v');
   }
 }
 `,
+      );
+      expect(printed()).toContain(
+        `⚠️ ${path.relative(process.cwd(), path.join(dir, 'app', 'app.component.ts'))}:15: translate.set has no counterpart in the TranslocoService, migrate it by hand`,
       );
     });
 

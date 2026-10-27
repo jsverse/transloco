@@ -65,7 +65,6 @@ The calls are replaced on every name the service is injected as, a constructor p
 4. `translateService.instant(...)` calls will be replaced with `translateService.translate(...)`.
 5. `translateService.get(...)` calls will be replaced with `translateService.selectTranslate(...).pipe(take(1))`, so that they emit once as before instead of listening to language changes. `take` is added to the `rxjs` import of the file, unless it imports it already.
 6. `translateService.stream(...)` calls will be replaced with `translateService.selectTranslate(...)`.
-7. `translateService.set(...)` calls will be replaced with `translateService.setTranslation(...)`.
 
 ##### Examples:
 
@@ -79,7 +78,8 @@ These members are left as they are, and each use is printed with its file and li
 2. `getBrowserCultureLang()` - In Transloco it's a pure function that needs to be imported.
 3. `getLangs()` and `langs` - `getAvailableLangs()`.
 4. `addLangs(...)` - `setAvailableLangs(...)` sets the whole list.
-5. `currentLoader`, `reloadLang(...)`, `resetLang(...)`, `defaultLang`, `onTranslationChange`, `onDefaultLangChange`, `getParsedResult(...)`, `getStreamOnTranslationChange(...)`, `translations`, `store`, `compiler`, `parser`, `missingTranslationHandler` - No direct equivalent in Transloco.
+5. `set(key, value, lang)` - `setTranslationKey(key, value, { lang })`, whose third argument is an options object.
+6. `currentLoader`, `reloadLang(...)`, `resetLang(...)`, `defaultLang`, `onTranslationChange`, `onDefaultLangChange`, `getParsedResult(...)`, `getStreamOnTranslationChange(...)`, `translations`, `store`, `compiler`, `parser`, `missingTranslationHandler` - No direct equivalent in Transloco.
 
 `getTranslation(...)` and `setTranslation(...)` keep their names, which the `TranslocoService` has too, but take other arguments: check them by hand.
 
