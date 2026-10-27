@@ -635,6 +635,20 @@ describe('createProgram', () => {
       expect(output.stderr).toContain("unknown option '--config'");
       expect(runners.runInit).not.toHaveBeenCalled();
     });
+
+    it(`GIVEN the help of the command
+        WHEN it is printed
+        THEN --yes names the folder ng add picks, not a fixed one`, async () => {
+      const { run, output } = setup();
+
+      await expect(run('init', '--help')).rejects.toMatchObject({
+        exitCode: 0,
+      });
+
+      expect(unwrap(output.stdout)).toContain(
+        'the folder `ng add` picks for the translations (`public/i18n` with a `public` folder or from Angular 18, else `<source root>/assets/i18n`)',
+      );
+    });
   });
 
   describe('migrate ngx-translate', () => {
