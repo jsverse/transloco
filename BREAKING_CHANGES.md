@@ -33,6 +33,7 @@ nx migrate @jsverse/transloco  # Nx
 - `extract` writes to the translations folder of the Transloco config when neither `--output` nor `keysManager.output` is set, that is `rootTranslationsPath`, or `keysManager.translationsPath` when set, which is the folder `find` reads, where the keys manager always wrote to `<source root>/assets/i18n` and ignored both. A project whose config sets `rootTranslationsPath` to another folder and no output gets its translation files there now, so after `ng add` the extracted files are the ones the application loads. Set `keysManager.output`, or pass `--output`, to keep writing to the old folder. It goes for `transloco-keys-manager extract` too. `ng update` reports it when the old folder holds translation files and the config points `rootTranslationsPath` elsewhere.
 - On Angular 20, `extract` now finds the keys that sit in the expressions of a template, which the 8.x Keys Manager silently missed there: in an Angular 20 project it found only the static `transloco="key"` attributes of templates, not the `| transloco` pipes, the `[transloco]` bindings, the `t('key')` calls of `*transloco` and `<ng-template transloco>` and the same constructs in inline templates. The first `extract` after the upgrade adds those keys to the translation files, and until it has run, `find` reports them as missing.
 - Removed `TranslocoExtractKeysWebpackPlugin`, the other export of the package root, since Angular's default builder no longer uses webpack. There is no replacement that watches: `transloco extract` has no `--watch` option, it extracts once and exits. Run it before your dev server starts, as in `"start": "transloco extract && ng serve"`, and again whenever the keys should be refreshed. `ng update` lists the files that still reference the plugin.
+- `extract --project` still writes to `<source root>/assets/i18n` of the project when its folder doesn't hold `rootTranslationsPath`, as with the second project of a workspace whose one config at the root `ng add` wrote for the first, so that its keys don't land in the translations of another project. `extract` says so on stderr.
 
 ## Transloco Scoped Libs
 
@@ -45,6 +46,8 @@ nx migrate @jsverse/transloco  # Nx
   }
   ```
 
+- A misconfigured library no longer stops the copy: the libraries listed after it are copied too, where they used to be skipped. `transloco-scoped-libs` still prints the problem on stdout and exits with 0, while `transloco scoped-libs` reports each problem on stderr and exits with 1, as it does for a config without `scopedLibs`. A library without a `package.json`, or with one that is not valid JSON, is reported as such, not as one missing the `i18n` entry.
+
 ## Transloco Keys Manager, Optimize, Scoped Libs, Utils & Validator
 
 - Node.js `^22.18.0 || >=24` is now required. `ng update` warns when it runs on a Node.js version outside that range. `@jsverse/transloco-schematics` reads the Transloco config through `@jsverse/transloco-cli` and now needs the same Node versions.
@@ -53,7 +56,7 @@ nx migrate @jsverse/transloco  # Nx
 ## Transloco Schematics
 
 - The `join` and `split` schematics are deprecated in favour of `transloco join` and `transloco split` of `@jsverse/transloco-cli`. They keep working until Transloco v10 and log a deprecation warning. They now ignore the files that are not `.json` in the translations root and in the source folder, which used to fail the run, and `split` skips a root file whose language has no joined file instead of writing `undefined` into it. `split` also restores a scope folder nested in another one from the dotted key `join` stores it under, such as `admin.users`; before, the nested folder was left stale and the next `join` failed with a duplicate key.
-- The `ngx-migrate` and `ng-migrate` schematics are deprecated in favour of `transloco migrate ngx-translate` and `transloco migrate angular-i18n` of `@jsverse/transloco-cli`. They keep working until Transloco v10 and log a deprecation warning. Files are now processed in path order, so the result no longer depends on the order the file system lists them in: when two Angular i18n templates define the same key, the one that comes last in path order supplies the text.
+- The `ngx-migrate` and `ng-migrate` schematics are deprecated in favour of `transloco migrate ngx-translate` and `transloco migrate angular-i18n` of `@jsverse/transloco-cli`. They keep working until Transloco v10 and log a deprecation warning. Files are now processed in path order, so the result no longer depends on the order the file system lists them in: when two Angular i18n templates define the same key, the one that comes last in path order supplies the text. They run the code of those commands, so they also skip `node_modules`, `dist` and the other build folders and symlinks pointing outside the input, and `ng-migrate` binds a marked attribute to the pipe (`[title]="'key' | transloco"`) and leaves a mark it can't convert (no text, nested elements, an interpolation) in place with a warning, where it used to write broken HTML or throw halfway.
 
 ## Transloco Keys Manager, Optimize, Scoped Libs & Validator
 

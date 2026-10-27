@@ -45,8 +45,8 @@ export function reportScopedLibsWebpackPlugin(): Rule {
       context.logger.warn(
         `  ↳ ${PLUGIN} was removed from '${PACKAGE}', but these files still reference it:\n` +
           references.map((path) => `    - ${path}`).join('\n') +
-          `\n    Run 'transloco-scoped-libs --watch' alongside your dev server instead` +
-          ` (or 'transloco scoped-libs --watch' with '@jsverse/transloco-cli').`,
+          `\n    Run 'transloco scoped-libs --watch' (from '@jsverse/transloco-cli')` +
+          ` alongside your dev server instead.`,
       );
     }
   };

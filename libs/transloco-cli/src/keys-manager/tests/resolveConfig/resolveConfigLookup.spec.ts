@@ -165,6 +165,80 @@ describe('resolveConfig config lookup', () => {
     expect(langs({ config: 'missing' })).toEqual(['en', 'es']);
   });
 
+  it(`GIVEN a config beside the package.json above the working directory
+      WHEN the config is resolved, found or named with --config
+      THEN the paths of the found one are taken from its folder, and the ones named with --config from the working directory, as in v8`, () => {
+    const file = writeConfig('.', {
+      rootTranslationsPath: 'apps/web/src/assets/i18n',
+      scopePathMap: {
+        admin: 'apps/web/src/admin/i18n',
+        shared: '${sourceRoot}/shared/i18n',
+      },
+      keysManager: {
+        input: 'apps/web/src/app,apps/web/src/lib',
+        output: 'apps/web/src/assets/out',
+      },
+    });
+    mkdir('apps/web/src/lib');
+    fs.writeFileSync(path.resolve(dir, 'package.json'), '{}');
+    process.chdir(path.resolve(dir, 'apps/web'));
+    project.sourceRoot = 'src';
+
+    const found = resolveConfig({} as any);
+
+    expect(found).toMatchObject({
+      translationsPath: path.resolve(dir, 'apps/web/src/assets/i18n'),
+      output: path.resolve(dir, 'apps/web/src/assets/out'),
+      input: [
+        path.resolve(dir, 'apps/web/src/app'),
+        path.resolve(dir, 'apps/web/src/lib'),
+      ],
+      // relative to the working directory, as a path of a config in it is,
+      // and ${sourceRoot} already is
+      scopePathMap: {
+        admin: path.join('src', 'admin', 'i18n'),
+        shared: '${sourceRoot}/shared/i18n',
+      },
+    });
+    for (const config of [file, '../..']) {
+      expect(resolveConfig({ config } as any)).toMatchObject({
+        translationsPath: path.resolve(
+          dir,
+          'apps/web/apps/web/src/assets/i18n',
+        ),
+        output: path.resolve(dir, 'apps/web/apps/web/src/assets/out'),
+        scopePathMap: { admin: 'apps/web/src/admin/i18n' },
+      });
+    }
+  });
+
+  it(`GIVEN a config with absolute paths beside the package.json above the working directory
+      WHEN the config is resolved
+      THEN its paths are kept`, () => {
+    writeConfig('.', {
+      rootTranslationsPath: path.resolve(dir, 'apps/web/src/assets/i18n'),
+    });
+    fs.writeFileSync(path.resolve(dir, 'package.json'), '{}');
+    process.chdir(path.resolve(dir, 'apps/web'));
+    project.sourceRoot = 'src';
+
+    expect(resolveConfig({} as any).translationsPath).toBe(
+      path.resolve(dir, 'apps/web/src/assets/i18n'),
+    );
+  });
+
+  it(`GIVEN a config in a directory between the source root and the working directory
+      WHEN the config is resolved
+      THEN its paths are taken from the working directory, as they always were`, () => {
+    writeConfig('apps/web', {
+      rootTranslationsPath: 'apps/web/src/assets/i18n',
+    });
+
+    expect(resolveConfig({} as any).translationsPath).toBe(
+      path.resolve(dir, 'apps/web/src/assets/i18n'),
+    );
+  });
+
   it(`GIVEN a source root outside the working directory
       WHEN the config is resolved without --config
       THEN the source root and then the working directory are searched, not the parents of the source root`, () => {

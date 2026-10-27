@@ -1,12 +1,8 @@
 <p>{{ 'multi-line' | transloco }}</p>
 <div
   class="wide"
- 
->{{ '
---attributes-on-separate-lines
-' | transloco }}</div>
+>{{ 'attributes-on-separate-lines' | transloco }}</div>
 <input
   type="text"
-  placeholder="Search for something"
- -placeholder="@@searchPlaceholder"
+  [placeholder]="'search-placeholder' | transloco"
 />

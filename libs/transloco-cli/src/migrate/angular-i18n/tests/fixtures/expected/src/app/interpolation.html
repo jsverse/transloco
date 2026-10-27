@@ -1,4 +1,4 @@
-<p>{{ 'hello-{{-name-}},-you-have-{{-count-}}-messages' | transloco }}</p>
+<p i18n>Hello {{ name }}, you have {{ count }} messages</p>
 <p>{{ 'items' | transloco }}</p>
-<p>{{ 'updated-{{-date-|-date:-'short'-}}-by-{{-user.name-}}' | transloco }}</p>
+<p i18n>Updated {{ date | date: 'short' }} by {{ user.name }}</p>
 <span>{{ 'gender' | transloco }}</span>

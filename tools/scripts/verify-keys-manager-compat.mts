@@ -10,7 +10,7 @@
  *   nx build transloco-cli
  *   node tools/scripts/verify-keys-manager-compat.mts --angular=20 --typescript=5.8
  */
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -283,3 +283,40 @@ if (missing.length || unexpected.length) {
 }
 
 console.log(`\nExactly the ${expected.length} expected keys were extracted.`);
+
+// The golden cases that need `@boundary` are skipped against the workspace's
+// own compiler, so this is the only run that compares their expected files.
+if (boundary) {
+  console.log('\nRunning the @boundary golden cases...');
+  const golden = spawnSync(
+    'pnpm',
+    [
+      'exec',
+      'vitest',
+      'run',
+      '-c',
+      'libs/transloco-cli/vitest.config.golden.ts',
+    ],
+    {
+      cwd: repoRoot,
+      stdio: 'inherit',
+      shell: process.platform === 'win32',
+      env: {
+        ...process.env,
+        TRANSLOCO_BIN: join(
+          project,
+          'node_modules',
+          '@jsverse',
+          'transloco-cli',
+          'src',
+          'bin.js',
+        ),
+        GOLDEN_FILTER: 'boundary',
+      },
+    },
+  );
+
+  if (golden.status !== 0) {
+    process.exit(golden.status ?? 1);
+  }
+}

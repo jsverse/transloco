@@ -266,12 +266,12 @@ describe('runJoin', () => {
       writeTranslations();
       write('src/i18n/scope/keep.txt', 'keep');
       write('sentinel.txt', 'keep');
-      write('apps/out/sentinel.txt', 'keep');
+      write('apps/out/sentinel.json', 'keep');
     }
 
     function expectUntouched() {
       expect(read('sentinel.txt')).toBe('keep');
-      expect(read('apps/out/sentinel.txt')).toBe('keep');
+      expect(read('apps/out/sentinel.json')).toBe('keep');
       expect(read('src/i18n/scope/keep.txt')).toBe('keep');
       expect(read('src/i18n/es.json')).toContain('hola');
       expect(exists('src/i18n/scope/es.json')).toBe(true);
@@ -388,7 +388,7 @@ describe('runJoin', () => {
 
       runJoin(options({ outDir: 'apps/out' }));
 
-      expect(exists('apps/out/sentinel.txt')).toBe(false);
+      expect(exists('apps/out/sentinel.json')).toBe(false);
       expect(exists('apps/out/es.json')).toBe(true);
     });
   });
@@ -588,6 +588,58 @@ describe('runJoin', () => {
       runJoin(options({ outDir: 'linkapps/out' }));
 
       expect(exists('apps/out/es.json')).toBe(true);
+    });
+  });
+
+  describe('the out folder holding other things than translations', () => {
+    it.each(['node_modules/pkg/index.js', '.git/HEAD', 'dist-i18n/notes.txt'])(
+      `GIVEN an out folder holding %s
+        WHEN it runs
+        THEN it refuses and leaves the folder as it was`,
+      async (file) => {
+        writeTranslations();
+        write(file, 'keep');
+        const outDir = file.split('/')[0];
+
+        const error = await failure({ outDir });
+
+        expect(error.exitCode).toBe(1);
+        expect(error.message).toContain(`Refusing to empty ${outDir}`);
+        expect(read(file)).toBe('keep');
+      },
+    );
+
+    it(`GIVEN an out folder holding only json files and empty folders
+        WHEN it runs
+        THEN the folder is emptied first`, async () => {
+      writeTranslations();
+      write('dist-i18n/stale.json', '{}');
+      write('dist-i18n/nested/old.json', '{}');
+      fs.mkdirSync(path.join(dir, 'dist-i18n/empty'));
+
+      runJoin(options());
+
+      expect(fs.readdirSync(path.join(dir, 'dist-i18n'))).toEqual(['es.json']);
+    });
+  });
+
+  describe('a link to a folder above itself in a scope', () => {
+    it(`GIVEN a scope folder holding a link to the translations root
+        WHEN it runs
+        THEN the link is not followed`, async () => {
+      writeTranslations();
+      fs.symlinkSync(
+        path.join(dir, 'src/i18n'),
+        path.join(dir, 'src/i18n/scope/loop'),
+        'dir',
+      );
+
+      runJoin(options());
+
+      expect(JSON.parse(read('dist-i18n/es.json'))).toEqual({
+        hello: 'hola',
+        scope: { bye: 'adios' },
+      });
     });
   });
 

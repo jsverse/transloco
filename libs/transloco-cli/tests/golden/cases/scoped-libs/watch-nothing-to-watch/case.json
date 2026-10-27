@@ -1,0 +1,6 @@
+{
+  "description": "GIVEN a single library that does not exist WHEN the scoped libs are watched THEN no watcher is created, the problem and a message that nothing could be watched are on stderr and it exits with 1",
+  "args": ["scoped-libs", "--watch", "--skip-gitignore"],
+  "exitCode": 1,
+  "stderrMatches": "libs/missing/package\\.json does not exist\\.[\\s\\S]*Nothing could be watched"
+}

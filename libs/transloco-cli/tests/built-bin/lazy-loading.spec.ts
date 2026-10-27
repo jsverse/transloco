@@ -118,10 +118,18 @@ const migrateAngularI18n: Allowed = {
     'src/migrate/angular-i18n/dasherize.js',
     'src/migrate/angular-i18n/migrate-angular-i18n.js',
     'src/migrate/angular-i18n/template.js',
+    'src/peers.js',
     'src/utils/file-system.js',
     'src/utils/real-path.js',
+    'src/utils/style.js',
   ],
-  packages: [...migrate.packages, 'cosmiconfig', 'env-paths'],
+  // The templates are parsed with the compiler.
+  packages: [
+    ...migrate.packages,
+    'cosmiconfig',
+    'env-paths',
+    '@angular/compiler',
+  ],
 };
 
 /** Everything `init` loads to decide and to write. The questions are not in it: `@clack/prompts` is loaded when one is asked. */
@@ -135,6 +143,7 @@ const init: Allowed = {
     'src/init/apply.js',
     'src/init/manifest.js',
     'src/init/plan.js',
+    'src/init/translations-path.js',
     'src/init/unreadable-config.js',
     'src/init/validation.js',
     'src/keys-manager/config.js',
@@ -143,6 +152,7 @@ const init: Allowed = {
     'src/keys-manager/utils/json.utils.js',
     'src/keys-manager/utils/normalize-glob-path.js',
     'src/keys-manager/utils/object.utils.js',
+    'src/keys-manager/utils/path.utils.js',
     'src/keys-manager/utils/resolve-project-base-path.js',
     'src/keys-manager/utils/validators.utils.js',
     'src/utils/file-system.js',

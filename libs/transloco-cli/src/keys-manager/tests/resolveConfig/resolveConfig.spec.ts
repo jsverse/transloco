@@ -5,6 +5,7 @@ import {
   vi,
   MockInstance,
   beforeAll,
+  beforeEach,
   afterAll,
   expect,
   describe,
@@ -43,7 +44,7 @@ describe('resolveConfig', () => {
 
   beforeAll(() => {
     mockedGlobalConfig = {};
-    spies = [spyOnProcess('exit'), spyOnConsole('log')];
+    spies = [spyOnProcess('exit'), spyOnConsole('error')];
   });
 
   afterAll(() => {
@@ -219,11 +220,11 @@ describe('resolveConfig', () => {
 
   describe('validate directories', () => {
     function shouldFail(prop: string, msg: 'pathDoesntExist' | 'pathIsNotDir') {
-      const [processExitSpy, consoleLogSpy] = spies;
+      const [processExitSpy, consoleErrorSpy] = spies;
       expect(processExitSpy).toHaveBeenCalledWith(1);
-      expect(consoleLogSpy).toHaveBeenCalledWith(
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
         styleText(['bgRed', 'black'], `${prop} ${messages[msg]}`, {
-          stream: process.stdout,
+          stream: process.stderr,
         }),
       );
       clearSpies();
@@ -404,6 +405,248 @@ describe('resolveConfig', () => {
         expect(appConfig.output).not.toBe(libConfig.output);
         expect(appConfig.input).not.toEqual(libConfig.input);
       });
+    });
+  });
+
+  describe('output of extract for a project of a multi-project workspace', () => {
+    const projectA = `${sourceRoot}/projects/a`;
+    const projectB = `${sourceRoot}/projects/b`;
+    let warn: MockInstance;
+
+    beforeAll(() => {
+      warn = spyOnConsole('warn');
+      vi.mocked(resolveProjectBasePath).mockImplementation(
+        (projectName?: string) => {
+          const root = projectName === 'b' ? projectB : projectA;
+
+          return {
+            projectBasePath: `${root}/src`,
+            projectType: 'application',
+            projectRoot: root,
+          };
+        },
+      );
+    });
+
+    beforeEach(() => {
+      warn.mockClear();
+    });
+
+    afterAll(() => {
+      warn.mockRestore();
+      mockedGlobalConfig = {};
+      vi.mocked(resolveProjectBasePath).mockReturnValue({
+        projectBasePath: sourceRoot,
+      });
+    });
+
+    it(`GIVEN a root config whose rootTranslationsPath is in project a
+        WHEN the keys of project b are extracted
+        THEN they are written to the default folder of b, and a notice says so`, () => {
+      mockedGlobalConfig = {
+        rootTranslationsPath: `${projectA}/public/i18n/`,
+        keysManager: {},
+      };
+
+      const { output } = resolveConfig({
+        command: 'extract',
+        project: 'b',
+        input: validInput,
+      });
+
+      expect(output).toBe(resolvePath(`${projectB}/src/assets/i18n`));
+      expect(warn).toHaveBeenCalledExactlyOnceWith(
+        expect.stringContaining(
+          `is outside project b (${projectB}). Writing to ${resolvePath(`${projectB}/src/assets/i18n`)} instead.`,
+        ),
+      );
+    });
+
+    it(`GIVEN a root config whose rootTranslationsPath is in project a
+        WHEN the keys of project a are extracted
+        THEN they are written to rootTranslationsPath`, () => {
+      mockedGlobalConfig = {
+        rootTranslationsPath: `${projectA}/public/i18n/`,
+        keysManager: {},
+      };
+
+      const { output } = resolveConfig({
+        command: 'extract',
+        project: 'a',
+        input: validInput,
+      });
+
+      expect(output).toBe(resolvePath(`${projectA}/public/i18n/`));
+      expect(warn).not.toHaveBeenCalledWith(
+        expect.stringContaining('is outside project'),
+      );
+    });
+
+    it(`GIVEN a root config whose rootTranslationsPath is in project a
+        WHEN the keys are extracted without --project
+        THEN they are written to rootTranslationsPath`, () => {
+      mockedGlobalConfig = {
+        rootTranslationsPath: `${projectA}/public/i18n/`,
+        keysManager: {},
+      };
+
+      const { output } = resolveConfig({
+        command: 'extract',
+        input: validInput,
+      });
+
+      expect(output).toBe(resolvePath(`${projectA}/public/i18n/`));
+    });
+
+    it.each([
+      ['--output', { output: `${projectA}/out` }, {}],
+      ['keysManager.output', {}, { output: `${projectA}/out` }],
+    ])(
+      `GIVEN a root config whose rootTranslationsPath is in project a and an output given by %s
+        WHEN the keys of project b are extracted
+        THEN they are written to that output`,
+      (_, inline, keysManager) => {
+        mockedGlobalConfig = {
+          rootTranslationsPath: `${projectA}/public/i18n/`,
+          keysManager,
+        };
+
+        const { output } = resolveConfig({
+          command: 'extract',
+          project: 'b',
+          input: validInput,
+          ...inline,
+        });
+
+        expect(output).toBe(resolvePath(`${projectA}/out`));
+        expect(warn).not.toHaveBeenCalled();
+      },
+    );
+
+    it(`GIVEN a root config whose rootTranslationsPath is in project a
+        WHEN the keys of project b are looked for
+        THEN find reads the folder extract writes to, and a notice says so`, () => {
+      mockedGlobalConfig = {
+        rootTranslationsPath: `${projectA}/public/i18n/`,
+        keysManager: {},
+      };
+
+      const { translationsPath } = resolveConfig({
+        command: 'find',
+        project: 'b',
+        input: validInput,
+      });
+      const { output } = resolveConfig({
+        command: 'extract',
+        project: 'b',
+        input: validInput,
+      });
+
+      expect(translationsPath).toBe(resolvePath(`${projectB}/src/assets/i18n`));
+      expect(translationsPath).toBe(output);
+      expect(warn).toHaveBeenCalledWith(
+        expect.stringContaining(
+          `Transloco find: The translations folder of the config, ${resolvePath(`${projectA}/public/i18n/`)}, is outside project b (${projectB}). Reading ${resolvePath(`${projectB}/src/assets/i18n`)} instead.`,
+        ),
+      );
+    });
+
+    it(`GIVEN a root config whose rootTranslationsPath is in project a
+        WHEN the keys of project a are looked for, or of project b with --translations-path
+        THEN find reads rootTranslationsPath or that path, without a notice`, () => {
+      mockedGlobalConfig = {
+        rootTranslationsPath: `${projectA}/public/i18n/`,
+        keysManager: {},
+      };
+
+      expect(
+        resolveConfig({ command: 'find', project: 'a', input: validInput })
+          .translationsPath,
+      ).toBe(resolvePath(`${projectA}/public/i18n/`));
+      expect(
+        resolveConfig({
+          command: 'find',
+          project: 'b',
+          input: validInput,
+          translationsPath: `${projectA}/other`,
+        }).translationsPath,
+      ).toBe(resolvePath(`${projectA}/other`));
+      expect(warn).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('output of extract that does not exist', () => {
+    let warn: MockInstance;
+
+    beforeAll(() => {
+      warn = spyOnConsole('warn');
+    });
+
+    beforeEach(() => {
+      warn.mockClear();
+    });
+
+    afterAll(() => {
+      warn.mockRestore();
+      mockedGlobalConfig = {};
+    });
+
+    it(`GIVEN a rootTranslationsPath that does not exist
+        WHEN the keys are extracted
+        THEN a notice names the folder that will be created`, () => {
+      mockedGlobalConfig = {
+        rootTranslationsPath: `${sourceRoot}/missing/i18n`,
+        keysManager: {},
+      };
+
+      resolveConfig({ command: 'extract', input: validInput });
+
+      expect(warn).toHaveBeenCalledExactlyOnceWith(
+        expect.stringContaining(
+          `${resolvePath(`${sourceRoot}/missing/i18n`)}, does not exist and will be created`,
+        ),
+      );
+    });
+
+    it(`GIVEN a rootTranslationsPath that exists
+        WHEN the keys are extracted
+        THEN there is no notice`, () => {
+      mockedGlobalConfig = {
+        rootTranslationsPath: `${sourceRoot}/src`,
+        keysManager: {},
+      };
+
+      resolveConfig({ command: 'extract', input: validInput });
+
+      expect(warn).not.toHaveBeenCalled();
+    });
+
+    it(`GIVEN a rootTranslationsPath that does not exist and is the default folder
+        WHEN the keys are extracted
+        THEN there is no notice, as extract has always created that folder`, () => {
+      mockedGlobalConfig = {
+        rootTranslationsPath: `${sourceRoot}/assets/i18n/`,
+        keysManager: {},
+      };
+
+      resolveConfig({ command: 'extract', input: validInput });
+
+      expect(warn).not.toHaveBeenCalled();
+    });
+
+    it(`GIVEN an output that does not exist, given by --output or no config at all
+        WHEN the keys are extracted
+        THEN there is no notice`, () => {
+      mockedGlobalConfig = {};
+
+      resolveConfig({ command: 'extract', input: validInput });
+      resolveConfig({
+        command: 'extract',
+        input: validInput,
+        output: `${sourceRoot}/missing/i18n`,
+      });
+
+      expect(warn).not.toHaveBeenCalled();
     });
   });
 });

@@ -1,5 +1,6 @@
 {
-  "description": "GIVEN a config with rootTranslationsPath and no output, as ng add writes it WHEN the keys are extracted THEN a file per configured language is written to the folder of rootTranslationsPath",
+  "description": "GIVEN a config with rootTranslationsPath and no output, as ng add writes it, and no folder there yet WHEN the keys are extracted THEN a file per configured language is written to the folder of rootTranslationsPath and a notice on stderr says the folder is created",
   "args": ["extract", "--default-value", "missing"],
-  "exitCode": 0
+  "exitCode": 0,
+  "stderrMatches": "The translations folder of the config, <cwd>/public/i18n/?, does not exist and will be created\\."
 }

@@ -289,7 +289,7 @@ export class AppModule {}
 `);
       expect(read('app/shared.module.ts'))
         .toBe(`import { NgModule } from '@angular/core';
-import { Foo} from '@ngx-translate/core';
+import { Foo } from '@ngx-translate/core';
 import { TranslocoModule } from '@jsverse/transloco';
 
 @NgModule({
@@ -302,10 +302,7 @@ export class SharedModule {}
 
     it(`GIVEN a spec file
         WHEN the migration runs
-        THEN it goes through the steps of the other sources as well as through its own, as before`, () => {
-      // The steps were written to leave the specs out of the first four. The
-      // pattern that excluded them never reached the glob, so they take part.
-      // This pins what the schematic did, it isn't a promise.
+        THEN its imports are migrated and the names left are renamed by its own step`, () => {
       write(
         'app/app.component.spec.ts',
         `import { TranslateService } from '@ngx-translate/core';
@@ -349,8 +346,7 @@ class Fake {
 `);
       expect(read('app/home.component.spec.ts'))
         .toBe(`import { TestBed } from '@angular/core/testing';
-import { TranslocoService } from '@jsverse/transloco';
-import { TranslocoModule } from '@jsverse/transloco';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 
 describe('HomeComponent', () => {
   let translate: TranslocoService;
@@ -368,6 +364,132 @@ describe('HomeComponent', () => {
   });
 });
 `);
+    });
+  });
+
+  describe('what it must not break', () => {
+    it(`GIVEN the translate attribute of HTML, a data attribute and a key holding "translate"
+        WHEN the migration runs
+        THEN only the directive and the name of the pipe are rewritten`, () => {
+      write(
+        'app/a.html',
+        `<p translate="no" class="notranslate">Brand</p>
+<p data-translate="x">X</p>
+<p translate="home.translate.title"></p>
+<p>{{ 'translate' | translate }}</p>
+<p>{{ 'a' | translateX }}</p>
+<img [alt]="'menu.translate' | translate" />
+`,
+      );
+
+      migrateNgxTranslate({ input: path.join(dir, 'app') });
+
+      expect(read('app/a.html'))
+        .toBe(`<p translate="no" class="notranslate">Brand</p>
+<p data-translate="x">X</p>
+<p transloco="home.translate.title"></p>
+<p>{{ 'translate' | transloco }}</p>
+<p>{{ 'a' | translateX }}</p>
+<img [alt]="'menu.translate' | transloco" />
+`);
+    });
+
+    it(`GIVEN a component importing the pipe, the service and a symbol without a counterpart
+        WHEN the migration runs
+        THEN each counterpart is imported once from Transloco, the other symbol keeps its import, and the references are renamed`, () => {
+      write(
+        'app/a.component.ts',
+        `import { Component, inject } from '@angular/core';
+import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
+
+@Component({ selector: 'app-a', imports: [TranslatePipe], template: '' })
+export class AComponent {
+  translate = inject(TranslateService);
+  onChange(event: LangChangeEvent) {}
+}
+`,
+      );
+
+      migrateNgxTranslate({ input: path.join(dir, 'app') });
+
+      expect(read('app/a.component.ts'))
+        .toBe(`import { Component, inject } from '@angular/core';
+import { LangChangeEvent } from '@ngx-translate/core';
+import { TranslocoService, TranslocoPipe } from '@jsverse/transloco';
+
+@Component({ selector: 'app-a', imports: [TranslocoPipe], template: '' })
+export class AComponent {
+  translate = inject(TranslocoService);
+  onChange(event: LangChangeEvent) {}
+}
+`);
+    });
+
+    it(`GIVEN a component injecting the pipe and one importing Transloco already
+        WHEN the migration runs
+        THEN the injected pipe becomes the service, and nothing is imported twice`, () => {
+      write(
+        'app/a.component.ts',
+        `import { TranslatePipe } from '@ngx-translate/core';
+
+export class AComponent {
+  constructor(private pipe: TranslatePipe) {}
+}
+`,
+      );
+      write(
+        'app/b.component.ts',
+        `import { TranslocoService } from '@jsverse/transloco';
+import { TranslateService } from '@ngx-translate/core';
+
+export class BComponent {
+  constructor(private translate: TranslateService) {}
+}
+`,
+      );
+
+      migrateNgxTranslate({ input: path.join(dir, 'app') });
+
+      expect(read('app/a.component.ts'))
+        .toBe(`import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+
+export class AComponent {
+  constructor(private pipe: TranslocoService) {}
+}
+`);
+      expect(read('app/b.component.ts'))
+        .toBe(`import { TranslocoService } from '@jsverse/transloco';
+
+export class BComponent {
+  constructor(private translate: TranslocoService) {}
+}
+`);
+    });
+
+    it(`GIVEN a spec and a declaration file
+        WHEN the migration runs
+        THEN the declaration file is left as it is, and the injections and calls of the spec are not rewritten`, () => {
+      const declaration = `import { TranslateService } from '@ngx-translate/core';
+export declare const t: TranslateService;
+`;
+
+      write('app/types.d.ts', declaration);
+      write(
+        'app/a.spec.ts',
+        `class Fake {
+  constructor(private translate: TranslocoService) {}
+  run() {
+    return this.translate.instant('x');
+  }
+}
+`,
+      );
+
+      migrateNgxTranslate({ input: path.join(dir, 'app') });
+
+      expect(read('app/types.d.ts')).toBe(declaration);
+      expect(read('app/a.spec.ts')).toContain(`this.translate.instant('x')`);
     });
   });
 
@@ -472,7 +594,7 @@ describe('HomeComponent', () => {
         ...steps('HTML', ['directives', 'pipes']),
         ...steps('TS', [
           'modules',
-          'service imports',
+          'imports',
           'constructor injections',
           'service usage',
           'specs',
@@ -498,12 +620,8 @@ describe('HomeComponent', () => {
         '⏳ Step 1/5: Migrating modules',
         '✅ Step 1/5: Migrating modules',
         ts,
-        ts,
-        ts,
-        '⏳ Step 2/5: Migrating service imports',
-        '✅ Step 2/5: Migrating service imports',
-        ts,
-        ts,
+        '⏳ Step 2/5: Migrating imports',
+        '✅ Step 2/5: Migrating imports',
         ts,
         '⏳ Step 3/5: Migrating constructor injections',
         '✅ Step 3/5: Migrating constructor injections',
@@ -544,7 +662,7 @@ describe('HomeComponent', () => {
         '\nMigrating TS files 📜',
         ...[
           'modules',
-          'service imports',
+          'imports',
           'constructor injections',
           'service usage',
         ].flatMap((name, index) => [
@@ -565,8 +683,8 @@ describe('HomeComponent', () => {
 
       const warnings = printed().filter((message) => message.startsWith('⚠️'));
 
-      // The pipes warn twice, the modules and the service imports three times, the rest once
-      expect(warnings).toHaveLength(1 + 2 + 3 + 3 + 1 + 1 + 1);
+      // The pipes warn twice, the rest once
+      expect(warnings).toHaveLength(1 + 2 + 1 + 1 + 1 + 1 + 1);
       expect(
         warnings.every((message) =>
           message.startsWith(

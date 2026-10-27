@@ -1,0 +1,6 @@
+{
+  "description": "GIVEN a config without scopedLibs WHEN the scoped libs are copied THEN it asks for them on stderr, copies nothing and exits with 1",
+  "args": ["scoped-libs"],
+  "exitCode": 1,
+  "snapshot": ["stdout", "stderr"]
+}
