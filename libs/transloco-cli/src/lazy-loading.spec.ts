@@ -433,6 +433,7 @@ describe('lazy loading', () => {
       'keys-manager/utils/json.utils',
       'keys-manager/utils/normalize-glob-path',
       'keys-manager/utils/object.utils',
+      'keys-manager/utils/path.utils',
       'keys-manager/utils/resolve-project-base-path',
       'keys-manager/utils/validators.utils',
       'utils/file-system',

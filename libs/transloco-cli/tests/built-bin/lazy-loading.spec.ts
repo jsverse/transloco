@@ -152,6 +152,7 @@ const init: Allowed = {
     'src/keys-manager/utils/json.utils.js',
     'src/keys-manager/utils/normalize-glob-path.js',
     'src/keys-manager/utils/object.utils.js',
+    'src/keys-manager/utils/path.utils.js',
     'src/keys-manager/utils/resolve-project-base-path.js',
     'src/keys-manager/utils/validators.utils.js',
     'src/utils/file-system.js',

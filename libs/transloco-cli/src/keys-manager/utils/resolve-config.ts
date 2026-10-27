@@ -7,7 +7,7 @@ import {
   TranslocoGlobalConfig,
 } from '../../config/index.js';
 import { nameConfigFile } from '../../config/load-error.js';
-import { style, styleError } from '../../utils/style.js';
+import { styleError } from '../../utils/style.js';
 import { defaultConfig } from '../config.js';
 import { getScopes } from '../keys-builder/utils/scope.utils.js';
 import { messages } from '../messages.js';
@@ -179,8 +179,8 @@ function validateDirectories(
   const projects = inputMissing && suggestProject ? listProjects() : [];
 
   if (projects.length) {
-    console.log(
-      style(
+    console.error(
+      styleError(
         ['bgRed', 'black'],
         `Pass --project <name> to take the sources of a project, or --input to name them. ${describeProjects(projects)}`,
       ),
