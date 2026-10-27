@@ -46,7 +46,7 @@ nx migrate @jsverse/transloco  # Nx
 
 ## Transloco Keys Manager, Optimize, Scoped Libs & Validator
 
-- The packages are ES modules now, and so is the new `@jsverse/transloco-cli`. The commands, their flags, their output and their exit codes are unchanged. What Node.js itself prints when one of the old bins fails on an uncaught error is different: the stack trace, and its own "cannot find" message when a required peer such as `typescript` is not installed, whose code is now `ERR_MODULE_NOT_FOUND`.
+- The packages are ES modules now, and so is the new `@jsverse/transloco-cli`. The commands, their flags, their output and their exit codes are unchanged, except that the files are now read in name order, so the first extraction after upgrading may reorder the keys of an existing file once. What Node.js itself prints when one of the old bins fails on an uncaught error is different: the stack trace, and its own "cannot find" message when a required peer such as `typescript` is not installed, whose code is now `ERR_MODULE_NOT_FOUND`.
 - `require()` of the packages returns the module namespace object. Named exports and `.default` are read from it as before, but Optimize, which has named exports only, no longer carries `__esModule`.
 - `import` of Validator and of Scoped Libs gives the function as the default export, it used to be an object holding the function in `default`. Optimize has named exports only, the default export holding all of them is gone.
 
