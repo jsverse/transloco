@@ -1,7 +1,7 @@
 import cliValidator from '@jsverse/transloco-cli/internal/validator';
 import { describe, expect, it } from 'vitest';
 
-import * as main from './lib/transloco-validator';
+import * as main from './lib/transloco-validator.js';
 
 describe('transloco-validator main', () => {
   it(`GIVEN the package's main module

@@ -1,9 +1,9 @@
 import fs from 'fs-extra';
 
-import { Config, Translation } from '../types';
+import { Config, Translation } from '../types.js';
 
-import { createTranslation } from './utils/create-translation';
-import { getCurrentTranslation } from './utils/get-current-translation';
+import { createTranslation } from './utils/create-translation.js';
+import { getCurrentTranslation } from './utils/get-current-translation.js';
 
 export interface FileAction {
   path: string;

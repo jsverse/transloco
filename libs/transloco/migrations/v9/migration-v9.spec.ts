@@ -1009,13 +1009,56 @@ describe('findVersionFloorWarnings', () => {
     },
   );
 
+  it.each(['22.0.0', '22.11.0', '22.17.1', '23.11.0'])(
+    `GIVEN Node %s
+      WHEN the floors are checked
+      THEN the packages running on the CLI are reported with the same range`,
+    (version) => {
+      const warnings = findVersionFloorWarnings(version);
+
+      expect(warnings).toHaveLength(1);
+      expect(warnings[0]).toContain('^22.18.0 || >=24');
+      expect(warnings[0]).toContain(
+        '@jsverse/transloco-optimize, @jsverse/transloco-validator require the same range',
+      );
+      expect(warnings[0]).toContain('@jsverse/transloco-cli');
+    },
+  );
+
   it(`GIVEN Node 20
       WHEN the floors are checked
-      THEN the Node 22 floor is reported`, () => {
+      THEN the range the CLI packages require is reported`, () => {
     const [warning] = findVersionFloorWarnings('20.19.0');
 
-    expect(warning).toContain('Node >=22');
+    expect(warning).toContain('Node ^22.18.0 || >=24');
+    expect(warning).not.toContain('>=22');
   });
+
+  it.each(['18.20.4', '20.19.0', '21.7.3'])(
+    `GIVEN Node %s
+      WHEN the floors are checked
+      THEN every CLI package is reported with the range it requires`,
+    (version) => {
+      const warnings = findVersionFloorWarnings(version);
+
+      expect(warnings).toHaveLength(1);
+      expect(warnings[0]).toContain(
+        'The Transloco CLI packages now require Node ^22.18.0 || >=24:',
+      );
+      expect(warnings[0]).toContain(
+        'moved from chokidar 3 to 5 (ESM-only), which it now gets through @jsverse/transloco-cli',
+      );
+      for (const name of [
+        'keys-manager',
+        'optimize',
+        'scoped-libs',
+        'utils',
+        'validator',
+      ]) {
+        expect(warnings[0]).toContain(`@jsverse/transloco-${name}`);
+      }
+    },
+  );
 });
 
 describe('migration-v9', () => {

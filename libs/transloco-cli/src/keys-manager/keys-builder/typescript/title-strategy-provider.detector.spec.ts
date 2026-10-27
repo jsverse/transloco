@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
-import { parseTsSource } from '../../utils/ts-ast.utils';
+import { parseTsSource } from '../../utils/ts-ast.utils.js';
 
 import {
   importsTitleStrategyProvider,
   mentionsTitleStrategyProvider,
-} from './title-strategy-provider.detector';
+} from './title-strategy-provider.detector.js';
 
 function parse(content: string) {
   return parseTsSource(content);

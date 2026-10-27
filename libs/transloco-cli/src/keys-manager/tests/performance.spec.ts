@@ -14,15 +14,15 @@ import {
 } from 'vitest';
 import { parseTemplate as ngParseTemplate } from '@angular/compiler';
 
-import { templateExtractor } from '../keys-builder/template';
-import { pipeExtractor } from '../keys-builder/template/pipe.extractor';
-import { directiveExtractor } from '../keys-builder/template/directive.extractor';
-import { structuralDirectiveExtractor } from '../keys-builder/template/structural-directive.extractor';
-import { extractTSKeys } from '../keys-builder/typescript';
-import { readFile } from '../utils/file.utils';
-import { parseTsSource } from '../utils/ts-ast.utils';
-import { setConfig } from '../config';
-import { ScopeMap, Scopes } from '../types';
+import { templateExtractor } from '../keys-builder/template/index.js';
+import { pipeExtractor } from '../keys-builder/template/pipe.extractor.js';
+import { directiveExtractor } from '../keys-builder/template/directive.extractor.js';
+import { structuralDirectiveExtractor } from '../keys-builder/template/structural-directive.extractor.js';
+import { extractTSKeys } from '../keys-builder/typescript/index.js';
+import { readFile } from '../utils/file.utils.js';
+import { parseTsSource } from '../utils/ts-ast.utils.js';
+import { setConfig } from '../config.js';
+import { ScopeMap, Scopes } from '../types.js';
 
 /**
  * Performance benchmarks to ensure the tool scales to large monorepo apps and
@@ -34,7 +34,7 @@ import { ScopeMap, Scopes } from '../types';
  * Timings are still logged with console.info for informational purposes.
  */
 
-vi.mock('../utils/logger', () => ({
+vi.mock('../utils/logger.js', () => ({
   getLogger: () => ({
     log: vi.fn(),
     success: vi.fn(),
@@ -51,8 +51,9 @@ vi.mock('@angular/compiler', async (importOriginal) => {
   };
 });
 
-vi.mock('../utils/ts-ast.utils', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../utils/ts-ast.utils')>();
+vi.mock('../utils/ts-ast.utils.js', async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import('../utils/ts-ast.utils.js')>();
   return {
     ...actual,
     parseTsSource: vi.fn(actual.parseTsSource),

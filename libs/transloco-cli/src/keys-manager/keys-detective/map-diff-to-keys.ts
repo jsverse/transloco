@@ -1,7 +1,7 @@
 import type { Diff, DiffEdit } from 'deep-diff';
 
-import { buildPath } from '../utils/path.utils';
-import { isObject } from '../utils/validators.utils';
+import { buildPath } from '../utils/path.utils.js';
+import { isObject } from '../utils/validators.utils.js';
 
 export function mapDiffToKeys(
   diffArr: Diff<any>[],

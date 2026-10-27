@@ -5,7 +5,7 @@ import {
   getTranslationFiles,
   optimizeFiles,
   getTranslationsFolder,
-} from './lib/transloco-optimize';
+} from './lib/transloco-optimize.js';
 
 const optionDefinitions: commandLineArgs.OptionDefinition[] = [
   { name: 'commentsKey', alias: 'k', type: String, defaultValue: 'comment' },

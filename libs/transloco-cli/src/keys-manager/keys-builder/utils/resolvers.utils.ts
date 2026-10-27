@@ -1,7 +1,7 @@
 import { LiteralPrimitive } from '@angular/compiler';
 
-import { Scopes } from '../../types';
-import { isString } from '../../utils/validators.utils';
+import { Scopes } from '../../types.js';
+import { isString } from '../../utils/validators.utils.js';
 
 export function resolveAliasAndKey(
   key: LiteralPrimitive['value'],

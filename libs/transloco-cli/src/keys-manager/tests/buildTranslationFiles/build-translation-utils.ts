@@ -7,7 +7,7 @@ import {
   buildConfig as _buildConfig,
   BuildConfigOptions,
   removeI18nFolder as _removeI18nFolder,
-} from '../spec-utils';
+} from '../spec-utils.js';
 
 export const sourceRoot =
   'libs/transloco-cli/src/keys-manager/tests/buildTranslationFiles';

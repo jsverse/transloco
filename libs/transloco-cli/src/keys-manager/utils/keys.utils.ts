@@ -1,7 +1,7 @@
-import { messages } from '../messages';
+import { messages } from '../messages.js';
 
-import { getLogger } from './logger';
-import { isObject } from './validators.utils';
+import { getLogger } from './logger.js';
+import { isObject } from './validators.utils.js';
 
 export function countKeys(obj: Record<string, any>): number {
   return Object.keys(obj).reduce(

@@ -1,6 +1,6 @@
-import { messages } from '../messages';
-import { BaseParams } from '../types';
-import { isFunction, isNil, isString } from '../utils/validators.utils';
+import { messages } from '../messages.js';
+import { BaseParams } from '../types.js';
+import { isFunction, isNil, isString } from '../utils/validators.utils.js';
 
 interface AddKeysParams extends BaseParams {
   scopeAlias: string | null;

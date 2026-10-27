@@ -1,7 +1,7 @@
 import * as cli from '@jsverse/transloco-cli/internal/optimize';
 import { describe, expect, it } from 'vitest';
 
-import * as main from './lib/transloco-optimize';
+import * as main from './lib/transloco-optimize.js';
 
 describe('transloco-optimize main', () => {
   it(`GIVEN the package's main module

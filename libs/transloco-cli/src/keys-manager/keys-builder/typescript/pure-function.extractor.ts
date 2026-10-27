@@ -1,8 +1,8 @@
-import { isNamed } from '../../utils/ts-ast.utils';
+import { isNamed } from '../../utils/ts-ast.utils.js';
 
-import { buildKeysFromCall } from './build-keys-from-call';
-import { SourceFileScan } from './scan-source-file';
-import { TSExtractorResult } from './types';
+import { buildKeysFromCall } from './build-keys-from-call.js';
+import { SourceFileScan } from './scan-source-file.js';
+import { TSExtractorResult } from './types.js';
 
 // `translate('key')` from `@jsverse/transloco`
 export function pureFunctionExtractor({

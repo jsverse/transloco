@@ -20,7 +20,7 @@ describe('transloco-validator bin', () => {
   async function runBin(...args: string[]) {
     process.argv = ['node', 'transloco-validator', ...args];
     vi.resetModules();
-    await import('./index');
+    await import('./index.js');
   }
 
   it(`GIVEN translation file paths as arguments

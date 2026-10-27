@@ -2,8 +2,8 @@ import { unflatten } from 'flat';
 import fs from 'fs-extra';
 import { po } from 'gettext-parser';
 
-import { getConfig } from '../../config';
-import { FileFormats, Translation } from '../../types';
+import { getConfig } from '../../config.js';
+import { FileFormats, Translation } from '../../types.js';
 
 function parseJson(path: string): Translation {
   return fs.readJsonSync(path, { throws: false }) || {};

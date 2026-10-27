@@ -1,9 +1,9 @@
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'fs';
 import { join, resolve } from 'path';
 
-import run from './transloco-scoped-libs';
+import run from './transloco-scoped-libs.js';
 
-const TEST_DIR = resolve(__dirname, '../../test-multi-scope');
+const TEST_DIR = resolve(import.meta.dirname, '../../test-multi-scope');
 
 describe('Multi-scope i18n with join strategy', () => {
   beforeEach(() => {

@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
-import { buildScopeFilePaths } from '../utils/path.utils';
-import type { Config, Scopes } from '../types';
+import { buildScopeFilePaths } from '../utils/path.utils.js';
+import type { Config, Scopes } from '../types.js';
 
 let mockConfig: Partial<Config> = {};
 
-vi.mock('../config', () => ({
+vi.mock('../config.js', () => ({
   getConfig: () => mockConfig,
   setConfig: vi.fn(),
 }));
