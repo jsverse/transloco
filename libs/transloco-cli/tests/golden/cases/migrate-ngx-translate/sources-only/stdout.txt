@@ -11,16 +11,18 @@ Migrating HTML files 📜
 ⚠️ No files match the pattern: <cwd>/src/app/**/*.html
 
 Migrating TS files 📜
-⏳ Step 1/5: Migrating modules
-✅ Step 1/5: Migrating modules
-⏳ Step 2/5: Migrating imports
-✅ Step 2/5: Migrating imports
-⏳ Step 3/5: Migrating constructor injections
-✅ Step 3/5: Migrating constructor injections
-⏳ Step 4/5: Migrating service usage
-✅ Step 4/5: Migrating service usage
-⏳ Step 5/5: Migrating specs
-✅ Step 5/5: Migrating specs
+⏳ Step 1/6: Migrating inline templates
+✅ Step 1/6: Migrating inline templates
+⏳ Step 2/6: Migrating modules
+✅ Step 2/6: Migrating modules
+⏳ Step 3/6: Migrating imports
+✅ Step 3/6: Migrating imports
+⏳ Step 4/6: Migrating constructor injections
+✅ Step 4/6: Migrating constructor injections
+⏳ Step 5/6: Migrating service usage
+✅ Step 5/6: Migrating service usage
+⏳ Step 6/6: Migrating specs
+✅ Step 6/6: Migrating specs
 ⚠️ No files match the pattern: <cwd>/src/app/**/*spec.ts
 
               🌵 Done! 🌵

@@ -12,10 +12,15 @@ import {
 } from '@jsverse/transloco-cli/internal/keys-manager';
 
 // The action may follow options, so it's looked up the way the parser below finds it
-const { command: action } = commandLineArgs(
-  [{ name: 'command', defaultOption: true }, ...optionDefinitions],
-  { camelCase: true, partial: true },
-);
+let action: string | undefined;
+try {
+  ({ command: action } = commandLineArgs(
+    [{ name: 'command', defaultOption: true }, ...optionDefinitions],
+    { camelCase: true, partial: true },
+  ));
+} catch {
+  // An invalid option set (e.g. a repeated --input) fails the parse below as it always did, after the notice
+}
 
 warnDeprecatedBin('transloco-keys-manager', action);
 
