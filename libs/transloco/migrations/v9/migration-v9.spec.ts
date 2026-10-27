@@ -3058,6 +3058,38 @@ describe('migration-v9 npm scripts', () => {
     );
   });
 
+  it(`GIVEN a package.json with a null dependency section
+      WHEN the migration runs
+      THEN the other manifests are still reported`, async () => {
+    const { infos } = await runWith(
+      {
+        '/packages/a/package.json':
+          '{"name":"a","dependencies":null,"devDependencies":null}',
+      },
+      {},
+      {
+        listCli: true,
+        devDependencies: { '@jsverse/transloco-validator': '^8.0.0' },
+      },
+    );
+
+    expect(infos.join('\n')).toContain(
+      `/package.json: @jsverse/transloco-validator`,
+    );
+  });
+
+  it(`GIVEN a package.json that starts with a BOM and lists a deprecated package
+      WHEN the migration runs
+      THEN the package is reported`, async () => {
+    const { infos } = await runWith({
+      '/packages/a/package.json': `\uFEFF{"name":"a","devDependencies":{"@jsverse/transloco-validator":"^8.0.0"}}`,
+    });
+
+    expect(infos.join('\n')).toContain(
+      `/packages/a/package.json: @jsverse/transloco-validator`,
+    );
+  });
+
   it(`GIVEN no deprecated package in any package.json
       WHEN the migration runs
       THEN no notice is printed`, async () => {

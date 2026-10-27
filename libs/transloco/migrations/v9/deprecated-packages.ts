@@ -59,17 +59,19 @@ export function reportDeprecatedPackages(): Rule {
       let manifest: Record<string, unknown>;
 
       try {
-        manifest = JSON.parse(tree.read(path)?.toString() ?? '');
+        manifest = JSON.parse(
+          (tree.read(path)?.toString() ?? '').replace(/^\uFEFF/, ''),
+        );
       } catch {
         continue;
       }
 
       for (const name of [...Object.keys(REPLACEMENTS), UTILS_PACKAGE]) {
-        const listed = DEPENDENCY_FIELDS.some(
-          (field) =>
-            typeof manifest?.[field] === 'object' &&
-            name in (manifest[field] as object),
-        );
+        const listed = DEPENDENCY_FIELDS.some((field) => {
+          const section = manifest?.[field];
+
+          return !!section && typeof section === 'object' && name in section;
+        });
 
         if (listed) found.push({ path, name });
       }
