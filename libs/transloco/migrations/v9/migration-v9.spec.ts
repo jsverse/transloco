@@ -1530,6 +1530,9 @@ describe('findVersionFloorWarnings', () => {
 
       expect(warning).toContain('^22.18.0 || >=24');
       expect(warning).toContain('@jsverse/transloco-utils');
+      expect(warning).toContain(
+        'These packages now require Node ^22.18.0 || >=24:\n    @jsverse/transloco-cli,',
+      );
     },
   );
 
@@ -1573,6 +1576,7 @@ describe('findVersionFloorWarnings', () => {
         'moved from chokidar 3 to 5 (ESM-only), which it now gets through @jsverse/transloco-cli',
       );
       for (const name of [
+        'cli',
         'keys-manager',
         'optimize',
         'schematics',

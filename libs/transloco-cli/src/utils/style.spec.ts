@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { style } from './style.js';
+import { style, styleError } from './style.js';
 
 const red = (text: string) => `\u001B[31m${text}\u001B[39m`;
 
@@ -139,6 +139,34 @@ describe('style', () => {
 
       expect(style('magenta', 'Starting Transloco Scoped Libs...')).toBe(
         '\u001B[35mStarting Transloco Scoped Libs...\u001B[39m',
+      );
+    });
+  });
+
+  describe('styleError', () => {
+    beforeEach(() => {
+      vi.stubEnv('FORCE_COLOR', undefined);
+    });
+
+    it(`GIVEN stderr is a terminal, while stdout is not
+        WHEN a text is styled for stderr
+        THEN it gets the codes of the style`, () => {
+      setIsTTY(process.stdout, false);
+      setIsTTY(process.stderr, true);
+
+      expect(styleError('red', 'Input path is missing')).toBe(
+        red('Input path is missing'),
+      );
+    });
+
+    it(`GIVEN stdout is a terminal, while stderr is not
+        WHEN a text is styled for stderr
+        THEN it is left plain, as stderr is where it gets printed`, () => {
+      setIsTTY(process.stdout, true);
+      setIsTTY(process.stderr, false);
+
+      expect(styleError('red', 'Input path is missing')).toBe(
+        'Input path is missing',
       );
     });
   });

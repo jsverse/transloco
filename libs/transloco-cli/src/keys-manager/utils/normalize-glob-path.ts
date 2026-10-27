@@ -1,5 +1,7 @@
 import { GlobOptionsWithFileTypesFalse, sync as globSync } from 'glob';
 
+import { pathUnixFormat } from './path.utils.js';
+
 export function normalizedGlob(
   path: string,
   options: GlobOptionsWithFileTypesFalse = {},
@@ -24,5 +26,12 @@ export function normalizedGlob(
     ignore: [...defaultIgnores, ...customIgnores],
   };
 
-  return globSync(normalizedPath, mergedOptions);
+  // glob walks in whatever order the file system returns entries, sort on
+  // forward-slash paths so every OS and file system yields the same order
+  return globSync(normalizedPath, mergedOptions).sort((a, b) => {
+    const unixA = pathUnixFormat(a);
+    const unixB = pathUnixFormat(b);
+
+    return unixA < unixB ? -1 : unixA > unixB ? 1 : 0;
+  });
 }
