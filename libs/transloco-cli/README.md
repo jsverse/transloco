@@ -80,7 +80,7 @@ transloco find --translations-path src/assets/i18n --emit-error-on-extra-keys
 
 Exits with `1` when keys are missing, unless `--add-missing-keys` adds them, and with `2` when `--emit-error-on-extra-keys` is set and extra keys were found.
 
-`find` takes `--project`, `--config`, `--input`, `--file-format`, `--marker`, `--sort`, `--unflat` and `--default-value` like `extract` does, with the same defaults, and the config is looked up the same way. `--sort` and `--default-value` change what `--add-missing-keys` writes. Its own options:
+`find` takes `--project`, `--config`, `--input`, `--file-format`, `--marker`, `--sort`, `--unflat` and `--default-value` like `extract` does, with the same defaults, and the config is looked up the same way. `--sort` and `--default-value` change what `--add-missing-keys` writes. `find` reads `json` translation files only, so `--file-format pot` (or `pot` in the config) stops it with `1` and a message saying so. Its own options:
 
 | Option                           | Meaning                                                                                                                          |
 | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |

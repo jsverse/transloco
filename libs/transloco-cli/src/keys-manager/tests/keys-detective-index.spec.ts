@@ -12,7 +12,7 @@ vi.mock('../utils/resolve-config.js', () => ({
   resolveConfig: (config: any) => ({
     ...config,
     translationsPath: '/tmp/i18n',
-    fileFormat: 'json',
+    fileFormat: config.fileFormat ?? 'json',
     addMissingKeys: false,
     emitErrorOnExtraKeys: false,
     unflat: false,
@@ -80,5 +80,11 @@ describe('findMissingKeys', () => {
       unflat: false,
       scopePathMap: { admin: 'libs/admin/i18n' },
     });
+  });
+
+  it('should fail with a clear message when the format is not json', () => {
+    expect(() => findMissingKeys({ fileFormat: 'pot' } as Config)).toThrowError(
+      'find supports only json translation files, not "pot"',
+    );
   });
 });
