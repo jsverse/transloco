@@ -83,6 +83,8 @@ export async function runInit({
     workspace.projectBasePath,
     manifest,
   );
+  // Looked into before anything is written, as it reads the workspace
+  const closing = nextStep(workspace);
 
   const exists = (file: string) => lstat(path.resolve(file)) !== undefined;
   const state = {
@@ -109,7 +111,7 @@ export async function runInit({
     assertPlanCanBeWritten(steps);
     applySteps(steps, ({ message }) => console.log(message));
 
-    console.log(nextStep(workspace));
+    console.log(closing);
 
     return;
   }
@@ -149,7 +151,7 @@ export async function runInit({
   assertPlanCanBeWritten(planned);
   applySteps(planned, ui.reportStep);
 
-  ui.endPrompts(nextStep(workspace));
+  ui.endPrompts(closing);
 }
 
 /**

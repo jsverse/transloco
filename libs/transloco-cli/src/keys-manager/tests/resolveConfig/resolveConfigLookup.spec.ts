@@ -152,7 +152,7 @@ describe('resolveConfig config lookup', () => {
 
   it(`GIVEN a config beside the package.json above the working directory
       WHEN the config is resolved, found or named with --config
-      THEN its paths are taken from its own folder`, () => {
+      THEN the paths of the found one are taken from its folder, and the ones named with --config from the working directory, as in v8`, () => {
     const file = writeConfig('.', {
       rootTranslationsPath: 'apps/web/src/assets/i18n',
       scopePathMap: {
@@ -185,14 +185,16 @@ describe('resolveConfig config lookup', () => {
         shared: '${sourceRoot}/shared/i18n',
       },
     });
-    expect(resolveConfig({ config: file } as any)).toEqual({
-      ...found,
-      config: file,
-    });
-    expect(resolveConfig({ config: '../..' } as any)).toEqual({
-      ...found,
-      config: '../..',
-    });
+    for (const config of [file, '../..']) {
+      expect(resolveConfig({ config } as any)).toMatchObject({
+        translationsPath: path.resolve(
+          dir,
+          'apps/web/apps/web/src/assets/i18n',
+        ),
+        output: path.resolve(dir, 'apps/web/apps/web/src/assets/out'),
+        scopePathMap: { admin: 'apps/web/src/admin/i18n' },
+      });
+    }
   });
 
   it(`GIVEN a config with absolute paths beside the package.json above the working directory

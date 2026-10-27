@@ -38,7 +38,11 @@ export function resolveConfig(inlineConfig: Partial<Config>): Config {
       }
     : searchGlobalConfig(sourceRoot);
   const userConfig = {
-    ...rebasePaths(flatFileConfig(fileConfig), configFile),
+    // A config named with `--config` keeps its paths relative to the working directory, as in v8
+    ...rebasePaths(
+      flatFileConfig(fileConfig),
+      inlineConfig.config ? undefined : configFile,
+    ),
     ...inlineConfig,
   };
   const mergedConfig = {
@@ -106,8 +110,8 @@ function flatFileConfig({
 
 /**
  * The paths of a config are relative to the working directory, except in a
- * config above it, the one at the root of the repository when the command
- * runs in a project folder, whose paths are relative to its own folder. They
+ * config found above it, the one at the root of the repository when the
+ * command runs in a project folder, whose paths are relative to its own folder. They
  * are made relative to the working directory here. A path holding
  * `${sourceRoot}` is left as it is, the source root is relative to the
  * working directory already.
@@ -119,9 +123,7 @@ function rebasePaths(
   if (configFile === undefined) return options;
 
   const cwd = process.cwd();
-  const configDir = isDirectory(configFile)
-    ? path.resolve(configFile)
-    : path.dirname(path.resolve(configFile));
+  const configDir = path.dirname(path.resolve(configFile));
   const fromCwd = path.relative(configDir, cwd);
 
   if (!fromCwd || fromCwd.startsWith('..') || path.isAbsolute(fromCwd)) {
