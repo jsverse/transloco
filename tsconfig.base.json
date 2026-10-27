@@ -17,6 +17,9 @@
       "@jsverse/transloco": ["./libs/transloco/src/index.ts"],
       "@jsverse/transloco/router": ["./libs/transloco/router/src/index.ts"],
       "@jsverse/transloco-cli": ["./libs/transloco-cli/src/index.ts"],
+      "@jsverse/transloco-cli/internal/deprecation": [
+        "./libs/transloco-cli/src/deprecation/index.ts"
+      ],
       "@jsverse/transloco-cli/internal/keys-manager": [
         "./libs/transloco-cli/src/keys-manager/index.ts"
       ],

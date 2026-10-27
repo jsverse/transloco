@@ -33,7 +33,11 @@
       "types": "./src/validator/index.d.ts",
       "default": "./src/validator/index.js"
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./internal/deprecation": {
+      "types": "./src/deprecation/index.d.ts",
+      "default": "./src/deprecation/index.js"
+    }
   },
   "main": "src/index.js",
   "bin": {

@@ -12,6 +12,7 @@
   "type": "module",
   "main": "src/lib/transloco-validator.js",
   "module": "src/lib/transloco-validator.js",
+  "types": "src/lib/transloco-validator.d.ts",
   "bin": {
     "transloco-validator": "src/index.js"
   },
