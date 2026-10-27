@@ -62,6 +62,31 @@ describe('scope', () => {
     );
   });
 
+  it(`GIVEN a config with a rootTranslationsPath
+      WHEN the scope schematic runs
+      THEN the language files are created under it`, async () => {
+    mockedConfig = {
+      langs: ['en', 'es'],
+      rootTranslationsPath: 'public/i18n/',
+    };
+
+    const tree = await schematicRunner.runSchematic(
+      'scope',
+      { name: 'reports', project: 'bar' },
+      appTree,
+    );
+
+    expect(tree.files).toEqual(
+      expect.arrayContaining([
+        '/public/i18n/reports/en.json',
+        '/public/i18n/reports/es.json',
+      ]),
+    );
+    expect(tree.files).not.toContain(
+      '/projects/bar/src/assets/i18n/reports/en.json',
+    );
+  });
+
   it(`GIVEN a scope name and the inline loader option
       WHEN the scope schematic runs
       THEN the loader is generated beside the module`, async () => {

@@ -143,6 +143,13 @@ function addInlineLoader(
   tree.create(path, loader);
 }
 
+/** The folder of the root translation files: `rootTranslationsPath` of the config, `<source root>/assets/i18n` when it isn't set. */
+function getTranslationsRoot(sourceRoot: string) {
+  return (
+    getGlobalConfig().rootTranslationsPath ?? join(sourceRoot, 'assets', 'i18n')
+  );
+}
+
 function createTranslationFiles(
   options: SchemaOptions,
   rootPath: string,
@@ -154,7 +161,7 @@ function createTranslationFiles(
   }
   const defaultPath = options.inlineLoader
     ? join(dirname(modulePath), 'i18n')
-    : join(rootPath, 'assets', 'i18n', dasherize(options.name));
+    : join(getTranslationsRoot(rootPath), dasherize(options.name));
   const translationsPath = options.translationPath
     ? join(rootPath, options.translationPath)
     : defaultPath;
@@ -181,7 +188,7 @@ export default function (options: SchemaOptions): Rule {
   return (host: Tree, context: SchematicContext) => {
     const project = getProject(host, options.project);
     const rootPath = project?.sourceRoot ?? 'src';
-    const assetsPath = join(rootPath, 'assets', 'i18n');
+    const assetsPath = getTranslationsRoot(rootPath);
     options.langs = getTranslationFiles(options, host, assetsPath);
     if (options.module) {
       const projectPath = getProjectPath(host, project, options);

@@ -2796,6 +2796,34 @@ describe('migration-v9 npm scripts', () => {
     expect(infos.join('\n')).toContain('/packages/ui/package.json: postbuild');
   });
 
+  it(`GIVEN a nested package.json whose scripts are rewritten
+      WHEN the migration runs
+      THEN it lists the CLI of its own, and one that doesn't move gets none`, async () => {
+    const { migrated, infos } = await runWith({
+      '/packages/ui/package.json': manifest({
+        postbuild: 'transloco-optimize dist/ui',
+      }),
+      '/packages/other/package.json': manifest({ build: 'ng build' }),
+      '/packages/listed/package.json': manifest(
+        { postbuild: 'transloco-optimize dist/ui' },
+        { listCli: true },
+      ),
+    });
+
+    const devDependencies = (path: string) =>
+      JSON.parse(migrated.readContent(path)).devDependencies;
+
+    expect(devDependencies('/packages/ui/package.json')[CLI]).toMatch(/^\^\d/);
+    expect(devDependencies('/packages/listed/package.json')[CLI]).toBe(
+      '^9.0.0',
+    );
+    expect(devDependencies('/packages/other/package.json')).toEqual({});
+    expect(infos.join('\n')).toContain(`Added '${CLI}@^`);
+    expect(infos.join('\n')).toContain(
+      `devDependencies of '/packages/ui/package.json'`,
+    );
+  });
+
   it.each([
     '/node_modules/dep/package.json',
     '/projects/bar/node_modules/dep/package.json',
@@ -3934,4 +3962,81 @@ describe('migration-v9 keeps the formatting of package.json', () => {
     expect(again.readContent('/package.json')).toBe(first);
     expect(nodePackageTasks(runner)).toHaveLength(0);
   });
+});
+
+describe('migration-v9 extract output', () => {
+  const WARNING = `'transloco extract' writes to rootTranslationsPath now`;
+
+  async function runWith(files: Record<string, string>) {
+    const runner = new SchematicTestRunner('migrations', collectionPath);
+    const warnings: string[] = [];
+    runner.logger.subscribe((entry) => {
+      if (entry.level === 'warn') warnings.push(entry.message);
+    });
+    const tree = await createWorkspace(runner);
+
+    for (const [path, content] of Object.entries(files)) {
+      tree.create(path, content);
+    }
+
+    await runner.runSchematic('migration-v9', {}, tree);
+
+    return warnings.join('\n');
+  }
+
+  const oldFolder = { '/projects/bar/src/assets/i18n/en.json': '{}' };
+
+  it.each([
+    [`export default { rootTranslationsPath: 'public/i18n/' };`],
+    [`{ "rootTranslationsPath": "./public/i18n" }`],
+  ])(
+    `GIVEN translation files in the old folder and a config pointing %s
+      WHEN the migration runs
+      THEN the new location is reported`,
+    async (config) => {
+      const warned = await runWith({
+        ...oldFolder,
+        '/transloco.config.ts': config,
+      });
+
+      expect(warned).toContain(WARNING);
+      expect(warned).toContain('projects/bar/src/assets/i18n -> public/i18n');
+      expect(warned).toContain('keysManager.output');
+    },
+  );
+
+  it.each([
+    [
+      'the old folder is empty',
+      {},
+      `export default { rootTranslationsPath: 'public/i18n/' };`,
+    ],
+    [
+      'the config points at the old folder',
+      oldFolder,
+      `export default { rootTranslationsPath: 'projects/bar/src/assets/i18n/' };`,
+    ],
+    [
+      'the config sets keysManager.output',
+      oldFolder,
+      `export default { rootTranslationsPath: 'public/i18n/', keysManager: { output: 'src/assets/i18n' } };`,
+    ],
+    [
+      'the config sets no rootTranslationsPath',
+      oldFolder,
+      `export default { langs: ['en'] };`,
+    ],
+  ])(
+    `GIVEN %s
+      WHEN the migration runs
+      THEN nothing is reported`,
+    async (_, files, config) => {
+      const warned = await runWith({
+        ...files,
+        '/transloco.config.ts': config,
+      });
+
+      expect(warned).not.toContain(WARNING);
+    },
+  );
 });

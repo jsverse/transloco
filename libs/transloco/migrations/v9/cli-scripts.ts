@@ -241,6 +241,7 @@ const REPLACEMENTS = `'transloco extract', 'transloco find', 'transloco validate
 export function migrateCliScripts(): Rule {
   return (tree: Tree, context: SchematicContext) => {
     const moved: Moved[] = [];
+    const movedManifests = new Set<string>();
     const kept: Kept[] = [];
     const bins = new Set<LegacyBin>();
     const others: string[] = [];
@@ -285,6 +286,7 @@ export function migrateCliScripts(): Rule {
             text: JSON.stringify(result.script),
           });
           moved.push({ path, name: script.name });
+          movedManifests.add(path);
           result.bins.forEach((bin) => bins.add(bin));
         }
       }
@@ -345,6 +347,18 @@ export function migrateCliScripts(): Rule {
         context,
         `npm scripts in your workspace run its 'transloco' bin now`,
       );
+
+      // A workspace package gets the bins of its own dependencies only under Yarn
+      for (const path of movedManifests) {
+        if (path !== '/package.json') {
+          addCliDependency(
+            tree,
+            context,
+            `its npm scripts run the 'transloco' bin now`,
+            path,
+          );
+        }
+      }
     }
   };
 }

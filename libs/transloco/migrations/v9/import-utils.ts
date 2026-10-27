@@ -157,12 +157,12 @@ function installedVersion(): string | null {
   }
 }
 
-/** Whether the root `package.json` has a key `name` in a dependency section, or `null` when it can't be read. */
-function isListed(tree: Tree, name: string): boolean | null {
+/** Whether the `package.json` at `path` has a key `name` in a dependency section, or `null` when it can't be read. */
+function isListed(tree: Tree, name: string, path: string): boolean | null {
   try {
     // `JSON.parse` rejects a byte order mark, which editors on Windows put at the start of a file
     const manifest = JSON.parse(
-      (tree.read('/package.json')?.toString() ?? '').replace(/^\uFEFF/, ''),
+      (tree.read(path)?.toString() ?? '').replace(/^\uFEFF/, ''),
     );
     if (!manifest || typeof manifest !== 'object' || Array.isArray(manifest))
       return null;
@@ -192,7 +192,9 @@ const scheduled = new WeakSet<SchematicContext>();
  * message that asks for the dependency when it can't be added.
  *
  * The entry is inserted into the text of the `package.json`, so the rest of
- * the file stays as the user wrote it.
+ * the file stays as the user wrote it. `manifest` is the one that gets it, the
+ * root one unless a workspace package needs the CLI of its own: Yarn runs the
+ * bins of the package's own dependencies only.
  *
  * Every step that needs the CLI calls this. The first one that finds it
  * missing adds it, and since the rules of a chain run one after the other on
@@ -202,14 +204,16 @@ export function addCliDependency(
   tree: Tree,
   context: SchematicContext,
   usage: string,
+  manifest = '/package.json',
 ): void {
-  const manual = `  ↳ Add '${CLI_PACKAGE}' to your devDependencies: ${usage}.`;
+  const where = manifest === '/package.json' ? '' : ` of '${manifest}'`;
+  const manual = `  ↳ Add '${CLI_PACKAGE}' to your devDependencies${where}: ${usage}.`;
 
-  const listed = isListed(tree, CLI_PACKAGE);
+  const listed = isListed(tree, CLI_PACKAGE, manifest);
   if (listed) return;
 
   const version = installedVersion();
-  const source = tree.read('/package.json')?.toString();
+  const source = tree.read(manifest)?.toString();
   const content =
     version && source
       ? addDevDependency(source, CLI_PACKAGE, `^${version}`)
@@ -219,9 +223,9 @@ export function addCliDependency(
     return;
   }
 
-  tree.overwrite('/package.json', content);
+  tree.overwrite(manifest, content);
   context.logger.info(
-    `  ↳ Added '${CLI_PACKAGE}@^${version}' to devDependencies.`,
+    `  ↳ Added '${CLI_PACKAGE}@^${version}' to devDependencies${where}.`,
   );
 
   if (!scheduled.has(context)) {
