@@ -135,13 +135,13 @@ function readTranslationFile(file: string) {
     content = readJsonFile(file);
   } catch (error) {
     throw new CliError(
-      `Transloco Migrate: ${file} isn't a translation file, nothing is migrated: ${(error as Error).message}`,
+      `Transloco Migrate: Nothing is migrated, a translation file can't be read: ${(error as Error).message}`,
     );
   }
 
   if (!isTranslation(content)) {
     throw new CliError(
-      `Transloco Migrate: ${file} isn't a translation file, nothing is migrated: it holds no JSON object`,
+      `Transloco Migrate: Nothing is migrated, a translation file can't be read: ${file}: it holds no JSON object`,
     );
   }
 

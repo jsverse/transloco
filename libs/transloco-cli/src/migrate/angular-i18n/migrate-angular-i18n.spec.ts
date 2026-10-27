@@ -322,7 +322,7 @@ describe('migrateAngularI18n', () => {
             langs: ['en', 'es'],
           }),
         ).toThrow(
-          `${path.join(dir, 'i18n', 'es.json')} isn't a translation file, nothing is migrated`,
+          `Transloco Migrate: Nothing is migrated, a translation file can't be read: ${path.join(dir, 'i18n', 'es.json')}: `,
         );
 
         expect(read('app/a.html')).toBe('<p i18n>One</p>');
