@@ -60,8 +60,20 @@ export function resolveConfig(inlineConfig: Partial<Config>): Config {
 
   if (mergedConfig.command === 'extract' && !userConfig.output) {
     checkOutputDefault(mergedConfig, {
-      outputDefault: outputDefault.output,
-      defaultOutput: defaults.output,
+      field: 'output',
+      fromConfig: outputDefault.output,
+      defaultFolder: defaults.output,
+      project: inlineConfig.project,
+      projectRoot,
+    });
+  }
+
+  // Find reads the folder extract writes to
+  if (mergedConfig.command === 'find' && !inlineConfig.translationsPath) {
+    checkOutputDefault(mergedConfig, {
+      field: 'translationsPath',
+      fromConfig: fileOptions.translationsPath,
+      defaultFolder: defaults.translationsPath,
       project: inlineConfig.project,
       projectRoot,
     });
@@ -122,44 +134,50 @@ function flatFileConfig({
 function checkOutputDefault(
   config: Config,
   {
-    outputDefault,
-    defaultOutput,
+    field,
+    fromConfig,
+    defaultFolder,
     project,
     projectRoot,
   }: {
-    outputDefault?: string;
-    defaultOutput: string;
+    field: 'output' | 'translationsPath';
+    fromConfig?: string;
+    defaultFolder: string;
     project?: string;
     projectRoot?: string;
   },
 ) {
-  if (!outputDefault) return;
+  if (!fromConfig) return;
+
+  const command = config.command === 'find' ? 'find' : 'extract';
+  const folder = config[field];
 
   if (project && projectRoot !== undefined) {
-    const fromRoot = path.relative(path.resolve(projectRoot), config.output);
+    const fromRoot = path.relative(path.resolve(projectRoot), folder);
     const isInProject =
       fromRoot !== '..' &&
       !fromRoot.startsWith(`..${path.sep}`) &&
       !path.isAbsolute(fromRoot);
 
     if (!isInProject) {
-      const output = path.resolve(defaultOutput);
+      const fallback = path.resolve(defaultFolder);
       console.warn(
-        `Transloco extract: The translations folder of the config, ${config.output}, is outside project ${project} (${projectRoot}). Writing to ${output} instead. Pass --output, set keysManager.output, or give ${project} a Transloco config whose rootTranslationsPath is in ${projectRoot}, relative to the working directory.`,
+        `Transloco ${command}: The translations folder of the config, ${folder}, is outside project ${project} (${projectRoot}). ${command === 'find' ? 'Reading' : 'Writing to'} ${fallback} instead. Pass ${command === 'find' ? '--translations-path' : '--output'}, set keysManager.${field}, or give ${project} a Transloco config whose rootTranslationsPath is in ${projectRoot}, relative to the working directory.`,
       );
-      config.output = output;
+      config[field] = fallback;
 
       return;
     }
   }
 
-  // The default folder is no news, extract has always created it
+  // The default folder is no news, extract has always created it. Find reports a missing one itself
   if (
-    path.resolve(config.output) !== path.resolve(defaultOutput) &&
-    !existsSync(config.output)
+    command === 'extract' &&
+    path.resolve(folder) !== path.resolve(defaultFolder) &&
+    !existsSync(folder)
   ) {
     console.warn(
-      `Transloco extract: The translations folder of the config, ${config.output}, does not exist and will be created. Its path is relative to the working directory.`,
+      `Transloco extract: The translations folder of the config, ${folder}, does not exist and will be created. Its path is relative to the working directory.`,
     );
   }
 }

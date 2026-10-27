@@ -513,7 +513,7 @@ describe('resolveConfig', () => {
 
     it(`GIVEN a root config whose rootTranslationsPath is in project a
         WHEN the keys of project b are looked for
-        THEN find reads rootTranslationsPath without a notice`, () => {
+        THEN find reads the folder extract writes to, and a notice says so`, () => {
       mockedGlobalConfig = {
         rootTranslationsPath: `${projectA}/public/i18n/`,
         keysManager: {},
@@ -524,8 +524,41 @@ describe('resolveConfig', () => {
         project: 'b',
         input: validInput,
       });
+      const { output } = resolveConfig({
+        command: 'extract',
+        project: 'b',
+        input: validInput,
+      });
 
-      expect(translationsPath).toBe(resolvePath(`${projectA}/public/i18n/`));
+      expect(translationsPath).toBe(resolvePath(`${projectB}/src/assets/i18n`));
+      expect(translationsPath).toBe(output);
+      expect(warn).toHaveBeenCalledWith(
+        expect.stringContaining(
+          `Transloco find: The translations folder of the config, ${resolvePath(`${projectA}/public/i18n/`)}, is outside project b (${projectB}). Reading ${resolvePath(`${projectB}/src/assets/i18n`)} instead.`,
+        ),
+      );
+    });
+
+    it(`GIVEN a root config whose rootTranslationsPath is in project a
+        WHEN the keys of project a are looked for, or of project b with --translations-path
+        THEN find reads rootTranslationsPath or that path, without a notice`, () => {
+      mockedGlobalConfig = {
+        rootTranslationsPath: `${projectA}/public/i18n/`,
+        keysManager: {},
+      };
+
+      expect(
+        resolveConfig({ command: 'find', project: 'a', input: validInput })
+          .translationsPath,
+      ).toBe(resolvePath(`${projectA}/public/i18n/`));
+      expect(
+        resolveConfig({
+          command: 'find',
+          project: 'b',
+          input: validInput,
+          translationsPath: `${projectA}/other`,
+        }).translationsPath,
+      ).toBe(resolvePath(`${projectA}/other`));
       expect(warn).not.toHaveBeenCalled();
     });
   });
