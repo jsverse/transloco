@@ -1,6 +1,6 @@
-import chalk from 'chalk';
 import Table from 'cli-table3';
 
+import { style } from '../../utils/style.js';
 import { messages } from '../messages.js';
 import { getLogger } from '../utils/logger.js';
 
@@ -29,13 +29,11 @@ export function buildTable({
     let displayAddedMsg = false;
     let hasExtraKeys = false;
 
-    logger.success(`\x1b[4m${messages.summary}\x1b[0m\n`);
+    logger.success(`${style('underline', messages.summary)}\n`);
     const table = new Table({
-      style: {
-        border: ['white'],
-      },
+      style: { border: [], head: [] },
       head: ['File Name', 'Missing Keys', 'Extra Keys'].map((h) =>
-        chalk.cyan(h),
+        style('cyan', h),
       ),
     });
 
@@ -47,7 +45,7 @@ export function buildTable({
 
       if (!(hasExtra || hasMissing)) continue;
 
-      row.push(chalk.blueBright(langs[i]));
+      row.push(style('blueBright', langs[i]));
 
       if (hasMissing) {
         row.push(mapDiffToKeys(missing, 'rhs'));
@@ -70,12 +68,18 @@ export function buildTable({
       if (addMissingKeys) {
         logger.success(`Added all missing keys\n`);
       } else {
-        process.exit(1);
+        // Not `process.exit`, which may end the process before a piped stdout
+        // took the whole table
+        process.exitCode = 1;
+
+        return;
       }
     }
 
     if (hasExtraKeys && emitErrorOnExtraKeys) {
-      process.exit(2);
+      process.exitCode = 2;
+
+      return;
     }
   } else {
     logger.log(`\n🎉 ${messages.noMissing} 🎉\n`);

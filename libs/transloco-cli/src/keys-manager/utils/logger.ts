@@ -1,7 +1,10 @@
 import debug from 'debug';
-import ora, { Ora } from 'ora';
 
-let spinner: Ora;
+import { style } from '../../utils/style.js';
+
+import { Spinner, startSpinner } from './spinner.js';
+
+let spinner: Spinner;
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function -- intentional no-op for production builds
 function noop() {}
@@ -11,7 +14,8 @@ const defaultLogger = {
   log: (...msg: string[]) => (isProd ? noop : console.log(...msg)),
   warn: (msg: string) => (isProd ? noop : console.warn(`⚠️  ${msg}`)),
   success: (msg: string) => (isProd ? noop : spinner.succeed(msg)),
-  startSpinner: (msg: string) => (isProd ? noop : (spinner = ora().start(msg))),
+  startSpinner: (msg: string) =>
+    isProd ? noop : (spinner = startSpinner(msg)),
 };
 
 export function getLogger() {
@@ -27,7 +31,7 @@ export function devlog(
 ) {
   if (!debug.enabled(`tkm:${namespace}`)) return;
 
-  console.log(`\n\x1b[4m🐞 DEBUG - ${tag}:\x1b[0m`);
+  console.log(`\n${style('underline', `🐞 DEBUG - ${tag}:`)}`);
   // To prevent from logging the namespace twice, we set an empty namespace and enable it
   const log = debug('');
   log.enabled = true;

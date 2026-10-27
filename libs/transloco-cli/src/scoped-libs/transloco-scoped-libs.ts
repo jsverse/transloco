@@ -1,11 +1,11 @@
 import path from 'node:path';
 
-import chalk from 'chalk';
 import { glob } from 'glob';
 import chokidar from 'chokidar';
-import { mkdirsSync } from 'fs-extra';
 
 import { TranslocoGlobalConfig } from '../config/index.js';
+import { makeDir } from '../utils/file-system.js';
+import { style } from '../utils/style.js';
 
 import {
   cutPath,
@@ -61,12 +61,12 @@ export default async function run({
   const startMsg = watch
     ? 'Running Transloco Scoped Libs in watch mode'
     : 'Starting Transloco Scoped Libs...';
-  console.log(chalk.magenta(startMsg));
+  console.log(style('magenta', startMsg));
 
   for (const lib of scopedLibsArr) {
     if (!lib.src) {
       console.log(
-        chalk.red(`Please specify the library's src.`, libSrcExample),
+        style('red', `Please specify the library's src.`, libSrcExample),
       );
 
       return;
@@ -75,7 +75,8 @@ export default async function run({
     const pkg = getPackageJson(lib.src);
     if (!pkg.content.i18n) {
       console.log(
-        chalk.red(
+        style(
+          'red',
           `${path.join(lib.src, 'package.json')} is missing i18n information.`,
           packageJsoni18nExample,
         ),
@@ -86,7 +87,8 @@ export default async function run({
 
     if (!lib.dist?.length) {
       console.log(
-        chalk.red(
+        style(
+          'red',
           'please specify dist path, by either set "rootTranslationsPath" or specify the "dist" for each library',
           libSrcExample,
         ),
@@ -151,7 +153,8 @@ function coerceScopedLibs(
 ): ScopedLib[] {
   if (!scopedLibs?.length) {
     console.log(
-      chalk.red(
+      style(
+        'red',
         'Please add "scopedLibs" configuration in transloco.config.ts file.',
         libSrcExample,
       ),
@@ -180,7 +183,7 @@ function copyScopes(options: CopyScopeOptions) {
       resolvedOptions.outputDir,
       options.scope,
     );
-    mkdirsSync(resolvedOptions.outputDir);
+    makeDir(resolvedOptions.outputDir);
   }
 
   copyScopeTranslationFiles(resolvedOptions);
@@ -205,9 +208,9 @@ function copyScopeTranslationFiles(options: CopyScopeTranslationsOptions) {
 
     console.log(
       '✅ Copy translation from file:',
-      chalk.blue(cutPath(translationFilePath)),
+      style('blue', cutPath(translationFilePath)),
       'to:',
-      chalk.blue(cutPath(outputFilePath)),
+      style('blue', cutPath(outputFilePath)),
     );
 
     if (!skipGitIgnoreUpdate) {

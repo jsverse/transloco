@@ -1,6 +1,7 @@
-import ts, { SourceFile } from 'typescript';
+import type { SourceFile } from 'typescript';
 
 import { hasDescendant } from '../../utils/ts-ast.utils.js';
+import ts from '../../utils/typescript.js';
 
 const titleStrategyMention = /\b(?:provide)?TranslocoTitleStrategy\b/;
 

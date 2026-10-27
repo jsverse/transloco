@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN -h after --, where nothing is an option any more WHEN extract runs THEN it is not a request for the help: it is rejected as an argument extract does not take, no usage is printed, nothing is written and it exits with 1",
+  "args": [
+    "extract",
+    "-R",
+    "--",
+    "-h"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

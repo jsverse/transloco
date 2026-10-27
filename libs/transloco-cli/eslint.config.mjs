@@ -22,5 +22,6 @@ export default [
   // prettier: optional, loaded via a guarded dynamic import when the user has it.
   // domhandler: type-only import, installed through htmlparser2.
   // commander: peer dependency of @commander-js/extra-typings, never imported directly.
-  dependencyChecks(['prettier', 'domhandler', 'commander']),
+  // tslib: `importHelpers` is off, so the output never requires it.
+  dependencyChecks(['prettier', 'domhandler', 'commander', 'tslib']),
 ];
