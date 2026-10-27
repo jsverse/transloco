@@ -1,4 +1,4 @@
-import tty from 'node:tty';
+import { styleText } from 'node:util';
 
 import yoctoSpinner from 'yocto-spinner';
 
@@ -33,13 +33,10 @@ function isUnicodeSupported() {
   );
 }
 
-// The colour follows the environment and not the stream: a log gets the green
-// a terminal of that environment would show, unless `NO_COLOR`, `FORCE_COLOR=0`
-// or a CI say otherwise.
+// Coloured by what stderr takes, as the text is written there: not when it's
+// piped to a file, unless `FORCE_COLOR` says otherwise.
 const mark = isUnicodeSupported() ? '✔' : '√';
-const successSymbol = tty.WriteStream.prototype.hasColors()
-  ? `\u001B[32m${mark}\u001B[39m`
-  : mark;
+const successSymbol = styleText('green', mark, { stream });
 
 // The braille frames of the default spinner need Unicode, so the plain line spinner stands in
 const spinnerStyle = isUnicodeSupported()
