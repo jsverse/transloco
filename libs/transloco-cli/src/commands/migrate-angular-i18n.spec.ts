@@ -227,9 +227,9 @@ describe('runMigrateAngularI18n', () => {
       expect(read('src/assets/i18n/en.json')).toBe('{\n  "one": "One"\n}\n');
     });
 
-    it(`GIVEN a symlinked folder below the input
+    it(`GIVEN a symlinked folder below the input, to a folder outside of it
         WHEN the command runs
-        THEN the templates behind the link are migrated and their texts written`, (ctx) => {
+        THEN the templates behind the link are left as they are`, (ctx) => {
       writeTemplate();
       write('src/shared/shared.html', '<p i18n>Shared</p>');
       if (!symlink('../shared', 'src/app/linked')) {
@@ -238,12 +238,9 @@ describe('runMigrateAngularI18n', () => {
 
       runMigrateAngularI18n(options());
 
-      expect(read('src/shared/shared.html')).toBe(
-        `<p>{{ 'shared' | transloco }}</p>`,
-      );
+      expect(read('src/shared/shared.html')).toBe('<p i18n>Shared</p>');
       expect(JSON.parse(read('src/assets/i18n/en.json'))).toEqual({
         one: 'One',
-        shared: 'Shared',
       });
     });
   });
