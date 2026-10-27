@@ -345,14 +345,16 @@ describe('splitTranslations', () => {
         WHEN it runs
         THEN the value is written to the files of that folder`, () => {
       const files = {
-        ...merged({}, { shop: { cart: 'Carrito' } }),
+        ...merged({}, { shop: { cart: { title: 'Carrito' } } }),
         [`${root}/shop/es.json`]: '',
         [`${root}/shop/cart/es.json`]: '',
       };
 
       const result = afterSplit(files);
 
-      expect(result[`${root}/shop/cart/es.json`]).toBe(json('Carrito'));
+      expect(result[`${root}/shop/cart/es.json`]).toBe(
+        json({ title: 'Carrito' }),
+      );
       expect(result[`${root}/shop/es.json`]).toBe(json({}));
     });
 
@@ -420,5 +422,75 @@ describe('splitTranslations', () => {
         split({ 'dist-i18n/es.json': '{ "hi": ', [`${root}/es.json`]: '' }),
       ).toThrow(/^Invalid JSON in dist-i18n\/es.json: /);
     });
+  });
+  describe('files that are not the translation of a language', () => {
+    it(`GIVEN a root holding es.vendor.json beside es.json
+        WHEN it runs
+        THEN es.vendor.json is not written`, () => {
+      const files = {
+        ...merged({ hello: 'hello' }, { hello: 'hola' }),
+        [`${root}/en.json`]: '',
+        [`${root}/es.json`]: '',
+        [`${root}/es.vendor.json`]: json({ v: 1 }),
+      };
+
+      const after = afterSplit(files);
+
+      expect(after[`${root}/es.vendor.json`]).toBe(json({ v: 1 }));
+      expect(JSON.parse(after[`${root}/es.json`])).toEqual({ hello: 'hola' });
+    });
+
+    it(`GIVEN scope files whose names only contain es.json
+        WHEN it runs
+        THEN only the es.json of the scope is written`, () => {
+      const files = {
+        ...merged({}, { scope: { a: 1 } }),
+        [`${root}/es.json`]: '',
+        [`${root}/scope/es.json`]: '',
+        [`${root}/scope/xes.json`]: json({ z: 1 }),
+        [`${root}/scope/es.json.bak`]: json({ z: 2 }),
+      };
+
+      const after = afterSplit(files);
+
+      expect(JSON.parse(after[`${root}/scope/es.json`])).toEqual({ a: 1 });
+      expect(after[`${root}/scope/xes.json`]).toBe(json({ z: 1 }));
+      expect(after[`${root}/scope/es.json.bak`]).toBe(json({ z: 2 }));
+    });
+  });
+
+  describe('files that do not hold an object', () => {
+    it.each(['"hi"', 'null', '[1]'])(
+      `GIVEN a joined file holding %s
+        WHEN it runs
+        THEN it fails naming the file`,
+      (content) => {
+        const files = {
+          'dist-i18n/es.json': content,
+          [`${root}/es.json`]: '',
+        };
+
+        expect(() => split(files)).toThrow(
+          'dist-i18n/es.json must hold a JSON object',
+        );
+      },
+    );
+
+    it.each([{ scope: 'str' }, { scope: [1] }, { scope: null }])(
+      `GIVEN a joined file holding %j for a scope
+        WHEN it runs
+        THEN it fails instead of turning the scope file into a non-object`,
+      (joined) => {
+        const files = {
+          'dist-i18n/es.json': json(joined),
+          [`${root}/es.json`]: '',
+          [`${root}/scope/es.json`]: '',
+        };
+
+        expect(() => split(files)).toThrow(
+          'The key "scope" in dist-i18n/es.json must hold a JSON object',
+        );
+      },
+    );
   });
 });

@@ -119,12 +119,17 @@ export function replaceImport(
   };
 }
 
-/** Whether `file` already imports `name` under its own name from `packageName`. */
+/**
+ * Whether `file` already imports `name` under its own name from `packageName`.
+ * With `valueOnly`, a type-only import (`import type` or `{ type name }`) does
+ * not count, since it can't stand in for a value import.
+ */
 export function importsUnaliased(
   ts: TypeScript,
   file: SourceFile,
   packageName: string,
   name: string,
+  valueOnly = false,
 ): boolean {
   return file.statements.some(
     (statement) =>
@@ -132,9 +137,13 @@ export function importsUnaliased(
       ts.isStringLiteral(statement.moduleSpecifier) &&
       statement.moduleSpecifier.text === packageName &&
       !!statement.importClause?.namedBindings &&
+      !(valueOnly && statement.importClause.isTypeOnly) &&
       ts.isNamedImports(statement.importClause.namedBindings) &&
       statement.importClause.namedBindings.elements.some(
-        (element) => !element.propertyName && element.name.text === name,
+        (element) =>
+          !element.propertyName &&
+          element.name.text === name &&
+          !(valueOnly && element.isTypeOnly),
       ),
   );
 }
