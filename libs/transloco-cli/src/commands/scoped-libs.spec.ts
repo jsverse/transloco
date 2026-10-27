@@ -10,6 +10,10 @@ import { runScopedLibs } from './scoped-libs.js';
 
 const run = vi.hoisted(() => vi.fn());
 
+function stopWatching(watching: number) {
+  return Object.assign(async () => {}, { watching });
+}
+
 vi.mock('../scoped-libs/index.js', () => ({ default: run }));
 
 describe('runScopedLibs', () => {
@@ -18,6 +22,7 @@ describe('runScopedLibs', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    run.mockResolvedValue(stopWatching(1));
     // The real path, as that's what `process.cwd()` reports once inside it.
     dir = fs.realpathSync(
       fs.mkdtempSync(path.join(os.tmpdir(), 'transloco-cli-scoped-libs-')),
@@ -148,12 +153,45 @@ describe('runScopedLibs', () => {
     const stderr = vi.spyOn(console, 'error').mockImplementation(() => {});
     run.mockImplementationOnce(async ({ onProblem }) => {
       onProblem('libs/a is broken');
+
+      return stopWatching(1);
     });
 
     await expect(runScopedLibs({ watch: true })).resolves.toBeUndefined();
 
     expect(stderr).toHaveBeenCalledExactlyOnceWith('libs/a is broken');
     stderr.mockRestore();
+  });
+
+  it(`GIVEN the watch mode and no library that could be watched
+      WHEN it runs
+      THEN it fails once the problems are printed, instead of ending with a success`, async () => {
+    writeConfig('transloco.config.js', { scopedLibs: ['libs/a'] });
+    const stderr = vi.spyOn(console, 'error').mockImplementation(() => {});
+    run.mockImplementationOnce(async ({ onProblem }) => {
+      onProblem('libs/a is broken');
+
+      return stopWatching(0);
+    });
+
+    const error = await runScopedLibs({ watch: true }).catch((e) => e);
+
+    expect(stderr).toHaveBeenCalledExactlyOnceWith('libs/a is broken');
+    expect(error).toBeInstanceOf(CliError);
+    expect(error).toMatchObject({
+      exitCode: 1,
+      message: expect.stringContaining('Nothing could be watched'),
+    });
+    stderr.mockRestore();
+  });
+
+  it(`GIVEN no watch mode and no watcher
+      WHEN it runs
+      THEN it is no error`, async () => {
+    writeConfig('transloco.config.js', { scopedLibs: ['libs/a'] });
+    run.mockResolvedValueOnce(stopWatching(0));
+
+    await expect(runScopedLibs({})).resolves.toBeUndefined();
   });
 
   it(`GIVEN a config path that does not exist, next to a config in the working directory

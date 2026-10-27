@@ -67,7 +67,7 @@ An option that is not on the command line is taken from the config (the `keysMan
 | `-r, --replace`               | Replaces the content of an existing translation file with the extracted keys instead of merging them. Off by default.                                                                                                                          |
 | `-R, --remove-extra-keys`     | Removes the keys that are no longer in the sources from the existing translation files. Off by default.                                                                                                                                        |
 
-A `--project` whose folder doesn't hold `rootTranslationsPath` is the exception to that default, which is what one config at the workspace root holds for the other projects, as `ng add` writes it for the first one alone. So as not to write into the translations of another project, `extract` writes to `<source root>/assets/i18n` of the project then, and says so on stderr. A `rootTranslationsPath` that doesn't exist yet is pointed out on stderr as well, as it is relative to the working directory, not to the config.
+A `--project` whose folder doesn't hold `rootTranslationsPath` is the exception to that default, which is what one config at the workspace root holds for the other projects, as `ng add` writes it for the first one alone. So as not to write into the translations of another project, `extract` writes to `<source root>/assets/i18n` of the project then, and says so on stderr. `find --project` takes the same folder, so that it reads what `extract` wrote, and says so on stderr. A `rootTranslationsPath` that doesn't exist yet is pointed out on stderr as well, as it is relative to the working directory, not to the config.
 
 ### find
 
@@ -150,7 +150,7 @@ The `i18n` entry of the `package.json` of a library lists its scopes: the `scope
 | `--skip-gitignore`    | Doesn't add the copied translation files to `.gitignore`. Off by default.       |
 | `-c, --config <path>` | A config file, or a folder to look for one in, which has to exist.              |
 
-Every library is copied, also when one before it is misconfigured: without `src`, a `package.json` or an `i18n` entry in it, or a folder to copy to. Each problem is reported on stderr, and the command exits with 1 once the others are copied. With `--watch` it reports them and keeps watching the other libraries. A config without `scopedLibs`, or with an empty list, is an error too.
+Every library is copied, also when one before it is misconfigured: without `src`, a `package.json` or an `i18n` entry in it, or a folder to copy to. Each problem is reported on stderr, and the command exits with 1 once the others are copied. With `--watch` it reports them and keeps watching the other libraries, and exits with 1 when none of them could be watched. A config without `scopedLibs`, or with an empty list, is an error too.
 
 ### join
 

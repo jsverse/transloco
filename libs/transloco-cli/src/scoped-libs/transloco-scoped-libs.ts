@@ -53,7 +53,8 @@ const packageJsoni18nExample = `
  * scopedLibs - list of all translation scoped project paths.
  * onProblem - reports a misconfigured library, which is skipped, defaults to printing it in red.
  *
- * @returns a function that stops the watchers, which there are in watch mode
+ * @returns a function that stops the watchers, which there are in watch mode,
+ * with the number of them as `watching`
  */
 export default async function run({
   watch,
@@ -87,7 +88,7 @@ export default async function run({
     }
   }
 
-  return stopWatching;
+  return Object.assign(stopWatching, { watching: watchers.length });
 }
 
 async function copyLib(
