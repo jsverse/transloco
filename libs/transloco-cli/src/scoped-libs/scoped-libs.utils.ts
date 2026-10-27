@@ -12,6 +12,14 @@ export function cutPath(path: string) {
   return toLinuxFormat(path).split(toLinuxFormat(process.cwd()))[1];
 }
 
+/**
+ * The path relative to the working directory, for the log. `cutPath` keeps the
+ * leading slash, which anchors a .gitignore entry to the root.
+ */
+export function fromCwd(file: string) {
+  return toLinuxFormat(path.relative(process.cwd(), file));
+}
+
 export function getPackageJson(lib: string) {
   let pkgPath = path.join(process.cwd(), lib, 'package.json');
   if (!fs.existsSync(pkgPath)) {
