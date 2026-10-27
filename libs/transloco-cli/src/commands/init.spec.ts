@@ -164,6 +164,21 @@ describe('runInit', () => {
         },
         'src/assets/i18n',
       ],
+      ...[
+        ['20', 'public/i18n'],
+        ['^20', 'public/i18n'],
+        ['>=18 <21', 'public/i18n'],
+        ['~18.2.1', 'public/i18n'],
+        ['17.x', 'src/assets/i18n'],
+      ].map(([range, folder]) => [
+        `Angular ${range} in package.json`,
+        {
+          'package.json': JSON.stringify({
+            dependencies: { '@angular/core': range },
+          }),
+        },
+        folder,
+      ]),
       [
         'an assets folder in the source root of the project',
         {

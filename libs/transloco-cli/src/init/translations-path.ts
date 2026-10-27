@@ -28,9 +28,10 @@ function angularMajor(manifest: string | undefined): number {
     const { dependencies, devDependencies } = JSON.parse(manifest ?? '');
     const version =
       dependencies?.['@angular/core'] ?? devDependencies?.['@angular/core'];
-    const major = typeof version === 'string' && version.match(/(\d+)\./);
+    // The first number of the range, as in `20`, `^20.1.0` or `>=18 <21`
+    const major = typeof version === 'string' && version.match(/\d+/);
 
-    return major ? Number(major[1]) : 0;
+    return major ? Number(major[0]) : 0;
   } catch {
     return 0;
   }
