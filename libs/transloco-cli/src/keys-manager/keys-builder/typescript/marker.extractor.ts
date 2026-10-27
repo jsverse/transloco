@@ -1,4 +1,4 @@
-import { isNamed, resolveImportedName } from '../../utils/ts-ast.utils.js';
+import { isNamed, resolveImportedNames } from '../../utils/ts-ast.utils.js';
 
 import { buildKeysFromCall } from './build-keys-from-call.js';
 import { SourceFileScan } from './scan-source-file.js';
@@ -14,10 +14,13 @@ export function markerExtractor({
   imports,
   calls,
 }: SourceFileScan): TSExtractorResult {
-  const markerName = resolveImportedName(imports, markerImport, 'marker');
-  if (!markerName) return [];
+  const markerNames = resolveImportedNames(imports, markerImport, 'marker');
+  if (!markerNames.length) return [];
 
+  // A file mid-migration can import it from both the old and the new specifier
   return calls
-    .filter((call) => isNamed(call.expression, markerName))
+    .filter((call) =>
+      markerNames.some((name) => isNamed(call.expression, name)),
+    )
     .flatMap(buildKeysFromCall);
 }

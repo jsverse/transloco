@@ -48,6 +48,18 @@ describe('markerExtractor', () => {
     },
   );
 
+  it(`GIVEN marker imported from both the old and the new specifier, one under an alias
+      WHEN the keys are extracted
+      THEN the calls of both bindings are extracted`, () => {
+    const keys = keysOf(`
+      import { marker } from '@jsverse/transloco-keys-manager';
+      import { marker as m } from '@jsverse/transloco-cli/marker';
+      const keys = [marker('old.key'), m('new.key')];
+    `);
+
+    expect(keys).toEqual(['old.key', 'new.key']);
+  });
+
   it(`GIVEN a scope and a list of keys passed to marker from the CLI
       WHEN the keys are extracted
       THEN the scope is read as the language slot and every key is extracted`, () => {
