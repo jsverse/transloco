@@ -1,0 +1,5 @@
+{
+  "description": "GIVEN an Nx workspace whose project.json has a workspace-root-relative sourceRoot WHEN extract runs with --cwd naming the project folder THEN the sources are taken from the sourceRoot resolved against the workspace root",
+  "args": ["--cwd", "apps/shop", "extract", "--langs", "en", "--default-value", "missing"],
+  "exitCode": 0
+}

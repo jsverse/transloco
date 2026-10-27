@@ -193,8 +193,11 @@ describe('createProgram', () => {
       [['--langs', 'en,es'], 'en,es', 'en es'],
       [['-l', 'en,es'], 'en,es', 'en es'],
       [['--langs=en,es'], 'en,es', 'en es'],
-      [['--langs', 'en', 'es,fr'], 'es,fr', 'es fr'],
-      [['--langs', 'en', '--langs', 'es,fr'], 'es,fr', 'es fr'],
+      [['--langs', 'en', 'es,fr'], 'es,fr', 'en es fr'],
+      [['--langs', 'en', '--langs', 'es,fr'], 'es,fr', 'en es fr'],
+      [['--langs', 'en,', 'es'], 'en,', 'en es'],
+      [['-l', 'en,es', 'fr'], 'en,es', 'en es fr'],
+      [['--langs', ',en'], ',en', 'en'],
     ])(
       `GIVEN a comma in a language typed as %j
        WHEN the program runs
@@ -212,6 +215,21 @@ describe('createProgram', () => {
         expect(runners.runExtract).not.toHaveBeenCalled();
       },
     );
+
+    it(`GIVEN nothing but commas as the languages
+        WHEN the program runs
+        THEN it is refused without an example to copy`, async () => {
+      const { run, output } = setup();
+
+      await expect(run('extract', '--langs', ',')).rejects.toMatchObject({
+        exitCode: 1,
+      });
+
+      expect(output.stderr).toContain(
+        `error: option '-l, --langs <langs...>' argument ',' holds a comma. Separate the languages with spaces\n`,
+      );
+      expect(runners.runExtract).not.toHaveBeenCalled();
+    });
 
     it(`GIVEN a comma in a language
         WHEN migrate angular-i18n runs

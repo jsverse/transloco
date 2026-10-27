@@ -4,8 +4,9 @@ import {
   findTranslationFiles,
   getScopeEntries,
   getTranslationKey,
+  isLanguageFile,
   languageOf,
-  readJson,
+  readJsonObject,
   toJson,
   TranslationFilesError,
   type PlannedFile,
@@ -49,7 +50,7 @@ export function joinTranslations(
     .filter(({ lang }) => includeDefaultLang || lang !== defaultLang)
     .map(({ fileName, lang }) => {
       const rootFile = join(root, fileName);
-      const translation: Translation = readJson(reader, rootFile);
+      const translation: Translation = readJsonObject(reader, rootFile);
       const origins = new Map<string, string>();
 
       for (const { scope, path: scopePath } of entries) {
@@ -86,17 +87,17 @@ function mergeScope(params: MergeScope) {
   const { reader, dir, translation, lang, key, origins, rootFile } = params;
 
   for (const fileName of reader.listFiles(dir)) {
-    if (!fileName.includes(`${lang}.json`)) continue;
+    if (!isLanguageFile(fileName, lang)) continue;
 
     const file = join(dir, fileName);
 
-    if (translation[key]) {
+    if (Object.hasOwn(translation, key)) {
       throw new TranslationFilesError(
         `The key "${key}" is defined in both ${origins.get(key) ?? rootFile} and ${file}, rename one and run the command again.`,
       );
     }
 
-    translation[key] = readJson(reader, file);
+    translation[key] = readJsonObject(reader, file);
     origins.set(key, file);
   }
 

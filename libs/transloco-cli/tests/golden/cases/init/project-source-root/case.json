@@ -1,0 +1,6 @@
+{
+  "description": "GIVEN an Angular workspace before 18 whose project is in projects/p WHEN init runs with --yes THEN the translation files go to the assets of that project, as ng add does",
+  "args": ["init", "--yes", "--no-scripts"],
+  "exitCode": 0,
+  "snapshot": ["stdout", "stderr"]
+}

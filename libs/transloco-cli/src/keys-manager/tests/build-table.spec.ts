@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 import { buildTable } from '../keys-detective/build-table.js';
 import { getLogger } from '../utils/logger.js';
@@ -22,6 +22,7 @@ describe('buildTable', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
     vi.spyOn(process, 'exit').mockImplementation((() => {}) as any);
+    process.exitCode = undefined;
     vi.mocked(getLogger().log).mockClear();
     vi.mocked(getLogger().success).mockClear();
   });
@@ -79,7 +80,11 @@ describe('buildTable', () => {
     expect(logger.log).toHaveBeenCalledWith(expect.stringContaining('--'));
   });
 
-  it('should call process.exit(1) when missing keys exist and addMissingKeys is false', () => {
+  afterEach(() => {
+    process.exitCode = undefined;
+  });
+
+  it('should set the exit code to 1 when missing keys exist and addMissingKeys is false', () => {
     buildTable({
       langs: ['en'],
       diffsPerLang: {
@@ -92,7 +97,8 @@ describe('buildTable', () => {
       emitErrorOnExtraKeys: false,
     });
 
-    expect(process.exit).toHaveBeenCalledWith(1);
+    expect(process.exitCode).toBe(1);
+    expect(process.exit).not.toHaveBeenCalled();
   });
 
   it('should log success when missing keys exist and addMissingKeys is true', () => {
@@ -120,7 +126,7 @@ describe('buildTable', () => {
     exitSpy.mockRestore();
   });
 
-  it('should call process.exit(2) when extra keys exist and emitErrorOnExtraKeys is true', () => {
+  it('should set the exit code to 2 when extra keys exist and emitErrorOnExtraKeys is true', () => {
     const exitSpy = vi
       .spyOn(process, 'exit')
       .mockImplementation((() => {}) as any);
@@ -137,7 +143,8 @@ describe('buildTable', () => {
       emitErrorOnExtraKeys: true,
     });
 
-    expect(exitSpy).toHaveBeenCalledWith(2);
+    expect(process.exitCode).toBe(2);
+    expect(exitSpy).not.toHaveBeenCalled();
     exitSpy.mockRestore();
   });
 

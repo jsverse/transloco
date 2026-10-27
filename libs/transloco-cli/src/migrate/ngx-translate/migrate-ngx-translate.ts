@@ -39,7 +39,7 @@ function migrate(dir: string, steps: Matcher[], filesType: 'HTML' | 'TS') {
     const noFilesFound: string[] = [];
 
     for (const matcher of matchers) {
-      const files = findFiles(dir, matcher.files);
+      const files = findFiles(dir, matcher.files, matcher.exclude);
 
       if (files.length === 0) {
         noFilesFound.push(

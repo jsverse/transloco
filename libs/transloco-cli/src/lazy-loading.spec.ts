@@ -19,7 +19,8 @@ const loaded: string[] = [];
  * in for everything below them.
  */
 const stubbed: Record<string, () => object> = {
-  '@angular/compiler': () => ({}),
+  // The real one, as the Angular i18n migration parses the templates with it.
+  '@angular/compiler': () => vi.importActual('@angular/compiler'),
   // Requires @angular/compiler as a peer, so loading it loads the compiler too.
   '@jsverse/angular-utils': () => ({}),
   // Loads `typescript` with `require`, which a mock of the package wouldn't see.
@@ -112,7 +113,6 @@ const recorded = [
   'typescript',
   'cli-table3',
   'gettext-parser',
-  'deep-diff',
   'debug',
   'jsonc-parser',
 ];
@@ -364,7 +364,7 @@ describe('lazy loading', () => {
 
     it(`GIVEN a folder of templates
         WHEN it is migrated from the Angular i18n
-        THEN only the runner, the folder check, the config reader, the migration and the glob are loaded`, async () => {
+        THEN only the runner, the folder check, the config reader, the peer check, the migration, the compiler and the glob are loaded`, async () => {
       await run(
         '--cwd',
         dir,
@@ -382,6 +382,7 @@ describe('lazy loading', () => {
         JSON.parse(fs.readFileSync(path.join(dir, 'i18n', 'en.json'), 'utf-8')),
       ).toEqual({ one: 'One' });
       expect([...loaded].sort()).toEqual([
+        '@angular/compiler',
         'commands/migrate-angular-i18n',
         'commands/translation-folders',
         'config/index',
@@ -393,12 +394,14 @@ describe('lazy loading', () => {
         'migrate/angular-i18n/migrate-angular-i18n',
         'migrate/angular-i18n/template',
         'migrate/find-files',
+        'peers',
         'translation-files/index',
         'translation-files/join',
         'translation-files/shared',
         'translation-files/split',
         'utils/file-system',
         'utils/real-path',
+        'utils/style',
       ]);
     });
   });
@@ -420,6 +423,7 @@ describe('lazy loading', () => {
       'init/apply',
       'init/manifest',
       'init/plan',
+      'init/translations-path',
       'init/unreadable-config',
       'init/validation',
       'jsonc-parser',
@@ -429,6 +433,7 @@ describe('lazy loading', () => {
       'keys-manager/utils/json.utils',
       'keys-manager/utils/normalize-glob-path',
       'keys-manager/utils/object.utils',
+      'keys-manager/utils/path.utils',
       'keys-manager/utils/resolve-project-base-path',
       'keys-manager/utils/validators.utils',
       'utils/file-system',

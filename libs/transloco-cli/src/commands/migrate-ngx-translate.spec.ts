@@ -175,26 +175,27 @@ describe('runMigrateNgxTranslate', () => {
       expect(read('src/app/a.html')).toBe(`<p>{{ 'y' | transloco }}</p>\n`);
     });
 
-    it(`GIVEN a symlinked folder below the input
+    it(`GIVEN a symlinked folder below the input, to a folder outside of it
         WHEN the command runs
-        THEN the files behind the link are migrated`, (ctx) => {
+        THEN the files behind the link are left as they are`, (ctx) => {
       if (!symlink('../shared', 'src/app/linked')) {
         return ctx.skip();
       }
 
       runMigrateNgxTranslate({ input: 'src/app' });
 
+      expect(read('src/app/a.html')).toBe(`<p>{{ 'y' | transloco }}</p>\n`);
       expect(read('src/shared/shared.html')).toBe(
-        `<p>{{ 'x' | transloco }}</p>\n`,
+        `<p>{{ 'x' | translate }}</p>\n`,
       );
       expect(read('src/shared/shared.ts')).toBe(
-        `import { TranslocoModule } from '@jsverse/transloco';\n`,
+        `import { TranslateModule } from '@ngx-translate/core';\n`,
       );
     });
 
-    it(`GIVEN a symlinked file below the input
+    it(`GIVEN a symlinked file below the input, to a file outside of it
         WHEN the command runs
-        THEN the file behind the link is migrated`, (ctx) => {
+        THEN the file behind the link is left as it is`, (ctx) => {
       if (!symlink('../shared/shared.html', 'src/app/linked.html')) {
         return ctx.skip();
       }
@@ -202,7 +203,7 @@ describe('runMigrateNgxTranslate', () => {
       runMigrateNgxTranslate({ input: 'src/app' });
 
       expect(read('src/shared/shared.html')).toBe(
-        `<p>{{ 'x' | transloco }}</p>\n`,
+        `<p>{{ 'x' | translate }}</p>\n`,
       );
     });
   });
