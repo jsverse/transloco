@@ -10,7 +10,7 @@ import { sourceRoot } from './buildTranslationFiles/build-translation-utils.js';
 
 export function noop() {}
 
-export function spyOnConsole(method: 'log' | 'warn') {
+export function spyOnConsole(method: 'log' | 'warn' | 'error') {
   return vi.spyOn(console, method).mockImplementation(noop);
 }
 

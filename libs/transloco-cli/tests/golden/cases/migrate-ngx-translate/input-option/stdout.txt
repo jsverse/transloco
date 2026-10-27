@@ -10,8 +10,8 @@ Migrating HTML files 📜
 Migrating TS files 📜
 ⏳ Step 1/5: Migrating modules
 ✅ Step 1/5: Migrating modules
-⏳ Step 2/5: Migrating service imports
-✅ Step 2/5: Migrating service imports
+⏳ Step 2/5: Migrating imports
+✅ Step 2/5: Migrating imports
 ⏳ Step 3/5: Migrating constructor injections
 ✅ Step 3/5: Migrating constructor injections
 ⏳ Step 4/5: Migrating service usage

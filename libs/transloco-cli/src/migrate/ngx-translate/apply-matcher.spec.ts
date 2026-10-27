@@ -60,7 +60,7 @@ describe('generateMatchers', () => {
   ) =>
     steps.map(({ step, matchers }) => [
       step,
-      matchers.map(({ files }) => files),
+      matchers.map(({ files, exclude = [] }) => [files, ...exclude]),
     ]);
 
   it(`GIVEN the matchers of the migration
@@ -69,22 +69,22 @@ describe('generateMatchers', () => {
     const { htmlReplacements } = generateMatchers();
 
     expect(describeSteps(htmlReplacements)).toEqual([
-      ['directives', ['.html']],
-      ['pipes', ['.html', '.html']],
+      ['directives', [['.html']]],
+      ['pipes', [['.html'], ['.html']]],
     ]);
   });
 
   it(`GIVEN the matchers of the migration
       WHEN they are generated
-      THEN the steps of the sources keep their order and every one but the last takes all .ts files, the specs included`, () => {
+      THEN the steps of the sources keep their order, none takes the declaration files and only the modules, the imports and the specs take the spec files`, () => {
     const { tsReplacements } = generateMatchers();
 
     expect(describeSteps(tsReplacements)).toEqual([
-      ['modules', ['.ts', '.ts', '.ts']],
-      ['service imports', ['.ts', '.ts', '.ts']],
-      ['constructor injections', ['.ts']],
-      ['service usage', ['.ts']],
-      ['specs', ['spec.ts']],
+      ['modules', [['.ts', '.d.ts']]],
+      ['imports', [['.ts', '.d.ts']]],
+      ['constructor injections', [['.ts', '.spec.ts', '.d.ts']]],
+      ['service usage', [['.ts', '.spec.ts', '.d.ts']]],
+      ['specs', [['spec.ts']]],
     ]);
   });
 });

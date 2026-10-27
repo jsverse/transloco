@@ -293,7 +293,7 @@ export function createProgram() {
       const { runMigrateAngularI18n } =
         await import('./commands/migrate-angular-i18n.js');
 
-      runMigrateAngularI18n(options);
+      await runMigrateAngularI18n(options);
     });
 
   program
@@ -365,13 +365,31 @@ const valueProblems: Record<string, (value: string) => string | undefined> = {
     value.split(',').some((path) => path.trim() === '')
       ? 'holds an empty path. Separate the paths with a single comma, e.g. --input src/app,projects/ui/src'
       : undefined,
-  // A language is the name of the file written for it, which `en,es` would be
-  // one of. The several languages are separate arguments.
-  langs: (value) =>
-    value.includes(',')
-      ? `holds a comma. Separate the languages with spaces, e.g. --langs ${value.split(',').filter(Boolean).join(' ')}`
-      : undefined,
 };
+
+/**
+ * What is wrong with the values of a variadic option, which are judged
+ * together once they are all parsed, see `enforceOptionRules`.
+ */
+const valuesProblems: Record<string, (values: string[]) => string | undefined> =
+  {
+    // A language is the name of the file written for it, which `en,es` would be
+    // one of. The several languages are separate arguments, and the example is
+    // made of all that was typed, so `--langs en, es` loses none.
+    langs: (values) => {
+      const joined = values.find((value) => value.includes(','));
+
+      if (joined === undefined) return undefined;
+
+      const separate = values
+        .flatMap((value) => value.split(','))
+        .map((lang) => lang.trim())
+        .filter(Boolean)
+        .join(' ');
+
+      return `argument '${joined}' holds a comma. Separate the languages with spaces${separate ? `, e.g. --langs ${separate}` : ''}`;
+    },
+  };
 
 /**
  * Holds every option that takes a value, of the command and of all the
@@ -423,6 +441,18 @@ function enforceOptionRules(command: CommandUnknownOpts) {
         command.error(`error: ${flags} argument '${value}' ${problem}`);
       }
     });
+
+    const valuesProblem = scoped ? valuesProblems[name] : undefined;
+
+    // The values that follow are not parsed yet when one of them comes in
+    if (valuesProblem) {
+      command.hook('preAction', () => {
+        const values = command.getOptionValue(option.attributeName());
+        const problem = Array.isArray(values) && valuesProblem(values);
+
+        if (problem) command.error(`error: ${flags} ${problem}`);
+      });
+    }
   }
 
   // The rules above see the values commander parsed. The ones below need the

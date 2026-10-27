@@ -91,7 +91,6 @@
     "commander": "15.0.0",
     "cosmiconfig": "10.0.0",
     "debug": "4.4.3",
-    "deep-diff": "1.0.2",
     "find-duplicated-property-keys": "1.2.9",
     "flat": "6.0.1",
     "gettext-parser": "8.0.0",

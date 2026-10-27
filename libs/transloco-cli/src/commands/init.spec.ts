@@ -144,6 +144,107 @@ describe('runInit', () => {
       ]);
     });
 
+    it.each([
+      [
+        'a public folder, the Angular 18+ layout',
+        { 'public/favicon.ico': '' },
+        'public/i18n',
+      ],
+      [
+        'Angular 18+ in package.json',
+        {
+          'package.json': '{"dependencies": {"@angular/core": "^20.0.0"}}',
+        },
+        'public/i18n',
+      ],
+      [
+        'Angular 17 in package.json',
+        {
+          'package.json': '{"devDependencies": {"@angular/core": "~17.3.0"}}',
+        },
+        'src/assets/i18n',
+      ],
+      [
+        'an assets folder in the source root of the project',
+        {
+          'angular.json':
+            '{"projects": {"p": {"root": "projects/p", "sourceRoot": "projects/p/src"}}}',
+          'projects/p/src/assets/logo.svg': '',
+          'package.json': '{"dependencies": {"@angular/core": "^20.0.0"}}',
+        },
+        'projects/p/src/assets/i18n',
+      ],
+      [
+        'a project in projects/p of an Angular workspace before 18',
+        {
+          'angular.json':
+            '{"projects": {"p": {"root": "projects/p", "sourceRoot": "projects/p/src"}}}',
+        },
+        'projects/p/src/assets/i18n',
+      ],
+    ])(
+      `GIVEN %s
+       WHEN init runs with --yes
+       THEN the translation files go to the folder ng add picks`,
+      async (_, files: Record<string, string>, folder) => {
+        Object.entries(files).forEach(([file, content]) =>
+          write(file, content),
+        );
+
+        await runInit(options({ scripts: false }));
+
+        expect(read('transloco.config.ts')).toBe(config(folder, ['en']));
+        expect(read(`${folder}/en.json`)).toBe('{}\n');
+      },
+    );
+
+    it(`GIVEN an Nx workspace without a root project
+        WHEN init runs with --yes
+        THEN it says to run extract with the project`, async () => {
+      write('nx.json', '{}');
+      write(
+        'apps/shop/project.json',
+        '{"name": "shop", "sourceRoot": "apps/shop/src"}',
+      );
+
+      await runInit(options({ scripts: false }));
+
+      expect(printed().at(-1)).toBe(
+        'Done. Run `transloco extract --project shop` to collect the keys of your project into the translation files. The projects of the workspace are: shop.',
+      );
+    });
+
+    it(`GIVEN an Nx workspace with several projects and no root project
+        WHEN init runs with --yes
+        THEN it says to run extract with one of them`, async () => {
+      write(
+        'apps/shop/project.json',
+        '{"name": "shop", "sourceRoot": "apps/shop/src"}',
+      );
+      write('libs/ui/project.json', '{"sourceRoot": "libs/ui/src"}');
+
+      await runInit(options({ scripts: false }));
+
+      expect(printed().at(-1)).toBe(
+        'Done. Run `transloco extract --project <name>` to collect the keys of your project into the translation files. The projects of the workspace are: shop, ui.',
+      );
+    });
+
+    it(`GIVEN an Angular workspace with several projects
+        WHEN init runs with --yes
+        THEN it says the others are extracted with --project`, async () => {
+      write(
+        'angular.json',
+        '{"projects": {"shop": {"sourceRoot": "src"}, "ui": {"sourceRoot": "projects/ui/src"}}}',
+      );
+
+      await runInit(options({ scripts: false }));
+
+      expect(printed().at(-1)).toBe(
+        'Done. Run `transloco extract` to collect the keys of your project into the translation files. Add --project <name> for another project than the default one. The projects of the workspace are: shop, ui.',
+      );
+    });
+
     it(`GIVEN languages and a translations path
         WHEN init runs with --yes
         THEN they are used for the config and for the files`, async () => {
@@ -475,6 +576,22 @@ describe('runInit', () => {
       );
       expect(fs.readdirSync(dir)).toEqual([]);
     });
+
+    it.each([
+      [['en,', 'es'], 'en,', ' Run with --langs en es'],
+      [['en,es', 'fr'], 'en,es', ' Run with --langs en es fr'],
+      [[','], ',', ''],
+    ])(
+      `GIVEN the languages %j
+       WHEN init runs
+       THEN the command it suggests holds every language, and none when there is none`,
+      async (langs, joined, suggestion) => {
+        await expect(runInit(options({ langs }))).rejects.toMatchObject({
+          message: `Transloco Init: The languages are separate arguments, not a comma separated list: '${joined}'.${suggestion}`,
+        });
+        expect(fs.readdirSync(dir)).toEqual([]);
+      },
+    );
 
     it.each([['../en'], ['en/es'], ['a b']])(
       `GIVEN the language %s that is no file name

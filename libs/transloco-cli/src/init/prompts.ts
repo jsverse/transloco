@@ -10,7 +10,6 @@ import {
 
 import {
   defaultLangs,
-  defaultTranslationsPath,
   type InitAnswers,
   type InitStep,
   manifestFileName,
@@ -25,6 +24,8 @@ import {
 export interface AskContext {
   /** What the options already gave, which is not asked again. */
   given: { langs?: string[]; translationsPath?: string };
+  /** The folder offered for the translation files, the one `ng add` would pick. */
+  defaultTranslationsPath: string;
   /** Whether the scripts are to be asked about: there is a `package.json`, and `--no-scripts` was not passed. */
   askScripts: boolean;
   /** The translation files of the languages that are not there yet, for the folder. */
@@ -46,6 +47,7 @@ export const endPrompts = (message: string) => outro(message);
  */
 export async function askInit({
   given,
+  defaultTranslationsPath,
   askScripts,
   findMissing,
 }: AskContext): Promise<InitAnswers | undefined> {
@@ -54,7 +56,8 @@ export async function askInit({
   if (!langs) return cancelled();
 
   const translationsPath =
-    given.translationsPath ?? (await askTranslationsPath())?.trim();
+    given.translationsPath ??
+    (await askTranslationsPath(defaultTranslationsPath))?.trim();
 
   if (translationsPath === undefined) return cancelled();
 
@@ -107,7 +110,7 @@ async function askLangs() {
   return answer === undefined ? undefined : parseLanguages(answer);
 }
 
-function askTranslationsPath() {
+function askTranslationsPath(defaultTranslationsPath: string) {
   return ask(
     text({
       message: 'Where do the translation files live?',
