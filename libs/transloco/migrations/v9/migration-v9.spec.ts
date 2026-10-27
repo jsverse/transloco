@@ -1637,6 +1637,40 @@ describe('migration-v9', () => {
     expect(config).toContain('@jsverse/transloco');
   });
 
+  it(`GIVEN an app config whose last provider is a multi-line call
+      WHEN the migration adds provideGlobalTranslateFn()
+      THEN it sits on its own line, indented like its siblings`, async () => {
+    const tree = await run((host) => {
+      host.create(
+        '/projects/bar/src/app/greeter.ts',
+        [
+          `import { translate } from '@jsverse/transloco';`,
+          `export const greet = () => translate('hello');`,
+        ].join('\n'),
+      );
+      host.overwrite(
+        '/projects/bar/src/app/app.config.ts',
+        [
+          `import { ApplicationConfig } from '@angular/core';`,
+          `import { provideTransloco } from '@jsverse/transloco';`,
+          ``,
+          `export const appConfig: ApplicationConfig = {`,
+          `  providers: [`,
+          `    provideTransloco({`,
+          `      loader: Loader,`,
+          `    }),`,
+          `  ],`,
+          `};`,
+          ``,
+        ].join('\n'),
+      );
+    });
+
+    const config = tree.readContent('/projects/bar/src/app/app.config.ts');
+
+    expect(config).toContain(`    }),\n    provideGlobalTranslateFn(),\n  ],`);
+  });
+
   it(`GIVEN an application that does not use the standalone functions
       WHEN the migration runs
       THEN no provider is added`, async () => {
