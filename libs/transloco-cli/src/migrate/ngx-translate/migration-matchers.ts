@@ -125,8 +125,9 @@ export function generateMatchers() {
     // The whole file: every name the service is injected as.
     from: /[^]+/g,
     to: migrateServiceUsage,
-    warn: (content: string) =>
-      serviceNames(content).flatMap((name) =>
+    warn: (content: string) => [
+      ...langChangeEventUsages(content),
+      ...serviceNames(content).flatMap((name) =>
         [
           ...content.matchAll(
             new RegExp(
@@ -139,6 +140,7 @@ export function generateMatchers() {
           message: `${name}.${match[1]} has no counterpart in the TranslocoService, migrate it by hand`,
         })),
       ),
+    ],
   };
 
   const specs = {
@@ -290,6 +292,26 @@ function specifiers(names: string) {
     .split(',')
     .map((name) => name.trim().replace(/^type\s+/, ''))
     .filter(Boolean);
+}
+
+/**
+ * The uses of `LangChangeEvent` outside the imports. `onLangChange` becomes
+ * `langChanges$`, which emits the language and no event, so a handler typed
+ * with the event no longer compiles.
+ */
+function langChangeEventUsages(content: string) {
+  // Blanked out, so that the indexes stay the ones of the file
+  const withoutImports = content.replace(
+    /^\s*(?:import|export)\b[^;]*?\bfrom\s*['"][^'"]*['"]/gm,
+    (statement) => statement.replace(/[^\n]/g, ' '),
+  );
+
+  return [
+    ...withoutImports.matchAll(/(?<![\w$.])LangChangeEvent(?![\w$])/g),
+  ].map(({ index }) => ({
+    index,
+    message: `LangChangeEvent has no counterpart, langChanges$ emits the language itself: type the handler as (lang: string) and use lang instead of event.lang`,
+  }));
 }
 
 /** The calls of the TranslateService and their counterparts. */

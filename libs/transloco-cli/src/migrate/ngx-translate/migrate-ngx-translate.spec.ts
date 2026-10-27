@@ -488,6 +488,39 @@ export class App {
       ]);
     });
 
+    it(`GIVEN an onLangChange handler typed with LangChangeEvent
+        WHEN the migration runs
+        THEN every use of the type is printed with its line, and its import is not`, () => {
+      write(
+        'app/a.ts',
+        `import { inject } from '@angular/core';
+import {
+  LangChangeEvent,
+  TranslateService,
+} from '@ngx-translate/core';
+
+export class A {
+  private translate = inject(TranslateService);
+
+  init() {
+    this.translate.onLangChange.subscribe((e: LangChangeEvent) => e.lang);
+  }
+}
+`,
+      );
+      process.chdir(dir);
+
+      migrateNgxTranslate({ input: 'app' });
+
+      const file = path.join('app', 'a.ts');
+
+      expect(
+        printed().filter((message) => message.startsWith(`⚠️ ${file}`)),
+      ).toEqual([
+        `⚠️ ${file}:9: LangChangeEvent has no counterpart, langChanges$ emits the language itself: type the handler as (lang: string) and use lang instead of event.lang`,
+      ]);
+    });
+
     it(`GIVEN a use without a counterpart below a get() call, in a file with no rxjs import
         WHEN the migration runs
         THEN its line is the one of the migrated file, below the import of take`, () => {
