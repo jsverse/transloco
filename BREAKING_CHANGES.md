@@ -30,7 +30,7 @@ nx migrate @jsverse/transloco  # Nx
 - The package moved into the main repo and joined the shared version line, so it jumps from `8.1.1` to `9.0.0`.
 - `@angular/compiler` peer dependency is now `>=v20` and `typescript` is now `>=5.8`.
 - `marker` is now imported from `@jsverse/transloco-cli/marker`. `@jsverse/transloco-keys-manager/marker` still works and is deprecated. The package root `@jsverse/transloco-keys-manager` has no entry point anymore, so a `marker` import from it no longer resolves, although the extractor still reads the keys of one. `ng update` rewrites the imports from both paths and adds `@jsverse/transloco-cli` to `devDependencies`.
-- `extract` writes to the `rootTranslationsPath` of the Transloco config when neither `--output` nor `keysManager.output` is set, the folder `find` reads, where the keys manager always wrote to `<source root>/assets/i18n` and ignored `rootTranslationsPath`. A project whose config sets `rootTranslationsPath` to another folder and no output gets its translation files there now, so after `ng add` the extracted files are the ones the application loads. Set `keysManager.output`, or pass `--output`, to keep writing to the old folder. It goes for `transloco-keys-manager extract` too.
+- `extract` writes to the `rootTranslationsPath` of the Transloco config when neither `--output` nor `keysManager.output` is set, the folder `find` reads, where the keys manager always wrote to `<source root>/assets/i18n` and ignored `rootTranslationsPath`. A project whose config sets `rootTranslationsPath` to another folder and no output gets its translation files there now, so after `ng add` the extracted files are the ones the application loads. Set `keysManager.output`, or pass `--output`, to keep writing to the old folder. A `--project` whose folder doesn't hold `rootTranslationsPath`, such as the second project of a workspace with one config at its root, still gets `<source root>/assets/i18n`, so its keys don't land in the translations of the project the config was written for; `extract` says so on stderr. It goes for `transloco-keys-manager extract` too.
 - Removed `TranslocoExtractKeysWebpackPlugin`, the other export of the package root, since Angular's default builder no longer uses webpack. There is no replacement that watches: `transloco extract` has no `--watch` option, it extracts once and exits. Run it before your dev server starts, as in `"start": "transloco extract && ng serve"`, and again whenever the keys should be refreshed. `ng update` lists the files that still reference the plugin.
 
 ## Transloco Scoped Libs
@@ -43,6 +43,8 @@ nx migrate @jsverse/transloco  # Nx
     "transloco:extract-scoped-libs": "transloco-scoped-libs --watch"
   }
   ```
+
+- A misconfigured library no longer stops the copy: the libraries listed after it are copied too, where they used to be skipped. `transloco-scoped-libs` still prints the problem on stdout and exits with 0, while `transloco scoped-libs` reports each problem on stderr and exits with 1, as it does for a config without `scopedLibs`. A library without a `package.json` is reported as such, not as one missing the `i18n` entry.
 
 ## Transloco Keys Manager, Optimize, Scoped Libs, Utils & Validator
 

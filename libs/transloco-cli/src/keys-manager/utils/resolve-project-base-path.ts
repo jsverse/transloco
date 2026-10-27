@@ -57,8 +57,8 @@ function logNotFound(searchPlaces: string[]) {
 }
 
 /**
- * The source root of the project, `quiet` leaves out the notice printed when
- * it has to fall back to the default.
+ * The source root of the project and its root, `quiet` leaves out the notice
+ * printed when it has to fall back to the default.
  */
 export function resolveProjectBasePath(
   projectName?: string,
@@ -66,6 +66,7 @@ export function resolveProjectBasePath(
 ): {
   projectBasePath: string;
   projectType?: ProjectType;
+  projectRoot?: string;
 } {
   const angularConfig = searchConfig(angularConfigFile);
   const workspaceConfig = searchConfig(workspaceConfigFile);
@@ -108,6 +109,7 @@ export function resolveProjectBasePath(
   return {
     projectBasePath: resolved.sourceRoot,
     projectType: resolved.projectType,
+    projectRoot: resolved.root,
   };
 }
 
@@ -204,13 +206,15 @@ function escapeRegExp(value: string) {
 function resolveProject(
   config: Record<string, any>,
   projectName: string | undefined,
-): { sourceRoot: string; projectType: ProjectType } | null {
+): { sourceRoot: string; projectType: ProjectType; root: string } | null {
   let projectConfig = config;
+  let projectDir: string | undefined;
 
   if (config?.projects) {
     projectName =
       projectName || config.defaultProject || Object.keys(config.projects)[0];
     const project = config.projects[projectName!];
+    projectDir = isString(project) ? project : undefined;
     projectConfig = isString(project)
       ? searchConfig(projectConfigFile, project)
       : project;
@@ -220,6 +224,11 @@ function resolveProject(
     return {
       sourceRoot: projectConfig.sourceRoot,
       projectType: projectConfig.projectType,
+      // Nx leaves the root out of a project.json, the source root is in it
+      root:
+        projectConfig.root ??
+        projectDir ??
+        path.dirname(projectConfig.sourceRoot),
     };
   }
 

@@ -352,6 +352,49 @@ describe('resolveProjectBasePath', () => {
       });
     });
   });
+
+  describe('Project root', () => {
+    afterEach(() => {
+      removeRootConfigs();
+    });
+
+    it(`GIVEN an angular.json whose projects state their root
+        WHEN a project is resolved
+        THEN its root is returned, '' for one at the workspace root`, () => {
+      addRootConfig({
+        configType: 'angular',
+        config: {
+          projects: {
+            app: { root: '', sourceRoot: 'src' },
+            b: { root: 'projects/b', sourceRoot: 'projects/b/src' },
+          },
+        },
+      });
+
+      expect(resolveProjectBasePath('app').projectRoot).toBe('');
+      expect(resolveProjectBasePath('b').projectRoot).toBe('projects/b');
+    });
+
+    it(`GIVEN a project without a root, as Nx writes a project.json
+        WHEN it is resolved
+        THEN the folder holding its source root is its root`, () => {
+      addRootConfig({
+        configType: 'angular',
+        config: { projects: { b: { sourceRoot: 'apps/b/src' } } },
+      });
+
+      expect(resolveProjectBasePath('b').projectRoot).toBe('apps/b');
+    });
+
+    it(`GIVEN no workspace config
+        WHEN the project is resolved
+        THEN there is no root`, () => {
+      const spy = spyOnConsole('log');
+
+      expect(resolveProjectBasePath().projectRoot).toBeUndefined();
+      spy.mockRestore();
+    });
+  });
 });
 
 function jsonFile(name: string, path?: string) {
