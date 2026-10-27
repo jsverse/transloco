@@ -62,6 +62,21 @@ describe('generateConfigFile', () => {
       "import type { TranslocoGlobalConfig } from '@jsverse/transloco';\n\nconst config: TranslocoGlobalConfig = {\n  rootTranslationsPath: 'projects/shop/src/assets/i18n',\n  langs: [ 'en', 'es', 'fr', 'de' ],\n  keysManager: {}\n};\n\nexport default config;",
     );
   });
+
+  it(`GIVEN more than 100 languages
+      WHEN the config file is generated
+      THEN every language is written, none is truncated`, () => {
+    const langs = Array.from({ length: 101 }, (_, i) => `l${i + 1}`);
+
+    const file = generateConfigFile({
+      rootTranslationsPath: 'src/assets/i18n',
+      langs,
+      keysManager: {},
+    });
+
+    expect(file).not.toContain('more item');
+    expect(file).toContain("'l101'");
+  });
 });
 
 describe('translationFile', () => {

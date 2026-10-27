@@ -8,7 +8,8 @@
     "i18n"
   ],
   "exitCode": 1,
-  "stdoutIncludes": [
+  "stderrIncludes": [
     "Input requires a directory."
-  ]
+  ],
+  "allowStderr": "the error the run exits with is written to stderr"
 }

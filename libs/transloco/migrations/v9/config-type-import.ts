@@ -87,6 +87,14 @@ export function migrateConfigTypeImportSource(
     READER_PACKAGE,
     READER_EXPORT,
   );
+  // A type-only import of the reader doesn't cover a value import being moved.
+  let readerValueImported = importsUnaliased(
+    ts,
+    file,
+    READER_PACKAGE,
+    READER_EXPORT,
+    true,
+  );
 
   const edits: Edit[] = [];
   let types = 0;
@@ -137,11 +145,20 @@ export function migrateConfigTypeImportSource(
     const typesToAdd = typeElements.filter(
       (element) => element.propertyName || !typeImported,
     );
+    const isTypeOnly = (element: ImportSpecifier) =>
+      clause.isTypeOnly || element.isTypeOnly;
     const readersToAdd = readerElements.filter(
-      (element) => element.propertyName || !readerImported,
+      (element) =>
+        element.propertyName ||
+        !(isTypeOnly(element) ? readerImported : readerValueImported),
     );
     typeImported ||= typesToAdd.some((element) => !element.propertyName);
-    readerImported ||= readersToAdd.some((element) => !element.propertyName);
+    for (const element of readersToAdd) {
+      if (element.propertyName) continue;
+
+      readerImported = true;
+      readerValueImported ||= !isTypeOnly(element);
+    }
 
     const statements: string[] = [];
     if (typesToAdd.length) {

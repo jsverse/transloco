@@ -5,7 +5,7 @@ import {
   searchGlobalConfig,
   TranslocoGlobalConfig,
 } from '../../config/index.js';
-import { style } from '../../utils/style.js';
+import { styleError } from '../../utils/style.js';
 import { defaultConfig } from '../config.js';
 import { getScopes } from '../keys-builder/utils/scope.utils.js';
 import { messages } from '../messages.js';
@@ -90,7 +90,7 @@ function validateDirectories({ input, translationsPath, command }: Config) {
     const msg = existsSync(path)
       ? messages.pathIsNotDir
       : messages.pathDoesntExist;
-    console.log(style(['bgRed', 'black'], `${prop} ${msg}`));
+    console.error(styleError(['bgRed', 'black'], `${prop} ${msg}`));
   };
 
   for (const path of input) {

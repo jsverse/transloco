@@ -1,3 +1,4 @@
+import { style } from '../../utils/style.js';
 import { messages } from '../messages.js';
 
 import { getLogger } from './logger.js';
@@ -33,9 +34,7 @@ export function checkForProblematicUnflatKeys(obj: object) {
   if (problematicKeys.length) {
     const logger = getLogger();
     logger.log(
-      '\x1b[31m%s\x1b[0m',
-      '⚠️',
-      messages.problematicKeysForUnflat(problematicKeys),
+      style('red', '⚠️', messages.problematicKeysForUnflat(problematicKeys)),
     );
   }
 }
