@@ -279,7 +279,7 @@ describe('runInit', () => {
         THEN it is in the config and written once`, async () => {
       await runInit(options({ langs: ['en', 'en'] }));
 
-      expect(read('transloco.config.ts')).toContain(`langs: [ 'en' ]`);
+      expect(read('transloco.config.ts')).toContain(`langs: ['en'],`);
       expect(printed()).toHaveLength(3);
     });
 

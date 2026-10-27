@@ -1,5 +1,3 @@
-import { inspect } from 'node:util';
-
 import { addScripts, parseManifest } from './manifest.js';
 
 export const configFileName = 'transloco.config.ts';
@@ -41,20 +39,37 @@ export interface InitStep {
 export const translationFile = (folder: string, lang: string) =>
   `${folder.replace(/[\\/]+$/, '')}/${lang}.json`;
 
+/** A string literal the way Prettier writes it, in single quotes. */
+const quote = (value: string) =>
+  `'${value.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`;
+
 /**
- * The config file the way `ng add @jsverse/transloco` generates it, which has
- * no line break at its end.
+ * The config file the way `ng add @jsverse/transloco` leaves it once the Angular
+ * CLI has formatted it with Prettier: single quotes, trailing commas, the
+ * languages on one line while they fit in 80 columns, and a line break at its end.
  */
 export function generateConfigFile(config: {
   rootTranslationsPath: string;
   langs: string[];
   keysManager: Record<string, never>;
 }) {
+  const langs = config.langs.map(quote);
+  const oneLine = `  langs: [${langs.join(', ')}],`;
+  const langsLine =
+    oneLine.length <= 80
+      ? oneLine
+      : `  langs: [\n${langs.map((lang) => `    ${lang},\n`).join('')}  ],`;
+
   return `import type { TranslocoGlobalConfig } from '@jsverse/transloco';
 
-const config: TranslocoGlobalConfig = ${inspect(config, { maxArrayLength: Infinity, maxStringLength: Infinity })};
+const config: TranslocoGlobalConfig = {
+  rootTranslationsPath: ${quote(config.rootTranslationsPath)},
+${langsLine}
+  keysManager: {},
+};
 
-export default config;`;
+export default config;
+`;
 }
 
 /**
