@@ -115,9 +115,17 @@ const migrateAngularI18n: Allowed = {
     'src/migrate/angular-i18n/dasherize.js',
     'src/migrate/angular-i18n/migrate-angular-i18n.js',
     'src/migrate/angular-i18n/template.js',
+    'src/peers.js',
     'src/utils/file-system.js',
+    'src/utils/style.js',
   ],
-  packages: [...migrate.packages, 'cosmiconfig', 'env-paths'],
+  // The templates are parsed with the compiler.
+  packages: [
+    ...migrate.packages,
+    'cosmiconfig',
+    'env-paths',
+    '@angular/compiler',
+  ],
 };
 
 /** `.../node_modules/@scope/name/lib/a.js` => `@scope/name`, for a pnpm store path as well. */

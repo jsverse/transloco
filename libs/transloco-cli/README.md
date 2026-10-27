@@ -93,19 +93,19 @@ Hands the translations of every scope in the joined files, `dist-i18n` unless `-
 
 ### migrate
 
-`migrate` has one command per library to migrate from. Both rewrite the files of your project in place, so commit your work first.
+`migrate` has one command per library to migrate from. Both rewrite the files of your project in place, so commit your work first. They leave out the folders of tools and builds below `--input` (`node_modules`, `dist`, `out-tsc`, `coverage`, `.angular`, `.nx` and hidden folders), and a symlink below it that points outside of it.
 
 ```bash
 transloco migrate ngx-translate --input src/app
 ```
 
-Rewrites the HTML and TS files below `--input`, `src/app` unless it says otherwise: the `translate` directive and pipe, the `TranslateModule`, the `TranslateService` with its injection and its calls, and the `TranslatePipe`, all for their Transloco counterparts. Some changes may still be needed by hand afterwards, see the [list of replacements](https://github.com/jsverse/transloco/blob/master/libs/transloco-schematics/src/ngx-migrate/ngx-translate-migration.md). Exits with `1` when the input doesn't exist or holds no `.html` or `.ts` file.
+Rewrites the HTML and TS files below `--input`, `src/app` unless it says otherwise: the `translate` directive and pipe, the `TranslateModule`, the `TranslateService` with its injection and its calls, and the `TranslatePipe`, all for their Transloco counterparts. The ngx-translate imports become one `@jsverse/transloco` import, and a symbol without a counterpart, such as `LangChangeEvent`, keeps its ngx-translate import. Declaration files are left out, and the injections and calls of the spec files are left as they are. Some changes may still be needed by hand afterwards, see the [list of replacements](https://github.com/jsverse/transloco/blob/master/libs/transloco-schematics/src/ngx-migrate/ngx-translate-migration.md). Exits with `1` when the input doesn't exist or holds no `.html` or `.ts` file.
 
 ```bash
 transloco migrate angular-i18n --input src/app --langs en es
 ```
 
-Replaces the marked text of the HTML templates below `--input`, `src/app` unless it says otherwise, with the `transloco` pipe, and writes the texts to one translation file per language of `--langs`. The files go to `--translations-path`, then `rootTranslationsPath` of the config (`--config` names another one), then `src/assets/i18n`. A key is made of the custom id of the mark or else of its text, and a meaning and a description are kept as the comment of the key. Exits with `1` when the input doesn't exist or holds no `.html` file.
+Replaces the marked text of the HTML templates below `--input`, `src/app` unless it says otherwise, with the `transloco` pipe, and writes the texts to one translation file per language of `--langs`. The files go to `--translations-path`, then `rootTranslationsPath` of the config (`--config` names another one), then `src/assets/i18n`. A key is made of the custom id of the mark or else of its text, and a meaning and a description are kept as the comment of the key. A marked attribute (`i18n-title`) is bound to the pipe: `[title]="'key' | transloco"`. A mark the migration can't convert is left in place and printed with its file and line: one on an element without a text, around other elements, with an interpolation, or with an ICU message and no custom id. The templates are parsed with `@angular/compiler`, which has to be installed. Exits with `1` when the input doesn't exist or holds no `.html` file.
 
 Both migrations only read the marks and the names they know, so go through the diff before you keep it. They replace the `ng g @jsverse/transloco:ngx-migrate` and `ng g @jsverse/transloco:ng-migrate` schematics, which are deprecated.
 

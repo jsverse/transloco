@@ -60,10 +60,10 @@ describe('runMigrateAngularI18n', () => {
   describe('the translations folder', () => {
     it(`GIVEN no translations path and no config
         WHEN the command runs
-        THEN the files go to src/assets/i18n`, () => {
+        THEN the files go to src/assets/i18n`, async () => {
       writeTemplate();
 
-      runMigrateAngularI18n(options({ langs: ['en', 'es'] }));
+      await runMigrateAngularI18n(options({ langs: ['en', 'es'] }));
 
       expect(read('src/app/a.html')).toBe(`<p>{{ 'one' | transloco }}</p>`);
       expect(read('src/assets/i18n/en.json')).toBe('{\n  "one": "One"\n}\n');
@@ -72,11 +72,11 @@ describe('runMigrateAngularI18n', () => {
 
     it(`GIVEN a config with a root translations path
         WHEN the command runs without a translations path
-        THEN the files go to the root of the config`, () => {
+        THEN the files go to the root of the config`, async () => {
       writeTemplate();
       writeConfig({ rootTranslationsPath: 'public/i18n' });
 
-      runMigrateAngularI18n(options());
+      await runMigrateAngularI18n(options());
 
       expect(read('public/i18n/en.json')).toBe('{\n  "one": "One"\n}\n');
       expect(exists('src/assets/i18n/en.json')).toBe(false);
@@ -84,11 +84,11 @@ describe('runMigrateAngularI18n', () => {
 
     it(`GIVEN a config with a root translations path and the option
         WHEN the command runs
-        THEN the option wins`, () => {
+        THEN the option wins`, async () => {
       writeTemplate();
       writeConfig({ rootTranslationsPath: 'public/i18n' });
 
-      runMigrateAngularI18n(options({ translationsPath: 'other/i18n' }));
+      await runMigrateAngularI18n(options({ translationsPath: 'other/i18n' }));
 
       expect(exists('other/i18n/en.json')).toBe(true);
       expect(exists('public/i18n/en.json')).toBe(false);
@@ -96,34 +96,34 @@ describe('runMigrateAngularI18n', () => {
 
     it(`GIVEN a config without a root translations path
         WHEN the command runs
-        THEN the files go to src/assets/i18n`, () => {
+        THEN the files go to src/assets/i18n`, async () => {
       writeTemplate();
       writeConfig({ defaultLang: 'en' });
 
-      runMigrateAngularI18n(options());
+      await runMigrateAngularI18n(options());
 
       expect(exists('src/assets/i18n/en.json')).toBe(true);
     });
 
     it(`GIVEN a config given by its path
         WHEN the command runs
-        THEN its root translations path is used`, () => {
+        THEN its root translations path is used`, async () => {
       writeTemplate();
       writeConfig({ rootTranslationsPath: 'from/custom' }, 'configs/custom.js');
 
-      runMigrateAngularI18n(options({ config: 'configs/custom.js' }));
+      await runMigrateAngularI18n(options({ config: 'configs/custom.js' }));
 
       expect(exists('from/custom/en.json')).toBe(true);
     });
 
     it(`GIVEN a config path that points at nothing
         WHEN the command runs
-        THEN it fails before anything is written`, () => {
+        THEN it fails before anything is written`, async () => {
       writeTemplate();
 
-      expect(() =>
+      await expect(
         runMigrateAngularI18n(options({ config: 'missing.config.js' })),
-      ).toThrow(
+      ).rejects.toThrow(
         new CliError(
           'error: the --config path does not exist: missing.config.js',
         ),
@@ -133,11 +133,11 @@ describe('runMigrateAngularI18n', () => {
 
     it(`GIVEN a translations path and a config that cannot be loaded
         WHEN the command runs
-        THEN the config is not read`, () => {
+        THEN the config is not read`, async () => {
       writeTemplate();
       write('transloco.config.js', 'throw new Error("broken");');
 
-      runMigrateAngularI18n(options({ translationsPath: 'i18n' }));
+      await runMigrateAngularI18n(options({ translationsPath: 'i18n' }));
 
       expect(exists('i18n/en.json')).toBe(true);
     });
@@ -146,8 +146,8 @@ describe('runMigrateAngularI18n', () => {
   describe('what it refuses', () => {
     it(`GIVEN an input that does not exist
         WHEN the command runs
-        THEN it fails naming the folder, and writes and prints nothing`, () => {
-      expect(() => runMigrateAngularI18n(options())).toThrow(
+        THEN it fails naming the folder, and writes and prints nothing`, async () => {
+      await expect(runMigrateAngularI18n(options())).rejects.toThrow(
         new CliError(
           'Transloco Migrate: The input folder does not exist: src/app',
         ),
@@ -158,10 +158,10 @@ describe('runMigrateAngularI18n', () => {
 
     it(`GIVEN an input that is a file
         WHEN the command runs
-        THEN it fails saying it is no folder`, () => {
+        THEN it fails saying it is no folder`, async () => {
       write('src/app', '');
 
-      expect(() => runMigrateAngularI18n(options())).toThrow(
+      await expect(runMigrateAngularI18n(options())).rejects.toThrow(
         new CliError(
           'Transloco Migrate: The input folder is not a folder: src/app',
         ),
@@ -170,10 +170,10 @@ describe('runMigrateAngularI18n', () => {
 
     it(`GIVEN a folder without a template
         WHEN the command runs
-        THEN it fails saying it looked for .html files, and writes and prints nothing`, () => {
+        THEN it fails saying it looked for .html files, and writes and prints nothing`, async () => {
       write('src/app/a.ts', '<p i18n>One</p>');
 
-      expect(() => runMigrateAngularI18n(options())).toThrow(
+      await expect(runMigrateAngularI18n(options())).rejects.toThrow(
         new CliError('Transloco Migrate: No .html files found in src/app'),
       );
       expect(exists('src/assets')).toBe(false);
@@ -182,12 +182,12 @@ describe('runMigrateAngularI18n', () => {
 
     it(`GIVEN a language that holds a comma
         WHEN the command runs
-        THEN it fails pointing at the separate arguments, before anything is written`, () => {
+        THEN it fails pointing at the separate arguments, before anything is written`, async () => {
       writeTemplate();
 
-      expect(() =>
+      await expect(
         runMigrateAngularI18n(options({ langs: ['en,es'] })),
-      ).toThrow(
+      ).rejects.toThrow(
         new CliError(
           `Transloco Migrate: The languages are separate arguments, not a comma separated list: 'en,es'. Run with --langs en es`,
         ),
@@ -215,13 +215,13 @@ describe('runMigrateAngularI18n', () => {
 
     it(`GIVEN an input that is a symlink to a folder
         WHEN the command runs
-        THEN the templates behind the link are migrated and their texts written`, (ctx) => {
+        THEN the templates behind the link are migrated and their texts written`, async (ctx) => {
       writeTemplate();
       if (!symlink('src/app', 'linkroot')) {
         return ctx.skip();
       }
 
-      runMigrateAngularI18n(options({ input: 'linkroot' }));
+      await runMigrateAngularI18n(options({ input: 'linkroot' }));
 
       expect(read('src/app/a.html')).toBe(`<p>{{ 'one' | transloco }}</p>`);
       expect(read('src/assets/i18n/en.json')).toBe('{\n  "one": "One"\n}\n');
@@ -229,14 +229,14 @@ describe('runMigrateAngularI18n', () => {
 
     it(`GIVEN a symlinked folder below the input, to a folder outside of it
         WHEN the command runs
-        THEN the templates behind the link are left as they are`, (ctx) => {
+        THEN the templates behind the link are left as they are`, async (ctx) => {
       writeTemplate();
       write('src/shared/shared.html', '<p i18n>Shared</p>');
       if (!symlink('../shared', 'src/app/linked')) {
         return ctx.skip();
       }
 
-      runMigrateAngularI18n(options());
+      await runMigrateAngularI18n(options());
 
       expect(read('src/shared/shared.html')).toBe('<p i18n>Shared</p>');
       expect(JSON.parse(read('src/assets/i18n/en.json'))).toEqual({

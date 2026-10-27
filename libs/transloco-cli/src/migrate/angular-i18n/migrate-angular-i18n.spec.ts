@@ -43,9 +43,9 @@ function readTree(dir: string) {
 }
 
 /**
- * What the migration of the schematic did to the fixtures, recorded before it
- * moved: `expected` is the project after it ran with `src/app` as the input,
- * `src/assets/i18n` as the output and the languages en and es.
+ * `expected` is the project of the fixtures after the migration ran with
+ * `src/app` as the input, `src/assets/i18n` as the output and the languages
+ * en and es.
  */
 describe('migrateAngularI18n', () => {
   const originalCwd = process.cwd();
@@ -84,7 +84,7 @@ describe('migrateAngularI18n', () => {
 
     it(`GIVEN a project of templates of every kind
         WHEN the migration runs with relative folders
-        THEN the templates and the translation files are those the schematic left`, () => {
+        THEN the templates and the translation files are the expected ones`, () => {
       process.chdir(dir);
 
       migrateAngularI18n({
@@ -110,10 +110,12 @@ describe('migrateAngularI18n', () => {
 
     it(`GIVEN the same project
         WHEN the migration runs
-        THEN it prints the greeting alone, as the schematic did`, () => {
+        THEN it prints the marks it left, with their files and lines, and the greeting`, () => {
+      process.chdir(dir);
+
       migrateAngularI18n({
-        input: path.join(dir, 'src/app'),
-        output: path.join(dir, 'src/assets/i18n'),
+        input: 'src/app',
+        output: 'src/assets/i18n',
         langs: ['en', 'es'],
       });
 
@@ -272,15 +274,39 @@ describe('migrateAngularI18n', () => {
     });
   });
 
-  describe('a template the migration cannot make a key of', () => {
-    it(`GIVEN a mark without a text, behind templates that went well
+  describe('a mark the migration cannot convert', () => {
+    it(`GIVEN a mark without a text, between templates that go well
         WHEN the migration runs
-        THEN it throws, the templates before it are rewritten and no translation file is written`, () => {
+        THEN every template is migrated but that mark, which is printed with its file and line, and the translation files are written`, () => {
       write('app/a.html', '<p i18n>One</p>');
-      write('app/b.html', '<img title="Logo" i18n-title>');
+      write('app/b.html', '<p i18n>Two</p>\n<img i18n src="x.png">');
       write('app/c.html', '<p i18n>Three</p>');
+      process.chdir(dir);
+
+      migrateAngularI18n({ input: 'app', output: 'i18n', langs: ['en'] });
+
+      expect(read('app/a.html')).toBe(`<p>{{ 'one' | transloco }}</p>`);
+      expect(read('app/b.html')).toBe(
+        `<p>{{ 'two' | transloco }}</p>\n<img i18n src="x.png">`,
+      );
+      expect(read('app/c.html')).toBe(`<p>{{ 'three' | transloco }}</p>`);
+      expect(JSON.parse(read('i18n/en.json'))).toEqual({
+        one: 'One',
+        two: 'Two',
+        three: 'Three',
+      });
+      expect(printed()).toContain(
+        `⚠️ ${path.join('app', 'b.html')}:2: <img i18n> is left as it is: it has no text`,
+      );
+    });
+
+    it(`GIVEN a template that fails to migrate, behind templates that went well
+        WHEN the migration runs
+        THEN it throws before any template or translation file is written`, () => {
+      write('app/a.html', '<p i18n>One</p>');
+      write('app/b.html', '<p i18n>Two</p>');
       vi.mocked(findFiles).mockReturnValueOnce(
-        ['a.html', 'b.html', 'c.html'].map((name) =>
+        ['a.html', 'b.html', 'missing.html'].map((name) =>
           path.join(dir, 'app', name),
         ),
       );
@@ -291,15 +317,10 @@ describe('migrateAngularI18n', () => {
           output: path.join(dir, 'i18n'),
           langs: ['en'],
         }),
-      ).toThrow(
-        new TypeError(
-          "Cannot read properties of undefined (reading 'replace')",
-        ),
-      );
+      ).toThrow(/ENOENT/);
 
-      expect(read('app/a.html')).toBe(`<p>{{ 'one' | transloco }}</p>`);
-      expect(read('app/b.html')).toBe('<img title="Logo" i18n-title>');
-      expect(read('app/c.html')).toBe('<p i18n>Three</p>');
+      expect(read('app/a.html')).toBe('<p i18n>One</p>');
+      expect(read('app/b.html')).toBe('<p i18n>Two</p>');
       expect(fs.existsSync(path.join(dir, 'i18n'))).toBe(false);
     });
   });
