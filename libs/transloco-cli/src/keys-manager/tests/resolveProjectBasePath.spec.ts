@@ -418,6 +418,17 @@ describe('resolveProjectBasePath', () => {
       expect(resolveProjectBasePath('shop').projectBasePath).toBe('src');
     });
 
+    it(`GIVEN nx.json above the cwd
+        WHEN the root of the project in the cwd is resolved
+        THEN it is relative to the cwd, as its source root is`, () => {
+      givenNxWorkspace();
+      vi.spyOn(process, 'cwd').mockReturnValue(
+        path.join(TEST_DIR, projectPath),
+      );
+
+      expect(resolveProjectBasePath('shop').projectRoot).toBe('.');
+    });
+
     it(`GIVEN nx.json in the cwd
         WHEN the source root of a project is resolved
         THEN it is kept as it is`, () => {
@@ -426,6 +437,7 @@ describe('resolveProjectBasePath', () => {
       expect(resolveProjectBasePath('shop').projectBasePath).toBe(
         'apps/shop/src',
       );
+      expect(resolveProjectBasePath('shop').projectRoot).toBe('apps/shop');
     });
   });
 
