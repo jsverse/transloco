@@ -37,6 +37,7 @@ function migrate(dir: string, steps: Matcher[], filesType: 'HTML' | 'TS') {
     console.log(`⏳ ${msg}`);
 
     const noFilesFound: string[] = [];
+    const warnings: string[] = [];
 
     for (const matcher of matchers) {
       const files = findFiles(dir, matcher.files, matcher.exclude);
@@ -52,13 +53,21 @@ function migrate(dir: string, steps: Matcher[], filesType: 'HTML' | 'TS') {
       for (const file of files) {
         const content = fs.readFileSync(file, 'utf8');
 
+        for (const { index, message } of matcher.warn?.(content) ?? []) {
+          const line = content.slice(0, index).split('\n').length;
+
+          warnings.push(
+            `${path.relative(process.cwd(), file)}:${line}: ${message}`,
+          );
+        }
+
         fs.writeFileSync(file, applyMatcher(content, matcher), 'utf8');
       }
     }
 
     console.log(`✅ ${msg}`);
-    noFilesFound.forEach((pattern) =>
-      console.log(style('yellow', `⚠️ ${pattern}`)),
+    [...warnings, ...noFilesFound].forEach((warning) =>
+      console.log(style('yellow', `⚠️ ${warning}`)),
     );
   });
 }

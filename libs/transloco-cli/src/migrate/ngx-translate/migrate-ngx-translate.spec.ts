@@ -90,7 +90,7 @@ describe('migrateNgxTranslate', () => {
 
       expect(read('app/app.component.html'))
         .toBe(`<h1 transloco="app.title"></h1>
-<p [translate]="'app.subtitle'" [translocoParams]="{ name: user }"></p>
+<p [transloco]="'app.subtitle'" [translocoParams]="{ name: user }"></p>
 <span>{{ 'app.hello' | transloco: { name: user } }}</span>
 <button [title]="'app.save' | transloco">{{ "app.save" | transloco }}</button>
 `);
@@ -117,7 +117,7 @@ describe('migrateNgxTranslate', () => {
       migrateNgxTranslate({ input: path.join(dir, 'app') });
 
       expect(read('app/crlf.component.html')).toBe(
-        `<p>{{ 'crlf.a' | transloco }}</p>\r\n<p [translate]="'crlf.b'"></p>\r\n`,
+        `<p>{{ 'crlf.a' | transloco }}</p>\r\n<p [transloco]="'crlf.b'"></p>\r\n`,
       );
     });
   });
@@ -152,6 +152,7 @@ export class AppComponent {
       expect(read('app/app.component.ts')).toBe(
         `import { Component } from '@angular/core';
 import { TranslocoService } from '@jsverse/transloco';
+import { take } from 'rxjs';
 
 @Component({ selector: 'app-root', templateUrl: './app.component.html' })
 export class AppComponent {
@@ -159,7 +160,7 @@ export class AppComponent {
     this.translate.setDefaultLang('en');
     this.translate.setActiveLang('en');
     const hello = this.translate.translate('app.hello');
-    this.translate.selectTranslate('app.title').subscribe((v) => console.log(v));
+    this.translate.selectTranslate('app.title').pipe(take(1)).subscribe((v) => console.log(v));
     this.translate.selectTranslate('app.stream').subscribe();
     const lang = this.translate.getActiveLang();
     this.translate.langChanges$.subscribe(() => {});
@@ -202,6 +203,7 @@ export class HomeComponent implements OnInit {
         `import { Component, OnInit } from '@angular/core';
 import { OnDestroy, Inject } from '@ngx-translate/core';
 import { TranslocoService } from '@jsverse/transloco';
+import { take } from 'rxjs';
 
 @Component({ selector: 'app-home', templateUrl: './home.component.html' })
 export class HomeComponent implements OnInit {
@@ -212,7 +214,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.$t
-      .selectTranslate('home.title')
+      .selectTranslate('home.title').pipe(take(1))
       .subscribe();
     const x = this.$t.translate('home.x');
     const y = $t.getActiveLang();
@@ -364,6 +366,320 @@ describe('HomeComponent', () => {
   });
 });
 `);
+    });
+  });
+
+  describe('the service wherever it is injected', () => {
+    it(`GIVEN classes and a function taking the TranslateService with inject()
+        WHEN the migration runs
+        THEN every use of the service is rewritten, whatever its name`, () => {
+      write(
+        'app/app.ts',
+        `import { Component, inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+
+@Component({ selector: 'app-root', template: '' })
+export class App {
+  private translate = inject(TranslateService);
+  readonly #i18n: TranslateService = inject(TranslateService, { optional: true })!;
+
+  init() {
+    this.translate.use('en');
+    const a = this.translate.instant('a');
+    this.translate.stream('b').subscribe();
+    const lang = this.#i18n.currentLang;
+    this.#i18n.onLangChange.subscribe();
+  }
+}
+
+export class Other {
+  constructor(private readonly ngx: TranslateService) {}
+
+  init() {
+    this.ngx.use('es');
+  }
+}
+
+export function title() {
+  const t = inject(TranslateService);
+
+  return t.instant('title');
+}
+`,
+      );
+
+      migrateNgxTranslate({ input: path.join(dir, 'app') });
+
+      expect(read('app/app.ts'))
+        .toBe(`import { Component, inject } from '@angular/core';
+import { TranslocoService } from '@jsverse/transloco';
+
+@Component({ selector: 'app-root', template: '' })
+export class App {
+  private translate = inject(TranslocoService);
+  readonly #i18n: TranslocoService = inject(TranslocoService, { optional: true })!;
+
+  init() {
+    this.translate.setActiveLang('en');
+    const a = this.translate.translate('a');
+    this.translate.selectTranslate('b').subscribe();
+    const lang = this.#i18n.getActiveLang();
+    this.#i18n.langChanges$.subscribe();
+  }
+}
+
+export class Other {
+  constructor(private readonly ngx: TranslocoService) {}
+
+  init() {
+    this.ngx.setActiveLang('es');
+  }
+}
+
+export function title() {
+  const t = inject(TranslocoService);
+
+  return t.translate('title');
+}
+`);
+    });
+
+    it(`GIVEN uses of the service without a Transloco counterpart
+        WHEN the migration runs
+        THEN they are left as they are and printed with their file and line`, () => {
+      write(
+        'app/app.ts',
+        `import { inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+
+export class App {
+  private translate = inject(TranslateService);
+
+  init() {
+    this.translate.addLangs(['en', 'es']);
+    this.translate.setDefaultLang('en');
+    const langs = this.translate.getLangs();
+    this.translate.onTranslationChange.subscribe();
+  }
+}
+`,
+      );
+      process.chdir(dir);
+
+      migrateNgxTranslate({ input: 'app' });
+
+      expect(read('app/app.ts')).toContain(
+        `    this.translate.addLangs(['en', 'es']);
+    this.translate.setDefaultLang('en');
+    const langs = this.translate.getLangs();
+    this.translate.onTranslationChange.subscribe();`,
+      );
+      const file = path.join('app', 'app.ts');
+
+      expect(
+        printed().filter((message) => message.startsWith(`⚠️ ${file}`)),
+      ).toEqual([
+        `⚠️ ${file}:8: translate.addLangs has no counterpart in the TranslocoService, migrate it by hand`,
+        `⚠️ ${file}:10: translate.getLangs has no counterpart in the TranslocoService, migrate it by hand`,
+        `⚠️ ${file}:11: translate.onTranslationChange has no counterpart in the TranslocoService, migrate it by hand`,
+      ]);
+    });
+
+    it(`GIVEN get() calls next to an rxjs import, an operator import and a take(1) already there
+        WHEN the migration runs
+        THEN each one emits once, and take is imported once`, () => {
+      write(
+        'app/a.ts',
+        `import { inject } from '@angular/core';
+import { map } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
+
+export class A {
+  private translate = inject(TranslateService);
+  a = this.translate.get(['a', 'b'], { n: f(1, ')') }).pipe(map(String));
+  b = this.translate.get('b').pipe(take(1));
+}
+`,
+      );
+      write(
+        'app/b.ts',
+        `import { inject } from '@angular/core';
+import { take } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
+
+export class B {
+  private translate = inject(TranslateService);
+  b = this.translate.get('b');
+}
+`,
+      );
+
+      migrateNgxTranslate({ input: path.join(dir, 'app') });
+
+      expect(read('app/a.ts')).toBe(`import { inject } from '@angular/core';
+import { map, take } from 'rxjs';
+import { TranslocoService } from '@jsverse/transloco';
+
+export class A {
+  private translate = inject(TranslocoService);
+  a = this.translate.selectTranslate(['a', 'b'], { n: f(1, ')') }).pipe(take(1)).pipe(map(String));
+  b = this.translate.selectTranslate('b').pipe(take(1));
+}
+`);
+      expect(read('app/b.ts')).toBe(`import { inject } from '@angular/core';
+import { take } from 'rxjs/operators';
+import { TranslocoService } from '@jsverse/transloco';
+
+export class B {
+  private translate = inject(TranslocoService);
+  b = this.translate.selectTranslate('b').pipe(take(1));
+}
+`);
+    });
+  });
+
+  describe('inline templates', () => {
+    it(`GIVEN components with inline templates
+        WHEN the migration runs
+        THEN their templates are migrated like the template files`, () => {
+      write(
+        'app/feat.ts',
+        `import { Component } from '@angular/core';
+import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+
+@Component({
+  selector: 'app-feat',
+  imports: [TranslatePipe, TranslateDirective],
+  template: \`
+    <h1>{{ 'FEAT' | translate }}</h1>
+    <p [translate]="'P'" [translateParams]="{ a: 1 }"></p>
+  \`,
+})
+export class Feat {}
+
+@Component({ selector: 'app-legacy', template: '<b>{{ "LEGACY" | translate }}</b>' })
+export class Legacy {}
+`,
+      );
+
+      migrateNgxTranslate({ input: path.join(dir, 'app') });
+
+      expect(read('app/feat.ts'))
+        .toBe(`import { Component } from '@angular/core';
+import { TranslocoPipe, TranslocoDirective } from '@jsverse/transloco';
+
+@Component({
+  selector: 'app-feat',
+  imports: [TranslocoPipe, TranslocoDirective],
+  template: \`
+    <h1>{{ 'FEAT' | transloco }}</h1>
+    <p [transloco]="'P'" [translocoParams]="{ a: 1 }"></p>
+  \`,
+})
+export class Feat {}
+
+@Component({ selector: 'app-legacy', template: '<b>{{ "LEGACY" | transloco }}</b>' })
+export class Legacy {}
+`);
+    });
+
+    it.each([
+      ['an interpolation', "template: `<b>{{ 'A' | translate }}</b>${extra}`,"],
+      [
+        'a concatenation',
+        "template: '<b>{{ \\'A\\' | translate }}</b>' + extra,",
+      ],
+      ['a variable', 'template: shared,'],
+    ])(
+      `GIVEN a component whose inline template holds %s
+       WHEN the migration runs
+       THEN the template, the pipe and the module are left, and it is printed with its file and line`,
+      (_, template) => {
+        const source = `import { Component, inject } from '@angular/core';
+import { TranslateModule, TranslatePipe, TranslateService } from '@ngx-translate/core';
+
+@Component({
+  imports: [TranslatePipe, TranslateModule.forChild()],
+  ${template}
+})
+export class A {
+  translate = inject(TranslateService);
+}
+`;
+
+        write('app/a.ts', source);
+        process.chdir(dir);
+
+        migrateNgxTranslate({ input: 'app' });
+
+        expect(read('app/a.ts')).toBe(
+          source
+            .replace(
+              `import { TranslateModule, TranslatePipe, TranslateService } from '@ngx-translate/core';`,
+              `import { TranslateModule, TranslatePipe } from '@ngx-translate/core';\nimport { TranslocoService } from '@jsverse/transloco';`,
+            )
+            .replace('inject(TranslateService)', 'inject(TranslocoService)'),
+        );
+        expect(printed()).toContain(
+          `⚠️ ${path.join('app', 'a.ts')}:6: The inline template can't be migrated, its TranslateModule, TranslatePipe and TranslateDirective are left: migrate it by hand`,
+        );
+      },
+    );
+
+    it(`GIVEN a component with a member named template, next to its inline template
+        WHEN the migration runs
+        THEN only the template of the decorator is read, and the source is migrated`, () => {
+      write(
+        'app/a.ts',
+        `import { Component, Input, TemplateRef } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
+
+@Component({ imports: [TranslatePipe], template: \`{{ 'A' | translate }}\` })
+export class A {
+  @Input() template: TemplateRef<unknown>;
+  options = { template: other };
+}
+`,
+      );
+
+      migrateNgxTranslate({ input: path.join(dir, 'app') });
+
+      expect(read('app/a.ts'))
+        .toBe(`import { Component, Input, TemplateRef } from '@angular/core';
+import { TranslocoPipe } from '@jsverse/transloco';
+
+@Component({ imports: [TranslocoPipe], template: \`{{ 'A' | transloco }}\` })
+export class A {
+  @Input() template: TemplateRef<unknown>;
+  options = { template: other };
+}
+`);
+      expect(
+        printed().some((message) => message.includes("inline template can't")),
+      ).toBe(false);
+    });
+  });
+
+  describe('templates the directive can not take', () => {
+    it(`GIVEN the translate attribute without a value, holding the key as its content
+        WHEN the migration runs
+        THEN it is left and printed with its file and line`, () => {
+      write(
+        'app/a.html',
+        `<p title="please translate it">x</p>\n<span translate>menu.item</span>\n`,
+      );
+      process.chdir(dir);
+
+      migrateNgxTranslate({ input: 'app' });
+
+      expect(read('app/a.html')).toBe(
+        `<p title="please translate it">x</p>\n<span translate>menu.item</span>\n`,
+      );
+      expect(
+        printed().filter((message) => message.includes('without a value')),
+      ).toEqual([
+        `⚠️ ${path.join('app', 'a.html')}:2: The translate attribute without a value isn't migrated, use transloco="key" or the pipe`,
+      ]);
     });
   });
 
@@ -593,6 +909,7 @@ export declare const t: TranslateService;
         '\nStarting migration script',
         ...steps('HTML', ['directives', 'pipes']),
         ...steps('TS', [
+          'inline templates',
           'modules',
           'imports',
           'constructor injections',
@@ -617,20 +934,23 @@ export declare const t: TranslateService;
         '\nStarting migration script',
         ...steps('HTML', ['directives', 'pipes']),
         '\nMigrating TS files 📜',
-        '⏳ Step 1/5: Migrating modules',
-        '✅ Step 1/5: Migrating modules',
+        '⏳ Step 1/6: Migrating inline templates',
+        '✅ Step 1/6: Migrating inline templates',
         ts,
-        '⏳ Step 2/5: Migrating imports',
-        '✅ Step 2/5: Migrating imports',
+        '⏳ Step 2/6: Migrating modules',
+        '✅ Step 2/6: Migrating modules',
         ts,
-        '⏳ Step 3/5: Migrating constructor injections',
-        '✅ Step 3/5: Migrating constructor injections',
+        '⏳ Step 3/6: Migrating imports',
+        '✅ Step 3/6: Migrating imports',
         ts,
-        '⏳ Step 4/5: Migrating service usage',
-        '✅ Step 4/5: Migrating service usage',
+        '⏳ Step 4/6: Migrating constructor injections',
+        '✅ Step 4/6: Migrating constructor injections',
         ts,
-        '⏳ Step 5/5: Migrating specs',
-        '✅ Step 5/5: Migrating specs',
+        '⏳ Step 5/6: Migrating service usage',
+        '✅ Step 5/6: Migrating service usage',
+        ts,
+        '⏳ Step 6/6: Migrating specs',
+        '✅ Step 6/6: Migrating specs',
         spec,
         ...done,
       ]);
@@ -661,16 +981,17 @@ export declare const t: TranslateService;
         html,
         '\nMigrating TS files 📜',
         ...[
+          'inline templates',
           'modules',
           'imports',
           'constructor injections',
           'service usage',
         ].flatMap((name, index) => [
-          `⏳ Step ${index + 1}/5: Migrating ${name}`,
-          `✅ Step ${index + 1}/5: Migrating ${name}`,
+          `⏳ Step ${index + 1}/6: Migrating ${name}`,
+          `✅ Step ${index + 1}/6: Migrating ${name}`,
         ]),
-        '⏳ Step 5/5: Migrating specs',
-        '✅ Step 5/5: Migrating specs',
+        '⏳ Step 6/6: Migrating specs',
+        '✅ Step 6/6: Migrating specs',
         spec,
         ...done,
       ]);
@@ -684,7 +1005,7 @@ export declare const t: TranslateService;
       const warnings = printed().filter((message) => message.startsWith('⚠️'));
 
       // The pipes warn twice, the rest once
-      expect(warnings).toHaveLength(1 + 2 + 1 + 1 + 1 + 1 + 1);
+      expect(warnings).toHaveLength(1 + 2 + 1 + 1 + 1 + 1 + 1 + 1);
       expect(
         warnings.every((message) =>
           message.startsWith(
