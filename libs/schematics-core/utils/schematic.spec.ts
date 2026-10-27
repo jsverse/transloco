@@ -69,4 +69,18 @@ export default config;
     expect(file).toContain("rootTranslationsPath: 'it\\'s\\\\x',");
     expect(file).toContain('langs: [],');
   });
+
+  it('should escape line breaks and other control characters', () => {
+    // when
+    const file = generateConfigFile({
+      rootTranslationsPath: 'a\nb\r\tc\u2028d\u0001',
+      langs: [],
+      keysManager: {},
+    });
+
+    // then
+    expect(file).toContain(
+      "rootTranslationsPath: 'a\\nb\\r\\tc\\u2028d\\u0001',",
+    );
+  });
 });

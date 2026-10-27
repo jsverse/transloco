@@ -7,9 +7,16 @@ export const NAMES = {
 
 const identifier = /^[A-Za-z_$][\w$]*$/;
 
+const escapeControl = (char: string) =>
+  ({ '\n': '\\n', '\r': '\\r', '\t': '\\t' })[char] ??
+  `\\u${char.charCodeAt(0).toString(16).padStart(4, '0')}`;
+
 /** A string literal the way Prettier writes it, in single quotes. */
 const quote = (value: string) =>
-  `'${value.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`;
+  `'${value
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    .replace(/[\p{Cc}\u2028\u2029]/gu, escapeControl)}'`;
 
 /**
  * Serializes a config value the way the Angular CLI's Prettier pass leaves it:
