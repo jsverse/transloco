@@ -10,7 +10,6 @@ import { assertConfigPathExists } from './config-path.js';
 import { assertFolderExists } from './translation-folders.js';
 
 const name = 'Migrate';
-const defaultTranslationsPath = 'src/assets/i18n';
 
 export interface MigrateAngularI18nCommandOptions {
   input: string;
@@ -41,7 +40,7 @@ export async function runMigrateAngularI18n({
   const output =
     translationsPath ??
     getGlobalConfig(config).rootTranslationsPath ??
-    defaultTranslationsPath;
+    (await defaultTranslationsPath());
 
   // A language is the name of the file written for it, the several languages
   // are separate arguments. A comma is how the schematic took them, and would
@@ -65,6 +64,31 @@ export async function runMigrateAngularI18n({
     await import('../migrate/angular-i18n/migrate-angular-i18n.js');
 
   migrateAngularI18n({ input, output, langs });
+}
+
+/** The folder `transloco init` and `ng add` pick, so that the texts land where the app loads them from. */
+async function defaultTranslationsPath() {
+  // Only loaded when nothing else names the folder
+  const { detectTranslationsPath } =
+    await import('../init/translations-path.js');
+  const { resolveProjectBasePath } =
+    await import('../keys-manager/utils/resolve-project-base-path.js');
+  let sourceRoot = 'src';
+
+  try {
+    sourceRoot = resolveProjectBasePath(undefined, {
+      quiet: true,
+    }).projectBasePath;
+  } catch {
+    // No project to ask, the default source root it is
+  }
+
+  const manifest = path.resolve('package.json');
+
+  return detectTranslationsPath(
+    sourceRoot,
+    fs.existsSync(manifest) ? fs.readFileSync(manifest, 'utf8') : undefined,
+  );
 }
 
 /** Whether the path, through the links of the part of it that exists, lies inside the working directory. */

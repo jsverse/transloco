@@ -70,6 +70,18 @@ describe('runMigrateAngularI18n', () => {
       expect(read('src/assets/i18n/es.json')).toBe('{\n  "one": "One"\n}\n');
     });
 
+    it(`GIVEN a public folder, no translations path and no config
+        WHEN the command runs
+        THEN the files go to public/i18n, where ng add and init put them`, async () => {
+      write('public/favicon.ico', '');
+      writeTemplate();
+
+      await runMigrateAngularI18n(options({ langs: ['en'] }));
+
+      expect(read('public/i18n/en.json')).toBe('{\n  "one": "One"\n}\n');
+      expect(exists('src/assets/i18n/en.json')).toBe(false);
+    });
+
     it(`GIVEN a config with a root translations path
         WHEN the command runs without a translations path
         THEN the files go to the root of the config`, async () => {
