@@ -66,7 +66,7 @@ describe('Scoped libs with misconfigured libraries', () => {
 
   it(`GIVEN a library whose package.json can't be parsed and a valid one after it
       WHEN the libraries are copied
-      THEN the problem is reported and the valid library is still copied`, async () => {
+      THEN it is reported as such and the valid library is still copied`, async () => {
     writeFileSync(join(dir, 'libs/a/package.json'), '{ not json');
     const onProblem = vi.fn();
 
@@ -78,7 +78,9 @@ describe('Scoped libs with misconfigured libraries', () => {
       onProblem,
     });
 
-    expect(onProblem).toHaveBeenCalledOnce();
+    expect(onProblem).toHaveBeenCalledExactlyOnceWith(
+      `${join('libs/a', 'package.json')} is not valid JSON.`,
+    );
     expect(existsSync(join(dir, 'app/i18n/b/en.json'))).toBe(true);
   });
 

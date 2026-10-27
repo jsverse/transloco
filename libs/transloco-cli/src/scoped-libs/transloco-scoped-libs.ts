@@ -115,7 +115,13 @@ async function copyLib(
     return;
   }
 
-  if (!pkg.content?.i18n) {
+  if (!pkg.content) {
+    onProblem(`${path.join(lib.src, 'package.json')} is not valid JSON.`);
+
+    return;
+  }
+
+  if (!pkg.content.i18n) {
     onProblem(
       `${path.join(lib.src, 'package.json')} is missing i18n information. ${packageJsoni18nExample}`,
     );

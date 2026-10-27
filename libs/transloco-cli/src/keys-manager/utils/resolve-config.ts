@@ -145,7 +145,7 @@ function checkOutputDefault(
     if (!isInProject) {
       const output = path.resolve(defaultOutput);
       console.warn(
-        `Transloco extract: The translations folder of the config, ${config.output}, is outside project ${project} (${projectRoot}). Writing to ${output} instead. Pass --output, or give ${project} a Transloco config whose rootTranslationsPath is in ${projectRoot}, relative to the working directory.`,
+        `Transloco extract: The translations folder of the config, ${config.output}, is outside project ${project} (${projectRoot}). Writing to ${output} instead. Pass --output, set keysManager.output, or give ${project} a Transloco config whose rootTranslationsPath is in ${projectRoot}, relative to the working directory.`,
       );
       config.output = output;
 

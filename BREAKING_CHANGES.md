@@ -45,7 +45,7 @@ nx migrate @jsverse/transloco  # Nx
   }
   ```
 
-- A misconfigured library no longer stops the copy: the libraries listed after it are copied too, where they used to be skipped. `transloco-scoped-libs` still prints the problem on stdout and exits with 0, while `transloco scoped-libs` reports each problem on stderr and exits with 1, as it does for a config without `scopedLibs`. A library without a `package.json` is reported as such, not as one missing the `i18n` entry.
+- A misconfigured library no longer stops the copy: the libraries listed after it are copied too, where they used to be skipped. `transloco-scoped-libs` still prints the problem on stdout and exits with 0, while `transloco scoped-libs` reports each problem on stderr and exits with 1, as it does for a config without `scopedLibs`. A library without a `package.json`, or with one that is not valid JSON, is reported as such, not as one missing the `i18n` entry.
 
 ## Transloco Keys Manager, Optimize, Scoped Libs, Utils & Validator
 
