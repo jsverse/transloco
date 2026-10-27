@@ -226,6 +226,22 @@ describe('findFiles', () => {
       );
     });
 
+    it(`GIVEN a dangling symlink and a symlink loop below the input folder
+        WHEN files are looked for in it
+        THEN they are left out`, (ctx) => {
+      write(file('src/a'));
+      if (
+        !symlink(file('missing'), file('src/dangling')) ||
+        !symlink(file('loop'), file('src/loop'))
+      ) {
+        return ctx.skip();
+      }
+
+      expect(findFiles(path.join(dir, 'src'), suffix)).toEqual(
+        abs(file('src/a')),
+      );
+    });
+
     it(`GIVEN an input folder whose name has parentheses and brackets
         WHEN files are looked for in it
         THEN its files are found, and a folder of a name it would match as a pattern is left out`, () => {

@@ -71,7 +71,11 @@ function insideOf(dir: string, files: string[]) {
   const seen = new Set<string>();
 
   return files.filter((file) => {
-    const real = fs.realpathSync(file);
+    const real = realPath(file);
+
+    // A dangling link or a link loop is no file to migrate.
+    if (real === undefined) return false;
+
     const relative = path.relative(realDir, real);
     const inside =
       relative !== '..' &&
@@ -84,6 +88,14 @@ function insideOf(dir: string, files: string[]) {
 
     return true;
   });
+}
+
+function realPath(file: string) {
+  try {
+    return fs.realpathSync(file);
+  } catch {
+    return undefined;
+  }
 }
 
 /** UTF-8 sorts as the code points do, and a `\` doesn't change the order of Windows paths. */
