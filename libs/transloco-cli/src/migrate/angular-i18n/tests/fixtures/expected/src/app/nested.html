@@ -1,7 +1,9 @@
-<div>{{ 'outer-text-<b-i18n>inner-bold</b>-after' | transloco }}</div>
+<div i18n>Outer text <b>{{ 'inner-bold' | transloco }}</b> after</div>
 <ul>
   <li>{{ 'one' | transloco }}</li>
   <li>{{ 'two' | transloco }}</li>
   <li><span>{{ 'three' | transloco }}</span></li>
 </ul>
-<section>{{ 'section' | transloco }}</section>
+<section i18n="@@section">
+  <p>{{ 'paragraph' | transloco }}</p>
+</section>

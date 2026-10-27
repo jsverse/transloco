@@ -4,26 +4,32 @@ import { CliError } from './errors.js';
 import { packageJsonPath, readPackageJson } from './package-info.js';
 
 /**
- * Only the keys manager needs these, so the package marks them as optional
- * peers and the commands running it verify them instead.
+ * Only the keys manager needs both of these, and the Angular i18n migration
+ * the compiler, so the package marks them as optional peers and the commands
+ * using them verify them instead.
  */
 const keysManagerPeers = ['@angular/compiler', 'typescript'];
 
 type ResolvePeer = (name: string) => unknown;
 
+/** Fails with an actionable message when a peer of the keys manager is missing. */
+export function assertKeysManagerPeers(command: string, resolve?: ResolvePeer) {
+  assertPeers(command, keysManagerPeers, resolve);
+}
+
 /**
- * Fails with an actionable message when a peer of the keys manager is missing.
+ * Fails with an actionable message when one of the optional peers a command
+ * needs is missing.
  *
  * The peers are resolved from the package and not from the working directory,
- * since that's where the keys manager is going to load them from.
+ * since that's where the command is going to load them from.
  */
-export function assertKeysManagerPeers(
+export function assertPeers(
   command: string,
+  peers: string[],
   resolve: ResolvePeer = createRequire(packageJsonPath).resolve,
 ) {
-  const missing = keysManagerPeers.filter(
-    (peer) => !isInstalled(peer, resolve),
-  );
+  const missing = peers.filter((peer) => !isInstalled(peer, resolve));
 
   if (missing.length === 0) return;
 

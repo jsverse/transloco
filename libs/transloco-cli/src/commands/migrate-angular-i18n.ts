@@ -2,8 +2,8 @@ import path from 'node:path';
 
 import { getGlobalConfig } from '../config/index.js';
 import { CliError } from '../errors.js';
-import { migrateAngularI18n } from '../migrate/angular-i18n/migrate-angular-i18n.js';
 import { findFiles } from '../migrate/find-files.js';
+import { assertPeers } from '../peers.js';
 
 import { assertConfigPathExists } from './config-path.js';
 import { assertFolderExists } from './translation-folders.js';
@@ -18,7 +18,7 @@ export interface MigrateAngularI18nCommandOptions {
   config?: string;
 }
 
-export function runMigrateAngularI18n({
+export async function runMigrateAngularI18n({
   input,
   translationsPath,
   langs,
@@ -48,6 +48,12 @@ export function runMigrateAngularI18n({
   if (!findFiles(path.resolve(input), '.html').length) {
     throw new CliError(`Transloco ${name}: No .html files found in ${input}`);
   }
+
+  // The templates are read with the parser of the Angular compiler.
+  assertPeers(`migrate angular-i18n`, ['@angular/compiler']);
+
+  const { migrateAngularI18n } =
+    await import('../migrate/angular-i18n/migrate-angular-i18n.js');
 
   migrateAngularI18n({ input, output, langs });
 }

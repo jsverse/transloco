@@ -320,15 +320,13 @@ describe('joinTranslations', () => {
 
     it(`GIVEN a scope file whose name only ends with the file name of the language
         WHEN it runs
-        THEN it is taken for the file of the language`, () => {
+        THEN it is not taken for the file of the language`, () => {
       const planned = join({
         ...rootFiles,
         [`${root}/scope/ees.json`]: json({ taken: true }),
       });
 
-      expect(JSON.parse(contentOf(planned, 'es')!).scope).toEqual({
-        taken: true,
-      });
+      expect(JSON.parse(contentOf(planned, 'es')!).scope).toBeUndefined();
     });
   });
 
@@ -366,22 +364,6 @@ describe('joinTranslations', () => {
       ).toThrow(
         new TranslationFilesError(
           `The key "scope" is defined in both ${root}/es.json and ${root}/scope/es.json, rename one and run the command again.`,
-        ),
-      );
-    });
-
-    it(`GIVEN two files of a scope for the same language
-        WHEN it runs
-        THEN it fails naming the key and both files`, () => {
-      expect(() =>
-        join({
-          ...rootFiles,
-          [`${root}/scope/es.json`]: json(scopeEs),
-          [`${root}/scope/ees.json`]: json(scopeEs),
-        }),
-      ).toThrow(
-        new TranslationFilesError(
-          `The key "scope" is defined in both ${root}/scope/es.json and ${root}/scope/ees.json, rename one and run the command again.`,
         ),
       );
     });
@@ -426,6 +408,91 @@ describe('joinTranslations', () => {
       const planned = join({ ...rootFiles, [`${root}/en.json`]: 'nope' });
 
       expect(planned).toHaveLength(1);
+    });
+  });
+  describe('files that are not the translation of a language', () => {
+    it(`GIVEN a root holding es.vendor.json beside es.json
+        WHEN it runs
+        THEN only es.json is joined, and es.vendor.json is left out`, () => {
+      const files = {
+        ...rootFiles,
+        ...scopeFiles,
+        [`${root}/es.vendor.json`]: json({ v: 1 }),
+      };
+
+      const planned = join(files);
+
+      expect(planned.map(({ path }) => path)).toEqual(['dist-i18n/es.json']);
+      expect(JSON.parse(planned[0].content)).toEqual({
+        ...es,
+        scope: scopeEs,
+      });
+    });
+
+    it(`GIVEN scope files whose names only contain es.json
+        WHEN it runs
+        THEN only the es.json of the scope is merged`, () => {
+      const files = {
+        ...rootFiles,
+        ...scopeFiles,
+        [`${root}/scope/xes.json`]: json({ z: 1 }),
+        [`${root}/scope/es.json.bak`]: json({ z: 2 }),
+      };
+
+      expect(JSON.parse(join(files)[0].content)).toEqual({
+        ...es,
+        scope: scopeEs,
+      });
+    });
+  });
+
+  describe('keys of the root file that a scope shares', () => {
+    it.each(['', 0, false, null])(
+      `GIVEN a root file holding the key of a scope as %j
+        WHEN it runs
+        THEN it fails naming the key`,
+      (value) => {
+        const files = {
+          ...rootFiles,
+          ...scopeFiles,
+          [`${root}/es.json`]: json({ ...es, scope: value }),
+        };
+
+        expect(() => join(files)).toThrow(/The key "scope" is defined in both/);
+      },
+    );
+  });
+
+  describe('files that do not hold an object', () => {
+    it.each(['"hi"', 'null', '[1]', '5'])(
+      `GIVEN a root file holding %s
+        WHEN it runs
+        THEN it fails naming the file`,
+      (content) => {
+        const files = {
+          ...rootFiles,
+          ...scopeFiles,
+          [`${root}/es.json`]: content,
+        };
+
+        expect(() => join(files)).toThrow(TranslationFilesError);
+        expect(() => join(files)).toThrow(
+          `${root}/es.json must hold a JSON object`,
+        );
+      },
+    );
+
+    it(`GIVEN a scope file holding a string
+        WHEN it runs
+        THEN it fails naming the file`, () => {
+      const files = {
+        ...rootFiles,
+        [`${root}/scope/es.json`]: '"hi"',
+      };
+
+      expect(() => join(files)).toThrow(
+        `${root}/scope/es.json must hold a JSON object`,
+      );
     });
   });
 });

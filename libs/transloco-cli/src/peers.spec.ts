@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { CliError } from './errors.js';
-import { assertKeysManagerPeers } from './peers.js';
+import { assertKeysManagerPeers, assertPeers } from './peers.js';
 
 function notFound(name: string) {
   return Object.assign(new Error(`Cannot find module '${name}'`), {
@@ -142,5 +142,36 @@ describe('assertKeysManagerPeers', () => {
     };
 
     expect(() => assertKeysManagerPeers('extract', resolve)).not.toThrow();
+  });
+});
+
+describe('assertPeers', () => {
+  it(`GIVEN a command that needs the compiler alone, and typescript is missing
+      WHEN its peers are verified
+      THEN nothing is thrown`, () => {
+    expect(() =>
+      assertPeers(
+        'migrate angular-i18n',
+        ['@angular/compiler'],
+        resolverMissing('typescript'),
+      ),
+    ).not.toThrow();
+  });
+
+  it(`GIVEN a command that needs the compiler, and it is missing
+      WHEN its peers are verified
+      THEN it fails naming the command and the package`, () => {
+    const error = catchError(() =>
+      assertPeers(
+        'migrate angular-i18n',
+        ['@angular/compiler'],
+        resolverMissing('@angular/compiler'),
+      ),
+    );
+
+    expect(error).toBeInstanceOf(CliError);
+    expect((error as Error).message).toMatch(
+      /^error: "transloco migrate angular-i18n" needs @angular\/compiler, which is not installed\./,
+    );
   });
 });
