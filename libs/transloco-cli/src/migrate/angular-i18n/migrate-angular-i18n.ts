@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import { makeDir, outputFile, writeJsonFile } from '../../utils/file-system.js';
+import { style } from '../../utils/style.js';
 import { findFiles } from '../find-files.js';
 
 import { migrateTemplate, type Translation } from './template.js';
@@ -28,12 +29,25 @@ export function migrateAngularI18n({
   const files = findFiles(path.resolve(input), '.html');
   let translation: Translation = {};
 
-  for (const filePath of files) {
-    const tpl = fs.readFileSync(filePath, { encoding: 'utf-8' });
-    const migrated = migrateTemplate(tpl);
+  // Every template is migrated before the first is written, so nothing is
+  // left half done when one of them fails.
+  const migrated = files.map((filePath) => ({
+    filePath,
+    ...migrateTemplate(fs.readFileSync(filePath, { encoding: 'utf-8' })),
+  }));
 
-    translation = { ...translation, ...migrated.translation };
-    outputFile(filePath, migrated.template);
+  for (const { filePath, template, translation: found, warnings } of migrated) {
+    translation = { ...translation, ...found };
+    outputFile(filePath, template);
+
+    for (const { line, message } of warnings) {
+      console.log(
+        style(
+          'yellow',
+          `⚠️ ${path.relative(process.cwd(), filePath)}:${line}: ${message}`,
+        ),
+      );
+    }
   }
 
   const sorted = Object.keys(translation)

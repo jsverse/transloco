@@ -24,7 +24,7 @@ The `translate` pipes will be replaced with the `transloco` pipe.
 
 ### Directives
 
-The `translate` & `translateParams` directives will be replaced with the matching `transloco` directives.
+The `translate` & `translateParams` directives will be replaced with the matching `transloco` directives. The `translate="yes"` and `translate="no"` attributes of HTML, and attributes such as `data-translate`, are left as they are.
 
 ##### Examples:
 
@@ -32,14 +32,15 @@ The `translate` & `translateParams` directives will be replaced with the matchin
 
 ### Imports
 
-The `TranslateService` imports will be replaced with `TranslocoService`.
+The `TranslateModule`, `TranslateService`, `TranslatePipe` and `TranslateDirective` imports are replaced with their Transloco counterparts, in one `@jsverse/transloco` import per file, and their references in the file are renamed. A symbol the file already imports from `@jsverse/transloco` isn't imported twice, and a symbol without a counterpart keeps its ngx-translate import. A `TranslatePipe` injected in a constructor becomes the `TranslocoService` (see [Constructor Injections](#constructor-injections)).
 
 ##### Examples:
 
 1. `import { TranslateService } from '@ngx-translate/core';` will be replaced with `import { TranslocoService } from '@jsverse/transloco';`
-2. `import { TranslateModule, TranslateLoader } from '@ngx-translate/core';` will be replaced with  
+2. `import { TranslateModule, TranslateLoader } from '@ngx-translate/core';` will be replaced with
    `import { TranslateLoader } from '@ngx-translate/core';`
    `import { TranslocoModule } from '@jsverse/transloco';`
+3. `import { TranslateService } from '@ngx-translate/core';` and `import { TranslatePipe } from '@ngx-translate/core';` will be replaced with `import { TranslocoService, TranslocoPipe } from '@jsverse/transloco';`
 
 ### Constructor Injections
 
@@ -83,7 +84,9 @@ The `TranslateService` injections will be replaced with `TranslocoService`.
 
 ### Specs
 
-[Imports](#imports), [Modules](#modules) and `TranslateService` will be replaced with `TranslocoService`
+The [Imports](#imports) and [Modules](#modules) of the spec files are migrated, and the `TranslateService` and `TranslatePipe` left in them are replaced with `TranslocoService`. Their injections and service calls are left as they are.
+
+Declaration files (`*.d.ts`), and the `node_modules`, `dist`, `out-tsc`, `coverage`, `.angular`, `.nx` and hidden folders below the input, are left out.
 
 ### Issues
 

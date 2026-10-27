@@ -9,7 +9,7 @@ import {
   assertSearchPlacesAreFiles,
 } from '../../config/load-error.js';
 import { CliError } from '../../errors.js';
-import { style } from '../../utils/style.js';
+import { styleError } from '../../utils/style.js';
 import { ProjectType } from '../config.js';
 
 import { coerceArray } from './collection.utils.js';
@@ -48,8 +48,8 @@ function searchConfig(searchPlaces: string[] | string, searchFrom = '') {
 }
 
 function logNotFound(searchPlaces: string[]) {
-  console.log(
-    style(
+  console.error(
+    styleError(
       ['black', 'bgRed'],
       `Unable to load workspace config from ${searchPlaces.join(
         ', ',
@@ -105,8 +105,8 @@ export function resolveProjectBasePath(
     assertProjectIsKnown(projectName);
 
     if (!quiet) {
-      console.log(
-        style(
+      console.error(
+        styleError(
           ['black', 'bgRed'],
           `Unable to resolve \`projectBasePath\` from configuration. Defaulting source root to '${defaultSourceRoot}'`,
         ),

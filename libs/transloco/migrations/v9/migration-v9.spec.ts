@@ -749,6 +749,26 @@ describe('providesGlobalTranslateFn', () => {
 });
 
 describe('migrateMarkerImportSource', () => {
+  it(`GIVEN a file that only has a type-only import of marker from the CLI
+      WHEN the old-path value import is migrated
+      THEN the value import still lands on the CLI`, () => {
+    const result = migrateMarkerImportSource(
+      [
+        `import type { marker } from '@jsverse/transloco-cli/marker';`,
+        `import { marker } from '@jsverse/transloco-keys-manager/marker';`,
+        `const k = marker('a.b');`,
+      ].join('\n'),
+    );
+
+    expect(result?.content).toBe(
+      [
+        `import type { marker } from '@jsverse/transloco-cli/marker';`,
+        `import { marker } from '@jsverse/transloco-cli/marker';`,
+        `const k = marker('a.b');`,
+      ].join('\n'),
+    );
+  });
+
   it(`GIVEN marker imported alone from the top-level package
       WHEN the source is migrated
       THEN the specifier is repointed to the CLI's marker subpath`, () => {
@@ -1384,6 +1404,26 @@ describe('migrateConfigTypeImportSource', () => {
     );
   });
 
+  it(`GIVEN a file that only has a type-only import of getGlobalConfig from the CLI
+      WHEN the utils value import is migrated
+      THEN the value import still lands on the CLI`, () => {
+    const result = migrateConfigTypeImportSource(
+      [
+        `import type { getGlobalConfig } from '@jsverse/transloco-cli';`,
+        `import { getGlobalConfig } from '@jsverse/transloco-utils';`,
+        `const c = getGlobalConfig();`,
+      ].join('\n'),
+    );
+
+    expect(result?.content).toBe(
+      [
+        `import type { getGlobalConfig } from '@jsverse/transloco-cli';`,
+        `import { getGlobalConfig } from '@jsverse/transloco-cli';`,
+        `const c = getGlobalConfig();`,
+      ].join('\n'),
+    );
+  });
+
   it(`GIVEN a utils import whose names are all imported already
       WHEN it is migrated
       THEN the whole import line is removed`, () => {
@@ -1491,6 +1531,9 @@ describe('findVersionFloorWarnings', () => {
 
       expect(warning).toContain('^22.18.0 || >=24');
       expect(warning).toContain('@jsverse/transloco-utils');
+      expect(warning).toContain(
+        'These packages now require Node ^22.18.0 || >=24:\n    @jsverse/transloco-cli,',
+      );
     },
   );
 
@@ -1534,6 +1577,7 @@ describe('findVersionFloorWarnings', () => {
         'moved from chokidar 3 to 5 (ESM-only), which it now gets through @jsverse/transloco-cli',
       );
       for (const name of [
+        'cli',
         'keys-manager',
         'optimize',
         'schematics',
@@ -1818,7 +1862,6 @@ describe('migration-v9', () => {
       expect(reported).toContain(
         `TranslocoScopedLibsWebpackPlugin was removed from '@jsverse/transloco-scoped-libs'`,
       );
-      expect(reported).toContain(`'transloco-scoped-libs --watch'`);
       expect(reported).toContain(`'transloco scoped-libs --watch'`);
     },
   );

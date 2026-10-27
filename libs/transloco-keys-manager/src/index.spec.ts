@@ -134,6 +134,26 @@ describe('transloco-keys-manager bin', () => {
     },
   );
 
+  it.each([
+    [['--input', 'src', 'find'], 'transloco find'],
+    [['--project', 'x', 'extract'], 'transloco extract'],
+    [['--unflat', 'extract', '--langs', 'en'], 'transloco extract'],
+    [['--help'], 'transloco'],
+    [[], 'transloco'],
+  ])(
+    `GIVEN the arguments %j, with the action behind an option or none at all
+     WHEN the bin runs
+     THEN the notice names the replacement "%s" the action asks for`,
+    async (args, replacement) => {
+      vi.spyOn(process, 'exit').mockImplementation(() => undefined as never);
+
+      // The bin itself takes the action first, what it does with these is not the point
+      await runBin(...args).catch(() => undefined);
+
+      expect(stderr).toHaveBeenCalledWith(notice(replacement));
+    },
+  );
+
   it(`GIVEN the extract command
       WHEN the bin runs
       THEN the notice is written before the extractor starts and stdout is untouched`, async () => {

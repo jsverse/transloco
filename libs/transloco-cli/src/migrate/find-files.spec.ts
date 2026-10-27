@@ -121,6 +121,48 @@ describe('findFiles', () => {
     },
   );
 
+  it(`GIVEN the folders of tools and builds below the input folder
+      WHEN files are looked for
+      THEN the files in them are left out`, () => {
+    write('src/a.html');
+    [
+      'node_modules',
+      'dist',
+      'out-tsc',
+      'coverage',
+      '.angular',
+      '.nx',
+      '.git',
+    ].forEach((folder) => write(`${folder}/x/b.html`));
+    write('src/node_modules/c.html');
+
+    expect(findFiles(dir, '.html')).toEqual(abs('src/a.html'));
+  });
+
+  it(`GIVEN an input folder inside a folder named like a build folder
+      WHEN files are looked for in it
+      THEN its files are found`, () => {
+    write('dist/app/a.html');
+    write('node_modules/lib/b.html');
+
+    expect(findFiles(path.join(dir, 'dist/app'), '.html')).toEqual(
+      abs('dist/app/a.html'),
+    );
+    expect(findFiles(path.join(dir, 'node_modules/lib'), '.html')).toEqual(
+      abs('node_modules/lib/b.html'),
+    );
+  });
+
+  it(`GIVEN endings to exclude
+      WHEN files are looked for
+      THEN the files whose names end with one of them are left out`, () => {
+    ['a.ts', 'a.spec.ts', 'types.d.ts', 'x/b.ts', 'x/b.spec.ts'].forEach(write);
+
+    expect(findFiles(dir, '.ts', ['.spec.ts', '.d.ts'])).toEqual(
+      abs('a.ts', 'x/b.ts'),
+    );
+  });
+
   it(`GIVEN a folder that does not exist
       WHEN files are looked for
       THEN there are none`, () => {
@@ -143,9 +185,9 @@ describe('findFiles', () => {
       );
     });
 
-    it(`GIVEN a symlinked folder below the input folder
+    it(`GIVEN a symlinked folder below the input folder, to a folder outside of it
         WHEN files are looked for in it
-        THEN the files behind the link are found`, (ctx) => {
+        THEN the files behind the link are left out`, (ctx) => {
       write(file('src/shared/s'));
       write(file('src/app/a'));
       if (!symlink('../shared', 'src/app/linked')) {
@@ -153,13 +195,13 @@ describe('findFiles', () => {
       }
 
       expect(findFiles(path.join(dir, 'src/app'), suffix)).toEqual(
-        abs(file('src/app/a'), file('src/app/linked/s')),
+        abs(file('src/app/a')),
       );
     });
 
-    it(`GIVEN a symlinked file below the input folder
+    it(`GIVEN a symlinked file below the input folder, to a file outside of it
         WHEN files are looked for in it
-        THEN the file is found`, (ctx) => {
+        THEN the file is left out`, (ctx) => {
       write(file('src/shared/s'));
       write(file('src/app/a'));
       if (!symlink(`../shared/${file('s')}`, file('src/app/linked'))) {
@@ -167,7 +209,36 @@ describe('findFiles', () => {
       }
 
       expect(findFiles(path.join(dir, 'src/app'), suffix)).toEqual(
-        abs(file('src/app/a'), file('src/app/linked')),
+        abs(file('src/app/a')),
+      );
+    });
+
+    it(`GIVEN a symlinked folder below the input folder, to a folder inside of it
+        WHEN files are looked for in it
+        THEN each file is found once, by the first of its paths`, (ctx) => {
+      write(file('src/shared/s'));
+      if (!symlink('shared', 'src/linked')) {
+        return ctx.skip();
+      }
+
+      expect(findFiles(path.join(dir, 'src'), suffix)).toEqual(
+        abs(file('src/linked/s')),
+      );
+    });
+
+    it(`GIVEN a dangling symlink and a symlink loop below the input folder
+        WHEN files are looked for in it
+        THEN they are left out`, (ctx) => {
+      write(file('src/a'));
+      if (
+        !symlink(file('missing'), file('src/dangling')) ||
+        !symlink(file('loop'), file('src/loop'))
+      ) {
+        return ctx.skip();
+      }
+
+      expect(findFiles(path.join(dir, 'src'), suffix)).toEqual(
+        abs(file('src/a')),
       );
     });
 

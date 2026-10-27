@@ -270,9 +270,6 @@ importers:
       debug:
         specifier: 4.4.3
         version: 4.4.3(supports-color@7.2.0)
-      deep-diff:
-        specifier: 1.0.2
-        version: 1.0.2
       find-duplicated-property-keys:
         specifier: 1.2.9
         version: 1.2.9
@@ -388,9 +385,6 @@ importers:
       '@types/debug':
         specifier: 4.1.13
         version: 4.1.13
-      '@types/deep-diff':
-        specifier: 1.0.5
-        version: 1.0.5
       '@types/find-duplicated-property-keys':
         specifier: 1.1.3
         version: 1.1.3
@@ -3709,9 +3703,6 @@ packages:
   '@types/debug@4.1.13':
     resolution: {integrity: sha512-KSVgmQmzMwPlmtljOomayoR89W4FynCAi3E8PPs7vmDVPe84hT+vGPKkJfThkmXs0x0jAaa9U8uW8bbfyS2fWw==}
 
-  '@types/deep-diff@1.0.5':
-    resolution: {integrity: sha512-PQyNSy1YMZU1hgZA5tTYfHPpUAo9Dorn1PZho2/budQLfqLu3JIP37JAavnwYpR1S2yFZTXa3hxaE4ifGW5jaA==}
-
   '@types/deep-eql@4.0.2':
     resolution: {integrity: sha512-c9h9dVVMigMPc4bwTvC5dxqtqJZwQPePsWjPlpSOnojbor6pGqdk541lfA7AqFQr5pB1BRdq0juY9db81BwyFw==}
 
@@ -4907,10 +4898,6 @@ packages:
   decompress-response@10.0.0:
     resolution: {integrity: sha512-oj7KWToJuuxlPr7VV0vabvxEIiqNMo+q0NueIiL3XhtwC6FVOX7Hr1c0C4eD0bmf7Zr+S/dSf2xvkH3Ad6sU3Q==}
     engines: {node: '>=20'}
-
-  deep-diff@1.0.2:
-    resolution: {integrity: sha512-aWS3UIVH+NPGCD1kki+DCU9Dua032iSsO43LqQpcs4R3+dVv7tX0qBGjiVHJHjplsoUM2XRO/KB92glqc68awg==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   deep-extend@0.6.0:
     resolution: {integrity: sha512-LOHxIOaPYdHlJRtCQfDIVZtfw/ufM8+rVj649RIHzcm/vGwQRXFt6OPqIFWsm2XEMrNIEtWR64sY1LEKD2vAOA==}
@@ -11561,8 +11548,6 @@ snapshots:
     dependencies:
       '@types/ms': 2.1.0
 
-  '@types/deep-diff@1.0.5': {}
-
   '@types/deep-eql@4.0.2': {}
 
   '@types/esquery@1.5.4':
@@ -12972,8 +12957,6 @@ snapshots:
   decompress-response@10.0.0:
     dependencies:
       mimic-response: 4.0.0
-
-  deep-diff@1.0.2: {}
 
   deep-extend@0.6.0: {}
 
