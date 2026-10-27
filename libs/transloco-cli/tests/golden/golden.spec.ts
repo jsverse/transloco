@@ -217,9 +217,21 @@ function toPlainText(normalized: string) {
  */
 const PROGRESS_LINE = /^(- |✔ )/;
 
+/**
+ * The note about a project without a workspace config, whose source root is
+ * assumed. The fixtures are bare folders, so most runs print it.
+ */
+const SOURCE_ROOT_NOTE =
+  /^Unable to (load workspace config|resolve `projectBasePath`).*Defaulting source root to /;
+
 /** The lines of a plain stream that are anything but progress. */
 function withoutProgress(plain: string) {
-  return plain.split('\n').filter((line) => line && !PROGRESS_LINE.test(line));
+  return plain
+    .split('\n')
+    .filter(
+      (line) =>
+        line && !PROGRESS_LINE.test(line) && !SOURCE_ROOT_NOTE.test(line),
+    );
 }
 
 function compareVersions(a: string, b: string) {

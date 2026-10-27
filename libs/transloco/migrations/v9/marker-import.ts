@@ -12,6 +12,8 @@ import {
 import { loadTypeScript } from './lazy-deps';
 import { collectFiles } from './workspace-utils';
 
+type ImportSpecifier = import('typescript').ImportSpecifier;
+
 const PACKAGE = '@jsverse/transloco-keys-manager';
 const OLD_SUBPATH = `${PACKAGE}/marker`;
 
@@ -71,6 +73,8 @@ export function migrateMarkerImportSource(
   );
 
   let markerImported = importsUnaliased(ts, file, TARGET, EXPORT);
+  // A type-only import of `marker` doesn't cover a value import being moved.
+  let markerValueImported = importsUnaliased(ts, file, TARGET, EXPORT, true);
 
   const edits: Edit[] = [];
   let migrated = 0;
@@ -101,10 +105,19 @@ export function migrateMarkerImportSource(
     migrated++;
 
     const kept = elements.filter((element) => !moved.includes(element));
+    const isTypeOnly = (element: ImportSpecifier) =>
+      clause.isTypeOnly || element.isTypeOnly;
     const toAdd = moved.filter(
-      (element) => element.propertyName || !markerImported,
+      (element) =>
+        element.propertyName ||
+        !(isTypeOnly(element) ? markerImported : markerValueImported),
     );
-    markerImported ||= toAdd.some((element) => !element.propertyName);
+    for (const element of toAdd) {
+      if (element.propertyName) continue;
+
+      markerImported = true;
+      markerValueImported ||= !isTypeOnly(element);
+    }
     if (toAdd.length) introduced++;
 
     const specifier = statement.moduleSpecifier;
