@@ -386,6 +386,49 @@ describe('resolveProjectBasePath', () => {
     });
   });
 
+  describe('project.json of a project folder in an Nx workspace', () => {
+    const projectPath = 'apps/shop';
+
+    afterEach(() => {
+      vi.spyOn(process, 'cwd').mockReturnValue(TEST_DIR);
+      fs.rmSync(path.join(TEST_DIR, 'nx.json'), { force: true });
+      removeProjectConfig(projectPath);
+    });
+
+    function givenNxWorkspace() {
+      fs.writeFileSync(path.join(TEST_DIR, 'nx.json'), '{}');
+      addProjectConfig({
+        path: projectPath,
+        config: {
+          name: 'shop',
+          projectType: 'application',
+          sourceRoot: 'apps/shop/src',
+        },
+      });
+    }
+
+    it(`GIVEN nx.json above the cwd
+        WHEN the source root of the project in the cwd is resolved
+        THEN it is resolved against the workspace root, not the cwd`, () => {
+      givenNxWorkspace();
+      vi.spyOn(process, 'cwd').mockReturnValue(
+        path.join(TEST_DIR, projectPath),
+      );
+
+      expect(resolveProjectBasePath('shop').projectBasePath).toBe('src');
+    });
+
+    it(`GIVEN nx.json in the cwd
+        WHEN the source root of a project is resolved
+        THEN it is kept as it is`, () => {
+      givenNxWorkspace();
+
+      expect(resolveProjectBasePath('shop').projectBasePath).toBe(
+        'apps/shop/src',
+      );
+    });
+  });
+
   supportedConfigs.forEach((configType) => {
     describe(`${configType} config`, () => {
       beforeAll(() => {

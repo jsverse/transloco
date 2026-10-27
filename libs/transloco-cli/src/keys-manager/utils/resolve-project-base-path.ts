@@ -1,3 +1,4 @@
+import { existsSync } from 'fs';
 import path from 'path';
 
 import { cosmiconfigSync } from 'cosmiconfig';
@@ -90,10 +91,12 @@ export function resolveProjectBasePath(
   }
 
   let resolved: ReturnType<typeof resolveProject> | null = null;
+  let fromProjectConfig = false;
 
   for (const config of [angularConfig, workspaceConfig, projectConfig]) {
     resolved = resolveProject(config, projectName);
     if (resolved) {
+      fromProjectConfig = config === projectConfig;
       break;
     }
   }
@@ -114,9 +117,38 @@ export function resolveProjectBasePath(
   }
 
   return {
-    projectBasePath: resolved.sourceRoot,
+    projectBasePath: fromProjectConfig
+      ? fromWorkspaceRoot(resolved.sourceRoot)
+      : resolved.sourceRoot,
     projectType: resolved.projectType,
   };
+}
+
+const workspaceRootMarkers = [
+  'nx.json',
+  ...angularConfigFile,
+  workspaceConfigFile,
+];
+
+/**
+ * The `sourceRoot` of a `project.json` is relative to the workspace root, which
+ * is not the cwd when the command runs from within a project (`--cwd apps/shop`).
+ * Returns it relative to the cwd.
+ */
+function fromWorkspaceRoot(sourceRoot: string) {
+  if (path.isAbsolute(sourceRoot)) return sourceRoot;
+
+  const cwd = path.resolve(process.cwd());
+
+  for (let dir = cwd; ; dir = path.dirname(dir)) {
+    if (workspaceRootMarkers.some((file) => existsSync(path.join(dir, file)))) {
+      return dir === cwd
+        ? sourceRoot
+        : path.relative(cwd, path.resolve(dir, sourceRoot)) || '.';
+    }
+
+    if (path.dirname(dir) === dir) return sourceRoot;
+  }
 }
 
 function assertProjectIsKnown(projectName: string | undefined) {
