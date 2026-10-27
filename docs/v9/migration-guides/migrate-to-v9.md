@@ -85,8 +85,8 @@ export const appConfig: ApplicationConfig = {
 Without it, `translate()` returns `''` and `translateObject()` returns `[]`, and both warn in development mode. The migration adds the provider for you when it finds the functions imported from `@jsverse/transloco` — detection is anchored on the import rather than on call sites, so a local helper of your own named `translate` is never mistaken for the global one, and an `import type` is correctly ignored.
 
 {% hint style="warning" %}
-**Omit `provideGlobalTranslateFn()` in SSR and in multi-instance micro-frontend setups.**\
-Both run more than one Transloco instance, and a global function cannot know which one you meant. Inject `TranslocoService` directly there.
+**Keep `provideGlobalTranslateFn()` in SSR, remove it for multi-instance micro-frontends.**\
+On the server it does nothing, so `translate()` returns `''` while rendering there, and an SSR application keeps it for the browser. A multi-instance micro-frontend setup, where several application instances share the one module-level service and the last one wins, should remove it by hand after the update and inject `TranslocoService` directly.
 {% endhint %}
 
 ***
@@ -107,8 +107,11 @@ Transloco Scoped Libs also bumped `chokidar` from v3 to v5, which is **ESM-only*
 
 ## Keys Manager
 
-`@jsverse/transloco-keys-manager` moved into the main [jsverse/transloco](https://github.com/jsverse/transloco) monorepo and joined the shared version line, so it jumps straight from `8.1.1` to `9.0.0`. Its commands, options and configuration are unchanged — only the version number and the dependency floors above. The `transloco-keys-manager` bin is deprecated in favour of [`transloco extract` and `transloco find`](../developer-tools/transloco-cli.md), see [Moving to the Transloco CLI](#moving-to-the-transloco-cli).
+`@jsverse/transloco-keys-manager` moved into the main [jsverse/transloco](https://github.com/jsverse/transloco) monorepo and joined the shared version line, so it jumps straight from `8.1.1` to `9.0.0`. Its commands, options and configuration are the same apart from the changes below and the dependency floors above. The `transloco-keys-manager` bin is deprecated in favour of [`transloco extract` and `transloco find`](../developer-tools/transloco-cli.md), see [Moving to the Transloco CLI](#moving-to-the-transloco-cli).
 
+* `extract` writes to the translations folder of the Transloco config when neither `--output` nor `keysManager.output` is set, that is `rootTranslationsPath`, or `keysManager.translationsPath` when set, which is the folder `find` reads. The keys manager always wrote to `<source root>/assets/i18n` and ignored both. Set `keysManager.output`, or pass `--output`, to keep writing to the old folder.
+* The `transloco` bin is strict: it accepts kebab-case flags only and rejects a comma separated `--langs en,es`, see [Strict arguments](../developer-tools/transloco-cli.md#strict-arguments).
+* `extract` reads the files in a sorted order, so the keys of the extracted files come out in the same order everywhere. The first run after upgrading may reorder the keys once.
 * `marker` is now imported from `@jsverse/transloco-cli/marker`. `@jsverse/transloco-keys-manager/marker` still works and is deprecated. The package root `@jsverse/transloco-keys-manager` has no entry point anymore, so a `marker` import from it no longer resolves. `ng update` rewrites the imports from both paths.
 * `TranslocoExtractKeysWebpackPlugin` is removed, since Angular's default builder no longer uses webpack. There is no replacement that watches: `transloco extract` has no `--watch` option, it extracts once and exits. Run it before your dev server starts, as in `"start": "transloco extract && ng serve"`, and again whenever the keys should be refreshed. `ng update` lists the files that still reference the plugin.
 
@@ -128,7 +131,7 @@ v9 adds the [`transloco` command line](../developer-tools/transloco-cli.md) (`@j
 
 ### What `ng update` does
 
-`ng update @jsverse/transloco` moves the npm scripts that run the old bins to the `transloco` bin, in every `package.json` outside `node_modules`, `dist` and the dot-folders, and adds `@jsverse/transloco-cli` to `devDependencies`. It rewrites the `marker`, `TranslocoGlobalConfig` and `getGlobalConfig` imports as well. The rest of a script stays byte for byte, and options are respelled where they differ: `--commentsKey` of `transloco-optimize` becomes `--comments-key`, and `-m` of `transloco-scoped-libs` becomes `--skip-gitignore`. Options the old command accepted but never read are dropped from the rewritten script: `--output`, `--langs`, `--replace` and `--remove-extra-keys` for `find`, and `--translations-path`, `--add-missing-keys` and `--emit-error-on-extra-keys` for `extract`.
+`ng update @jsverse/transloco` moves the npm scripts that run the old bins to the `transloco` bin, in every `package.json` outside `node_modules`, `dist` and the dot-folders, and adds `@jsverse/transloco-cli` to `devDependencies`. It rewrites the `marker`, `TranslocoGlobalConfig` and `getGlobalConfig` imports as well. The rest of a script stays byte for byte, and options are respelled where they differ: `--commentsKey` of `transloco-optimize` becomes `--comments-key`, and `-m` of `transloco-scoped-libs` becomes `--skip-gitignore`. Options the old command accepted but never read are dropped from the rewritten script: `--output`, `--langs`, `--replace` and `--remove-extra-keys` for `find`, and `--translations-path`, `--add-missing-keys` and `--emit-error-on-extra-keys` for `extract`. It reports where the `extract` output moves to when the config sets a `rootTranslationsPath` and no output.
 
 ### What `ng update` leaves alone
 

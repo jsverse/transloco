@@ -38,6 +38,10 @@ npm install @jsverse/transloco-cli@next --save-dev
 
 ## Usage
 
+{% hint style="warning" %}
+Every `.json` file below the folder you give it, at any depth, is optimized in place, not only the translation files. Point it at the translations folder inside the build output and nothing wider, or unrelated JSON such as manifests is flattened and minified too.
+{% endhint %}
+
 1. Make the optimizer run after building
 
 {% tabs %}

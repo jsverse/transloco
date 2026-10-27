@@ -16,7 +16,7 @@ To streamline these tasks, the **T**ransloco **K**eys **M**anager or **TKM** for
 {% hint style="warning" %}
 **Deprecated in v9:** the `transloco-keys-manager` package and its `transloco-keys-manager` bin are replaced by the [Transloco CLI](../transloco-cli.md). Run `transloco extract` instead of `transloco-keys-manager extract`, and `transloco find` instead of `transloco-keys-manager find`. The old bin keeps working until Transloco v10, see [Moving to the Transloco CLI](../../migration-guides/migrate-to-v9.md#moving-to-the-transloco-cli).
 
-The Keys Manager moved into the main [jsverse/transloco](https://github.com/jsverse/transloco) monorepo and joined the shared version line, so it jumps straight from `8.1.1` to `9.0.0`. Its commands, options and configuration are unchanged. It requires `@angular/compiler >=20`, `typescript >=5.8` and Node.js `^22.18.0 || >=24`.
+The Keys Manager moved into the main [jsverse/transloco](https://github.com/jsverse/transloco) monorepo and joined the shared version line, so it jumps straight from `8.1.1` to `9.0.0`. Its commands and options are the same, except that `extract` now writes to the translations folder of the config (`rootTranslationsPath`) when no output is set, see [the options](options.md). It requires `@angular/compiler >=20`, `typescript >=5.8` and Node.js `^22.18.0 || >=24`.
 {% endhint %}
 
 ## Installation

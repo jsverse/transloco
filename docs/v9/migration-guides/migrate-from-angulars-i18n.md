@@ -105,7 +105,7 @@ _The `.comment` suffix is used to support comments in Transloco.Note:_
 
 ### Directives
 
-The `i18n` and `i18n-<attribute>` directives will be replaced with the `transloco` pipe.
+The `i18n` and `i18n-<attribute>` directives will be replaced with the `transloco` pipe, and a marked attribute becomes a bound attribute. A mark that can't be converted (on an element without a text, around other elements, with an interpolation, or with an ICU message and no custom id) is left in place and printed with its file and line, and `translate="no"` is preserved.
 
 {% code title="before.html" %}
 ```html
@@ -119,6 +119,6 @@ The `i18n` and `i18n-<attribute>` directives will be replaced with the `transloc
 ```html
 <h1>{{ 'hello-world' | transloco }}</h1>
 <h1>{{ 'some-value' | transloco }}</h1>
-<img src="..." title="{{ 'wow-image' | transloco }}" />
+<img src="..." [title]="'wow-image' | transloco" />
 ```
 {% endcode %}

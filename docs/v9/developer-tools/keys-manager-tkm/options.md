@@ -39,7 +39,7 @@ If a project is provided, the default input value is determined by `projectType`
 
 #### **`--output -o`**&#x20;
 
-Specifies the target directory for generated translation files. Defaults to `${sourceRoot}/assets/i18n`.
+Specifies the target directory for generated translation files. Defaults to `keysManager.output` of the config, then to the translations folder of the config (`rootTranslationsPath`, or `keysManager.translationsPath` when set), then to `${sourceRoot}/assets/i18n`. With `--project`, a `rootTranslationsPath` outside the project is not used: the files go to `${sourceRoot}/assets/i18n` of the project and a notice says so on stderr.
 
 #### **`--file-format -f`**
 
