@@ -200,10 +200,10 @@ describe('runMigrateAngularI18n', () => {
       `GIVEN the languages %j, one of them with a comma
        WHEN the command runs
        THEN it fails, wherever the comma stands, before anything is written`,
-      (langs) => {
+      async (langs) => {
         writeTemplate();
 
-        expect(() => runMigrateAngularI18n(options({ langs }))).toThrow(
+        await expect(runMigrateAngularI18n(options({ langs }))).rejects.toThrow(
           'The languages are separate arguments, not a comma separated list',
         );
         expect(exists('src/assets')).toBe(false);
