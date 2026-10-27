@@ -51,6 +51,7 @@ export function runJoin({
   }
 
   assertOutDirIsSafe(outDir, root, scopePathMap);
+  assertOutDirHoldsOnlyTranslations(outDir);
 
   const files = asCliError(name, () =>
     joinTranslations(nodeFileReader, {
@@ -79,6 +80,46 @@ export function runJoin({
   const langs = languagesOf(files.map((file) => file.path));
 
   console.log(`Transloco ${name}: Joined ${langs.join(', ')} into ${outDir}`);
+}
+
+/**
+ * The folder is emptied before it is written to, so anything that isn't a
+ * translation file in it, such as a `node_modules` or a `.git` typed by
+ * mistake, is a reason to refuse. Empty folders are fine, they hold nothing.
+ */
+function assertOutDirHoldsOnlyTranslations(outDir: string) {
+  const foreign = findForeignFile(path.resolve(outDir));
+
+  if (foreign) {
+    throw new CliError(
+      `Transloco ${name}: Refusing to empty ${outDir}, it holds ${path.relative(path.resolve(outDir), foreign)} which is not a translation file (.json)`,
+    );
+  }
+}
+
+function findForeignFile(dir: string): string | undefined {
+  let entries: fs.Dirent[];
+
+  try {
+    entries = fs.readdirSync(dir, { withFileTypes: true });
+  } catch {
+    // Not there yet, or not a folder, which the other checks deal with.
+    return undefined;
+  }
+
+  for (const entry of entries) {
+    const entryPath = path.join(dir, entry.name);
+
+    if (entry.isDirectory()) {
+      const found = findForeignFile(entryPath);
+
+      if (found) return found;
+    } else if (!entry.name.endsWith('.json')) {
+      return entryPath;
+    }
+  }
+
+  return undefined;
 }
 
 /**

@@ -293,7 +293,7 @@ export function createProgram() {
       const { runMigrateAngularI18n } =
         await import('./commands/migrate-angular-i18n.js');
 
-      runMigrateAngularI18n(options);
+      await runMigrateAngularI18n(options);
     });
 
   program

@@ -4,8 +4,11 @@ import {
   findTranslationFiles,
   getScopeEntries,
   getTranslationKey,
+  isLanguageFile,
+  isObject,
   languageOf,
-  readJson,
+  readJsonObject,
+  TranslationFilesError,
   toJson,
   type PlannedFile,
   type Translation,
@@ -45,10 +48,19 @@ export function splitTranslations(
 
   for (const fileName of findTranslationFiles(reader, source)) {
     const lang = languageOf(fileName);
-    const translation: Translation = readJson(reader, join(source, fileName));
+    const joinedFile = join(source, fileName);
+    const translation: Translation = readJsonObject(reader, joinedFile);
 
     for (const { scope, path: scopePath } of entries) {
-      splitScope(reader, scopePath, translation, lang, scope, files);
+      splitScope(
+        reader,
+        scopePath,
+        translation,
+        lang,
+        scope,
+        files,
+        joinedFile,
+      );
     }
 
     remaining.set(lang, translation);
@@ -72,6 +84,7 @@ function splitScope(
   lang: string,
   key: string,
   files: PlannedFile[],
+  joinedFile: string,
 ) {
   const scopeValue = own(translation, key);
 
@@ -91,9 +104,25 @@ function splitScope(
       own(scopeValue, subDir) !== undefined;
 
     if (nestedInScope) {
-      splitScope(reader, nestedDir, scopeValue, lang, subDir, files);
+      splitScope(
+        reader,
+        nestedDir,
+        scopeValue,
+        lang,
+        subDir,
+        files,
+        joinedFile,
+      );
     } else {
-      splitScope(reader, nestedDir, translation, lang, nestedKey, files);
+      splitScope(
+        reader,
+        nestedDir,
+        translation,
+        lang,
+        nestedKey,
+        files,
+        joinedFile,
+      );
     }
   }
 
@@ -102,9 +131,15 @@ function splitScope(
   if (!fileNames.length) return;
 
   for (const fileName of fileNames) {
-    if (fileName.includes(`${lang}.json`) && scopeValue) {
-      files.push({ path: join(dir, fileName), content: toJson(scopeValue) });
+    if (!isLanguageFile(fileName, lang) || scopeValue === undefined) continue;
+
+    if (!isObject(scopeValue)) {
+      throw new TranslationFilesError(
+        `The key "${key}" in ${joinedFile} must hold a JSON object`,
+      );
     }
+
+    files.push({ path: join(dir, fileName), content: toJson(scopeValue) });
   }
 
   delete translation[key];
@@ -114,12 +149,8 @@ function splitScope(
 const own = (value: Translation, key: string) =>
   Object.hasOwn(value, key) ? value[key] : undefined;
 
-const isObject = (value: unknown): value is Translation =>
-  typeof value === 'object' && value !== null;
-
 const holdsLanguage = (
   reader: TranslationFileReader,
   dir: string,
   lang: string,
-) =>
-  reader.listFiles(dir).some((fileName) => fileName.includes(`${lang}.json`));
+) => reader.listFiles(dir).some((fileName) => isLanguageFile(fileName, lang));

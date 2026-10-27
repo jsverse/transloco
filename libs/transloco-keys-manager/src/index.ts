@@ -11,7 +11,13 @@ import {
   warnUnsupportedOptions,
 } from '@jsverse/transloco-cli/internal/keys-manager';
 
-warnDeprecatedBin('transloco-keys-manager', process.argv[2]);
+// The action may follow options, so it's looked up the way the parser below finds it
+const { command: action } = commandLineArgs(
+  [{ name: 'command', defaultOption: true }, ...optionDefinitions],
+  { camelCase: true, partial: true },
+);
+
+warnDeprecatedBin('transloco-keys-manager', action);
 
 const mainDefinitions = [{ name: 'command', defaultOption: true }];
 

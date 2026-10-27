@@ -43,12 +43,18 @@ export const toJson = (value: unknown) => JSON.stringify(value, null, 2);
 export const getTranslationKey = (prefix: string, key: string) =>
   prefix ? `${prefix}.${key}` : key;
 
-/** The JSON files of the folder, which are the ones that are translations. */
+/** The file holding the translation of a language, and nothing else like `es.vendor.json` or `es.json.bak`. */
+export const isLanguageFile = (fileName: string, lang: string) =>
+  fileName === `${lang}.json`;
+
+/** The files of the folder that hold the translation of a language, which are named after it. */
 export function findTranslationFiles(
   reader: TranslationFileReader,
   dir: string,
 ) {
-  return reader.listFiles(dir).filter((fileName) => fileName.endsWith('.json'));
+  return reader
+    .listFiles(dir)
+    .filter((fileName) => /^[^.]+\.json$/.test(fileName));
 }
 
 /**
@@ -70,6 +76,20 @@ export function getScopeEntries(
   return reader
     .listDirs(root)
     .map((dir) => ({ scope: dir, path: join(root, dir) }));
+}
+
+export const isObject = (value: unknown): value is Translation =>
+  typeof value === 'object' && value !== null && !Array.isArray(value);
+
+/** A translation file holds an object, as anything else can't be merged into or split from. */
+export function readJsonObject(reader: TranslationFileReader, file: string) {
+  const value = readJson(reader, file);
+
+  if (!isObject(value)) {
+    throw new TranslationFilesError(`${file} must hold a JSON object`);
+  }
+
+  return value;
 }
 
 export function readJson(reader: TranslationFileReader, file: string) {
