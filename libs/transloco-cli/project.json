@@ -34,7 +34,8 @@
         "^production",
         "{workspaceRoot}/tools/vitest/**/*",
         { "env": "CI" },
-        "{workspaceRoot}/libs/transloco/migrations/v9/cli-scripts-table.ts"
+        "{workspaceRoot}/libs/transloco/migrations/v9/cli-scripts-table.ts",
+        "{workspaceRoot}/libs/transloco/src/lib/transloco-global-config.ts"
       ],
       "outputs": ["{workspaceRoot}/coverage/libs/transloco-cli"],
       "options": {
