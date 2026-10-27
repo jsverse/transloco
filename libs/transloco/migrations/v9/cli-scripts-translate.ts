@@ -25,6 +25,11 @@ export interface TranslateOptions {
    * insists on are only checked when this is given.
    */
   pathExists?: (path: string) => boolean | undefined;
+  /**
+   * Whether a path that exists is a folder holding no Transloco config, which
+   * the new bin stops on as well. Looked at once `pathExists` says it exists.
+   */
+  holdsNoConfig?: (path: string) => boolean;
 }
 
 export const LEGACY_BINS: readonly LegacyBin[] = [
@@ -441,6 +446,7 @@ function checkPathExists(
   name: string,
   value: string,
   pathExists: NonNullable<TranslateOptions['pathExists']>,
+  holdsNoConfig: TranslateOptions['holdsNoConfig'],
   folderChanged: boolean,
 ) {
   const stops = `'transloco ${invocation.command}' stops when the --config path does not exist, where ${candidate.bin} ignores a missing path and uses the configuration it finds`;
@@ -458,9 +464,13 @@ function checkPathExists(
     return `${name} points at '${value}', which is outside the workspace and can't be checked here. ${stops}`;
   }
 
-  return exists
-    ? undefined
-    : `${name} points at '${value}', which was not found. ${stops}`;
+  if (!exists) {
+    return `${name} points at '${value}', which was not found. ${stops}`;
+  }
+
+  return holdsNoConfig?.(value)
+    ? `${name} points at '${value}', a folder with no Transloco config in it. 'transloco ${invocation.command}' stops on a --config folder that holds none, where ${candidate.bin} ignores it and uses the configuration it finds`
+    : undefined;
 }
 
 function lookupOption(invocation: CliInvocation, spelling: string) {
@@ -472,7 +482,7 @@ function lookupOption(invocation: CliInvocation, spelling: string) {
 /** Works out the edits that move one bin invocation to the transloco bin, or why it can't. */
 function translateCandidate(
   candidate: Candidate,
-  { pathExists }: TranslateOptions,
+  { pathExists, holdsNoConfig }: TranslateOptions,
   folderChanged: boolean,
 ): Outcome {
   const { args } = candidate;
@@ -687,6 +697,7 @@ function translateCandidate(
             name,
             value,
             pathExists,
+            holdsNoConfig,
             folderChanged,
           );
 

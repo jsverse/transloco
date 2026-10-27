@@ -3287,6 +3287,44 @@ describe('migration-v9 npm scripts', () => {
       },
     );
 
+    it.each([
+      ['an empty one besides other files', { '/tools/other.js': '' }],
+      [
+        'one whose package.json has no transloco key',
+        { '/tools/package.json': '{ "name": "tools" }' },
+      ],
+    ])(
+      `GIVEN a --config path to a folder without a Transloco config: %s
+       WHEN the script is migrated
+       THEN it is left and reported`,
+      async (_, files) => {
+        const { migrated, warnings } = await runWith(
+          files,
+          { i18n: 'transloco-keys-manager extract --config tools' },
+          { listCli: true },
+        );
+
+        expect(scriptsOf(migrated).i18n).toBe(
+          'transloco-keys-manager extract --config tools',
+        );
+        expect(reportedScripts(warnings)).toEqual([
+          expect.stringContaining('a folder with no Transloco config in it'),
+        ]);
+      },
+    );
+
+    it(`GIVEN a --config folder whose package.json has a transloco key
+        WHEN the script is migrated
+        THEN it is rewritten`, async () => {
+      const { migrated } = await runWith(
+        { '/tools/package.json': '{ "transloco": {} }' },
+        { i18n: 'transloco-keys-manager extract --config tools' },
+        { listCli: true },
+      );
+
+      expect(scriptsOf(migrated).i18n).toBe('transloco extract --config tools');
+    });
+
     it(`GIVEN a --config path to a folder of the workspace
         WHEN the script is migrated
         THEN it is rewritten`, async () => {
