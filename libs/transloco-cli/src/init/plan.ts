@@ -5,7 +5,6 @@ import { addScripts, parseManifest } from './manifest.js';
 export const configFileName = 'transloco.config.ts';
 export const manifestFileName = 'package.json';
 export const defaultLangs = ['en'];
-export const defaultTranslationsPath = 'src/assets/i18n';
 
 /** The scripts to add, the way the keys manager schematic adds them. */
 export const scripts = {

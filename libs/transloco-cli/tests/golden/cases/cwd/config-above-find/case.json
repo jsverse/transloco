@@ -1,0 +1,5 @@
+{
+  "description": "GIVEN a config at the root of the repository with paths from the root and complete translation files WHEN find runs with --cwd naming a project folder without a package.json THEN the translations folder of the config is read from its folder and it exits with 0",
+  "args": ["--cwd", "apps/shop", "find", "--emit-error-on-extra-keys"],
+  "exitCode": 0
+}

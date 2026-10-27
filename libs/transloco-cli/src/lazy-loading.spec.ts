@@ -420,6 +420,7 @@ describe('lazy loading', () => {
       'init/apply',
       'init/manifest',
       'init/plan',
+      'init/translations-path',
       'init/unreadable-config',
       'init/validation',
       'jsonc-parser',

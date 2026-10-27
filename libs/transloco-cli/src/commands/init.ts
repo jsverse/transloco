@@ -4,22 +4,27 @@ import path from 'node:path';
 import { searchGlobalConfig } from '../config/index.js';
 import { ConfigLoadError } from '../config/load-error.js';
 import { CliError } from '../errors.js';
-import { resolveProjectBasePath } from '../keys-manager/utils/resolve-project-base-path.js';
+import {
+  describeProjects,
+  listProjects,
+  resolveProjectBasePath,
+} from '../keys-manager/utils/resolve-project-base-path.js';
 import { applySteps } from '../init/apply.js';
 import { parseManifest } from '../init/manifest.js';
 import {
   configFileName,
   defaultLangs,
-  defaultTranslationsPath,
   type InitAnswers,
   type InitStep,
   manifestFileName,
   planInit,
   translationFile,
 } from '../init/plan.js';
+import { detectTranslationsPath } from '../init/translations-path.js';
 import { findUnreadableConfig } from '../init/unreadable-config.js';
 import {
   languageProblem,
+  parseLanguages,
   specialFileProblem,
   translationsPathProblem,
   writeProblem,
@@ -73,7 +78,11 @@ export async function runInit({
     parseManifest(manifest);
   }
 
-  assertConfigCanBeWritten(force);
+  const workspace = assertConfigCanBeWritten(force);
+  const defaultTranslationsPath = detectTranslationsPath(
+    workspace.projectBasePath,
+    manifest,
+  );
 
   const exists = (file: string) => lstat(path.resolve(file)) !== undefined;
   const state = {
@@ -100,7 +109,7 @@ export async function runInit({
     assertPlanCanBeWritten(steps);
     applySteps(steps, ({ message }) => console.log(message));
 
-    console.log(nextStep);
+    console.log(nextStep(workspace));
 
     return;
   }
@@ -112,6 +121,7 @@ export async function runInit({
 
   const answers = await ui.askInit({
     given,
+    defaultTranslationsPath,
     askScripts: scripts && manifest !== undefined,
     findMissing: (langs, folder) =>
       langs
@@ -139,11 +149,29 @@ export async function runInit({
   assertPlanCanBeWritten(planned);
   applySteps(planned, ui.reportStep);
 
-  ui.endPrompts(nextStep);
+  ui.endPrompts(nextStep(workspace));
 }
 
-const nextStep =
-  'Done. Run `transloco extract` to collect the keys of your project into the translation files.';
+/**
+ * What to run next. `extract` takes the default project of the workspace, so
+ * the others are named, and so are all of them when none is found without
+ * `--project`, as in an Nx workspace without a root project.
+ */
+function nextStep({ defaulted }: Workspace) {
+  const done =
+    'Done. Run `transloco extract` to collect the keys of your project into the translation files.';
+  const projects = listProjects();
+
+  if (defaulted && projects.length) {
+    const project = projects.length === 1 ? projects[0] : '<name>';
+
+    return `Done. Run \`transloco extract --project ${project}\` to collect the keys of your project into the translation files. ${describeProjects(projects)}`;
+  }
+
+  return projects.length > 1
+    ? `${done} Add --project <name> for another project than the default one. ${describeProjects(projects)}`
+    : done;
+}
 
 /** Whether the file can be opened without waiting, if it is there. */
 function assertIsNotSpecial(file: string) {
@@ -191,8 +219,11 @@ function assertLangs(langs: string[]) {
   const joined = langs.find((lang) => lang.includes(','));
 
   if (joined !== undefined) {
+    // Every language that was typed, which the hint is copied from
+    const separate = parseLanguages(langs.join(' ')).join(' ');
+
     throw new CliError(
-      `Transloco ${name}: The languages are separate arguments, not a comma separated list: '${joined}'. Run with --langs ${joined.split(',').join(' ')}`,
+      `Transloco ${name}: The languages are separate arguments, not a comma separated list: '${joined}'.${separate ? ` Run with --langs ${separate}` : ''}`,
     );
   }
 
@@ -224,18 +255,20 @@ const relativeToCwd = (folder: string) =>
  * applies, so init writes `transloco.config.ts` only where there is none, or
  * where it is the one that's there and `--force` says to replace it.
  */
-function assertConfigCanBeWritten(force: boolean) {
+function assertConfigCanBeWritten(force: boolean): Workspace {
   const target = path.resolve(configFileName);
   const stats = lstat(target);
   const targetExists = stats !== undefined;
   let found: string | undefined;
+  let workspace: Workspace | undefined;
 
   if (stats?.isSymbolicLink()) {
     assertLinkStaysInside(target);
   }
 
   try {
-    found = findExistingConfig();
+    workspace = resolveProjectBasePath(undefined, { quiet: true });
+    found = findExistingConfig(workspace);
   } catch (error) {
     const { file, reason } =
       error instanceof ConfigLoadError ? error : findUnreadableConfig(error);
@@ -260,18 +293,19 @@ function assertConfigCanBeWritten(force: boolean) {
       `Transloco ${name}: ${configFileName} already exists. Pass --force to overwrite it.`,
     );
   }
+
+  // Only the config that is replaced failed to load, past the workspace
+  return workspace ?? resolveProjectBasePath(undefined, { quiet: true });
 }
+
+type Workspace = ReturnType<typeof resolveProjectBasePath>;
 
 /**
  * The config `transloco extract` would read, which is also the one that the
  * other commands use: it is looked for from the source root of the default
  * project, up to where the package of the working directory ends.
  */
-function findExistingConfig() {
-  const { projectBasePath } = resolveProjectBasePath(undefined, {
-    quiet: true,
-  });
-
+function findExistingConfig({ projectBasePath }: Workspace) {
   return searchGlobalConfig(projectBasePath).filepath;
 }
 

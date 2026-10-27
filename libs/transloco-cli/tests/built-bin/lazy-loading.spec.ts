@@ -135,6 +135,7 @@ const init: Allowed = {
     'src/init/apply.js',
     'src/init/manifest.js',
     'src/init/plan.js',
+    'src/init/translations-path.js',
     'src/init/unreadable-config.js',
     'src/init/validation.js',
     'src/keys-manager/config.js',

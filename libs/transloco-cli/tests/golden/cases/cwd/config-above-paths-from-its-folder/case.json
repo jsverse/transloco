@@ -1,0 +1,5 @@
+{
+  "description": "GIVEN a config at the root of the repository with paths from the root WHEN extract runs with --cwd naming a project folder without a package.json THEN the paths of the config are taken from its folder, not from the project folder",
+  "args": ["--cwd", "apps/shop", "extract", "--default-value", "missing"],
+  "exitCode": 0
+}

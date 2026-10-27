@@ -1,0 +1,6 @@
+{
+  "description": "GIVEN an Angular 18+ workspace with a public folder WHEN init runs with --yes THEN the translation files go to public/i18n, as ng add does",
+  "args": ["init", "--yes", "--no-scripts"],
+  "exitCode": 0,
+  "snapshot": ["stdout", "stderr"]
+}

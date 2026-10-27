@@ -28,6 +28,7 @@ import {
 describe('askInit', () => {
   const context = (overrides: Partial<AskContext> = {}): AskContext => ({
     given: {},
+    defaultTranslationsPath: 'src/assets/i18n',
     askScripts: true,
     findMissing: (langs, folder) =>
       langs.map((lang) => `${folder}/${lang}.json`),
@@ -87,6 +88,20 @@ describe('askInit', () => {
       expect.objectContaining({ initialValue: true }),
       expect.objectContaining({ initialValue: true }),
     ]);
+  });
+
+  it(`GIVEN another folder for the translation files detected
+      WHEN the questions are asked
+      THEN that folder is offered`, async () => {
+    clack.text.mockResolvedValueOnce('en').mockResolvedValueOnce('public/i18n');
+    clack.confirm.mockResolvedValue(true);
+
+    await askInit(context({ defaultTranslationsPath: 'public/i18n' }));
+
+    expect(asked(clack.text)[1]).toMatchObject({
+      defaultValue: 'public/i18n',
+      placeholder: 'public/i18n',
+    });
   });
 
   it.each([
