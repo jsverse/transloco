@@ -1,0 +1,18 @@
+{
+  "description": "GIVEN an en.vendor.json next to en.json, as scoped-libs writes it for a library with the join strategy WHEN the keys are searched with --add-missing-keys THEN the vendor file is left alone, it is not a language",
+  "args": [
+    "find",
+    "--input",
+    "src",
+    "--translations-path",
+    "i18n",
+    "--add-missing-keys",
+    "--default-value",
+    "missing"
+  ],
+  "exitCode": 0,
+  "fixtures": {
+    "src": "findMissingKeys/add-missing-keys/src"
+  },
+  "stdoutIncludes": ["No missing keys were found"]
+}

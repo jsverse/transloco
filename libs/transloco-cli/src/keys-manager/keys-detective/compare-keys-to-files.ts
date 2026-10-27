@@ -4,7 +4,10 @@ import { messages } from '../messages.js';
 import { Config, ScopeMap } from '../types.js';
 import { readFile, writeFile } from '../utils/file.utils.js';
 import { getLogger } from '../utils/logger.js';
-import { getScopeAndLangFromPath } from '../utils/path.utils.js';
+import {
+  getScopeAndLangFromPath,
+  isTranslationFile,
+} from '../utils/path.utils.js';
 import { normalizedGlob } from '../utils/normalize-glob-path.js';
 
 import { buildTable } from './build-table.js';
@@ -56,6 +59,9 @@ export function compareKeysToFiles({
     fileFormat,
   );
 
+  const isLanguage = (filePath: string) =>
+    isTranslationFile(filePath, fileFormat);
+
   const result: Result[] = [];
   for (const [scope, path] of Object.entries(scopePathMap)) {
     const keys = scopeToKeys[scope];
@@ -67,7 +73,9 @@ export function compareKeysToFiles({
       };
       result.push({
         ...res,
-        files: normalizedGlob(`${res.baseFilesPath}/*.${fileFormat}`),
+        files: normalizedGlob(`${res.baseFilesPath}/*.${fileFormat}`).filter(
+          isLanguage,
+        ),
       });
     }
   }
@@ -96,7 +104,7 @@ export function compareKeysToFiles({
         ...res,
         files: normalizedGlob(
           `${res.baseFilesPath}/${isGlobal ? '' : scope}/*.${fileFormat}`,
-        ),
+        ).filter(isLanguage),
       });
     }
   }
