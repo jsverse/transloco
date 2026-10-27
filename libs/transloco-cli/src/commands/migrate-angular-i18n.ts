@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import path from 'node:path';
 
 import { getGlobalConfig } from '../config/index.js';
@@ -26,6 +27,14 @@ export async function runMigrateAngularI18n({
 }: MigrateAngularI18nCommandOptions) {
   assertConfigPathExists(config);
   assertFolderExists(name, 'input folder', input);
+
+  // The files are written to, so the option must not lead out of the project.
+  // The folder of the config is the project's own choice.
+  if (translationsPath !== undefined && !isInsideCwd(translationsPath)) {
+    throw new CliError(
+      `Transloco ${name}: The translations path is not inside the current directory: ${translationsPath}`,
+    );
+  }
 
   // The option and the config are two ways to the same folder, the config is
   // only read when the option doesn't give it.
@@ -56,4 +65,24 @@ export async function runMigrateAngularI18n({
     await import('../migrate/angular-i18n/migrate-angular-i18n.js');
 
   migrateAngularI18n({ input, output, langs });
+}
+
+/** Whether the path, through the links of the part of it that exists, lies inside the working directory. */
+function isInsideCwd(target: string) {
+  let existing = path.resolve(target);
+  const rest: string[] = [];
+
+  while (!fs.existsSync(existing) && path.dirname(existing) !== existing) {
+    rest.unshift(path.basename(existing));
+    existing = path.dirname(existing);
+  }
+
+  const real = path.join(fs.realpathSync(existing), ...rest);
+  const relative = path.relative(fs.realpathSync(process.cwd()), real);
+
+  return (
+    relative !== '..' &&
+    !relative.startsWith(`..${path.sep}`) &&
+    !path.isAbsolute(relative)
+  );
 }
