@@ -42,7 +42,7 @@ describe('resolveConfig', () => {
 
   beforeAll(() => {
     mockedGlobalConfig = {};
-    spies = [spyOnProcess('exit'), spyOnConsole('log')];
+    spies = [spyOnProcess('exit'), spyOnConsole('error')];
   });
 
   afterAll(() => {
@@ -137,11 +137,11 @@ describe('resolveConfig', () => {
 
   describe('validate directories', () => {
     function shouldFail(prop: string, msg: 'pathDoesntExist' | 'pathIsNotDir') {
-      const [processExitSpy, consoleLogSpy] = spies;
+      const [processExitSpy, consoleErrorSpy] = spies;
       expect(processExitSpy).toHaveBeenCalledWith(1);
-      expect(consoleLogSpy).toHaveBeenCalledWith(
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
         styleText(['bgRed', 'black'], `${prop} ${messages[msg]}`, {
-          stream: process.stdout,
+          stream: process.stderr,
         }),
       );
       clearSpies();

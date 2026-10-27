@@ -108,7 +108,7 @@ describe('startSpinner', () => {
 
       expect(written).toEqual([
         '- Extracting Template and Component Keys 🗝\n',
-        `${green('✔')} Extracting Template and Component Keys 🗝\n`,
+        '✔ Extracting Template and Component Keys 🗝\n',
       ]);
       expect(yocto.create).not.toHaveBeenCalled();
     });
@@ -138,9 +138,9 @@ describe('startSpinner', () => {
 
       expect(written).toEqual([
         '- Checking for missing keys ✨\n',
-        `${green('✔')} \x1b[4mSummary\x1b[0m\n\n`,
-        `${green('✔')} Added all missing keys\n\n`,
-        `${green('✔')} \n`,
+        `✔ \x1b[4mSummary\x1b[0m\n\n`,
+        `✔ Added all missing keys\n\n`,
+        `✔ \n`,
       ]);
     });
 
@@ -196,7 +196,13 @@ describe('startSpinner', () => {
       ['a CI is detected', { CI: 'true' }, '✔'],
       ['FORCE_COLOR is 1', { FORCE_COLOR: '1' }, green('✔')],
       ['FORCE_COLOR is 3', { FORCE_COLOR: '3' }, green('✔')],
-      ['it is the Linux console', { TERM: 'linux' }, green('√')],
+      [
+        'it is the Linux console and FORCE_COLOR is 1',
+        { TERM: 'linux', FORCE_COLOR: '1' },
+        green('√'),
+      ],
+      ['it is the Linux console', { TERM: 'linux' }, '√'],
+      ['the environment is a colourful terminal', {}, '✔'],
       [
         'it is the Linux console and NO_COLOR is set',
         { TERM: 'linux', NO_COLOR: '1' },
@@ -205,7 +211,7 @@ describe('startSpinner', () => {
     ])(
       `GIVEN stderr is piped and %s
        WHEN a step succeeds
-       THEN the mark is written the way a terminal of that environment would show it`,
+       THEN the mark is coloured by what stderr takes, so plain unless FORCE_COLOR says otherwise`,
       async (_, env, mark) => {
         for (const [name, value] of Object.entries(env)) {
           vi.stubEnv(name, value);
@@ -284,6 +290,8 @@ describe('startSpinner', () => {
 
     beforeEach(() => {
       setIsTTY(true);
+      // The stand-in of stderr has no colour depth to ask
+      vi.stubEnv('FORCE_COLOR', '1');
       before = new Map(events.map((e) => [e, process.rawListeners(e)]));
     });
 
