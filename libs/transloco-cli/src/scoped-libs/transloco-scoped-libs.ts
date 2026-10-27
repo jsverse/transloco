@@ -9,7 +9,7 @@ import { makeDir } from '../utils/file-system.js';
 import { style } from '../utils/style.js';
 
 import {
-  cutPath,
+  fromCwd,
   getPackageJson,
   insertPathToGitIgnore,
   isString,
@@ -26,7 +26,7 @@ import {
 
 const libSrcExample = `
   e.g:
-  module.exports = {
+  export default {
     scopedLibs: [{
       src: './projects/core',
       dist: ['./projects/spa/src/assets/i18n', './src/assets/i18n/']
@@ -255,9 +255,9 @@ function copyScopeTranslationFiles(options: CopyScopeTranslationsOptions) {
 
     console.log(
       '✅ Copy translation from file:',
-      style('blue', cutPath(translationFilePath)),
+      style('blue', fromCwd(translationFilePath)),
       'to:',
-      style('blue', cutPath(outputFilePath)),
+      style('blue', fromCwd(outputFilePath)),
     );
 
     if (!skipGitIgnoreUpdate) {

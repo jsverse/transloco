@@ -20,6 +20,18 @@ export function buildPath(obj: Record<string, any>) {
   }, [] as string[]);
 }
 
+/**
+ * Whether the file holds the translation of a language, which it is named
+ * after, and isn't something like the `en.vendor.json` that `transloco
+ * scoped-libs` joins a library into. `join` and `split` go by the same rule.
+ */
+export function isTranslationFile(
+  filePath: string,
+  fileFormat: Config['fileFormat'],
+) {
+  return new RegExp(`^[^.]+\\.${fileFormat}$`).test(path.basename(filePath));
+}
+
 interface Options extends Pick<Config, 'fileFormat' | 'translationsPath'> {
   filePath: string;
 }

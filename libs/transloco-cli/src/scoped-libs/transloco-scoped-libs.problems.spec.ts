@@ -8,6 +8,7 @@ import {
 } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { stripVTControlCharacters } from 'node:util';
 
 import { vi } from 'vitest';
 
@@ -116,5 +117,52 @@ describe('Scoped libs with misconfigured libraries', () => {
       expect.stringContaining('is missing i18n information.'),
     );
     expect(existsSync(join(dir, 'app/i18n/b/en.json'))).toBe(true);
+  });
+
+  it.each([
+    ['without a src', { dist: ['app/i18n'] }],
+    ['without a dist, and no rootTranslationsPath', { src: 'libs/b' }],
+  ])(
+    `GIVEN a library %s
+     WHEN the libraries are copied
+     THEN the example of the problem is an ES module config`,
+    async (_, lib) => {
+      const onProblem = vi.fn();
+
+      await run({
+        watch: false,
+        skipGitIgnoreUpdate: true,
+        scopedLibs: [lib],
+        onProblem,
+      });
+
+      expect(onProblem).toHaveBeenCalledExactlyOnceWith(
+        expect.stringContaining('export default {'),
+      );
+      expect(onProblem.mock.calls[0][0]).not.toContain('module.exports');
+    },
+  );
+
+  it(`GIVEN a valid library
+      WHEN its files are copied
+      THEN the copy is logged with paths relative to the working directory`, async () => {
+    await run({
+      watch: false,
+      skipGitIgnoreUpdate: true,
+      rootTranslationsPath: 'app/i18n/',
+      scopedLibs: ['libs/b'],
+    });
+
+    expect(console.log).toHaveBeenCalledWith(
+      '✅ Copy translation from file:',
+      expect.stringContaining('libs/b/i18n/en.json'),
+      'to:',
+      expect.stringContaining('app/i18n/b/en.json'),
+    );
+    const [, from, , to] = vi
+      .mocked(console.log)
+      .mock.calls.find(([text]) => text === '✅ Copy translation from file:')!;
+    expect(stripVTControlCharacters(from)).toBe('libs/b/i18n/en.json');
+    expect(stripVTControlCharacters(to)).toBe('app/i18n/b/en.json');
   });
 });

@@ -38,9 +38,15 @@ function listEntries(
       const entry = path.join(dir, name);
 
       return keep(fs.statSync(entry)) && keepPath(entry);
-    } catch {
-      // A link that leads nowhere
-      return false;
+    } catch (error) {
+      const { code } = error as NodeJS.ErrnoException;
+
+      // A link that leads nowhere, or in circles
+      if (code === 'ENOENT' || code === 'ENOTDIR' || code === 'ELOOP') {
+        return false;
+      }
+
+      throw error;
     }
   });
 }

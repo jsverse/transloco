@@ -86,7 +86,7 @@ export function createProgram() {
   )
     .option(
       '-o, --output <path>',
-      'The target directory for all generated translation files (defaults to `rootTranslationsPath` of the config, or `<source root>/assets/i18n`)',
+      'The target directory for all generated translation files (defaults to `keysManager.output` of the config, then to its translations folder, `keysManager.translationsPath` or else `rootTranslationsPath`, then to `<source root>/assets/i18n`)',
     )
     .option('-l, --langs <langs...>', 'The languages files to generate')
     .option(
@@ -316,7 +316,7 @@ export function createProgram() {
     )
     .option(
       '-y, --yes',
-      'Ask nothing: what was not given is `en` for the languages, `src/assets/i18n` for the folder, and the files and scripts are added',
+      'Ask nothing: what was not given is `en` for the languages and the folder `ng add` picks for the translations (`public/i18n` with a `public` folder or from Angular 18, else `<source root>/assets/i18n`), and the files and scripts are added',
     )
     .option('--force', 'Overwrite an existing transloco.config.ts')
     .action(async (options) => {

@@ -1,0 +1,1 @@
+error: the --config folder holds no Transloco config: cfgs

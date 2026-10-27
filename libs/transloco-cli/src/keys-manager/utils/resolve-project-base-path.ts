@@ -80,7 +80,9 @@ export function resolveProjectBasePath(
   if (!angularConfig && !workspaceConfig && !projectConfig) {
     assertProjectIsKnown(projectName);
 
-    if (!quiet) {
+    // A workspace of project.json files alone has no default project, which
+    // the error of a missing input asks to pass with --project
+    if (!quiet && !listProjects().length) {
       logNotFound([
         ...angularConfigFile,
         workspaceConfigFile,
@@ -117,12 +119,12 @@ export function resolveProjectBasePath(
     return { projectBasePath: defaultSourceRoot, defaulted: true };
   }
 
+  const toCwd = fromProjectConfig ? fromWorkspaceRoot : (p: string) => p;
+
   return {
-    projectBasePath: fromProjectConfig
-      ? fromWorkspaceRoot(resolved.sourceRoot)
-      : resolved.sourceRoot,
+    projectBasePath: toCwd(resolved.sourceRoot),
     projectType: resolved.projectType,
-    projectRoot: resolved.root,
+    projectRoot: toCwd(resolved.root),
   };
 }
 
@@ -133,9 +135,9 @@ const workspaceRootMarkers = [
 ];
 
 /**
- * The `sourceRoot` of a `project.json` is relative to the workspace root, which
- * is not the cwd when the command runs from within a project (`--cwd apps/shop`).
- * Returns it relative to the cwd.
+ * The `sourceRoot` and `root` of a `project.json` are relative to the workspace
+ * root, which is not the cwd when the command runs from within a project
+ * (`--cwd apps/shop`). Returns the path relative to the cwd.
  */
 function fromWorkspaceRoot(sourceRoot: string) {
   if (path.isAbsolute(sourceRoot)) return sourceRoot;

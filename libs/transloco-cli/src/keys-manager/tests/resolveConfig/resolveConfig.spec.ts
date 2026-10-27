@@ -457,7 +457,7 @@ describe('resolveConfig', () => {
       expect(output).toBe(resolvePath(`${projectB}/src/assets/i18n`));
       expect(warn).toHaveBeenCalledExactlyOnceWith(
         expect.stringContaining(
-          `is outside project b (${projectB}). Writing to ${resolvePath(`${projectB}/src/assets/i18n`)} instead.`,
+          `is outside project 'b' (${projectB}). Writing to ${projectB}/src/assets/i18n instead.`,
         ),
       );
     });
@@ -546,7 +546,7 @@ describe('resolveConfig', () => {
       expect(translationsPath).toBe(output);
       expect(warn).toHaveBeenCalledWith(
         expect.stringContaining(
-          `Transloco find: The translations folder of the config, ${resolvePath(`${projectA}/public/i18n/`)}, is outside project b (${projectB}). Reading ${resolvePath(`${projectB}/src/assets/i18n`)} instead.`,
+          `Transloco find: The translations folder of the config, ${projectA}/public/i18n, is outside project 'b' (${projectB}). Reading ${projectB}/src/assets/i18n instead.`,
         ),
       );
     });
@@ -603,7 +603,7 @@ describe('resolveConfig', () => {
 
       expect(warn).toHaveBeenCalledExactlyOnceWith(
         expect.stringContaining(
-          `${resolvePath(`${sourceRoot}/missing/i18n`)}, does not exist and will be created`,
+          `${sourceRoot}/missing/i18n, does not exist and will be created. The paths of the config are relative to the working directory.`,
         ),
       );
     });

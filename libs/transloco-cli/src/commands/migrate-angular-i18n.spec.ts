@@ -211,6 +211,60 @@ describe('runMigrateAngularI18n', () => {
     );
   });
 
+  describe('a translations path outside of the working directory', () => {
+    it.each(['../outside', path.join(os.tmpdir(), 'transloco-cli-outside')])(
+      `GIVEN the translations path %s
+       WHEN the command runs
+       THEN it fails before anything is written`,
+      async (translationsPath) => {
+        writeTemplate();
+
+        await expect(
+          runMigrateAngularI18n(options({ translationsPath })),
+        ).rejects.toThrow(
+          new CliError(
+            `Transloco Migrate: The translations path is not inside the current directory: ${translationsPath}`,
+          ),
+        );
+        expect(read('src/app/a.html')).toBe('<p i18n>One</p>');
+        expect(fs.existsSync(path.resolve(translationsPath))).toBe(false);
+      },
+    );
+
+    it(`GIVEN an absolute translations path inside of the working directory
+        WHEN the command runs
+        THEN the files go there`, async () => {
+      writeTemplate();
+
+      await runMigrateAngularI18n(
+        options({ translationsPath: path.join(dir, 'i18n') }),
+      );
+
+      expect(exists('i18n/en.json')).toBe(true);
+    });
+
+    it(`GIVEN a translations path through a link to a folder outside
+        WHEN the command runs
+        THEN it fails before anything is written`, async (ctx) => {
+      writeTemplate();
+      const outside = fs.mkdtempSync(path.join(os.tmpdir(), 'transloco-out-'));
+
+      try {
+        fs.symlinkSync(outside, path.join(dir, 'link'));
+      } catch {
+        fs.rmSync(outside, { recursive: true });
+
+        return ctx.skip();
+      }
+
+      await expect(
+        runMigrateAngularI18n(options({ translationsPath: 'link/i18n' })),
+      ).rejects.toThrow(CliError);
+      expect(fs.readdirSync(outside)).toEqual([]);
+      fs.rmSync(outside, { recursive: true });
+    });
+  });
+
   describe('symlinks', () => {
     /** Where the system allows symlinks: the link at `link` to `target`, which is relative to the link. */
     function symlink(target: string, link: string) {

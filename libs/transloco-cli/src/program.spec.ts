@@ -81,6 +81,20 @@ describe('createProgram', () => {
   });
 
   describe('extract', () => {
+    it(`GIVEN the help of the command
+        WHEN it is printed
+        THEN --output lists every default in the order they apply`, async () => {
+      const { run, output } = setup();
+
+      await expect(run('extract', '--help')).rejects.toMatchObject({
+        exitCode: 0,
+      });
+
+      expect(unwrap(output.stdout)).toContain(
+        'defaults to `keysManager.output` of the config, then to its translations folder, `keysManager.translationsPath` or else `rootTranslationsPath`, then to `<source root>/assets/i18n`',
+      );
+    });
+
     it(`GIVEN every option of the command by its long name
         WHEN the program runs
         THEN the runner gets them as the keys manager inline config`, async () => {
@@ -645,6 +659,20 @@ describe('createProgram', () => {
 
       expect(output.stderr).toContain("unknown option '--config'");
       expect(runners.runInit).not.toHaveBeenCalled();
+    });
+
+    it(`GIVEN the help of the command
+        WHEN it is printed
+        THEN --yes names the folder ng add picks, not a fixed one`, async () => {
+      const { run, output } = setup();
+
+      await expect(run('init', '--help')).rejects.toMatchObject({
+        exitCode: 0,
+      });
+
+      expect(unwrap(output.stdout)).toContain(
+        'the folder `ng add` picks for the translations (`public/i18n` with a `public` folder or from Angular 18, else `<source root>/assets/i18n`)',
+      );
     });
   });
 
