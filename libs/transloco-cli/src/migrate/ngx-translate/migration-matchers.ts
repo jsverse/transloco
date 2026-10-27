@@ -439,11 +439,9 @@ function importTake(content: string) {
   const rxjs = /import\s*{([^}]*)}\s*from\s*('|")rxjs\2/;
 
   if (rxjs.test(content)) {
+    // Added to the names as they are written, `type` modifiers included.
     return content.replace(rxjs, (match, names: string) =>
-      match.replace(
-        `{${names}}`,
-        `{ ${[...specifiers(names), 'take'].join(', ')} }`,
-      ),
+      match.replace(`{${names}}`, `{${names.replace(/,?\s*$/, '')}, take }`),
     );
   }
 
@@ -483,10 +481,13 @@ function inlineTemplatesOf(content: string) {
     }
 
     const body = content.slice(start + 1, end);
+    // A translate attribute without a value would be left in a template
+    // whose directive is renamed.
     const readable =
       end < content.length &&
       !(quote === '`' && body.includes('${')) &&
-      !/^\s*\+/.test(content.slice(end + 1));
+      !/^\s*\+/.test(content.slice(end + 1)) &&
+      !new RegExp(bareTranslate).test(body);
 
     templates.push(
       readable

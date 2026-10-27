@@ -485,6 +485,58 @@ export class App {
       ]);
     });
 
+    it(`GIVEN a use without a counterpart below a get() call, in a file with no rxjs import
+        WHEN the migration runs
+        THEN its line is the one of the migrated file, below the import of take`, () => {
+      write(
+        'app/a.ts',
+        `import { inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+
+export class A {
+  private translate = inject(TranslateService);
+  a = this.translate.get('a');
+  b = this.translate.addLangs(['en']);
+}
+`,
+      );
+      process.chdir(dir);
+
+      migrateNgxTranslate({ input: 'app' });
+
+      const lines = read('app/a.ts').split('\n');
+      const line = lines.findIndex((text) => text.includes('addLangs')) + 1;
+
+      expect(lines[2]).toBe(`import { take } from 'rxjs';`);
+      expect(line).toBe(8);
+      expect(printed()).toContain(
+        `⚠️ ${path.join('app', 'a.ts')}:8: translate.addLangs has no counterpart in the TranslocoService, migrate it by hand`,
+      );
+    });
+
+    it(`GIVEN an rxjs import with a type modifier
+        WHEN take is added to it
+        THEN the modifier is kept`, () => {
+      write(
+        'app/a.ts',
+        `import { inject } from '@angular/core';
+import { type OperatorFunction, map } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
+
+export class A {
+  private translate = inject(TranslateService);
+  a = this.translate.get('a');
+}
+`,
+      );
+
+      migrateNgxTranslate({ input: path.join(dir, 'app') });
+
+      expect(read('app/a.ts')).toContain(
+        `import { type OperatorFunction, map, take } from 'rxjs';`,
+      );
+    });
+
     it(`GIVEN get() calls next to an rxjs import, an operator import and a take(1) already there
         WHEN the migration runs
         THEN each one emits once, and take is imported once`, () => {
@@ -590,6 +642,10 @@ export class Legacy {}
         "template: '<b>{{ \\'A\\' | translate }}</b>' + extra,",
       ],
       ['a variable', 'template: shared,'],
+      [
+        'a translate attribute without a value',
+        "template: '<b translate>A</b><i>{{ \\'B\\' | translate }}</i>',",
+      ],
     ])(
       `GIVEN a component whose inline template holds %s
        WHEN the migration runs
@@ -621,7 +677,7 @@ export class A {
             .replace('inject(TranslateService)', 'inject(TranslocoService)'),
         );
         expect(printed()).toContain(
-          `⚠️ ${path.join('app', 'a.ts')}:6: The inline template can't be migrated, its TranslateModule, TranslatePipe and TranslateDirective are left: migrate it by hand`,
+          `⚠️ ${path.join('app', 'a.ts')}:7: The inline template can't be migrated, its TranslateModule, TranslatePipe and TranslateDirective are left: migrate it by hand`,
         );
       },
     );

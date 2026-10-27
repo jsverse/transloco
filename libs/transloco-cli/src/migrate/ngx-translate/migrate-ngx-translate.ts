@@ -5,7 +5,11 @@ import { style } from '../../utils/style.js';
 import { findFiles } from '../find-files.js';
 
 import { applyMatcher } from './apply-matcher.js';
-import { generateMatchers, type Matcher } from './migration-matchers.js';
+import {
+  generateMatchers,
+  type Matcher,
+  type MatcherDef,
+} from './migration-matchers.js';
 
 export interface MigrateNgxTranslateOptions {
   /** The folder holding the sources to migrate. */
@@ -32,12 +36,15 @@ export function migrateNgxTranslate({ input }: MigrateNgxTranslateOptions) {
 function migrate(dir: string, steps: Matcher[], filesType: 'HTML' | 'TS') {
   console.log(`\nMigrating ${filesType} files 📜`);
 
+  // What can't be migrated is looked for once the steps are done, so the
+  // lines are the ones of the files as they are left.
+  const toCheck: { file: string; warn: NonNullable<MatcherDef['warn']> }[] = [];
+
   steps.forEach(({ step, matchers }, index) => {
     const msg = `Step ${index + 1}/${steps.length}: Migrating ${step}`;
     console.log(`⏳ ${msg}`);
 
     const noFilesFound: string[] = [];
-    const warnings: string[] = [];
 
     for (const matcher of matchers) {
       const files = findFiles(dir, matcher.files, matcher.exclude);
@@ -53,21 +60,30 @@ function migrate(dir: string, steps: Matcher[], filesType: 'HTML' | 'TS') {
       for (const file of files) {
         const content = fs.readFileSync(file, 'utf8');
 
-        for (const { index, message } of matcher.warn?.(content) ?? []) {
-          const line = content.slice(0, index).split('\n').length;
-
-          warnings.push(
-            `${path.relative(process.cwd(), file)}:${line}: ${message}`,
-          );
-        }
+        if (matcher.warn) toCheck.push({ file, warn: matcher.warn });
 
         fs.writeFileSync(file, applyMatcher(content, matcher), 'utf8');
       }
     }
 
     console.log(`✅ ${msg}`);
-    [...warnings, ...noFilesFound].forEach((warning) =>
-      console.log(style('yellow', `⚠️ ${warning}`)),
+    noFilesFound.forEach((pattern) =>
+      console.log(style('yellow', `⚠️ ${pattern}`)),
     );
   });
+
+  for (const { file, warn } of toCheck) {
+    const content = fs.readFileSync(file, 'utf8');
+
+    for (const { index, message } of warn(content)) {
+      const line = content.slice(0, index).split('\n').length;
+
+      console.log(
+        style(
+          'yellow',
+          `⚠️ ${path.relative(process.cwd(), file)}:${line}: ${message}`,
+        ),
+      );
+    }
+  }
 }
