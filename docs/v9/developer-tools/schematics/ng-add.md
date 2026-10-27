@@ -27,7 +27,7 @@ nx g @jsverse/transloco:ng-add
 * Configures Transloco for both:
   * **Module-based applications**: Imports `TranslocoRootModule` in the root module
   * **Standalone applications**: Configures `provideTransloco()` in the app config
-* Automatically detects Angular 18+ `public/` vs legacy `src/assets/` structure.
+* Automatically detects the translations folder of the selected project: `public/i18n` when the project has a `public` folder (or from Angular 18), else `<source root>/assets/i18n`.
 * Optional SSR support.
 * Customizable translation loader and file paths.
 

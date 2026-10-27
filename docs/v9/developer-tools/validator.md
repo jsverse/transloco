@@ -70,6 +70,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
@@ -81,7 +83,7 @@ jobs:
       - name: Run Transloco Validator on Changed i18n Files
         run: |
           # Find the changed i18n files and run the validator on them
-          git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'src/assets/i18n/.*\.json' | xargs npx transloco validate
+          git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep 'src/assets/i18n/.*\.json' | xargs -r npx transloco validate
 ```
 {% endcode %}
 {% endtab %}

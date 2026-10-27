@@ -139,7 +139,7 @@ A script that can't be translated with the same meaning is left as it is and lis
 
 CI pipelines (GitHub Actions, GitLab, Azure, CircleCI, Bitbucket, Jenkins), Makefiles, shell scripts, husky hooks, lint-staged configs, Dockerfiles, Docker Compose files, Taskfiles, justfiles, `project.json` and `angular.json` that run the old bins are listed and never edited. Change them by hand to the commands in the table.
 
-The old packages stay in `package.json`. Remove them once nothing runs their bins.
+The old packages stay in `package.json`, and `ng update` names the ones it finds there with the `transloco` command that replaces each, on every run while they are installed. `@jsverse/transloco-utils` is named as removable only when no file imports it any more. Remove the others once nothing runs their bins.
 
 ### Behaviour differences
 

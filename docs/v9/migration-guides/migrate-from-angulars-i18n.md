@@ -31,7 +31,7 @@ npx transloco migrate angular-i18n --input src/app --langs en es
 {% endtab %}
 {% endtabs %}
 
-`--input` is the folder holding the templates, `src/app` unless you say otherwise. `--langs` is required and lists the languages to create a translation file for, as separate arguments (`--langs en es`). The files are written to `rootTranslationsPath` of your [config](../developer-tools/global-config.md), or to `src/assets/i18n`. Pass `--translations-path` to write them somewhere else.
+`--input` is the folder holding the templates, `src/app` unless you say otherwise. `--langs` is required and lists the languages to create a translation file for, as separate arguments (`--langs en es`). The texts are added to the files in `rootTranslationsPath` of your [config](../developer-tools/global-config.md), or in `src/assets/i18n`. Pass `--translations-path` to use another folder, which has to lie inside the working directory. A file that exists keeps its keys and their values, and gets the keys it lacks after them. Nothing is written when a file is not a valid JSON object, or when no mark is found.
 
 ### The deprecated schematic
 
@@ -57,7 +57,7 @@ nx g @jsverse/transloco-schematics:ng-migrate
 
 ### The Translation File
 
-The migration script will extract all translations from your HTML files and generate a translations JSON file. The script will use the translation string as the key, converting it to kebab case (e.g., "`My sample string`" → "`my-sample-string`"). Here's an example of the output JSON:
+The migration script will extract all translations from your HTML files and add them to the translations JSON file of each language. A custom id (`@@myId`) is the key as it's written. Without one, the key is made of the text: the camelCase words and the spaces and underscores become dashes, all in lower case (e.g., "`My sample string`" → "`my-sample-string`"). A key with a meaning goes below it, and the template reads it as `meaning.key`. When a key comes twice with different texts, the first in path order is kept and the other is printed with both files and lines. Here's an example of the output JSON:
 
 {% code title="en.json" %}
 ```json
@@ -111,14 +111,14 @@ The `i18n` and `i18n-<attribute>` directives will be replaced with the `transloc
 ```html
 <h1 i18n>Hello World</h1>
 <h1 i18n="other context|another comment@@myId">Some value</h1>
-<img src="..." i18n i18n-title="Wow image" />
+<img src="..." title="Wow image" i18n-title />
 ```
 {% endcode %}
 
 {% code title="after.html" %}
 ```html
 <h1>{{ 'hello-world' | transloco }}</h1>
-<h1>{{ 'some-value' | transloco }}</h1>
+<h1>{{ 'other context.myId' | transloco }}</h1>
 <img src="..." [title]="'wow-image' | transloco" />
 ```
 {% endcode %}

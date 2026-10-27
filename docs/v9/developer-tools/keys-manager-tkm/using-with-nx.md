@@ -12,11 +12,13 @@ To integrate Transloco commands with an Nx workspace, you can define tasks in th
 
 ```json
 {
-  "i18n-extract": {
-    "command": "transloco extract --project projectName"
-  },
-  "i18n-find": {
-    "command": "transloco find --project projectName"
+  "targets": {
+    "i18n-extract": {
+      "command": "transloco extract --project projectName"
+    },
+    "i18n-find": {
+      "command": "transloco find --project projectName"
+    }
   }
 }
 ```
