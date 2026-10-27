@@ -80,7 +80,9 @@ export function resolveProjectBasePath(
   if (!angularConfig && !workspaceConfig && !projectConfig) {
     assertProjectIsKnown(projectName);
 
-    if (!quiet) {
+    // A workspace of project.json files alone has no default project, which
+    // the error of a missing input asks to pass with --project
+    if (!quiet && !listProjects().length) {
       logNotFound([
         ...angularConfigFile,
         workspaceConfigFile,

@@ -103,7 +103,7 @@ describe('runScopedLibs', () => {
 
   it(`GIVEN a directory without a config as the config path
       WHEN it runs
-      THEN it fails asking for the libraries, as there is nothing to copy`, async () => {
+      THEN it fails naming the directory, before anything is copied`, async () => {
     fs.mkdirSync(path.join(dir, 'configs'));
 
     const error = await runScopedLibs({ config: 'configs' }).catch((e) => e);
@@ -111,7 +111,7 @@ describe('runScopedLibs', () => {
     expect(error).toBeInstanceOf(CliError);
     expect(error).toMatchObject({
       exitCode: 1,
-      message: expect.stringContaining('"scopedLibs"'),
+      message: 'error: the --config folder holds no Transloco config: configs',
     });
     expect(run).not.toHaveBeenCalled();
   });

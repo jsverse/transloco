@@ -429,6 +429,33 @@ describe('resolveProjectBasePath', () => {
       expect(resolveProjectBasePath('shop').projectRoot).toBe('.');
     });
 
+    it(`GIVEN project.json files only, none at the root
+        WHEN the source root is resolved without a project
+        THEN it falls back to "src" without saying it found no workspace config`, () => {
+      givenNxWorkspace();
+      const error = spyOnConsole('error');
+
+      expect(resolveProjectBasePath()).toEqual({
+        projectBasePath: 'src',
+        defaulted: true,
+      });
+      expect(error).not.toHaveBeenCalled();
+      error.mockRestore();
+    });
+
+    it(`GIVEN no project.json at all
+        WHEN the source root is resolved without a project
+        THEN it says it found no workspace config`, () => {
+      const error = spyOnConsole('error');
+
+      resolveProjectBasePath();
+
+      expect(error).toHaveBeenCalledExactlyOnceWith(
+        expect.stringContaining('Unable to load workspace config'),
+      );
+      error.mockRestore();
+    });
+
     it(`GIVEN nx.json in the cwd
         WHEN the source root of a project is resolved
         THEN it is kept as it is`, () => {

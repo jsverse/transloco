@@ -41,12 +41,12 @@ export function resolveConfig(inlineConfig: Partial<Config>): Config {
         }
       : searchGlobalConfig(sourceRoot);
   // A config named with `--config` keeps its paths relative to the working directory, as in v8
-  const fileOptions = rebasePaths(
-    flatFileConfig(fileConfig),
+  const pathsFrom = folderAboveCwd(
     inlineConfig.config && existsSync(inlineConfig.config)
       ? undefined
       : configFile,
   );
+  const fileOptions = rebasePaths(flatFileConfig(fileConfig), pathsFrom);
   const userConfig = { ...fileOptions, ...inlineConfig };
   // Unless an output is given, extract writes where find reads
   const outputDefault = fileOptions.translationsPath
@@ -76,6 +76,7 @@ export function resolveConfig(inlineConfig: Partial<Config>): Config {
       defaultFolder: defaults.output,
       project: inlineConfig.project,
       projectRoot,
+      pathsFrom,
     });
   }
 
@@ -87,6 +88,7 @@ export function resolveConfig(inlineConfig: Partial<Config>): Config {
       defaultFolder: defaults.translationsPath,
       project: inlineConfig.project,
       projectRoot,
+      pathsFrom,
     });
   }
 
@@ -141,7 +143,8 @@ function flatFileConfig({
  * A root config serves the project `ng add` set it up for. Another project picked with
  * `--project` writes to its own default folder, instead of into that project's
  * translations. Another folder that isn't there yet is pointed out, as it often means
- * a rootTranslationsPath meant relative to something else than the working directory.
+ * a rootTranslationsPath meant relative to another folder. Paths are printed
+ * relative to the working directory.
  */
 function checkOutputDefault(
   config: Config,
@@ -151,12 +154,15 @@ function checkOutputDefault(
     defaultFolder,
     project,
     projectRoot,
+    pathsFrom,
   }: {
     field: 'output' | 'translationsPath';
     fromConfig?: string;
     defaultFolder: string;
     project?: string;
     projectRoot?: string;
+    /** The folder the paths of the config are relative to, when it isn't the working directory. */
+    pathsFrom?: string;
   },
 ) {
   if (!fromConfig) return;
@@ -174,7 +180,8 @@ function checkOutputDefault(
     if (!isInProject) {
       const fallback = path.resolve(defaultFolder);
       console.warn(
-        `Transloco ${command}: The translations folder of the config, ${folder}, is outside project ${project} (${projectRoot}). ${command === 'find' ? 'Reading' : 'Writing to'} ${fallback} instead. Pass ${command === 'find' ? '--translations-path' : '--output'}, set keysManager.${field}, or give ${project} a Transloco config whose rootTranslationsPath is in ${projectRoot}, relative to the working directory.`,
+        `Transloco ${command}: The translations folder of the config, ${fromCwd(folder)}, is outside project '${project}' (${fromCwd(projectRoot)}). ${command === 'find' ? 'Reading' : 'Writing to'} ${fromCwd(fallback)} instead.\n` +
+          `To use another folder, pass ${command === 'find' ? '--translations-path' : '--output'}, set keysManager.${field}, or put a Transloco config in ${fromCwd(projectRoot)} whose rootTranslationsPath, relative to the working directory, is in it.`,
       );
       config[field] = fallback;
 
@@ -189,33 +196,49 @@ function checkOutputDefault(
     !existsSync(folder)
   ) {
     console.warn(
-      `Transloco extract: The translations folder of the config, ${folder}, does not exist and will be created. Its path is relative to the working directory.`,
+      `Transloco extract: The translations folder of the config, ${fromCwd(folder)}, does not exist and will be created. The paths of the config are relative to ${pathsFrom === undefined ? 'the working directory' : `its folder, ${fromCwd(pathsFrom)}`}.`,
     );
   }
 }
 
+/** The path relative to the working directory, which is shorter to print. */
+function fromCwd(file: string) {
+  return path.relative(process.cwd(), path.resolve(file)) || '.';
+}
+
+/**
+ * The folder of a config found above the working directory, the one at the
+ * root of the repository when the command runs in a project folder, whose paths
+ * are relative to its own folder. Nothing for any other config, whose paths are
+ * relative to the working directory.
+ */
+function folderAboveCwd(configFile: string | undefined) {
+  if (configFile === undefined) return undefined;
+
+  const configDir = path.dirname(path.resolve(configFile));
+  const fromConfigDir = path.relative(configDir, process.cwd());
+
+  return !fromConfigDir ||
+    fromConfigDir.startsWith('..') ||
+    path.isAbsolute(fromConfigDir)
+    ? undefined
+    : configDir;
+}
+
 /**
  * The paths of a config are relative to the working directory, except in a
- * config found above it, the one at the root of the repository when the
- * command runs in a project folder, whose paths are relative to its own folder. They
- * are made relative to the working directory here. A path holding
- * `${sourceRoot}` is left as it is, the source root is relative to the
+ * config found above it, see `folderAboveCwd`, whose paths are relative to its
+ * own folder. They are made relative to the working directory here. A path
+ * holding `${sourceRoot}` is left as it is, the source root is relative to the
  * working directory already.
  */
 function rebasePaths(
   options: Partial<Config>,
-  configFile: string | undefined,
+  configDir: string | undefined,
 ): Partial<Config> {
-  if (configFile === undefined) return options;
+  if (configDir === undefined) return options;
 
   const cwd = process.cwd();
-  const configDir = path.dirname(path.resolve(configFile));
-  const fromCwd = path.relative(configDir, cwd);
-
-  if (!fromCwd || fromCwd.startsWith('..') || path.isAbsolute(fromCwd)) {
-    return options;
-  }
-
   const rebase = (value: string) =>
     typeof value !== 'string' ||
     path.isAbsolute(value) ||

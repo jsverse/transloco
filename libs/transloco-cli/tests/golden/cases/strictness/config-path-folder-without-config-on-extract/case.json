@@ -1,0 +1,6 @@
+{
+  "description": "GIVEN a --config folder that holds no config under a name the search looks for WHEN extract runs THEN it exits with 1 naming the folder, instead of going on with the defaults",
+  "args": ["extract", "--config", "cfgs"],
+  "exitCode": 1,
+  "snapshot": ["stdout", "stderr"]
+}

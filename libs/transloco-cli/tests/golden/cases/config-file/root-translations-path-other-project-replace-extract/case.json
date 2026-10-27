@@ -10,5 +10,5 @@
     "--remove-extra-keys"
   ],
   "exitCode": 0,
-  "stderrMatches": "is outside project b \\(projects/b\\)\\. Writing to <cwd>/projects/b/src/assets/i18n instead\\."
+  "stderrMatches": "is outside project 'b' \\(projects/b\\)\\. Writing to projects/b/src/assets/i18n instead\\."
 }

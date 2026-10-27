@@ -308,4 +308,43 @@ describe('resolveConfig config lookup', () => {
       expect.objectContaining({ 'Transloco file path': file }),
     );
   });
+
+  describe('the notice of a translations folder that does not exist', () => {
+    let warn: MockInstance;
+
+    beforeEach(() => {
+      warn = spyOnConsole('warn');
+    });
+
+    afterEach(() => {
+      warn.mockRestore();
+    });
+
+    it(`GIVEN a config beside the package.json above the working directory, whose folder isn't there
+        WHEN the keys are extracted
+        THEN the notice says the paths of the config are relative to its folder, not to the working directory`, () => {
+      writeConfig('.', { rootTranslationsPath: 'apps/web/public/i18n' });
+      fs.writeFileSync(path.resolve(dir, 'package.json'), '{}');
+      process.chdir(path.resolve(dir, 'apps/web'));
+      project.sourceRoot = 'src';
+
+      resolveConfig({ command: 'extract' } as any);
+
+      expect(warn).toHaveBeenCalledExactlyOnceWith(
+        `Transloco extract: The translations folder of the config, public/i18n, does not exist and will be created. The paths of the config are relative to its folder, ../...`,
+      );
+    });
+
+    it(`GIVEN a config in the working directory, whose folder isn't there
+        WHEN the keys are extracted
+        THEN the notice says the paths of the config are relative to the working directory`, () => {
+      writeConfig('.', { rootTranslationsPath: 'public/i18n' });
+
+      resolveConfig({ command: 'extract' } as any);
+
+      expect(warn).toHaveBeenCalledExactlyOnceWith(
+        `Transloco extract: The translations folder of the config, public/i18n, does not exist and will be created. The paths of the config are relative to the working directory.`,
+      );
+    });
+  });
 });
