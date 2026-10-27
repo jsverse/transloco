@@ -51,17 +51,18 @@ describe('migrateTemplate', () => {
       });
     });
 
-    it(`GIVEN a mark with an id
-        WHEN it is migrated
-        THEN the id is the key, dasherized`, () => {
-      expect(
-        migrateTemplate('<p i18n="@@someCamelCaseKey">Camel case id</p>'),
-      ).toEqual({
-        template: `<p>{{ 'some-camel-case-key' | transloco }}</p>`,
-        translation: { 'some-camel-case-key': 'Camel case id' },
-        warnings: [],
-      });
-    });
+    it.each(['someCamelCaseKey', 'Snake_case_ID', 'with.dots', 'With Space'])(
+      `GIVEN a mark with the id %s
+       WHEN it is migrated
+       THEN the id is the key, as it is written`,
+      (id) => {
+        expect(migrateTemplate(`<p i18n="@@${id}">Text</p>`)).toEqual({
+          template: `<p>{{ '${id}' | transloco }}</p>`,
+          translation: { [id]: 'Text' },
+          warnings: [],
+        });
+      },
+    );
 
     it(`GIVEN a mark with a description and an id
         WHEN it is migrated
@@ -77,13 +78,13 @@ describe('migrateTemplate', () => {
 
     it(`GIVEN a mark with a meaning, a description and an id
         WHEN it is migrated
-        THEN the key goes below the meaning, with its comment`, () => {
+        THEN the key goes below the meaning, with its comment, and the template reads it there`, () => {
       expect(
         migrateTemplate(
           '<h2 i18n="site header|An introduction@@intro">Hello i18n!</h2>',
         ),
       ).toEqual({
-        template: `<h2>{{ 'intro' | transloco }}</h2>`,
+        template: `<h2>{{ 'site header.intro' | transloco }}</h2>`,
         translation: {
           'site header': {
             intro: 'Hello i18n!',
@@ -92,6 +93,51 @@ describe('migrateTemplate', () => {
         },
         warnings: [],
       });
+    });
+
+    it.each([
+      [
+        '<span i18n="meaning only|">Text</span>',
+        `<span>{{ 'meaning only.text' | transloco }}</span>`,
+        { 'meaning only': { text: 'Text' } },
+      ],
+      [
+        '<span i18n="x|y@@m.id">Text</span>',
+        `<span>{{ 'x.m.id' | transloco }}</span>`,
+        { x: { 'm.id': 'Text', 'm.id.comment': 'y' } },
+      ],
+      [
+        '<input placeholder="Name" i18n-placeholder="the field|enter name@@phKey">',
+        `<input [placeholder]="'the field.phKey' | transloco">`,
+        { 'the field': { phKey: 'Name', 'phKey.comment': 'enter name' } },
+      ],
+    ])(
+      `GIVEN %s, a mark with a meaning
+       WHEN it is migrated
+       THEN the key of the template is the path of the key in the translation`,
+      (input, template, translation) => {
+        expect(migrateTemplate(input)).toEqual({
+          template,
+          translation,
+          warnings: [],
+        });
+      },
+    );
+
+    it(`GIVEN the same id twice in a template, with different texts
+        WHEN it is migrated
+        THEN the first text is kept, and both marks are reported with their lines`, () => {
+      const messages: unknown[] = [];
+      const { translation } = migrateTemplate(
+        '<p i18n="@@k">First</p>\n<p i18n="@@k">Second</p>',
+        (message) => messages.push(message),
+      );
+
+      expect(translation).toEqual({ k: 'First' });
+      expect(messages).toEqual([
+        { key: 'k', text: 'First', line: 1 },
+        { key: 'k', text: 'Second', line: 2 },
+      ]);
     });
 
     it(`GIVEN a text over several lines
@@ -157,7 +203,7 @@ describe('migrateTemplate', () => {
         migrateTemplate(
           `<a title="x" i18n-title="@@it's &quot;x&quot;">Link</a>`,
         ).template,
-      ).toBe(`<a [title]="'it\\'s-&quot;x&quot;' | transloco">Link</a>`);
+      ).toBe(`<a [title]="'it\\'s &quot;x&quot;' | transloco">Link</a>`);
     });
   });
 
