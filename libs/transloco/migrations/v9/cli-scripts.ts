@@ -171,7 +171,7 @@ const COMMAND_FILES = [
 /** The hooks husky generates, which are not the user's: only the ones right in `.husky` are. */
 const GENERATED = /(^|\/)\.husky\/_\//;
 
-const isManifest = (path: string) =>
+export const isManifest = (path: string) =>
   /(^|\/)package\.json$/.test(path) && !/\/\.[^/]+\//.test(path);
 
 interface Moved {
@@ -338,10 +338,6 @@ export function migrateCliScripts(): Rule {
     }
 
     if (moved.length) {
-      context.logger.info(
-        `  ↳ The packages of the deprecated bins are still in your dependencies. Remove them once nothing runs their bins anymore.`,
-      );
-
       addCliDependency(
         tree,
         context,

@@ -3026,14 +3026,78 @@ describe('migration-v9 npm scripts', () => {
     expect(infos.join('\n')).not.toContain('exits with code 1');
   });
 
-  it(`GIVEN scripts that were migrated
+  it(`GIVEN scripts that were migrated and a deprecated package still listed
       WHEN the migration reports
-      THEN it says that the deprecated packages can go once nothing runs them`, async () => {
-    const { infos } = await runWith({}, legacy, { listCli: true });
+      THEN it names the package and what replaces it`, async () => {
+    const { infos } = await runWith({}, legacy, {
+      listCli: true,
+      devDependencies: { '@jsverse/transloco-keys-manager': '^8.0.0' },
+    });
+
+    const notice = infos.find((info) => info.includes('still in your'));
+    expect(notice).toContain(
+      `/package.json: @jsverse/transloco-keys-manager (replaced by 'transloco extract' and 'transloco find'`,
+    );
+    expect(notice).toContain('Remove each one once nothing runs its bin');
+  });
+
+  it(`GIVEN a deprecated package listed and no script moved in this run
+      WHEN the migration runs again
+      THEN the package is still reported`, async () => {
+    const { infos } = await runWith(
+      {},
+      { 'i18n:extract': 'transloco extract' },
+      {
+        listCli: true,
+        devDependencies: { '@jsverse/transloco-validator': '^8.0.0' },
+      },
+    );
 
     expect(infos.join('\n')).toContain(
-      'Remove them once nothing runs their bins anymore',
+      `@jsverse/transloco-validator (replaced by 'transloco validate'`,
     );
+  });
+
+  it(`GIVEN no deprecated package in any package.json
+      WHEN the migration runs
+      THEN no notice is printed`, async () => {
+    const { infos } = await runWith({}, legacy, { listCli: true });
+
+    expect(infos.join('\n')).not.toContain('still in your dependencies');
+  });
+
+  it(`GIVEN the utils package listed and no file importing it
+      WHEN the migration runs
+      THEN it is reported as removable`, async () => {
+    const { infos } = await runWith(
+      {},
+      { lint: 'ng lint' },
+      {
+        listCli: true,
+        devDependencies: { '@jsverse/transloco-utils': '^8.0.0' },
+      },
+    );
+
+    expect(infos.join('\n')).toContain(
+      '@jsverse/transloco-utils (no file imports it any more, remove it)',
+    );
+  });
+
+  it(`GIVEN the utils package listed and a file importing it in a way that cannot move
+      WHEN the migration runs
+      THEN it is not reported as removable`, async () => {
+    const { infos } = await runWith(
+      {
+        '/scripts/cfg.cjs': `const utils = require('@jsverse/transloco-utils');`,
+      },
+      { lint: 'ng lint' },
+      {
+        listCli: true,
+        devDependencies: { '@jsverse/transloco-utils': '^8.0.0' },
+      },
+    );
+
+    expect(infos.join('\n')).not.toContain('no file imports it any more');
   });
 
   it(`GIVEN scripts that were migrated
