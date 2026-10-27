@@ -182,7 +182,7 @@ describe('migrateAngularI18n', () => {
 
     it(`GIVEN a folder with no template
         WHEN the migration runs
-        THEN an empty translation file is written for each language, as before`, () => {
+        THEN no translation file is written`, () => {
       write('app/a.ts', '');
 
       migrateAngularI18n({
@@ -191,35 +191,38 @@ describe('migrateAngularI18n', () => {
         langs: ['en', 'es'],
       });
 
-      expect(read('i18n/en.json')).toBe('{}\n');
-      expect(read('i18n/es.json')).toBe('{}\n');
+      expect(fs.existsSync(path.join(dir, 'i18n'))).toBe(false);
+      expect(printed()).toContain(
+        '⚠️ No i18n mark was found, no translation file is written',
+      );
     });
 
     it(`GIVEN the same key in two templates, with different texts
         WHEN the migration runs
-        THEN the template that comes last in the walk supplies the text`, () => {
+        THEN the template that comes first in the walk supplies the text, and both are printed with their files and lines`, () => {
       write('app/a.html', '<p i18n="@@key">From a</p>');
-      write('app/b.html', '<p i18n="@@key">From b</p>');
-      const files = (...names: string[]) =>
-        names.map((name) => path.join(dir, 'app', name));
+      write('app/b.html', '\n<p i18n="@@key">From b</p>');
+      process.chdir(dir);
 
-      vi.mocked(findFiles).mockReturnValueOnce(files('a.html', 'b.html'));
-      migrateAngularI18n({
-        input: path.join(dir, 'app'),
-        output: path.join(dir, 'one'),
-        langs: ['en'],
-      });
-      vi.mocked(findFiles).mockReturnValueOnce(files('b.html', 'a.html'));
-      write('app/a.html', '<p i18n="@@key">From a</p>');
-      write('app/b.html', '<p i18n="@@key">From b</p>');
-      migrateAngularI18n({
-        input: path.join(dir, 'app'),
-        output: path.join(dir, 'other'),
-        langs: ['en'],
-      });
+      migrateAngularI18n({ input: 'app', output: 'i18n', langs: ['en'] });
 
-      expect(JSON.parse(read('one/en.json'))).toEqual({ key: 'From b' });
-      expect(JSON.parse(read('other/en.json'))).toEqual({ key: 'From a' });
+      expect(JSON.parse(read('i18n/en.json'))).toEqual({ key: 'From a' });
+      expect(printed()).toContain(
+        `⚠️ ${path.join('app', 'b.html')}:2: The key 'key' has another text in ${path.join('app', 'a.html')}:1, which is kept, and "From b" is left out`,
+      );
+    });
+
+    it(`GIVEN the same key in two templates, with the same text
+        WHEN the migration runs
+        THEN nothing is printed about it`, () => {
+      write('app/a.html', '<p i18n="@@key">Same</p>');
+      write('app/b.html', '<p i18n="@@key">Same</p>');
+      process.chdir(dir);
+
+      migrateAngularI18n({ input: 'app', output: 'i18n', langs: ['en'] });
+
+      expect(JSON.parse(read('i18n/en.json'))).toEqual({ key: 'Same' });
+      expect(printed().some((line) => line.startsWith('⚠️'))).toBe(false);
     });
 
     it.each([
@@ -232,7 +235,7 @@ describe('migrateAngularI18n', () => {
     ])(
       `GIVEN the same key in three templates, and a file system that lists them %s
        WHEN the migration runs
-       THEN the template last in path order supplies the text`,
+       THEN the template first in path order supplies the text`,
       (_, reorder) => {
         write('app/b.html', '<p i18n="@@key">From b</p>');
         write('app/c.html', '<p i18n="@@key">From c</p>');
@@ -249,19 +252,16 @@ describe('migrateAngularI18n', () => {
           langs: ['en'],
         });
 
-        expect(JSON.parse(read('i18n/en.json'))).toEqual({ key: 'From c' });
+        expect(JSON.parse(read('i18n/en.json'))).toEqual({ key: 'From a' });
       },
     );
 
     it(`GIVEN the same meaning in two templates
         WHEN the migration runs
-        THEN the keys of the later one replace the ones of the earlier, as before`, () => {
+        THEN the keys of both are below it`, () => {
       write('app/a.html', '<p i18n="menu|x@@one">One</p>');
       write('app/b.html', '<p i18n="menu|x@@two">Two</p>');
 
-      vi.mocked(findFiles).mockReturnValueOnce(
-        ['a.html', 'b.html'].map((name) => path.join(dir, 'app', name)),
-      );
       migrateAngularI18n({
         input: path.join(dir, 'app'),
         output: path.join(dir, 'i18n'),
@@ -269,8 +269,85 @@ describe('migrateAngularI18n', () => {
       });
 
       expect(JSON.parse(read('i18n/en.json'))).toEqual({
-        menu: { two: 'Two', 'two.comment': 'x' },
+        menu: {
+          one: 'One',
+          'one.comment': 'x',
+          two: 'Two',
+          'two.comment': 'x',
+        },
       });
+      expect(read('app/a.html')).toBe(`<p>{{ 'menu.one' | transloco }}</p>`);
+    });
+  });
+
+  describe('the translation files that exist', () => {
+    it(`GIVEN translation files with keys of their own
+        WHEN the migration runs
+        THEN the keys found are added to them, and the values they hold are kept`, () => {
+      write('app/a.html', '<p i18n="@@one">One</p><p i18n="m|@@two">Two</p>');
+      write('i18n/en.json', '{"existing": "keep", "one": "Mine"}');
+      write('i18n/es.json', '{"m": {"other": "Otro"}}');
+
+      migrateAngularI18n({
+        input: path.join(dir, 'app'),
+        output: path.join(dir, 'i18n'),
+        langs: ['en', 'es'],
+      });
+
+      expect(read('i18n/en.json')).toBe(
+        '{\n  "existing": "keep",\n  "one": "Mine",\n  "m": {\n    "two": "Two"\n  }\n}\n',
+      );
+      expect(JSON.parse(read('i18n/es.json'))).toEqual({
+        m: { other: 'Otro', two: 'Two' },
+        one: 'One',
+      });
+    });
+
+    it.each([
+      ['not JSON', '{ broken'],
+      ['not an object', '["a"]'],
+    ])(
+      `GIVEN a translation file that is %s
+       WHEN the migration runs
+       THEN it throws, and no template or translation file is written`,
+      (_, content) => {
+        write('app/a.html', '<p i18n>One</p>');
+        write('i18n/en.json', '{"existing": "keep"}');
+        write('i18n/es.json', content);
+
+        expect(() =>
+          migrateAngularI18n({
+            input: path.join(dir, 'app'),
+            output: path.join(dir, 'i18n'),
+            langs: ['en', 'es'],
+          }),
+        ).toThrow(
+          `${path.join(dir, 'i18n', 'es.json')} isn't a translation file, nothing is migrated`,
+        );
+
+        expect(read('app/a.html')).toBe('<p i18n>One</p>');
+        expect(read('i18n/en.json')).toBe('{"existing": "keep"}');
+        expect(read('i18n/es.json')).toBe(content);
+      },
+    );
+
+    it(`GIVEN templates migrated already
+        WHEN the migration runs again
+        THEN the translation files are left as they are`, () => {
+      write('app/a.html', '<p i18n>One</p>');
+      const run = () =>
+        migrateAngularI18n({
+          input: path.join(dir, 'app'),
+          output: path.join(dir, 'i18n'),
+          langs: ['en'],
+        });
+
+      run();
+      write('i18n/en.json', '{"one": "Translated"}');
+      run();
+
+      expect(read('i18n/en.json')).toBe('{"one": "Translated"}');
+      expect(read('app/a.html')).toBe(`<p>{{ 'one' | transloco }}</p>`);
     });
   });
 
