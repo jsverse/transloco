@@ -8,7 +8,10 @@ import {
   UnitTestTree,
 } from '@angular-devkit/schematics/testing';
 
-import { createWorkspace } from '../../schematics-core/testing';
+import {
+  createWorkspace,
+  defaultAppOptions,
+} from '../../schematics-core/testing';
 
 import { SchemaOptions } from './schema';
 
@@ -117,8 +120,8 @@ describe('ng add', () => {
       const options: SchemaOptions = { project: 'bar' } as SchemaOptions;
       const initialTree = await createWorkspace(schematicRunner);
 
-      // Create public folder to simulate Angular 18+
-      initialTree.create('/public/favicon.ico', '');
+      // Angular 18+ applications come with a public folder next to src
+      expect(initialTree.files).toContain('/projects/bar/public/favicon.ico');
 
       const tree = await schematicRunner.runSchematic(
         'ng-add',
@@ -126,8 +129,11 @@ describe('ng add', () => {
         initialTree,
       );
 
-      expect(tree.files).toContain('/public/i18n/en.json');
-      expect(tree.files).toContain('/public/i18n/es.json');
+      expect(tree.files).toContain('/projects/bar/public/i18n/en.json');
+      expect(tree.files).toContain('/projects/bar/public/i18n/es.json');
+      expect(readFileAt(tree, '/transloco.config.ts')).toContain(
+        `rootTranslationsPath: 'projects/bar/public/i18n/'`,
+      );
 
       // Check that loader uses correct URL path
       const loaderContent = readFile(tree, 'app/transloco-loader.ts');
@@ -141,7 +147,8 @@ describe('ng add', () => {
       const options: SchemaOptions = { project: 'bar' } as SchemaOptions;
       const initialTree = await createWorkspace(schematicRunner);
 
-      // Create assets folder to simulate traditional Angular structure
+      // Simulate the traditional Angular structure
+      removePublicFolder(initialTree);
       initialTree.create('/projects/bar/src/assets/icons/icon.png', '');
 
       const tree = await schematicRunner.runSchematic(
@@ -195,6 +202,7 @@ describe('ng add', () => {
         initialTree.read('/package.json')!.toString(),
       );
       packageJson.dependencies['@angular/core'] = '^18.0.0';
+      removePublicFolder(initialTree);
       initialTree.overwrite(
         '/package.json',
         JSON.stringify(packageJson, null, 2),
@@ -206,8 +214,8 @@ describe('ng add', () => {
         initialTree,
       );
 
-      expect(tree.files).toContain('/public/i18n/en.json');
-      expect(tree.files).toContain('/public/i18n/es.json');
+      expect(tree.files).toContain('/projects/bar/public/i18n/en.json');
+      expect(tree.files).toContain('/projects/bar/public/i18n/es.json');
 
       // Check that loader uses correct URL path for Angular 18+
       const loaderContent = readFile(tree, 'app/transloco-loader.ts');
@@ -225,6 +233,7 @@ describe('ng add', () => {
         initialTree.read('/package.json')!.toString(),
       );
       packageJson.dependencies['@angular/core'] = '^17.0.0';
+      removePublicFolder(initialTree);
       initialTree.overwrite(
         '/package.json',
         JSON.stringify(packageJson, null, 2),
@@ -243,9 +252,72 @@ describe('ng add', () => {
       const loaderContent = readFile(tree, 'app/transloco-loader.ts');
       expect(loaderContent).toContain('/assets/i18n/${lang}.json');
     });
+
+    it.each(['^20', '>=18', '>=18 <21'])(
+      `GIVEN an @angular/core range of %s without folder indicators
+        WHEN ng-add schematic runs
+        THEN the first integer is the major version and public/i18n is used`,
+      async (range) => {
+        const options: SchemaOptions = { project: 'bar' } as SchemaOptions;
+        const initialTree = await createWorkspace(schematicRunner);
+        const packageJson = JSON.parse(
+          initialTree.read('/package.json')!.toString(),
+        );
+        packageJson.dependencies['@angular/core'] = range;
+        removePublicFolder(initialTree);
+        initialTree.overwrite(
+          '/package.json',
+          JSON.stringify(packageJson, null, 2),
+        );
+
+        const tree = await schematicRunner.runSchematic(
+          'ng-add',
+          options,
+          initialTree,
+        );
+
+        expect(tree.files).toContain('/projects/bar/public/i18n/en.json');
+      },
+    );
+
+    it(`GIVEN a multi-project workspace where each application serves its own public folder
+        WHEN ng-add runs for the first project
+        THEN the files and the config point at that project's public/i18n`, async () => {
+      const options: SchemaOptions = { project: 'bar' } as SchemaOptions;
+      const initialTree = await schematicRunner.runExternalSchematic(
+        '@schematics/angular',
+        'application',
+        { ...defaultAppOptions, name: 'other' },
+        await createWorkspace(schematicRunner),
+      );
+
+      const tree = await schematicRunner.runSchematic(
+        'ng-add',
+        options,
+        initialTree,
+      );
+
+      expect(tree.files).toContain('/projects/bar/public/i18n/en.json');
+      expect(tree.files).not.toContain('/public/i18n/en.json');
+      expect(tree.files).not.toContain('/projects/other/public/i18n/en.json');
+      expect(readFileAt(tree, '/transloco.config.ts')).toContain(
+        `rootTranslationsPath: 'projects/bar/public/i18n/'`,
+      );
+      expect(readFile(tree, 'app/transloco-loader.ts')).toContain(
+        '/i18n/${lang}.json',
+      );
+    });
   });
 });
 
 function readFile(host: UnitTestTree, path: string) {
   return host.get(`/projects/bar/src/${path}`)!.content.toString();
+}
+
+function readFileAt(host: UnitTestTree, path: string) {
+  return host.get(path)!.content.toString();
+}
+
+function removePublicFolder(host: UnitTestTree) {
+  host.getDir('/projects/bar/public').visit((path) => host.delete(path));
 }
