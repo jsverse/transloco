@@ -110,7 +110,6 @@ const recorded = [
   'typescript',
   'cli-table3',
   'gettext-parser',
-  'deep-diff',
   'debug',
   'jsonc-parser',
 ];
