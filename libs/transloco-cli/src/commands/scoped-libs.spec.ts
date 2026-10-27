@@ -55,6 +55,7 @@ describe('runScopedLibs', () => {
       skipGitIgnoreUpdate: false,
       rootTranslationsPath: 'src/assets/i18n',
       scopedLibs: ['libs/core'],
+      onProblem: expect.any(Function),
     });
   });
 
@@ -77,6 +78,7 @@ describe('runScopedLibs', () => {
       skipGitIgnoreUpdate: false,
       rootTranslationsPath: 'custom/i18n',
       scopedLibs: [{ src: 'libs/custom', dist: ['apps/a/i18n'] }],
+      onProblem: expect.any(Function),
     });
   });
 
@@ -96,17 +98,62 @@ describe('runScopedLibs', () => {
 
   it(`GIVEN a directory without a config as the config path
       WHEN it runs
-      THEN it is no error: the library gets no libs, just as when started in a directory without a config`, async () => {
+      THEN it fails asking for the libraries, as there is nothing to copy`, async () => {
     fs.mkdirSync(path.join(dir, 'configs'));
 
-    await runScopedLibs({ config: 'configs' });
+    const error = await runScopedLibs({ config: 'configs' }).catch((e) => e);
 
-    expect(run).toHaveBeenCalledExactlyOnceWith({
-      watch: false,
-      skipGitIgnoreUpdate: false,
-      rootTranslationsPath: undefined,
-      scopedLibs: undefined,
+    expect(error).toBeInstanceOf(CliError);
+    expect(error).toMatchObject({
+      exitCode: 1,
+      message: expect.stringContaining('"scopedLibs"'),
     });
+    expect(run).not.toHaveBeenCalled();
+  });
+
+  it(`GIVEN a config with an empty scopedLibs list
+      WHEN it runs
+      THEN it fails asking for the libraries, as there is nothing to copy`, async () => {
+    writeConfig('transloco.config.js', { scopedLibs: [] });
+
+    const error = await runScopedLibs({}).catch((e) => e);
+
+    expect(error).toBeInstanceOf(CliError);
+    expect(error.message).toContain('"scopedLibs"');
+    expect(run).not.toHaveBeenCalled();
+  });
+
+  it(`GIVEN libraries the library reports problems for
+      WHEN it runs
+      THEN it fails with every problem, once all libraries were tried`, async () => {
+    writeConfig('transloco.config.js', { scopedLibs: ['libs/a', 'libs/b'] });
+    run.mockImplementationOnce(async ({ onProblem }) => {
+      onProblem('libs/a is broken');
+      onProblem('libs/b is broken');
+    });
+
+    const error = await runScopedLibs({}).catch((e) => e);
+
+    expect(error).toBeInstanceOf(CliError);
+    expect(error).toMatchObject({
+      exitCode: 1,
+      message: 'libs/a is broken\nlibs/b is broken',
+    });
+  });
+
+  it(`GIVEN the watch mode and a library the library reports a problem for
+      WHEN it runs
+      THEN the problem is printed to stderr and it keeps running`, async () => {
+    writeConfig('transloco.config.js', { scopedLibs: ['libs/a'] });
+    const stderr = vi.spyOn(console, 'error').mockImplementation(() => {});
+    run.mockImplementationOnce(async ({ onProblem }) => {
+      onProblem('libs/a is broken');
+    });
+
+    await expect(runScopedLibs({ watch: true })).resolves.toBeUndefined();
+
+    expect(stderr).toHaveBeenCalledExactlyOnceWith('libs/a is broken');
+    stderr.mockRestore();
   });
 
   it(`GIVEN a config path that does not exist, next to a config in the working directory
@@ -139,6 +186,7 @@ describe('runScopedLibs', () => {
       skipGitIgnoreUpdate: true,
       rootTranslationsPath: undefined,
       scopedLibs: ['libs/core'],
+      onProblem: expect.any(Function),
     });
   });
 });

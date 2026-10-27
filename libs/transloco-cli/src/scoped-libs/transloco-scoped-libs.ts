@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import path from 'node:path';
 
 import { glob } from 'glob';
@@ -50,6 +51,7 @@ const packageJsoni18nExample = `
  * skipGitIgnoreUpdate - if false tries to add an entry to the .gitignore for each of the translation files
  * rootTranslationsPath - the root directory of the translation files.
  * scopedLibs - list of all translation scoped project paths.
+ * onProblem - reports a misconfigured library, which is skipped, defaults to printing it in red.
  *
  * @returns a function that stops the watchers, which there are in watch mode
  */
@@ -58,124 +60,144 @@ export default async function run({
   skipGitIgnoreUpdate,
   rootTranslationsPath,
   scopedLibs,
+  onProblem = (problem) => console.log(style('red', problem)),
 }: ScopedLibsOptions) {
   const watchers: FSWatcher[] = [];
   const stopWatching = async () => {
     await Promise.all(watchers.map((watcher) => watcher.close()));
   };
-  const scopedLibsArr = coerceScopedLibs(scopedLibs, rootTranslationsPath);
+  const scopedLibsArr = coerceScopedLibs(
+    scopedLibs,
+    rootTranslationsPath,
+    onProblem,
+  );
   const startMsg = watch
     ? 'Running Transloco Scoped Libs in watch mode'
     : 'Starting Transloco Scoped Libs...';
   console.log(style('magenta', startMsg));
 
+  // A misconfigured library is reported and skipped, the ones after it are still copied
   for (const lib of scopedLibsArr) {
-    if (!lib.src) {
-      console.log(
-        style('red', `Please specify the library's src.`, libSrcExample),
+    try {
+      await copyLib(lib, { watch, skipGitIgnoreUpdate, watchers, onProblem });
+    } catch (error) {
+      onProblem(
+        `${lib.src}: ${error instanceof Error ? error.message : String(error)}`,
       );
-
-      return stopWatching;
-    }
-
-    const pkg = getPackageJson(lib.src);
-    if (!pkg.content.i18n) {
-      console.log(
-        style(
-          'red',
-          `${path.join(lib.src, 'package.json')} is missing i18n information.`,
-          packageJsoni18nExample,
-        ),
-      );
-
-      return stopWatching;
-    }
-
-    if (!lib.dist?.length) {
-      console.log(
-        style(
-          'red',
-          'please specify dist path, by either set "rootTranslationsPath" or specify the "dist" for each library',
-          libSrcExample,
-        ),
-      );
-
-      return stopWatching;
-    }
-
-    const outputs = lib.dist.map((o) => path.resolve(o));
-    const input = path.dirname(pkg.path);
-    const isWindows = process.platform === 'win32';
-
-    // Sort scopes: narrow paths first, then wide paths (so wide paths include all data)
-    const getDepth = (scopePath: string) =>
-      scopePath.split(/[\\/]+/).filter(Boolean).length;
-
-    const sortedScopes = [...pkg.content.i18n].sort((a, b) => {
-      return getDepth(b.path) - getDepth(a.path);
-    });
-
-    for (const scopeConfig of sortedScopes) {
-      const { scope, strategy } = scopeConfig;
-
-      const files = await glob(
-        `${path.join(input, scopeConfig.path)}/**/*.json`,
-        {
-          windowsPathsNoEscape: isWindows,
-        },
-      );
-
-      for (const output of outputs) {
-        copyScopes({
-          outputDir: output,
-          strategy,
-          files,
-          skipGitIgnoreUpdate,
-          scope,
-        });
-      }
-
-      if (watch) {
-        // The folder is watched, not the files found now, to pick up a file added later
-        const copyFile = (file: string) => {
-          if (!file.endsWith('.json')) return;
-
-          for (const output of outputs) {
-            // TODO should we skip the git ignore update here?
-            copyScopes({
-              outputDir: output,
-              strategy,
-              files: [file],
-              skipGitIgnoreUpdate,
-              scope,
-            });
-          }
-        };
-
-        watchers.push(
-          chokidar
-            .watch(path.join(input, scopeConfig.path), { ignoreInitial: true })
-            .on('add', copyFile)
-            .on('change', copyFile),
-        );
-      }
     }
   }
 
   return stopWatching;
 }
 
+async function copyLib(
+  lib: ScopedLib,
+  {
+    watch,
+    skipGitIgnoreUpdate,
+    watchers,
+    onProblem,
+  }: Pick<ScopedLibsOptions, 'watch' | 'skipGitIgnoreUpdate'> & {
+    watchers: FSWatcher[];
+    onProblem: (problem: string) => void;
+  },
+) {
+  if (!lib.src) {
+    onProblem(`Please specify the library's src. ${libSrcExample}`);
+
+    return;
+  }
+
+  const pkg = getPackageJson(lib.src);
+  if (!fs.existsSync(pkg.path)) {
+    onProblem(`${path.join(lib.src, 'package.json')} does not exist.`);
+
+    return;
+  }
+
+  if (!pkg.content?.i18n) {
+    onProblem(
+      `${path.join(lib.src, 'package.json')} is missing i18n information. ${packageJsoni18nExample}`,
+    );
+
+    return;
+  }
+
+  if (!lib.dist?.length) {
+    onProblem(
+      `please specify dist path, by either set "rootTranslationsPath" or specify the "dist" for each library ${libSrcExample}`,
+    );
+
+    return;
+  }
+
+  const outputs = lib.dist.map((o) => path.resolve(o));
+  const input = path.dirname(pkg.path);
+  const isWindows = process.platform === 'win32';
+
+  // Sort scopes: narrow paths first, then wide paths (so wide paths include all data)
+  const getDepth = (scopePath: string) =>
+    scopePath.split(/[\\/]+/).filter(Boolean).length;
+
+  const sortedScopes = [...pkg.content.i18n].sort((a, b) => {
+    return getDepth(b.path) - getDepth(a.path);
+  });
+
+  for (const scopeConfig of sortedScopes) {
+    const { scope, strategy } = scopeConfig;
+
+    const files = await glob(
+      `${path.join(input, scopeConfig.path)}/**/*.json`,
+      {
+        windowsPathsNoEscape: isWindows,
+      },
+    );
+
+    for (const output of outputs) {
+      copyScopes({
+        outputDir: output,
+        strategy,
+        files,
+        skipGitIgnoreUpdate,
+        scope,
+      });
+    }
+
+    if (watch) {
+      // The folder is watched, not the files found now, to pick up a file added later
+      const copyFile = (file: string) => {
+        if (!file.endsWith('.json')) return;
+
+        for (const output of outputs) {
+          // TODO should we skip the git ignore update here?
+          copyScopes({
+            outputDir: output,
+            strategy,
+            files: [file],
+            skipGitIgnoreUpdate,
+            scope,
+          });
+        }
+      };
+
+      watchers.push(
+        chokidar
+          .watch(path.join(input, scopeConfig.path), { ignoreInitial: true })
+          .on('add', copyFile)
+          .on('change', copyFile),
+      );
+    }
+  }
+}
+
 function coerceScopedLibs(
   scopedLibs: TranslocoGlobalConfig['scopedLibs'],
   defaultPath: TranslocoGlobalConfig['rootTranslationsPath'],
+  onProblem: (problem: string) => void,
 ): ScopedLib[] {
   if (!scopedLibs?.length) {
-    console.log(
-      style(
-        'red',
-        'Please add "scopedLibs" configuration in transloco.config.ts file.',
-        libSrcExample,
-      ),
+    onProblem(
+      `Please add "scopedLibs" configuration in transloco.config.ts file. ${libSrcExample}`,
     );
 
     return [];
