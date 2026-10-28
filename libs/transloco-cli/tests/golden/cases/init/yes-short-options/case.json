@@ -1,0 +1,15 @@
+{
+  "description": "GIVEN the short options WHEN init runs THEN they do what the long ones do",
+  "args": [
+    "init",
+    "-y",
+    "-l",
+    "de",
+    "it"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

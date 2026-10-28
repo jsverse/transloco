@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN a package.json with both scripts set to other commands WHEN init runs with --yes THEN they are kept and reported as kept",
+  "args": [
+    "init",
+    "--yes"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

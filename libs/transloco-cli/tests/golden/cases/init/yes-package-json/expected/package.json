@@ -1,0 +1,9 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "ng build",
+    "i18n:extract": "transloco extract",
+    "i18n:find": "transloco find"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN a transloco.config.ts WHEN init runs without --force THEN it is refused and nothing is written",
+  "args": [
+    "init",
+    "--yes"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

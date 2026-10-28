@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN a package.json indented with four spaces WHEN init runs with --yes THEN the scripts are added with four spaces",
+  "args": [
+    "init",
+    "--yes"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}
