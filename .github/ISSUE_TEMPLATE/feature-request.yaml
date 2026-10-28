@@ -28,6 +28,7 @@ body:
         - Scoped Libs
         - Keys Manager
         - Validator
+        - CLI
         - Don't know / other
       multiple: true
     validations:
