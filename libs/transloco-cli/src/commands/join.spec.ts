@@ -137,6 +137,29 @@ describe('runJoin', () => {
       expect(fs.readdirSync(path.join(dir, 'dist-i18n'))).toEqual(['es.json']);
     });
 
+    it.skipIf(process.platform === 'win32' || process.getuid?.() === 0)(
+      `GIVEN an out folder holding a folder that can't be read
+        WHEN it runs
+        THEN it fails and leaves the out folder untouched`,
+      async () => {
+        writeTranslations();
+        write('dist-i18n/ok/a.json', '{}');
+        write('dist-i18n/locked/readme.txt', 'x');
+        const locked = path.join(dir, 'dist-i18n/locked');
+        fs.chmodSync(locked, 0o000);
+
+        try {
+          const error = await failure();
+
+          expect(error.message).toMatch(/Refusing to empty the out folder/);
+          expect(exists('dist-i18n/ok/a.json')).toBe(true);
+          expect(exists('dist-i18n/es.json')).toBe(false);
+        } finally {
+          fs.chmodSync(locked, 0o755);
+        }
+      },
+    );
+
     it(`GIVEN an out folder that is nested
         WHEN it runs
         THEN the folders above it are created`, async () => {

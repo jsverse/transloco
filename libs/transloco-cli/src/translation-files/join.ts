@@ -54,6 +54,17 @@ export function joinTranslations(
       const origins = new Map<string, string>();
 
       for (const { scope, path: scopePath } of entries) {
+        // Split drops a scope's key from the root file, so the value of a key
+        // that only looks like the scope of another language would be lost.
+        if (
+          Object.hasOwn(translation, scope) &&
+          !reader.listFiles(scopePath).some((f) => isLanguageFile(f, lang))
+        ) {
+          throw new TranslationFilesError(
+            `The key "${scope}" in ${rootFile} is also the scope ${scopePath}, which has no ${lang} file to take its place, rename one and run the command again.`,
+          );
+        }
+
         mergeScope({
           reader,
           dir: scopePath,

@@ -461,7 +461,11 @@ function closingParen(content: string, open: number) {
   return -1;
 }
 
-/** Imports `take` from rxjs, along with the other rxjs symbols of the file, unless it's imported already. */
+/**
+ * Imports `take` from `rxjs/operators`, as the root of rxjs 6, a supported
+ * peer, doesn't export it, along with the other operators of the file, unless
+ * it's imported already.
+ */
 function importTake(content: string) {
   if (
     /import\s*{[^}]*\btake\b[^}]*}\s*from\s*('|")rxjs(\/operators)?\1/.test(
@@ -471,7 +475,7 @@ function importTake(content: string) {
     return content;
   }
 
-  const rxjs = /import\s*{([^}]*)}\s*from\s*('|")rxjs\2/;
+  const rxjs = /import\s*{([^}]*)}\s*from\s*('|")rxjs\/operators\2/;
 
   if (rxjs.test(content)) {
     // Added to the names as they are written, `type` modifiers included.
@@ -484,7 +488,7 @@ function importTake(content: string) {
   const last = imports.at(-1);
   const eol = content.includes('\r\n') ? '\r\n' : '\n';
   const at = last ? last.index + last[0].length : 0;
-  const line = `import { take } from 'rxjs';${eol}`;
+  const line = `import { take } from 'rxjs/operators';${eol}`;
 
   return last && !last[1]
     ? `${content.slice(0, at)}${eol}${line}${content.slice(at)}`
