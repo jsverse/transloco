@@ -1,0 +1,9 @@
+{
+  "description": "GIVEN a transloco.config.ts in the workspace root and the sources in a sub directory WHEN the keys are extracted without --config THEN the config is found and a file per configured language is written",
+  "args": [
+    "extract",
+    "--default-value",
+    "missing"
+  ],
+  "exitCode": 0
+}

@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN a transloco.config.ts in the workspace root pointing the translations at a folder of its own WHEN the keys are searched without --config THEN the config is found, the missing and the extra key are reported and it exits with 1",
+  "args": [
+    "find",
+    "-e"
+  ],
+  "exitCode": 1,
+  "stdoutIncludes": [
+    "File Name Missing Keys Extra Keys",
+    "en 'home.title' 'stale'"
+  ]
+}

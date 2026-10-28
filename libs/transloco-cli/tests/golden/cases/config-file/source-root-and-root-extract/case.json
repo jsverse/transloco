@@ -1,0 +1,9 @@
+{
+  "description": "GIVEN a transloco.config.js in the source root and another one in the workspace root WHEN the keys are extracted without --config THEN the config of the source root wins",
+  "args": [
+    "extract",
+    "--default-value",
+    "missing"
+  ],
+  "exitCode": 0
+}

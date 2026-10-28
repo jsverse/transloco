@@ -1,6 +1,6 @@
-import type { Diff } from 'deep-diff';
 import { describe, expect, it } from 'vitest';
 
+import type { Diff } from '../keys-detective/flat-diff.js';
 import { mapDiffToKeys } from '../keys-detective/map-diff-to-keys.js';
 
 describe('mapDiffToKeys', () => {
@@ -10,7 +10,7 @@ describe('mapDiffToKeys', () => {
   });
 
   it('should return the correct keys for added properties', () => {
-    const diffArr: Diff<any>[] = [
+    const diffArr: Diff[] = [
       { kind: 'N', path: ['a'], rhs: 1 },
       { kind: 'N', path: ['b', 'c'], rhs: 2 },
     ];
@@ -20,7 +20,7 @@ describe('mapDiffToKeys', () => {
   });
 
   it('should return the correct keys for deleted properties', () => {
-    const diffArr: Diff<any>[] = [
+    const diffArr: Diff[] = [
       { kind: 'D', path: ['a'], lhs: 1 },
       { kind: 'D', path: ['b', 'c'], lhs: 2 },
     ];
@@ -30,9 +30,7 @@ describe('mapDiffToKeys', () => {
   });
 
   it('should handle nested objects correctly', () => {
-    const diffArr: Diff<any>[] = [
-      { kind: 'N', path: ['a'], rhs: { b: { c: 1 } } },
-    ];
+    const diffArr: Diff[] = [{ kind: 'N', path: ['a'], rhs: { b: { c: 1 } } }];
 
     const result = mapDiffToKeys(diffArr, 'rhs');
 

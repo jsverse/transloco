@@ -1,8 +1,5 @@
-import type { DiffDeleted, DiffNew } from 'deep-diff';
-import df from 'deep-diff';
 import { flatten, unflatten } from 'flat';
 
-import { getGlobalConfig } from '../../config/index.js';
 import { messages } from '../messages.js';
 import { Config, ScopeMap } from '../types.js';
 import { readFile, writeFile } from '../utils/file.utils.js';
@@ -11,6 +8,7 @@ import { getScopeAndLangFromPath } from '../utils/path.utils.js';
 import { normalizedGlob } from '../utils/normalize-glob-path.js';
 
 import { buildTable } from './build-table.js';
+import { DiffDeleted, DiffNew, flatDiff } from './flat-diff.js';
 import { getTranslationFilesPath } from './get-translation-files-path.js';
 
 interface Result {
@@ -27,6 +25,7 @@ interface CompareKeysOptions extends Pick<
   | 'addMissingKeys'
   | 'emitErrorOnExtraKeys'
   | 'translationsPath'
+  | 'scopePathMap'
 > {
   scopeToKeys: ScopeMap;
 }
@@ -38,6 +37,7 @@ export function compareKeysToFiles({
   emitErrorOnExtraKeys,
   fileFormat,
   unflat,
+  scopePathMap = {},
 }: CompareKeysOptions) {
   const logger = getLogger();
   logger.startSpinner(`${messages.checkMissing} ✨`);
@@ -45,8 +45,8 @@ export function compareKeysToFiles({
   const diffsPerLang: Record<
     string,
     {
-      missing: Array<DiffNew<any>>;
-      extra: Array<DiffDeleted<any>>;
+      missing: DiffNew[];
+      extra: DiffDeleted[];
     }
   > = {};
 
@@ -57,8 +57,7 @@ export function compareKeysToFiles({
   );
 
   const result: Result[] = [];
-  const scopePaths = getGlobalConfig().scopePathMap || {};
-  for (const [scope, path] of Object.entries(scopePaths)) {
+  for (const [scope, path] of Object.entries(scopePathMap)) {
     const keys = scopeToKeys[scope];
     if (keys) {
       const res: Omit<Result, 'files'> = {
@@ -118,31 +117,20 @@ export function compareKeysToFiles({
         },
       );
       // Compare the current file with the extracted keys
-      const differences = df.diff(flat, keys);
+      const { missing, extra } = flatDiff(flat, keys);
 
-      if (differences) {
+      if (missing.length || extra.length) {
         const langPath = `${scope !== '__global' ? scope + '/' : ''}${lang}`;
 
         diffsPerLang[langPath] = {
-          missing: [],
-          extra: [],
+          missing,
+          extra: extra.filter((diff) => !diff.path[0].endsWith('.comment')),
         };
 
-        for (const diff of differences) {
-          if (diff.kind === 'N') {
-            diffsPerLang[langPath].missing.push(diff);
-            if (addMissingKeys) {
-              df.applyChange(translation, keys, diff);
-            }
-          } else if (diff.kind === 'D') {
-            const isComment = diff.path!.join('.').endsWith('.comment');
-            if (!isComment) {
-              diffsPerLang[langPath].extra.push(diff);
-            }
-          }
-        }
-
         if (addMissingKeys) {
+          for (const diff of missing) {
+            translation[diff.path[0]] = diff.rhs;
+          }
           writeFile(filePath, unflat ? unflatten(translation) : translation);
         }
       }
