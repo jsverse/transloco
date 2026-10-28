@@ -282,7 +282,7 @@ export function createProgram() {
     )
     .option(
       '--translations-path <dir>',
-      'The folder the translation files are written to (defaults to `rootTranslationsPath` of the config, or `src/assets/i18n`)',
+      'The folder the translation files are written to (defaults to `rootTranslationsPath` of the config, else the folder `transloco init` picks: `public/i18n` with a `public` folder, otherwise `<source root>/assets/i18n`)',
     )
     .requiredOption(
       '-l, --langs <langs...>',
