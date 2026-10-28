@@ -35,6 +35,7 @@ describe('TranslocoGlobalConfig copies', () => {
     const core = readInterface(CORE_TYPE);
 
     expect(cli).toContain('rootTranslationsPath?: string;');
+    expect(cli).toContain('translationsPath?: string;');
     expect(core).toBe(cli);
   });
 });
