@@ -1,13 +1,13 @@
 /**
- * Checks that keys-manager still extracts every key against a given
+ * Checks that `transloco extract` still extracts every key against a given
  * `@angular/compiler` / `typescript` pair, since the workspace only ever
  * installs one version of each.
  *
- * Packs the built library into a throwaway project rather than swapping the
- * root dependency: an older `@angular/compiler` breaks the dev toolchain first
+ * Packs the built CLI into a throwaway project rather than swapping the root
+ * dependency: an older `@angular/compiler` breaks the dev toolchain first
  * (`@analogjs/vite-plugin-angular` needs Angular >=21).
  *
- *   nx build transloco-keys-manager
+ *   nx build transloco-cli
  *   node tools/scripts/verify-keys-manager-compat.mts --angular=20 --typescript=5.8
  */
 import { execFileSync } from 'node:child_process';
@@ -39,7 +39,6 @@ if (!angularVersion || !typescriptVersion) {
 }
 
 const repoRoot = process.cwd();
-const distDir = join(repoRoot, 'dist', 'libs', 'transloco-keys-manager');
 const cliDistDir = join(repoRoot, 'dist', 'libs', 'transloco-cli');
 
 /**
@@ -166,7 +165,7 @@ function flatten(value: Record<string, unknown>, prefix = ''): string[] {
 
 const project = mkdtempSync(join(tmpdir(), 'tkm-compat-'));
 console.log(
-  `Verifying keys-manager against @angular/compiler@${angularVersion} + typescript@${typescriptVersion}`,
+  `Verifying the key extraction against @angular/compiler@${angularVersion} + typescript@${typescriptVersion}`,
 );
 console.log(`Scratch project: ${project}`);
 
@@ -184,11 +183,9 @@ const pack = (dir: string) => {
 
   return join(project, output.trim().split('\n').pop()!);
 };
-const tarball = pack(distDir);
-// transloco-cli holds the implementation keys-manager delegates to. It is packed
-// too, so keys-manager is checked against the CLI it ships with rather than the
-// one on npm: on a release commit that version is not published yet, and on a PR
-// the registry copy lacks the PR's changes.
+// The CLI is checked as built here rather than as published: on a release commit
+// that version is not published yet, and on a PR the registry copy lacks the
+// PR's changes.
 const cliTarball = pack(cliDistDir);
 
 mkdirSync(join(project, 'src'), { recursive: true });
@@ -208,7 +205,6 @@ run(
   'npm',
   [
     'install',
-    tarball,
     cliTarball,
     `@angular/compiler@${angularVersion}`,
     `typescript@${typescriptVersion}`,
@@ -252,7 +248,7 @@ console.log(
 );
 
 run(
-  join(project, 'node_modules', '.bin', 'transloco-keys-manager'),
+  join(project, 'node_modules', '.bin', 'transloco'),
   ['extract', '--input', 'src', '--output', 'i18n', '--langs', 'en'],
   project,
 );

@@ -4,6 +4,7 @@ import {
   addCliDependency,
   applyEdits,
   Edit,
+  importsFromCli,
   importsUnaliased,
   namedImports,
   replaceImport,
@@ -227,7 +228,7 @@ export function migrateMarkerImport(): Rule {
         `  ↳ '${PACKAGE}' no longer has a root entry point, but these files still reference it:\n` +
           rootReferences.map((path) => `    - ${path}`).join('\n') +
           `\n    Import marker from '${TARGET}'. TranslocoExtractKeysWebpackPlugin was removed;` +
-          ` run 'transloco-keys-manager extract' instead.`,
+          ` run 'transloco extract' instead.`,
       );
     }
 
@@ -239,6 +240,7 @@ export function migrateMarkerImport(): Rule {
       );
     }
 
-    if (introduced) return addCliDependency(tree, context, EXPORT);
+    if (introduced)
+      return addCliDependency(tree, context, importsFromCli(EXPORT));
   };
 }
