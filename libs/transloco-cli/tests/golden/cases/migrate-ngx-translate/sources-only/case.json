@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN a folder with TS files and no template WHEN it is migrated THEN the steps of the templates warn about the files they found none of",
+  "args": [
+    "migrate",
+    "ngx-translate"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

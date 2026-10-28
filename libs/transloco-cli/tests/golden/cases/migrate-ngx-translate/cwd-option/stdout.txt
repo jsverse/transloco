@@ -1,0 +1,28 @@
+
+Starting migration script
+
+Migrating HTML files 📜
+⏳ Step 1/2: Migrating directives
+✅ Step 1/2: Migrating directives
+⏳ Step 2/2: Migrating pipes
+✅ Step 2/2: Migrating pipes
+
+Migrating TS files 📜
+⏳ Step 1/6: Migrating inline templates
+✅ Step 1/6: Migrating inline templates
+⏳ Step 2/6: Migrating modules
+✅ Step 2/6: Migrating modules
+⏳ Step 3/6: Migrating imports
+✅ Step 3/6: Migrating imports
+⏳ Step 4/6: Migrating constructor injections
+✅ Step 4/6: Migrating constructor injections
+⏳ Step 5/6: Migrating service usage
+✅ Step 5/6: Migrating service usage
+⏳ Step 6/6: Migrating specs
+✅ Step 6/6: Migrating specs
+
+              🌵 Done! 🌵
+Welcome to a better translation experience 🌐
+
+For more information about this script please visit 👉 https://jsverse.github.io/transloco/docs/migration/ngx
+

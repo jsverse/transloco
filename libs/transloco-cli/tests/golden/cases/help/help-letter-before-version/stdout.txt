@@ -22,4 +22,5 @@ Commands:
                              file per language
   split [options]            Split joined translation files back into the scope
                              folders
+  migrate                    Migrate a project to Transloco
   help [command]             Display help for the command

@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN an input folder without an .html file WHEN the command runs THEN stderr says it looked for .html files and nothing is written",
+  "args": [
+    "migrate",
+    "angular-i18n",
+    "--langs",
+    "en"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

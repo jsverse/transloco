@@ -24,6 +24,9 @@
       "@jsverse/transloco-cli/internal/keys-manager": [
         "./libs/transloco-cli/src/keys-manager/index.ts"
       ],
+      "@jsverse/transloco-cli/internal/migrate": [
+        "./libs/transloco-cli/src/migrate/index.ts"
+      ],
       "@jsverse/transloco-cli/internal/optimize": [
         "./libs/transloco-cli/src/optimize/index.ts"
       ],

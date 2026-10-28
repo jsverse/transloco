@@ -1,0 +1,76 @@
+{
+  "ABCDef": "Upper start",
+  "With Space Id": "Space id",
+  "apos": "Don't \"stop\" believing",
+  "attributes-on-separate-lines": "Attributes on separate lines",
+  "cardHeader": "Card header",
+  "close action": {
+    "closeDialog": "Close dialog",
+    "closeDialog.comment": "Closes the dialog"
+  },
+  "crlf": "First line second line",
+  "described-text": "Described text",
+  "described-text.comment": "Just a description",
+  "describedId": "Description and id",
+  "describedId.comment": "description with id",
+  "dollar": "Costs $5 and $& and $1 for \\n real",
+  "dotted.id.here": "Dotted id",
+  "empty-value": "Empty value",
+  "footer note": {
+    "footerNote": "All rights reserved",
+    "footerNote.comment": "Shown on every page"
+  },
+  "gender": "{gender, select, male {he} female {she} other {they}}",
+  "go-home": "Go home",
+  "goHome": "Go home",
+  "hello-world": "Hello world",
+  "inner-bold": "inner bold",
+  "items": "{count, plural, =0 {No items} =1 {One item} other {{{count}} items}}",
+  "its-a-quote-more-stuff": "It's a \"quote\" & more <stuff>",
+  "labelText": "Label text",
+  "labelTitle": "Label title",
+  "logo": "Logo",
+  "meaning only": {
+    "empty-description": "Empty description"
+  },
+  "menuAbout": "About",
+  "menuHome": "Home",
+  "multi line meaning": {
+    "multiLine": "This text spans several lines and has indentation",
+    "multiLine.comment": "multi line description"
+  },
+  "nested-span": "Nested span",
+  "one": "One",
+  "onlyA": "Only in A",
+  "onlyB": "Only in B",
+  "onlyId": "Only an id",
+  "open": "Open",
+  "open-link": "Open link",
+  "paragraph": "Paragraph in section",
+  "plain-text-with-capitals": "Plain Text With Capitals",
+  "privacy": "Privacy",
+  "privacyTitle": "Privacy",
+  "same-plain-text": "Same plain text",
+  "save": "Save",
+  "save-it": "Save it",
+  "searchPlaceholder": "Search for something",
+  "shared": "Shared text",
+  "singleId": "Single quotes",
+  "singleId.comment": "single quoted",
+  "site header": {
+    "introductionHeader": "Hello i18n!",
+    "introductionHeader.comment": "An introduction header for this sample"
+  },
+  "someCamelCaseKey": "Camel case id",
+  "tabs-and-multiple-spaces": "Tabs and multiple spaces",
+  "three": "Three",
+  "two": "Two",
+  "unicode:-ünï-çödé-—-日本語-🎉": "Unicode: ünï çödé — 日本語 🎉",
+  "user greeting": {
+    "greet": "Hi there",
+    "greet.comment": "Greets the user"
+  },
+  "welcome-to-the-app": "Welcome to the app",
+  "windows-line-endings": "Windows line endings",
+  "with_underscore_id": "Underscore id"
+}

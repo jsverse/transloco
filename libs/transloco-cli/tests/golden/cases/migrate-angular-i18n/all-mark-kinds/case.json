@@ -1,0 +1,15 @@
+{
+  "description": "GIVEN templates holding every kind of mark the migration reads WHEN they are migrated for two languages THEN the templates and the translation files are those the schematic produced",
+  "args": [
+    "migrate",
+    "angular-i18n",
+    "--langs",
+    "en",
+    "es"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

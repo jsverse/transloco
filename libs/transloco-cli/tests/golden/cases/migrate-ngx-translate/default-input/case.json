@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN templates and sources in the default src/app WHEN they are migrated from ngx-translate THEN they are rewritten in place and the steps are printed",
+  "args": [
+    "migrate",
+    "ngx-translate"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}
