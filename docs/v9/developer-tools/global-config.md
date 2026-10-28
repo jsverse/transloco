@@ -20,6 +20,7 @@ const config: TranslocoGlobalConfig = {
   keysManager?: {
     input?: string | string[];
     output?: string;
+    translationsPath?: string;
     fileFormat?: 'json' | 'pot';
     marker?: string;
     addMissingKeys?: boolean;
@@ -64,3 +65,5 @@ export default config;
 ### Keys Manager
 
 The `keysManager` property configures the behavior of the translation keys extraction and management tool.
+
+`keysManager.translationsPath` is the folder of the translation files. It wins over `rootTranslationsPath` for both `find` (its `--translations-path` default) and `extract` (the default of `--output`).

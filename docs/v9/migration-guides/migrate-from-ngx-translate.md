@@ -79,7 +79,7 @@ A `translate` attribute without a value, whose key is the content of the element
 
 ## **Inline templates**
 
-The templates written in the `template` of a `@Component()` are migrated like the template files. A template the script can't read, a template string with an interpolation (`${...}`), a concatenation, or a variable, is left as it is and printed with its file and line, and that file keeps its `TranslateModule`, `TranslatePipe` and `TranslateDirective` so that its template still compiles. Migrate it by hand.
+The templates written in the `template` of a `@Component()` are migrated like the template files. A template the script can't read, a template string with an interpolation (`${...}`), a concatenation, or a variable, is left as it is and printed with its file and line, and that file keeps its ngx-translate imports (`TranslateModule`, `TranslatePipe` and `TranslateDirective`) so that its template still compiles. The templates of the other components in that file are still migrated. Migrate it by hand.
 
 ## **Imports**
 
@@ -102,7 +102,7 @@ The calls below are replaced on every name the service is injected as: a constru
 | **Before**                      | **After**                                             |
 | ------------------------------- | ----------------------------------------------------- |
 | `translateService.currentLang`  | `translateService.getActiveLang()`                    |
-| `translateService.onLangChange` | `translateService.langChanges$`                       |
+| `translateService.onLangChange` | `translateService.langChanges$`, which emits the language string |
 | `translateService.use(...)`     | `translateService.setActiveLang(...)`                 |
 | `translateService.instant(...)` | `translateService.translate(...)`                     |
 | `translateService.get(...)`     | `translateService.selectTranslate(...).pipe(take(1))` |
@@ -119,7 +119,7 @@ The calls below are replaced on every name the service is injected as: a constru
 | `set(key, value, lang)`   | `setTranslationKey(key, value, { lang })`, whose third argument is an options object. |
 | `currentLoader`, `reloadLang(...)`, `resetLang(...)`, `defaultLang`, `onTranslationChange`, `onDefaultLangChange`, `getParsedResult(...)`, `getStreamOnTranslationChange(...)`, `translations`, `store`, `compiler`, `parser`, `missingTranslationHandler` | No direct equivalent in Transloco. |
 
-These members are left as they are, and each use is printed with its file and line. `getTranslation(...)` and `setTranslation(...)` keep their names, which the `TranslocoService` has too, but take other arguments: check them by hand.
+These members are left as they are, and each use is printed with its file and line. A leftover `LangChangeEvent` is printed with its file and line too: `langChanges$` emits the language string, not an event object, so adjust the code that reads `event.lang`. `getTranslation(...)` and `setTranslation(...)` keep their names, which the `TranslocoService` has too, but take other arguments: check them by hand.
 
 ## **Modules**
 

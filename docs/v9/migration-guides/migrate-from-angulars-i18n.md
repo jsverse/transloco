@@ -31,7 +31,7 @@ npx transloco migrate angular-i18n --input src/app --langs en es
 {% endtab %}
 {% endtabs %}
 
-`--input` is the folder holding the templates, `src/app` unless you say otherwise. `--langs` is required and lists the languages to create a translation file for, as separate arguments (`--langs en es`). The texts are added to the files in `rootTranslationsPath` of your [config](../developer-tools/global-config.md), or in `src/assets/i18n`. Pass `--translations-path` to use another folder, which has to lie inside the working directory. A file that exists keeps its keys and their values, and gets the keys it lacks after them. Nothing is written when a file is not a valid JSON object, or when no mark is found.
+`--input` is the folder holding the templates, `src/app` unless you say otherwise. `--langs` is required and lists the languages to create a translation file for, as separate arguments (`--langs en es`). The texts are added to the files in `rootTranslationsPath` of your [config](../developer-tools/global-config.md), or else in the folder `transloco init` would pick: `public/i18n` when a `public` folder exists, otherwise `<source root>/assets/i18n`. Pass `--translations-path` to use another folder, which has to lie inside the working directory. A file that exists keeps its keys and their values, and gets the keys it lacks after them, in sorted order. Nothing is written when a file is not a valid JSON object, or when no mark is found.
 
 ### The deprecated schematic
 
@@ -57,7 +57,7 @@ nx g @jsverse/transloco-schematics:ng-migrate
 
 ### The Translation File
 
-The migration script will extract all translations from your HTML files and add them to the translations JSON file of each language. A custom id (`@@myId`) is the key as it's written. Without one, the key is made of the text: the camelCase words and the spaces and underscores become dashes, all in lower case (e.g., "`My sample string`" → "`my-sample-string`"). A key with a meaning goes below it, and the template reads it as `meaning.key`. When a key comes twice with different texts, the first in path order is kept and the other is printed with both files and lines. Here's an example of the output JSON:
+The migration script will extract all translations from your HTML files and add them to the translations JSON file of each language. A custom id (`@@myId`) is the key as it's written. Without one, the key is made of the text: the camelCase words and the spaces and underscores become dashes, all in lower case (e.g., "`My sample string`" → "`my-sample-string`"). The characters that can't stand in a template string (`'"` `` ` `` `\<>&{}`) are removed, repeated dashes collapse to one, and leading and trailing dashes are removed. A key with a meaning goes below it, and the template reads it as `meaning.key`. When a key comes twice with different texts, the first in path order is kept and the other is printed with both files and lines. Here's an example of the output JSON:
 
 {% code title="en.json" %}
 ```json
@@ -82,17 +82,17 @@ The migration script will extract all translations from your HTML files and add 
 {% code title="after.json" %}
 ```json
 {
-  "translation-value": "translation value",
+  "other context": {
+    "myId": "Val3",
+    "myId.comment": "another comment"
+  },
   "site header": {
     "val1": "Val1",
     "val1.comment": "value 1 sample",
     "val2": "Val2",
     "val2.comment": "value 2 sample"
   },
-  "other context": {
-    "myId": "Val3",
-    "myId.comment": "another comment"
-  }
+  "translation-value": "translation value"
 }
 ```
 {% endcode %}
