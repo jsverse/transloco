@@ -122,7 +122,7 @@ async function copyLib(
     return;
   }
 
-  if (!pkg.content.i18n) {
+  if (!Array.isArray(pkg.content.i18n)) {
     onProblem(
       `${path.join(lib.src, 'package.json')} is missing i18n information. ${packageJsoni18nExample}`,
     );

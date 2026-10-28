@@ -93,7 +93,7 @@ These members are left as they are, and each use is printed with its file and li
 
 ### Specs
 
-The [Imports](#imports) and [Modules](#modules) of the spec files are migrated, and the `TranslateService` and `TranslatePipe` left in them are replaced with `TranslocoService`. Their injections and service calls are left as they are.
+The [Imports](#imports) and [Modules](#modules) of the spec files are migrated, and the `TranslateService` and `TranslatePipe` left in them are replaced with `TranslocoService`. Their service calls are left as they are, so check them by hand.
 
 Declaration files (`*.d.ts`), and the `node_modules`, `dist`, `out-tsc`, `coverage`, `.angular`, `.nx` and hidden folders below the input, are left out.
 
