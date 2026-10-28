@@ -23,6 +23,17 @@ const workspaceConfigFile = 'workspace.json';
 const projectConfigFile = 'project.json';
 const defaultSourceRoot = 'src';
 
+let unknownProjectFallsBack = false;
+
+/**
+ * The deprecated `transloco-keys-manager` bin keeps its v8 behaviour for a
+ * project that is in none of the workspace configs, it warns and defaults the
+ * source root to `src`. Only the `transloco` command refuses it.
+ */
+export function allowUnknownProject() {
+  unknownProjectFallsBack = true;
+}
+
 function searchConfig(searchPlaces: string[] | string, searchFrom = '') {
   const cwd = process.cwd();
   const resolvePath = path.resolve(cwd, searchFrom);
@@ -45,6 +56,16 @@ function searchConfig(searchPlaces: string[] | string, searchFrom = '') {
     },
     searchPlaces: places,
   }).search(resolvePath)?.config;
+}
+
+// A project that was asked for and is unknown has its default input checked as in v8
+function defaultToSourceRoot(projectName?: string) {
+  return {
+    projectBasePath: defaultSourceRoot,
+    ...(unknownProjectFallsBack && projectName
+      ? {}
+      : { defaulted: true as const }),
+  };
 }
 
 function logNotFound(searchPlaces: string[]) {
@@ -78,7 +99,7 @@ export function resolveProjectBasePath(
   const projectConfig = resolveProjectConfig(projectName);
 
   if (!angularConfig && !workspaceConfig && !projectConfig) {
-    assertProjectIsKnown(projectName);
+    if (!unknownProjectFallsBack) assertProjectIsKnown(projectName);
 
     // A workspace of project.json files alone has no default project, which
     // the error of a missing input asks to pass with --project
@@ -90,7 +111,7 @@ export function resolveProjectBasePath(
       ]);
     }
 
-    return { projectBasePath: defaultSourceRoot, defaulted: true };
+    return defaultToSourceRoot(projectName);
   }
 
   let resolved: ReturnType<typeof resolveProject> | null = null;
@@ -105,7 +126,7 @@ export function resolveProjectBasePath(
   }
 
   if (!resolved) {
-    assertProjectIsKnown(projectName);
+    if (!unknownProjectFallsBack) assertProjectIsKnown(projectName);
 
     if (!quiet) {
       console.error(
@@ -116,7 +137,7 @@ export function resolveProjectBasePath(
       );
     }
 
-    return { projectBasePath: defaultSourceRoot, defaulted: true };
+    return defaultToSourceRoot(projectName);
   }
 
   const toCwd = fromProjectConfig ? fromWorkspaceRoot : (p: string) => p;

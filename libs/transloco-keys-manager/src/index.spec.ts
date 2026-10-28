@@ -1,9 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { buildTranslationFiles, findMissingKeys } = vi.hoisted(() => ({
-  buildTranslationFiles: vi.fn(),
-  findMissingKeys: vi.fn(),
-}));
+const { allowUnknownProject, buildTranslationFiles, findMissingKeys } =
+  vi.hoisted(() => ({
+    allowUnknownProject: vi.fn(),
+    buildTranslationFiles: vi.fn(),
+    findMissingKeys: vi.fn(),
+  }));
 
 // The option definitions and the unsupported-option warning stay real, so the
 // bin is exercised against the CLI's actual exports.
@@ -11,6 +13,7 @@ vi.mock('@jsverse/transloco-cli/internal/keys-manager', async (original) => ({
   ...(await original<
     typeof import('@jsverse/transloco-cli/internal/keys-manager')
   >()),
+  allowUnknownProject,
   buildTranslationFiles,
   findMissingKeys,
 }));
@@ -62,6 +65,14 @@ describe('transloco-keys-manager bin', () => {
     });
     expect(findMissingKeys).not.toHaveBeenCalled();
     expect(console.warn).not.toHaveBeenCalled();
+  });
+
+  it(`GIVEN any command
+      WHEN the bin runs
+      THEN it keeps the v8 fallback to "src" for a project it can't find`, async () => {
+    await runBin('extract', '--project', 'nope');
+
+    expect(allowUnknownProject).toHaveBeenCalledOnce();
   });
 
   it(`GIVEN the find command with options

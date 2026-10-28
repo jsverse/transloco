@@ -4,3 +4,4 @@ export { buildTranslationFiles } from './keys-builder/index.js';
 export { findMissingKeys } from './keys-detective/index.js';
 export type { Config } from './types.js';
 export { warnUnsupportedOptions } from './utils/warn-unsupported-options.js';
+export { allowUnknownProject } from './utils/resolve-project-base-path.js';

@@ -92,6 +92,58 @@ describe('resolveProjectBasePath', () => {
     }
   });
 
+  describe('for the deprecated transloco-keys-manager bin', () => {
+    async function freshModule() {
+      vi.resetModules();
+
+      return import('../utils/resolve-project-base-path.js');
+    }
+
+    it(`GIVEN no workspace config
+        WHEN the source root is resolved for a named project
+        THEN it warns and falls back to "src", as in v8`, async () => {
+      const spy = spyOnConsole('error');
+      const { allowUnknownProject, resolveProjectBasePath } =
+        await freshModule();
+      allowUnknownProject();
+
+      try {
+        expect(resolveProjectBasePath('nope')).toEqual({
+          projectBasePath: 'src',
+        });
+        expect(spy).toHaveBeenCalledWith(
+          expect.stringContaining('Defaulting source root to'),
+        );
+      } finally {
+        spy.mockRestore();
+      }
+    });
+
+    it(`GIVEN an Angular workspace
+        WHEN the source root is resolved for a project it doesn't have
+        THEN it warns and falls back to "src", as in v8`, async () => {
+      const spy = spyOnConsole('error');
+      addRootConfig({ configType: 'angular' });
+      const { allowUnknownProject, resolveProjectBasePath } =
+        await freshModule();
+      allowUnknownProject();
+
+      try {
+        expect(resolveProjectBasePath('nope')).toEqual({
+          projectBasePath: 'src',
+        });
+        expect(spy).toHaveBeenCalledWith(
+          expect.stringContaining(
+            'Unable to resolve `projectBasePath` from configuration. Defaulting source root to',
+          ),
+        );
+      } finally {
+        removeRootConfigs();
+        spy.mockRestore();
+      }
+    });
+  });
+
   it(`GIVEN an Angular workspace whose project has no source root
       WHEN the source root is resolved for that project
       THEN it falls back to "src", as the project is there`, () => {
