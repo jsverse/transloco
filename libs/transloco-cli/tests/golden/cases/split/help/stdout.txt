@@ -1,0 +1,11 @@
+Usage: transloco split [options]
+
+Split joined translation files back into the scope folders
+
+Options:
+  --translations-path <dir>  The folder of the root translation files (defaults
+                             to `rootTranslationsPath` of the config)
+  --source <dir>             The folder holding the joined translation files
+                             (default: "dist-i18n")
+  -c, --config <path>        Path to a custom transloco config
+  -h, --help                 Display help for the command

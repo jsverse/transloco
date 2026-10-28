@@ -167,4 +167,37 @@ describe('Split', () => {
       expect(resEn).toEqual(translatedEn.scope);
     });
   });
+  describe('deprecation and failures', () => {
+    it(`GIVEN merged translation files in source directory
+        WHEN split schematic runs
+        THEN the deprecation warning is logged exactly once`, async () => {
+      setupMerged({ hello: 'hello' }, { hello: 'hola' });
+      appTree.create(`${options.translationPath}/en.json`, '');
+      appTree.create(`${options.translationPath}/es.json`, '');
+      const warnings: string[] = [];
+      const subscription = schematicRunner.logger.subscribe(
+        ({ level, message }) => {
+          if (level === 'warn') warnings.push(message);
+        },
+      );
+
+      await schematicRunner.runSchematic('split', options, appTree);
+      subscription.unsubscribe();
+
+      expect(warnings).toEqual([
+        'The "split" schematic is deprecated and will be removed in Transloco v10. Run "transloco split" from @jsverse/transloco-cli instead.',
+      ]);
+    });
+
+    it(`GIVEN a merged translation file that is not valid JSON
+        WHEN split schematic runs
+        THEN the run is rejected with the message naming the file`, async () => {
+      appTree.create(`${options.source}/es.json`, '{ "hello": ');
+      appTree.create(`${options.translationPath}/es.json`, '');
+
+      await expect(
+        schematicRunner.runSchematic('split', options, appTree),
+      ).rejects.toThrow(/^Invalid JSON in dist-i18n\/es\.json: /);
+    });
+  });
 });

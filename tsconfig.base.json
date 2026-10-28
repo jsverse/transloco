@@ -30,6 +30,9 @@
       "@jsverse/transloco-cli/internal/scoped-libs": [
         "./libs/transloco-cli/src/scoped-libs/index.ts"
       ],
+      "@jsverse/transloco-cli/internal/translation-files": [
+        "./libs/transloco-cli/src/translation-files/index.ts"
+      ],
       "@jsverse/transloco-cli/internal/validator": [
         "./libs/transloco-cli/src/validator/index.ts"
       ],

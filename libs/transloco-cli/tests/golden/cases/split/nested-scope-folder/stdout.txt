@@ -1,0 +1,1 @@
+Transloco Split: Split en, es from dist-i18n into i18n

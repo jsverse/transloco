@@ -1,0 +1,13 @@
+{
+  "description": "GIVEN a config with a scopePathMap WHEN joined files are split THEN each scope goes to its mapped folder",
+  "args": [
+    "split",
+    "--config",
+    "transloco.config.js"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

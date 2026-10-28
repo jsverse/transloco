@@ -1,0 +1,10 @@
+{
+  "description": "GIVEN a joined file that is not valid JSON WHEN the files are split THEN stderr names the file, nothing is written and it exits with 1",
+  "args": [
+    "split",
+    "--translations-path",
+    "i18n"
+  ],
+  "exitCode": 1,
+  "stderrMatches": "^Transloco Split: Invalid JSON in dist-i18n/es\\.json: .+$"
+}
