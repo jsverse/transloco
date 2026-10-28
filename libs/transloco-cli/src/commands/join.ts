@@ -102,9 +102,18 @@ function findForeignFile(dir: string): string | undefined {
 
   try {
     entries = fs.readdirSync(dir, { withFileTypes: true });
-  } catch {
+  } catch (error) {
     // Not there yet, or not a folder, which the other checks deal with.
-    return undefined;
+    const code = (error as NodeJS.ErrnoException).code;
+
+    if (code === 'ENOENT' || code === 'ENOTDIR') {
+      return undefined;
+    }
+
+    // Unreadable, so it can't be told what the folder holds before emptying it.
+    throw new CliError(
+      `Transloco ${name}: Refusing to empty the out folder, ${dir} can't be read (${(error as Error).message})`,
+    );
   }
 
   for (const entry of entries) {

@@ -463,6 +463,23 @@ describe('joinTranslations', () => {
     );
   });
 
+  describe('keys of the root file that a scope of another language shares', () => {
+    it(`GIVEN a root file holding the key of a scope that has no file for its language
+        WHEN it runs
+        THEN it fails naming the key, the file and the scope`, () => {
+      const files = {
+        ...rootFiles,
+        [`${root}/es.json`]: json({ ...es, scope: { title: 'root es' } }),
+        [`${root}/scope/en.json`]: json(scopeEn),
+      };
+
+      expect(() => join(files)).toThrow(TranslationFilesError);
+      expect(() => join(files)).toThrow(
+        `The key "scope" in ${root}/es.json is also the scope ${root}/scope, which has no es file to take its place, rename one and run the command again.`,
+      );
+    });
+  });
+
   describe('files that do not hold an object', () => {
     it.each(['"hi"', 'null', '[1]', '5'])(
       `GIVEN a root file holding %s
