@@ -152,7 +152,7 @@ export class AppComponent {
       expect(read('app/app.component.ts')).toBe(
         `import { Component } from '@angular/core';
 import { TranslocoService } from '@jsverse/transloco';
-import { take } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 @Component({ selector: 'app-root', templateUrl: './app.component.html' })
 export class AppComponent {
@@ -206,7 +206,7 @@ export class HomeComponent implements OnInit {
         `import { Component, OnInit } from '@angular/core';
 import { OnDestroy, Inject } from '@ngx-translate/core';
 import { TranslocoService } from '@jsverse/transloco';
-import { take } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 @Component({ selector: 'app-home', templateUrl: './home.component.html' })
 export class HomeComponent implements OnInit {
@@ -510,7 +510,7 @@ export class A {
       const lines = read('app/a.ts').split('\n');
       const line = lines.findIndex((text) => text.includes('addLangs')) + 1;
 
-      expect(lines[2]).toBe(`import { take } from 'rxjs';`);
+      expect(lines[2]).toBe(`import { take } from 'rxjs/operators';`);
       expect(line).toBe(8);
       expect(printed()).toContain(
         `⚠️ ${path.join('app', 'a.ts')}:8: translate.addLangs has no counterpart in the TranslocoService, migrate it by hand`,
@@ -523,7 +523,7 @@ export class A {
       write(
         'app/a.ts',
         `import { inject } from '@angular/core';
-import { type OperatorFunction, map } from 'rxjs';
+import { type OperatorFunction, map } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 
 export class A {
@@ -536,8 +536,33 @@ export class A {
       migrateNgxTranslate({ input: path.join(dir, 'app') });
 
       expect(read('app/a.ts')).toContain(
-        `import { type OperatorFunction, map, take } from 'rxjs';`,
+        `import { type OperatorFunction, map, take } from 'rxjs/operators';`,
       );
+    });
+
+    it(`GIVEN an rxjs 6 project whose root rxjs import has no take
+        WHEN take is added
+        THEN it is imported from rxjs/operators and the root import is left as it is`, () => {
+      write(
+        'app/a.ts',
+        `import { inject } from '@angular/core';
+import { Observable } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
+
+export class A {
+  private translate = inject(TranslateService);
+  a: Observable<string> = this.translate.get('a');
+}
+`,
+      );
+
+      migrateNgxTranslate({ input: path.join(dir, 'app') });
+
+      const content = read('app/a.ts');
+
+      expect(content).toContain(`import { Observable } from 'rxjs';`);
+      expect(content).toContain(`import { take } from 'rxjs/operators';`);
+      expect(content).not.toContain(`take } from 'rxjs';`);
     });
 
     it(`GIVEN get() calls next to an rxjs import, an operator import and a take(1) already there
@@ -572,8 +597,9 @@ export class B {
       migrateNgxTranslate({ input: path.join(dir, 'app') });
 
       expect(read('app/a.ts')).toBe(`import { inject } from '@angular/core';
-import { map, take } from 'rxjs';
+import { map } from 'rxjs';
 import { TranslocoService } from '@jsverse/transloco';
+import { take } from 'rxjs/operators';
 
 export class A {
   private translate = inject(TranslocoService);
