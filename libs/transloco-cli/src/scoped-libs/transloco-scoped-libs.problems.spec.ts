@@ -85,6 +85,28 @@ describe('Scoped libs with misconfigured libraries', () => {
     expect(existsSync(join(dir, 'app/i18n/b/en.json'))).toBe(true);
   });
 
+  it(`GIVEN a library whose i18n is a string instead of a list and a valid one after it
+      WHEN the libraries are copied
+      THEN it is reported as missing i18n information and the valid library is still copied`, async () => {
+    write('libs/a/package.json', { name: 'a', i18n: 'i18n' });
+    const onProblem = vi.fn();
+
+    await run({
+      watch: false,
+      skipGitIgnoreUpdate: true,
+      rootTranslationsPath: 'app/i18n/',
+      scopedLibs: ['libs/a', 'libs/b'],
+      onProblem,
+    });
+
+    expect(onProblem).toHaveBeenCalledExactlyOnceWith(
+      expect.stringContaining(
+        `${join('libs/a', 'package.json')} is missing i18n information.`,
+      ),
+    );
+    expect(existsSync(join(dir, 'app/i18n/b/en.json'))).toBe(true);
+  });
+
   it(`GIVEN no scopedLibs
       WHEN the library runs
       THEN the missing configuration is reported`, async () => {
