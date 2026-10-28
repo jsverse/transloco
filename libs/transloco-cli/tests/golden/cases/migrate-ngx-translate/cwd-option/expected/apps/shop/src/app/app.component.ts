@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { TranslocoService } from '@jsverse/transloco';
-import { take } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 @Component({ selector: 'app-root', templateUrl: './app.component.html' })
 export class AppComponent {
