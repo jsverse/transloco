@@ -109,5 +109,12 @@
     "typescript": {
       "optional": true
     }
+  },
+  "typesVersions": {
+    "*": {
+      "marker": [
+        "src/marker.d.ts"
+      ]
+    }
   }
 }

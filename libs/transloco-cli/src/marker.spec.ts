@@ -70,4 +70,19 @@ describe('marker', () => {
     expect(path.basename(types)).toBe('marker.d.ts');
     expect(path.basename(entry)).toBe('marker.js');
   });
+
+  it(`GIVEN a consumer resolving types with moduleResolution node10
+      WHEN it imports the ./marker subpath
+      THEN typesVersions maps it to the same declaration file as the exports map`, () => {
+    const pkg = JSON.parse(
+      fs.readFileSync(
+        path.join(import.meta.dirname, '../package.json'),
+        'utf-8',
+      ),
+    );
+
+    expect(pkg.typesVersions['*'].marker).toEqual([
+      pkg.exports['./marker'].types.replace(/^\.\//, ''),
+    ]);
+  });
 });
