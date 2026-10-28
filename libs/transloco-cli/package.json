@@ -47,6 +47,13 @@
       "default": "./src/translation-files/index.js"
     }
   },
+  "typesVersions": {
+    "*": {
+      "marker": [
+        "src/marker.d.ts"
+      ]
+    }
+  },
   "main": "src/index.js",
   "bin": {
     "transloco": "src/bin.js"
