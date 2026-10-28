@@ -6,6 +6,37 @@ icon: a
 
 ## Command
 
+Install the [Transloco CLI](../developer-tools/transloco-cli.md) and run the migration. It rewrites your templates in place, so commit your work first.
+
+{% tabs %}
+{% tab title="pnpm" %}
+```bash
+pnpm add @jsverse/transloco-cli@next --save-dev
+pnpm exec transloco migrate angular-i18n --input src/app --langs en es
+```
+{% endtab %}
+
+{% tab title="yarn" %}
+```bash
+yarn add @jsverse/transloco-cli@next --dev
+yarn transloco migrate angular-i18n --input src/app --langs en es
+```
+{% endtab %}
+
+{% tab title="npm" %}
+```bash
+npm install @jsverse/transloco-cli@next --save-dev
+npx transloco migrate angular-i18n --input src/app --langs en es
+```
+{% endtab %}
+{% endtabs %}
+
+`--input` is the folder holding the templates, `src/app` unless you say otherwise. `--langs` is required and lists the languages to create a translation file for, as separate arguments (`--langs en es`). The texts are added to the files in `rootTranslationsPath` of your [config](../developer-tools/global-config.md), or else in the folder `transloco init` would pick for the project that holds `--input` (the default project when none does): `public/i18n` when its `public` folder exists, otherwise `<source root>/assets/i18n`, and by the Angular version when neither exists. A detected folder that is a link leading outside the working directory is refused. Pass `--translations-path` to use another folder, which has to lie inside the working directory. A file that exists keeps its keys and their values, and gets the keys it lacks after them, in sorted order. Nothing is written when a file is not a valid JSON object, or when no mark is found.
+
+### The deprecated schematic
+
+The `ng-migrate` schematic still works until Transloco v10 and logs a deprecation warning. Use `transloco migrate angular-i18n` instead.
+
 {% tabs %}
 {% tab title="Angular CLI" %}
 ```bash
@@ -26,7 +57,7 @@ nx g @jsverse/transloco-schematics:ng-migrate
 
 ### The Translation File
 
-The migration script will extract all translations from your HTML files and generate a translations JSON file. The script will use the translation string as the key, converting it to kebab case (e.g., "`My sample string`" → "`my-sample-string`"). Here's an example of the output JSON:
+The migration script will extract all translations from your HTML files and add them to the translations JSON file of each language. A custom id (`@@myId`) is the key as it's written. Without one, the key is made of the text: the camelCase words and the spaces and underscores become dashes, all in lower case (e.g., "`My sample string`" → "`my-sample-string`"). The characters that can't stand in a template string (`'"` `` ` `` `\<>&{}`) are removed, repeated dashes collapse to one, and leading and trailing dashes are removed. A key with a meaning goes below it, and the template reads it as `meaning.key`. When a key comes twice with different texts, the first in path order is kept and the other is printed with both files and lines. Here's an example of the output JSON:
 
 {% code title="en.json" %}
 ```json
@@ -51,17 +82,17 @@ The migration script will extract all translations from your HTML files and gene
 {% code title="after.json" %}
 ```json
 {
-  "translation-value": "translation value",
+  "other context": {
+    "myId": "Val3",
+    "myId.comment": "another comment"
+  },
   "site header": {
     "val1": "Val1",
     "val1.comment": "value 1 sample",
     "val2": "Val2",
     "val2.comment": "value 2 sample"
   },
-  "other context": {
-    "myId": "Val3",
-    "myId.comment": "another comment"
-  }
+  "translation-value": "translation value"
 }
 ```
 {% endcode %}
@@ -74,20 +105,20 @@ _The `.comment` suffix is used to support comments in Transloco.Note:_
 
 ### Directives
 
-The `i18n` and `i18n-<attribute>` directives will be replaced with the `transloco` pipe.
+The `i18n` and `i18n-<attribute>` directives will be replaced with the `transloco` pipe, and a marked attribute becomes a bound attribute. A mark that can't be converted (on an element without a text, around other elements, with an interpolation, or with an ICU message and no custom id) is left in place and printed with its file and line, and `translate="no"` is preserved.
 
 {% code title="before.html" %}
 ```html
 <h1 i18n>Hello World</h1>
 <h1 i18n="other context|another comment@@myId">Some value</h1>
-<img src="..." i18n i18n-title="Wow image" />
+<img src="..." title="Wow image" i18n-title />
 ```
 {% endcode %}
 
 {% code title="after.html" %}
 ```html
 <h1>{{ 'hello-world' | transloco }}</h1>
-<h1>{{ 'some-value' | transloco }}</h1>
-<img src="..." title="{{ 'wow-image' | transloco }}" />
+<h1>{{ 'other context.myId' | transloco }}</h1>
+<img src="..." [title]="'wow-image' | transloco" />
 ```
 {% endcode %}

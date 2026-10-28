@@ -4,6 +4,10 @@ icon: arrow-right-from-arc
 
 # Scoped Library Extractor
 
+{% hint style="warning" %}
+**Deprecated in v9:** the `@jsverse/transloco-scoped-libs` package and its `transloco-scoped-libs` bin are replaced by `transloco scoped-libs` of the [Transloco CLI](transloco-cli.md#scoped-libs). The old bin keeps working until Transloco v10, see [Moving to the Transloco CLI](../migration-guides/migrate-to-v9.md#moving-to-the-transloco-cli).
+{% endhint %}
+
 In some cases, you may need to include translations within your npm libraries, especially in a monorepo environment. This allows you to keep translation files inside the library's folder and package them together. However, loading translation files directly from the library can be challenging for two main reasons:
 
 1. The application’s public directory isn't directly accessible.
@@ -82,15 +86,17 @@ Then, in the `CoreComponent`, use the translations with the defined scope:
 
 ### Install the Scoped Library Extractor
 
+The extractor is the `transloco scoped-libs` command of the Transloco CLI.
+
 {% hint style="info" %}
-**New in v9:** requires Node.js `>=22`. `chokidar` was bumped from v3 to v5, which is **ESM-only**.
+**New in v9:** requires Node.js `^22.18.0 || >=24`. `chokidar` was bumped from v3 to v5, which is **ESM-only**.
 {% endhint %}
 
 {% tabs %}
 {% tab title="pnpm" %}
 
 ```bash
-pnpm add @jsverse/transloco-scoped-libs@next --save-dev
+pnpm add @jsverse/transloco-cli@next --save-dev
 ```
 
 {% endtab %}
@@ -98,7 +104,7 @@ pnpm add @jsverse/transloco-scoped-libs@next --save-dev
 {% tab title="yarn" %}
 
 ```bash
-yarn add @jsverse/transloco-scoped-libs@next --dev
+yarn add @jsverse/transloco-cli@next --dev
 ```
 
 {% endtab %}
@@ -106,7 +112,7 @@ yarn add @jsverse/transloco-scoped-libs@next --dev
 {% tab title="npm" %}
 
 ```bash
-npm install @jsverse/transloco-scoped-libs@next --save-dev
+npm install @jsverse/transloco-cli@next --save-dev
 ```
 
 {% endtab %}
@@ -183,7 +189,7 @@ Finally, add a script to the main `package.json` to run the extractor, you can a
 
 ```json
 "scripts": {
-  "transloco:extract-scoped-libs": "transloco-scoped-libs --watch"
+  "transloco:extract-scoped-libs": "transloco scoped-libs --watch"
 }
 ```
 
@@ -260,16 +266,6 @@ export class HttpLoader implements TranslocoLoader {
 export const httpLoader = { provide: TRANSLOCO_LOADER, useClass: HttpLoader };
 ```
 
-## Use with Webpack
-
-To add custom Webpack support, use a tool like `ngx-build-plus` and include the plugin in your `webpack.config.js`:
-
-```javascript
-const TranslocoScopedLibsWebpackPlugin = require('@jsverse/transloco-scoped-libs/webpack');
-
-module.exports = {
-  plugins: [new TranslocoScopedLibsWebpackPlugin()],
-};
-```
+The Scoped Libs webpack plugin was removed in v9, since Angular's default builder no longer uses webpack. Run `transloco scoped-libs --watch` yourself instead, in a second terminal or through a parallel script runner, so that it keeps running at the same time as your dev server.
 
 This solution ensures that translation files from libraries are easily extracted, joined, and integrated into your application.

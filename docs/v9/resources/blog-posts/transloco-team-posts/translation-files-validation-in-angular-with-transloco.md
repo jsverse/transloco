@@ -4,6 +4,10 @@ icon: book-open
 
 # Translation Files Validation in Angular with Transloco
 
+{% hint style="info" %}
+This post was written for `transloco-validator`, which is deprecated in v9, and the commands and the Node.js version below are the v8 ones. In v9 use `transloco validate` of the [Transloco CLI](../../../developer-tools/transloco-cli.md#validate), which needs Node.js `^22.18.0 || >=24`. See the [Validator](../../../developer-tools/validator.md) page for the current setup.
+{% endhint %}
+
 ![](<../../../.gitbook/assets/Screenshot 2025-01-20 at 17.50.51 copy 2.png>)   Written by Shahar Kazaz, Co-Creator & maintainer of Transloco\
 [<picture><source srcset="../../../.gitbook/assets/Octicons-mark-github-dark.png" media="(prefers-color-scheme: dark)"><img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg" alt="" data-size="line"></picture>](https://github.com/shaharkazaz) [<picture><source srcset="../../../.gitbook/assets/medium_logo_dark.png" media="(prefers-color-scheme: dark)"><img src="../../../.gitbook/assets/meidum-logo.png" alt="" data-size="line"></picture>](https://medium.com/@shahar.kazaz) [<img src="../../../.gitbook/assets/LinkedIn_icon_circle.svg.png" alt="" data-size="line">](https://www.linkedin.com/in/shahar-kazaz/)
 

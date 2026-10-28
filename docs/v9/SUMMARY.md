@@ -46,6 +46,7 @@
 
 ## Developer Tools
 
+* [Transloco CLI](developer-tools/transloco-cli.md)
 * [Schematics](developer-tools/schematics/README.md)
   * [ng-add Schematic](developer-tools/schematics/ng-add.md)
   * [Scope Schematic](developer-tools/schematics/scope.md)

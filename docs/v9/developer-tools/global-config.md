@@ -4,12 +4,12 @@ icon: gear
 
 # Global Config
 
-This config is used by tools & plugins such as the scoped lib extractor and the keys manager.
+This config is used by the [Transloco CLI](./transloco-cli.md), for example by the scoped lib extractor and the keys manager.
 
 If you installed Transloco via the schematics, a `transloco.config.ts` should have been created. Otherwise, you can just create a `transloco.config.ts` in the project's root folder and add the configuration in it:
 
 ```typescript
-import type { TranslocoGlobalConfig } from "@jsverse/transloco-utils";
+import type { TranslocoGlobalConfig } from "@jsverse/transloco";
 
 const config: TranslocoGlobalConfig = {
   rootTranslationsPath?: string;
@@ -20,6 +20,7 @@ const config: TranslocoGlobalConfig = {
   keysManager?: {
     input?: string | string[];
     output?: string;
+    translationsPath?: string;
     fileFormat?: 'json' | 'pot';
     marker?: string;
     addMissingKeys?: boolean;
@@ -50,7 +51,7 @@ export default config;
 
 ### Translation Path Mapping
 
-- **`scopePathMap`** - Custom mappings between scope names and their file system paths. Used by the [join](./schematics/join.md) and [split](./schematics/split.md) schematics when your translation files don't follow the default directory structure.
+- **`scopePathMap`** - Custom mappings between scope names and their file system paths. Used by [`transloco join`](./transloco-cli.md#join) and [`transloco split`](./transloco-cli.md#split) (and by the deprecated [join](./schematics/join.md) and [split](./schematics/split.md) schematics) when your translation files don't follow the default directory structure.
 
   Example:
 
@@ -64,3 +65,5 @@ export default config;
 ### Keys Manager
 
 The `keysManager` property configures the behavior of the translation keys extraction and management tool.
+
+`keysManager.translationsPath` is the folder of the translation files. It wins over `rootTranslationsPath` for both `find` (its `--translations-path` default) and `extract` (the default of `--output`).

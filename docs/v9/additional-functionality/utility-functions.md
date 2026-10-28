@@ -74,8 +74,8 @@ export const appConfig: ApplicationConfig = {
 Both functions resolve against a single Transloco instance, which is what makes them convenient — and what makes them wrong in some setups.
 
 {% hint style="warning" %}
-**Omit `provideGlobalTranslateFn()` in SSR and in multi-instance micro-frontend setups.**\
-Both run more than one Transloco instance, and a global function has no way to know which one you meant. Inject `TranslocoService` directly there instead.
+**Keep `provideGlobalTranslateFn()` in SSR, remove it for multi-instance micro-frontends.**\
+On the server it does nothing, so `translate()` returns `''` while rendering there, and an SSR application keeps it for the browser. In a multi-instance micro-frontend setup, where several application instances share the one module-level service and the last one wins, a global function has no way to know which one you meant. Inject `TranslocoService` directly there instead.
 {% endhint %}
 
 Upgrading from v8? `ng update` adds this provider for you wherever it finds the functions imported. See the [migration guide](../migration-guides/migrate-to-v9.md).
