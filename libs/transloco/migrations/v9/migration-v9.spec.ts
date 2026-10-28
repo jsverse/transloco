@@ -1671,6 +1671,40 @@ describe('migration-v9', () => {
     expect(config).toContain(`    }),\n    provideGlobalTranslateFn(),\n  ],`);
   });
 
+  it(`GIVEN an app config with CRLF line endings whose last provider is a single-line call
+      WHEN the migration adds provideGlobalTranslateFn()
+      THEN the provider is moved to its own line with a CRLF, leaving no bare LF`, async () => {
+    const tree = await run((host) => {
+      host.create(
+        '/projects/bar/src/app/greeter.ts',
+        [
+          `import { translate } from '@jsverse/transloco';`,
+          `export const greet = () => translate('hello');`,
+        ].join('\r\n'),
+      );
+      host.overwrite(
+        '/projects/bar/src/app/app.config.ts',
+        [
+          `import { ApplicationConfig } from '@angular/core';`,
+          `import { provideTransloco } from '@jsverse/transloco';`,
+          ``,
+          `export const appConfig: ApplicationConfig = {`,
+          `  providers: [`,
+          `    provideTransloco({ loader: Loader }),`,
+          `    provideRouter(routes),`,
+          `  ],`,
+          `};`,
+          ``,
+        ].join('\r\n'),
+      );
+    });
+
+    const config = tree.readContent('/projects/bar/src/app/app.config.ts');
+
+    expect(config).toContain(`provideGlobalTranslateFn()`);
+    expect(config).not.toMatch(/(?<!\r)\n/);
+  });
+
   it(`GIVEN an application that does not use the standalone functions
       WHEN the migration runs
       THEN no provider is added`, async () => {

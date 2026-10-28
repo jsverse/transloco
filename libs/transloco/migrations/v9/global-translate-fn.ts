@@ -267,12 +267,14 @@ export function addGlobalTranslateFn(): Rule {
  * a line of its own, indented like the previous provider and its siblings.
  */
 function moveProviderToOwnLine(source: string): string {
+  const eol = source.includes('\r\n') ? '\r\n' : '\n';
+
   return source.replace(
     new RegExp(
       `^([ \\t]*)([)}\\]]+,|[\\w$.]+\\([^\\[\\]{}]*\\),)[ \\t]+(${PROVIDER_FN}\\(\\))`,
       'gm',
     ),
-    '$1$2\n$1$3',
+    `$1$2${eol}$1$3`,
   );
 }
 
