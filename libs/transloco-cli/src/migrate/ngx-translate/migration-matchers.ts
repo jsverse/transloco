@@ -300,15 +300,27 @@ function specifiers(names: string) {
  * with the event no longer compiles.
  */
 function langChangeEventUsages(content: string) {
-  // Blanked out, so that the indexes stay the ones of the file
+  // The names the event is imported under, `LangChangeEvent as E` is used as `E`
+  const names = new Set(['LangChangeEvent']);
+
+  for (const [, alias] of content.matchAll(
+    /\bLangChangeEvent\s+as\s+([\w$]+)/g,
+  )) {
+    names.add(alias);
+  }
+
+  // Blanked out, so that the indexes stay the ones of the file. Only the
+  // statement itself, as a file without semicolons has no end to stop at.
   const withoutImports = content.replace(
-    /^\s*(?:import|export)\b[^;]*?\bfrom\s*['"][^'"]*['"]/gm,
+    /^[ \t]*(?:import|export)\s+(?:type\s+)?(?:\*(?:\s+as\s+[\w$]+)?|[\w$]+\s*,?\s*)?(?:\{[^}]*\})?\s*from\s*['"][^'"]*['"]/gm,
     (statement) => statement.replace(/[^\n]/g, ' '),
   );
+  const usage = new RegExp(
+    `(?<![\\w$.])(?:${[...names].map((name) => name.replace(/\$/g, '\\$')).join('|')})(?![\\w$])`,
+    'g',
+  );
 
-  return [
-    ...withoutImports.matchAll(/(?<![\w$.])LangChangeEvent(?![\w$])/g),
-  ].map(({ index }) => ({
+  return [...withoutImports.matchAll(usage)].map(({ index }) => ({
     index,
     message: `LangChangeEvent has no counterpart, langChanges$ emits the language itself: type the handler as (lang: string) and use lang instead of event.lang`,
   }));
