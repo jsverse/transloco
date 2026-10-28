@@ -116,7 +116,7 @@ The calls below are replaced on every name the service is injected as: a constru
 | `getBrowserCultureLang()` | In Transloco, this is a pure function that needs to be imported. |
 | `getLangs()` and `langs`  | `getAvailableLangs()`.                                           |
 | `addLangs(...)`           | `setAvailableLangs(...)` sets the whole list.                    |
-| `set(key, value, lang)`   | `setTranslationKey(key, value, { lang })`, whose third argument is an options object. |
+| `set(key, value, lang)`   | `setTranslationKey(key, value, { lang })` for a string value, whose third argument is an options object. An object value has no counterpart, use `setTranslation(translation, lang, { merge: true })`. The migration leaves `set()` as it is and prints a warning, so replace it by hand. |
 | `currentLoader`, `reloadLang(...)`, `resetLang(...)`, `defaultLang`, `onTranslationChange`, `onDefaultLangChange`, `getParsedResult(...)`, `getStreamOnTranslationChange(...)`, `translations`, `store`, `compiler`, `parser`, `missingTranslationHandler` | No direct equivalent in Transloco. |
 
 These members are left as they are, and each use is printed with its file and line. A leftover `LangChangeEvent` is printed with its file and line too: `langChanges$` emits the language string, not an event object, so adjust the code that reads `event.lang`. `getTranslation(...)` and `setTranslation(...)` keep their names, which the `TranslocoService` has too, but take other arguments: check them by hand.
@@ -131,6 +131,6 @@ These members are left as they are, and each use is printed with its file and li
 
 The script rewrites the templates and the sources, a few steps are left to you:
 
-1. Set up Transloco in place of `provideTranslateService()` / `TranslateModule.forRoot()` and the `TranslateHttpLoader`: `provideTransloco()` with your languages and a `TranslocoLoader` that loads your translation files. `ng add @jsverse/transloco` writes both.
+1. Set up Transloco in place of `provideTranslateService()` / `TranslateModule.forRoot()` and the `TranslateHttpLoader`: `provideTransloco()` with your languages and a `TranslocoLoader` that loads your translation files. `ng add @jsverse/transloco@next` writes both.
 2. Import `TranslocoPipe` or `TranslocoDirective` in a standalone component whose template uses them and didn't import the `TranslatePipe` or the `TranslateDirective` before (the script renames the imports it finds).
 3. Go through what the script printed: the uses of the service without a counterpart, the `translate` attributes without a value and the inline templates it couldn't read.
