@@ -282,7 +282,7 @@ export function createProgram() {
     )
     .option(
       '--translations-path <dir>',
-      'The folder the translation files are written to (defaults to `rootTranslationsPath` of the config, else the folder `transloco init` picks: `public/i18n` with a `public` folder, otherwise `<source root>/assets/i18n`)',
+      'The folder the translation files are written to (defaults to `rootTranslationsPath` of the config, else the folder `transloco init` picks: `public/i18n` with a `public` folder, else `<source root>/assets/i18n` when that folder exists, else `public/i18n` from Angular 18)',
     )
     .requiredOption(
       '-l, --langs <langs...>',
