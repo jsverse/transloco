@@ -83,10 +83,12 @@ describe('ng add', () => {
         { project: 'bar' } as SchemaOptions,
         await createWorkspace(schematicRunner),
       );
-      fs.writeFileSync(
-        nodePath.join(dir, 'transloco.config.ts'),
-        tree.readContent('/transloco.config.ts'),
+      const generated = tree.readContent('/transloco.config.ts');
+      expect(generated).toContain(
+        `import type { TranslocoGlobalConfig } from '@jsverse/transloco';`,
       );
+      expect(generated).not.toContain('@jsverse/transloco-utils');
+      fs.writeFileSync(nodePath.join(dir, 'transloco.config.ts'), generated);
 
       const output = execFileSync(
         process.execPath,

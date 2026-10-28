@@ -5,6 +5,10 @@ import { cosmiconfigSync } from 'cosmiconfig';
 
 import { TranslocoGlobalConfig } from './transloco-utils.types';
 
+/**
+ * @deprecated Import `getGlobalConfig` from `@jsverse/transloco-cli` instead.
+ * `@jsverse/transloco-utils` keeps working but will not change.
+ */
 export function getGlobalConfig(searchPath = ''): TranslocoGlobalConfig {
   const explorer = cosmiconfigSync('transloco');
   const resolvedPath = path.resolve(process.cwd(), searchPath);

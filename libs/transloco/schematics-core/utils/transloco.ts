@@ -1,19 +1,6 @@
 import { Tree } from '@angular-devkit/schematics';
-import {
-  getGlobalConfig as _getGlobalConfig,
-  TranslocoGlobalConfig,
-} from '@jsverse/transloco-utils';
 
 import { generateConfigFile, NAMES } from './schematic';
-
-let config: TranslocoGlobalConfig;
-
-export function getGlobalConfig(): TranslocoGlobalConfig {
-  if (config) return config;
-  config = _getGlobalConfig();
-
-  return config;
-}
 
 export function createGlobalConfig(
   host: Tree,
@@ -30,19 +17,4 @@ export function createGlobalConfig(
       }),
     );
   }
-}
-
-export function updateGlobalConfig(host: Tree, config: TranslocoGlobalConfig) {
-  const originalConfig = getGlobalConfig();
-  if (!originalConfig || Object.keys(originalConfig).length === 0) {
-    return createGlobalConfig(
-      host,
-      config.langs || [],
-      config.rootTranslationsPath,
-    );
-  }
-  host.overwrite(
-    NAMES.CONFIG_FILE,
-    generateConfigFile({ ...config, ...originalConfig }),
-  );
 }

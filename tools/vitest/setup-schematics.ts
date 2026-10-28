@@ -15,8 +15,8 @@
  *      applies to native ESM (and fails on the schematics' directory/CJS-style
  *      imports), and there is no TS transpile hook for `require()` (under Jest,
  *      `ts-jest` provided this).
- *   2. tsconfig `paths` aliases (e.g. `@jsverse/transloco-utils`, mapped in
- *      `tsconfig.base.json` to `libs/transloco-utils/src/index.ts`) are not
+ *   2. tsconfig `paths` aliases (e.g. `@jsverse/transloco-cli`, mapped in
+ *      `tsconfig.base.json` to `libs/transloco-cli/src/index.ts`) are not
  *      resolved – that mapping only lives in the Vite/tsconfig pipeline, not in
  *      Node's resolver.
  *
@@ -42,8 +42,9 @@
  * its own location) so any project whose specs use `SchematicTestRunner` can
  * reference it from `test.setupFiles` – e.g. the core `transloco` library's
  * `test-schematics` target, which uses the same runner and the same
- * `@jsverse/transloco-utils` alias.
+ * path aliases.
  */
+import { existsSync } from 'node:fs';
 import Module, { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -71,6 +72,36 @@ const compilerOptions = readDefaultTsConfig(tsConfigPath);
 // Installs the pirates require-hook. `register` forces CommonJS output so the
 // transpiled modules are loadable by Node's `require`.
 register(compilerOptions);
+
+// `@jsverse/transloco-cli` is an ES module package whose sources import each
+// other as `./x.js`, the way Node's ESM resolution wants them. The alias above
+// points the schematics at those `.ts` sources, so a relative `.js` request from
+// a `.ts` file has to land on the `.ts` next to it - `require()` has no
+// `.js`-to-`.ts` mapping of its own.
+const moduleResolver = Module as unknown as {
+  _resolveFilename: (
+    request: string,
+    parent?: { filename?: string },
+    ...rest: unknown[]
+  ) => string;
+};
+const resolveFilename = moduleResolver._resolveFilename;
+moduleResolver._resolveFilename = function (request, parent, ...rest) {
+  if (/^\.\.?\/.*\.js$/.test(request) && parent?.filename?.endsWith('.ts')) {
+    const sibling = join(
+      dirname(parent.filename),
+      request.replace(/\.js$/, '.ts'),
+    );
+    if (
+      !existsSync(join(dirname(parent.filename), request)) &&
+      existsSync(sibling)
+    ) {
+      return sibling;
+    }
+  }
+
+  return resolveFilename.call(this, request, parent, ...rest);
+};
 
 // Make TypeScript extensions resolve BEFORE `.json`/`.js` for extensionless
 // requires. `@swc-node/register` appends `.ts`/`.tsx` to `Module._extensions`,
