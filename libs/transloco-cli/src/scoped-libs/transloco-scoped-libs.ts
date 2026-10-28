@@ -191,7 +191,13 @@ async function copyLib(
         chokidar
           .watch(path.join(input, scopeConfig.path), { ignoreInitial: true })
           .on('add', copyFile)
-          .on('change', copyFile),
+          .on('change', copyFile)
+          // E.g. ENOSPC or EMFILE: reported, the other libraries are still watched
+          .on('error', (error) =>
+            onProblem(
+              `${lib.src}: ${error instanceof Error ? error.message : String(error)}`,
+            ),
+          ),
       );
     }
   }

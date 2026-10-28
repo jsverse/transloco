@@ -45,4 +45,29 @@ describe('marker', () => {
 
     expect(moduleReferences).toEqual([]);
   });
+
+  it(`GIVEN the ./marker export of the package
+      WHEN its types and default targets are mapped to the build output sources
+      THEN both point at files the build produces`, () => {
+    const pkg = JSON.parse(
+      fs.readFileSync(
+        path.join(import.meta.dirname, '../package.json'),
+        'utf-8',
+      ),
+    );
+    const { types, default: entry } = pkg.exports['./marker'];
+
+    // The build emits src/marker.ts as src/marker.js and src/marker.d.ts
+    const sourceOf = (target: string) =>
+      path.join(
+        import.meta.dirname,
+        '..',
+        target.replace(/\.d\.ts$/, '.ts').replace(/\.js$/, '.ts'),
+      );
+
+    expect(fs.existsSync(sourceOf(types))).toBe(true);
+    expect(fs.existsSync(sourceOf(entry))).toBe(true);
+    expect(path.basename(types)).toBe('marker.d.ts');
+    expect(path.basename(entry)).toBe('marker.js');
+  });
 });
