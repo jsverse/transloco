@@ -103,9 +103,9 @@ function findForeignFile(dir: string): string | undefined {
     entries = fs.readdirSync(dir, { withFileTypes: true });
   } catch (error) {
     // Not there yet, or not a folder, which the other checks deal with.
-    if (
-      ['ENOENT', 'ENOTDIR'].includes((error as NodeJS.ErrnoException).code!)
-    ) {
+    const code = (error as NodeJS.ErrnoException).code;
+
+    if (code === 'ENOENT' || code === 'ENOTDIR') {
       return undefined;
     }
 
