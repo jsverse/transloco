@@ -72,16 +72,18 @@ export function assertExplorerCanBeMade() {
 }
 
 /**
- * Names the config file a failed load choked on. The loaders of a script
- * report the failure without the file, so the target is loaded again to find
+ * Names the config file a failed load choked on. The error of cosmiconfig
+ * carries the file; for one that doesn't, the target is loaded again to find
  * it: the file itself when it is one, otherwise the places a search looks in
  * the directory, in its order. A failure that is not reproduced is returned as
  * it was reported.
  */
 export function nameConfigFile(failure: unknown, target: string): unknown {
-  const file = isFile(target)
-    ? path.resolve(target)
-    : failingFileIn(path.resolve(target));
+  const file =
+    filepathOf(failure) ??
+    (isFile(target)
+      ? path.resolve(target)
+      : failingFileIn(path.resolve(target)));
 
   return file === undefined
     ? failure
@@ -102,6 +104,12 @@ export const fileNamedIn = (error: unknown) =>
 
 const message = (error: unknown) =>
   error instanceof Error ? error.message : String(error);
+
+function filepathOf(error: unknown) {
+  const filepath = (error as { filepath?: unknown } | null)?.filepath;
+
+  return typeof filepath === 'string' ? path.resolve(filepath) : undefined;
+}
 
 function failingFileIn(dir: string) {
   let explorer: ReturnType<typeof cosmiconfigSync>;

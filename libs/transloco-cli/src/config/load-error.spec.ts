@@ -124,6 +124,22 @@ describe('a config that fails to load', () => {
     });
   });
 
+  it(`GIVEN a JS config that has a side effect and then throws
+      WHEN the keys manager resolves its config
+      THEN the module is evaluated once, and the file is named`, () => {
+    write(
+      'transloco.config.js',
+      `require('node:fs').appendFileSync(${JSON.stringify(path.join(dir, 'count.txt'))}, 'x');\nthrow new Error('boom');`,
+    );
+
+    const error = failure(() => resolve());
+
+    expect(error.message).toBe(
+      'Transloco: could not load the config transloco.config.js: boom',
+    );
+    expect(fs.readFileSync(path.join(dir, 'count.txt'), 'utf8')).toBe('x');
+  });
+
   it(`GIVEN a config whose langs hold a comma
       WHEN the keys manager resolves its config
       THEN they are taken as they are, as only typed values are checked`, () => {
