@@ -80,10 +80,10 @@ function logNotFound(searchPlaces: string[]) {
 }
 
 /**
- * The source root of the project, `quiet` leaves out the notice printed when
- * it has to fall back to the default. A project that is named but is in none
- * of the workspace configs is an error, as its sources are not in `src`
- * either. `defaulted` tells that no project gave the source root.
+ * The source root of the project and its root, `quiet` leaves out the notice
+ * printed when it has to fall back to the default. A project that is named but
+ * is in none of the workspace configs is an error, as its sources are not in
+ * `src` either. `defaulted` tells that no project gave the source root.
  */
 export function resolveProjectBasePath(
   projectName?: string,
@@ -91,6 +91,7 @@ export function resolveProjectBasePath(
 ): {
   projectBasePath: string;
   projectType?: ProjectType;
+  projectRoot?: string;
   defaulted?: true;
 } {
   const angularConfig = searchConfig(angularConfigFile);
@@ -100,7 +101,9 @@ export function resolveProjectBasePath(
   if (!angularConfig && !workspaceConfig && !projectConfig) {
     if (!unknownProjectFallsBack) assertProjectIsKnown(projectName);
 
-    if (!quiet) {
+    // A workspace of project.json files alone has no default project, which
+    // the error of a missing input asks to pass with --project
+    if (!quiet && !listProjects().length) {
       logNotFound([
         ...angularConfigFile,
         workspaceConfigFile,
@@ -137,11 +140,12 @@ export function resolveProjectBasePath(
     return defaultToSourceRoot(projectName);
   }
 
+  const toCwd = fromProjectConfig ? fromWorkspaceRoot : (p: string) => p;
+
   return {
-    projectBasePath: fromProjectConfig
-      ? fromWorkspaceRoot(resolved.sourceRoot)
-      : resolved.sourceRoot,
+    projectBasePath: toCwd(resolved.sourceRoot),
     projectType: resolved.projectType,
+    projectRoot: toCwd(resolved.root),
   };
 }
 
@@ -152,9 +156,9 @@ const workspaceRootMarkers = [
 ];
 
 /**
- * The `sourceRoot` of a `project.json` is relative to the workspace root, which
- * is not the cwd when the command runs from within a project (`--cwd apps/shop`).
- * Returns it relative to the cwd.
+ * The `sourceRoot` and `root` of a `project.json` are relative to the workspace
+ * root, which is not the cwd when the command runs from within a project
+ * (`--cwd apps/shop`). Returns the path relative to the cwd.
  */
 function fromWorkspaceRoot(sourceRoot: string) {
   if (path.isAbsolute(sourceRoot)) return sourceRoot;
@@ -335,13 +339,15 @@ function escapeRegExp(value: string) {
 function resolveProject(
   config: Record<string, any>,
   projectName: string | undefined,
-): { sourceRoot: string; projectType: ProjectType } | null {
+): { sourceRoot: string; projectType: ProjectType; root: string } | null {
   let projectConfig = config;
+  let projectDir: string | undefined;
 
   if (config?.projects) {
     projectName =
       projectName || config.defaultProject || Object.keys(config.projects)[0];
     const project = config.projects[projectName!];
+    projectDir = isString(project) ? project : undefined;
     projectConfig = isString(project)
       ? searchConfig(projectConfigFile, project)
       : project;
@@ -351,6 +357,11 @@ function resolveProject(
     return {
       sourceRoot: projectConfig.sourceRoot,
       projectType: projectConfig.projectType,
+      // Nx leaves the root out of a project.json, the source root is in it
+      root:
+        projectConfig.root ??
+        projectDir ??
+        path.dirname(projectConfig.sourceRoot),
     };
   }
 

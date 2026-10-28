@@ -39,6 +39,36 @@ export const languageOf = (fileName: string) => fileName.split('.')[0];
 
 export const toJson = (value: unknown) => JSON.stringify(value, null, 2);
 
+/**
+ * What to write for the file to hold the value, nothing when it already does.
+ * A file that does change ends with a line break if it did before.
+ */
+export function planRewrite(
+  reader: TranslationFileReader,
+  path: string,
+  value: unknown,
+): PlannedFile | undefined {
+  const current = reader.readFile(path);
+
+  if (holds(current, value)) return undefined;
+
+  const content = toJson(value);
+
+  return { path, content: current.endsWith('\n') ? `${content}\n` : content };
+}
+
+/** Whether the parsed file is the value, key order included, whatever its formatting. */
+function holds(content: string, value: unknown) {
+  try {
+    return (
+      JSON.stringify(JSON.parse(content.replace(/^\uFEFF/, ''))) ===
+      JSON.stringify(value)
+    );
+  } catch {
+    return false;
+  }
+}
+
 /** The prefix is joined to the key with a dot, which is how a scope nested in another is keyed. */
 export const getTranslationKey = (prefix: string, key: string) =>
   prefix ? `${prefix}.${key}` : key;

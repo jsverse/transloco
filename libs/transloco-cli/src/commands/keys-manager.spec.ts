@@ -101,7 +101,13 @@ describe('keys manager runners', () => {
 
     it.each([
       ['a file', import.meta.filename],
-      ['a directory', import.meta.dirname],
+      [
+        'a directory holding a config',
+        path.join(
+          import.meta.dirname,
+          '../../tests/golden/cases/config-file/typescript-extract/input',
+        ),
+      ],
     ])(
       `GIVEN a config path that is %s
        WHEN the commands run

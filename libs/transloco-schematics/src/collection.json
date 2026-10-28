@@ -5,13 +5,13 @@
     "ng-migrate": {
       "factory": "./ng-migrate/index",
       "schema": "./ng-migrate/schema.json",
-      "description": "Migrate from Angular i18n to Transloco."
+      "description": "Deprecated: use `transloco migrate angular-i18n`. Migrate from Angular i18n to Transloco."
     },
     "ngx-migrate": {
       "aliases": ["m"],
       "factory": "./ngx-migrate/index",
       "schema": "./ngx-migrate/schema.json",
-      "description": "Migrate from @ngx-translate to Transloco."
+      "description": "Deprecated: use `transloco migrate ngx-translate`. Migrate from @ngx-translate to Transloco."
     },
     "scope": {
       "aliases": ["s"],
@@ -29,13 +29,13 @@
       "aliases": ["build"],
       "factory": "./join/index",
       "schema": "./join/schema.json",
-      "description": "Join the translation files into one."
+      "description": "Deprecated: use `transloco join`. Join the translation files into one."
     },
     "split": {
       "aliases": ["sp"],
       "factory": "./split/index",
       "schema": "./split/schema.json",
-      "description": "split the translated files over the project's translation files."
+      "description": "Deprecated: use `transloco split`. split the translated files over the project's translation files."
     }
   }
 }

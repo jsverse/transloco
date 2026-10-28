@@ -1,0 +1,9 @@
+{
+  "description": "GIVEN an en.vendor.json next to en.json, as scoped-libs writes it for a library with the join strategy WHEN the keys are searched THEN only en.json is a language, it reports no missing keys and exits with 0",
+  "args": ["find", "--input", "src", "--translations-path", "i18n"],
+  "exitCode": 0,
+  "fixtures": {
+    "src": "findMissingKeys/add-missing-keys/src"
+  },
+  "stdoutIncludes": ["No missing keys were found"]
+}
