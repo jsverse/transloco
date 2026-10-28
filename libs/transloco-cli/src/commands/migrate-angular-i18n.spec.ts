@@ -117,6 +117,49 @@ describe('runMigrateAngularI18n', () => {
       expect(exists('src/assets/i18n/en.json')).toBe(true);
     });
 
+    it(`GIVEN two projects and an input in the one that is not the default
+        WHEN the command runs without a translations path
+        THEN the files go to the folder of the project owning the input`, async () => {
+      write(
+        'angular.json',
+        JSON.stringify({
+          defaultProject: 'admin',
+          projects: {
+            admin: { root: 'apps/admin', sourceRoot: 'apps/admin/src' },
+            shop: { root: 'apps/shop', sourceRoot: 'apps/shop/src' },
+          },
+        }),
+      );
+      write('apps/admin/src/assets/keep', '');
+      write('apps/shop/src/assets/keep', '');
+      write('apps/shop/src/app/a.html', '<p i18n>One</p>');
+
+      await runMigrateAngularI18n(options({ input: 'apps/shop/src/app' }));
+
+      expect(exists('apps/shop/src/assets/i18n/en.json')).toBe(true);
+      expect(exists('apps/admin/src/assets/i18n/en.json')).toBe(false);
+    });
+
+    it(`GIVEN a public/i18n folder that is a link to a folder outside
+        WHEN the command runs without a translations path
+        THEN it fails before anything is written`, async (ctx) => {
+      writeTemplate();
+      const outside = fs.mkdtempSync(path.join(os.tmpdir(), 'transloco-out-'));
+
+      try {
+        fs.mkdirSync(path.join(dir, 'public'));
+        fs.symlinkSync(outside, path.join(dir, 'public', 'i18n'));
+      } catch {
+        fs.rmSync(outside, { recursive: true });
+
+        return ctx.skip();
+      }
+
+      await expect(runMigrateAngularI18n(options())).rejects.toThrow(CliError);
+      expect(fs.readdirSync(outside)).toEqual([]);
+      fs.rmSync(outside, { recursive: true });
+    });
+
     it(`GIVEN a config given by its path
         WHEN the command runs
         THEN its root translations path is used`, async () => {
