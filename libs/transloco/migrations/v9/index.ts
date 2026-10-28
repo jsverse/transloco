@@ -13,6 +13,8 @@ import { migrateConfigTypeImport } from './config-type-import';
 import { reportVersionFloors } from './report-version-floors';
 import { reportScopedLibsWebpackPlugin } from './scoped-libs-webpack-plugin';
 import { migrateCliScripts } from './cli-scripts';
+import { reportDeprecatedPackages } from './deprecated-packages';
+import { reportExtractOutputMove } from './extract-output-move';
 
 /**
  * Replaces `translocoRead` with `translocoPrefix`. Walks the whole tree rather
@@ -89,6 +91,8 @@ export function migrateToV9(): Rule {
       migrateConfigTypeImport(),
       reportVersionFloors(),
       migrateCliScripts(),
+      reportDeprecatedPackages(),
+      reportExtractOutputMove(),
     ])(tree, context);
   };
 }

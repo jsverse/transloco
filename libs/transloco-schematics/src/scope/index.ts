@@ -102,16 +102,27 @@ function getTranslationFilesFromAssets(
   );
 }
 
+/** `--langs en,fr` is one comma separated string, as in `ng add`. */
+function splitLangs(langs: string | string[] | undefined): string[] {
+  return coerceArray(langs ?? [])
+    .flatMap((lang) => lang.split(','))
+    .map((lang) => lang.trim())
+    .filter(Boolean);
+}
+
 function getTranslationFiles(
   options: SchemaOptions,
   host: Tree,
   translationsPath: string,
 ): string[] {
-  return coerceArray(
-    options.langs ||
-      getGlobalConfig().langs ||
-      getTranslationFilesFromAssets(host, translationsPath),
-  );
+  const fromOption = splitLangs(options.langs);
+
+  return fromOption.length
+    ? fromOption
+    : coerceArray(
+        getGlobalConfig().langs ||
+          getTranslationFilesFromAssets(host, translationsPath),
+      );
 }
 
 function addInlineLoader(
@@ -132,6 +143,13 @@ function addInlineLoader(
   tree.create(path, loader);
 }
 
+/** The folder of the root translation files: `rootTranslationsPath` of the config, `<source root>/assets/i18n` when it isn't set. */
+function getTranslationsRoot(sourceRoot: string) {
+  return (
+    getGlobalConfig().rootTranslationsPath ?? join(sourceRoot, 'assets', 'i18n')
+  );
+}
+
 function createTranslationFiles(
   options: SchemaOptions,
   rootPath: string,
@@ -143,7 +161,7 @@ function createTranslationFiles(
   }
   const defaultPath = options.inlineLoader
     ? join(dirname(modulePath), 'i18n')
-    : join(rootPath, 'assets', 'i18n', dasherize(options.name));
+    : join(getTranslationsRoot(rootPath), dasherize(options.name));
   const translationsPath = options.translationPath
     ? join(rootPath, options.translationPath)
     : defaultPath;
@@ -170,7 +188,7 @@ export default function (options: SchemaOptions): Rule {
   return (host: Tree, context: SchematicContext) => {
     const project = getProject(host, options.project);
     const rootPath = project?.sourceRoot ?? 'src';
-    const assetsPath = join(rootPath, 'assets', 'i18n');
+    const assetsPath = getTranslationsRoot(rootPath);
     options.langs = getTranslationFiles(options, host, assetsPath);
     if (options.module) {
       const projectPath = getProjectPath(host, project, options);

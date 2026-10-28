@@ -54,6 +54,6 @@ describe('createGlobalConfig', () => {
     expect(config.split('\n')[0]).toBe(
       `import type { TranslocoGlobalConfig } from '@jsverse/transloco';`,
     );
-    expect(config).toContain(`langs: [ 'en', 'es' ]`);
+    expect(config).toContain(`langs: ['en', 'es']`);
   });
 });

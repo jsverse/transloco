@@ -125,8 +125,9 @@ export function generateMatchers() {
     // The whole file: every name the service is injected as.
     from: /[^]+/g,
     to: migrateServiceUsage,
-    warn: (content: string) =>
-      serviceNames(content).flatMap((name) =>
+    warn: (content: string) => [
+      ...langChangeEventUsages(content),
+      ...serviceNames(content).flatMap((name) =>
         [
           ...content.matchAll(
             new RegExp(
@@ -139,6 +140,7 @@ export function generateMatchers() {
           message: `${name}.${match[1]} has no counterpart in the TranslocoService, migrate it by hand`,
         })),
       ),
+    ],
   };
 
   const specs = {
@@ -290,6 +292,38 @@ function specifiers(names: string) {
     .split(',')
     .map((name) => name.trim().replace(/^type\s+/, ''))
     .filter(Boolean);
+}
+
+/**
+ * The uses of `LangChangeEvent` outside the imports. `onLangChange` becomes
+ * `langChanges$`, which emits the language and no event, so a handler typed
+ * with the event no longer compiles.
+ */
+function langChangeEventUsages(content: string) {
+  // The names the event is imported under, `LangChangeEvent as E` is used as `E`
+  const names = new Set(['LangChangeEvent']);
+
+  for (const [, alias] of content.matchAll(
+    /\bLangChangeEvent\s+as\s+([\w$]+)/g,
+  )) {
+    names.add(alias);
+  }
+
+  // Blanked out, so that the indexes stay the ones of the file. Only the
+  // statement itself, as a file without semicolons has no end to stop at.
+  const withoutImports = content.replace(
+    /^[ \t]*(?:import|export)\s+(?:type\s+)?(?:\*(?:\s+as\s+[\w$]+)?|[\w$]+\s*,?\s*)?(?:\{[^}]*\})?\s*from\s*['"][^'"]*['"]/gm,
+    (statement) => statement.replace(/[^\n]/g, ' '),
+  );
+  const usage = new RegExp(
+    `(?<![\\w$.])(?:${[...names].map((name) => name.replace(/\$/g, '\\$')).join('|')})(?![\\w$])`,
+    'g',
+  );
+
+  return [...withoutImports.matchAll(usage)].map(({ index }) => ({
+    index,
+    message: `LangChangeEvent has no counterpart, langChanges$ emits the language itself: type the handler as (lang: string) and use lang instead of event.lang`,
+  }));
 }
 
 /** The calls of the TranslateService and their counterparts. */

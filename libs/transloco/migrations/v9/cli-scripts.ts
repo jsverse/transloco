@@ -171,7 +171,7 @@ const COMMAND_FILES = [
 /** The hooks husky generates, which are not the user's: only the ones right in `.husky` are. */
 const GENERATED = /(^|\/)\.husky\/_\//;
 
-const isManifest = (path: string) =>
+export const isManifest = (path: string) =>
   /(^|\/)package\.json$/.test(path) && !/\/\.[^/]+\//.test(path);
 
 interface Moved {
@@ -214,6 +214,47 @@ function pathChecker(tree: Tree, manifest: string) {
   };
 }
 
+const RC_EXTENSIONS = ['', '.json', '.yaml', '.yml', '.js', '.ts', '.cjs'];
+
+/** Where the new bin looks for a config in a `--config` folder, the places of cosmiconfig's search for 'transloco'. */
+const CONFIG_SEARCH_PLACES = [
+  'package.json',
+  ...RC_EXTENSIONS.map((ext) => `.translocorc${ext}`),
+  ...RC_EXTENSIONS.map((ext) => `.config/translocorc${ext}`),
+  'transloco.config.js',
+  'transloco.config.ts',
+  'transloco.config.cjs',
+];
+
+/**
+ * Whether `path`, as a script of the `package.json` at `manifest` writes it,
+ * is a folder of the tree without a Transloco config in it. A `package.json`
+ * counts as one only with a `transloco` key.
+ */
+function folderWithoutConfig(tree: Tree, manifest: string) {
+  const base = posix.dirname(manifest).replace(/^\//, '');
+
+  return (path: string) => {
+    const dir = `/${posix.join(base, path)}`.replace(/\/$/, '') || '/';
+
+    if (!path.endsWith('/') && tree.exists(dir)) return false;
+
+    return !CONFIG_SEARCH_PLACES.some((place) => {
+      const buffer = tree.read(posix.join(dir, place));
+
+      if (!buffer) return false;
+      if (place !== 'package.json') return true;
+
+      try {
+        return JSON.parse(buffer.toString())?.transloco !== undefined;
+      } catch {
+        // cosmiconfig reports the broken file when it loads it
+        return true;
+      }
+    });
+  };
+}
+
 const REPLACEMENTS = `'transloco extract', 'transloco find', 'transloco validate', 'transloco optimize' and 'transloco scoped-libs'`;
 
 /**
@@ -230,7 +271,8 @@ const REPLACEMENTS = `'transloco extract', 'transloco find', 'transloco validate
  *
  * A `--config` path is looked up in the tree, from the folder of the
  * `package.json` that holds the script: the new bin stops on a path that does
- * not exist, the old one ignored it.
+ * not exist, or on a folder without a Transloco config, the old one ignored
+ * both.
  *
  * Only the text of the scripts changes in a `package.json`. Other files that
  * run the bins, the CI pipelines and the like, are reported and never edited.
@@ -241,6 +283,7 @@ const REPLACEMENTS = `'transloco extract', 'transloco find', 'transloco validate
 export function migrateCliScripts(): Rule {
   return (tree: Tree, context: SchematicContext) => {
     const moved: Moved[] = [];
+    const movedManifests = new Set<string>();
     const kept: Kept[] = [];
     const bins = new Set<LegacyBin>();
     const others: string[] = [];
@@ -265,9 +308,13 @@ export function migrateCliScripts(): Rule {
 
       const edits: Array<{ start: number; end: number; text: string }> = [];
       const pathExists = pathChecker(tree, path);
+      const holdsNoConfig = folderWithoutConfig(tree, path);
 
       for (const script of findScripts(source) ?? []) {
-        const result = translateScript(script.value, { pathExists });
+        const result = translateScript(script.value, {
+          pathExists,
+          holdsNoConfig,
+        });
 
         if (result.kind === 'left') {
           kept.push({ path, name: script.name, reason: result.reason });
@@ -285,6 +332,7 @@ export function migrateCliScripts(): Rule {
             text: JSON.stringify(result.script),
           });
           moved.push({ path, name: script.name });
+          movedManifests.add(path);
           result.bins.forEach((bin) => bins.add(bin));
         }
       }
@@ -336,15 +384,23 @@ export function migrateCliScripts(): Rule {
     }
 
     if (moved.length) {
-      context.logger.info(
-        `  ↳ The packages of the deprecated bins are still in your dependencies. Remove them once nothing runs their bins anymore.`,
-      );
-
-      return addCliDependency(
+      addCliDependency(
         tree,
         context,
         `npm scripts in your workspace run its 'transloco' bin now`,
       );
+
+      // A workspace package gets the bins of its own dependencies only under Yarn
+      for (const path of movedManifests) {
+        if (path !== '/package.json') {
+          addCliDependency(
+            tree,
+            context,
+            `its npm scripts run the 'transloco' bin now`,
+            path,
+          );
+        }
+      }
     }
   };
 }

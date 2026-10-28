@@ -70,6 +70,18 @@ describe('runMigrateAngularI18n', () => {
       expect(read('src/assets/i18n/es.json')).toBe('{\n  "one": "One"\n}\n');
     });
 
+    it(`GIVEN a public folder, no translations path and no config
+        WHEN the command runs
+        THEN the files go to public/i18n, where ng add and init put them`, async () => {
+      write('public/favicon.ico', '');
+      writeTemplate();
+
+      await runMigrateAngularI18n(options({ langs: ['en'] }));
+
+      expect(read('public/i18n/en.json')).toBe('{\n  "one": "One"\n}\n');
+      expect(exists('src/assets/i18n/en.json')).toBe(false);
+    });
+
     it(`GIVEN a config with a root translations path
         WHEN the command runs without a translations path
         THEN the files go to the root of the config`, async () => {
@@ -103,6 +115,49 @@ describe('runMigrateAngularI18n', () => {
       await runMigrateAngularI18n(options());
 
       expect(exists('src/assets/i18n/en.json')).toBe(true);
+    });
+
+    it(`GIVEN two projects and an input in the one that is not the default
+        WHEN the command runs without a translations path
+        THEN the files go to the folder of the project owning the input`, async () => {
+      write(
+        'angular.json',
+        JSON.stringify({
+          defaultProject: 'admin',
+          projects: {
+            admin: { root: 'apps/admin', sourceRoot: 'apps/admin/src' },
+            shop: { root: 'apps/shop', sourceRoot: 'apps/shop/src' },
+          },
+        }),
+      );
+      write('apps/admin/src/assets/keep', '');
+      write('apps/shop/src/assets/keep', '');
+      write('apps/shop/src/app/a.html', '<p i18n>One</p>');
+
+      await runMigrateAngularI18n(options({ input: 'apps/shop/src/app' }));
+
+      expect(exists('apps/shop/src/assets/i18n/en.json')).toBe(true);
+      expect(exists('apps/admin/src/assets/i18n/en.json')).toBe(false);
+    });
+
+    it(`GIVEN a public/i18n folder that is a link to a folder outside
+        WHEN the command runs without a translations path
+        THEN it fails before anything is written`, async (ctx) => {
+      writeTemplate();
+      const outside = fs.mkdtempSync(path.join(os.tmpdir(), 'transloco-out-'));
+
+      try {
+        fs.mkdirSync(path.join(dir, 'public'));
+        fs.symlinkSync(outside, path.join(dir, 'public', 'i18n'));
+      } catch {
+        fs.rmSync(outside, { recursive: true });
+
+        return ctx.skip();
+      }
+
+      await expect(runMigrateAngularI18n(options())).rejects.toThrow(CliError);
+      expect(fs.readdirSync(outside)).toEqual([]);
+      fs.rmSync(outside, { recursive: true });
     });
 
     it(`GIVEN a config given by its path
@@ -195,6 +250,20 @@ describe('runMigrateAngularI18n', () => {
       expect(read('src/app/a.html')).toBe('<p i18n>One</p>');
       expect(exists('src/assets')).toBe(false);
     });
+
+    it.each([[['en', 'es,fr']], [['en,es', 'fr']]])(
+      `GIVEN the languages %j, one of them with a comma
+       WHEN the command runs
+       THEN it fails, wherever the comma stands, before anything is written`,
+      async (langs) => {
+        writeTemplate();
+
+        await expect(runMigrateAngularI18n(options({ langs }))).rejects.toThrow(
+          'The languages are separate arguments, not a comma separated list',
+        );
+        expect(exists('src/assets')).toBe(false);
+      },
+    );
   });
 
   describe('a translations path outside of the working directory', () => {

@@ -105,6 +105,18 @@ describe('generateConfigFile', () => {
       }),
     ).toContain(`rootTranslationsPath: 'it\\'s\\\\i18n',`);
   });
+
+  it(`GIVEN a path holding a line break
+      WHEN the config file is generated
+      THEN the string literal escapes it`, () => {
+    expect(
+      generateConfigFile({
+        rootTranslationsPath: 'a\nb',
+        langs: ['en'],
+        keysManager: {},
+      }),
+    ).toContain(`rootTranslationsPath: 'a\\nb',`);
+  });
 });
 
 describe('translationFile', () => {
