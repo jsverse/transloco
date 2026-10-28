@@ -12,9 +12,9 @@ Options:
                              package.json
   -y, --yes                  Ask nothing: what was not given is `en` for the
                              languages and the folder `ng add` picks for the
-                             translations (`public/i18n` with a `public` folder
-                             or from Angular 18, else `<source
-                             root>/assets/i18n`), and the files and scripts are
-                             added
+                             translations (`public/i18n` with a `public` folder,
+                             else `<source root>/assets/i18n` when that folder
+                             exists, else `public/i18n` from Angular 18), and
+                             the files and scripts are added
   --force                    Overwrite an existing transloco.config.ts
   -h, --help                 Display help for the command

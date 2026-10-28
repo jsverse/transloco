@@ -646,7 +646,7 @@ describe('createProgram', () => {
       });
 
       expect(unwrap(output.stdout)).toContain(
-        'the folder `ng add` picks for the translations (`public/i18n` with a `public` folder or from Angular 18, else `<source root>/assets/i18n`)',
+        'the folder `ng add` picks for the translations (`public/i18n` with a `public` folder, else `<source root>/assets/i18n` when that folder exists, else `public/i18n` from Angular 18)',
       );
     });
   });
