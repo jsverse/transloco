@@ -33,11 +33,11 @@ const summarize = (steps: ReturnType<typeof planInit>) =>
   );
 
 describe('generateConfigFile', () => {
-  // The text `ng add @jsverse/transloco` generates for the same input, taken
-  // from running its generator
+  // The text `ng add @jsverse/transloco` leaves in a fresh Angular 21 app,
+  // once the Angular CLI has formatted it
   it(`GIVEN one language
       WHEN the config file is generated
-      THEN it is the text ng add generates, with no line break at its end`, () => {
+      THEN it is the text ng add leaves, with a line break at its end`, () => {
     expect(
       generateConfigFile({
         rootTranslationsPath: 'src/assets/i18n',
@@ -45,13 +45,13 @@ describe('generateConfigFile', () => {
         keysManager: {},
       }),
     ).toBe(
-      "import type { TranslocoGlobalConfig } from '@jsverse/transloco';\n\nconst config: TranslocoGlobalConfig = {\n  rootTranslationsPath: 'src/assets/i18n',\n  langs: [ 'en' ],\n  keysManager: {}\n};\n\nexport default config;",
+      "import type { TranslocoGlobalConfig } from '@jsverse/transloco';\n\nconst config: TranslocoGlobalConfig = {\n  rootTranslationsPath: 'src/assets/i18n',\n  langs: ['en'],\n  keysManager: {},\n};\n\nexport default config;\n",
     );
   });
 
   it(`GIVEN several languages and a longer path
       WHEN the config file is generated
-      THEN it is the text ng add generates`, () => {
+      THEN it is the text ng add leaves`, () => {
     expect(
       generateConfigFile({
         rootTranslationsPath: 'projects/shop/src/assets/i18n',
@@ -59,7 +59,7 @@ describe('generateConfigFile', () => {
         keysManager: {},
       }),
     ).toBe(
-      "import type { TranslocoGlobalConfig } from '@jsverse/transloco';\n\nconst config: TranslocoGlobalConfig = {\n  rootTranslationsPath: 'projects/shop/src/assets/i18n',\n  langs: [ 'en', 'es', 'fr', 'de' ],\n  keysManager: {}\n};\n\nexport default config;",
+      "import type { TranslocoGlobalConfig } from '@jsverse/transloco';\n\nconst config: TranslocoGlobalConfig = {\n  rootTranslationsPath: 'projects/shop/src/assets/i18n',\n  langs: ['en', 'es', 'fr', 'de'],\n  keysManager: {},\n};\n\nexport default config;\n",
     );
   });
 
@@ -76,6 +76,34 @@ describe('generateConfigFile', () => {
 
     expect(file).not.toContain('more item');
     expect(file).toContain("'l101'");
+  });
+
+  it(`GIVEN languages that don't fit in 80 columns on one line
+      WHEN the config file is generated
+      THEN each is on a line of its own, as Prettier puts them`, () => {
+    const langs = Array.from({ length: 13 }, (_, i) => `l${i + 10}`);
+
+    const file = generateConfigFile({
+      rootTranslationsPath: 'src/assets/i18n',
+      langs,
+      keysManager: {},
+    });
+
+    expect(file).toContain(
+      `  langs: [\n${langs.map((lang) => `    '${lang}',\n`).join('')}  ],\n`,
+    );
+  });
+
+  it(`GIVEN a path holding a quote and a backslash
+      WHEN the config file is generated
+      THEN the string literal escapes them`, () => {
+    expect(
+      generateConfigFile({
+        rootTranslationsPath: "it's\\i18n",
+        langs: ['en'],
+        keysManager: {},
+      }),
+    ).toContain(`rootTranslationsPath: 'it\\'s\\\\i18n',`);
   });
 });
 
@@ -135,7 +163,7 @@ describe('planInit', () => {
     expect(steps[0].write?.content).toContain(
       `rootTranslationsPath: 'projects/ui/i18n/'`,
     );
-    expect(steps[0].write?.content).toContain(`langs: [ 'en', 'es' ]`);
+    expect(steps[0].write?.content).toContain(`langs: ['en', 'es'],`);
   });
 
   it(`GIVEN translation files that exist

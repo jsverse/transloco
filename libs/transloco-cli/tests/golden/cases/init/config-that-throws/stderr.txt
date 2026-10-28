@@ -1,0 +1,1 @@
+Transloco Init: could not read transloco.config.js while looking for an existing Transloco config: boom at import

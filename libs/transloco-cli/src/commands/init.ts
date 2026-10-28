@@ -1,25 +1,34 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { findGlobalConfigFile } from '../config/index.js';
+import { searchGlobalConfig } from '../config/index.js';
+import { ConfigLoadError } from '../config/load-error.js';
 import { CliError } from '../errors.js';
+import {
+  describeProjects,
+  listProjects,
+  resolveProjectBasePath,
+} from '../keys-manager/utils/resolve-project-base-path.js';
+import { applySteps } from '../init/apply.js';
 import { parseManifest } from '../init/manifest.js';
 import {
   configFileName,
   defaultLangs,
-  defaultTranslationsPath,
+  type InitAnswers,
   type InitStep,
   manifestFileName,
   planInit,
   translationFile,
 } from '../init/plan.js';
+import { detectTranslationsPath } from '../init/translations-path.js';
 import { findUnreadableConfig } from '../init/unreadable-config.js';
 import {
   languageProblem,
+  parseLanguages,
+  specialFileProblem,
   translationsPathProblem,
   writeProblem,
 } from '../init/validation.js';
-import { outputFile } from '../utils/file-system.js';
 import { contains, lstat } from '../utils/real-path.js';
 
 const name = 'Init';
@@ -57,6 +66,10 @@ export async function runInit({
     );
   }
 
+  // Looking for the config opens these, which a FIFO makes wait for good
+  assertIsNotSpecial(manifestFileName);
+  assertIsNotSpecial(configFileName);
+
   const { text: manifest, skipped } = readManifest();
 
   // A `package.json` that can't take the scripts is found before anything is
@@ -65,7 +78,13 @@ export async function runInit({
     parseManifest(manifest);
   }
 
-  assertConfigCanBeWritten(force);
+  const workspace = assertConfigCanBeWritten(force);
+  const defaultTranslationsPath = detectTranslationsPath(
+    workspace.projectBasePath,
+    manifest,
+  );
+  // Looked into before anything is written, as it reads the workspace
+  const closing = nextStep(workspace);
 
   const exists = (file: string) => lstat(path.resolve(file)) !== undefined;
   const state = {
@@ -76,22 +95,23 @@ export async function runInit({
   };
 
   if (!interactive) {
-    const steps = planInit(
-      {
-        langs: given.langs ?? defaultLangs,
-        translationsPath:
-          given.translationsPath ??
-          assertTranslationsPath(defaultTranslationsPath),
-        createTranslationFiles: true,
-        addScripts: scripts,
-      },
-      state,
-    );
+    const answers = {
+      langs: given.langs ?? defaultLangs,
+      translationsPath:
+        given.translationsPath ??
+        assertTranslationsPath(defaultTranslationsPath),
+      createTranslationFiles: true,
+      addScripts: scripts,
+    };
+
+    assertTranslationFilesAreFiles(answers);
+
+    const steps = planInit(answers, state);
 
     assertPlanCanBeWritten(steps);
     applySteps(steps, ({ message }) => console.log(message));
 
-    console.log(nextStep);
+    console.log(closing);
 
     return;
   }
@@ -103,6 +123,7 @@ export async function runInit({
 
   const answers = await ui.askInit({
     given,
+    defaultTranslationsPath,
     askScripts: scripts && manifest !== undefined,
     findMissing: (langs, folder) =>
       langs
@@ -118,22 +139,65 @@ export async function runInit({
 
   // The prompt rejects a folder that can't be used, so this is the same check
   // for the answer that comes from anywhere else.
-  const planned = planInit(
-    {
-      ...answers,
-      translationsPath: assertTranslationsPath(answers.translationsPath),
-    },
-    state,
-  );
+  const confirmed = {
+    ...answers,
+    translationsPath: assertTranslationsPath(answers.translationsPath),
+  };
+
+  assertTranslationFilesAreFiles(confirmed);
+
+  const planned = planInit(confirmed, state);
 
   assertPlanCanBeWritten(planned);
   applySteps(planned, ui.reportStep);
 
-  ui.endPrompts(nextStep);
+  ui.endPrompts(closing);
 }
 
-const nextStep =
-  'Done. Run `transloco extract` to collect the keys of your project into the translation files.';
+/**
+ * What to run next. `extract` takes the default project of the workspace, so
+ * the others are named, and so are all of them when none is found without
+ * `--project`, as in an Nx workspace without a root project.
+ */
+function nextStep({ defaulted }: Workspace) {
+  const done =
+    'Done. Run `transloco extract` to collect the keys of your project into the translation files.';
+  const projects = listProjects();
+
+  if (defaulted && projects.length) {
+    const project = projects.length === 1 ? projects[0] : '<name>';
+
+    return `Done. Run \`transloco extract --project ${project}\` to collect the keys of your project into the translation files. ${describeProjects(projects)}`;
+  }
+
+  return projects.length > 1
+    ? `${done} Add --project <name> for another project than the default one. ${describeProjects(projects)}`
+    : done;
+}
+
+/** Whether the file can be opened without waiting, if it is there. */
+function assertIsNotSpecial(file: string) {
+  const problem = specialFileProblem(path.resolve(file));
+
+  if (problem) {
+    throw new CliError(
+      `Transloco ${name}: cannot use ${file}, ${problem}. Nothing was written.`,
+    );
+  }
+}
+
+/** The files that are there stay as they are, and are not looked into, which is as far as a FIFO is a file. */
+function assertTranslationFilesAreFiles({
+  langs,
+  translationsPath,
+  createTranslationFiles,
+}: InitAnswers) {
+  if (!createTranslationFiles) return;
+
+  for (const lang of langs) {
+    assertIsNotSpecial(translationFile(translationsPath, lang));
+  }
+}
 
 /**
  * Nothing is written unless everything can be: a file system problem found
@@ -151,40 +215,17 @@ function assertPlanCanBeWritten(steps: InitStep[]) {
   }
 }
 
-/** Does what each step is about and tells what it was, as it goes. */
-function applySteps(steps: InitStep[], report: (step: InitStep) => void) {
-  const written: string[] = [];
-
-  for (const step of steps) {
-    if (step.write) {
-      try {
-        outputFile(path.resolve(step.write.file), step.write.content);
-      } catch (error) {
-        // The check before can't see what happens in between
-        throw new CliError(
-          `Transloco ${name}: could not write ${step.write.file}: ${(error as Error).message}. ${
-            written.length
-              ? `Already written: ${written.join(', ')}.`
-              : 'Nothing was written.'
-          }`,
-        );
-      }
-
-      written.push(step.write.file);
-    }
-
-    report(step);
-  }
-}
-
 function assertLangs(langs: string[]) {
   // A language is the name of the file written for it, the several languages
   // are separate arguments, as they are for `migrate angular-i18n`.
   const joined = langs.find((lang) => lang.includes(','));
 
   if (joined !== undefined) {
+    // Every language that was typed, which the hint is copied from
+    const separate = parseLanguages(langs.join(' ')).join(' ');
+
     throw new CliError(
-      `Transloco ${name}: The languages are separate arguments, not a comma separated list: '${joined}'. Run with --langs ${joined.split(',').join(' ')}`,
+      `Transloco ${name}: The languages are separate arguments, not a comma separated list: '${joined}'.${separate ? ` Run with --langs ${separate}` : ''}`,
     );
   }
 
@@ -216,15 +257,23 @@ const relativeToCwd = (folder: string) =>
  * applies, so init writes `transloco.config.ts` only where there is none, or
  * where it is the one that's there and `--force` says to replace it.
  */
-function assertConfigCanBeWritten(force: boolean) {
+function assertConfigCanBeWritten(force: boolean): Workspace {
   const target = path.resolve(configFileName);
-  const targetExists = lstat(target) !== undefined;
+  const stats = lstat(target);
+  const targetExists = stats !== undefined;
   let found: string | undefined;
+  let workspace: Workspace | undefined;
+
+  if (stats?.isSymbolicLink()) {
+    assertLinkStaysInside(target);
+  }
 
   try {
-    found = findGlobalConfigFile();
+    workspace = resolveProjectBasePath(undefined, { quiet: true });
+    found = findExistingConfig(workspace);
   } catch (error) {
-    const { file, reason } = findUnreadableConfig(error);
+    const { file, reason } =
+      error instanceof ConfigLoadError ? error : findUnreadableConfig(error);
 
     // A config that can't be loaded still stands where it is. Any other file
     // might hold the config, which makes it unknown whether there is one.
@@ -246,6 +295,41 @@ function assertConfigCanBeWritten(force: boolean) {
       `Transloco ${name}: ${configFileName} already exists. Pass --force to overwrite it.`,
     );
   }
+
+  // Only the config that is replaced failed to load, past the workspace
+  return workspace ?? resolveProjectBasePath(undefined, { quiet: true });
+}
+
+type Workspace = ReturnType<typeof resolveProjectBasePath>;
+
+/**
+ * The config `transloco extract` would read, which is also the one that the
+ * other commands use: it is looked for from the source root of the default
+ * project, up to where the package of the working directory ends.
+ */
+function findExistingConfig({ projectBasePath }: Workspace) {
+  return searchGlobalConfig(projectBasePath).filepath;
+}
+
+/**
+ * Writing the config overwrites the file the link leads to, which `init` does
+ * only inside the working directory, as it does for the `package.json`. A link
+ * that leads nowhere is refused when the file is written.
+ */
+function assertLinkStaysInside(link: string) {
+  let real: string;
+
+  try {
+    real = fs.realpathSync(link);
+  } catch {
+    return;
+  }
+
+  if (!contains(fs.realpathSync(process.cwd()), real)) {
+    throw new CliError(
+      `Transloco ${name}: ${configFileName} is a link that leads outside the folder, and writing it would overwrite the file it leads to. Nothing was written.`,
+    );
+  }
 }
 
 /**
@@ -259,7 +343,7 @@ function readManifest(): { text?: string; skipped?: string } {
   const stats = lstat(file);
 
   if (stats?.isFile()) {
-    return { text: fs.readFileSync(file, 'utf8') };
+    return { text: readText(file) };
   }
 
   if (!stats?.isSymbolicLink()) return {};
@@ -277,6 +361,17 @@ function readManifest(): { text?: string; skipped?: string } {
   }
 
   return fs.statSync(real).isFile()
-    ? { text: fs.readFileSync(real, 'utf8') }
+    ? { text: readText(real) }
     : { skipped: 'it is a link to something that is not a file' };
+}
+
+function readText(file: string) {
+  try {
+    return fs.readFileSync(file, 'utf8');
+  } catch (error) {
+    throw new CliError(
+      // The reason without the file, which is named before it
+      `Transloco ${name}: could not read ${manifestFileName}: ${(error as Error).message.replace(/, \w+ '.*'$/, '')}`,
+    );
+  }
 }

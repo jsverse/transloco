@@ -56,6 +56,114 @@ describe('resolveProjectBasePath', () => {
     spy.mockRestore();
   });
 
+  it(`GIVEN no workspace config
+      WHEN the source root is resolved without a project
+      THEN it falls back to "src" and says so`, () => {
+    const spy = spyOnConsole('log');
+    expect(resolveProjectBasePath()).toEqual({
+      projectBasePath: 'src',
+      defaulted: true,
+    });
+    spy.mockRestore();
+  });
+
+  it(`GIVEN no workspace config
+      WHEN the source root is resolved for a named project
+      THEN it fails, as the project is nowhere`, () => {
+    expect(() => resolveProjectBasePath('nope')).toThrow(
+      "Transloco: the project 'nope' was not found in angular.json, .angular.json, workspace.json or any project.json. The workspace has no project.",
+    );
+  });
+
+  it(`GIVEN an Angular workspace
+      WHEN the source root is resolved for a project it doesn't have
+      THEN it fails naming the projects it has, instead of falling back to "src"`, () => {
+    const spy = spyOnConsole('log');
+    addRootConfig({ configType: 'angular' });
+
+    try {
+      expect(() => resolveProjectBasePath('nope')).toThrow(
+        'The projects of the workspace are: defaultProject, myProject.',
+      );
+      expect(spy).not.toHaveBeenCalled();
+    } finally {
+      removeRootConfigs();
+      spy.mockRestore();
+    }
+  });
+
+  describe('for the deprecated transloco-keys-manager bin', () => {
+    async function freshModule() {
+      vi.resetModules();
+
+      return import('../utils/resolve-project-base-path.js');
+    }
+
+    it(`GIVEN no workspace config
+        WHEN the source root is resolved for a named project
+        THEN it warns and falls back to "src", as in v8`, async () => {
+      const spy = spyOnConsole('error');
+      const { allowUnknownProject, resolveProjectBasePath } =
+        await freshModule();
+      allowUnknownProject();
+
+      try {
+        expect(resolveProjectBasePath('nope')).toEqual({
+          projectBasePath: 'src',
+        });
+        expect(spy).toHaveBeenCalledWith(
+          expect.stringContaining('Defaulting source root to'),
+        );
+      } finally {
+        spy.mockRestore();
+      }
+    });
+
+    it(`GIVEN an Angular workspace
+        WHEN the source root is resolved for a project it doesn't have
+        THEN it warns and falls back to "src", as in v8`, async () => {
+      const spy = spyOnConsole('error');
+      addRootConfig({ configType: 'angular' });
+      const { allowUnknownProject, resolveProjectBasePath } =
+        await freshModule();
+      allowUnknownProject();
+
+      try {
+        expect(resolveProjectBasePath('nope')).toEqual({
+          projectBasePath: 'src',
+        });
+        expect(spy).toHaveBeenCalledWith(
+          expect.stringContaining(
+            'Unable to resolve `projectBasePath` from configuration. Defaulting source root to',
+          ),
+        );
+      } finally {
+        removeRootConfigs();
+        spy.mockRestore();
+      }
+    });
+  });
+
+  it(`GIVEN an Angular workspace whose project has no source root
+      WHEN the source root is resolved for that project
+      THEN it falls back to "src", as the project is there`, () => {
+    const spy = spyOnConsole('log');
+    addRootConfig({
+      configType: 'angular',
+      config: { projects: { bare: { projectType: 'application' } } },
+    });
+
+    try {
+      expect(resolveProjectBasePath('bare')).toEqual({
+        projectBasePath: 'src',
+        defaulted: true,
+      });
+    } finally {
+      removeRootConfigs();
+      spy.mockRestore();
+    }
+  });
+
   it('should work when having both Angular and Workspace config', () => {
     addRootConfig({ configType: 'angular' });
     addRootConfig({ configType: 'workspace', config: { otherStuff: true } });
@@ -324,9 +432,52 @@ describe('resolveProjectBasePath', () => {
     });
 
     it('should not resolve an unknown project to the nearest config', () => {
-      const spy = spyOnConsole('log');
-      expect(resolveProjectBasePath('unknown').projectBasePath).toBe('src');
-      spy.mockRestore();
+      expect(() => resolveProjectBasePath('unknown')).toThrow(
+        "Transloco: the project 'unknown' was not found in angular.json, .angular.json, workspace.json or any project.json. The projects of the workspace are: foo.",
+      );
+    });
+  });
+
+  describe('project.json of a project folder in an Nx workspace', () => {
+    const projectPath = 'apps/shop';
+
+    afterEach(() => {
+      vi.spyOn(process, 'cwd').mockReturnValue(TEST_DIR);
+      fs.rmSync(path.join(TEST_DIR, 'nx.json'), { force: true });
+      removeProjectConfig(projectPath);
+    });
+
+    function givenNxWorkspace() {
+      fs.writeFileSync(path.join(TEST_DIR, 'nx.json'), '{}');
+      addProjectConfig({
+        path: projectPath,
+        config: {
+          name: 'shop',
+          projectType: 'application',
+          sourceRoot: 'apps/shop/src',
+        },
+      });
+    }
+
+    it(`GIVEN nx.json above the cwd
+        WHEN the source root of the project in the cwd is resolved
+        THEN it is resolved against the workspace root, not the cwd`, () => {
+      givenNxWorkspace();
+      vi.spyOn(process, 'cwd').mockReturnValue(
+        path.join(TEST_DIR, projectPath),
+      );
+
+      expect(resolveProjectBasePath('shop').projectBasePath).toBe('src');
+    });
+
+    it(`GIVEN nx.json in the cwd
+        WHEN the source root of a project is resolved
+        THEN it is kept as it is`, () => {
+      givenNxWorkspace();
+
+      expect(resolveProjectBasePath('shop').projectBasePath).toBe(
+        'apps/shop/src',
+      );
     });
   });
 

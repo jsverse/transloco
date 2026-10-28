@@ -1,0 +1,10 @@
+{
+  "description": "GIVEN a transloco.config.js that throws when it is loaded WHEN the keys are extracted without --config THEN the error names the file in one line, nothing is written and it exits with 1",
+  "args": [
+    "extract"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stderr"
+  ]
+}

@@ -1,7 +1,14 @@
+import { existsSync } from 'fs';
 import path from 'path';
 
 import { cosmiconfigSync } from 'cosmiconfig';
 
+import {
+  assertExplorerCanBeMade,
+  assertRegularFile,
+  assertSearchPlacesAreFiles,
+} from '../../config/load-error.js';
+import { CliError } from '../../errors.js';
 import { styleError } from '../../utils/style.js';
 import { ProjectType } from '../config.js';
 
@@ -16,18 +23,49 @@ const workspaceConfigFile = 'workspace.json';
 const projectConfigFile = 'project.json';
 const defaultSourceRoot = 'src';
 
+let unknownProjectFallsBack = false;
+
+/**
+ * The deprecated `transloco-keys-manager` bin keeps its v8 behaviour for a
+ * project that is in none of the workspace configs, it warns and defaults the
+ * source root to `src`. Only the `transloco` command refuses it.
+ */
+export function allowUnknownProject() {
+  unknownProjectFallsBack = true;
+}
+
 function searchConfig(searchPlaces: string[] | string, searchFrom = '') {
   const cwd = process.cwd();
   const resolvePath = path.resolve(cwd, searchFrom);
   const stopDir = path.resolve(cwd, '../');
+  const places = coerceArray(searchPlaces);
+
+  // The search opens what it finds, which a FIFO or a device would not survive
+  assertExplorerCanBeMade();
+
+  for (let dir = resolvePath; ; dir = path.dirname(dir)) {
+    assertSearchPlacesAreFiles(dir, places);
+
+    if (dir === stopDir || path.dirname(dir) === dir) break;
+  }
 
   return cosmiconfigSync('', {
     stopDir,
     loaders: {
       '.json': jsoncParser,
     },
-    searchPlaces: coerceArray(searchPlaces),
+    searchPlaces: places,
   }).search(resolvePath)?.config;
+}
+
+// A project that was asked for and is unknown has its default input checked as in v8
+function defaultToSourceRoot(projectName?: string) {
+  return {
+    projectBasePath: defaultSourceRoot,
+    ...(unknownProjectFallsBack && projectName
+      ? {}
+      : { defaulted: true as const }),
+  };
 }
 
 function logNotFound(searchPlaces: string[]) {
@@ -41,44 +79,167 @@ function logNotFound(searchPlaces: string[]) {
   );
 }
 
-export function resolveProjectBasePath(projectName?: string): {
+/**
+ * The source root of the project, `quiet` leaves out the notice printed when
+ * it has to fall back to the default. A project that is named but is in none
+ * of the workspace configs is an error, as its sources are not in `src`
+ * either. `defaulted` tells that no project gave the source root.
+ */
+export function resolveProjectBasePath(
+  projectName?: string,
+  { quiet = false }: { quiet?: boolean } = {},
+): {
   projectBasePath: string;
   projectType?: ProjectType;
+  defaulted?: true;
 } {
   const angularConfig = searchConfig(angularConfigFile);
   const workspaceConfig = searchConfig(workspaceConfigFile);
   const projectConfig = resolveProjectConfig(projectName);
 
   if (!angularConfig && !workspaceConfig && !projectConfig) {
-    logNotFound([...angularConfigFile, workspaceConfigFile, projectConfigFile]);
+    if (!unknownProjectFallsBack) assertProjectIsKnown(projectName);
 
-    return { projectBasePath: defaultSourceRoot };
+    if (!quiet) {
+      logNotFound([
+        ...angularConfigFile,
+        workspaceConfigFile,
+        projectConfigFile,
+      ]);
+    }
+
+    return defaultToSourceRoot(projectName);
   }
 
   let resolved: ReturnType<typeof resolveProject> | null = null;
+  let fromProjectConfig = false;
 
   for (const config of [angularConfig, workspaceConfig, projectConfig]) {
     resolved = resolveProject(config, projectName);
     if (resolved) {
+      fromProjectConfig = config === projectConfig;
       break;
     }
   }
 
   if (!resolved) {
-    console.error(
-      styleError(
-        ['black', 'bgRed'],
-        `Unable to resolve \`projectBasePath\` from configuration. Defaulting source root to '${defaultSourceRoot}'`,
-      ),
-    );
+    if (!unknownProjectFallsBack) assertProjectIsKnown(projectName);
 
-    return { projectBasePath: defaultSourceRoot };
+    if (!quiet) {
+      console.error(
+        styleError(
+          ['black', 'bgRed'],
+          `Unable to resolve \`projectBasePath\` from configuration. Defaulting source root to '${defaultSourceRoot}'`,
+        ),
+      );
+    }
+
+    return defaultToSourceRoot(projectName);
   }
 
   return {
-    projectBasePath: resolved.sourceRoot,
+    projectBasePath: fromProjectConfig
+      ? fromWorkspaceRoot(resolved.sourceRoot)
+      : resolved.sourceRoot,
     projectType: resolved.projectType,
   };
+}
+
+const workspaceRootMarkers = [
+  'nx.json',
+  ...angularConfigFile,
+  workspaceConfigFile,
+];
+
+/**
+ * The `sourceRoot` of a `project.json` is relative to the workspace root, which
+ * is not the cwd when the command runs from within a project (`--cwd apps/shop`).
+ * Returns it relative to the cwd.
+ */
+function fromWorkspaceRoot(sourceRoot: string) {
+  if (path.isAbsolute(sourceRoot)) return sourceRoot;
+
+  const cwd = path.resolve(process.cwd());
+
+  for (let dir = cwd; ; dir = path.dirname(dir)) {
+    if (workspaceRootMarkers.some((file) => existsSync(path.join(dir, file)))) {
+      return dir === cwd
+        ? sourceRoot
+        : path.relative(cwd, path.resolve(dir, sourceRoot)) || '.';
+    }
+
+    if (path.dirname(dir) === dir) return sourceRoot;
+  }
+}
+
+function assertProjectIsKnown(projectName: string | undefined) {
+  if (projectName === undefined) return;
+
+  const { projects, directories } = scanProjects();
+
+  // A `project.json` is found by its directory as well, whatever its name
+  if (projects.includes(projectName) || directories.includes(projectName)) {
+    return;
+  }
+
+  throw new CliError(
+    `Transloco: the project '${projectName}' was not found in ${[...angularConfigFile, workspaceConfigFile].join(', ')} or any ${projectConfigFile}. ${describeProjects(projects)}`,
+  );
+}
+
+/** The projects as a sentence, for a message that asks to pick one. */
+export function describeProjects(projects: string[]) {
+  return projects.length
+    ? `The projects of the workspace are: ${projects.join(', ')}.`
+    : 'The workspace has no project.';
+}
+
+/** The names of the projects of the workspace, which `--project` takes. */
+export function listProjects(): string[] {
+  return scanProjects().projects;
+}
+
+/**
+ * The projects of the workspace configs, and of every `project.json` the one
+ * it names, or else the one of the directory holding it, which is what a
+ * config omitting the name is named after. `directories` holds the
+ * directories of all of them.
+ */
+function scanProjects() {
+  const projects = new Set<string>();
+  const directories = new Set<string>();
+
+  for (const config of [
+    searchConfig(angularConfigFile),
+    searchConfig(workspaceConfigFile),
+  ]) {
+    Object.keys(config?.projects ?? {}).forEach((name) => projects.add(name));
+  }
+
+  for (const configPath of normalizedGlob(`**/${projectConfigFile}`).sort()) {
+    const resolvedConfigPath = path.resolve(configPath);
+    const directory = path.basename(path.dirname(resolvedConfigPath));
+    let config: Record<string, any> | undefined;
+
+    assertRegularFile(resolvedConfigPath);
+
+    // The resolution warns about a config it can't parse, the list just goes by its directory
+    try {
+      config = jsoncParser(configPath, readFile(resolvedConfigPath));
+    } catch {
+      config = undefined;
+    }
+
+    directories.add(directory);
+
+    if (config?.projects) {
+      Object.keys(config.projects).forEach((name) => projects.add(name));
+    } else {
+      projects.add(isString(config?.name) ? config.name : directory);
+    }
+  }
+
+  return { projects: [...projects], directories: [...directories] };
 }
 
 /**
@@ -111,6 +272,9 @@ function resolveProjectConfig(projectName?: string) {
       // relative paths; resolving them ourselves keeps the subsequent read
       // consistent even when `process.cwd()` is mocked (e.g. in tests)
       const resolvedConfigPath = path.resolve(configPath);
+
+      assertRegularFile(resolvedConfigPath);
+
       const isDirectoryMatch =
         !directoryMatch &&
         path.basename(path.dirname(resolvedConfigPath)) === projectName;

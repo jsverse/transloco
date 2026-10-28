@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { contains, locate, lstat } from '../utils/real-path.js';
+import { contains, locate, lstat, specialKind } from '../utils/real-path.js';
 
 /** A language is the name of the file written for it, which rules these out. */
 const notInFileName = /[\\/:*?"<>|\0\s]/;
@@ -54,11 +54,30 @@ export function translationsPathProblem(value: string, cwd = process.cwd()) {
     return outside;
   }
 
-  if (!fs.statSync(target.existing).isDirectory()) {
-    return `The translations path ${value} is, or lies inside, a file`;
+  const stats = nearestStats(target.existing);
+
+  if (!stats.isDirectory()) {
+    return `The translations path ${value} is, or lies inside, ${specialKind(stats) ?? 'a file'}`;
   }
 
   return undefined;
+}
+
+/**
+ * Why something that is there can't be read or written as a file, `undefined`
+ * when it is a file, a folder, a link to either, or isn't there. The ones
+ * that are neither make whoever opens them wait. A link that leads nowhere is
+ * left to `writeProblem`.
+ */
+export function specialFileProblem(target: string) {
+  const stats = statOrUndefined(target);
+  const kind = stats && specialKind(stats);
+
+  if (!kind) return undefined;
+
+  return lstat(target)?.isSymbolicLink()
+    ? `it is a link to ${kind}`
+    : `it is ${kind}`;
 }
 
 /**
@@ -75,7 +94,10 @@ export function writeProblem(file: string, cwd = process.cwd()) {
 
     if (!stats) return 'it is a link that leads nowhere';
 
-    if (!stats.isFile()) return 'it is a folder';
+    if (stats.isDirectory()) return 'it is a folder';
+
+    // Writing to a FIFO waits for a reader
+    if (!stats.isFile()) return `it is ${specialKind(stats) ?? 'not a file'}`;
 
     return can(target, fs.constants.W_OK) ? undefined : 'it is read-only';
   }
@@ -92,11 +114,26 @@ export function writeProblem(file: string, cwd = process.cwd()) {
 
   if (!stats) return `${name} is a link that leads nowhere`;
 
-  if (!stats.isDirectory()) return `${name} is a file`;
+  if (!stats.isDirectory())
+    return `${name} is ${specialKind(stats) ?? 'a file'}`;
 
   return can(ancestor, fs.constants.W_OK | fs.constants.X_OK)
     ? undefined
     : `the folder ${name} is read-only`;
+}
+
+/**
+ * What the path is, or the closest thing above it that can be looked at: a
+ * link may lead to a file, and nothing lies below a file.
+ */
+function nearestStats(target: string): fs.Stats {
+  for (let current = target; ; current = path.dirname(current)) {
+    try {
+      return fs.statSync(current);
+    } catch (error) {
+      if (path.dirname(current) === current) throw error;
+    }
+  }
 }
 
 function statOrUndefined(target: string) {

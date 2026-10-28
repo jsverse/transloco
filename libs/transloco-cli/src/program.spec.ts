@@ -188,6 +188,58 @@ describe('createProgram', () => {
         langs: ['en', 'es', 'it'],
       });
     });
+
+    it.each([
+      [['--langs', 'en,es'], 'en,es', 'en es'],
+      [['-l', 'en,es'], 'en,es', 'en es'],
+      [['--langs=en,es'], 'en,es', 'en es'],
+      [['--langs', 'en', 'es,fr'], 'es,fr', 'en es fr'],
+      [['--langs', 'en', '--langs', 'es,fr'], 'es,fr', 'en es fr'],
+      [['--langs', 'en,', 'es'], 'en,', 'en es'],
+      [['-l', 'en,es', 'fr'], 'en,es', 'en es fr'],
+      [['--langs', ',en'], ',en', 'en'],
+    ])(
+      `GIVEN a comma in a language typed as %j
+       WHEN the program runs
+       THEN it is refused with the way to write several languages, and nothing runs`,
+      async (args, value, hint) => {
+        const { run, output } = setup();
+
+        await expect(run('extract', ...args)).rejects.toMatchObject({
+          exitCode: 1,
+        });
+
+        expect(output.stderr).toContain(
+          `error: option '-l, --langs <langs...>' argument '${value}' holds a comma. Separate the languages with spaces, e.g. --langs ${hint}`,
+        );
+        expect(runners.runExtract).not.toHaveBeenCalled();
+      },
+    );
+
+    it(`GIVEN nothing but commas as the languages
+        WHEN the program runs
+        THEN it is refused without an example to copy`, async () => {
+      const { run, output } = setup();
+
+      await expect(run('extract', '--langs', ',')).rejects.toMatchObject({
+        exitCode: 1,
+      });
+
+      expect(output.stderr).toContain(
+        `error: option '-l, --langs <langs...>' argument ',' holds a comma. Separate the languages with spaces\n`,
+      );
+      expect(runners.runExtract).not.toHaveBeenCalled();
+    });
+
+    it(`GIVEN a comma in a language
+        WHEN migrate angular-i18n runs
+        THEN the program lets it through, as the command checks its languages itself`, async () => {
+      await setup().run('migrate', 'angular-i18n', '--langs', 'en,es');
+
+      expect(runners.runMigrateAngularI18n).toHaveBeenCalledExactlyOnceWith(
+        expect.objectContaining({ langs: ['en,es'] }),
+      );
+    });
   });
 
   describe('find', () => {
@@ -568,6 +620,20 @@ describe('createProgram', () => {
 
       expect(output.stderr).toContain("unknown option '--config'");
       expect(runners.runInit).not.toHaveBeenCalled();
+    });
+
+    it(`GIVEN the help of the command
+        WHEN it is printed
+        THEN --yes names the folder ng add picks, not a fixed one`, async () => {
+      const { run, output } = setup();
+
+      await expect(run('init', '--help')).rejects.toMatchObject({
+        exitCode: 0,
+      });
+
+      expect(unwrap(output.stdout)).toContain(
+        'the folder `ng add` picks for the translations (`public/i18n` with a `public` folder, else `<source root>/assets/i18n` when that folder exists, else `public/i18n` from Angular 18)',
+      );
     });
   });
 

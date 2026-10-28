@@ -11,7 +11,10 @@ Options:
   --no-scripts               Don't add the i18n:extract and i18n:find scripts to
                              package.json
   -y, --yes                  Ask nothing: what was not given is `en` for the
-                             languages, `src/assets/i18n` for the folder, and
+                             languages and the folder `ng add` picks for the
+                             translations (`public/i18n` with a `public` folder,
+                             else `<source root>/assets/i18n` when that folder
+                             exists, else `public/i18n` from Angular 18), and
                              the files and scripts are added
   --force                    Overwrite an existing transloco.config.ts
   -h, --help                 Display help for the command

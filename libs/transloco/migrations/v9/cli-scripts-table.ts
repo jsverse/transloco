@@ -21,6 +21,8 @@ export interface CliOptionEntry {
    * moved when the path is known to exist.
    */
   mustExist?: boolean;
+  /** A comma in a value is rejected by the new bin, as the values are separate arguments. */
+  noComma?: boolean;
   /** Why the option is dropped or left. */
   reason?: string;
 }
@@ -168,7 +170,8 @@ export const CLI_SCRIPTS_TABLE: CliScriptsTable = {
           },
           "outcome": "same",
           "takesValue": true,
-          "variadic": true
+          "variadic": true,
+          "noComma": true
         },
         {
           "name": "replace",
