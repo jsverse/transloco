@@ -43,6 +43,13 @@
       "default": "./src/marker.js"
     }
   },
+  "typesVersions": {
+    "*": {
+      "marker": [
+        "src/marker.d.ts"
+      ]
+    }
+  },
   "main": "src/index.js",
   "bin": {
     "transloco": "src/bin.js"
