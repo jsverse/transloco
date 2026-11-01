@@ -26,6 +26,16 @@ describe('selectTranslateObject', () => {
       });
     }));
 
+    it(`GIVEN a TranslocoService with English translations loaded
+        WHEN subscribing to selectTranslateObject with an empty scope array
+        THEN should fall back to the active language`, fakeAsync(() => {
+      service.selectTranslateObject('a', {}, []).subscribe(spy);
+      runLoader();
+      expect(spy).toHaveBeenCalledWith({
+        b: { c: 'a.b.c {{fromList}} english' },
+      });
+    }));
+
     it(`GIVEN a TranslocoService with scoped translations loaded
         WHEN subscribing to selectTranslateObject with a scope parameter
         THEN should emit the translation object from the scoped language file`, fakeAsync(() => {

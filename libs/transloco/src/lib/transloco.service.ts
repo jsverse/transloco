@@ -384,11 +384,11 @@ export class TranslocoService {
             : this.translate(key, params, lang),
         ),
       );
+    lang = Array.isArray(lang) ? lang[lang.length - 1] : lang;
     if (isNil(lang)) {
       return this.langChanges$.pipe(switchMap((lang) => load(lang)));
     }
 
-    lang = Array.isArray(lang) ? lang[lang.length - 1] : lang;
     if (isScopeObject(lang)) {
       // it's a scope object.
       const providerScope = lang;
