@@ -475,20 +475,32 @@ export class TranslocoService {
     return translations;
   }
 
+  /**
+   * Gets the translated object of a key as observable.
+   * Loads the translation file (if not loaded yet) and behaves the same as translateObject.
+   *
+   * @example
+   *
+   * selectTranslateObject('path.to.object').subscribe(value => ...)
+   * selectTranslateObject('path.to.object', {}, 'es').subscribe(value => ...)
+   * selectTranslateObject('path.to.object', {}, 'todos').subscribe(value => ...)
+   * selectTranslateObject('path.to.object', {}, { scope: 'todos' }).subscribe(value => ...)
+   *
+   */
   selectTranslateObject<T = any>(
     key: string,
     params?: HashMap,
-    lang?: string,
+    lang?: string | TranslocoScope | TranslocoScope[],
   ): Observable<T>;
   selectTranslateObject<T = any>(
     key: string[],
     params?: HashMap,
-    lang?: string,
+    lang?: string | TranslocoScope | TranslocoScope[],
   ): Observable<T[]>;
   selectTranslateObject<T = any>(
     key: TranslateParams,
     params?: HashMap,
-    lang?: string,
+    lang?: string | TranslocoScope | TranslocoScope[],
   ): Observable<T> | Observable<T[]>;
   selectTranslateObject<T = any>(
     key: HashMap | Map<string, HashMap>,
@@ -498,7 +510,7 @@ export class TranslocoService {
   selectTranslateObject<T = any>(
     key: TranslateObjectParams,
     params?: HashMap | null,
-    lang?: string,
+    lang?: string | TranslocoScope | TranslocoScope[],
   ): Observable<T> | Observable<T[]> {
     if (isString(key) || Array.isArray(key)) {
       return this.selectTranslate<T>(key, params!, lang, true);
@@ -512,7 +524,10 @@ export class TranslocoService {
       map((value) => {
         const translations = [value];
         for (const [_key, _params] of rest) {
-          translations.push(this.translateObject<T>(_key, _params, lang));
+          // The key-params map overload only accepts a string lang
+          translations.push(
+            this.translateObject<T>(_key, _params, lang as string | undefined),
+          );
         }
 
         return translations;
