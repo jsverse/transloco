@@ -4,6 +4,7 @@ import type { Mock } from 'vitest';
 import { createService, runLoader } from '../mocks';
 import { TranslocoService } from '../../transloco.service';
 import { HashMap } from '../../utils/type.utils';
+import { ProviderScope } from '../../transloco.types';
 
 describe('selectTranslateObject', () => {
   let service: TranslocoService;
@@ -25,6 +26,16 @@ describe('selectTranslateObject', () => {
       });
     }));
 
+    it(`GIVEN a TranslocoService with English translations loaded
+        WHEN subscribing to selectTranslateObject with an empty scope array
+        THEN should fall back to the active language`, fakeAsync(() => {
+      service.selectTranslateObject('a', {}, []).subscribe(spy);
+      runLoader();
+      expect(spy).toHaveBeenCalledWith({
+        b: { c: 'a.b.c {{fromList}} english' },
+      });
+    }));
+
     it(`GIVEN a TranslocoService with scoped translations loaded
         WHEN subscribing to selectTranslateObject with a scope parameter
         THEN should emit the translation object from the scoped language file`, fakeAsync(() => {
@@ -39,6 +50,56 @@ describe('selectTranslateObject', () => {
       service.selectTranslateObject('obj', {}, 'lazy-page/es').subscribe(spy);
       runLoader();
       expect(spy).toHaveBeenCalledWith({ a: { b: 'a.b spanish' } });
+    }));
+
+    it(`GIVEN a scope file that has not been loaded yet
+        WHEN subscribing to selectTranslateObject with a scope object
+        THEN should load the scope file and emit the translation object`, fakeAsync(() => {
+      service
+        .selectTranslateObject('obj', {}, { scope: 'lazy-page' })
+        .subscribe(spy);
+      runLoader();
+      expect(spy).toHaveBeenCalledWith({ a: { b: 'a.b english' } });
+    }));
+
+    it(`GIVEN a scope file that has not been loaded yet
+        WHEN subscribing to selectTranslateObject with an array of scope objects
+        THEN should load the last scope and emit the translation object`, fakeAsync(() => {
+      service
+        .selectTranslateObject('obj', {}, [
+          { scope: 'admin-page' },
+          { scope: 'lazy-page' },
+        ])
+        .subscribe(spy);
+      runLoader();
+      expect(spy).toHaveBeenCalledWith({ a: { b: 'a.b english' } });
+    }));
+
+    it(`GIVEN a scope object with an inline loader
+        WHEN subscribing to selectTranslateObject with that scope object
+        THEN should load the scope through the inline loader and emit the translation object`, fakeAsync(() => {
+      const scope: ProviderScope = {
+        scope: 'todos',
+        loader: {
+          en: () =>
+            Promise.resolve({ default: { list: { title: 'Todos english' } } }),
+          es: () =>
+            Promise.resolve({ default: { list: { title: 'Todos spanish' } } }),
+        },
+      };
+      service.selectTranslateObject('list', {}, scope).subscribe(spy);
+      runLoader();
+      expect(spy).toHaveBeenCalledWith({ title: 'Todos english' });
+    }));
+
+    it(`GIVEN a scope file that has not been loaded yet
+        WHEN subscribing to selectTranslateObject with an array of keys and a scope object
+        THEN should emit an array with the translation objects from the scope file`, fakeAsync(() => {
+      service
+        .selectTranslateObject(['obj'], {}, { scope: 'lazy-page' })
+        .subscribe(spy);
+      runLoader();
+      expect(spy).toHaveBeenCalledWith([{ a: { b: 'a.b english' } }]);
     }));
 
     it(`GIVEN a TranslocoService with English translations loaded
