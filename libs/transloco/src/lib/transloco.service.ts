@@ -809,33 +809,31 @@ export class TranslocoService {
     }
 
     const splitted = lang.split('/');
+    const isScoped = splitted.length > 1;
     const fallbacks = loadOptions.fallbackLangs;
     const nextLang = fallbacks![loadOptions.failedCounter!];
     this.failedLangs.add(lang);
 
-    // This handles the case where a loaded fallback language is requested again
-    if (this.cache.has(nextLang)) {
-      this.handleSuccess(nextLang, this.getTranslation(nextLang));
-      return EMPTY;
-    }
-
     const isFallbackLang = nextLang === splitted[splitted.length - 1];
-
-    if (!nextLang || isFallbackLang) {
-      throw new TranslationLoadError(
-        lang,
-        fallbacks ?? [],
-        splitted.length > 1,
-      );
-    }
 
     let resolveLang = nextLang;
     // if it's scoped lang
-    if (splitted.length > 1) {
+    if (isScoped) {
       // We need to resolve it to:
       // todos/langNotExists => todos/nextLang
       splitted[splitted.length - 1] = nextLang;
       resolveLang = splitted.join('/');
+    }
+
+    // This handles the case where a loaded fallback language is requested again.
+    // For a scope the fallback is `scope/nextLang`, not the global `nextLang`.
+    if (!(isScoped && isFallbackLang) && this.cache.has(resolveLang)) {
+      this.handleSuccess(resolveLang, this.getTranslation(resolveLang));
+      return EMPTY;
+    }
+
+    if (!nextLang || isFallbackLang) {
+      throw new TranslationLoadError(lang, fallbacks ?? [], isScoped);
     }
 
     loadOptions.failedCounter!++;
