@@ -1,0 +1,21 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "outDir": "../../dist/out-tsc",
+    "sourceMap": false,
+    "declaration": true,
+    "lib": ["es2022"],
+    "module": "nodenext",
+    "target": "ES2021",
+    "allowSyntheticDefaultImports": true,
+    "types": ["node"]
+  },
+  "include": ["**/*.ts", "**/*.mts"],
+  "exclude": [
+    "**/*.spec.ts",
+    "**/tests/**",
+    "src/test-setup.ts",
+    "vitest.config*.ts"
+  ]
+}
