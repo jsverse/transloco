@@ -30,7 +30,7 @@
     "validator"
   ],
   "dependencies": {
-    "find-duplicated-property-keys": "1.2.9",
+    "@jsverse/transloco-cli": "^9.0.0-alpha.4",
     "tslib": "^2.8.1"
   }
 }

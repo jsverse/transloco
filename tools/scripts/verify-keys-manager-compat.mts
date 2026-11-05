@@ -40,7 +40,7 @@ if (!angularVersion || !typescriptVersion) {
 
 const repoRoot = process.cwd();
 const distDir = join(repoRoot, 'dist', 'libs', 'transloco-keys-manager');
-const utilsDistDir = join(repoRoot, 'dist', 'libs', 'transloco-utils');
+const cliDistDir = join(repoRoot, 'dist', 'libs', 'transloco-cli');
 
 /**
  * Every template feature whose AST the extractors walk. `@switch` and the
@@ -185,10 +185,11 @@ const pack = (dir: string) => {
   return join(project, output.trim().split('\n').pop()!);
 };
 const tarball = pack(distDir);
-// transloco-utils is packed too, so keys-manager is checked against the utils it
-// ships with rather than the one on npm: on a release commit that version is not
-// published yet, and on a PR the registry copy lacks the PR's changes.
-const utilsTarball = pack(utilsDistDir);
+// transloco-cli holds the implementation keys-manager delegates to. It is packed
+// too, so keys-manager is checked against the CLI it ships with rather than the
+// one on npm: on a release commit that version is not published yet, and on a PR
+// the registry copy lacks the PR's changes.
+const cliTarball = pack(cliDistDir);
 
 mkdirSync(join(project, 'src'), { recursive: true });
 writeFileSync(join(project, 'src', 'app.html'), TEMPLATE);
@@ -208,7 +209,7 @@ run(
   [
     'install',
     tarball,
-    utilsTarball,
+    cliTarball,
     `@angular/compiler@${angularVersion}`,
     `typescript@${typescriptVersion}`,
     '--no-audit',

@@ -14,7 +14,7 @@ import {
 } from '../../spec-utils';
 
 const sourceRoot =
-  'libs/transloco-keys-manager/src/lib/tests/findMissingKeys/add-missing-keys';
+  'libs/transloco-cli/src/keys-manager/tests/findMissingKeys/add-missing-keys';
 mockResolveProjectBasePath(sourceRoot);
 
 /**

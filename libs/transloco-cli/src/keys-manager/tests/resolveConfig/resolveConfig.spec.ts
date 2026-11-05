@@ -17,16 +17,16 @@ import { spyOnConsole, spyOnProcess } from '../spec-utils';
 import { resolveConfig } from '../../utils/resolve-config';
 import { resolveProjectBasePath } from '../../utils/resolve-project-base-path';
 
-const sourceRoot = 'libs/transloco-keys-manager/src/lib/tests/resolveConfig';
+const sourceRoot = 'libs/transloco-cli/src/keys-manager/tests/resolveConfig';
 let mockedGlobalConfig = {};
 
 vi.mock('../../utils/resolve-project-base-path', () => ({
   resolveProjectBasePath: vi.fn().mockReturnValue({
-    projectBasePath: 'libs/transloco-keys-manager/src/lib/tests/resolveConfig',
+    projectBasePath: 'libs/transloco-cli/src/keys-manager/tests/resolveConfig',
   }),
 }));
 
-vi.mock('@jsverse/transloco-utils', () => ({
+vi.mock('../../../config', () => ({
   getGlobalConfig: () => mockedGlobalConfig,
 }));
 
@@ -260,7 +260,7 @@ describe('resolveConfig', () => {
         // Reset mock to default behavior
         vi.mocked(resolveProjectBasePath).mockReturnValue({
           projectBasePath:
-            'libs/transloco-keys-manager/src/lib/tests/resolveConfig',
+            'libs/transloco-cli/src/keys-manager/tests/resolveConfig',
         });
       });
 
@@ -282,7 +282,7 @@ describe('resolveConfig', () => {
             }
             return {
               projectBasePath:
-                'libs/transloco-keys-manager/src/lib/tests/resolveConfig',
+                'libs/transloco-cli/src/keys-manager/tests/resolveConfig',
             };
           },
         );

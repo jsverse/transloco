@@ -1,11 +1,8 @@
 import { existsSync } from 'fs';
 
-import {
-  getGlobalConfig,
-  TranslocoGlobalConfig,
-} from '@jsverse/transloco-utils';
 import chalk from 'chalk';
 
+import { getGlobalConfig, TranslocoGlobalConfig } from '../../config';
 import { defaultConfig } from '../config';
 import { getScopes } from '../keys-builder/utils/scope.utils';
 import { messages } from '../messages';
