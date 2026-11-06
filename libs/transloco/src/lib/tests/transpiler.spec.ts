@@ -217,6 +217,94 @@ describe('TranslocoTranspiler', () => {
       }
     });
 
+    describe('Circular key references', () => {
+      afterEach(() => {
+        vi.unstubAllGlobals();
+      });
+
+      it(`GIVEN a cycle that is reached through function arguments
+          WHEN transpiling in dev mode
+          THEN should throw the circular reference error with its path instead of a function error`, () => {
+        const translation = {
+          a: '[[ upperCase({{ b }}) ]]',
+          b: '{{ a }}',
+        };
+        vi.stubGlobal('ngDevMode', true);
+
+        expect(() =>
+          transpiler.transpile(
+            getTranspilerParams(translation.a, { key: 'a', translation }),
+          ),
+        ).toThrow('Circular key reference detected: a -> b -> a');
+      });
+
+      it(`GIVEN a translation that calls a function and references itself
+          WHEN transpiling in production mode
+          THEN should call the function once and resolve the circular reference to an empty string`, () => {
+        const translation = { a: '[[ upperCase(x) ]] {{ a }}' };
+        vi.stubGlobal('ngDevMode', false);
+
+        expect(
+          transpiler.transpile(
+            getTranspilerParams(translation.a, { key: 'a', translation }),
+          ),
+        ).toEqual('X ');
+      });
+
+      it(`GIVEN a function that transpiles another translation map while a key is being resolved
+          WHEN the inner translation references a key with the same name
+          THEN should resolve it without reporting a circular reference`, () => {
+        const outer = { start: '{{ a }}', a: 'A [[ upperCase(x) ]]' };
+        const inner = { inner: 'Inner {{ a }}', a: 'fine' };
+        const spy = vi
+          .spyOn(transpilerFunctions['upperCase'], 'transpile')
+          .mockImplementation(() =>
+            transpiler.transpile(
+              getTranspilerParams(inner.inner, {
+                key: 'inner',
+                translation: inner,
+              }),
+            ),
+          );
+
+        try {
+          expect(
+            transpiler.transpile(
+              getTranspilerParams(outer.start, {
+                key: 'start',
+                translation: outer,
+              }),
+            ),
+          ).toEqual('A Inner fine');
+        } finally {
+          spy.mockRestore();
+        }
+      });
+
+      it(`GIVEN a function that transpiles a key of the same translation map
+          WHEN that key references back a key that is being resolved
+          THEN should throw the circular reference error with its path`, () => {
+        const translation = { a: 'A [[ upperCase(x) ]]', x: 'X {{ a }}' };
+        const spy = vi
+          .spyOn(transpilerFunctions['upperCase'], 'transpile')
+          .mockImplementation(() =>
+            transpiler.transpile(
+              getTranspilerParams(translation.x, { key: 'x', translation }),
+            ),
+          );
+
+        try {
+          expect(() =>
+            transpiler.transpile(
+              getTranspilerParams(translation.a, { key: 'a', translation }),
+            ),
+          ).toThrow('Circular key reference detected: a -> x -> a');
+        } finally {
+          spy.mockRestore();
+        }
+      });
+    });
+
     describe('getFunctionArgs', () => {
       it(`GIVEN an empty string of raw arguments
           WHEN parsing the function arguments
@@ -617,6 +705,251 @@ describe('TranslocoTranspiler', () => {
             'Transloco3',
             'Hello there Transloco1',
           ]);
+        });
+      });
+
+      describe('Circular key references', () => {
+        afterEach(() => {
+          vi.unstubAllGlobals();
+        });
+
+        function transpileKey(
+          key: string,
+          translation: Record<string, string>,
+          params?: Record<string, unknown>,
+        ) {
+          return transpiler.transpile(
+            getTranspilerParams(translation[key], { key, translation, params }),
+          );
+        }
+
+        const selfRef = {
+          recursive: `Recursive ${wrapParam('recursive')}`,
+        };
+        const indirect = {
+          a: `A ${wrapParam('b')}`,
+          b: `B ${wrapParam('a')}`,
+        };
+
+        it(`GIVEN a translation that references itself
+            WHEN transpiling it in dev mode
+            THEN should throw an error containing the recursive path`, () => {
+          vi.stubGlobal('ngDevMode', true);
+
+          expect(() => transpileKey('recursive', selfRef)).toThrow(
+            'recursive -> recursive',
+          );
+        });
+
+        it(`GIVEN two translations that reference each other
+            WHEN transpiling one of them in dev mode
+            THEN should throw an error containing the recursive path`, () => {
+          vi.stubGlobal('ngDevMode', true);
+
+          expect(() => transpileKey('a', indirect)).toThrow('a -> b -> a');
+        });
+
+        it(`GIVEN a non-cyclic translation that leads into a cycle
+            WHEN transpiling it in dev mode
+            THEN should throw an error containing the full path from the entry key`, () => {
+          vi.stubGlobal('ngDevMode', true);
+
+          expect(() =>
+            transpileKey('start', {
+              ...indirect,
+              start: `Start ${wrapParam('a')}`,
+            }),
+          ).toThrow('start -> a -> b -> a');
+        });
+
+        it(`GIVEN a translation whose dynamic key reference resolves to itself
+            WHEN transpiling it in dev mode
+            THEN should throw an error containing the recursive path`, () => {
+          vi.stubGlobal('ngDevMode', true);
+
+          expect(() =>
+            transpileKey(
+              'self',
+              { self: wrapParam(wrapParam('target')) },
+              { target: 'self' },
+            ),
+          ).toThrow('self -> self');
+        });
+
+        it(`GIVEN a translation that references itself
+            WHEN transpiling it in production mode
+            THEN should resolve the circular reference to an empty string`, () => {
+          vi.stubGlobal('ngDevMode', false);
+
+          expect(transpileKey('recursive', selfRef)).toEqual('Recursive ');
+        });
+
+        it(`GIVEN two translations that reference each other
+            WHEN transpiling one of them in production mode
+            THEN should stop at the circular reference`, () => {
+          vi.stubGlobal('ngDevMode', false);
+
+          expect(transpileKey('a', indirect)).toEqual('A B ');
+        });
+
+        it(`GIVEN a translation that references the same key twice
+            WHEN transpiling it
+            THEN should resolve both references`, () => {
+          expect(
+            transpileKey('a', {
+              a: `${wrapParam('b')} and ${wrapParam('b')}`,
+              b: 'B',
+            }),
+          ).toEqual('B and B');
+        });
+
+        it(`GIVEN two translation paths that reference the same key
+            WHEN transpiling their common ancestor
+            THEN should resolve both paths`, () => {
+          expect(
+            transpileKey('a', {
+              a: `${wrapParam('b')} ${wrapParam('c')}`,
+              b: `b-${wrapParam('d')}`,
+              c: `c-${wrapParam('d')}`,
+              d: 'd',
+            }),
+          ).toEqual('b-d c-d');
+        });
+
+        it(`GIVEN a value that is not the translation of the given key
+            WHEN it references a translation named like the key
+            THEN should resolve the reference`, () => {
+          expect(
+            transpiler.transpile(
+              getTranspilerParams(`Hello ${wrapParam('key')}`, {
+                key: 'key',
+                translation: { key: 'World' },
+              }),
+            ),
+          ).toEqual('Hello World');
+        });
+      });
+
+      describe('Interpolation syntax inside param values', () => {
+        it(`GIVEN a translation containing private-use unicode characters
+            WHEN transpiling
+            THEN should keep those characters as-is`, () => {
+          const translation = {
+            icon: `\uE000\uE001 Failed ${wrapParam('reason')}`,
+          };
+          expect(
+            transpiler.transpile(
+              getTranspilerParams(translation.icon, {
+                key: 'icon',
+                translation,
+                params: { reason: 'Timeout' },
+              }),
+            ),
+          ).toEqual('\uE000\uE001 Failed Timeout');
+        });
+
+        it(`GIVEN a param value containing private-use unicode characters
+            WHEN transpiling
+            THEN should render the param value as-is`, () => {
+          expect(
+            transpiler.transpile(
+              getTranspilerParams(`Icon ${wrapParam('icon')}`, {
+                params: { icon: '\uE001\uE000\uE001' },
+              }),
+            ),
+          ).toEqual('Icon \uE001\uE000\uE001');
+        });
+
+        it(`GIVEN a param value containing part of an interpolation delimiter
+            WHEN the surrounding translation completes the delimiter
+            THEN should not form a new placeholder`, () => {
+          const partialStart = start.slice(0, 1);
+          expect(
+            transpiler.transpile(
+              getTranspilerParams(
+                `${wrapParam('x')}${start.slice(1)} secret ${end}`,
+                {
+                  params: { x: partialStart },
+                  translation: { secret: 'Secret' },
+                },
+              ),
+            ),
+          ).toEqual(`${start} secret ${end}`);
+        });
+
+        it(`GIVEN a param value containing its own placeholder
+            WHEN transpiling
+            THEN should render the param value as-is`, () => {
+          expect(
+            transpiler.transpile(
+              getTranspilerParams(`Hi ${wrapParam('name')}`, {
+                params: { name: `${start}name${end}` },
+              }),
+            ),
+          ).toEqual(`Hi ${start}name${end}`);
+        });
+
+        it(`GIVEN a param value containing another key's placeholder
+            WHEN transpiling
+            THEN should render the param value as-is without resolving the key`, () => {
+          expect(
+            transpiler.transpile(
+              getTranspilerParams(`Hi ${wrapParam('name')}`, {
+                params: { name: `x ${start}title${end}` },
+                translation: { title: 'Title' },
+              }),
+            ),
+          ).toEqual(`Hi x ${start}title${end}`);
+        });
+
+        it(`GIVEN a param value containing the placeholder of the translation being transpiled
+            WHEN transpiling it through a key reference
+            THEN should render the param value as-is`, () => {
+          const translation = {
+            greet: `Hi ${wrapParam('name')}`,
+            page: wrapParam('greet'),
+          };
+          expect(
+            transpiler.transpile(
+              getTranspilerParams(translation.page, {
+                key: 'page',
+                translation,
+                params: { name: `${start}greet${end}` },
+              }),
+            ),
+          ).toEqual(`Hi ${start}greet${end}`);
+        });
+
+        it(`GIVEN a param holding a full translation key
+            WHEN it is wrapped as a dynamic key reference
+            THEN should resolve the referenced key`, () => {
+          expect(
+            transpiler.transpile(
+              getTranspilerParams(
+                `${wrapParam('item')} would be ${wrapParam(wrapParam('action'))}`,
+                {
+                  params: { item: 'Item', action: 'common.action.copy' },
+                  translation: { 'common.action.copy': 'copied' },
+                },
+              ),
+            ),
+          ).toEqual('Item would be copied');
+        });
+
+        it(`GIVEN a param holding part of a translation key
+            WHEN it completes a dynamic key reference
+            THEN should resolve the referenced key`, () => {
+          expect(
+            transpiler.transpile(
+              getTranspilerParams(
+                `${wrapParam('item')} would be ${wrapParam(`common.action.${wrapParam('action')}`)}`,
+                {
+                  params: { item: 'Item', action: 'copy' },
+                  translation: { 'common.action.copy': 'copied' },
+                },
+              ),
+            ),
+          ).toEqual('Item would be copied');
         });
       });
     });
