@@ -39,9 +39,16 @@ export interface InitStep {
 export const translationFile = (folder: string, lang: string) =>
   `${folder.replace(/[\\/]+$/, '')}/${lang}.json`;
 
+const escapeControl = (char: string) =>
+  ({ '\n': '\\n', '\r': '\\r', '\t': '\\t' })[char] ??
+  `\\u${char.charCodeAt(0).toString(16).padStart(4, '0')}`;
+
 /** A string literal the way Prettier writes it, in single quotes. */
 const quote = (value: string) =>
-  `'${value.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`;
+  `'${value
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    .replace(/[\p{Cc}\u2028\u2029]/gu, escapeControl)}'`;
 
 /**
  * The config file the way `ng add @jsverse/transloco` leaves it once the Angular

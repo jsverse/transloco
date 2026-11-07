@@ -95,11 +95,12 @@ function dirExists(tree: Tree, dirPath: string): boolean {
 /**
  * Detects the appropriate path for translation assets based on Angular project structure.
  *
- * Angular 18+ introduced a new project structure using a top-level `public/` directory instead
- * of `src/assets/` for static assets. This function implements a three-tier detection strategy
- * to determine where translation JSON files should be placed:
+ * Angular 18+ introduced a new project structure using a `public/` directory next to the
+ * project's `src/` instead of `src/assets/` for static assets. In a multi-project workspace
+ * every application serves its own `public/` folder, so the detection is relative to the
+ * selected project and never to the workspace root. It follows a three-tier strategy:
  *
- * 1. **Directory existence check**: If `/public` exists, assume Angular 18+ structure
+ * 1. **Directory existence check**: If `<projectRoot>/public` exists, assume Angular 18+ structure
  * 2. **Legacy assets check**: If `${sourceRoot}/assets` exists, use traditional structure
  * 3. **Version fallback**: Parse package.json @angular/core version as final determination
  *
@@ -108,12 +109,18 @@ function dirExists(tree: Tree, dirPath: string): boolean {
  * choice for where users expect their translation files to be placed.
  *
  * @param host - The schematic virtual file system (Tree)
+ * @param projectRoot - The project root path ('' for a root project, 'projects/app-name' otherwise)
  * @param sourceRoot - The source root path (typically 'src' or 'projects/app-name/src')
  * @returns The detected assets path, e.g. 'public/i18n/' or 'src/assets/i18n/'
  */
-function detectAssetsPath(host: Tree, sourceRoot: string): string {
-  if (dirExists(host, '/public')) {
-    return 'public/i18n/';
+function detectAssetsPath(
+  host: Tree,
+  projectRoot: string,
+  sourceRoot: string,
+): string {
+  const publicPath = joinPaths(projectRoot, 'public');
+  if (dirExists(host, `/${publicPath}`)) {
+    return `${publicPath}/i18n/`;
   }
 
   if (dirExists(host, `${sourceRoot}/assets`)) {
@@ -126,18 +133,24 @@ function detectAssetsPath(host: Tree, sourceRoot: string): string {
     const version =
       packageJson.dependencies?.['@angular/core'] ||
       packageJson.devDependencies?.['@angular/core'];
-    // Extract major version number from versions like "^18.2.0", "~17.0.0", ">=16.0.0", etc.
-    const majorVersionMatch = version?.match(/(\d+)\./);
-    const majorVersion = parseInt(majorVersionMatch[1]);
-    return majorVersion >= 18 ? 'public/i18n/' : `${sourceRoot}/assets/i18n/`;
+    // The first integer of the range: "^18.2.0", "~17.0.0", ">=16.0.0", "^20", ">=18 <21", etc.
+    const majorVersion = parseInt(version.match(/\d+/)[0]);
+    return majorVersion >= 18
+      ? `${publicPath}/i18n/`
+      : `${sourceRoot}/assets/i18n/`;
   } catch {
     return `${sourceRoot}/assets/i18n/`; // Safe default
   }
 }
 
-function getUrlPathFromAssetsPath(assetsPath: string): string {
-  if (assetsPath.startsWith('public/')) {
-    return assetsPath.replace('public/', '');
+function joinPaths(...parts: string[]) {
+  return parts.filter(Boolean).join('/');
+}
+
+function getUrlPathFromAssetsPath(assetsPath: string, projectRoot: string) {
+  const publicPrefix = `${joinPaths(projectRoot, 'public')}/`;
+  if (assetsPath.startsWith(publicPrefix)) {
+    return assetsPath.slice(publicPrefix.length);
   }
   return assetsPath;
 }
@@ -152,11 +165,12 @@ export function ngAdd(options: SchemaOptions): Rule {
     }
     const project = getProject(host, options.project);
     const sourceRoot = project.sourceRoot ?? 'src';
+    const projectRoot = project.root ?? '';
     const isLib = project.projectType === 'library';
     const assetsPath = options.path
       ? `${sourceRoot}/${options.path}`
-      : detectAssetsPath(host, sourceRoot);
-    const urlPath = getUrlPathFromAssetsPath(assetsPath);
+      : detectAssetsPath(host, projectRoot, sourceRoot);
+    const urlPath = getUrlPathFromAssetsPath(assetsPath, projectRoot);
     const mainPath = await getMainFilePath(host, options.project);
     const isStandalone = isStandaloneApp(host, mainPath);
     const modulePath = isStandalone

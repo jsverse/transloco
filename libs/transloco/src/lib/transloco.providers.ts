@@ -53,8 +53,10 @@ export interface TranslocoOptions {
  * `TranslocoService` instance, enabling their use outside Angular's DI context
  * (e.g. class constructors, utility functions, third-party integrations).
  *
- * **Omit in SSR** — the module-level reference persists across requests, causing
- * state leakage between users. In SSR or MFE environments, inject `TranslocoService` directly.
+ * Keep it in SSR applications: on the server it does nothing, so no state leaks between
+ * requests, and the functions return `''` / `[]` while rendering there. Omit it only in a
+ * multi-instance micro-frontend setup, where several application instances share the one
+ * module-level service and the last one wins; inject `TranslocoService` directly there.
  *
  * @example
  * // app.config.ts

@@ -181,6 +181,7 @@ export function addGlobalTranslateFn(): Rule {
     }
 
     const rules: Rule[] = [];
+    const wiredSources: string[] = [];
     const librariesWithUsage: string[] = [];
     const unresolved: string[] = [];
 
@@ -212,6 +213,7 @@ export function addGlobalTranslateFn(): Rule {
         continue;
       }
 
+      wiredSources.push(...sources);
       rules.push(
         standalone.addRootProvider(
           project.name,
@@ -241,8 +243,39 @@ export function addGlobalTranslateFn(): Rule {
       );
     }
 
-    return chain(rules);
+    // `addRootProvider` appends on the line of the previous provider.
+    const before = new Map(
+      wiredSources.map((path) => [path, tree.read(path)?.toString()]),
+    );
+
+    return chain([
+      ...rules,
+      (host: Tree) => {
+        for (const [path, original] of before) {
+          const updated = host.read(path)?.toString();
+          if (updated && updated !== original) {
+            host.overwrite(path, moveProviderToOwnLine(updated));
+          }
+        }
+      },
+    ]);
   };
+}
+
+/**
+ * Turns `}), provideGlobalTranslateFn()` - or `provideRouter(routes), ...` - into
+ * a line of its own, indented like the previous provider and its siblings.
+ */
+function moveProviderToOwnLine(source: string): string {
+  const eol = source.includes('\r\n') ? '\r\n' : '\n';
+
+  return source.replace(
+    new RegExp(
+      `^([ \\t]*)([)}\\]]+,|[\\w$.]+\\([^\\[\\]{}]*\\),)[ \\t]+(${PROVIDER_FN}\\(\\))`,
+      'gm',
+    ),
+    `$1$2${eol}$1$3`,
+  );
 }
 
 /** How many offending files to name before collapsing the rest into a count. */

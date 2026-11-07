@@ -60,7 +60,7 @@ The `TranslateService` injections will be replaced with `TranslocoService`, in a
 The calls are replaced on every name the service is injected as, a constructor parameter (`private translate: TranslateService`), a field or a variable given by `inject()` (`#i18n = inject(TranslateService)`, `const t = inject(TranslateService)`).
 
 1. `translateService.currentLang` will be replaced with `translateService.getActiveLang()`.
-2. `translateService.onLangChange` will be replaced with `translateService.langChanges$`.
+2. `translateService.onLangChange` will be replaced with `translateService.langChanges$`. `langChanges$` emits the language itself, not a `LangChangeEvent`: change `(e: LangChangeEvent) => e.lang` to `(lang: string) => lang`. `transloco migrate ngx-translate` prints every use of `LangChangeEvent` it leaves.
 3. `translateService.use(...)` calls will be replaced with `translateService.setActiveLang(...)`.
 4. `translateService.instant(...)` calls will be replaced with `translateService.translate(...)`.
 5. `translateService.get(...)` calls will be replaced with `translateService.selectTranslate(...).pipe(take(1))`, so that they emit once as before instead of listening to language changes. `take` is added to the `rxjs` import of the file, unless it imports it already.
