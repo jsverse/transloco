@@ -245,10 +245,13 @@ describe('Multiple fallbacks', () => {
         mockLangs['admin-page/es'],
       );
 
-      // a second failing load reuses the cached scope fallback
-      service.load('admin-page/notExists2').subscribe();
+      // a second failing load reuses the cached scope fallback and emits it
+      let emitted: unknown;
+      service
+        .load('admin-page/notExists2')
+        .subscribe((translation) => (emitted = translation));
       runLoader(2);
-      expect(service.load).toHaveBeenCalledTimes(3);
+      expect(emitted).toEqual(mockLangs['admin-page/es']);
       expect(service.getTranslation('admin-page/es')).toEqual(
         mockLangs['admin-page/es'],
       );

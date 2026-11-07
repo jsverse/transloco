@@ -829,7 +829,9 @@ export class TranslocoService {
     // For a scope the fallback is `scope/nextLang`, not the global `nextLang`.
     if (!(isScoped && isFallbackLang) && this.cache.has(resolveLang)) {
       this.handleSuccess(resolveLang, this.getTranslation(resolveLang));
-      return EMPTY;
+      // Unscoped requests keep the old behavior. A scoped load still has to
+      // emit, so return the cached `scope/nextLang`.
+      return isScoped ? this.load(resolveLang, loadOptions) : EMPTY;
     }
 
     if (!nextLang || isFallbackLang) {
