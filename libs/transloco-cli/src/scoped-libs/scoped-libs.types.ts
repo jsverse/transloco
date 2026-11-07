@@ -13,6 +13,7 @@ export interface ScopedLibsOptions extends Pick<
 > {
   watch: boolean;
   skipGitIgnoreUpdate: boolean;
+  onProblem?: (problem: string) => void;
 }
 
 export interface CopyScopeOptions {

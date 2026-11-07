@@ -245,4 +245,57 @@ describe('compareKeysToFiles', () => {
       expect.objectContaining({ a: { b: 'value' } }),
     );
   });
+
+  it(`GIVEN an en.vendor.json, as scoped-libs writes it for a joined library, next to en.json
+      WHEN missing keys are added
+      THEN only en.json is a language, the vendor file is neither compared nor written`, () => {
+    mockGetTranslationFilesPath.mockReturnValue([
+      '/tmp/i18n/en.json',
+      '/tmp/i18n/en.vendor.json',
+    ]);
+    mockNormalizedGlob.mockReturnValue([
+      '/tmp/i18n/en.json',
+      '/tmp/i18n/en.vendor.json',
+    ]);
+
+    compareKeysToFiles({
+      scopeToKeys: { __global: { key: 'value' } },
+      translationsPath: '/tmp/i18n',
+      addMissingKeys: true,
+      emitErrorOnExtraKeys: false,
+      fileFormat: 'json',
+      unflat: false,
+    });
+
+    expect(mockWriteFile).toHaveBeenCalledExactlyOnceWith('/tmp/i18n/en.json', {
+      key: 'value',
+    });
+    expect(mockBuildTable).toHaveBeenCalledWith(
+      expect.objectContaining({ langs: ['en'] }),
+    );
+  });
+
+  it(`GIVEN a file of a scope mapped by scopePathMap next to a vendor file
+      WHEN the keys are compared
+      THEN only the language file is read`, () => {
+    mockNormalizedGlob.mockReturnValue([
+      '/tmp/libs/ui/i18n/es.json',
+      '/tmp/libs/ui/i18n/es.vendor.json',
+    ]);
+
+    compareKeysToFiles({
+      scopeToKeys: { __global: {}, ui: { key: 'value' } },
+      translationsPath: '/tmp/i18n',
+      addMissingKeys: false,
+      emitErrorOnExtraKeys: false,
+      fileFormat: 'json',
+      unflat: false,
+      scopePathMap: { ui: '/tmp/libs/ui/i18n' },
+    });
+
+    expect(mockReadFile).toHaveBeenCalledExactlyOnceWith(
+      '/tmp/libs/ui/i18n/es.json',
+      { parse: true },
+    );
+  });
 });

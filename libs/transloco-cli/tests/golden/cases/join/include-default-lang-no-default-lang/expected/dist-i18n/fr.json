@@ -1,0 +1,14 @@
+{
+  "title": "Titre",
+  "nav": {
+    "home": "Accueil"
+  },
+  "admin": {
+    "users": "Utilisateurs"
+  },
+  "shop": {
+    "cart": {
+      "empty": "Vide"
+    }
+  }
+}

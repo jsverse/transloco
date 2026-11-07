@@ -2,6 +2,7 @@
   "$schema": "http://json-schema.org/schema",
   "$id": "SchematicsTranslocoMigrate",
   "title": "Migrate from @ngx-translate to Transloco",
+  "description": "Superseded by `transloco migrate ngx-translate`, to be deprecated in Transloco v10. Migrate from @ngx-translate to Transloco",
   "type": "object",
   "properties": {
     "path": {

@@ -187,3 +187,125 @@ describe('join then split', () => {
     expect(result[`${root}/es.json`]).toBe(json({ hello: 'hola' }));
   });
 });
+
+describe('join then split of files formatted in their own way', () => {
+  const plain: MemoryFiles = {
+    ...pair(root, { hello: 'hello' }, { hello: 'hola' }),
+    ...pair(`${root}/admin`, { title: 'Admin' }, { title: 'Administrador' }),
+    ...pair(`${root}/shop`, { cart: 'Cart' }, { cart: 'Carrito' }),
+  };
+
+  const reformat = (files: MemoryFiles, format: (content: string) => string) =>
+    Object.fromEntries(
+      Object.entries(files).map(([file, content]) => [file, format(content)]),
+    );
+
+  const withFinalNewline = (content: string) => `${content}\n`;
+  const minified = (content: string) => JSON.stringify(JSON.parse(content));
+  const crlf = (content: string) => `${content.replaceAll('\n', '\r\n')}\r\n`;
+
+  /** Joins the files, lets the edit change the joined ones, and splits them. */
+  function splitAfter(
+    files: MemoryFiles,
+    edit: (joined: MemoryFiles) => MemoryFiles = (joined) => joined,
+  ) {
+    const joined = edit(applyPlannedFiles(files, joinAll(files)));
+
+    return splitTranslations(createMemoryReader({ ...files, ...joined }), {
+      root,
+      source: 'dist-i18n',
+    });
+  }
+
+  const editAdminTitle = (joined: MemoryFiles): MemoryFiles => ({
+    ...joined,
+    'dist-i18n/es.json': json({
+      hello: 'hola',
+      admin: { title: 'Administracion' },
+      shop: { cart: 'Carrito' },
+    }),
+  });
+
+  it.each([
+    ['ends with a line break', withFinalNewline],
+    ['is minified', minified],
+    ['has Windows line endings', crlf],
+  ])(
+    `GIVEN translation files whose format %s
+      WHEN they are joined and then split
+      THEN no file is written, so every file holds its original bytes`,
+    (_, format) => {
+      expect(splitAfter(reformat(plain, format))).toEqual([]);
+    },
+  );
+
+  it(`GIVEN translation files that end with a line break
+      WHEN one value is edited in the joined file and it is split
+      THEN only the file of that value is written, and it ends with a line break`, () => {
+    const planned = splitAfter(
+      reformat(plain, withFinalNewline),
+      editAdminTitle,
+    );
+
+    expect(planned).toEqual([
+      {
+        path: `${root}/admin/es.json`,
+        content: `${json({ title: 'Administracion' })}\n`,
+      },
+    ]);
+  });
+
+  it(`GIVEN translation files that do not end with a line break
+      WHEN one value is edited in the joined file and it is split
+      THEN only the file of that value is written, and it does not end with a line break`, () => {
+    const planned = splitAfter(plain, editAdminTitle);
+
+    expect(planned).toEqual([
+      {
+        path: `${root}/admin/es.json`,
+        content: json({ title: 'Administracion' }),
+      },
+    ]);
+  });
+
+  it(`GIVEN a minified file
+      WHEN one value is edited in the joined file and it is split
+      THEN the file is written with two spaces of indentation`, () => {
+    const planned = splitAfter(reformat(plain, minified), editAdminTitle);
+
+    expect(planned).toEqual([
+      {
+        path: `${root}/admin/es.json`,
+        content: json({ title: 'Administracion' }),
+      },
+    ]);
+  });
+
+  it(`GIVEN files with Windows line endings
+      WHEN one value is edited in the joined file and it is split
+      THEN only that file is written, with line feeds, as join writes it`, () => {
+    const planned = splitAfter(reformat(plain, crlf), editAdminTitle);
+
+    expect(planned).toEqual([
+      {
+        path: `${root}/admin/es.json`,
+        content: `${json({ title: 'Administracion' })}\n`,
+      },
+    ]);
+  });
+
+  it(`GIVEN a root file whose value is edited in the joined file
+      WHEN it is split
+      THEN only the root file of that language is written`, () => {
+    const planned = splitAfter(plain, (joined) => ({
+      ...joined,
+      'dist-i18n/es.json': json({
+        hello: 'hola!',
+        admin: { title: 'Administrador' },
+        shop: { cart: 'Carrito' },
+      }),
+    }));
+
+    expect(planned.map(({ path }) => path)).toEqual([`${root}/es.json`]);
+  });
+});

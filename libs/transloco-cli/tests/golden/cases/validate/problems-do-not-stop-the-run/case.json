@@ -1,0 +1,6 @@
+{
+  "description": "GIVEN a missing path, a folder, a file with duplicate keys and a valid file WHEN they are validated together THEN every problem is reported on its own line in the order given and it exits with 1",
+  "args": ["validate", "i18n/nope.json", "i18n/en.json", "i18n", "i18n/duplicate.json"],
+  "exitCode": 1,
+  "snapshot": ["stdout", "stderr"]
+}

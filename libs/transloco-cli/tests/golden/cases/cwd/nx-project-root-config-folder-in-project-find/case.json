@@ -1,0 +1,5 @@
+{
+  "description": "GIVEN an Nx workspace whose root config has its rootTranslationsPath in project golden-cwd-root-find WHEN find runs with --cwd naming the folder of the project and --project golden-cwd-root-find THEN it reads that folder, as it does from the root, and finds nothing missing",
+  "args": ["--cwd", "apps/x", "find", "--project", "golden-cwd-root-find"],
+  "exitCode": 0
+}

@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "projects": {
+    "shop": {
+      "projectType": "application",
+      "root": "",
+      "sourceRoot": "src"
+    }
+  }
+}

@@ -62,6 +62,15 @@ export function testAddMissingKeysConfig(
       });
     });
 
+    it('should end the written file with a line break', () => {
+      fs.mkdirSync(nodePath.dirname(translationPath), { recursive: true });
+      fs.writeFileSync(translationPath, JSON.stringify(missingJson));
+      findMissingKeys(config);
+      expect(fs.readFileSync(translationPath, 'utf-8').endsWith('\n')).toBe(
+        fileFormat === 'json',
+      );
+    });
+
     it('should respect unflat option', () => {
       fs.mkdirSync(nodePath.dirname(translationPath), { recursive: true });
       fs.writeFileSync(translationPath, JSON.stringify(unflatten(missingJson)));

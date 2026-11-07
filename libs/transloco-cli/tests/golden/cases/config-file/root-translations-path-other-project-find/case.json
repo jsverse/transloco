@@ -1,0 +1,6 @@
+{
+  "description": "GIVEN one root config whose rootTranslationsPath is in project a of a multi-project workspace WHEN the keys of project b are searched THEN find reads the default folder of b, as extract writes to it, finds nothing missing and says so on stderr",
+  "args": ["find", "--project", "b"],
+  "exitCode": 0,
+  "stderrMatches": "The translations folder of the config, projects/a/public/i18n, is outside project 'b' \\(projects/b\\)\\. Reading projects/b/src/assets/i18n instead\\."
+}

@@ -1,0 +1,5 @@
+{
+  "description": "GIVEN a config with both rootTranslationsPath and keysManager.output WHEN the keys are extracted with --output THEN the files are written to the folder of the flag",
+  "args": ["extract", "--default-value", "missing", "--output", "cli/i18n"],
+  "exitCode": 0
+}
