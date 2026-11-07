@@ -8,7 +8,7 @@ import {
   findGlobalConfigFile,
   getGlobalConfig,
   searchGlobalConfig,
-} from './transloco-utils.js';
+} from './transloco-utils';
 
 const TS_CONFIG = `export default { rootTranslationsPath: 'src/assets/i18n/', langs: ['en', 'es'] };`;
 

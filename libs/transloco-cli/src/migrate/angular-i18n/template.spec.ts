@@ -3,7 +3,7 @@ import path from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
-import { migrateTemplate } from './template.js';
+import { migrateTemplate } from './template';
 
 const fixtures = path.join(import.meta.dirname, 'tests/fixtures');
 const app = 'src/app';

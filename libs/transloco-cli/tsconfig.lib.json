@@ -6,7 +6,7 @@
     "sourceMap": false,
     "declaration": true,
     "lib": ["es2022"],
-    "module": "nodenext",
+    "module": "esnext",
     "target": "ES2021",
     "allowSyntheticDefaultImports": true,
     "types": ["node"]
@@ -16,6 +16,7 @@
     "**/*.spec.ts",
     "**/tests/**",
     "src/test-setup.ts",
-    "vitest.config*.ts"
+    "vitest.config*.ts",
+    "tsdown.config.ts"
   ]
 }

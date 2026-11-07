@@ -1,9 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import type { TranslocoGlobalConfig } from '../config/index.js';
-import { CliError } from '../errors.js';
-import { TranslationFilesError } from '../translation-files/index.js';
+import type { TranslocoGlobalConfig } from '../config';
+import { CliError } from '../errors';
+import { TranslationFilesError } from '../translation-files';
 
 /** The translations root is the option, then the config. Neither is an error. */
 export function resolveTranslationsRoot(

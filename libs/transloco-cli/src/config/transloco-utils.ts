@@ -3,7 +3,7 @@ import * as path from 'node:path';
 
 import { cosmiconfigSync, type CosmiconfigResult } from 'cosmiconfig';
 
-import { TranslocoGlobalConfig } from './transloco-utils.types.js';
+import { TranslocoGlobalConfig } from './transloco-utils.types';
 
 export function getGlobalConfig(searchPath = ''): TranslocoGlobalConfig {
   const explorer = cosmiconfigSync('transloco');

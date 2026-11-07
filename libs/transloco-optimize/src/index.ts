@@ -1,12 +1,11 @@
 #!/usr/bin/env node
 import { warnDeprecatedBin } from '@jsverse/transloco-cli/internal/deprecation';
 import commandLineArgs from 'command-line-args';
-
 import {
   getTranslationFiles,
   optimizeFiles,
   getTranslationsFolder,
-} from './lib/transloco-optimize.js';
+} from '@jsverse/transloco-cli/internal/optimize';
 
 warnDeprecatedBin('transloco-optimize');
 

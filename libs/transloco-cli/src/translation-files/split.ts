@@ -13,7 +13,7 @@ import {
   type PlannedFile,
   type Translation,
   type TranslationFileReader,
-} from './shared.js';
+} from './shared';
 
 export interface SplitOptions {
   /** The folder of the root translation files. */

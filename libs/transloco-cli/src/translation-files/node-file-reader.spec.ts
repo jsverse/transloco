@@ -4,7 +4,7 @@ import path from 'node:path';
 
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { nodeFileReader } from './node-file-reader.js';
+import { nodeFileReader } from './node-file-reader';
 
 describe('nodeFileReader', () => {
   let root: string;

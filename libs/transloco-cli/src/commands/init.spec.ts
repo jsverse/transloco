@@ -4,12 +4,12 @@ import path from 'node:path';
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { CliError } from '../errors.js';
-import { generateConfigFile } from '../init/plan.js';
-import { createProgram } from '../program.js';
-import { collectOutput } from '../tests/program-harness.js';
+import { CliError } from '../errors';
+import { generateConfigFile } from '../init/plan';
+import { createProgram } from '../program';
+import { collectOutput } from '../tests/program-harness';
 
-import { runInit, type InitCommandOptions } from './init.js';
+import { runInit, type InitCommandOptions } from './init';
 
 const ui = vi.hoisted(() => ({
   startPrompts: vi.fn(),
@@ -18,7 +18,7 @@ const ui = vi.hoisted(() => ({
   endPrompts: vi.fn(),
 }));
 
-vi.mock('../init/prompts.js', () => ui);
+vi.mock('../init/prompts', () => ui);
 
 describe('runInit', () => {
   const originalCwd = process.cwd();

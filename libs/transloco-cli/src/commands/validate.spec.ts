@@ -4,9 +4,9 @@ import path from 'node:path';
 
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { CliError } from '../errors.js';
+import { CliError } from '../errors';
 
-import { runValidate } from './validate.js';
+import { runValidate } from './validate';
 
 describe('runValidate', () => {
   let dir: string;
