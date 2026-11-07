@@ -19,7 +19,8 @@ const loaded: string[] = [];
  * in for everything below them.
  */
 const stubbed: Record<string, () => object> = {
-  '@angular/compiler': () => ({}),
+  // The real one, as the Angular i18n migration parses the templates with it.
+  '@angular/compiler': () => vi.importActual('@angular/compiler'),
   // Requires @angular/compiler as a peer, so loading it loads the compiler too.
   '@jsverse/angular-utils': () => ({}),
   // Loads `typescript` with `require`, which a mock of the package wouldn't see.
@@ -69,6 +70,7 @@ const recorded = [
     'optimize',
     'scoped-libs',
     'translation-files',
+    'migrate',
     'config',
     'utils',
   ]
@@ -81,6 +83,8 @@ const recorded = [
   './commands/scoped-libs.js',
   './commands/join.js',
   './commands/split.js',
+  './commands/migrate-ngx-translate.js',
+  './commands/migrate-angular-i18n.js',
   './commands/translation-folders.js',
   './peers.js',
   'find-duplicated-property-keys',
@@ -89,6 +93,9 @@ const recorded = [
   'cosmiconfig',
   'chokidar',
   'yocto-spinner',
+  // Recorded though the keys manager loads it with `require`, which a mock of
+  // the package doesn't see: this catches a `typescript` import of anything else.
+  'typescript',
   'cli-table3',
   'gettext-parser',
   'deep-diff',
@@ -176,10 +183,18 @@ describe('lazy loading', () => {
       ['scoped-libs', '--help'],
       ['join', '--help'],
       ['split', '--help'],
+      ['migrate', '--help'],
+      ['migrate', 'ngx-translate', '--help'],
+      ['migrate', 'angular-i18n', '--help'],
+      ['help', 'migrate', 'ngx-translate'],
       // rejected by the argument parser
       ['extract', '--add-missing-keys'],
       ['find', '--replace'],
       ['translate'],
+      ['migrate'],
+      ['migrate', 'translate'],
+      ['migrate', 'angular-i18n'],
+      ['migrate', 'ngx-translate', '--langs', 'en'],
     ].map((args) => [args.join(' '), args] as const),
   )(
     `GIVEN the arguments "%s"
@@ -288,6 +303,81 @@ describe('lazy loading', () => {
         'translation-files/shared',
         'translation-files/split',
         'utils/file-system',
+      ]);
+    });
+  });
+
+  describe('migrate', () => {
+    const originalCwd = process.cwd();
+
+    beforeEach(() => {
+      fs.mkdirSync(path.join(dir, 'app'));
+      fs.writeFileSync(path.join(dir, 'app', 'a.html'), '<p i18n>One</p>');
+    });
+
+    afterEach(() => {
+      process.chdir(originalCwd);
+    });
+
+    it(`GIVEN a folder of sources
+        WHEN it is migrated from ngx-translate
+        THEN only the runner, the folder check, the migration and the glob are loaded`, async () => {
+      await run('--cwd', dir, 'migrate', 'ngx-translate', '--input', 'app');
+
+      expect([...loaded].sort()).toEqual([
+        'commands/migrate-ngx-translate',
+        'commands/translation-folders',
+        'glob',
+        'migrate/find-files',
+        'migrate/ngx-translate/apply-matcher',
+        'migrate/ngx-translate/migrate-ngx-translate',
+        'migrate/ngx-translate/migration-matchers',
+        'translation-files/index',
+        'translation-files/join',
+        'translation-files/shared',
+        'translation-files/split',
+        'utils/style',
+      ]);
+    });
+
+    it(`GIVEN a folder of templates
+        WHEN it is migrated from the Angular i18n
+        THEN only the runner, the folder check, the config reader, the peer check, the migration, the compiler and the glob are loaded`, async () => {
+      await run(
+        '--cwd',
+        dir,
+        'migrate',
+        'angular-i18n',
+        '--input',
+        'app',
+        '--translations-path',
+        'i18n',
+        '--langs',
+        'en',
+      );
+
+      expect(
+        JSON.parse(fs.readFileSync(path.join(dir, 'i18n', 'en.json'), 'utf-8')),
+      ).toEqual({ one: 'One' });
+      expect([...loaded].sort()).toEqual([
+        '@angular/compiler',
+        'commands/migrate-angular-i18n',
+        'commands/translation-folders',
+        'config/index',
+        'config/transloco-utils',
+        'cosmiconfig',
+        'glob',
+        'migrate/angular-i18n/dasherize',
+        'migrate/angular-i18n/migrate-angular-i18n',
+        'migrate/angular-i18n/template',
+        'migrate/find-files',
+        'peers',
+        'translation-files/index',
+        'translation-files/join',
+        'translation-files/shared',
+        'translation-files/split',
+        'utils/file-system',
+        'utils/style',
       ]);
     });
   });

@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN an option of a sub-command given to migrate itself WHEN the binary runs THEN it is rejected and nothing is written",
+  "args": [
+    "migrate",
+    "--input",
+    "src/app",
+    "ngx-translate"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

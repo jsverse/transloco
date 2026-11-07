@@ -45,6 +45,10 @@
     "./internal/translation-files": {
       "types": "./internal/translation-files.d.ts",
       "default": "./internal/translation-files.js"
+    },
+    "./internal/migrate": {
+      "types": "./internal/migrate.d.ts",
+      "default": "./internal/migrate.js"
     }
   },
   "main": "index.js",

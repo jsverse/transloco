@@ -1,0 +1,18 @@
+{
+  "description": "GIVEN the aliases of the options WHEN the templates are migrated THEN they work like the long names",
+  "args": [
+    "migrate",
+    "angular-i18n",
+    "-i",
+    "libs/ui",
+    "-l",
+    "en",
+    "-c",
+    "transloco.config.js"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

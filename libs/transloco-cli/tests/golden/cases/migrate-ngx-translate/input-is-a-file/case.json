@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN an input that is a file WHEN the command runs THEN stderr says it is no folder and it exits with 1",
+  "args": [
+    "migrate",
+    "ngx-translate",
+    "--input",
+    "src/app"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}
