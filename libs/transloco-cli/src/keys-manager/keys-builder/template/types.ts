@@ -1,6 +1,6 @@
 import { parseTemplate as ngParseTemplate } from '@angular/compiler';
 
-import type { ExtractorConfig } from '../../types.js';
+import type { ExtractorConfig } from '../../types';
 
 export interface TemplateExtractorConfig extends ExtractorConfig {
   content?: string;

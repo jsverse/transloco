@@ -2,8 +2,8 @@
 export {
   migrateAngularI18n,
   type MigrateAngularI18nOptions,
-} from './angular-i18n/migrate-angular-i18n.js';
+} from './angular-i18n/migrate-angular-i18n';
 export {
   migrateNgxTranslate,
   type MigrateNgxTranslateOptions,
-} from './ngx-translate/migrate-ngx-translate.js';
+} from './ngx-translate/migrate-ngx-translate';

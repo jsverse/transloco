@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
-import { joinTranslations, type JoinOptions } from './join.js';
-import { TranslationFilesError } from './shared.js';
+import { joinTranslations, type JoinOptions } from './join';
+import { TranslationFilesError } from './shared';
 import {
   createMemoryReader,
   json,
   type MemoryFiles,
-} from './tests/memory-file-reader.js';
+} from './tests/memory-file-reader';
 
 const root = 'src/assets/i18n';
 const options: JoinOptions = { root, outDir: 'dist-i18n', defaultLang: 'en' };

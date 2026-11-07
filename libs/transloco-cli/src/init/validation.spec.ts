@@ -9,7 +9,7 @@ import {
   parseLanguages,
   translationsPathProblem,
   writeProblem,
-} from './validation.js';
+} from './validation';
 
 describe('languageProblem', () => {
   it.each(['en', 'es-MX', 'zh_Hans', 'pt.BR', 'x'])(

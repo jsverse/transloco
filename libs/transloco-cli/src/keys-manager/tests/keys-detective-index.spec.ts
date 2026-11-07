@@ -1,14 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-import { findMissingKeys } from '../keys-detective/index.js';
-import { Config } from '../types.js';
+import { findMissingKeys } from '../keys-detective';
+import { Config } from '../types';
 
-vi.mock('../config.js', () => ({
+vi.mock('../config', () => ({
   setConfig: vi.fn(),
   getConfig: () => ({}),
 }));
 
-vi.mock('../utils/resolve-config.js', () => ({
+vi.mock('../utils/resolve-config', () => ({
   resolveConfig: (config: any) => ({
     ...config,
     translationsPath: '/tmp/i18n',
@@ -19,19 +19,19 @@ vi.mock('../utils/resolve-config.js', () => ({
   }),
 }));
 
-vi.mock('../keys-detective/get-translation-files-path.js', () => ({
+vi.mock('../keys-detective/get-translation-files-path', () => ({
   getTranslationFilesPath: vi.fn().mockReturnValue([]),
 }));
 
-vi.mock('../keys-builder/build-keys.js', () => ({
+vi.mock('../keys-builder/build-keys', () => ({
   buildKeys: vi.fn().mockReturnValue({ scopeToKeys: {} }),
 }));
 
-vi.mock('../keys-detective/compare-keys-to-files.js', () => ({
+vi.mock('../keys-detective/compare-keys-to-files', () => ({
   compareKeysToFiles: vi.fn(),
 }));
 
-vi.mock('../utils/logger.js', () => ({
+vi.mock('../utils/logger', () => ({
   getLogger: () => ({
     log: vi.fn(),
     success: vi.fn(),
@@ -55,15 +55,15 @@ describe('findMissingKeys', () => {
 
   it('should forward the built keys and resolved config to compareKeysToFiles when translation files exist', async () => {
     const { getTranslationFilesPath } =
-      await import('../keys-detective/get-translation-files-path.js');
+      await import('../keys-detective/get-translation-files-path');
     (getTranslationFilesPath as any).mockReturnValue(['/tmp/i18n/en.json']);
 
-    const { buildKeys } = await import('../keys-builder/build-keys.js');
+    const { buildKeys } = await import('../keys-builder/build-keys');
     const scopeToKeys = { __global: { 'some.key': 'missing' } };
     (buildKeys as any).mockReturnValue({ scopeToKeys });
 
     const { compareKeysToFiles } =
-      await import('../keys-detective/compare-keys-to-files.js');
+      await import('../keys-detective/compare-keys-to-files');
 
     findMissingKeys({} as Config);
 

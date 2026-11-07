@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { CliError } from '../errors.js';
+import { CliError } from '../errors';
 
 import {
   generateConfigFile,
@@ -8,7 +8,7 @@ import {
   type InitState,
   planInit,
   translationFile,
-} from './plan.js';
+} from './plan';
 
 const answers = (overrides: Partial<InitAnswers> = {}): InitAnswers => ({
   langs: ['en'],
