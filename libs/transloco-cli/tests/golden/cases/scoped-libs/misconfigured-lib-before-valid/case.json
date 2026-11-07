@@ -1,0 +1,7 @@
+{
+  "description": "GIVEN a library without i18n in its package.json and one without a package.json, listed before a valid library WHEN the scoped libs are copied THEN the valid library is still copied, both problems are reported on stderr and it exits with 1",
+  "args": ["scoped-libs", "--skip-gitignore"],
+  "exitCode": 1,
+  "stderrMatches": "libs/a/package\\.json is missing i18n information\\.[\\s\\S]*libs/missing/package\\.json does not exist\\.",
+  "stdoutExcludes": ["is missing i18n information", "does not exist"]
+}

@@ -7,9 +7,9 @@ import {
   isLanguageFile,
   isObject,
   languageOf,
+  planRewrite,
   readJsonObject,
   TranslationFilesError,
-  toJson,
   type PlannedFile,
   type Translation,
   type TranslationFileReader,
@@ -35,6 +35,9 @@ export interface SplitOptions {
  * folder holds no file for the language are dropped, those of a folder with no
  * files at all stay with the root file. A language with no root file, and a root
  * file of a language that wasn't joined, are left as they are.
+ *
+ * A file that already holds what it would be given is left out, and one that
+ * changes keeps ending with a line break, or not, as it did.
  *
  * @returns the files to write, in the order to write them
  */
@@ -70,7 +73,7 @@ export function splitTranslations(
     const translation = remaining.get(languageOf(fileName));
 
     if (translation) {
-      files.push({ path: join(root, fileName), content: toJson(translation) });
+      pushRewrite(reader, files, join(root, fileName), translation);
     }
   }
 
@@ -139,10 +142,21 @@ function splitScope(
       );
     }
 
-    files.push({ path: join(dir, fileName), content: toJson(scopeValue) });
+    pushRewrite(reader, files, join(dir, fileName), scopeValue);
   }
 
   delete translation[key];
+}
+
+function pushRewrite(
+  reader: TranslationFileReader,
+  files: PlannedFile[],
+  path: string,
+  value: Translation,
+) {
+  const file = planRewrite(reader, path, value);
+
+  if (file) files.push(file);
 }
 
 /** The value of the key, leaving out what an object inherits. */

@@ -470,6 +470,44 @@ describe('resolveProjectBasePath', () => {
       expect(resolveProjectBasePath('shop').projectBasePath).toBe('src');
     });
 
+    it(`GIVEN nx.json above the cwd
+        WHEN the root of the project in the cwd is resolved
+        THEN it is relative to the cwd, as its source root is`, () => {
+      givenNxWorkspace();
+      vi.spyOn(process, 'cwd').mockReturnValue(
+        path.join(TEST_DIR, projectPath),
+      );
+
+      expect(resolveProjectBasePath('shop').projectRoot).toBe('.');
+    });
+
+    it(`GIVEN project.json files only, none at the root
+        WHEN the source root is resolved without a project
+        THEN it falls back to "src" without saying it found no workspace config`, () => {
+      givenNxWorkspace();
+      const error = spyOnConsole('error');
+
+      expect(resolveProjectBasePath()).toEqual({
+        projectBasePath: 'src',
+        defaulted: true,
+      });
+      expect(error).not.toHaveBeenCalled();
+      error.mockRestore();
+    });
+
+    it(`GIVEN no project.json at all
+        WHEN the source root is resolved without a project
+        THEN it says it found no workspace config`, () => {
+      const error = spyOnConsole('error');
+
+      resolveProjectBasePath();
+
+      expect(error).toHaveBeenCalledExactlyOnceWith(
+        expect.stringContaining('Unable to load workspace config'),
+      );
+      error.mockRestore();
+    });
+
     it(`GIVEN nx.json in the cwd
         WHEN the source root of a project is resolved
         THEN it is kept as it is`, () => {
@@ -478,6 +516,7 @@ describe('resolveProjectBasePath', () => {
       expect(resolveProjectBasePath('shop').projectBasePath).toBe(
         'apps/shop/src',
       );
+      expect(resolveProjectBasePath('shop').projectRoot).toBe('apps/shop');
     });
   });
 
@@ -501,6 +540,49 @@ describe('resolveProjectBasePath', () => {
         expect(projectBasePath).toBe('myRoot');
         expect(projectType).toBe('library');
       });
+    });
+  });
+
+  describe('Project root', () => {
+    afterEach(() => {
+      removeRootConfigs();
+    });
+
+    it(`GIVEN an angular.json whose projects state their root
+        WHEN a project is resolved
+        THEN its root is returned, '' for one at the workspace root`, () => {
+      addRootConfig({
+        configType: 'angular',
+        config: {
+          projects: {
+            app: { root: '', sourceRoot: 'src' },
+            b: { root: 'projects/b', sourceRoot: 'projects/b/src' },
+          },
+        },
+      });
+
+      expect(resolveProjectBasePath('app').projectRoot).toBe('');
+      expect(resolveProjectBasePath('b').projectRoot).toBe('projects/b');
+    });
+
+    it(`GIVEN a project without a root, as Nx writes a project.json
+        WHEN it is resolved
+        THEN the folder holding its source root is its root`, () => {
+      addRootConfig({
+        configType: 'angular',
+        config: { projects: { b: { sourceRoot: 'apps/b/src' } } },
+      });
+
+      expect(resolveProjectBasePath('b').projectRoot).toBe('apps/b');
+    });
+
+    it(`GIVEN no workspace config
+        WHEN the project is resolved
+        THEN there is no root`, () => {
+      const spy = spyOnConsole('log');
+
+      expect(resolveProjectBasePath().projectRoot).toBeUndefined();
+      spy.mockRestore();
     });
   });
 });

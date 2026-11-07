@@ -1,0 +1,6 @@
+{
+  "description": "GIVEN one root config whose rootTranslationsPath is in project a of a multi-project workspace, as ng add writes it for the first project WHEN the keys of project b are extracted THEN they are written to the default folder of b, the translations of a are left alone and a notice on stderr names the folder written to",
+  "args": ["extract", "--project", "b", "--default-value", "missing"],
+  "exitCode": 0,
+  "stderrMatches": "The translations folder of the config, projects/a/public/i18n, is outside project 'b' \\(projects/b\\)\\. Writing to projects/b/src/assets/i18n instead\\."
+}

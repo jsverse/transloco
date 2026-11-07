@@ -265,14 +265,13 @@ describe('joinTranslations', () => {
   describe('default language', () => {
     it(`GIVEN includeDefaultLang and no default language
         WHEN it runs
-        THEN it asks for the default language`, () => {
-      expect(() =>
-        join(rootFiles, { defaultLang: undefined, includeDefaultLang: true }),
-      ).toThrow(
-        new TranslationFilesError(
-          'Please specify the default language of the project using --default-lang or the defaultLang option of the Transloco config.',
-        ),
-      );
+        THEN every language is joined`, () => {
+      expect(
+        join(rootFiles, {
+          defaultLang: undefined,
+          includeDefaultLang: true,
+        }).map(({ path }) => path),
+      ).toEqual(['dist-i18n/es.json', 'dist-i18n/en.json']);
     });
 
     it(`GIVEN no default language

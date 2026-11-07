@@ -1,3 +1,4 @@
+import { CliError } from '../../errors';
 import { style } from '../../utils/style';
 import { setConfig } from '../config';
 import { buildKeys } from '../keys-builder/build-keys';
@@ -15,6 +16,12 @@ export function findMissingKeys(inlineConfig: Config) {
   setConfig(config);
 
   const { translationsPath, fileFormat } = config;
+  if (fileFormat !== 'json') {
+    throw new CliError(
+      `error: find supports only json translation files, not "${fileFormat}"`,
+    );
+  }
+
   const translationFiles = getTranslationFilesPath(
     translationsPath,
     fileFormat,

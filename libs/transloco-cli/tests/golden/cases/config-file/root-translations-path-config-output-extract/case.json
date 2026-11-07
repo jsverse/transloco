@@ -1,0 +1,5 @@
+{
+  "description": "GIVEN a config with both rootTranslationsPath and keysManager.output WHEN the keys are extracted THEN the files are written to the output of the config",
+  "args": ["extract", "--default-value", "missing"],
+  "exitCode": 0
+}

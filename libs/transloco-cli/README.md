@@ -9,6 +9,8 @@ npm install --save-dev @jsverse/transloco-cli
 npx transloco --help
 ```
 
+`ng add @jsverse/transloco` does not install the CLI, so a project that was set up with it has to add it with the command above (`yarn add --dev @jsverse/transloco-cli` with Yarn).
+
 Every command has its own `--help`.
 
 ### Strict by design
@@ -20,7 +22,7 @@ A command line either runs with everything that was typed or it is rejected with
 - A value can't be empty or blank. `--default-value` is the exception: an empty default value is a valid choice.
 - An option that needs a value doesn't take another option for it: `--config --sort` reports the value of `--config` as missing. To pass a value that really starts with a dash, attach it with `=`: `--default-value=-R`.
 - A short option is one dash and one letter. When it takes a value, the value is the next argument (`-c path`); `=` goes with the long form (`--config=path`). Several letters behind one dash are flags and nothing else (`-su`), so a value glued to its option (`-cpath`, `-c=path`), an option taking a value inside a cluster (`-sc path`) and a long option written with one dash (`-output`) are all rejected.
-- A `--config` path has to exist. It may be a directory, which is then searched for a config.
+- A `--config` path has to exist. It may be a directory, which is then searched for a config and has to hold one, the command exits with `1` otherwise.
 - A `--project` has to be a project of the workspace: a project of `angular.json`, `.angular.json` or `workspace.json`, or a `project.json` that has its name or is in a folder of that name. The error lists the projects there are.
 
 Asking for the help is the one thing that comes before all of it. A help request anywhere before `--` prints the help and exits with code 0, ahead of the version and of any other argument error, and nothing runs: `transloco extract --frobnicate -h` and `transloco -V -h` both print the help. A request is `--help`, `-h`, or the letter among flags behind one dash (`-sh`), and it gets the help of the command it follows. That is the program when it stands before the command, or when what precedes it doesn't name one (`transloco translate -h`, `transloco --frobnicate extract -h`). What only looks like one stays what it is: the value in `--default-value=-h`, whatever comes after `--`, and the letter next to anything but flags (`-hc`, `-h=1`). The same goes one level down: `transloco migrate ngx-translate -h` and `transloco help migrate ngx-translate` print the help of `ngx-translate`, while `transloco migrate -h ngx-translate` prints the one of `migrate`.
@@ -51,14 +53,14 @@ Without `--project`, the default project of the workspace gives the source root,
 
 Without `--config`, `extract` and `find` look for the config in the source root of the project first, then in each parent directory up to the working directory, and use the first one they find, so the `transloco.config.ts` that `ng add` and `transloco init` write to the workspace root is found. A source root outside of the working directory is followed by the working directory. When the working directory has no `package.json`, as with `--cwd apps/shop`, the search goes on upward to the first directory that has one, which is the root of the repository, and stops there. The relative paths of a config found above the working directory are taken from the folder of the config, so the root config, whose paths start at the root, works from `--cwd apps/shop` as well. The paths of any other config, and of every config named with `--config`, are relative to the working directory, as they were in v8. Without a `package.json` above, or when the working directory has its own, nothing above the working directory is searched. `--config` names the one file, or the one directory, to read, and nothing else is searched. A config that fails to load (a syntax error, an exception when it is imported) stops the command with `1` and one line naming the file and the reason, whether it was found or named with `--config`. The other commands that read the config (`scoped-libs`, `join`, `split` and `migrate angular-i18n`) look for it in the working directory alone, and `--config` names the file, or the directory, to read instead.
 
-An option that is not on the command line is taken from the config (the `keysManager` block, `langs`, and `rootTranslationsPath` for `--translations-path`) and else from its default:
+An option that is not on the command line is taken from the config (the `keysManager` block, `langs`, and `rootTranslationsPath` for `--translations-path`) and else from its default. Without an output from the command line or `keysManager.output`, `extract` writes to the `rootTranslationsPath` of the config, the folder `find` reads, and to `<source root>/assets/i18n` only when the config has none:
 
 | Option                        | Meaning                                                                                                                                                                                                                                                                                                              |
 | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `--project <name>`            | The project whose source root and type give the defaults below. Defaults to the default project, or else the first one, of `angular.json` (or `.angular.json`), `workspace.json` or `project.json`, and to a source root of `src` without any. A name that is in none of them exits with `1` and lists the projects. |
 | `-c, --config <path>`         | A config file, or a folder to search for one, instead of the lookup above. It has to exist.                                                                                                                                                                                                                          |
 | `-i, --input <paths>`         | The folders holding the sources, several separated by commas. Defaults to `<source root>/app`, and `<source root>/lib` for a library.                                                                                                                                                                                |
-| `-o, --output <path>`         | The folder the translation files are written to. Defaults to `<source root>/assets/i18n`.                                                                                                                                                                                                                            |
+| `-o, --output <path>`         | The folder the translation files are written to. Defaults to `keysManager.output` of the config, then to `rootTranslationsPath` of the config, then to `<source root>/assets/i18n`.                                                                                                                                  |
 | `-l, --langs <langs...>`      | The languages to generate, as separate arguments. Defaults to `en`.                                                                                                                                                                                                                                                  |
 | `-f, --file-format <format>`  | The format of the translation files, `json` or `pot`. Defaults to `json`.                                                                                                                                                                                                                                            |
 | `-m, --marker <name>`         | The marker sign for dynamic values. Defaults to `t`.                                                                                                                                                                                                                                                                 |
@@ -68,6 +70,8 @@ An option that is not on the command line is taken from the config (the `keysMan
 | `-r, --replace`               | Replaces the content of an existing translation file with the extracted keys instead of merging them. Off by default.                                                                                                                                                                                                |
 | `-R, --remove-extra-keys`     | Removes the keys that are no longer in the sources from the existing translation files. Off by default.                                                                                                                                                                                                              |
 
+A `--project` whose folder doesn't hold `rootTranslationsPath` is the exception to that default, which is what one config at the workspace root holds for the other projects, as `ng add` writes it for the first one alone. So as not to write into the translations of another project, `extract` writes to `<source root>/assets/i18n` of the project then, and says so on stderr. `find --project` takes the same folder, so that it reads what `extract` wrote, and says so on stderr. A `rootTranslationsPath` that doesn't exist yet is pointed out on stderr as well, along with the folder its path is relative to: the working directory, or the folder of a config found above it.
+
 ### find
 
 ```bash
@@ -76,13 +80,13 @@ transloco find --translations-path src/assets/i18n --emit-error-on-extra-keys
 
 Exits with `1` when keys are missing, unless `--add-missing-keys` adds them, and with `2` when `--emit-error-on-extra-keys` is set and extra keys were found.
 
-`find` takes `--project`, `--config`, `--input`, `--file-format`, `--marker`, `--sort`, `--unflat` and `--default-value` like `extract` does, with the same defaults, and the config is looked up the same way. `--sort` and `--default-value` change what `--add-missing-keys` writes. Its own options:
+`find` takes `--project`, `--config`, `--input`, `--file-format`, `--marker`, `--sort`, `--unflat` and `--default-value` like `extract` does, with the same defaults, and the config is looked up the same way. `--sort` and `--default-value` change what `--add-missing-keys` writes. `find` reads `json` translation files only, so `--file-format pot` (or `pot` in the config) stops it with `1` and a message saying so. Its own options:
 
-| Option                           | Meaning                                                                                                                          |
-| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `-p, --translations-path <path>` | The folder of the main translation files. Defaults to `rootTranslationsPath` of the config, then to `<source root>/assets/i18n`. |
-| `-a, --add-missing-keys`         | Adds the missing keys to the translation files. Off by default.                                                                  |
-| `-e, --emit-error-on-extra-keys` | Exits with `2` when extra keys were found. Off by default.                                                                       |
+| Option                           | Meaning                                                                                                                                                               |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `-p, --translations-path <path>` | The folder of the main translation files. Defaults to `keysManager.translationsPath` of the config, then `rootTranslationsPath`, then to `<source root>/assets/i18n`. |
+| `-a, --add-missing-keys`         | Adds the missing keys to the translation files. Off by default.                                                                                                       |
+| `-e, --emit-error-on-extra-keys` | Exits with `2` when extra keys were found. Off by default.                                                                                                            |
 
 ### validate
 
@@ -90,15 +94,15 @@ Exits with `1` when keys are missing, unless `--add-missing-keys` adds them, and
 transloco validate src/assets/i18n/en.json src/assets/i18n/es.json
 ```
 
-Prints one line per invalid file and exits with `1` when there is any.
+Prints one line per invalid file and exits with `1` when there is any. A path that does not exist or is a folder is reported on its line like an invalid file, and the other files are still checked.
 
 ### optimize
 
 ```bash
-transloco optimize dist/my-app/browser/assets/i18n --comments-key note
+transloco optimize dist/my-app/browser/i18n --comments-key note
 ```
 
-Exits with `1` when there is nothing to optimize or a file can't be processed.
+The folder is resolved against the working directory, and every `.json` file below it, at any depth, is optimized in place. Point it at the translations folder inside the build output, `dist/<project>/browser/i18n` when `rootTranslationsPath` is `public/i18n`, as any other JSON file below the folder is rewritten as well. Exits with `1` when there is nothing to optimize or a file can't be processed.
 
 | Option                        | Meaning                                                                                                                   |
 | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
@@ -111,13 +115,45 @@ Exits with `1` when there is nothing to optimize or a file can't be processed.
 transloco scoped-libs --watch --config configs/transloco.config.js
 ```
 
-Reads `rootTranslationsPath` and `scopedLibs` of the config.
+Reads `rootTranslationsPath` and `scopedLibs` of the config, and the `i18n` entry of the `package.json` of each library.
 
-| Option                | Meaning                                                                   |
-| --------------------- | ------------------------------------------------------------------------- |
-| `-w, --watch`         | Keeps running and copies the files as they change. Off by default.        |
-| `--skip-gitignore`    | Doesn't add the copied translation files to `.gitignore`. Off by default. |
-| `-c, --config <path>` | A config file, or a folder to look for one in, which has to exist.        |
+`scopedLibs` lists the libraries, each one either a string, which is copied to the folder `rootTranslationsPath` names, or an object with the library in `src` and the folders to copy to in `dist`. A library is the folder of a workspace project, relative to the working directory, or the name of a package in `node_modules`, and it has to hold a `package.json`:
+
+```ts
+// transloco.config.ts
+export default {
+  rootTranslationsPath: 'src/assets/i18n',
+  scopedLibs: [
+    // copied to rootTranslationsPath
+    '@acme/shared-ui',
+    // copied to every folder of dist
+    {
+      src: 'projects/core',
+      dist: ['projects/shop/src/assets/i18n', 'src/assets/i18n'],
+    },
+  ],
+};
+```
+
+The `i18n` entry of the `package.json` of a library lists its scopes: the `scope` name and the `path` of the folder holding its translation files, relative to the `package.json`. Every `.json` file below the folder is copied, and the language is the part of its name before the first dot. Without a `strategy` a scope is copied to a folder of its own, `<dist>/<scope>/<lang>.json`. With `"strategy": "join"` the scopes of all the libraries are merged, each one under the key of its scope, into one `<dist>/<lang>.vendor.json` per language.
+
+```json
+{
+  "name": "@acme/core",
+  "i18n": [
+    { "scope": "core", "path": "src/lib/i18n" },
+    { "scope": "core-admin", "path": "src/lib/admin/i18n", "strategy": "join" }
+  ]
+}
+```
+
+| Option                | Meaning                                                                         |
+| --------------------- | ------------------------------------------------------------------------------- |
+| `-w, --watch`         | Keeps running and copies the files as they change or are added. Off by default. |
+| `--skip-gitignore`    | Doesn't add the copied translation files to `.gitignore`. Off by default.       |
+| `-c, --config <path>` | A config file, or a folder to look for one in, which has to exist.              |
+
+Every library is copied, also when one before it is misconfigured: without `src`, a `package.json` or an `i18n` entry in it, or a folder to copy to. Each problem is reported on stderr, and the command exits with 1 once the others are copied. With `--watch` it reports them and keeps watching the other libraries, and exits with 1 when none of them could be watched. A config without `scopedLibs`, or with an empty list, is an error too.
 
 ### join
 
@@ -132,7 +168,7 @@ Merges the translation files of every scope into the root file of the same langu
 | `--translations-path <dir>` | The folder of the root translation files. Defaults to `rootTranslationsPath` of the config.  |
 | `-o, --out-dir <dir>`       | The folder the joined files are written to, which is emptied first. Defaults to `dist-i18n`. |
 | `--default-lang <lang>`     | The default language of the project. Defaults to `defaultLang` of the config.                |
-| `--include-default-lang`    | Joins the default language as well. Off by default.                                          |
+| `--include-default-lang`    | Joins the default language as well, which then needs no default language. Off by default.    |
 | `-c, --config <path>`       | A config file, or a folder to look for one in, which has to exist.                           |
 
 The root is `--translations-path`, then `rootTranslationsPath` of the config, and the default language is `--default-lang`, then `defaultLang` of the config. The out folder is emptied first, so it has to be inside the working directory and not overlap the translations. It does not have to exist, it is created. The command refuses to run when it is the working directory or a folder above it, a folder outside of it, a symbolic link or a folder reached through one that leads out, a file, or the translations root or a scope folder, or a folder above or below one. Links are followed before any of this is judged, and nothing is changed when the folder is refused. Only `.json` files count as translations. Exits with `1` when the root doesn't exist or holds no translation file, when two files define the same key or a file it reads is not valid JSON, and nothing is written. The files of the default language are not read when it is left out, so an invalid one doesn't stop the command.
@@ -143,7 +179,7 @@ The root is `--translations-path`, then `rootTranslationsPath` of the config, an
 transloco split --translations-path src/assets/i18n --source dist-i18n
 ```
 
-Hands the translations of every scope in the joined files, `dist-i18n` unless `--source` says otherwise, back to the files of its folder, and what is left to the root file of the language. Only the files that exist are written, none is created. The root comes from `--translations-path` or `rootTranslationsPath` of the config, and the scopes are found the way `join` finds them. A scope folder nested in another one, at any depth, gets back the dotted key `join` stored it under, such as `admin.users`, so that `join` followed by `split` leaves every file as it was. Exits with `1` when the root or the source doesn't exist or holds no translation file, or a joined file is not valid JSON, and nothing is written.
+Hands the translations of every scope in the joined files, `dist-i18n` unless `--source` says otherwise, back to the files of its folder, and what is left to the root file of the language. Only the files that exist are written, none is created. The root comes from `--translations-path` or `rootTranslationsPath` of the config, and the scopes are found the way `join` finds them. A scope folder nested in another one, at any depth, gets back the dotted key `join` stored it under, such as `admin.users`, so that `join` followed by `split` leaves every file as it was. A file that already holds what `split` would write is not written, whatever its formatting (a final line break, a minified file, Windows line endings). A file that does change is written with two spaces of indentation and line feeds, and ends with a line break if it did before. Exits with `1` when the root or the source doesn't exist or holds no translation file, or a joined file is not valid JSON, and nothing is written.
 
 | Option                      | Meaning                                                                                     |
 | --------------------------- | ------------------------------------------------------------------------------------------- |
@@ -159,7 +195,7 @@ Hands the translations of every scope in the joined files, `dist-i18n` unless `-
 transloco migrate ngx-translate --input src/app
 ```
 
-Rewrites the HTML and TS files below `--input`, `src/app` unless it says otherwise: the `translate` directive (`[translate]="'KEY'"` and `[translateParams]` too) and pipe, in the template files and in the inline templates of the components, the `TranslateModule`, the `TranslateService` with its injection, by the constructor or by `inject()` under any name, and its calls, and the `TranslatePipe`, all for their Transloco counterparts. A `get()` becomes `selectTranslate().pipe(take(1))`, with `take` imported from `rxjs/operators`, which both rxjs 6 and 7 export. The ngx-translate imports become one `@jsverse/transloco` import, and a symbol without a counterpart, such as `LangChangeEvent`, keeps its ngx-translate import. Declaration files are left out, and the injections and calls of the spec files are left as they are. What it can't migrate is left as it is and printed with its file and line: a call of the service without a counterpart (`set()`, `addLangs()`, `getLangs()`, `onTranslationChange`…), a `translate` attribute without a value (`<span translate>KEY</span>`), and an inline template it can't read (an interpolation, a concatenation or a variable), for which the component keeps its ngx-translate pipe, directive and module so that it isn't half migrated. See the [list of replacements](https://github.com/jsverse/transloco/blob/master/libs/transloco-schematics/src/ngx-migrate/ngx-translate-migration.md). Exits with `1` when the input doesn't exist or holds no `.html` or `.ts` file. Its only option is `-i, --input <dir>`, which defaults to `src/app`.
+Rewrites the HTML and TS files below `--input`, `src/app` unless it says otherwise: the `translate` directive (`[translate]="'KEY'"` and `[translateParams]` too) and pipe, in the template files and in the inline templates of the components, the `TranslateModule`, the `TranslateService` with its injection, by the constructor or by `inject()` under any name, and its calls, and the `TranslatePipe`, all for their Transloco counterparts. A `get()` becomes `selectTranslate().pipe(take(1))`, with `take` imported from `rxjs/operators`, which both rxjs 6 and 7 export. The ngx-translate imports become one `@jsverse/transloco` import, and a symbol without a counterpart, such as `LangChangeEvent`, keeps its ngx-translate import. Declaration files are left out. In spec files the imports and injections are migrated but the service calls are left as they are, so check them by hand. What it can't migrate is left as it is and printed with its file and line: a call of the service without a counterpart (`set()`, `addLangs()`, `getLangs()`, `onTranslationChange`…), a `translate` attribute without a value (`<span translate>KEY</span>`), and an inline template it can't read (an interpolation, a concatenation or a variable), for which the component keeps its ngx-translate pipe, directive and module so that it isn't half migrated. See the [list of replacements](https://github.com/jsverse/transloco/blob/master/libs/transloco-schematics/src/ngx-migrate/ngx-translate-migration.md). Exits with `1` when the input doesn't exist or holds no `.html` or `.ts` file. Its only option is `-i, --input <dir>`, which defaults to `src/app`.
 
 ```bash
 transloco migrate angular-i18n --input src/app --langs en es
@@ -220,7 +256,7 @@ import { marker } from '@jsverse/transloco-cli/marker';
 const key = marker('dashboard.title');
 ```
 
-Marks a key for `extract` and `find` when it is not read by a translate call, and returns the key as it is. The optional second argument is not used, and the third is the scope of the key. `@jsverse/transloco-keys-manager/marker` still works and is deprecated.
+Marks a key for `extract` and `find` when it is not read by a translate call, and returns the key as it is. The optional second argument takes the place of the params of a translate call (`translate(key, params, lang)`), so that the scope of the key can be the third argument; the type allows `undefined` only, so pass that when you give a scope, as in `marker('key', undefined, 'admin')`. The third argument is the scope of the key. `@jsverse/transloco-keys-manager/marker` still works and is deprecated.
 
 ### Replacing the old tools
 

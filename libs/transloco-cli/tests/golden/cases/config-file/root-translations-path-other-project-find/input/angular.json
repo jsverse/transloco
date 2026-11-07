@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "projects": {
+    "a": {
+      "projectType": "application",
+      "root": "projects/a",
+      "sourceRoot": "projects/a/src"
+    },
+    "b": {
+      "projectType": "application",
+      "root": "projects/b",
+      "sourceRoot": "projects/b/src"
+    }
+  }
+}

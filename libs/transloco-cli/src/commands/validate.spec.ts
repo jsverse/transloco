@@ -74,13 +74,24 @@ describe('runValidate', () => {
 
   it(`GIVEN a file that does not exist
       WHEN it is validated
-      THEN it fails with a message that names the file once`, () => {
+      THEN it fails with one clean line that names the file`, () => {
     const file = path.join(dir, 'missing.json');
 
     const error = catchError([file]);
 
-    expect(error.message).toContain('ENOENT');
-    expect(error.message.split(file)).toHaveLength(2);
+    expect(error).toBeInstanceOf(CliError);
+    expect(error.exitCode).toBe(1);
+    expect(error.message).toBe(`The path does not exist (${file})`);
+  });
+
+  it(`GIVEN a path below a file
+      WHEN it is validated
+      THEN it fails as a path that does not exist`, () => {
+    const file = path.join(write('en.json', '{}'), 'nested.json');
+
+    const error = catchError([file]);
+
+    expect(error.message).toBe(`The path does not exist (${file})`);
   });
 
   it(`GIVEN an invalid file whose name also occurs in the error
@@ -103,12 +114,27 @@ describe('runValidate', () => {
 
   it(`GIVEN a directory instead of a file
       WHEN it is validated
-      THEN the failure names the directory`, () => {
+      THEN it fails with one clean line that names the directory`, () => {
     const error = catchError([dir]);
 
-    expect(error.message).toContain('EISDIR');
-    expect(error.message.endsWith(` (${dir})`)).toBe(true);
-    expect(error.message).not.toContain('\n');
+    expect(error.message).toBe(`The path is a folder, not a file (${dir})`);
+  });
+
+  it(`GIVEN a missing path, a folder and an invalid file among valid ones
+      WHEN they are validated
+      THEN every problem is reported on its own line and the other files are still checked`, () => {
+    const missing = path.join(dir, 'missing.json');
+    const valid = write('en.json', '{"a": "1"}');
+    const malformed = write('it.json', '{"a": }');
+
+    const lines = catchError([missing, valid, dir, malformed]).message.split(
+      '\n',
+    );
+
+    expect(lines).toHaveLength(3);
+    expect(lines[0]).toBe(`The path does not exist (${missing})`);
+    expect(lines[1]).toBe(`The path is a folder, not a file (${dir})`);
+    expect(lines[2].endsWith(` (${malformed})`)).toBe(true);
   });
 
   it(`GIVEN several files where more than one is invalid

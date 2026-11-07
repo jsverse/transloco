@@ -4,7 +4,7 @@
  * The function will simply return the first "key" argument passed into it.
  *
  * @param key The translation key to extract.
- * @param params This parameter does nothing, but is required for compatipility reasons.
+ * @param params Takes the place of the params of a translate call, so that the scope is the third argument. Pass `undefined`.
  * @param scope The scope to when extracting the translation key.
  */
 export function marker<T extends string | string[]>(

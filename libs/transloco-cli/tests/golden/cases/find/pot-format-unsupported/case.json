@@ -1,0 +1,20 @@
+{
+  "description": "GIVEN a pot file format WHEN the keys are searched THEN it exits with 1 and says that find supports only json",
+  "args": [
+    "find",
+    "--input",
+    "src",
+    "--translations-path",
+    "i18n",
+    "--file-format",
+    "pot"
+  ],
+  "exitCode": 1,
+  "fixtures": {
+    "src": "findMissingKeys/add-missing-keys/src"
+  },
+  "stderrIncludes": [
+    "find supports only json translation files"
+  ],
+  "allowStderr": "the error the run exits with is written to stderr"
+}
