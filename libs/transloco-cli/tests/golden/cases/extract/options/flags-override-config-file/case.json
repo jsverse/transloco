@@ -1,0 +1,15 @@
+{
+  "description": "GIVEN the same config file WHEN the keys are extracted with --output, --langs and --default-value on the command line THEN the flags win over the file and the rest of the file still applies",
+  "args": [
+    "extract",
+    "--config",
+    "transloco.config.js",
+    "--output",
+    "i18n",
+    "--default-value",
+    "missing",
+    "--langs",
+    "fr"
+  ],
+  "exitCode": 0
+}

@@ -1,0 +1,19 @@
+{
+  "description": "GIVEN an en.json holding a key the sources no longer use WHEN the keys are searched with --emit-error-on-extra-keys THEN the summary lists the extra key and it exits with 2",
+  "args": [
+    "find",
+    "--input",
+    "src",
+    "--translations-path",
+    "i18n",
+    "--emit-error-on-extra-keys"
+  ],
+  "exitCode": 2,
+  "fixtures": {
+    "src": "findMissingKeys/add-missing-keys/src"
+  },
+  "stdoutIncludes": [
+    "File Name Missing Keys Extra Keys",
+    "en -- 'old.key'"
+  ]
+}

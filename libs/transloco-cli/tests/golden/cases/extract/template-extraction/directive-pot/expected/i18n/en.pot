@@ -1,0 +1,83 @@
+msgid ""
+msgstr ""
+"mime-version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "1"
+msgstr "missing"
+
+msgid "10"
+msgstr "missing"
+
+msgid "11"
+msgstr "missing"
+
+msgid "12"
+msgstr "missing"
+
+msgid "13"
+msgstr "missing"
+
+msgid "14"
+msgstr "missing"
+
+msgid "15"
+msgstr "missing"
+
+msgid "16"
+msgstr "missing"
+
+msgid "17"
+msgstr "missing"
+
+msgid "18"
+msgstr "missing"
+
+msgid "19"
+msgstr "missing"
+
+msgid "2"
+msgstr "missing"
+
+msgid "20"
+msgstr "missing"
+
+msgid "21"
+msgstr "missing"
+
+msgid "22"
+msgstr "missing"
+
+msgid "23"
+msgstr "missing"
+
+msgid "24"
+msgstr "missing"
+
+msgid "3"
+msgstr "missing"
+
+msgid "4"
+msgstr "missing"
+
+msgid "5"
+msgstr "missing"
+
+msgid "6"
+msgstr "missing"
+
+msgid "7"
+msgstr "missing"
+
+msgid "8"
+msgstr "missing"
+
+msgid "9"
+msgstr "missing"
+
+msgid "Processing archive..."
+msgstr "missing"
+
+msgid "Restore Options"
+msgstr "missing"

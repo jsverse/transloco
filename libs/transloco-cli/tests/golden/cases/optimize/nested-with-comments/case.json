@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN nested translation files holding translator comments, in the root and in a scope WHEN the directory given as an argument is optimized THEN every file is flattened and minified without its comment keys",
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ],
+  "args": [
+    "optimize",
+    "dist/i18n"
+  ]
+}

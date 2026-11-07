@@ -1,0 +1,2 @@
+error: option '-c, --config <path>' argument missing ('-s' is an option, a value that starts with a dash is written as --config=-s)
+(add --help for additional information)

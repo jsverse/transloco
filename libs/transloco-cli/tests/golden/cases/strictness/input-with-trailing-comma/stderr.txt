@@ -1,0 +1,2 @@
+error: option '-i, --input <paths>' argument 'src/app,' holds an empty path. Separate the paths with a single comma, e.g. --input src/app,projects/ui/src
+(add --help for additional information)

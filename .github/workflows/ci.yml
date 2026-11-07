@@ -15,7 +15,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: ['build', 'test', 'lint', 'format']
+        # `golden` builds the CLI and runs its binary against the cases in
+        # libs/transloco-cli/tests/golden.
+        target: ['build', 'test', 'golden', 'lint', 'format']
     runs-on: ubuntu-latest
     name: ${{ matrix.target }}
     steps:

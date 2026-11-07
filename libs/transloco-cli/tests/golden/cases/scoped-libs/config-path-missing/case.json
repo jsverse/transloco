@@ -1,0 +1,13 @@
+{
+  "description": "GIVEN a --config path that does not exist, next to a valid config in the working directory WHEN the scoped libs are copied THEN the path is reported on stderr, nothing is copied and it exits with 1",
+  "args": [
+    "scoped-libs",
+    "--config",
+    "configs/missing.config.js"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

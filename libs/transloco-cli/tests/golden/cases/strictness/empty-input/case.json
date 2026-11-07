@@ -1,0 +1,16 @@
+{
+  "description": "GIVEN an empty --input, as an unset shell variable leaves it, together with --remove-extra-keys and translation files holding the keys of two folders WHEN extract runs THEN it is rejected instead of falling back to the default input, the translation files are untouched and it exits with 1",
+  "args": [
+    "extract",
+    "-i",
+    "",
+    "-o",
+    "out",
+    "-R"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

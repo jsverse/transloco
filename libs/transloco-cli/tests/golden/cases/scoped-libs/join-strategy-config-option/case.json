@@ -1,0 +1,10 @@
+{
+  "description": "GIVEN a config kept outside the working directory root, a library using the join strategy and a vendor file already holding another scope WHEN the scoped libs are copied with --config and --skip-gitignore THEN each language is joined into the vendor file of every destination, next to what it already holds, and .gitignore is left alone",
+  "args": [
+    "scoped-libs",
+    "--config",
+    "configs/transloco.config.js",
+    "--skip-gitignore"
+  ],
+  "exitCode": 0
+}

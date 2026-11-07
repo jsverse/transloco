@@ -1,0 +1,2 @@
+error: 'dist' was given both as an argument and through '--dist'
+(add --help for additional information)

@@ -1,0 +1,11 @@
+{
+  "description": "GIVEN a scopePathMap entry using ${sourceRoot} in an Angular workspace WHEN the keys are extracted THEN the files of that scope are written to the mapped directory under the source root, and the global ones to the default output",
+  "args": [
+    "extract",
+    "--config",
+    "transloco.config.js",
+    "--default-value",
+    "missing"
+  ],
+  "exitCode": 0
+}

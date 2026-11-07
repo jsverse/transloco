@@ -1,0 +1,16 @@
+{
+  "description": "GIVEN an application with a scope whose translation file misses a key and holds an extra one WHEN the keys are searched with -e THEN the summary names the scoped file and it exits with 1",
+  "args": [
+    "find",
+    "--input",
+    "src/app",
+    "--translations-path",
+    "src/assets/i18n",
+    "-e"
+  ],
+  "exitCode": 1,
+  "stdoutIncludes": [
+    "File Name Missing Keys Extra Keys",
+    "admin/en 'users.add' 'users.removed'"
+  ]
+}

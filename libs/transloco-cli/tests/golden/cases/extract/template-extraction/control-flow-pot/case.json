@@ -1,0 +1,24 @@
+{
+  "description": "GIVEN the template-extraction/control-flow/src fixture of the in-process specs WHEN its keys are extracted to pot THEN the generated translation files match",
+  "args": [
+    "extract",
+    "--input",
+    "src",
+    "--output",
+    "i18n",
+    "--file-format",
+    "pot",
+    "--default-value",
+    "missing",
+    "--langs",
+    "en",
+    "es"
+  ],
+  "exitCode": 0,
+  "fixtures": {
+    "src": "buildTranslationFiles/template-extraction/control-flow/src"
+  },
+  "requires": {
+    "@angular/compiler": "21.1.0"
+  }
+}

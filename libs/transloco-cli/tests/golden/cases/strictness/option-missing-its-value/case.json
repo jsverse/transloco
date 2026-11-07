@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN --output without a value WHEN extract runs THEN the missing value is reported and it exits with 1",
+  "args": [
+    "extract",
+    "--output"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

@@ -1,0 +1,2 @@
+error: unknown option '-out=i18n' (did you mean '--output'?)
+(add --help for additional information)

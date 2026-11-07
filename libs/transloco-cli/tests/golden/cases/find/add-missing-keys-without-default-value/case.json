@@ -1,0 +1,15 @@
+{
+  "description": "GIVEN an en.json missing keys and no default value WHEN the keys are searched with -a THEN the added keys get the \"Missing value for\" placeholder",
+  "args": [
+    "find",
+    "--input",
+    "src",
+    "--translations-path",
+    "i18n",
+    "-a"
+  ],
+  "exitCode": 0,
+  "fixtures": {
+    "src": "findMissingKeys/add-missing-keys/src"
+  }
+}

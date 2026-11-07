@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN the camelCase spelling of an option WHEN extract runs THEN it is rejected like an unknown option and it exits with 1",
+  "args": [
+    "extract",
+    "--removeExtraKeys"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "description": "GIVEN an existing en.json with a translated key and a key the sources no longer use WHEN the keys are extracted to json with --replace THEN the file holds the extracted keys alone, with their default value",
+  "args": [
+    "extract",
+    "--input",
+    "src/app",
+    "--output",
+    "i18n",
+    "--file-format",
+    "json",
+    "--default-value",
+    "missing",
+    "--replace",
+    "--langs",
+    "en"
+  ],
+  "exitCode": 0
+}

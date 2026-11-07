@@ -1,0 +1,13 @@
+{
+  "description": "GIVEN -key=note, which would read as -k with \"ey=note\" for the comments key WHEN optimize runs THEN it is rejected with the option that was meant, the translation file is left as it was and it exits with 1",
+  "args": [
+    "optimize",
+    "dist",
+    "-key=note"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

@@ -1,0 +1,22 @@
+Usage: transloco find [options]
+
+Find the keys missing from the translation files, and the extra ones in them
+
+Options:
+  --project <name>                Name of the targeted project
+  -c, --config <path>             Path to a custom transloco config
+  -i, --input <paths>             The source directory for all files using the
+                                  translation keys, comma separated when there
+                                  are several
+  -f, --file-format <format>      The translation file format, `json` unless
+                                  configured otherwise (choices: "json", "pot")
+  -m, --marker <name>             The marker sign for dynamic values
+  -s, --sort                      Sort keys using the sort() method
+  -u, --unflat                    Unflat the translation file
+  -d, --default-value <value>     The default value of a generated key
+  -p, --translations-path <path>  Where are the main translation files
+  -a, --add-missing-keys          Add missing keys that were found by the
+                                  detective (default value is false)
+  -e, --emit-error-on-extra-keys  Emit an error and exit the process if extra
+                                  keys were found (defaults to `false`)
+  -h, --help                      Display help for the command

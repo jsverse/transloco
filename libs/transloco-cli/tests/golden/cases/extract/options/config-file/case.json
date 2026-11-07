@@ -1,0 +1,9 @@
+{
+  "description": "GIVEN a config file setting the keys manager options next to ones only find reads WHEN the keys are extracted with nothing but --config THEN every option of the file applies and its find options are no error",
+  "args": [
+    "extract",
+    "--config",
+    "transloco.config.js"
+  ],
+  "exitCode": 0
+}

@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN --cwd after the command instead of before it WHEN validate runs THEN it is rejected and it exits with 1",
+  "args": [
+    "validate",
+    "en.json",
+    "--cwd",
+    "."
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

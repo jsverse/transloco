@@ -1,0 +1,9 @@
+Usage: transloco scoped-libs [options]
+
+Copy the translation files of scoped libraries into the application
+
+Options:
+  -w, --watch          Keep running and copy the files as they change
+  --skip-gitignore     Don't add the copied translation files to .gitignore
+  -c, --config <path>  Path to a custom transloco config
+  -h, --help           Display help for the command

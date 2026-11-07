@@ -1,0 +1,15 @@
+{
+  "description": "GIVEN -out=i18n next to --remove-extra-keys, which would read as -o with \"ut=i18n\" for a value WHEN extract runs THEN it is rejected with the option that was meant, the translation file is untouched and it exits with 1",
+  "args": [
+    "extract",
+    "-c",
+    "configs/transloco.config.js",
+    "-R",
+    "-out=i18n"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

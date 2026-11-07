@@ -1,0 +1,17 @@
+{
+  "1": "missing{{1}}",
+  "2": "missing{{2}}",
+  "3": "missing{{3}}",
+  "4": "missing{{4}}",
+  "5": "missing{{5}}",
+  "6": "missing{{6}}",
+  "7": "missing{{7}}",
+  "8": "missing{{8}}",
+  "9": "missing{{9}}",
+  "10": "missing{{10}}",
+  "11": "missing{{11}}",
+  "another.variable": "missing{{another.variable}}",
+  "inject.test": "missing{{inject.test}}",
+  "private-class-field.test": "missing{{private-class-field.test}}",
+  "variable": "missing{{variable}}"
+}

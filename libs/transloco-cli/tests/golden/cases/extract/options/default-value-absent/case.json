@@ -1,0 +1,15 @@
+{
+  "description": "GIVEN no default value WHEN the keys are extracted THEN every new key gets the \"Missing value for\" placeholder, scoped ones with their alias",
+  "args": [
+    "extract",
+    "--input",
+    "src/app",
+    "--output",
+    "i18n",
+    "--file-format",
+    "json",
+    "--langs",
+    "en"
+  ],
+  "exitCode": 0
+}

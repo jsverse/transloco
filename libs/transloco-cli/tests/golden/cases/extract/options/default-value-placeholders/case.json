@@ -1,0 +1,17 @@
+{
+  "description": "GIVEN a default value using every placeholder WHEN the keys are extracted THEN each of {{key}}, {{keyWithoutScope}}, {{scope}} and {{params}} is replaced per key",
+  "args": [
+    "extract",
+    "--input",
+    "src/app",
+    "--output",
+    "i18n",
+    "--file-format",
+    "json",
+    "--default-value",
+    "key={{key}} keyWithoutScope={{keyWithoutScope}} scope={{scope}} params={{params}}",
+    "--langs",
+    "en"
+  ],
+  "exitCode": 0
+}

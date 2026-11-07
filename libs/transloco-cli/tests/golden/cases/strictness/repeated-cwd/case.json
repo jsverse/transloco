@@ -1,0 +1,16 @@
+{
+  "description": "GIVEN --cwd twice WHEN a command runs THEN it is rejected and it exits with 1",
+  "args": [
+    "-C",
+    "a",
+    "--cwd",
+    "b",
+    "validate",
+    "en.json"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

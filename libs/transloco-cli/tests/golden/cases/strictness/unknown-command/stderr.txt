@@ -1,0 +1,2 @@
+error: unknown command 'translate'
+(add --help for additional information)

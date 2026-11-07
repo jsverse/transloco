@@ -1,0 +1,16 @@
+{
+  "description": "GIVEN a config file enabling emitErrorOnExtraKeys next to options only extract reads WHEN the keys are searched with nothing but --config THEN the file is honoured, its extract options are no error and it exits with 2",
+  "args": [
+    "find",
+    "--config",
+    "transloco.config.js"
+  ],
+  "exitCode": 2,
+  "fixtures": {
+    "src": "findMissingKeys/add-missing-keys/src"
+  },
+  "stdoutIncludes": [
+    "File Name Missing Keys Extra Keys",
+    "en -- 'old.key'"
+  ]
+}

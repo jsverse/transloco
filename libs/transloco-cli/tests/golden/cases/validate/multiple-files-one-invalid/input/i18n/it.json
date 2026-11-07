@@ -1,0 +1,6 @@
+{
+  "hello": "world",
+  "nested": {
+    "key": "value"
+  }
+}

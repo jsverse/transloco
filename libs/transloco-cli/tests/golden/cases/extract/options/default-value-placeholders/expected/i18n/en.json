@@ -1,0 +1,7 @@
+{
+  "actions.save": "key=actions.save keyWithoutScope=actions.save scope= params=",
+  "home.title": "key=home.title keyWithoutScope=home.title scope= params=",
+  "home.greeting": "key=home.greeting keyWithoutScope=home.greeting scope= params={{name}}",
+  "home.documentTitle": "key=home.documentTitle keyWithoutScope=home.documentTitle scope= params=",
+  "actions.cancel": "key=actions.cancel keyWithoutScope=actions.cancel scope= params="
+}

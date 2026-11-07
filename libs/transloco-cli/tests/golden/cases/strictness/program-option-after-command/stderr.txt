@@ -1,0 +1,2 @@
+error: unknown option '--cwd'
+(add --help for additional information)

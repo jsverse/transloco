@@ -1,0 +1,11 @@
+{
+  "description": "GIVEN an Angular workspace with an application and a library WHEN the keys are extracted with --project naming the library THEN its \"lib\" directory is the input and its assets the output",
+  "args": [
+    "extract",
+    "--project",
+    "ui",
+    "--default-value",
+    "missing"
+  ],
+  "exitCode": 0
+}

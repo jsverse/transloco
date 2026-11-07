@@ -1,0 +1,11 @@
+{
+  "description": "GIVEN -hV, the help letter in front of the version letter behind one dash WHEN the binary runs THEN it prints the usage of the program instead of the version and exits with 0",
+  "args": [
+    "-hV"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

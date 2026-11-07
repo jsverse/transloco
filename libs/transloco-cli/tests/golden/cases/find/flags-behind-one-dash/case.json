@@ -1,0 +1,21 @@
+{
+  "description": "GIVEN the flags -a and -e written behind one dash, an en file missing a key and holding an extra one WHEN the keys are searched THEN both apply: the missing key is added and it exits with 2",
+  "args": [
+    "find",
+    "--input",
+    "src",
+    "--translations-path",
+    "i18n",
+    "--default-value",
+    "missing",
+    "-ae"
+  ],
+  "exitCode": 2,
+  "fixtures": {
+    "src": "findMissingKeys/add-missing-keys/src"
+  },
+  "stdoutIncludes": [
+    "File Name Missing Keys Extra Keys",
+    "en '4' 'old.key'"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "description": "GIVEN a --cwd directory that does not exist WHEN a command runs THEN the directory is reported on stderr and it exits with 1",
+  "args": [
+    "--cwd",
+    "packages/nope",
+    "extract"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

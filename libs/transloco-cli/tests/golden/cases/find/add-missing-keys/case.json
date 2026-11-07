@@ -1,0 +1,24 @@
+{
+  "description": "GIVEN the en.json of the add-missing-keys spec WHEN the keys are searched with --add-missing-keys THEN the missing keys are added with the default value and it exits with 0",
+  "args": [
+    "find",
+    "--input",
+    "src",
+    "--translations-path",
+    "i18n",
+    "--add-missing-keys",
+    "--default-value",
+    "missing"
+  ],
+  "exitCode": 0,
+  "fixtures": {
+    "src": "findMissingKeys/add-missing-keys/src"
+  },
+  "stdoutIncludes": [
+    "File Name Missing Keys Extra Keys",
+    "en '4' --\n'c.d'"
+  ],
+  "stderrIncludes": [
+    "Added all missing keys"
+  ]
+}

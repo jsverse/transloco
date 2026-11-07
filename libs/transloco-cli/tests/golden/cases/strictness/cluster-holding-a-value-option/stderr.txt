@@ -1,0 +1,2 @@
+error: option '-o, --output <path>' takes a value, so it can't share a dash with anything else ('-sor'): write '-o <path>' or '--output=<path>' (or did you mean '--sort'?)
+(add --help for additional information)

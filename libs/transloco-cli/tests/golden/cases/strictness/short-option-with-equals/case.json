@@ -1,0 +1,13 @@
+{
+  "description": "GIVEN -c=<path>, which makes \"=<path>\" the value WHEN extract runs with --remove-extra-keys THEN it is rejected saying how to write it, the translation files are untouched and it exits with 1",
+  "args": [
+    "extract",
+    "-R",
+    "-c=configs/transloco.config.js"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

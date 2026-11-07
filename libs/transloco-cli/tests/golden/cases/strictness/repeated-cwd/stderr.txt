@@ -1,0 +1,2 @@
+error: option '-C, --cwd <dir>' was given more than once.
+(add --help for additional information)

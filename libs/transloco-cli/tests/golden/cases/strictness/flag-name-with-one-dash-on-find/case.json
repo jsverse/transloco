@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN -addMissingKeys, which would read as -a and -d with \"dMissingKeys\" for a default value WHEN find runs THEN it is rejected with the option that was meant, the translation file is untouched and it exits with 1",
+  "args": [
+    "find",
+    "-c",
+    "configs/transloco.config.js",
+    "-addMissingKeys"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

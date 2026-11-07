@@ -1,0 +1,32 @@
+msgid ""
+msgstr ""
+"mime-version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "password"
+msgstr "missing"
+
+msgid "password2"
+msgstr "missing"
+
+msgid "password3"
+msgstr "missing"
+
+msgid "title"
+msgstr "missing"
+
+msgid "title2"
+msgstr "missing"
+
+msgid "title3"
+msgstr "missing"
+
+msgid "username"
+msgstr "missing"
+
+msgid "username2"
+msgstr "missing"
+
+msgid "username3"
+msgstr "missing"

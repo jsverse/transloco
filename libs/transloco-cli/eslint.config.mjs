@@ -15,9 +15,12 @@ export default [
       '**/src/keys-manager/tests/**/src/**',
       '**/src/keys-manager/tests/buildTranslationFiles/ts-extraction/service/with-params/**',
       '**/src/keys-manager/tests/__perf_fixtures__/**',
+      // Inputs and expected outputs of the golden suite, kept byte for byte
+      '**/tests/golden/cases/**',
     ],
   },
   // prettier: optional, loaded via a guarded dynamic import when the user has it.
   // domhandler: type-only import, installed through htmlparser2.
-  dependencyChecks(['prettier', 'domhandler']),
+  // commander: peer dependency of @commander-js/extra-typings, never imported directly.
+  dependencyChecks(['prettier', 'domhandler', 'commander']),
 ];

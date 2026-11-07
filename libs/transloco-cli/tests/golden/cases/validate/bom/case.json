@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN a valid translation file starting with a UTF-8 BOM WHEN it is validated THEN nothing is printed and it exits with 0",
+  "args": [
+    "validate",
+    "i18n/en.json"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

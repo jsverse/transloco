@@ -1,0 +1,16 @@
+{
+  "description": "GIVEN a repeated flag and an empty --input, which is rejected, followed by -h WHEN find runs THEN it prints the usage, writes nothing and exits with 0",
+  "args": [
+    "find",
+    "-a",
+    "-a",
+    "-i",
+    "",
+    "-h"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

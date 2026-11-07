@@ -1,0 +1,13 @@
+{
+  "description": "GIVEN the same files WHEN the directory is given with --dist instead of as an argument THEN the result is the same",
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ],
+  "args": [
+    "optimize",
+    "--dist",
+    "dist/i18n"
+  ]
+}

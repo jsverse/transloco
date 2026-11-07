@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN an empty dist argument, which would resolve to the working directory WHEN optimize runs THEN it is rejected, the JSON files of the working directory are left alone and it exits with 1",
+  "args": [
+    "optimize",
+    ""
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

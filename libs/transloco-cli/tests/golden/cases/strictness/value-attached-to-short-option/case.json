@@ -1,0 +1,13 @@
+{
+  "description": "GIVEN -cpath-to-config, a value glued to the letter of its option WHEN extract runs THEN it is rejected saying how to write it, the translation file is untouched and it exits with 1",
+  "args": [
+    "extract",
+    "-R",
+    "-cconfigs/transloco.config.js"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

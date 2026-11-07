@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN a translation file defining a key twice WHEN it is validated THEN a single line on stderr names the key and the file, and it exits with 1",
+  "args": [
+    "validate",
+    "i18n/en.json"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

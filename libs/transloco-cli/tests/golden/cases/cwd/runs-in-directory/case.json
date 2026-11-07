@@ -1,0 +1,15 @@
+{
+  "description": "GIVEN a project in a sub directory WHEN extract runs with --cwd naming it THEN the relative input and output resolve against that directory",
+  "args": [
+    "--cwd",
+    "packages/shop",
+    "extract",
+    "--input",
+    "src/app",
+    "--output",
+    "i18n",
+    "--default-value",
+    "missing"
+  ],
+  "exitCode": 0
+}

@@ -1,0 +1,2 @@
+error: option '-i, --input <paths>' argument cannot be empty
+(add --help for additional information)

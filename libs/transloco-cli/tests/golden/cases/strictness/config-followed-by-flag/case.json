@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN -c without its value, directly followed by -s WHEN extract runs with --remove-extra-keys THEN the value is reported missing instead of -s being taken for it, the translation files are untouched and it exits with 1",
+  "args": [
+    "extract",
+    "-R",
+    "-c",
+    "-s"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "description": "GIVEN an empty --dist WHEN optimize runs THEN it is rejected, the JSON files of the working directory are left alone and it exits with 1",
+  "args": [
+    "optimize",
+    "--dist",
+    ""
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}
