@@ -2843,7 +2843,7 @@ describe('migration-v9', () => {
       await runner.runSchematic('migration-v9', {}, tree);
 
       expect(warnings.join('\n')).not.toContain(
-        'is deprecated, and these files',
+        'will be deprecated in Transloco v10, and these files',
       );
     });
   });
@@ -2938,7 +2938,7 @@ describe('migration-v9 npm scripts', () => {
     bom?: string;
     trailing?: boolean;
     listCli?: boolean;
-    /** Packages listed next to the CLI, the deprecated ones that is. */
+    /** Packages listed next to the CLI, the superseded ones that is. */
     devDependencies?: Record<string, string>;
     /** The root package.json as it is written, instead of one built from the scripts. */
     raw?: string;
@@ -3003,7 +3003,7 @@ describe('migration-v9 npm scripts', () => {
     lint: 'ng lint',
   };
 
-  it(`GIVEN scripts running the deprecated bins
+  it(`GIVEN scripts running the legacy bins
       WHEN the migration runs
       THEN they run the transloco bin and the other scripts stay as they are`, async () => {
     const { migrated } = await runWith({}, legacy, { listCli: true });
@@ -3361,7 +3361,7 @@ describe('migration-v9 npm scripts', () => {
 
   it(`GIVEN scripts that were migrated
       WHEN the dependencies are read
-      THEN the deprecated packages are still listed`, async () => {
+      THEN the superseded packages are still listed`, async () => {
     const { migrated } = await runWith({}, legacy, {
       devDependencies: { '@jsverse/transloco-keys-manager': '^8.0.0' },
     });
@@ -3416,7 +3416,7 @@ describe('migration-v9 npm scripts', () => {
     expect(runner.tasks).toHaveLength(0);
   });
 
-  it(`GIVEN files of a pipeline that run the deprecated bins
+  it(`GIVEN files of a pipeline that run the legacy bins
       WHEN the migration runs
       THEN each is reported once and none is edited`, async () => {
     const files: Record<string, string> = {
@@ -3474,7 +3474,7 @@ describe('migration-v9 npm scripts', () => {
     );
     expect(
       [...warnings, ...infos].filter((line) =>
-        /npm script|deprecated bin|exits with code/.test(line),
+        /npm script|legacy bin|exits with code/.test(line),
       ),
     ).toEqual([]);
     expect(runner.tasks).toHaveLength(0);
@@ -3542,7 +3542,7 @@ describe('migration-v9 npm scripts', () => {
           b: `transloco ${command} --config=./tools/conf.js`,
           c: `transloco ${command} -c tools/conf.js`,
         });
-        expect(warnings.join('\n')).not.toContain('deprecated bin');
+        expect(warnings.join('\n')).not.toContain('legacy bin');
       },
     );
 
@@ -3869,7 +3869,7 @@ describe('migration-v9 npm scripts', () => {
 
         expect(scriptsOf(migrated).i18n).toBe(script);
         expect(warnings.join('\n')).not.toContain('i18n');
-        expect(warnings.join('\n')).not.toContain('deprecated bin');
+        expect(warnings.join('\n')).not.toContain('legacy bin');
       },
     );
 
@@ -3891,7 +3891,7 @@ describe('migration-v9 npm scripts', () => {
         optimize: 'env CI=1 transloco optimize dist',
         extract: 'sudo env A=1 transloco extract -i src',
       });
-      expect(warnings.join('\n')).not.toContain('deprecated bin');
+      expect(warnings.join('\n')).not.toContain('legacy bin');
     });
 
     it(`GIVEN the sudo and env scripts were migrated
@@ -4026,7 +4026,7 @@ describe('migration-v9 npm scripts', () => {
     };
 
     it.each(Object.keys(files))(
-      `GIVEN the file %s that runs a deprecated bin
+      `GIVEN the file %s that runs a legacy bin
        WHEN the migration runs
        THEN it is reported once and not edited`,
       async (path) => {
@@ -4080,7 +4080,7 @@ describe('migration-v9 npm scripts', () => {
   describe('a package.json that starts with a byte order mark', () => {
     const MANUAL = `Add '${CLI}' to your devDependencies`;
 
-    /** A root package.json with a BOM, running a deprecated bin. */
+    /** A root package.json with a BOM, running a legacy bin. */
     const bomManifest = (dependencies: Record<string, unknown> = {}) =>
       '\uFEFF' +
       JSON.stringify(

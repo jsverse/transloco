@@ -26,7 +26,7 @@ const defaultSourceRoot = 'src';
 let unknownProjectFallsBack = false;
 
 /**
- * The deprecated `transloco-keys-manager` bin keeps its v8 behaviour for a
+ * The legacy `transloco-keys-manager` bin keeps its v8 behaviour for a
  * project that is in none of the workspace configs, it warns and defaults the
  * source root to `src`. Only the `transloco` command refuses it.
  */

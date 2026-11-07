@@ -15,34 +15,38 @@ const deprecated = [
 
 describe('collection', () => {
   it.each(deprecated)(
-    `GIVEN the deprecated %s schematic
+    `GIVEN the superseded %s schematic
       WHEN its description in the collection is read
       THEN it starts with the command that replaces it`,
     (name, command) => {
       expect(collection.schematics[name].description).toMatch(
-        new RegExp(`^Deprecated: use \`${command}\`\\. \\S`),
+        new RegExp(
+          `^Superseded by \`${command}\`, to be deprecated in Transloco v10\\. \\S`,
+        ),
       );
     },
   );
 
   it.each(deprecated)(
-    `GIVEN the deprecated %s schematic
+    `GIVEN the superseded %s schematic
       WHEN its description in the schema is read
       THEN it starts with the command that replaces it`,
     (name, command) => {
       expect(readJson(`${name}/schema.json`).description).toMatch(
-        new RegExp(`^Deprecated: use \`${command}\`\\. \\S`),
+        new RegExp(
+          `^Superseded by \`${command}\`, to be deprecated in Transloco v10\\. \\S`,
+        ),
       );
     },
   );
 
   it.each(['scope', 'keys-manager'])(
-    `GIVEN the %s schematic that is not deprecated
+    `GIVEN the %s schematic that is not superseded
       WHEN its description in the collection is read
-      THEN it does not say it is deprecated`,
+      THEN it does not say it is superseded or deprecated`,
     (name) => {
       expect(collection.schematics[name].description).not.toMatch(
-        /deprecated/i,
+        /superseded|deprecated/i,
       );
     },
   );

@@ -258,7 +258,7 @@ function folderWithoutConfig(tree: Tree, manifest: string) {
 const REPLACEMENTS = `'transloco extract', 'transloco find', 'transloco validate', 'transloco optimize' and 'transloco scoped-libs'`;
 
 /**
- * Moves the npm scripts running a deprecated bin to the `transloco` bin of
+ * Moves the npm scripts running a legacy bin to the `transloco` bin of
  * `@jsverse/transloco-cli`.
  *
  * The scripts of every `package.json` in the workspace are read as shell
@@ -365,7 +365,7 @@ export function migrateCliScripts(): Rule {
 
     if (kept.length) {
       context.logger.warn(
-        `  ↳ ${kept.length} npm script(s) run a deprecated bin in a way that has no safe translation, so they were left as they are:\n` +
+        `  ↳ ${kept.length} npm script(s) run a legacy bin in a way that has no safe translation, so they were left as they are:\n` +
           kept
             .map(
               ({ path, name, reason }) => `    - ${path}: ${name}: ${reason}`,
@@ -377,7 +377,7 @@ export function migrateCliScripts(): Rule {
 
     if (others.length) {
       context.logger.warn(
-        `  ↳ These files run a deprecated bin and were not edited:\n` +
+        `  ↳ These files run a legacy bin and were not edited:\n` +
           others.map((path) => `    - ${path}`).join('\n') +
           `\n    Replace the bin by hand: ${REPLACEMENTS}.`,
       );

@@ -223,10 +223,10 @@ describe('Join', () => {
       expect(tree.readContent('/dist-i18n/es.json')).toMatchSnapshot();
     });
   });
-  describe('deprecation and failures', () => {
+  describe('notice and failures', () => {
     it(`GIVEN a workspace with translation files
         WHEN join schematic runs
-        THEN the deprecation warning is logged exactly once`, async () => {
+        THEN the notice that it will be deprecated is logged exactly once`, async () => {
       const warnings: string[] = [];
       const subscription = schematicRunner.logger.subscribe(
         ({ level, message }) => {
@@ -238,7 +238,7 @@ describe('Join', () => {
       subscription.unsubscribe();
 
       expect(warnings).toEqual([
-        'The "join" schematic is deprecated and will be removed in Transloco v10. Run "transloco join" from @jsverse/transloco-cli instead.',
+        'The "join" schematic will be deprecated in Transloco v10. Run "transloco join" from @jsverse/transloco-cli instead.',
       ]);
     });
 
