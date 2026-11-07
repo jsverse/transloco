@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 
 import {
-  TranslocoModule,
+  TranslocoDirective,
+  TranslocoPipe,
   translateObjectSignal,
   translateSignal,
 } from '@jsverse/transloco';
@@ -11,7 +12,7 @@ import {
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule],
+  imports: [TranslocoDirective, TranslocoPipe],
 })
 export class HomeComponent {
   dynamic = signal('🦄');

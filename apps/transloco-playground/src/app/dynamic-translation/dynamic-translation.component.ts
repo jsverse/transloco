@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
-import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-dynamic-translation',
   templateUrl: './dynamic-translation.component.html',
   styleUrls: ['./dynamic-translation.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule],
+  imports: [TranslocoDirective],
 })
 export default class DynamicTranslationComponent {
   translocoService = inject(TranslocoService);

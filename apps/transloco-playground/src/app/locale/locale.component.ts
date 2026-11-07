@@ -1,11 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
-import { TranslocoModule } from '@jsverse/transloco';
 import {
   TRANSLOCO_LOCALE_CURRENCY_MAPPING,
   LocaleToCurrencyMapping,
   TranslocoLocaleService,
-  TranslocoLocaleModule,
+  TranslocoCurrencyPipe,
+  TranslocoDatePipe,
+  TranslocoDecimalPipe,
+  TranslocoPercentPipe,
 } from '@jsverse/transloco-locale';
 
 @Component({
@@ -13,7 +15,12 @@ import {
   templateUrl: './locale.component.html',
   styleUrls: ['./locale.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, TranslocoLocaleModule],
+  imports: [
+    TranslocoCurrencyPipe,
+    TranslocoDatePipe,
+    TranslocoDecimalPipe,
+    TranslocoPercentPipe,
+  ],
 })
 export default class LocaleComponent {
   private localeService = inject(TranslocoLocaleService);
