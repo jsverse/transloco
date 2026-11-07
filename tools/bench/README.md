@@ -34,7 +34,7 @@ It prints the median, min, max and standard deviation of the wall time and the p
 | `--out <file>`      | see above                | Where the JSON results go.                          |
 | `--no-hyperfine`    |                          | Use the built-in loop even when hyperfine is there. |
 
-The binary under test is chosen like in the golden suite: `TRANSLOCO_BIN` (default `dist/libs/transloco-cli/src/bin.js`), run with the current `node` when it is a `.js`, `.mjs` or `.cjs` file and executed directly otherwise, with `TRANSLOCO_BIN_ARGS` put in front of the command.
+The binary under test is chosen like in the golden suite: `TRANSLOCO_BIN` (default `dist/libs/transloco-cli/bin.js`), run with the current `node` when it is a `.js`, `.mjs` or `.cjs` file and executed directly otherwise, with `TRANSLOCO_BIN_ARGS` put in front of the command.
 
 ```bash
 TRANSLOCO_BIN=/path/to/node_modules/@jsverse/transloco-keys-manager/src/index.js node tools/bench/run.mts --label legacy

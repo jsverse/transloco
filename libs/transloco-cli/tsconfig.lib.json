@@ -16,6 +16,7 @@
     "**/*.spec.ts",
     "**/tests/**",
     "src/test-setup.ts",
-    "vitest.config*.ts"
+    "vitest.config*.ts",
+    "tsdown.config.ts"
   ]
 }
