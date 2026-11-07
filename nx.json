@@ -110,8 +110,7 @@
         "default",
         "^default",
         "{workspaceRoot}/eslint.config.mjs",
-        "{workspaceRoot}/tools/eslint-rules/**/*",
-        "{workspaceRoot}/tools/eslint/**/*"
+        "{workspaceRoot}/tools/eslint-rules/**/*"
       ],
       "cache": true
     }
