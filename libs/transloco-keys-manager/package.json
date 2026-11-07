@@ -11,10 +11,6 @@
   "bugs": "https://github.com/jsverse/transloco/issues",
   "type": "module",
   "exports": {
-    "./marker": {
-      "types": "./src/lib/marker.d.mts",
-      "default": "./src/lib/marker.mjs"
-    },
     "./package.json": "./package.json"
   },
   "bin": {

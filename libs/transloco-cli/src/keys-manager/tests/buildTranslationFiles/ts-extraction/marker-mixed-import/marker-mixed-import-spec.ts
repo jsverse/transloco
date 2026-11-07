@@ -14,13 +14,15 @@ mockResolveProjectBasePath(sourceRoot);
 
 const { buildTranslationFiles } = await import('../../../../keys-builder');
 
-export function testMarkerCliExtraction(fileFormat: Config['fileFormat']) {
-  describe('marker imported from @jsverse/transloco-cli/marker', () => {
-    const type: TranslationTestCase = 'ts-extraction/marker-cli';
+export function testMarkerMixedImportExtraction(
+  fileFormat: Config['fileFormat'],
+) {
+  describe('marker imported next to other names from @jsverse/transloco', () => {
+    const type: TranslationTestCase = 'ts-extraction/marker-mixed-import';
 
     beforeEach(() => removeI18nFolder(type));
 
-    it(`GIVEN files importing marker from the CLI's marker subpath, plain, aliased and with a scope
+    it(`GIVEN files importing marker in one declaration with other names, plain, aliased and with a scope
         WHEN keys are extracted
         THEN every marked key lands in its own scope's translation file`, () => {
       const config = buildConfig({ type, config: { fileFormat } });
