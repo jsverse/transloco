@@ -10,7 +10,7 @@ describe('transloco-validator bin', () => {
   const originalArgv = process.argv;
   const originalNoDeprecation = process.noDeprecation;
   const notice =
-    'DeprecationWarning: transloco-validator is deprecated and will be removed in Transloco v10. Run "transloco validate" from @jsverse/transloco-cli instead.\n';
+    'transloco-validator will be deprecated in Transloco v10. Run "transloco validate" from @jsverse/transloco-cli instead.\n';
   let stderr: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
