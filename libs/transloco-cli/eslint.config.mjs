@@ -23,5 +23,13 @@ export default [
   // domhandler: type-only import, installed through htmlparser2.
   // commander: peer dependency of @commander-js/extra-typings, never imported directly.
   // tslib: `importHelpers` is off, so the output never requires it.
-  dependencyChecks(['prettier', 'domhandler', 'commander', 'tslib']),
+  // @clack/prompts: nx pins another version, so the graph's installed version
+  // flips between the two and the version check fails at random.
+  dependencyChecks([
+    'prettier',
+    'domhandler',
+    'commander',
+    'tslib',
+    '@clack/prompts',
+  ]),
 ];

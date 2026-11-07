@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN a language that is no file name WHEN init runs with --yes THEN it is refused and nothing is written",
+  "args": [
+    "init",
+    "--yes",
+    "--langs",
+    "../en"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

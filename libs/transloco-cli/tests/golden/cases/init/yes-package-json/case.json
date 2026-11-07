@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN a package.json WHEN init runs with --yes THEN both scripts are added and the file keeps its style",
+  "args": [
+    "init",
+    "--yes"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

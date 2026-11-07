@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN a translations path outside the folder WHEN init runs with --yes THEN it is refused and nothing is written",
+  "args": [
+    "init",
+    "--yes",
+    "--translations-path",
+    "../i18n"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

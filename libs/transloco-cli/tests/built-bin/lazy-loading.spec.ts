@@ -68,7 +68,11 @@ const translationFolders: Allowed = {
 };
 const join: Allowed = {
   ...translationFolders,
-  files: [...translationFolders.files, 'chunks/commands/join.js'],
+  files: [
+    ...translationFolders.files,
+    'chunks/commands/join.js',
+    'chunks/real-path.js',
+  ],
 };
 const split: Allowed = {
   ...translationFolders,
@@ -114,6 +118,18 @@ const migrateAngularI18n: Allowed = {
     'env-paths',
     '@angular/compiler',
   ],
+};
+
+/** Everything `init` loads to decide and to write. The questions are not in it: `@clack/prompts` is loaded when one is asked. */
+const init: Allowed = {
+  files: [
+    ...program.files,
+    'chunks/commands/init.js',
+    'chunks/file-system.js',
+    'chunks/real-path.js',
+    'chunks/transloco-utils.js',
+  ],
+  packages: [...program.packages, 'cosmiconfig', 'env-paths', 'jsonc-parser'],
 };
 
 /** `.../node_modules/@scope/name/lib/a.js` => `@scope/name`, for a pnpm store path as well. */
@@ -259,6 +275,8 @@ describe.skipIf(Boolean(process.env['TRANSLOCO_BIN']))(
         ['migrate', '--help'],
         ['migrate', 'ngx-translate', '--help'],
         ['migrate', 'angular-i18n', '--help'],
+        ['init', '--help'],
+        ['help', 'init'],
         ['help', 'migrate', 'ngx-translate'],
       ].map((args) => [args.join(' '), args] as const),
     )(
@@ -285,6 +303,8 @@ describe.skipIf(Boolean(process.env['TRANSLOCO_BIN']))(
         ['migrate', 'translate'],
         ['migrate', 'angular-i18n'],
         ['migrate', 'ngx-translate', '--langs', 'en'],
+        ['init', '--config', 'a'],
+        ['init', '--translations-path', ''],
       ].map((args) => [JSON.stringify(args), args] as const),
     )(
       `GIVEN the rejected arguments %s
@@ -372,6 +392,33 @@ describe.skipIf(Boolean(process.env['TRANSLOCO_BIN']))(
       expect(unexpected(loaded, migrateAngularI18n)).toEqual(nothing);
       expect(loaded.files).toEqual([...migrateAngularI18n.files].sort());
       expect(loaded.status).toBe(0);
+    });
+
+    it(`GIVEN a folder
+        WHEN the built bin runs init with --yes
+        THEN it loads what init decides and writes with on top of the program, and no questions`, () => {
+      fs.mkdirSync(path.join(dir, 'init-yes'));
+
+      const loaded = run('--cwd', 'init-yes', 'init', '--yes');
+
+      expect(unexpected(loaded, init)).toEqual(nothing);
+      expect(loaded.files).toEqual([...init.files].sort());
+      expect(loaded.status).toBe(0);
+      expect(
+        fs.existsSync(path.join(dir, 'init-yes', 'src/assets/i18n/en.json')),
+      ).toBe(true);
+    });
+
+    it(`GIVEN no terminal
+        WHEN the built bin runs init without --yes
+        THEN it is refused without loading the questions`, () => {
+      fs.mkdirSync(path.join(dir, 'init-no-tty'));
+
+      const loaded = run('--cwd', 'init-no-tty', 'init');
+
+      expect(unexpected(loaded, init)).toEqual(nothing);
+      expect(loaded.stderr).toContain('needs a terminal');
+      expect(loaded.status).toBe(1);
     });
 
     it(`GIVEN the extract command

@@ -23,4 +23,6 @@ Commands:
   split [options]            Split joined translation files back into the scope
                              folders
   migrate                    Migrate a project to Transloco
+  init [options]             Prepare the project for the CLI: write the config,
+                             create the translation files and add the scripts
   help [command]             Display help for the command
