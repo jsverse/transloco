@@ -42,7 +42,7 @@ describe('startSpinner', () => {
   async function load() {
     vi.resetModules();
 
-    return (await import('../utils/spinner.js')).startSpinner;
+    return (await import('../utils/spinner')).startSpinner;
   }
 
   beforeEach(() => {

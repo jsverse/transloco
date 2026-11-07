@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { style, styleError } from './style.js';
+import { style, styleError } from './style';
 
 const red = (text: string) => `\u001B[31m${text}\u001B[39m`;
 

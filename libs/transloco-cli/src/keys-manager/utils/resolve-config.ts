@@ -1,17 +1,17 @@
 import { existsSync } from 'fs';
 
-import { getGlobalConfig, TranslocoGlobalConfig } from '../../config/index.js';
-import { styleError } from '../../utils/style.js';
-import { defaultConfig } from '../config.js';
-import { getScopes } from '../keys-builder/utils/scope.utils.js';
-import { messages } from '../messages.js';
-import { Config } from '../types.js';
+import { getGlobalConfig, TranslocoGlobalConfig } from '../../config';
+import { styleError } from '../../utils/style';
+import { defaultConfig } from '../config';
+import { getScopes } from '../keys-builder/utils/scope.utils';
+import { messages } from '../messages';
+import { Config } from '../types';
 
-import { devlog } from './logger.js';
-import { resolveConfigPaths } from './path.utils.js';
-import { resolveProjectBasePath } from './resolve-project-base-path.js';
-import { updateScopesMap } from './update-scopes-map.js';
-import { isDirectory } from './validators.utils.js';
+import { devlog } from './logger';
+import { resolveConfigPaths } from './path.utils';
+import { resolveProjectBasePath } from './resolve-project-base-path';
+import { updateScopesMap } from './update-scopes-map';
+import { isDirectory } from './validators.utils';
 
 export function resolveConfig(inlineConfig: Partial<Config>): Config {
   const { projectBasePath: sourceRoot, projectType } = resolveProjectBasePath(

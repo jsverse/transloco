@@ -1,12 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-import { compareKeysToFiles } from '../keys-detective/compare-keys-to-files.js';
-import { buildTable } from '../keys-detective/build-table.js';
-import { normalizedGlob } from '../utils/normalize-glob-path.js';
-import { readFile, writeFile } from '../utils/file.utils.js';
-import { getTranslationFilesPath } from '../keys-detective/get-translation-files-path.js';
+import { compareKeysToFiles } from '../keys-detective/compare-keys-to-files';
+import { buildTable } from '../keys-detective/build-table';
+import { normalizedGlob } from '../utils/normalize-glob-path';
+import { readFile, writeFile } from '../utils/file.utils';
+import { getTranslationFilesPath } from '../keys-detective/get-translation-files-path';
 
-vi.mock('../utils/logger.js', () => ({
+vi.mock('../utils/logger', () => ({
   getLogger: () => ({
     log: vi.fn(),
     success: vi.fn(),
@@ -14,24 +14,24 @@ vi.mock('../utils/logger.js', () => ({
   }),
 }));
 
-vi.mock('../keys-detective/build-table.js', () => ({
+vi.mock('../keys-detective/build-table', () => ({
   buildTable: vi.fn(),
 }));
 
-vi.mock('../utils/normalize-glob-path.js', () => ({
+vi.mock('../utils/normalize-glob-path', () => ({
   normalizedGlob: vi.fn(() => []),
 }));
 
-vi.mock('../keys-detective/get-translation-files-path.js', () => ({
+vi.mock('../keys-detective/get-translation-files-path', () => ({
   getTranslationFilesPath: vi.fn(() => []),
 }));
 
-vi.mock('../utils/file.utils.js', () => ({
+vi.mock('../utils/file.utils', () => ({
   readFile: vi.fn(() => ({})),
   writeFile: vi.fn(),
 }));
 
-vi.mock('../../config/index.js', () => ({
+vi.mock('../../config', () => ({
   getGlobalConfig: () => ({ scopePathMap: {} }),
 }));
 
