@@ -38,7 +38,9 @@ const stubbed: Record<string, () => object> = {
 /** `src/validator/index.ts` => `./validator/index.js`, for every module below the directory. */
 function modulesOf(directory: string): string[] {
   return fs
-    .readdirSync(path.join(__dirname, directory), { withFileTypes: true })
+    .readdirSync(path.join(import.meta.dirname, directory), {
+      withFileTypes: true,
+    })
     .flatMap((entry) => {
       const entryPath = `${directory}/${entry.name}`;
 
@@ -75,6 +77,7 @@ const recorded = [
   'cosmiconfig',
   'chokidar',
   'fs-extra',
+  'fs-extra/esm',
   'chalk',
   'ora',
   'cli-table3',

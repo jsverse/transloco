@@ -19,10 +19,10 @@ const keysManager = vi.hoisted(() => ({
   findMissingKeys: vi.fn(),
 }));
 
-vi.mock('./keys-manager/keys-builder/index.js', () => ({
+vi.mock('./keys-manager/keys-builder', () => ({
   buildTranslationFiles: keysManager.buildTranslationFiles,
 }));
-vi.mock('./keys-manager/keys-detective/index.js', () => ({
+vi.mock('./keys-manager/keys-detective', () => ({
   findMissingKeys: keysManager.findMissingKeys,
 }));
 

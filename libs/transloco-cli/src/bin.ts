@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import { describeError } from './errors.js';
-import { createProgram } from './program.js';
+import { describeError } from './errors';
+import { createProgram } from './program';
 
 createProgram()
   .parseAsync(process.argv)

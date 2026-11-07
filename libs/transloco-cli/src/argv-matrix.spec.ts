@@ -28,15 +28,15 @@ const runners = vi.hoisted(() => ({
   runScopedLibs: vi.fn(),
 }));
 
-vi.mock('./commands/extract.js', () => ({ runExtract: runners.runExtract }));
-vi.mock('./commands/find.js', () => ({ runFind: runners.runFind }));
-vi.mock('./commands/validate.js', () => ({
+vi.mock('./commands/extract', () => ({ runExtract: runners.runExtract }));
+vi.mock('./commands/find', () => ({ runFind: runners.runFind }));
+vi.mock('./commands/validate', () => ({
   runValidate: runners.runValidate,
 }));
-vi.mock('./commands/optimize.js', () => ({
+vi.mock('./commands/optimize', () => ({
   runOptimize: runners.runOptimize,
 }));
-vi.mock('./commands/scoped-libs.js', () => ({
+vi.mock('./commands/scoped-libs', () => ({
   runScopedLibs: runners.runScopedLibs,
 }));
 

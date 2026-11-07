@@ -16,20 +16,20 @@ const runners = vi.hoisted(() => ({
   runScopedLibs: vi.fn(),
 }));
 
-vi.mock('./commands/extract.js', () => ({ runExtract: runners.runExtract }));
-vi.mock('./commands/find.js', () => ({ runFind: runners.runFind }));
-vi.mock('./commands/validate.js', () => ({
+vi.mock('./commands/extract', () => ({ runExtract: runners.runExtract }));
+vi.mock('./commands/find', () => ({ runFind: runners.runFind }));
+vi.mock('./commands/validate', () => ({
   runValidate: runners.runValidate,
 }));
-vi.mock('./commands/optimize.js', () => ({
+vi.mock('./commands/optimize', () => ({
   runOptimize: runners.runOptimize,
 }));
-vi.mock('./commands/scoped-libs.js', () => ({
+vi.mock('./commands/scoped-libs', () => ({
   runScopedLibs: runners.runScopedLibs,
 }));
 
 const { version } = JSON.parse(
-  fs.readFileSync(path.join(__dirname, '../package.json'), 'utf-8'),
+  fs.readFileSync(path.join(import.meta.dirname, '../package.json'), 'utf-8'),
 );
 
 /**

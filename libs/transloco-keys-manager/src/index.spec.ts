@@ -31,7 +31,7 @@ describe('transloco-keys-manager bin', () => {
   async function runBin(...args: string[]) {
     process.argv = ['node', 'transloco-keys-manager', ...args];
     vi.resetModules();
-    await import('./index');
+    await import('./index.js');
   }
 
   it(`GIVEN the extract command with options

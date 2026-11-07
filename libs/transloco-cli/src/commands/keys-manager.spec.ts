@@ -16,11 +16,11 @@ const { assertKeysManagerPeers, buildTranslationFiles, findMissingKeys } =
     findMissingKeys: vi.fn(),
   }));
 
-vi.mock('../peers.js', () => ({ assertKeysManagerPeers }));
-vi.mock('../keys-manager/keys-builder/index.js', () => ({
+vi.mock('../peers', () => ({ assertKeysManagerPeers }));
+vi.mock('../keys-manager/keys-builder', () => ({
   buildTranslationFiles,
 }));
-vi.mock('../keys-manager/keys-detective/index.js', () => ({
+vi.mock('../keys-manager/keys-detective', () => ({
   findMissingKeys,
 }));
 
@@ -100,8 +100,8 @@ describe('keys manager runners', () => {
     );
 
     it.each([
-      ['a file', __filename],
-      ['a directory', __dirname],
+      ['a file', import.meta.filename],
+      ['a directory', import.meta.dirname],
     ])(
       `GIVEN a config path that is %s
        WHEN the commands run

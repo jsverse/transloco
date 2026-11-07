@@ -10,7 +10,7 @@ import { runScopedLibs } from './scoped-libs';
 
 const run = vi.hoisted(() => vi.fn());
 
-vi.mock('../scoped-libs/index.js', () => ({ default: run }));
+vi.mock('../scoped-libs', () => ({ default: run }));
 
 describe('runScopedLibs', () => {
   const originalCwd = process.cwd();
