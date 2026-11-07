@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN a package.json with one of the scripts WHEN init runs with --yes THEN that one is kept and the other one is added",
+  "args": [
+    "init",
+    "--yes"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "description": "GIVEN languages and a translations path WHEN init runs with --yes THEN the config and a file per language use them",
+  "args": [
+    "init",
+    "--yes",
+    "--langs",
+    "en",
+    "es",
+    "fr",
+    "--translations-path",
+    "projects/shop/src/assets/i18n"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

@@ -1,0 +1,4 @@
+Created transloco.config.ts
+Created src/assets/i18n/de.json
+Created src/assets/i18n/it.json
+Done. Run `transloco extract` to collect the keys of your project into the translation files.

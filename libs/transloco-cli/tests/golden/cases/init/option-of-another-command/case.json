@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN an option init does not have WHEN init runs THEN it is rejected by the argument parser",
+  "args": [
+    "init",
+    "--yes",
+    "--config",
+    "transloco.config.js"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

@@ -19,7 +19,7 @@ interface GeneratedConfig {
 export function generateConfigFile(config: GeneratedConfig) {
   return `import type { TranslocoGlobalConfig } from '@jsverse/transloco';
 
-const config: TranslocoGlobalConfig = ${inspect(config)};
+const config: TranslocoGlobalConfig = ${inspect(config, { maxArrayLength: Infinity, maxStringLength: Infinity })};
 
 export default config;`;
 }
