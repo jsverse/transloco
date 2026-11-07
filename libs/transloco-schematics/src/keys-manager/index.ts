@@ -13,23 +13,19 @@ import {
 
 import { SchemaOptions } from './schema';
 
-async function installKeysManager() {
+async function installCli() {
   const packageManager = await getConfiguredPackageManager();
   console.log('Installing packages for tooling...');
   if (packageManager === 'yarn') {
-    execSync('yarn add --dev @jsverse/transloco-keys-manager');
+    execSync('yarn add --dev @jsverse/transloco-cli');
   } else {
-    execSync('npm install --save-dev @jsverse/transloco-keys-manager');
+    execSync('npm install --save-dev @jsverse/transloco-cli');
   }
 }
 
 function addKeysDetectiveScript(host: Tree) {
-  addScriptToPackageJson(
-    host,
-    'i18n:extract',
-    'transloco-keys-manager extract',
-  );
-  addScriptToPackageJson(host, 'i18n:find', 'transloco-keys-manager find');
+  addScriptToPackageJson(host, 'i18n:extract', 'transloco extract');
+  addScriptToPackageJson(host, 'i18n:find', 'transloco find');
 }
 
 function updateTranslocoConfig(host: Tree, options: SchemaOptions) {
@@ -68,7 +64,7 @@ export default function (options: SchemaOptions): Rule {
   // @ts-ignore
   return (host: Tree) => {
     // First install dependencies via command line to get the latest versions.
-    return from(installKeysManager()).pipe(
+    return from(installCli()).pipe(
       map(() => {
         updateTranslocoConfig(host, options);
         addKeysDetectiveScript(host);
