@@ -59,7 +59,6 @@ export function extractTSKeys(config: Config): ExtractionResult {
 type TSExtractor = (scan: SourceFileScan) => TSExtractorResult;
 
 const translocoImport = /@jsverse\/transloco/;
-const translocoKeysManagerImport = /@jsverse\/transloco-keys-manager/;
 const routeTitleProperty = /\btitle\s*:/;
 
 function TSExtractor(
@@ -81,7 +80,7 @@ function TSExtractor(
   const mentionsProvider =
     !routeTitles.providerUsed && mentionsTitleStrategyProvider(content);
 
-  // Both import regexes contain "transloco", so this single check is enough
+  // The import regex contains "transloco", so this single check is enough
   // to skip the expensive AST parse for files that cannot hold any key.
   if (!content.includes('transloco') && !hasRouteTitle && !mentionsProvider) {
     addCommentSectionKeys(commentParams);
@@ -90,10 +89,12 @@ function TSExtractor(
 
   const extractors: TSExtractor[] = [];
   if (translocoImport.test(content)) {
-    extractors.push(serviceExtractor, pureFunctionExtractor, signalExtractor);
-  }
-  if (translocoKeysManagerImport.test(content)) {
-    extractors.push(markerExtractor);
+    extractors.push(
+      serviceExtractor,
+      pureFunctionExtractor,
+      signalExtractor,
+      markerExtractor,
+    );
   }
 
   const ast = parseTsSource(content, file);
