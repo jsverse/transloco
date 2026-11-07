@@ -66,11 +66,11 @@ describe('ngx-migrate', () => {
 
   it(`GIVEN the schematic runs
       WHEN its work is done
-      THEN it warned once that it is deprecated in favour of the command`, async () => {
+      THEN it warned once that it will be deprecated in favour of the command`, async () => {
     await schematicRunner.runSchematic('ngx-migrate', {});
 
     expect(warnings).toEqual([
-      'The "ngx-migrate" schematic is deprecated and will be removed in Transloco v10. Run "transloco migrate ngx-translate" from @jsverse/transloco-cli instead.',
+      'The "ngx-migrate" schematic will be deprecated in Transloco v10. Run "transloco migrate ngx-translate" from @jsverse/transloco-cli instead.',
     ]);
   });
 
