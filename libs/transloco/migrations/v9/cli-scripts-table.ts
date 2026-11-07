@@ -49,7 +49,7 @@ export interface CliScriptsTable {
 }
 
 /**
- * What `ng update` needs to know to move an npm script from a deprecated bin
+ * What `ng update` needs to know to move an npm script from a legacy bin
  * to the `transloco` bin of `@jsverse/transloco-cli`: for every invocation of
  * a legacy bin, each option it accepts and what the option becomes.
  *

@@ -180,7 +180,7 @@ Both migrations rewrite the templates and the sources, and `migrate angular-i18n
 | `--translations-path <dir>` | The folder the translation files are written to. Defaults to `rootTranslationsPath` of the config, then `src/assets/i18n`. |
 | `-c, --config <path>`       | A config file, or a folder to look for one in, which has to exist.                                                         |
 
-Both migrations only read the marks and the names they know, so go through the diff before you keep it. They replace the `ngx-migrate` and `ng-migrate` schematics of `@jsverse/transloco-schematics` (`ng g @jsverse/transloco-schematics:ngx-migrate`, `ng g @jsverse/transloco-schematics:ng-migrate`), which are deprecated.
+Both migrations only read the marks and the names they know, so go through the diff before you keep it. They replace the `ngx-migrate` and `ng-migrate` schematics of `@jsverse/transloco-schematics` (`ng g @jsverse/transloco-schematics:ngx-migrate`, `ng g @jsverse/transloco-schematics:ng-migrate`), which keep working and will be deprecated in Transloco v10.
 
 ### init
 

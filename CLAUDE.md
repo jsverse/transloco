@@ -55,7 +55,7 @@ The core `transloco` library is the foundation. The runtime plugin libraries dep
 - **transloco-keys-manager** - Deprecated shim over `transloco-cli`: the `transloco-keys-manager` bin prints a deprecation notice, keeps its own argument parsing and calls the code behind `transloco extract` / `transloco find`; it exports nothing but its bin, `marker` is exported by `@jsverse/transloco`
 - **transloco-schematics** - `ng add`/`ng generate` schematics; its `join`, `split`, `ngx-migrate` and `ng-migrate` schematics are deprecated in favour of the CLI commands
 - **transloco-validator** - Deprecated shim over `transloco-cli`: the `transloco-validator` bin prints a deprecation notice, keeps its own argument parsing and calls the code behind `transloco validate`
-- **transloco-utils** - Deprecated, frozen config reader (`getGlobalConfig`) kept for existing consumers. The `TranslocoGlobalConfig` type now lives in `transloco`, and `getGlobalConfig` in `transloco-cli`
+- **transloco-utils** - Superseded, frozen config reader (`getGlobalConfig`) kept for existing consumers, to be deprecated on npm in Transloco v10. The `TranslocoGlobalConfig` type now lives in `transloco`, and `getGlobalConfig` in `transloco-cli`
 - **schematics-core** - Shared schematics utilities (internal, not published)
 
 ### Core Library Structure (`libs/transloco/src/lib/`)

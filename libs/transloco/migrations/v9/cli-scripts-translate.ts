@@ -12,7 +12,7 @@ import {
 } from './cli-scripts-shell';
 
 export type ScriptTranslation =
-  /** The script runs none of the deprecated bins. */
+  /** The script runs none of the legacy bins. */
   | { kind: 'none' }
   | { kind: 'rewritten'; script: string; bins: LegacyBin[] }
   /** It runs one, in a way that can't be moved to the new bin without changing what it does. */
@@ -708,7 +708,7 @@ function translateCandidate(
 }
 
 /**
- * Moves the deprecated bins a shell script runs to the `transloco` bin.
+ * Moves the legacy bins a shell script runs to the `transloco` bin.
  *
  * Only the bin and the options of a command change, the rest of the script is
  * returned byte for byte. A script that runs a bin in any way that isn't read

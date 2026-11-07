@@ -22,7 +22,7 @@ describe('transloco-keys-manager bin', () => {
   const originalArgv = process.argv;
   const originalNoDeprecation = process.noDeprecation;
   const notice = (replacement: string) =>
-    `DeprecationWarning: transloco-keys-manager is deprecated and will be removed in Transloco v10. Run "${replacement}" from @jsverse/transloco-cli instead.\n`;
+    `transloco-keys-manager will be deprecated in Transloco v10. Run "${replacement}" from @jsverse/transloco-cli instead.\n`;
   let stderr: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {

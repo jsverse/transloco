@@ -92,7 +92,7 @@ describe('resolveProjectBasePath', () => {
     }
   });
 
-  describe('for the deprecated transloco-keys-manager bin', () => {
+  describe('for the legacy transloco-keys-manager bin', () => {
     async function freshModule() {
       vi.resetModules();
 

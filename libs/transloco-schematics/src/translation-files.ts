@@ -34,7 +34,7 @@ export function asSchematicsException<T>(run: () => T) {
   }
 }
 
-/** The command of the CLI that replaces each of the deprecated schematics. */
+/** The command of the CLI that supersedes each of the schematics. */
 const replacements = {
   join: 'join',
   split: 'split',
@@ -43,4 +43,4 @@ const replacements = {
 };
 
 export const deprecationWarning = (name: keyof typeof replacements) =>
-  `The "${name}" schematic is deprecated and will be removed in Transloco v10. Run "transloco ${replacements[name]}" from @jsverse/transloco-cli instead.`;
+  `The "${name}" schematic will be deprecated in Transloco v10. Run "transloco ${replacements[name]}" from @jsverse/transloco-cli instead.`;
