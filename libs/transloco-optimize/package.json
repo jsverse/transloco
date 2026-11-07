@@ -11,7 +11,6 @@
   "bugs": "https://github.com/jsverse/transloco/issues",
   "type": "module",
   "main": "src/lib/transloco-optimize.js",
-  "module": "src/lib/transloco-optimize.js",
   "types": "src/lib/transloco-optimize.d.ts",
   "bin": {
     "transloco-optimize": "src/index.js"

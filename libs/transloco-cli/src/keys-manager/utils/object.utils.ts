@@ -1,6 +1,6 @@
-import { getConfig } from '../config.js';
+import { getConfig } from '../config';
 
-import { isObject } from './validators.utils.js';
+import { isObject } from './validators.utils';
 
 export function stringify(val: object) {
   const { sort } = getConfig();

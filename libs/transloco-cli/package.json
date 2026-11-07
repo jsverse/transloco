@@ -14,34 +14,35 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./src/index.d.ts",
-      "default": "./src/index.js"
+      "types": "./index.d.ts",
+      "default": "./index.js"
     },
     "./internal/keys-manager": {
-      "types": "./src/keys-manager/index.d.ts",
-      "default": "./src/keys-manager/index.js"
+      "types": "./internal/keys-manager.d.ts",
+      "default": "./internal/keys-manager.js"
     },
     "./internal/optimize": {
-      "types": "./src/optimize/index.d.ts",
-      "default": "./src/optimize/index.js"
+      "types": "./internal/optimize.d.ts",
+      "default": "./internal/optimize.js"
     },
     "./internal/scoped-libs": {
-      "types": "./src/scoped-libs/index.d.ts",
-      "default": "./src/scoped-libs/index.js"
+      "types": "./internal/scoped-libs.d.ts",
+      "default": "./internal/scoped-libs.js"
     },
     "./internal/validator": {
-      "types": "./src/validator/index.d.ts",
-      "default": "./src/validator/index.js"
+      "types": "./internal/validator.d.ts",
+      "default": "./internal/validator.js"
     },
     "./package.json": "./package.json",
     "./internal/deprecation": {
-      "types": "./src/deprecation/index.d.ts",
-      "default": "./src/deprecation/index.js"
+      "types": "./internal/deprecation.d.ts",
+      "default": "./internal/deprecation.js"
     }
   },
-  "main": "src/index.js",
+  "main": "index.js",
+  "types": "index.d.ts",
   "bin": {
-    "transloco": "src/bin.js"
+    "transloco": "bin.js"
   },
   "sideEffects": false,
   "engines": {

@@ -1,7 +1,7 @@
 import { flatten } from 'flat';
 
-import { isObject } from '../../utils/validators.utils.js';
-import { Translation } from '../../types.js';
+import { isObject } from '../../utils/validators.utils';
+import { Translation } from '../../types';
 
 /**
  * The current translation is read from disk as-is, while the extracted keys are

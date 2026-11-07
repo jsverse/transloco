@@ -1,6 +1,6 @@
 import type { ImportDeclaration, Node, SourceFile } from 'typescript';
 
-import ts from './typescript.js';
+import ts from './typescript';
 
 export function parseTsSource(content: string, fileName = ''): SourceFile {
   // `setParentNodes` must be on: extractors walk up from calls to their

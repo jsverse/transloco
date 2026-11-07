@@ -19,11 +19,11 @@ const packageDir = path.resolve(
   import.meta.dirname,
   '../../../../dist/libs/transloco-cli',
 );
-const bin = path.join(packageDir, 'src', 'bin.js');
+const bin = path.join(packageDir, 'bin.js');
 const hook = path.join(import.meta.dirname, 'record-loaded-modules.mjs');
 
 interface Allowed {
-  /** Files of the CLI itself, relative to its package directory. */
+  /** Files of the CLI's bundle, relative to its package directory. */
   files: string[];
   packages: string[];
 }
@@ -31,28 +31,26 @@ interface Allowed {
 /** What it takes to parse the arguments, print the help or the version and report an error. */
 const program: Allowed = {
   files: [
-    'src/bin.js',
-    'src/errors.js',
-    'src/package-info.js',
-    'src/program.js',
+    // The program, with the package.json it reads inlined.
+    'bin.js',
+    'chunks/errors.js',
+    'chunks/package-info.js',
   ],
   packages: ['@commander-js/extra-typings', 'commander'],
 };
 const validate: Allowed = {
   files: [
     ...program.files,
-    'src/commands/validate.js',
-    'src/validator/index.js',
-    'src/validator/transloco-validator.js',
+    'chunks/commands/validate.js',
+    'chunks/validator.js',
   ],
   packages: [...program.packages, 'find-duplicated-property-keys'],
 };
 const optimize: Allowed = {
   files: [
     ...program.files,
-    'src/commands/optimize.js',
-    'src/optimize/index.js',
-    'src/optimize/transloco-optimize.js',
+    'chunks/commands/optimize.js',
+    'chunks/optimize.js',
   ],
   packages: [...program.packages, 'flat', 'glob'],
 };
@@ -229,8 +227,8 @@ describe.skipIf(Boolean(process.env['TRANSLOCO_BIN']))(
       const loaded = run('extract', '--input', 'src', '--output', 'i18n');
 
       expect(loaded.status).toBe(0);
-      expect(loaded.files).toContain('src/commands/extract.js');
-      expect(loaded.files).toContain('src/keys-manager/keys-builder/index.js');
+      expect(loaded.files).toContain('chunks/commands/extract.js');
+      expect(loaded.files).toContain('chunks/keys-builder.js');
       expect(loaded.packages).toEqual(
         expect.arrayContaining([
           '@angular/compiler',

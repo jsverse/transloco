@@ -10,8 +10,8 @@ import type {
   VariableDeclaration,
 } from 'typescript';
 
-import { hasDescendant, isNamed, nameText } from '../../utils/ts-ast.utils.js';
-import ts from '../../utils/typescript.js';
+import { hasDescendant, isNamed, nameText } from '../../utils/ts-ast.utils';
+import ts from '../../utils/typescript';
 
 /**
  * Everything the TS extractors need, collected in a single walk of the AST so
