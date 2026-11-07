@@ -63,7 +63,15 @@ function modulesOf(directory: string): string[] {
  * by one is what catches a runner importing a single helper from it.
  */
 const recorded = [
-  ...['keys-manager', 'validator', 'optimize', 'scoped-libs', 'config', 'utils']
+  ...[
+    'keys-manager',
+    'validator',
+    'optimize',
+    'scoped-libs',
+    'translation-files',
+    'config',
+    'utils',
+  ]
     .flatMap(modulesOf)
     .filter((id) => !(id in stubbed)),
   './commands/extract.js',
@@ -71,6 +79,9 @@ const recorded = [
   './commands/validate.js',
   './commands/optimize.js',
   './commands/scoped-libs.js',
+  './commands/join.js',
+  './commands/split.js',
+  './commands/translation-folders.js',
   './peers.js',
   'find-duplicated-property-keys',
   'glob',
@@ -163,6 +174,8 @@ describe('lazy loading', () => {
       ['validate', '--help'],
       ['optimize', '--help'],
       ['scoped-libs', '--help'],
+      ['join', '--help'],
+      ['split', '--help'],
       // rejected by the argument parser
       ['extract', '--add-missing-keys'],
       ['find', '--replace'],
@@ -207,6 +220,76 @@ describe('lazy loading', () => {
       'optimize/index',
       'optimize/transloco-optimize',
     ]);
+  });
+
+  describe('translation folders', () => {
+    const originalCwd = process.cwd();
+
+    beforeEach(() => {
+      fs.mkdirSync(path.join(dir, 'i18n', 'scope'), { recursive: true });
+      fs.writeFileSync(path.join(dir, 'i18n', 'es.json'), '{"a":"b"}');
+      fs.writeFileSync(path.join(dir, 'i18n', 'scope', 'es.json'), '{"c":"d"}');
+    });
+
+    afterEach(() => {
+      process.chdir(originalCwd);
+    });
+
+    it(`GIVEN a folder of translation files
+        WHEN it is joined
+        THEN only the join runner, the core and the config reader are loaded`, async () => {
+      await run('--cwd', dir, 'join', '--translations-path', 'i18n');
+
+      expect(
+        JSON.parse(
+          fs.readFileSync(path.join(dir, 'dist-i18n', 'es.json'), 'utf-8'),
+        ),
+      ).toEqual({ a: 'b', scope: { c: 'd' } });
+      expect([...loaded].sort()).toEqual([
+        'commands/join',
+        'commands/translation-folders',
+        'config/index',
+        'config/transloco-utils',
+        'cosmiconfig',
+        'translation-files/index',
+        'translation-files/join',
+        'translation-files/node-file-reader',
+        'translation-files/shared',
+        'translation-files/split',
+        'utils/file-system',
+      ]);
+    });
+
+    it(`GIVEN a folder of joined translation files
+        WHEN it is split
+        THEN only the split runner, the core and the config reader are loaded`, async () => {
+      fs.mkdirSync(path.join(dir, 'dist-i18n'));
+      fs.writeFileSync(
+        path.join(dir, 'dist-i18n', 'es.json'),
+        '{"a":"b","scope":{"c":"e"}}',
+      );
+
+      await run('--cwd', dir, 'split', '--translations-path', 'i18n');
+
+      expect(
+        JSON.parse(
+          fs.readFileSync(path.join(dir, 'i18n', 'scope', 'es.json'), 'utf-8'),
+        ),
+      ).toEqual({ c: 'e' });
+      expect([...loaded].sort()).toEqual([
+        'commands/split',
+        'commands/translation-folders',
+        'config/index',
+        'config/transloco-utils',
+        'cosmiconfig',
+        'translation-files/index',
+        'translation-files/join',
+        'translation-files/node-file-reader',
+        'translation-files/shared',
+        'translation-files/split',
+        'utils/file-system',
+      ]);
+    });
   });
 
   it(`GIVEN the extract command

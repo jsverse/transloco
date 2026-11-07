@@ -1,0 +1,11 @@
+{
+  "hello": "Hola",
+  "admin": {
+    "title": "Administrador"
+  },
+  "admin.audit": {
+    "log": {
+      "title": "Registro de auditoria"
+    }
+  }
+}

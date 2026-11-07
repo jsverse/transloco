@@ -1,0 +1,13 @@
+{
+  "description": "GIVEN a config with a scopePathMap and the root WHEN the files are joined THEN each scope is merged from its mapped folder and the folders of the root are not taken for scopes",
+  "args": [
+    "join",
+    "--config",
+    "transloco.config.js"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}
