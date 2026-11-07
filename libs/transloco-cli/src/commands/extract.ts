@@ -1,14 +1,14 @@
-import type { Config } from '../keys-manager/types.js';
-import { assertKeysManagerPeers } from '../peers.js';
+import type { Config } from '../keys-manager/types';
+import { assertKeysManagerPeers } from '../peers';
 
-import { assertConfigPathExists } from './config-path.js';
+import { assertConfigPathExists } from './config-path';
 
 export async function runExtract(config: Partial<Config>) {
   assertConfigPathExists(config.config);
   assertKeysManagerPeers('extract');
 
   const { buildTranslationFiles } =
-    await import('../keys-manager/keys-builder/index.js');
+    await import('../keys-manager/keys-builder');
 
   await buildTranslationFiles(config as Config);
 }

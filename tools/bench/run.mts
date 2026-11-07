@@ -4,7 +4,7 @@
  * resident memory of each.
  *
  * The binary under test is picked the same way the golden suite picks it:
- * `TRANSLOCO_BIN` (default: the built `dist/libs/transloco-cli/src/bin.js`),
+ * `TRANSLOCO_BIN` (default: the built `dist/libs/transloco-cli/bin.js`),
  * run with the current `node` when it's a `.js`/`.mjs`/`.cjs` file and executed
  * directly otherwise, with `TRANSLOCO_BIN_ARGS` put in front of the command.
  *
@@ -126,7 +126,7 @@ const outFile = resolve(
 
 const bin = resolve(
   process.env['TRANSLOCO_BIN'] ||
-    join('dist', 'libs', 'transloco-cli', 'src', 'bin.js'),
+    join('dist', 'libs', 'transloco-cli', 'bin.js'),
 );
 const binArgs = (process.env['TRANSLOCO_BIN_ARGS'] ?? '')
   .split(/\s+/)

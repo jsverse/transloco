@@ -1,6 +1,6 @@
 import { GlobOptionsWithFileTypesFalse, sync as globSync } from 'glob';
 
-import { pathUnixFormat } from './path.utils.js';
+import { pathUnixFormat } from './path.utils';
 
 export function normalizedGlob(
   path: string,

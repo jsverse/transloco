@@ -106,12 +106,7 @@
       ]
     },
     "@nx/eslint:lint": {
-      "inputs": [
-        "default",
-        "^default",
-        "{workspaceRoot}/eslint.config.mjs",
-        "{workspaceRoot}/tools/eslint/**/*"
-      ],
+      "inputs": ["default", "^default", "{workspaceRoot}/eslint.config.mjs"],
       "cache": true
     }
   },

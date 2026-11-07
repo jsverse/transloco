@@ -1,15 +1,15 @@
 import { flatten, unflatten } from 'flat';
 
-import { messages } from '../messages.js';
-import { Config, ScopeMap } from '../types.js';
-import { readFile, writeFile } from '../utils/file.utils.js';
-import { getLogger } from '../utils/logger.js';
-import { getScopeAndLangFromPath } from '../utils/path.utils.js';
-import { normalizedGlob } from '../utils/normalize-glob-path.js';
+import { messages } from '../messages';
+import { Config, ScopeMap } from '../types';
+import { readFile, writeFile } from '../utils/file.utils';
+import { getLogger } from '../utils/logger';
+import { getScopeAndLangFromPath } from '../utils/path.utils';
+import { normalizedGlob } from '../utils/normalize-glob-path';
 
-import { buildTable } from './build-table.js';
-import { DiffDeleted, DiffNew, flatDiff } from './flat-diff.js';
-import { getTranslationFilesPath } from './get-translation-files-path.js';
+import { buildTable } from './build-table';
+import { DiffDeleted, DiffNew, flatDiff } from './flat-diff';
+import { getTranslationFilesPath } from './get-translation-files-path';
 
 interface Result {
   keys: Record<string, string>;

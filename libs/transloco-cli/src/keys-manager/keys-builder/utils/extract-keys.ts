@@ -4,10 +4,10 @@ import {
   ExtractorConfig,
   FileType,
   ScopeMap,
-} from '../../types.js';
-import { initExtraction } from '../../utils/init-extraction.js';
-import { devlog } from '../../utils/logger.js';
-import { normalizedGlob } from '../../utils/normalize-glob-path.js';
+} from '../../types';
+import { initExtraction } from '../../utils/init-extraction';
+import { devlog } from '../../utils/logger';
+import { normalizedGlob } from '../../utils/normalize-glob-path';
 
 export function extractKeys(
   { input, scopes, defaultValue, files }: Config,

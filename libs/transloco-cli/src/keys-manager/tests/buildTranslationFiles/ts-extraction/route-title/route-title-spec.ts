@@ -6,17 +6,13 @@ import {
   removeI18nFolder,
   sourceRoot,
   TranslationTestCase,
-} from '../../build-translation-utils.js';
-import {
-  defaultValue,
-  mockResolveProjectBasePath,
-} from '../../../spec-utils.js';
-import { Config } from '../../../../types.js';
+} from '../../build-translation-utils';
+import { defaultValue, mockResolveProjectBasePath } from '../../../spec-utils';
+import { Config } from '../../../../types';
 
 mockResolveProjectBasePath(sourceRoot);
 
-const { buildTranslationFiles } =
-  await import('../../../../keys-builder/index.js');
+const { buildTranslationFiles } = await import('../../../../keys-builder');
 
 export function testRouteTitleExtraction(fileFormat: Config['fileFormat']) {
   describe('route title', () => {

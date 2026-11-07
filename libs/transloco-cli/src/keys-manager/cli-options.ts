@@ -1,4 +1,4 @@
-import { Config } from './types.js';
+import { Config } from './types';
 
 export const optionDefinitions = [
   {

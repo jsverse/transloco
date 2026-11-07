@@ -16,12 +16,12 @@ import {
   isLiteralMap,
 } from '@jsverse/angular-utils';
 
-import { ExtractorConfig } from '../../types.js';
-import { addKey } from '../add-key.js';
-import { resolveAliasAndKey } from '../utils/resolvers.utils.js';
-import { isString } from '../../utils/validators.utils.js';
+import { ExtractorConfig } from '../../types';
+import { addKey } from '../add-key';
+import { resolveAliasAndKey } from '../utils/resolvers.utils';
+import { isString } from '../../utils/validators.utils';
 
-import { TemplateExtractorConfig } from './types.js';
+import { TemplateExtractorConfig } from './types';
 import {
   isBoundAttribute,
   isBoundText,
@@ -35,7 +35,7 @@ import {
   isBlockNode,
   resolveBlockChildNodes,
   resolveKeysFromLiteralMap,
-} from './utils.js';
+} from './utils';
 
 interface MethodCallMetadata {
   keyNode?: AST;

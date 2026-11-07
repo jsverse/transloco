@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
-import { CliError } from '../errors.js';
+import { CliError } from '../errors';
 
-import { addScripts, parseManifest } from './manifest.js';
+import { addScripts, parseManifest } from './manifest';
 
 const scripts = {
   'i18n:extract': 'transloco extract',

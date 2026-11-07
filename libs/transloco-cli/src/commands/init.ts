@@ -1,9 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { findGlobalConfigFile } from '../config/index.js';
-import { CliError } from '../errors.js';
-import { parseManifest } from '../init/manifest.js';
+import { findGlobalConfigFile } from '../config';
+import { CliError } from '../errors';
+import { parseManifest } from '../init/manifest';
 import {
   configFileName,
   defaultLangs,
@@ -12,15 +12,15 @@ import {
   manifestFileName,
   planInit,
   translationFile,
-} from '../init/plan.js';
-import { findUnreadableConfig } from '../init/unreadable-config.js';
+} from '../init/plan';
+import { findUnreadableConfig } from '../init/unreadable-config';
 import {
   languageProblem,
   translationsPathProblem,
   writeProblem,
-} from '../init/validation.js';
-import { outputFile } from '../utils/file-system.js';
-import { contains, lstat } from '../utils/real-path.js';
+} from '../init/validation';
+import { outputFile } from '../utils/file-system';
+import { contains, lstat } from '../utils/real-path';
 
 const name = 'Init';
 const cancelledExitCode = 130;
@@ -97,7 +97,7 @@ export async function runInit({
   }
 
   // Only now is the library loaded, as nothing before this asks anything
-  const ui = await import('../init/prompts.js');
+  const ui = await import('../init/prompts');
 
   ui.startPrompts();
 

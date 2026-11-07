@@ -1,10 +1,10 @@
 import path from 'node:path';
 
-import { CliError } from '../errors.js';
-import { findFiles } from '../migrate/find-files.js';
-import { migrateNgxTranslate } from '../migrate/ngx-translate/migrate-ngx-translate.js';
+import { CliError } from '../errors';
+import { findFiles } from '../migrate/find-files';
+import { migrateNgxTranslate } from '../migrate/ngx-translate/migrate-ngx-translate';
 
-import { assertFolderExists } from './translation-folders.js';
+import { assertFolderExists } from './translation-folders';
 
 const name = 'Migrate';
 

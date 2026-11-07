@@ -1,23 +1,20 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { getGlobalConfig } from '../config/index.js';
-import { CliError } from '../errors.js';
-import {
-  findTranslationFiles,
-  joinTranslations,
-} from '../translation-files/index.js';
-import { nodeFileReader } from '../translation-files/node-file-reader.js';
-import { outputFile } from '../utils/file-system.js';
-import { contains, locate, lstat } from '../utils/real-path.js';
+import { getGlobalConfig } from '../config';
+import { CliError } from '../errors';
+import { findTranslationFiles, joinTranslations } from '../translation-files';
+import { nodeFileReader } from '../translation-files/node-file-reader';
+import { outputFile } from '../utils/file-system';
+import { contains, locate, lstat } from '../utils/real-path';
 
-import { assertConfigPathExists } from './config-path.js';
+import { assertConfigPathExists } from './config-path';
 import {
   asCliError,
   assertFolderExists,
   languagesOf,
   resolveTranslationsRoot,
-} from './translation-folders.js';
+} from './translation-folders';
 
 const name = 'Join';
 

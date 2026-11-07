@@ -12,7 +12,7 @@ import {
   type PlannedFile,
   type Translation,
   type TranslationFileReader,
-} from './shared.js';
+} from './shared';
 
 export interface JoinOptions {
   /** The folder of the root translation files. */
