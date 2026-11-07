@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN a package.json with tabs, CRLF line endings, no scripts and no final line break WHEN init runs with --yes THEN the style is kept",
+  "args": [
+    "init",
+    "--yes"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}
