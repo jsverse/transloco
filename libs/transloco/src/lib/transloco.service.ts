@@ -797,7 +797,10 @@ export class TranslocoService {
     this.failedLangs.clear();
   }
 
-  private handleFailure(lang: string, loadOptions: LoadOptions) {
+  private handleFailure(
+    lang: string,
+    loadOptions: LoadOptions,
+  ): Observable<Translation> {
     // When starting to load a first choice language, initialize
     // the failed counter and resolve the fallback langs.
     if (isNil(loadOptions.failedCounter)) {
@@ -825,13 +828,27 @@ export class TranslocoService {
       resolveLang = splitted.join('/');
     }
 
-    // This handles the case where a loaded fallback language is requested again.
-    // For a scope the fallback is `scope/nextLang`, not the global `nextLang`.
-    if (!(isScoped && isFallbackLang) && this.cache.has(resolveLang)) {
-      this.handleSuccess(resolveLang, this.getTranslation(resolveLang));
-      // Unscoped requests keep the old behavior. A scoped load still has to
-      // emit, so return the cached `scope/nextLang`.
-      return isScoped ? this.load(resolveLang, loadOptions) : EMPTY;
+    // This handles the case where a loaded fallback language is requested again
+    if (!isScoped && this.cache.has(nextLang)) {
+      this.handleSuccess(nextLang, this.getTranslation(nextLang));
+      return EMPTY;
+    }
+
+    if (isScoped && !isFallbackLang) {
+      // For a scope the fallback is `scope/nextLang`. Skip it if it already
+      // failed in this chain, and only reuse it when it was actually loaded.
+      // A cache entry alone may still be pending or hold the `of({})`
+      // placeholder from `useFallbackTranslation`.
+      if (this.failedLangs.has(resolveLang)) {
+        loadOptions.failedCounter!++;
+        return this.handleFailure(lang, loadOptions);
+      }
+
+      if (this.cache.has(resolveLang) && this.isScopeLoaded(resolveLang)) {
+        const translation = this.getTranslation(resolveLang);
+        this.handleSuccess(resolveLang, translation);
+        return of(translation);
+      }
     }
 
     if (!nextLang || isFallbackLang) {
@@ -845,6 +862,13 @@ export class TranslocoService {
     });
 
     return this.load(resolveLang, loadOptions);
+  }
+
+  private isScopeLoaded(scopedLang: string): boolean {
+    const prefix = `${this.getMappedScope(getScopeFromLang(scopedLang))}.`;
+    const translation = this.translations.get(getLangFromScope(scopedLang));
+
+    return Object.keys(translation ?? {}).some((key) => key.startsWith(prefix));
   }
 
   private getMappedScope(scope: string): string {

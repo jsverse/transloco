@@ -256,6 +256,79 @@ describe('Multiple fallbacks', () => {
         mockLangs['admin-page/es'],
       );
     }));
+    it(`GIVEN the scope fallback is cached but failed to load
+        WHEN a scope fails in every fallback lang
+        THEN should not report a fallback as loaded`, fakeAsync(() => {
+      const failing = class FailingLoader implements TranslocoLoader {
+        getTranslation(lang: string) {
+          return timer(1000).pipe(
+            map(() => {
+              if (lang.startsWith('admin-page/')) {
+                throw new Error('error');
+              }
+              return mockLangs[lang];
+            }),
+          );
+        }
+      };
+      const service = createService(
+        {
+          prodMode: true,
+          defaultLang: 'es',
+          fallbackLang: ['es', 'en'],
+          failedRetries: 0,
+        },
+        { loader: failing },
+      );
+
+      const successes: string[] = [];
+      service.events$.subscribe((e) => {
+        if (e.type === 'translationLoadSuccess') {
+          successes.push(e.payload.langName + ':' + e.payload.scope);
+        }
+      });
+      let error: unknown;
+      service
+        .load('admin-page/en')
+        .pipe(
+          catchError((e) => {
+            error = e;
+            return of('');
+          }),
+        )
+        .subscribe();
+      runLoader(5);
+
+      expect(error).toBeInstanceOf(TranslationLoadError);
+      expect(successes).toEqual([]);
+      expect(service.getActiveLang()).toEqual('es');
+    }));
+
+    it(`GIVEN useFallbackTranslation and a preloaded scope fallback
+        WHEN a scope fails to load
+        THEN should emit the scope fallback translation`, fakeAsync(() => {
+      const service = createService(
+        {
+          prodMode: true,
+          defaultLang: 'en',
+          fallbackLang: 'en',
+          failedRetries: 0,
+          missingHandler: { useFallbackTranslation: true },
+        },
+        { loader },
+      );
+
+      service.load('admin-page/es').subscribe();
+      runLoader(1);
+
+      let emitted: unknown;
+      service
+        .load('admin-page/notExists')
+        .subscribe((translation) => (emitted = translation));
+      runLoader(2);
+
+      expect(emitted).toEqual(mockLangs['admin-page/en']);
+    }));
   });
 
   describe('CustomFallbackStrategy', () => {
