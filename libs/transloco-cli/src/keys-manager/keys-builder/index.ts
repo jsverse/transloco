@@ -1,13 +1,13 @@
-import { style } from '../../utils/style.js';
-import { setConfig } from '../config.js';
-import { messages } from '../messages.js';
-import { Config } from '../types.js';
-import { countKeys } from '../utils/keys.utils.js';
-import { getLogger } from '../utils/logger.js';
-import { resolveConfig } from '../utils/resolve-config.js';
+import { style } from '../../utils/style';
+import { setConfig } from '../config';
+import { messages } from '../messages';
+import { Config } from '../types';
+import { countKeys } from '../utils/keys.utils';
+import { getLogger } from '../utils/logger';
+import { resolveConfig } from '../utils/resolve-config';
 
-import { buildKeys } from './build-keys.js';
-import { createTranslationFiles } from './create-translation-files.js';
+import { buildKeys } from './build-keys';
+import { createTranslationFiles } from './create-translation-files';
 
 /** The main function, collects the settings and starts the files build. */
 export async function buildTranslationFiles(inlineConfig: Config) {

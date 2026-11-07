@@ -1,10 +1,10 @@
 import fs from 'node:fs';
 
-import { outputFile } from '../../utils/file-system.js';
-import { Config, Translation } from '../types.js';
+import { outputFile } from '../../utils/file-system';
+import { Config, Translation } from '../types';
 
-import { createTranslation } from './utils/create-translation.js';
-import { getCurrentTranslation } from './utils/get-current-translation.js';
+import { createTranslation } from './utils/create-translation';
+import { getCurrentTranslation } from './utils/get-current-translation';
 
 export interface FileAction {
   path: string;

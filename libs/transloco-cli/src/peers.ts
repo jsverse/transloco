@@ -1,7 +1,9 @@
-import { createRequire } from 'node:module';
+// A namespace import: a named `createRequire` import makes the bundler keep a
+// bare `import "node:module"` in the chunk that holds its own runtime helpers.
+import * as nodeModule from 'node:module';
 
-import { CliError } from './errors.js';
-import { packageJsonPath, readPackageJson } from './package-info.js';
+import { CliError } from './errors';
+import { readPackageJson } from './package-info';
 
 /**
  * Only the keys manager needs both of these, and the Angular i18n migration
@@ -21,13 +23,13 @@ export function assertKeysManagerPeers(command: string, resolve?: ResolvePeer) {
  * Fails with an actionable message when one of the optional peers a command
  * needs is missing.
  *
- * The peers are resolved from the package and not from the working directory,
- * since that's where the command is going to load them from.
+ * The peers are resolved from this file's location and not from the working
+ * directory, since that's where the command is going to load them from.
  */
 export function assertPeers(
   command: string,
   peers: string[],
-  resolve: ResolvePeer = createRequire(packageJsonPath).resolve,
+  resolve: ResolvePeer = nodeModule.createRequire(import.meta.url).resolve,
 ) {
   const missing = peers.filter((peer) => !isInstalled(peer, resolve));
 

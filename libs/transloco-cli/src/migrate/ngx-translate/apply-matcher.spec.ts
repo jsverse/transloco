@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { applyMatcher } from './apply-matcher.js';
-import { generateMatchers } from './migration-matchers.js';
+import { applyMatcher } from './apply-matcher';
+import { generateMatchers } from './migration-matchers';
 
 describe('applyMatcher', () => {
   it(`GIVEN a replacement function

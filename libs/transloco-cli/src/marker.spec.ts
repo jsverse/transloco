@@ -3,8 +3,8 @@ import path from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
-import ts from './keys-manager/utils/typescript.js';
-import { marker } from './marker.js';
+import ts from './keys-manager/utils/typescript';
+import { marker } from './marker';
 
 describe('marker', () => {
   it(`GIVEN a key
@@ -47,8 +47,8 @@ describe('marker', () => {
   });
 
   it(`GIVEN the ./marker export of the package
-      WHEN its types and default targets are mapped to the build output sources
-      THEN both point at files the build produces`, () => {
+      WHEN its types and default targets are mapped to the bundle entries
+      THEN both point at the files the marker entry produces`, async () => {
     const pkg = JSON.parse(
       fs.readFileSync(
         path.join(import.meta.dirname, '../package.json'),
@@ -56,19 +56,14 @@ describe('marker', () => {
       ),
     );
     const { types, default: entry } = pkg.exports['./marker'];
+    const { default: config } = await import('../tsdown.config');
+    const entries = (config as { entry: Record<string, string> }).entry;
 
-    // The build emits src/marker.ts as src/marker.js and src/marker.d.ts
-    const sourceOf = (target: string) =>
-      path.join(
-        import.meta.dirname,
-        '..',
-        target.replace(/\.d\.ts$/, '.ts').replace(/\.js$/, '.ts'),
-      );
+    // The bundle emits the entry `<name>` as `<name>.js` and `<name>.d.ts`
+    const name = entry.replace(/^\.\//, '').replace(/\.js$/, '');
 
-    expect(fs.existsSync(sourceOf(types))).toBe(true);
-    expect(fs.existsSync(sourceOf(entry))).toBe(true);
-    expect(path.basename(types)).toBe('marker.d.ts');
-    expect(path.basename(entry)).toBe('marker.js');
+    expect(types).toBe(`./${name}.d.ts`);
+    expect(entries[name]).toBe('src/marker.ts');
   });
 
   it(`GIVEN a consumer resolving types with moduleResolution node10

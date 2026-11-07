@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import type { TranslationFileReader } from './shared.js';
+import type { TranslationFileReader } from './shared';
 
 /** Reads the translation folders from the disk, in the order of their names. */
 export const nodeFileReader: TranslationFileReader = {

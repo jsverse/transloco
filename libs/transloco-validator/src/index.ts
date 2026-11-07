@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 import { warnDeprecatedBin } from '@jsverse/transloco-cli/internal/deprecation';
-
-import validator from './lib/transloco-validator.js';
+import validator from '@jsverse/transloco-cli/internal/validator';
 
 warnDeprecatedBin('transloco-validator');
 

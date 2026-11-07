@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { dasherize } from './dasherize.js';
+import { dasherize } from './dasherize';
 
 /**
  * The results of `dasherize` of `@angular-devkit/core`, the function the keys
