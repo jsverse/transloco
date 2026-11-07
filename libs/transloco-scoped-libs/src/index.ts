@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 import { getGlobalConfig } from '@jsverse/transloco-cli';
+import { warnDeprecatedBin } from '@jsverse/transloco-cli/internal/deprecation';
 import commandLineArgs from 'command-line-args';
 import run from '@jsverse/transloco-cli/internal/scoped-libs';
+
+warnDeprecatedBin('transloco-scoped-libs');
 
 const optionDefinitions: commandLineArgs.OptionDefinition[] = [
   { name: 'watch', alias: 'w', type: Boolean, defaultValue: false },
