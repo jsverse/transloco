@@ -118,7 +118,6 @@ These are defects of the current implementation. They are left out on purpose, s
 - `find --file-format pot` fails while parsing the `.pot` files as JSON.
 - A `transloco.config.ts` using `export default` fails to load in a project whose `package.json` sets `"type": "commonjs"` explicitly. Without a `type`, or with `"type": "module"`, it loads: the `config-file/typescript-*` cases cover the file `ng add` generates.
 - A `transloco.config.mjs` doesn't load.
-- A config at the workspace root isn't found without `--config` when the source root is a sub directory, which it usually is. The cases that need a config pass `--config`.
 - `extract --remove-extra-keys` on a nested translation file without `--unflat` leaves the file half flat and half nested (`libs/transloco-keys-manager/v9.md`, item 1). The in-process spec for it asserts a subset of the file for the same reason.
 - `extract --remove-extra-keys` deletes `*.comment` keys although `find` doesn't count them as extra (`v9.md`, item 2). The `find` side is covered.
 - `extract` formats the JSON files it writes with Prettier when both Prettier and a Prettier config for those files resolve. That depends on what is installed next to the binary, so no case has a Prettier config.

@@ -1,0 +1,11 @@
+{
+  "description": "GIVEN a transloco.config.js in the workspace root and another one in a folder WHEN the keys are extracted with --config naming the folder THEN only the config of the folder is read",
+  "args": [
+    "extract",
+    "--config",
+    "config",
+    "--default-value",
+    "missing"
+  ],
+  "exitCode": 0
+}
