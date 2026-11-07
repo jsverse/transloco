@@ -543,7 +543,7 @@ describe('translateScript', () => {
     'echo @jsverse/transloco-keys-manager',
     '',
   ])(
-    `GIVEN the script %j that runs none of the deprecated bins
+    `GIVEN the script %j that runs none of the legacy bins
       WHEN it is translated
       THEN it is not touched`,
     (script) => {
@@ -871,7 +871,7 @@ describe('translateScript', () => {
     });
   });
 
-  it(`GIVEN several deprecated bins in a script
+  it(`GIVEN several legacy bins in a script
       WHEN it is translated
       THEN each one is reported in order`, () => {
     const result = translateScript(
