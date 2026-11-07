@@ -1,0 +1,13 @@
+{
+  "description": "GIVEN an empty input value WHEN the command runs THEN it is rejected before anything is read",
+  "args": [
+    "migrate",
+    "ngx-translate",
+    "--input="
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

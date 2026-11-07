@@ -1,0 +1,16 @@
+{
+  "description": "GIVEN --cwd pointing at an application folder WHEN the templates are migrated THEN the input and the output are resolved below that folder",
+  "args": [
+    "--cwd",
+    "apps/shop",
+    "migrate",
+    "angular-i18n",
+    "--langs",
+    "en"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}
