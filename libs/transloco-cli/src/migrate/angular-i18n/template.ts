@@ -7,7 +7,7 @@ import {
   type Node,
 } from '@angular/compiler';
 
-import { dasherize } from './dasherize.js';
+import { dasherize } from './dasherize';
 
 export type Translation = Record<string, unknown>;
 

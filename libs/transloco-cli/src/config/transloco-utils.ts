@@ -8,8 +8,8 @@ import {
   assertExplorerCanBeMade,
   assertRegularFile,
   nameConfigFile,
-} from './load-error.js';
-import { TranslocoGlobalConfig } from './transloco-utils.types.js';
+} from './load-error';
+import { TranslocoGlobalConfig } from './transloco-utils.types';
 
 export function getGlobalConfig(searchPath = ''): TranslocoGlobalConfig {
   const resolvedPath = path.resolve(process.cwd(), searchPath);

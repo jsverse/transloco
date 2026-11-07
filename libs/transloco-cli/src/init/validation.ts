@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { contains, locate, lstat, specialKind } from '../utils/real-path.js';
+import { contains, locate, lstat, specialKind } from '../utils/real-path';
 
 /** A language is the name of the file written for it, which rules these out. */
 const notInFileName = /[\\/:*?"<>|\0\s]/;

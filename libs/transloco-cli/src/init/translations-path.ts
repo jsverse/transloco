@@ -1,6 +1,6 @@
 import path from 'node:path';
 
-import { isDirectory } from '../keys-manager/utils/validators.utils.js';
+import { isDirectory } from '../keys-manager/utils/validators.utils';
 
 /**
  * The translations folder `ng add @jsverse/transloco` picks, see

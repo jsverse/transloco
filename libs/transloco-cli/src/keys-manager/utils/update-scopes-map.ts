@@ -1,12 +1,12 @@
 import type { Node, ObjectLiteralExpression } from 'typescript';
 
-import { addScope, hasScope } from '../keys-builder/utils/scope.utils.js';
-import { Scopes } from '../types.js';
+import { addScope, hasScope } from '../keys-builder/utils/scope.utils';
+import { Scopes } from '../types';
 
-import { readFile } from './file.utils.js';
-import { toCamelCase } from './string.utils.js';
-import { normalizedGlob } from './normalize-glob-path.js';
-import ts from './typescript.js';
+import { readFile } from './file.utils';
+import { toCamelCase } from './string.utils';
+import { normalizedGlob } from './normalize-glob-path';
+import ts from './typescript';
 import {
   findDescendant,
   findDescendants,
@@ -15,7 +15,7 @@ import {
   isNamed,
   nameText,
   parseTsSource,
-} from './ts-ast.utils.js';
+} from './ts-ast.utils';
 
 type Scope = string;
 type Alias = string;

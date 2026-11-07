@@ -5,23 +5,23 @@ import {
   getGlobalConfig,
   searchGlobalConfig,
   TranslocoGlobalConfig,
-} from '../../config/index.js';
-import { nameConfigFile } from '../../config/load-error.js';
-import { styleError } from '../../utils/style.js';
-import { defaultConfig } from '../config.js';
-import { getScopes } from '../keys-builder/utils/scope.utils.js';
-import { messages } from '../messages.js';
-import { Config } from '../types.js';
+} from '../../config';
+import { nameConfigFile } from '../../config/load-error';
+import { styleError } from '../../utils/style';
+import { defaultConfig } from '../config';
+import { getScopes } from '../keys-builder/utils/scope.utils';
+import { messages } from '../messages';
+import { Config } from '../types';
 
-import { devlog } from './logger.js';
-import { resolveConfigPaths } from './path.utils.js';
+import { devlog } from './logger';
+import { resolveConfigPaths } from './path.utils';
 import {
   describeProjects,
   listProjects,
   resolveProjectBasePath,
-} from './resolve-project-base-path.js';
-import { updateScopesMap } from './update-scopes-map.js';
-import { isDirectory } from './validators.utils.js';
+} from './resolve-project-base-path';
+import { updateScopesMap } from './update-scopes-map';
+import { isDirectory } from './validators.utils';
 
 export function resolveConfig(inlineConfig: Partial<Config>): Config {
   const {

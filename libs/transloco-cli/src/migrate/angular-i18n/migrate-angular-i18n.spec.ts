@@ -6,13 +6,13 @@ import { stripVTControlCharacters } from 'node:util';
 import { globSync } from 'glob';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { findFiles } from '../find-files.js';
+import { findFiles } from '../find-files';
 
-import { migrateAngularI18n } from './migrate-angular-i18n.js';
+import { migrateAngularI18n } from './migrate-angular-i18n';
 
-vi.mock('../find-files.js', async (importOriginal) => ({
+vi.mock('../find-files', async (importOriginal) => ({
   findFiles: vi.fn(
-    (await importOriginal<typeof import('../find-files.js')>()).findFiles,
+    (await importOriginal<typeof import('../find-files')>()).findFiles,
   ),
 }));
 

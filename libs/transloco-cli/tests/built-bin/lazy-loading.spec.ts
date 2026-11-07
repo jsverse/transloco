@@ -19,11 +19,11 @@ const packageDir = path.resolve(
   import.meta.dirname,
   '../../../../dist/libs/transloco-cli',
 );
-const bin = path.join(packageDir, 'src', 'bin.js');
+const bin = path.join(packageDir, 'bin.js');
 const hook = path.join(import.meta.dirname, 'record-loaded-modules.mjs');
 
 interface Allowed {
-  /** Files of the CLI itself, relative to its package directory. */
+  /** Files of the CLI's bundle, relative to its package directory. */
   files: string[];
   packages: string[];
 }
@@ -31,67 +31,56 @@ interface Allowed {
 /** What it takes to parse the arguments, print the help or the version and report an error. */
 const program: Allowed = {
   files: [
-    'src/bin.js',
-    'src/errors.js',
-    'src/package-info.js',
-    'src/program.js',
+    // The program, with the package.json it reads inlined.
+    'bin.js',
+    'chunks/errors.js',
+    'chunks/package-info.js',
   ],
   packages: ['@commander-js/extra-typings', 'commander'],
 };
 const validate: Allowed = {
   files: [
     ...program.files,
-    'src/commands/validate.js',
-    'src/validator/index.js',
-    'src/validator/transloco-validator.js',
+    'chunks/commands/validate.js',
+    'chunks/validator.js',
   ],
   packages: [...program.packages, 'find-duplicated-property-keys'],
 };
 const optimize: Allowed = {
   files: [
     ...program.files,
-    'src/commands/optimize.js',
-    'src/optimize/index.js',
-    'src/optimize/transloco-optimize.js',
+    'chunks/commands/optimize.js',
+    'chunks/optimize.js',
   ],
   packages: [...program.packages, 'flat', 'glob'],
 };
 const translationFolders: Allowed = {
   files: [
     ...program.files,
-    'src/commands/config-path.js',
-    'src/commands/translation-folders.js',
-    'src/config/index.js',
-    'src/config/load-error.js',
-    'src/config/transloco-utils.js',
-    'src/translation-files/index.js',
-    'src/translation-files/join.js',
-    'src/translation-files/node-file-reader.js',
-    'src/translation-files/shared.js',
-    'src/translation-files/split.js',
-    'src/utils/file-system.js',
-    'src/utils/real-path.js',
+    'chunks/config-path.js',
+    'chunks/file-system.js',
+    'chunks/node-file-reader.js',
+    'chunks/translation-files.js',
+    'chunks/translation-folders.js',
+    'chunks/transloco-utils.js',
   ],
   packages: [...program.packages, 'cosmiconfig', 'env-paths'],
 };
 const join: Allowed = {
   ...translationFolders,
-  files: [...translationFolders.files, 'src/commands/join.js'],
+  files: [...translationFolders.files, 'chunks/commands/join.js'],
 };
 const split: Allowed = {
   ...translationFolders,
-  files: [...translationFolders.files, 'src/commands/split.js'],
+  files: [...translationFolders.files, 'chunks/commands/split.js'],
 };
 
 const migrate: Allowed = {
   files: [
     ...program.files,
-    'src/commands/translation-folders.js',
-    'src/migrate/find-files.js',
-    'src/translation-files/index.js',
-    'src/translation-files/join.js',
-    'src/translation-files/shared.js',
-    'src/translation-files/split.js',
+    'chunks/find-files.js',
+    'chunks/translation-files.js',
+    'chunks/translation-folders.js',
   ],
   packages: [...program.packages, 'glob'],
 };
@@ -99,29 +88,24 @@ const migrateNgxTranslate: Allowed = {
   ...migrate,
   files: [
     ...migrate.files,
-    'src/commands/migrate-ngx-translate.js',
-    'src/migrate/ngx-translate/apply-matcher.js',
-    'src/migrate/ngx-translate/migrate-ngx-translate.js',
-    'src/migrate/ngx-translate/migration-matchers.js',
-    'src/utils/style.js',
+    'chunks/commands/migrate-ngx-translate.js',
+    'chunks/migrate-ngx-translate.js',
+    'chunks/style.js',
   ],
 };
 const migrateAngularI18n: Allowed = {
   ...migrate,
   files: [
     ...migrate.files,
-    'src/commands/migrate-angular-i18n.js',
-    'src/commands/config-path.js',
-    'src/config/index.js',
-    'src/config/load-error.js',
-    'src/config/transloco-utils.js',
-    'src/migrate/angular-i18n/dasherize.js',
-    'src/migrate/angular-i18n/migrate-angular-i18n.js',
-    'src/migrate/angular-i18n/template.js',
-    'src/peers.js',
-    'src/utils/file-system.js',
-    'src/utils/real-path.js',
-    'src/utils/style.js',
+    'chunks/commands/migrate-angular-i18n.js',
+    'chunks/config-path.js',
+    'chunks/file-system.js',
+    'chunks/migrate-angular-i18n.js',
+    'chunks/peers.js',
+    // The bundler's helper for the namespace the command gets from `import()`.
+    'chunks/rolldown-runtime.js',
+    'chunks/style.js',
+    'chunks/transloco-utils.js',
   ],
   // The templates are parsed with the compiler.
   packages: [
@@ -136,28 +120,11 @@ const migrateAngularI18n: Allowed = {
 const init: Allowed = {
   files: [
     ...program.files,
-    'src/commands/init.js',
-    'src/config/index.js',
-    'src/config/load-error.js',
-    'src/config/transloco-utils.js',
-    'src/init/apply.js',
-    'src/init/manifest.js',
-    'src/init/plan.js',
-    'src/init/translations-path.js',
-    'src/init/unreadable-config.js',
-    'src/init/validation.js',
-    'src/keys-manager/config.js',
-    'src/keys-manager/utils/collection.utils.js',
-    'src/keys-manager/utils/file.utils.js',
-    'src/keys-manager/utils/json.utils.js',
-    'src/keys-manager/utils/normalize-glob-path.js',
-    'src/keys-manager/utils/object.utils.js',
-    'src/keys-manager/utils/path.utils.js',
-    'src/keys-manager/utils/resolve-project-base-path.js',
-    'src/keys-manager/utils/validators.utils.js',
-    'src/utils/file-system.js',
-    'src/utils/real-path.js',
-    'src/utils/style.js',
+    'chunks/commands/init.js',
+    'chunks/file-system.js',
+    'chunks/resolve-project-base-path.js',
+    'chunks/style.js',
+    'chunks/transloco-utils.js',
   ],
   packages: [
     ...program.packages,
@@ -463,8 +430,8 @@ describe.skipIf(Boolean(process.env['TRANSLOCO_BIN']))(
       const loaded = run('extract', '--input', 'src', '--output', 'i18n');
 
       expect(loaded.status).toBe(0);
-      expect(loaded.files).toContain('src/commands/extract.js');
-      expect(loaded.files).toContain('src/keys-manager/keys-builder/index.js');
+      expect(loaded.files).toContain('chunks/commands/extract.js');
+      expect(loaded.files).toContain('chunks/keys-builder.js');
       expect(loaded.packages).toEqual(
         expect.arrayContaining([
           '@angular/compiler',

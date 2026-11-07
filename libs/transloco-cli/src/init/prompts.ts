@@ -14,12 +14,12 @@ import {
   type InitStep,
   manifestFileName,
   scripts,
-} from './plan.js';
+} from './plan';
 import {
   languageProblem,
   parseLanguages,
   translationsPathProblem,
-} from './validation.js';
+} from './validation';
 
 export interface AskContext {
   /** What the options already gave, which is not asked again. */

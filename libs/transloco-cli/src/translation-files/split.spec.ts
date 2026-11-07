@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
-import { splitTranslations, type SplitOptions } from './split.js';
+import { splitTranslations, type SplitOptions } from './split';
 import {
   applyPlannedFiles,
   createMemoryReader,
   json,
   type MemoryFiles,
-} from './tests/memory-file-reader.js';
+} from './tests/memory-file-reader';
 
 const root = 'src/assets/i18n';
 const options: SplitOptions = { root, source: 'dist-i18n' };

@@ -1,4 +1,4 @@
-import { Scopes } from '../../types.js';
+import { Scopes } from '../../types';
 
 let scopeToAlias: Scopes['scopeToAlias'] = {};
 let aliasToScope: Scopes['aliasToScope'] = {};

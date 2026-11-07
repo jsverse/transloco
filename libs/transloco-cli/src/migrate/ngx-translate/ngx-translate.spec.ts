@@ -6,8 +6,8 @@ import path from 'node:path';
 
 import { afterEach, beforeEach, describe, expect, it, test, vi } from 'vitest';
 
-import { migrateNgxTranslate } from './migrate-ngx-translate.js';
-import { PIPE_IN_BINDING_REGEX, PIPE_REGEX } from './migration-matchers.js';
+import { migrateNgxTranslate } from './migrate-ngx-translate';
+import { PIPE_IN_BINDING_REGEX, PIPE_REGEX } from './migration-matchers';
 
 describe('ngx-translate migration', () => {
   let dir: string;
