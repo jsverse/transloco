@@ -3253,7 +3253,7 @@ describe('migration-v9 npm scripts', () => {
     expect(infos.join('\n')).not.toContain('exits with code 1');
   });
 
-  it(`GIVEN scripts that were migrated and a deprecated package still listed
+  it(`GIVEN scripts that were migrated and a superseded package still listed
       WHEN the migration reports
       THEN it names the package and what replaces it`, async () => {
     const { infos } = await runWith({}, legacy, {
@@ -3268,7 +3268,7 @@ describe('migration-v9 npm scripts', () => {
     expect(notice).toContain('Remove each one once nothing runs its bin');
   });
 
-  it(`GIVEN a deprecated package listed and no script moved in this run
+  it(`GIVEN a superseded package listed and no script moved in this run
       WHEN the migration runs again
       THEN the package is still reported`, async () => {
     const { infos } = await runWith(
@@ -3305,7 +3305,7 @@ describe('migration-v9 npm scripts', () => {
     );
   });
 
-  it(`GIVEN a package.json that starts with a BOM and lists a deprecated package
+  it(`GIVEN a package.json that starts with a BOM and lists a superseded package
       WHEN the migration runs
       THEN the package is reported`, async () => {
     const { infos } = await runWith({
@@ -3317,7 +3317,7 @@ describe('migration-v9 npm scripts', () => {
     );
   });
 
-  it(`GIVEN no deprecated package in any package.json
+  it(`GIVEN no superseded package in any package.json
       WHEN the migration runs
       THEN no notice is printed`, async () => {
     const { infos } = await runWith({}, legacy, { listCli: true });

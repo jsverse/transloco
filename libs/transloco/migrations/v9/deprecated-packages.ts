@@ -22,7 +22,7 @@ const DEPENDENCY_FIELDS = [
   'optionalDependencies',
 ];
 
-/** The deprecated packages that have a bin, and what runs in their place. */
+/** The superseded packages that have a bin, and what runs in their place. */
 const REPLACEMENTS: Record<string, string> = {
   '@jsverse/transloco-keys-manager': `'transloco extract' and 'transloco find'`,
   '@jsverse/transloco-optimize': `'transloco optimize'`,
@@ -42,7 +42,7 @@ function utilsStillReferenced(tree: Tree): boolean {
 }
 
 /**
- * Names the deprecated `@jsverse` packages that are still listed in a
+ * Names the superseded `@jsverse` packages that are still listed in a
  * `package.json`, and what replaces each one.
  *
  * It reports on every run for as long as a package is installed: whether
@@ -93,7 +93,7 @@ export function reportDeprecatedPackages(): Rule {
     if (!lines.length) return;
 
     context.logger.info(
-      `  ↳ These deprecated packages are still in your dependencies:\n${lines.join('\n')}\n` +
+      `  ↳ These superseded packages are still in your dependencies:\n${lines.join('\n')}\n` +
         `    Remove each one once nothing runs its bin anymore - scripts, Makefiles, CI and git hooks included.`,
     );
   };
