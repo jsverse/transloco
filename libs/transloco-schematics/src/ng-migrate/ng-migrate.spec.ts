@@ -70,11 +70,11 @@ describe('ng-migrate', () => {
 
   it(`GIVEN the schematic runs
       WHEN its work is done
-      THEN it warned once that it is deprecated in favour of the command, and ended the process after it`, async () => {
+      THEN it warned once that it will be deprecated in favour of the command, and ended the process after it`, async () => {
     await schematicRunner.runSchematic('ng-migrate', {});
 
     expect(warnings).toEqual([
-      'The "ng-migrate" schematic is deprecated and will be removed in Transloco v10. Run "transloco migrate angular-i18n" from @jsverse/transloco-cli instead.',
+      'The "ng-migrate" schematic will be deprecated in Transloco v10. Run "transloco migrate angular-i18n" from @jsverse/transloco-cli instead.',
     ]);
     expect(exit).toHaveBeenCalledOnce();
     expect(exit.mock.invocationCallOrder[0]).toBeGreaterThan(
