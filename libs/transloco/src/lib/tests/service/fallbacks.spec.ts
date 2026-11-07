@@ -160,6 +160,177 @@ describe('Multiple fallbacks', () => {
     }));
   });
 
+  describe('Scoped fallbacks', () => {
+    let loader: Type<TranslocoLoader>;
+
+    beforeEach(() => {
+      loader = class TestLoader implements TranslocoLoader {
+        getTranslation(lang: string) {
+          return timer(1000).pipe(
+            map(() => {
+              if (
+                lang.startsWith('missing-scope/') ||
+                /\/notExists2?$/.test(lang)
+              ) {
+                throw new Error('error');
+              }
+
+              return mockLangs[lang];
+            }),
+          );
+        }
+      };
+    });
+
+    it(`GIVEN the fallback lang is loaded
+        WHEN a scope fails to load in the fallback lang
+        THEN should throw and not treat the global lang as the scope fallback`, fakeAsync(() => {
+      const service = createService(
+        {
+          prodMode: true,
+          defaultLang: 'en',
+          fallbackLang: 'en',
+          failedRetries: 0,
+        },
+        { loader },
+      );
+
+      service.load('en').subscribe();
+      runLoader(1);
+
+      vi.spyOn(service, 'load');
+      let error: unknown;
+      service
+        .load('missing-scope/en')
+        .pipe(
+          catchError((e) => {
+            error = e;
+            return of('');
+          }),
+        )
+        .subscribe();
+      runLoader(3);
+
+      expect(error).toBeInstanceOf(TranslationLoadError);
+      expect(service.load).toHaveBeenCalledTimes(1);
+      expect(service.getActiveLang()).toEqual('en');
+    }));
+
+    it(`GIVEN the global fallback lang is loaded
+        WHEN a scope fails to load
+        THEN should load the scope in the fallback lang`, fakeAsync(() => {
+      const service = createService(
+        {
+          prodMode: true,
+          defaultLang: 'en',
+          fallbackLang: 'es',
+          failedRetries: 0,
+        },
+        { loader },
+      );
+
+      service.load('es').subscribe();
+      runLoader(1);
+
+      vi.spyOn(service, 'load');
+      service.load('admin-page/notExists').subscribe();
+      runLoader(2);
+
+      expect(vi.mocked(service.load).mock.calls[1]).toEqual([
+        'admin-page/es',
+        { failedCounter: 1, fallbackLangs: ['es'] },
+      ]);
+      expect(service.getActiveLang()).toEqual('es');
+      expect(service.getTranslation('admin-page/es')).toEqual(
+        mockLangs['admin-page/es'],
+      );
+
+      // a second failing load reuses the cached scope fallback and emits it
+      let emitted: unknown;
+      service
+        .load('admin-page/notExists2')
+        .subscribe((translation) => (emitted = translation));
+      runLoader(2);
+      expect(emitted).toEqual(mockLangs['admin-page/es']);
+      expect(service.getTranslation('admin-page/es')).toEqual(
+        mockLangs['admin-page/es'],
+      );
+    }));
+    it(`GIVEN the scope fallback is cached but failed to load
+        WHEN a scope fails in every fallback lang
+        THEN should not report a fallback as loaded`, fakeAsync(() => {
+      const failing = class FailingLoader implements TranslocoLoader {
+        getTranslation(lang: string) {
+          return timer(1000).pipe(
+            map(() => {
+              if (lang.startsWith('admin-page/')) {
+                throw new Error('error');
+              }
+              return mockLangs[lang];
+            }),
+          );
+        }
+      };
+      const service = createService(
+        {
+          prodMode: true,
+          defaultLang: 'es',
+          fallbackLang: ['es', 'en'],
+          failedRetries: 0,
+        },
+        { loader: failing },
+      );
+
+      const successes: string[] = [];
+      service.events$.subscribe((e) => {
+        if (e.type === 'translationLoadSuccess') {
+          successes.push(e.payload.langName + ':' + e.payload.scope);
+        }
+      });
+      let error: unknown;
+      service
+        .load('admin-page/en')
+        .pipe(
+          catchError((e) => {
+            error = e;
+            return of('');
+          }),
+        )
+        .subscribe();
+      runLoader(5);
+
+      expect(error).toBeInstanceOf(TranslationLoadError);
+      expect(successes).toEqual([]);
+      expect(service.getActiveLang()).toEqual('es');
+    }));
+
+    it(`GIVEN useFallbackTranslation and a preloaded scope fallback
+        WHEN a scope fails to load
+        THEN should emit the scope fallback translation`, fakeAsync(() => {
+      const service = createService(
+        {
+          prodMode: true,
+          defaultLang: 'en',
+          fallbackLang: 'en',
+          failedRetries: 0,
+          missingHandler: { useFallbackTranslation: true },
+        },
+        { loader },
+      );
+
+      service.load('admin-page/es').subscribe();
+      runLoader(1);
+
+      let emitted: unknown;
+      service
+        .load('admin-page/notExists')
+        .subscribe((translation) => (emitted = translation));
+      runLoader(2);
+
+      expect(emitted).toEqual(mockLangs['admin-page/en']);
+    }));
+  });
+
   describe('CustomFallbackStrategy', () => {
     class StrategyTest implements TranslocoFallbackStrategy {
       // It may return arbitrary next langs based on the failed lang.
