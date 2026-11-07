@@ -1,3 +1,4 @@
+import { rm } from 'node:fs/promises';
 import path from 'node:path';
 
 import { defineConfig } from 'tsdown';
@@ -13,6 +14,17 @@ import pkg from './package.json' with { type: 'json' };
  * name the files each command loads.
  */
 const src = path.join(import.meta.dirname, 'src');
+
+/** The posix path of `file` under `src/`, or `undefined` when it's elsewhere. */
+function relativeToSrc(file: string) {
+  const relative = path.relative(src, file);
+  const outside =
+    relative === '..' ||
+    relative.startsWith(`..${path.sep}`) ||
+    path.isAbsolute(relative);
+
+  return outside ? undefined : relative.split(path.sep).join('/');
+}
 
 export default defineConfig({
   cwd: import.meta.dirname,
@@ -39,15 +51,25 @@ export default defineConfig({
   },
   outputOptions: {
     chunkFileNames: ({ facadeModuleId }) => {
-      // A chunk loaded with `import()` is named after its module.
-      const module = facadeModuleId && path.relative(src, facadeModuleId);
+      // A chunk whose only entry point is a module under `src/` is named after
+      // it, e.g. `chunks/commands/validate.js` for a command loaded with
+      // `import()`. The chunks shared by several modules have no such module
+      // and are named after what the bundler picks, e.g. `chunks/keys-builder.js`.
+      const module = facadeModuleId && relativeToSrc(facadeModuleId);
 
-      return module && !module.startsWith('..')
+      return module
         ? `chunks/${module.replace(/\.ts$/, '')}.js`
         : 'chunks/[name].js';
     },
   },
   dts: true,
+  hooks: {
+    // The `bin` is not an `exports` entry, so nothing imports it for types. It
+    // can't be left out of `dts`, which has no per-entry switch (its `entry`
+    // picks source files, and names their declarations after the file).
+    'build:done': ({ options }) =>
+      rm(path.join(options.outDir, 'bin.d.ts'), { force: true }),
+  },
   deps: {
     // Every bare specifier stays an import, whether or not it resolves.
     neverBundle: true,
