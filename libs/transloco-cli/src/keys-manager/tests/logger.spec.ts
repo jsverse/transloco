@@ -7,7 +7,7 @@ const spinnerModule = vi.hoisted(() => {
   return { spinner, startSpinner: vi.fn(() => spinner) };
 });
 
-vi.mock('../utils/spinner.js', () => ({
+vi.mock('../utils/spinner', () => ({
   startSpinner: spinnerModule.startSpinner,
 }));
 
@@ -23,7 +23,7 @@ describe('logger', () => {
 
   describe('getLogger', () => {
     it('should return a logger with log, warn, success, and startSpinner methods', async () => {
-      const { getLogger } = await import('../utils/logger.js');
+      const { getLogger } = await import('../utils/logger');
       const logger = getLogger();
       expect(logger).toHaveProperty('log');
       expect(logger).toHaveProperty('warn');
@@ -34,7 +34,7 @@ describe('logger', () => {
     it('should write warnings to stderr through console.warn', async () => {
       const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
-      const { getLogger } = await import('../utils/logger.js');
+      const { getLogger } = await import('../utils/logger');
       getLogger().warn('something is off');
 
       expect(warnSpy).toHaveBeenCalledWith(
@@ -50,7 +50,7 @@ describe('logger', () => {
     });
 
     it('should start the spinner of the spinner module with the message', async () => {
-      const { getLogger } = await import('../utils/logger.js');
+      const { getLogger } = await import('../utils/logger');
 
       getLogger().startSpinner('x');
 
@@ -58,7 +58,7 @@ describe('logger', () => {
     });
 
     it('should succeed the spinner that was started, with the message', async () => {
-      const { getLogger } = await import('../utils/logger.js');
+      const { getLogger } = await import('../utils/logger');
       const logger = getLogger();
       logger.startSpinner('x');
 
@@ -79,7 +79,7 @@ describe('logger', () => {
       const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
       debug.disable();
 
-      const { devlog } = await import('../utils/logger.js');
+      const { devlog } = await import('../utils/logger');
       devlog('config', 'Test', { key: 'value' });
 
       expect(consoleSpy).not.toHaveBeenCalled();
@@ -90,7 +90,7 @@ describe('logger', () => {
       const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
       debug.enable('tkm:config');
 
-      const { devlog } = await import('../utils/logger.js');
+      const { devlog } = await import('../utils/logger');
       devlog('config', 'MyTag', { myVar: 'myValue' });
 
       expect(consoleSpy).toHaveBeenCalledWith(
@@ -110,7 +110,7 @@ describe('logger', () => {
       const originalDebugLog = debug.log;
       debug.log = debugLogSpy;
 
-      const { devlog } = await import('../utils/logger.js');
+      const { devlog } = await import('../utils/logger');
       devlog('extraction', 'Extract', { a: 1, b: 'two' });
 
       // The header goes through console.log.

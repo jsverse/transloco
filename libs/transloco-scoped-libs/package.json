@@ -11,7 +11,6 @@
   "bugs": "https://github.com/jsverse/transloco/issues",
   "type": "module",
   "main": "src/lib/transloco-scoped-libs.js",
-  "module": "src/lib/transloco-scoped-libs.js",
   "bin": {
     "transloco-scoped-libs": "src/index.js"
   },

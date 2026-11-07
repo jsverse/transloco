@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { CliError, describeError } from './errors.js';
+import { CliError, describeError } from './errors';
 
 describe('describeError', () => {
   afterEach(() => {

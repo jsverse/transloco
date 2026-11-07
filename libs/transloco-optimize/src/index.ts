@@ -1,11 +1,10 @@
 #!/usr/bin/env node
 import commandLineArgs from 'command-line-args';
-
 import {
   getTranslationFiles,
   optimizeFiles,
   getTranslationsFolder,
-} from './lib/transloco-optimize.js';
+} from '@jsverse/transloco-cli/internal/optimize';
 
 const optionDefinitions: commandLineArgs.OptionDefinition[] = [
   { name: 'commentsKey', alias: 'k', type: String, defaultValue: 'comment' },

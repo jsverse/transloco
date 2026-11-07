@@ -12,13 +12,13 @@ nx run transloco-cli:test-golden
 
 The target builds the CLI first and then runs every spec under `libs/transloco-cli/tests`.
 
-| Variable             | Purpose                                                                                                                                                                                                                 |
-| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `TRANSLOCO_BIN`      | The binary under test, relative to the workspace root or absolute. Defaults to `dist/libs/transloco-cli/src/bin.js`. A `.js`, `.mjs` or `.cjs` file is run with the current `node`, anything else is executed directly. |
-| `TRANSLOCO_BIN_ARGS` | Arguments put in front of each case's own, separated by whitespace. Meant for something like `--engine=...`.                                                                                                            |
-| `GOLDEN_FILTER`      | A regular expression, only the cases whose id matches it run. The id is the path of the case under `cases/`, e.g. `^find/` or `pot$`.                                                                                   |
-| `GOLDEN_UPDATE=1`    | Rewrites `expected/` and the stream snapshots of the cases that run from what the binary does. See [Updating](#updating).                                                                                               |
-| `GOLDEN_KEEP=1`      | Keeps the working directory of each case and prints where it is.                                                                                                                                                        |
+| Variable             | Purpose                                                                                                                                                                                                             |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TRANSLOCO_BIN`      | The binary under test, relative to the workspace root or absolute. Defaults to `dist/libs/transloco-cli/bin.js`. A `.js`, `.mjs` or `.cjs` file is run with the current `node`, anything else is executed directly. |
+| `TRANSLOCO_BIN_ARGS` | Arguments put in front of each case's own, separated by whitespace. Meant for something like `--engine=...`.                                                                                                        |
+| `GOLDEN_FILTER`      | A regular expression, only the cases whose id matches it run. The id is the path of the case under `cases/`, e.g. `^find/` or `pot$`.                                                                               |
+| `GOLDEN_UPDATE=1`    | Rewrites `expected/` and the stream snapshots of the cases that run from what the binary does. See [Updating](#updating).                                                                                           |
+| `GOLDEN_KEEP=1`      | Keeps the working directory of each case and prints where it is.                                                                                                                                                    |
 
 ## A case
 

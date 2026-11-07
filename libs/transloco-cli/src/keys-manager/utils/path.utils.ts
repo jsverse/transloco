@@ -1,9 +1,9 @@
 import path, { sep } from 'node:path';
 
-import { getConfig } from '../config.js';
-import { Config, Scopes } from '../types.js';
+import { getConfig } from '../config';
+import { Config, Scopes } from '../types';
 
-import { isObject } from './validators.utils.js';
+import { isObject } from './validators.utils';
 
 export function pathUnixFormat(path: string) {
   return path.split(sep).join('/');

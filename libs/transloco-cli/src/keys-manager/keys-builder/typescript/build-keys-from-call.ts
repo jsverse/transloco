@@ -7,9 +7,9 @@ import type {
 } from 'typescript';
 import { flatten } from 'flat';
 
-import ts from '../../utils/typescript.js';
+import ts from '../../utils/typescript';
 
-import { TSExtractorResult } from './types.js';
+import { TSExtractorResult } from './types';
 
 /**
  * Resolve the keys of a `translate`-like call from its

@@ -7,20 +7,12 @@
   "implicitDependencies": ["!transloco"],
   "targets": {
     "build": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/libs/transloco-cli"],
       "options": {
-        "outputPath": "dist/libs/transloco-cli",
-        "main": "libs/transloco-cli/src/index.ts",
-        "tsConfig": "libs/transloco-cli/tsconfig.lib.json",
-        "assets": [
-          "libs/transloco-cli/*.md",
-          {
-            "input": ".",
-            "glob": "LICENSE",
-            "output": "."
-          }
-        ]
+        "cwd": "libs/transloco-cli",
+        "commands": ["tsc -p tsconfig.lib.json --noEmit", "tsdown"],
+        "parallel": false
       }
     },
     "lint": {
