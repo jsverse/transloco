@@ -1,2 +1,6 @@
-export { findGlobalConfigFile, getGlobalConfig } from './transloco-utils';
+export {
+  findGlobalConfigFile,
+  getGlobalConfig,
+  searchGlobalConfig,
+} from './transloco-utils';
 export type { TranslocoGlobalConfig } from './transloco-utils.types';
