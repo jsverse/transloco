@@ -7,6 +7,7 @@ export interface TranslocoGlobalConfig {
   keysManager?: {
     input?: string | string[];
     output?: string;
+    translationsPath?: string;
     fileFormat?: 'json' | 'pot';
     marker?: string;
     addMissingKeys?: boolean;

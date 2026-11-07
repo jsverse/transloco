@@ -55,7 +55,7 @@ The core `transloco` library is the foundation. All plugin libraries depend on i
 - **transloco-keys-manager** - CLI to extract/manage translation keys
 - **transloco-schematics** - `ng add`/`ng generate` schematics
 - **transloco-validator** - CLI to validate translation files
-- **transloco-utils** - Shared Node.js utilities (used by keys-manager, schematics)
+- **transloco-utils** - Deprecated, frozen config reader (`getGlobalConfig`) kept for existing consumers. The `TranslocoGlobalConfig` type now lives in `transloco`, and `getGlobalConfig` in `transloco-cli`
 - **schematics-core** - Shared schematics utilities (internal, not published)
 
 ### Core Library Structure (`libs/transloco/src/lib/`)

@@ -1,3 +1,7 @@
+/**
+ * @deprecated Import the `TranslocoGlobalConfig` type from `@jsverse/transloco`
+ * instead. `@jsverse/transloco-utils` keeps working but will not change.
+ */
 export interface TranslocoGlobalConfig {
   rootTranslationsPath?: string;
   defaultLang?: string;

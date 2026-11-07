@@ -15,8 +15,8 @@
  *      applies to native ESM (and fails on the schematics' directory/CJS-style
  *      imports), and there is no TS transpile hook for `require()` (under Jest,
  *      `ts-jest` provided this).
- *   2. tsconfig `paths` aliases (e.g. `@jsverse/transloco-utils`, mapped in
- *      `tsconfig.base.json` to `libs/transloco-utils/src/index.ts`) are not
+ *   2. tsconfig `paths` aliases (e.g. `@jsverse/transloco-cli`, mapped in
+ *      `tsconfig.base.json` to `libs/transloco-cli/src/index.ts`) are not
  *      resolved – that mapping only lives in the Vite/tsconfig pipeline, not in
  *      Node's resolver.
  *
@@ -42,7 +42,7 @@
  * its own location) so any project whose specs use `SchematicTestRunner` can
  * reference it from `test.setupFiles` – e.g. the core `transloco` library's
  * `test-schematics` target, which uses the same runner and the same
- * `@jsverse/transloco-utils` alias.
+ * path aliases.
  */
 import Module, { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
