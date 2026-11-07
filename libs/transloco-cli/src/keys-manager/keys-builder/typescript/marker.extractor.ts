@@ -4,10 +4,9 @@ import { buildKeysFromCall } from './build-keys-from-call';
 import { SourceFileScan } from './scan-source-file';
 import { TSExtractorResult } from './types';
 
-// The CLI's `/marker` subpath, plus the two paths of the package it replaced.
-// Only the subpath of the CLI: its root exports no `marker`.
-const markerImport =
-  /^@jsverse\/(?:transloco-keys-manager(?:\/marker)?|transloco-cli\/marker)$/;
+// `marker` is exported by the core package root only: not by its `/router`
+// entry point, and no longer by the keys manager, whose exports v9 removed.
+const markerImport = /^@jsverse\/transloco$/;
 
 // `marker('key')`, also under an import alias
 export function markerExtractor({
@@ -17,7 +16,7 @@ export function markerExtractor({
   const markerNames = resolveImportedNames(imports, markerImport, 'marker');
   if (!markerNames.length) return [];
 
-  // A file mid-migration can import it from both the old and the new specifier
+  // A file can import it more than once, e.g. under an alias as well
   return calls
     .filter((call) =>
       markerNames.some((name) => isNamed(call.expression, name)),

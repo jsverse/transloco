@@ -13,6 +13,7 @@ nx migrate @jsverse/transloco  # Nx
 - `translate()` and `translateObject()` now require `provideGlobalTranslateFn()` in the providers. Without it they return `''` / `[]` and warn in dev mode. Omit it in SSR and multi-instance MFE setups.
 - `@angular/core` peer dependency is now `>=v20`.
 - `rxjs` peer dependency is now `^6.5.3 || ^7.4.0`.
+- `marker`, which marks a key for extraction, is now exported by `@jsverse/transloco`. It used to come from `@jsverse/transloco-keys-manager/marker`, which was removed (see Transloco Keys Manager below).
 - `@jsverse/transloco` no longer depends on `@jsverse/transloco-utils`. The `TranslocoGlobalConfig` type is now exported by `@jsverse/transloco`, and `getGlobalConfig` by `@jsverse/transloco-cli`. `ng update` rewrites these imports, and adds `@jsverse/transloco-cli` to `devDependencies` when it starts importing it. The config the `ng-add` schematic generates imports the type from `@jsverse/transloco`.
 - `@jsverse/transloco-utils` is deprecated and keeps working, unchanged. Both of its exports are marked `@deprecated`.
 
@@ -29,7 +30,7 @@ nx migrate @jsverse/transloco  # Nx
 
 - The package moved into the main repo and joined the shared version line, so it jumps from `8.1.1` to `9.0.0`.
 - `@angular/compiler` peer dependency is now `>=v20` and `typescript` is now `>=5.8`.
-- `marker` is now imported from `@jsverse/transloco-cli/marker`. `@jsverse/transloco-keys-manager/marker` still works and is deprecated. The package root `@jsverse/transloco-keys-manager` has no entry point anymore, so a `marker` import from it no longer resolves, although the extractor still reads the keys of one. `ng update` rewrites the imports from both paths and adds `@jsverse/transloco-cli` to `devDependencies`.
+- Removed `@jsverse/transloco-keys-manager/marker`: `marker` is now exported by `@jsverse/transloco`. The package root `@jsverse/transloco-keys-manager` has no entry point anymore either, so the package exports nothing but its bin. The extractor only reads the keys of a `marker` imported from `@jsverse/transloco`. `ng update` rewrites the `marker` imports from both old paths, adding `marker` to an existing `@jsverse/transloco` import when the file has one.
 - Removed `TranslocoExtractKeysWebpackPlugin`, the other export of the package root, since Angular's default builder no longer uses webpack. There is no replacement that watches: `transloco extract` has no `--watch` option, it extracts once and exits. Run it before your dev server starts, as in `"start": "transloco extract && ng serve"`, and again whenever the keys should be refreshed. `ng update` lists the files that still reference the plugin.
 
 ## Transloco Scoped Libs

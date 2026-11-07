@@ -38,10 +38,6 @@
       "types": "./internal/deprecation.d.ts",
       "default": "./internal/deprecation.js"
     },
-    "./marker": {
-      "types": "./marker.d.ts",
-      "default": "./marker.js"
-    },
     "./internal/translation-files": {
       "types": "./internal/translation-files.d.ts",
       "default": "./internal/translation-files.js"
@@ -99,13 +95,6 @@
     },
     "typescript": {
       "optional": true
-    }
-  },
-  "typesVersions": {
-    "*": {
-      "marker": [
-        "marker.d.ts"
-      ]
     }
   }
 }
