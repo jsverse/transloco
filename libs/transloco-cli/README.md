@@ -224,9 +224,9 @@ Marks a key for `extract` and `find` when it is not read by a translate call, an
 
 ### Replacing the old tools
 
-The tools that `transloco` replaces are deprecated and keep working until Transloco v10, except `@jsverse/transloco-keys-manager/marker`, which was removed in v9. The bins print a deprecation notice on stderr when they start, which `NODE_OPTIONS=--no-deprecation` silences, and the schematics log a deprecation warning through the Angular CLI logger. `ng update @jsverse/transloco` moves the npm scripts that run the old bins to the `transloco` bin.
+`transloco` supersedes the tools below. `@jsverse/transloco-keys-manager`, `@jsverse/transloco-validator`, `@jsverse/transloco-optimize`, `@jsverse/transloco-scoped-libs` and `@jsverse/transloco-utils` keep working, and will be deprecated on npm in Transloco v10. Their bins print a notice saying so on stderr when they start, which `NODE_OPTIONS=--no-deprecation` silences. The `join`, `split`, `ngx-migrate` and `ng-migrate` schematics keep working too, will be deprecated in Transloco v10, and log a notice saying so through the Angular CLI logger. `@jsverse/transloco-keys-manager/marker` was removed in v9. `ng update @jsverse/transloco` moves the npm scripts that run the old bins to the `transloco` bin.
 
-| Deprecated                                                                                            | Use instead                                                            |
+| Old                                                                                                   | Use instead                                                            |
 | ----------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
 | `transloco-keys-manager extract`                                                                      | `transloco extract`                                                    |
 | `transloco-keys-manager find`                                                                         | `transloco find`                                                       |

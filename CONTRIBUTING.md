@@ -16,17 +16,17 @@ Packages:
 
 - transloco
 - transloco-cli (the unified `transloco` CLI, commit scope `cli`)
-- transloco-keys-manager (deprecated, a shim over transloco-cli)
+- transloco-keys-manager (a shim over transloco-cli, to be deprecated in Transloco v10)
 - transloco-locale
 - transloco-messageformat
-- transloco-optimize (deprecated, a shim over transloco-cli)
+- transloco-optimize (a shim over transloco-cli, to be deprecated in Transloco v10)
 - transloco-persist-lang
 - transloco-persist-translations
 - transloco-preload-langs
 - transloco-schematics
-- transloco-scoped-libs (deprecated, a shim over transloco-cli)
-- transloco-utils (deprecated)
-- transloco-validator (deprecated, a shim over transloco-cli)
+- transloco-scoped-libs (a shim over transloco-cli, to be deprecated in Transloco v10)
+- transloco-utils (superseded, to be deprecated in Transloco v10)
+- transloco-validator (a shim over transloco-cli, to be deprecated in Transloco v10)
 
 Apps:
 
