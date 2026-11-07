@@ -4,7 +4,7 @@
     "esModuleInterop": true,
     "outDir": "../../dist/out-tsc",
     "sourceMap": false,
-    "declaration": false,
+    "declaration": true,
     "lib": ["ES2021"],
     "module": "esnext",
     "moduleResolution": "bundler",

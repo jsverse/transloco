@@ -11,6 +11,7 @@
   "bugs": "https://github.com/jsverse/transloco/issues",
   "type": "module",
   "main": "src/lib/transloco-validator.js",
+  "types": "src/lib/transloco-validator.d.ts",
   "bin": {
     "transloco-validator": "src/index.js"
   },
