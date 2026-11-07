@@ -4,14 +4,14 @@ import nodePath from 'node:path';
 import { unflatten } from 'flat';
 import { describe, beforeEach, it } from 'vitest';
 
-import { Config } from '../../../types.js';
+import { Config } from '../../../types';
 import {
   defaultValue,
   mockResolveProjectBasePath,
   buildConfig,
   assertTranslation,
   removeI18nFolder,
-} from '../../spec-utils.js';
+} from '../../spec-utils';
 
 const sourceRoot =
   'libs/transloco-cli/src/keys-manager/tests/findMissingKeys/add-missing-keys';
@@ -22,7 +22,7 @@ mockResolveProjectBasePath(sourceRoot);
  * This thing is still in WIP at Jest, so keep an eye on it.
  * @see https://jestjs.io/docs/ecmascript-modules#module-mocking-in-esm
  */
-const { findMissingKeys } = await import('../../../keys-detective/index.js');
+const { findMissingKeys } = await import('../../../keys-detective');
 
 const missingJson = {
   '1': defaultValue,

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
-import { messages } from '../messages.js';
+import { messages } from '../messages';
 
 describe('messages', () => {
   it('should return singular "file" when filesCount is 1', () => {

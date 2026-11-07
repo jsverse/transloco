@@ -1,8 +1,8 @@
-import { isNamed, resolveImportedName } from '../../utils/ts-ast.utils.js';
+import { isNamed, resolveImportedName } from '../../utils/ts-ast.utils';
 
-import { buildKeysFromCall } from './build-keys-from-call.js';
-import { SourceFileScan } from './scan-source-file.js';
-import { TSExtractorResult } from './types.js';
+import { buildKeysFromCall } from './build-keys-from-call';
+import { SourceFileScan } from './scan-source-file';
+import { TSExtractorResult } from './types';
 
 const markerImport = /^@jsverse\/transloco-keys-manager(\/marker)?$/;
 

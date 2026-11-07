@@ -1,8 +1,8 @@
 import debug from 'debug';
 
-import { style } from '../../utils/style.js';
+import { style } from '../../utils/style';
 
-import { Spinner, startSpinner } from './spinner.js';
+import { Spinner, startSpinner } from './spinner';
 
 let spinner: Spinner;
 

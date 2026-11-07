@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
-import { buildTable } from '../keys-detective/build-table.js';
-import { getLogger } from '../utils/logger.js';
+import { buildTable } from '../keys-detective/build-table';
+import { getLogger } from '../utils/logger';
 
-vi.mock('../utils/logger.js', () => {
+vi.mock('../utils/logger', () => {
   const mockLogger = {
     log: vi.fn(),
     success: vi.fn(),
@@ -12,7 +12,7 @@ vi.mock('../utils/logger.js', () => {
   return { getLogger: () => mockLogger };
 });
 
-vi.mock('../keys-detective/map-diff-to-keys.js', () => ({
+vi.mock('../keys-detective/map-diff-to-keys', () => ({
   mapDiffToKeys: vi.fn((diffs: any[]) =>
     diffs.map((d: any) => d.path?.join('.')).join(', '),
   ),

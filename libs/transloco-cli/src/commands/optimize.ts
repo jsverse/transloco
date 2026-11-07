@@ -1,9 +1,9 @@
-import { CliError } from '../errors.js';
+import { CliError } from '../errors';
 import {
   getTranslationFiles,
   getTranslationsFolder,
   optimizeFiles,
-} from '../optimize/index.js';
+} from '../optimize';
 
 export interface OptimizeOptions {
   dist: string;

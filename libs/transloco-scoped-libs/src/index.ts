@@ -2,8 +2,7 @@
 import { getGlobalConfig } from '@jsverse/transloco-cli';
 import { warnDeprecatedBin } from '@jsverse/transloco-cli/internal/deprecation';
 import commandLineArgs from 'command-line-args';
-
-import run from './lib/transloco-scoped-libs.js';
+import run from '@jsverse/transloco-cli/internal/scoped-libs';
 
 warnDeprecatedBin('transloco-scoped-libs');
 

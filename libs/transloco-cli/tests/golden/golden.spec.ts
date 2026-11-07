@@ -69,7 +69,7 @@ const FIXTURES_ROOT = path.resolve(
 );
 const DEFAULT_BIN = path.resolve(
   import.meta.dirname,
-  '../../../../dist/libs/transloco-cli/src/bin.js',
+  '../../../../dist/libs/transloco-cli/bin.js',
 );
 
 const bin = path.resolve(process.env['TRANSLOCO_BIN'] || DEFAULT_BIN);
