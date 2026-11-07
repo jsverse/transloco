@@ -1,0 +1,34 @@
+
+Starting migration script
+
+Migrating HTML files 📜
+⏳ Step 1/2: Migrating directives
+✅ Step 1/2: Migrating directives
+⏳ Step 2/2: Migrating pipes
+✅ Step 2/2: Migrating pipes
+
+Migrating TS files 📜
+⏳ Step 1/6: Migrating inline templates
+✅ Step 1/6: Migrating inline templates
+⚠️ No files match the pattern: <cwd>/src/app/**/*.ts
+⏳ Step 2/6: Migrating modules
+✅ Step 2/6: Migrating modules
+⚠️ No files match the pattern: <cwd>/src/app/**/*.ts
+⏳ Step 3/6: Migrating imports
+✅ Step 3/6: Migrating imports
+⚠️ No files match the pattern: <cwd>/src/app/**/*.ts
+⏳ Step 4/6: Migrating constructor injections
+✅ Step 4/6: Migrating constructor injections
+⚠️ No files match the pattern: <cwd>/src/app/**/*.ts
+⏳ Step 5/6: Migrating service usage
+✅ Step 5/6: Migrating service usage
+⚠️ No files match the pattern: <cwd>/src/app/**/*.ts
+⏳ Step 6/6: Migrating specs
+✅ Step 6/6: Migrating specs
+⚠️ No files match the pattern: <cwd>/src/app/**/*spec.ts
+
+              🌵 Done! 🌵
+Welcome to a better translation experience 🌐
+
+For more information about this script please visit 👉 https://jsverse.github.io/transloco/docs/migration/ngx
+

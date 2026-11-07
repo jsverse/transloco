@@ -1,0 +1,1 @@
+Transloco Migrate: No .html or .ts files found in src/app

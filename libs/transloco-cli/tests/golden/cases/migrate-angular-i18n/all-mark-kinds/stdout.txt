@@ -1,0 +1,10 @@
+⚠️ src/app/interpolation.html:1: <p i18n> is left as it is: it holds an interpolation, translate it by hand with params
+⚠️ src/app/interpolation.html:3: <p i18n> is left as it is: it holds an interpolation, translate it by hand with params
+⚠️ src/app/nested.html:1: <div i18n> is left as it is: it holds other elements, translate its texts by hand
+⚠️ src/app/nested.html:7: <section i18n> is left as it is: it holds other elements, translate its texts by hand
+
+              🌵 Done! 🌵
+Welcome to a better translation experience 🌐
+
+For more information about this script please visit 👉 https://jsverse.github.io/transloco/docs/migration/angular
+

@@ -1,0 +1,15 @@
+{
+  "description": "GIVEN a config with a root translations path WHEN the templates are migrated without a translations path THEN the files go to the root of the config",
+  "args": [
+    "migrate",
+    "angular-i18n",
+    "--langs",
+    "en",
+    "es"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}
