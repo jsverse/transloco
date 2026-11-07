@@ -14,7 +14,7 @@ describe('transloco-scoped-libs bin', () => {
   const originalArgv = process.argv;
   const originalNoDeprecation = process.noDeprecation;
   const notice =
-    'DeprecationWarning: transloco-scoped-libs is deprecated and will be removed in Transloco v10. Run "transloco scoped-libs" from @jsverse/transloco-cli instead.\n';
+    'transloco-scoped-libs will be deprecated in Transloco v10. Run "transloco scoped-libs" from @jsverse/transloco-cli instead.\n';
   let stderr: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {

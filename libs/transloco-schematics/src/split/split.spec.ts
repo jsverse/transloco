@@ -167,10 +167,10 @@ describe('Split', () => {
       expect(resEn).toEqual(translatedEn.scope);
     });
   });
-  describe('deprecation and failures', () => {
+  describe('notice and failures', () => {
     it(`GIVEN merged translation files in source directory
         WHEN split schematic runs
-        THEN the deprecation warning is logged exactly once`, async () => {
+        THEN the notice that it will be deprecated is logged exactly once`, async () => {
       setupMerged({ hello: 'hello' }, { hello: 'hola' });
       appTree.create(`${options.translationPath}/en.json`, '');
       appTree.create(`${options.translationPath}/es.json`, '');
@@ -185,7 +185,7 @@ describe('Split', () => {
       subscription.unsubscribe();
 
       expect(warnings).toEqual([
-        'The "split" schematic is deprecated and will be removed in Transloco v10. Run "transloco split" from @jsverse/transloco-cli instead.',
+        'The "split" schematic will be deprecated in Transloco v10. Run "transloco split" from @jsverse/transloco-cli instead.',
       ]);
     });
 

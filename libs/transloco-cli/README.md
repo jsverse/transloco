@@ -116,7 +116,7 @@ Both migrations rewrite the templates and the sources, and `migrate angular-i18n
 - Import `TranslocoPipe` or `TranslocoDirective` (or `TranslocoModule`) where a template uses them. `migrate ngx-translate` renames the ngx-translate imports it finds, while `migrate angular-i18n` adds no import, so every standalone component or module with a converted template needs `TranslocoPipe` added to its `imports`.
 - Go through what the migration printed, and translate the texts it left by hand.
 
-Both migrations only read the marks and the names they know, so go through the diff before you keep it. They replace the `ng g @jsverse/transloco:ngx-migrate` and `ng g @jsverse/transloco:ng-migrate` schematics, which are deprecated.
+Both migrations only read the marks and the names they know, so go through the diff before you keep it. They replace the `ng g @jsverse/transloco:ngx-migrate` and `ng g @jsverse/transloco:ng-migrate` schematics, which keep working and will be deprecated in Transloco v10.
 
 ### init
 
