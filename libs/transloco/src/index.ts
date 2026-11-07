@@ -72,5 +72,6 @@ export {
   isBrowser,
 } from './lib/utils/browser.utils';
 export { setValue, getValue } from './lib/utils/object.utils';
+export { marker } from './lib/marker';
 export * from './lib/transloco.types';
 export type { TranslocoGlobalConfig } from './lib/transloco-global-config';

@@ -37,10 +37,6 @@
     "./internal/deprecation": {
       "types": "./internal/deprecation.d.ts",
       "default": "./internal/deprecation.js"
-    },
-    "./marker": {
-      "types": "./marker.d.ts",
-      "default": "./marker.js"
     }
   },
   "main": "index.js",
@@ -91,13 +87,6 @@
     },
     "typescript": {
       "optional": true
-    }
-  },
-  "typesVersions": {
-    "*": {
-      "marker": [
-        "marker.d.ts"
-      ]
     }
   }
 }
