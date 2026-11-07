@@ -1,4 +1,5 @@
-// Internal entry point for the legacy tool bins, which print the notice when they start. Not a public API.
+// Internal entry point for the legacy tool bins, which print a notice when they start that they will be
+// deprecated in Transloco v10. Not a public API.
 // Loaded by every one of them before it does anything else, so it imports nothing.
 
 export type LegacyBin =
@@ -23,14 +24,14 @@ function formatDeprecationNotice(bin: LegacyBin, command?: string) {
       ? `transloco ${command}`
       : replacements[bin];
 
-  return `DeprecationWarning: ${bin} is deprecated and will be removed in Transloco v10. Run "${replacement}" from @jsverse/transloco-cli instead.\n`;
+  return `${bin} will be deprecated in Transloco v10. Run "${replacement}" from @jsverse/transloco-cli instead.\n`;
 }
 
 /**
  * Writes the notice straight to stderr, so that it is the first line there.
  * `process.emitWarning` would defer it and add a process id. Node's own
- * `--no-deprecation` silences it. The write is synchronous for files, TTYs and
- * Windows pipes. A POSIX pipe takes the line at once while it has room, but
+ * `--no-deprecation` silences it, which users already rely on. The write is
+ * synchronous for files, TTYs and Windows pipes. A POSIX pipe takes the line at once while it has room, but
  * when the pipe is already full Node queues it, and a bin that exits right
  * after can drop it. `fs.writeSync(2)` would throw EAGAIN there instead.
  *
