@@ -21,6 +21,7 @@ const PACKAGE_LABELS: Record<string, string> = {
   'scoped libs': 'scoped-libs',
   'keys manager': 'keys-manager',
   validator: 'validator',
+  cli: 'cli',
 };
 
 /** Recognised answers that intentionally map to no label. */

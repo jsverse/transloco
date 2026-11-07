@@ -15,17 +15,18 @@ The Transloco project is a monorepo managed by nx with the following structure:
 Packages:
 
 - transloco
-- transloco-cli
-- transloco-keys-manager
+- transloco-cli (the unified `transloco` CLI, commit scope `cli`)
+- transloco-keys-manager (a shim over transloco-cli, to be deprecated in Transloco v10)
 - transloco-locale
 - transloco-messageformat
-- transloco-optimize
-- transloco-presist-lang
-- transloco-presist-translations
+- transloco-optimize (a shim over transloco-cli, to be deprecated in Transloco v10)
+- transloco-persist-lang
+- transloco-persist-translations
 - transloco-preload-langs
 - transloco-schematics
-- transloco-utils
-- transloco-validator
+- transloco-scoped-libs (a shim over transloco-cli, to be deprecated in Transloco v10)
+- transloco-utils (superseded, to be deprecated in Transloco v10)
+- transloco-validator (a shim over transloco-cli, to be deprecated in Transloco v10)
 
 Apps:
 
@@ -37,6 +38,12 @@ Run the tests:
 ```bash
 nx test [package-name]
 nx e2e transloco-playground-e2e
+```
+
+The CLI also has a golden suite that runs the built `transloco` bin against committed cases, see `libs/transloco-cli/tests/golden/README.md`:
+
+```bash
+nx run transloco-cli:test-golden
 ```
 
 Run the playground app:
