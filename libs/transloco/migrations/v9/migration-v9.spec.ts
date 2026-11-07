@@ -749,12 +749,12 @@ describe('providesGlobalTranslateFn', () => {
 });
 
 describe('migrateMarkerImportSource', () => {
-  it(`GIVEN a file that only has a type-only import of marker from the CLI
-      WHEN the old-path value import is migrated
-      THEN the value import still lands on the CLI`, () => {
+  it(`GIVEN a file that only has a type-only import from @jsverse/transloco
+      WHEN the old-path value import of marker is migrated
+      THEN marker gets a value import of its own instead of joining the type-only one`, () => {
     const result = migrateMarkerImportSource(
       [
-        `import type { marker } from '@jsverse/transloco-cli/marker';`,
+        `import type { marker } from '@jsverse/transloco';`,
         `import { marker } from '@jsverse/transloco-keys-manager/marker';`,
         `const k = marker('a.b');`,
       ].join('\n'),
@@ -762,8 +762,8 @@ describe('migrateMarkerImportSource', () => {
 
     expect(result?.content).toBe(
       [
-        `import type { marker } from '@jsverse/transloco-cli/marker';`,
-        `import { marker } from '@jsverse/transloco-cli/marker';`,
+        `import type { marker } from '@jsverse/transloco';`,
+        `import { marker } from '@jsverse/transloco';`,
         `const k = marker('a.b');`,
       ].join('\n'),
     );
@@ -771,13 +771,13 @@ describe('migrateMarkerImportSource', () => {
 
   it(`GIVEN marker imported alone from the top-level package
       WHEN the source is migrated
-      THEN the specifier is repointed to the CLI's marker subpath`, () => {
+      THEN the specifier is repointed to @jsverse/transloco`, () => {
     const result = migrateMarkerImportSource(
       `import { marker } from '@jsverse/transloco-keys-manager';`,
     );
 
     expect(result?.content).toBe(
-      `import { marker } from '@jsverse/transloco-cli/marker';`,
+      `import { marker } from '@jsverse/transloco';`,
     );
     expect(result?.migrated).toBe(1);
   });
@@ -790,7 +790,7 @@ describe('migrateMarkerImportSource', () => {
     );
 
     expect(result?.content).toBe(
-      `import { marker as mark } from '@jsverse/transloco-cli/marker';`,
+      `import { marker as mark } from '@jsverse/transloco';`,
     );
   });
 
@@ -802,13 +802,13 @@ describe('migrateMarkerImportSource', () => {
     );
 
     expect(result?.content).toBe(
-      `import { marker } from "@jsverse/transloco-cli/marker";`,
+      `import { marker } from "@jsverse/transloco";`,
     );
   });
 
   it(`GIVEN marker imported alongside another named export
       WHEN the source is migrated
-      THEN marker moves to its own import from the CLI and the rest is left in place`, () => {
+      THEN marker moves to its own import from @jsverse/transloco and the rest is left in place`, () => {
     const result = migrateMarkerImportSource(
       `import { TranslocoExtractKeysWebpackPlugin, marker } from '@jsverse/transloco-keys-manager';`,
     );
@@ -816,7 +816,7 @@ describe('migrateMarkerImportSource', () => {
     expect(result?.content).toBe(
       [
         `import { TranslocoExtractKeysWebpackPlugin } from '@jsverse/transloco-keys-manager';`,
-        `import { marker } from '@jsverse/transloco-cli/marker';`,
+        `import { marker } from '@jsverse/transloco';`,
       ].join('\n'),
     );
     expect(result?.migrated).toBe(1);
@@ -824,24 +824,23 @@ describe('migrateMarkerImportSource', () => {
 
   it(`GIVEN marker imported from the old /marker subpath
       WHEN the source is migrated
-      THEN the specifier is repointed to the CLI's marker subpath`, () => {
+      THEN the specifier is repointed to @jsverse/transloco`, () => {
     const result = migrateMarkerImportSource(
       `import { marker } from '@jsverse/transloco-keys-manager/marker';`,
     );
 
     expect(result?.content).toBe(
-      `import { marker } from '@jsverse/transloco-cli/marker';`,
+      `import { marker } from '@jsverse/transloco';`,
     );
     expect(result?.migrated).toBe(1);
-    expect(result?.introduced).toBe(1);
   });
 
-  it(`GIVEN marker already imported from the CLI's marker subpath
+  it(`GIVEN marker already imported from @jsverse/transloco
       WHEN the source is migrated
       THEN nothing changes`, () => {
     expect(
       migrateMarkerImportSource(
-        `import { marker } from '@jsverse/transloco-cli/marker';`,
+        `import { TranslocoModule, marker } from '@jsverse/transloco';`,
       ),
     ).toBeNull();
   });
@@ -854,7 +853,7 @@ describe('migrateMarkerImportSource', () => {
     );
 
     expect(result?.content).toBe(
-      `import type { marker } from '@jsverse/transloco-cli/marker';`,
+      `import type { marker } from '@jsverse/transloco';`,
     );
   });
 
@@ -868,7 +867,7 @@ describe('migrateMarkerImportSource', () => {
     expect(result?.content).toBe(
       [
         `import type { Other } from '@jsverse/transloco-keys-manager';`,
-        `import type { marker } from '@jsverse/transloco-cli/marker';`,
+        `import type { marker } from '@jsverse/transloco';`,
       ].join('\n'),
     );
   });
@@ -883,7 +882,7 @@ describe('migrateMarkerImportSource', () => {
     expect(result?.content).toBe(
       [
         `import { Other } from '@jsverse/transloco-keys-manager';`,
-        `import { type marker as mark } from '@jsverse/transloco-cli/marker';`,
+        `import { type marker as mark } from '@jsverse/transloco';`,
       ].join('\n'),
     );
   });
@@ -902,22 +901,22 @@ describe('migrateMarkerImportSource', () => {
     [
       'the old /marker subpath, aliased',
       `import { marker as mark } from '@jsverse/transloco-keys-manager/marker';`,
-      `import { marker as mark } from '@jsverse/transloco-cli/marker';`,
+      `import { marker as mark } from '@jsverse/transloco';`,
     ],
     [
       'the old /marker subpath, type-only',
       `import type { marker } from '@jsverse/transloco-keys-manager/marker';`,
-      `import type { marker } from '@jsverse/transloco-cli/marker';`,
+      `import type { marker } from '@jsverse/transloco';`,
     ],
     [
       'the old /marker subpath, double-quoted without a semicolon',
       `import { marker } from "@jsverse/transloco-keys-manager/marker"`,
-      `import { marker } from "@jsverse/transloco-cli/marker"`,
+      `import { marker } from "@jsverse/transloco"`,
     ],
     [
       'the old /marker subpath, with an inline type modifier',
       `import { type marker } from '@jsverse/transloco-keys-manager/marker';`,
-      `import { type marker } from '@jsverse/transloco-cli/marker';`,
+      `import { type marker } from '@jsverse/transloco';`,
     ],
   ])(
     `GIVEN marker imported from %s
@@ -940,8 +939,8 @@ describe('migrateMarkerImportSource', () => {
 
     expect(result?.content).toBe(
       [
-        `import { marker } from '@jsverse/transloco-cli/marker';`,
-        `import { marker as mark } from '@jsverse/transloco-cli/marker';`,
+        `import { marker } from '@jsverse/transloco';`,
+        `import { marker as mark } from '@jsverse/transloco';`,
       ].join('\n'),
     );
     expect(result?.migrated).toBe(2);
@@ -959,7 +958,7 @@ describe('migrateMarkerImportSource', () => {
       expect(result?.content).toBe(
         [
           `import { Other } from '@jsverse/transloco-keys-manager';`,
-          `import { marker } from '@jsverse/transloco-cli/marker';`,
+          `import { marker } from '@jsverse/transloco';`,
           `const a = 1;`,
           ``,
         ].join(eol),
@@ -973,7 +972,7 @@ describe('migrateMarkerImportSource', () => {
     const source = `\uFEFFimport { marker } from '@jsverse/transloco-keys-manager/marker';\r\nconst a = 1;\r\n`;
 
     expect(migrateMarkerImportSource(source)?.content).toBe(
-      `\uFEFFimport { marker } from '@jsverse/transloco-cli/marker';\r\nconst a = 1;\r\n`,
+      `\uFEFFimport { marker } from '@jsverse/transloco';\r\nconst a = 1;\r\n`,
     );
   });
 
@@ -983,16 +982,16 @@ describe('migrateMarkerImportSource', () => {
     const source = `\uFEFFimport { Other, marker } from '@jsverse/transloco-keys-manager';\r\nconst a = 1;\r\n`;
 
     expect(migrateMarkerImportSource(source)?.content).toBe(
-      `\uFEFFimport { Other } from '@jsverse/transloco-keys-manager';\r\nimport { marker } from '@jsverse/transloco-cli/marker';\r\nconst a = 1;\r\n`,
+      `\uFEFFimport { Other } from '@jsverse/transloco-keys-manager';\r\nimport { marker } from '@jsverse/transloco';\r\nconst a = 1;\r\n`,
     );
   });
 
-  it(`GIVEN marker already imported from the CLI and again from an old path
+  it(`GIVEN marker already imported from @jsverse/transloco and again from an old path
       WHEN the source is migrated
-      THEN the old import goes without a second import of the CLI and nothing is introduced`, () => {
+      THEN the old import goes without a second marker on the core import`, () => {
     const result = migrateMarkerImportSource(
       [
-        `import { marker } from '@jsverse/transloco-cli/marker';`,
+        `import { marker } from '@jsverse/transloco';`,
         `import { marker } from '@jsverse/transloco-keys-manager/marker';`,
         `export const key = marker('a');`,
       ].join('\n'),
@@ -1000,47 +999,206 @@ describe('migrateMarkerImportSource', () => {
 
     expect(result?.content).toBe(
       [
-        `import { marker } from '@jsverse/transloco-cli/marker';`,
+        `import { marker } from '@jsverse/transloco';`,
         `export const key = marker('a');`,
       ].join('\n'),
     );
     expect(result?.migrated).toBe(1);
-    expect(result?.introduced).toBe(0);
   });
 
-  it(`GIVEN marker already imported from the CLI and an aliased marker next to another name on an old import
+  it(`GIVEN a value import from @jsverse/transloco and marker alone on an old import
       WHEN the source is migrated
-      THEN the alias moves to its own import from the CLI`, () => {
+      THEN marker joins the core import and the old import goes`, () => {
     const result = migrateMarkerImportSource(
       [
-        `import { marker } from '@jsverse/transloco-cli/marker';`,
+        `import { TranslocoModule } from '@jsverse/transloco';`,
+        `import { marker } from '@jsverse/transloco-keys-manager/marker';`,
+        `export const key = marker('a');`,
+      ].join('\n'),
+    );
+
+    expect(result?.content).toBe(
+      [
+        `import { TranslocoModule, marker } from '@jsverse/transloco';`,
+        `export const key = marker('a');`,
+      ].join('\n'),
+    );
+    expect(result?.migrated).toBe(1);
+  });
+
+  it(`GIVEN an old import of marker before the value import from @jsverse/transloco
+      WHEN the source is migrated
+      THEN marker joins the core import further down`, () => {
+    const result = migrateMarkerImportSource(
+      [
+        `import { marker as t } from '@jsverse/transloco-keys-manager';`,
+        `import { TranslocoModule } from "@jsverse/transloco"`,
+      ].join('\n'),
+    );
+
+    expect(result?.content).toBe(
+      `import { TranslocoModule, marker as t } from "@jsverse/transloco"`,
+    );
+  });
+
+  it(`GIVEN marker next to another name on an old import and a value import from @jsverse/transloco
+      WHEN the source is migrated
+      THEN marker joins the core import and the other name stays on the old one`, () => {
+    const result = migrateMarkerImportSource(
+      [
+        `import { TranslocoModule } from '@jsverse/transloco';`,
+        `import { Other, marker } from '@jsverse/transloco-keys-manager';`,
+      ].join('\n'),
+    );
+
+    expect(result?.content).toBe(
+      [
+        `import { TranslocoModule, marker } from '@jsverse/transloco';`,
+        `import { Other } from '@jsverse/transloco-keys-manager';`,
+      ].join('\n'),
+    );
+  });
+
+  it(`GIVEN a value import from @jsverse/transloco with a trailing comma
+      WHEN marker joins it
+      THEN the trailing comma stays last`, () => {
+    const result = migrateMarkerImportSource(
+      [
+        `import { TranslocoModule, } from '@jsverse/transloco';`,
+        `import { marker } from '@jsverse/transloco-keys-manager/marker';`,
+        ``,
+      ].join('\n'),
+    );
+
+    expect(result?.content).toBe(
+      `import { TranslocoModule, marker, } from '@jsverse/transloco';\n`,
+    );
+  });
+
+  it.each(['\n', '\r\n'])(
+    `GIVEN a value import from @jsverse/transloco with one name per line and line ending %j
+      WHEN marker joins it
+      THEN it goes on its own line at the same indent`,
+    (eol) => {
+      const result = migrateMarkerImportSource(
+        [
+          `import {`,
+          `  TranslocoModule,`,
+          `  TranslocoService,`,
+          `} from '@jsverse/transloco';`,
+          `import { marker as m } from '@jsverse/transloco-keys-manager/marker';`,
+          ``,
+        ].join(eol),
+      );
+
+      expect(result?.content).toBe(
+        [
+          `import {`,
+          `  TranslocoModule,`,
+          `  TranslocoService,`,
+          `  marker as m,`,
+          `} from '@jsverse/transloco';`,
+          ``,
+        ].join(eol),
+      );
+    },
+  );
+
+  it(`GIVEN a value import from @jsverse/transloco without a trailing comma, one name per line
+      WHEN marker joins it
+      THEN no trailing comma is added`, () => {
+    const result = migrateMarkerImportSource(
+      [
+        `import {`,
+        `  TranslocoModule`,
+        `} from '@jsverse/transloco';`,
+        `import { marker } from '@jsverse/transloco-keys-manager';`,
+        ``,
+      ].join('\n'),
+    );
+
+    expect(result?.content).toBe(
+      [
+        `import {`,
+        `  TranslocoModule,`,
+        `  marker`,
+        `} from '@jsverse/transloco';`,
+        ``,
+      ].join('\n'),
+    );
+  });
+
+  it(`GIVEN imports of marker from both old paths and a value import from @jsverse/transloco
+      WHEN the source is migrated
+      THEN both join the core import in one go and both old imports go`, () => {
+    const result = migrateMarkerImportSource(
+      [
+        `import { marker } from '@jsverse/transloco-keys-manager/marker';`,
+        `import { TranslocoModule } from '@jsverse/transloco';`,
+        `import { marker as mark } from '@jsverse/transloco-keys-manager';`,
+        ``,
+      ].join('\n'),
+    );
+
+    expect(result?.content).toBe(
+      `import { TranslocoModule, marker, marker as mark } from '@jsverse/transloco';\n`,
+    );
+    expect(result?.migrated).toBe(2);
+  });
+
+  it(`GIVEN a type-only old import of marker and a value import from @jsverse/transloco
+      WHEN the source is migrated
+      THEN marker joins the core import with an inline type modifier`, () => {
+    const result = migrateMarkerImportSource(
+      [
+        `import { TranslocoModule } from '@jsverse/transloco';`,
+        `import type { marker } from '@jsverse/transloco-keys-manager/marker';`,
+        ``,
+      ].join('\n'),
+    );
+
+    expect(result?.content).toBe(
+      `import { TranslocoModule, type marker } from '@jsverse/transloco';\n`,
+    );
+  });
+
+  it.each([
+    [`import type { Translation } from '@jsverse/transloco';`],
+    [`import * as transloco from '@jsverse/transloco';`],
+    [`import {} from '@jsverse/transloco';`],
+    [`import { TranslocoModule } from '@jsverse/transloco/router';`],
+  ])(
+    `GIVEN %s, which marker cannot join
+      WHEN marker is migrated from an old path
+      THEN it gets an import of its own`,
+    (existing) => {
+      const result = migrateMarkerImportSource(
+        [
+          existing,
+          `import { marker } from '@jsverse/transloco-keys-manager/marker';`,
+        ].join('\n'),
+      );
+
+      expect(result?.content).toBe(
+        [existing, `import { marker } from '@jsverse/transloco';`].join('\n'),
+      );
+    },
+  );
+
+  it(`GIVEN marker already imported from @jsverse/transloco and an aliased marker next to another name on an old import
+      WHEN the source is migrated
+      THEN the alias joins the core import`, () => {
+    const result = migrateMarkerImportSource(
+      [
+        `import { marker } from '@jsverse/transloco';`,
         `import { Other, marker as again } from '@jsverse/transloco-keys-manager';`,
       ].join('\n'),
     );
 
     expect(result?.content).toBe(
       [
-        `import { marker } from '@jsverse/transloco-cli/marker';`,
+        `import { marker, marker as again } from '@jsverse/transloco';`,
         `import { Other } from '@jsverse/transloco-keys-manager';`,
-        `import { marker as again } from '@jsverse/transloco-cli/marker';`,
-      ].join('\n'),
-    );
-  });
-
-  it(`GIVEN an aliased marker and the CLI's marker already imported
-      WHEN the source is migrated
-      THEN the alias is still imported from the CLI`, () => {
-    const result = migrateMarkerImportSource(
-      [
-        `import { marker } from '@jsverse/transloco-cli/marker';`,
-        `import { marker as mark } from '@jsverse/transloco-keys-manager/marker';`,
-      ].join('\n'),
-    );
-
-    expect(result?.content).toBe(
-      [
-        `import { marker } from '@jsverse/transloco-cli/marker';`,
-        `import { marker as mark } from '@jsverse/transloco-cli/marker';`,
       ].join('\n'),
     );
   });
@@ -1049,11 +1207,23 @@ describe('migrateMarkerImportSource', () => {
       WHEN the source is migrated
       THEN the line goes and the BOM stays`, () => {
     const result = migrateMarkerImportSource(
-      `\uFEFFimport { marker } from '@jsverse/transloco-keys-manager/marker';\r\nimport { marker } from '@jsverse/transloco-cli/marker';\r\n`,
+      `\uFEFFimport { marker } from '@jsverse/transloco-keys-manager/marker';\r\nimport { marker } from '@jsverse/transloco';\r\n`,
     );
 
     expect(result?.content).toBe(
-      `\uFEFFimport { marker } from '@jsverse/transloco-cli/marker';\r\n`,
+      `\uFEFFimport { marker } from '@jsverse/transloco';\r\n`,
+    );
+  });
+
+  it(`GIVEN a BOM, CRLF and an old import that joins a core import further down
+      WHEN the source is migrated
+      THEN the old line goes, and the BOM and the line endings are kept`, () => {
+    const result = migrateMarkerImportSource(
+      `\uFEFFimport { marker } from '@jsverse/transloco-keys-manager';\r\nimport { TranslocoModule } from '@jsverse/transloco';\r\n`,
+    );
+
+    expect(result?.content).toBe(
+      `\uFEFFimport { TranslocoModule, marker } from '@jsverse/transloco';\r\n`,
     );
   });
 
@@ -1084,20 +1254,30 @@ describe('migrateMarkerImportSource', () => {
     ].join('\n');
 
     expect(migrateMarkerImportSource(source, 'view.tsx')?.content).toBe(
-      source.replace('transloco-keys-manager', 'transloco-cli'),
+      source.replace(
+        '@jsverse/transloco-keys-manager/marker',
+        '@jsverse/transloco',
+      ),
     );
   });
 
-  it(`GIVEN the output of a migration
+  it.each([
+    `import { Other, marker } from '@jsverse/transloco-keys-manager';`,
+    [
+      `import { TranslocoModule } from '@jsverse/transloco';`,
+      `import { marker as m } from '@jsverse/transloco-keys-manager/marker';`,
+    ].join('\n'),
+  ])(
+    `GIVEN the output of a migration of %j
       WHEN it is migrated again
-      THEN nothing changes`, () => {
-    const first = migrateMarkerImportSource(
-      `import { Other, marker } from '@jsverse/transloco-keys-manager';`,
-    )?.content;
+      THEN nothing changes`,
+    (source) => {
+      const first = migrateMarkerImportSource(source)?.content;
 
-    expect(first).toBeDefined();
-    expect(migrateMarkerImportSource(first as string)).toBeNull();
-  });
+      expect(first).toBeDefined();
+      expect(migrateMarkerImportSource(first as string)).toBeNull();
+    },
+  );
 });
 
 describe('referencesScopedLibsWebpackPlugin', () => {
@@ -1710,7 +1890,7 @@ describe('migration-v9', () => {
 
   it(`GIVEN a file importing marker from the top-level keys-manager package
       WHEN the migration runs
-      THEN the import is repointed to the CLI's marker subpath`, async () => {
+      THEN the import is repointed to @jsverse/transloco`, async () => {
     const tree = await run((host) =>
       host.create(
         '/projects/bar/src/app/keys.ts',
@@ -1719,13 +1899,13 @@ describe('migration-v9', () => {
     );
 
     expect(tree.readContent('/projects/bar/src/app/keys.ts')).toBe(
-      `import { marker } from '@jsverse/transloco-cli/marker';`,
+      `import { marker } from '@jsverse/transloco';`,
     );
   });
 
   it(`GIVEN an .mts file importing marker from the top-level keys-manager package
       WHEN the migration runs
-      THEN the import is repointed to the CLI's marker subpath`, async () => {
+      THEN the import is repointed to @jsverse/transloco`, async () => {
     const tree = await run((host) =>
       host.create(
         '/projects/bar/src/app/keys.mts',
@@ -1734,14 +1914,14 @@ describe('migration-v9', () => {
     );
 
     expect(tree.readContent('/projects/bar/src/app/keys.mts')).toBe(
-      `import { marker } from '@jsverse/transloco-cli/marker';`,
+      `import { marker } from '@jsverse/transloco';`,
     );
   });
 
   it.each(['keys.cts', 'keys.js', 'keys.mjs', 'keys.cjs'])(
     `GIVEN %s importing marker from the top-level keys-manager package
       WHEN the migration runs
-      THEN the import is repointed, since the CLI's marker is what v9 ships`,
+      THEN the import is repointed, since @jsverse/transloco is where v9 exports marker`,
     async (name) => {
       const tree = await run((host) =>
         host.create(
@@ -1751,7 +1931,7 @@ describe('migration-v9', () => {
       );
 
       expect(tree.readContent(`/projects/bar/src/app/${name}`)).toBe(
-        `import { marker } from '@jsverse/transloco-cli/marker';`,
+        `import { marker } from '@jsverse/transloco';`,
       );
     },
   );
@@ -1772,10 +1952,11 @@ describe('migration-v9', () => {
     );
 
     expect(tree.readContent('/projects/bar/src/app/keys.ts')).toContain(
-      `import { marker } from '@jsverse/transloco-cli/marker';`,
+      `import { marker } from '@jsverse/transloco';`,
     );
     const reported = warnings.join('\n');
     expect(reported).toContain('TranslocoExtractKeysWebpackPlugin');
+    expect(reported).toContain(`Import marker from '@jsverse/transloco'.`);
     expect(reported).toContain(`run 'transloco extract' instead`);
     expect(reported).toContain('/projects/bar/src/app/keys.ts');
   });
@@ -2036,59 +2217,32 @@ describe('migration-v9', () => {
     ])(
       `GIVEN a file importing marker from %s
         WHEN the migration runs
-        THEN it imports from @jsverse/transloco-cli/marker`,
+        THEN it imports from @jsverse/transloco`,
       async (_, content) => {
         const { migrated } = await runWith({ '/src/keys.ts': content });
 
         expect(migrated.readContent('/src/keys.ts')).toBe(
-          `import { marker } from '@jsverse/transloco-cli/marker';\nexport const key = marker('a');`,
+          `import { marker } from '@jsverse/transloco';\nexport const key = marker('a');`,
         );
       },
     );
 
     it(`GIVEN a workspace that does not list the CLI
-        WHEN a marker import is moved to it
-        THEN the CLI is added to devDependencies at the installed v9 range and installed`, async () => {
-      const { runner, migrated, infos } = await runWith({
+        WHEN a marker import is moved to @jsverse/transloco
+        THEN its package.json is left as it was and nothing is installed`, async () => {
+      const { runner, migrated, infos, warnings } = await runWith({
         '/src/keys.ts': subpathImport,
       });
 
-      const { version } = JSON.parse(
-        readFileSync(nodePath.join(__dirname, '../../package.json'), 'utf-8'),
-      );
-      expect(devDependency(migrated, '@jsverse/transloco-cli')).toBe(
-        `^${version}`,
-      );
-      expect(nodePackageTasks(runner)).toHaveLength(1);
+      expect(devDependency(migrated, '@jsverse/transloco-cli')).toBeUndefined();
+      expect(nodePackageTasks(runner)).toHaveLength(0);
       expect(infos.join('\n')).toContain(`Repointed 1 marker import(s)`);
+      expect(warnings.join('\n')).not.toContain('to your devDependencies');
     });
 
-    it.each(['dependencies', 'devDependencies', 'peerDependencies'])(
-      `GIVEN a workspace listing the CLI under %s
-        WHEN a marker import is moved to it
-        THEN its package.json is left as it was`,
-      async (section) => {
-        const runner = new SchematicTestRunner('migrations', collectionPath);
-        const tree = await createWorkspace(runner);
-        const manifest = JSON.parse(tree.readContent('/package.json'));
-        manifest[section] = {
-          ...manifest[section],
-          '@jsverse/transloco-cli': '9.0.0',
-        };
-        tree.overwrite('/package.json', JSON.stringify(manifest, null, 2));
-        tree.create('/src/keys.ts', rootImport);
-        const before = tree.readContent('/package.json');
-
-        const migrated = await runner.runSchematic('migration-v9', {}, tree);
-
-        expect(migrated.readContent('/package.json')).toBe(before);
-        expect(nodePackageTasks(runner)).toHaveLength(0);
-      },
-    );
-
-    it(`GIVEN a workspace where both a marker import and a getGlobalConfig import move to the CLI
+    it(`GIVEN a workspace where a marker import moves to @jsverse/transloco and a getGlobalConfig import to the CLI
         WHEN the migration runs
-        THEN the CLI is added once and installed once`, async () => {
+        THEN the CLI is added once, for getGlobalConfig, and installed once`, async () => {
       const { runner, migrated, infos, warnings } = await runWith({
         '/src/keys.ts': rootImport,
         '/scripts/show-config.mjs': configScript,
@@ -2101,6 +2255,9 @@ describe('migration-v9', () => {
       expect(
         migrated.readContent('/package.json').split('"@jsverse/transloco-cli"'),
       ).toHaveLength(2);
+      expect(migrated.readContent('/src/keys.ts')).toContain(
+        `from '@jsverse/transloco';`,
+      );
       expect(migrated.readContent('/scripts/show-config.mjs')).toContain(
         `from '@jsverse/transloco-cli'`,
       );
@@ -2118,32 +2275,32 @@ describe('migration-v9', () => {
       ['unparsable', '{ "devDependencies": '],
     ])(
       `GIVEN a root package.json that is %s
-        WHEN a marker import is moved to the CLI
-        THEN the user is asked to add the package and no addition is logged`,
+        WHEN a marker import is moved to @jsverse/transloco
+        THEN the user is not asked to add the CLI`,
       async (_, manifest) => {
         const runner = new SchematicTestRunner('migrations', collectionPath);
-        const { warnings, infos } = capture(runner);
+        const { warnings } = capture(runner);
         const tree = await createWorkspace(runner);
         tree.overwrite('/package.json', manifest);
         tree.create('/src/keys.ts', rootImport);
 
         const migrated = await runner.runSchematic('migration-v9', {}, tree);
 
-        expect(migrated.readContent('/package.json')).toBe(manifest);
-        expect(warnings.join('\n')).toContain(
-          `Add '@jsverse/transloco-cli' to your devDependencies`,
+        expect(migrated.readContent('/src/keys.ts')).toContain(
+          `from '@jsverse/transloco';`,
         );
-        expect(infos.join('\n')).not.toContain(`Added '@jsverse/transloco-cli`);
+        expect(migrated.readContent('/package.json')).toBe(manifest);
+        expect(warnings.join('\n')).not.toContain('to your devDependencies');
         expect(runner.tasks).toHaveLength(0);
       },
     );
 
-    it(`GIVEN a file that already imports marker from the CLI, and an aliased one from an old path
+    it(`GIVEN a file that already imports marker from @jsverse/transloco, and an aliased one from an old path
         WHEN the migration runs
-        THEN the alias is repointed to the CLI and there is no duplicate import of the plain name`, async () => {
+        THEN the alias joins the core import and there is no duplicate import of the plain name`, async () => {
       const { migrated, runner } = await runWith({
         '/src/keys.ts': [
-          `import { marker } from '@jsverse/transloco-cli/marker';`,
+          `import { marker } from '@jsverse/transloco';`,
           `import { marker as again } from '@jsverse/transloco-keys-manager';`,
           `export const keys = [marker('a'), again('b')];`,
         ].join('\n'),
@@ -2151,18 +2308,48 @@ describe('migration-v9', () => {
 
       expect(migrated.readContent('/src/keys.ts')).toBe(
         [
-          `import { marker } from '@jsverse/transloco-cli/marker';`,
-          `import { marker as again } from '@jsverse/transloco-cli/marker';`,
+          `import { marker, marker as again } from '@jsverse/transloco';`,
           `export const keys = [marker('a'), again('b')];`,
         ].join('\n'),
       );
-      expect(nodePackageTasks(runner)).toHaveLength(1);
+      expect(nodePackageTasks(runner)).toHaveLength(0);
     });
 
-    it(`GIVEN a file that only has the CLI's marker import
+    it(`GIVEN a component importing from @jsverse/transloco and marker from an old path
+        WHEN the migration runs
+        THEN marker joins the existing core import`, async () => {
+      const { migrated } = await runWith({
+        '/src/app.component.ts': [
+          `import { Component } from '@angular/core';`,
+          `import { TranslocoPipe } from '@jsverse/transloco';`,
+          `import { marker } from '@jsverse/transloco-keys-manager/marker';`,
+          ``,
+          `@Component({ imports: [TranslocoPipe], template: '' })`,
+          `export class AppComponent {`,
+          `  key = marker('app.title');`,
+          `}`,
+          ``,
+        ].join('\n'),
+      });
+
+      expect(migrated.readContent('/src/app.component.ts')).toBe(
+        [
+          `import { Component } from '@angular/core';`,
+          `import { TranslocoPipe, marker } from '@jsverse/transloco';`,
+          ``,
+          `@Component({ imports: [TranslocoPipe], template: '' })`,
+          `export class AppComponent {`,
+          `  key = marker('app.title');`,
+          `}`,
+          ``,
+        ].join('\n'),
+      );
+    });
+
+    it(`GIVEN a file that only has the core marker import
         WHEN the migration runs
         THEN no file and no dependency changes`, async () => {
-      const content = `import { marker } from '@jsverse/transloco-cli/marker';`;
+      const content = `import { marker } from '@jsverse/transloco';`;
       const { migrated, runner } = await runWith({ '/src/keys.ts': content });
 
       expect(migrated.readContent('/src/keys.ts')).toBe(content);
@@ -2178,20 +2365,20 @@ describe('migration-v9', () => {
       });
 
       expect(migrated.readContent('/src/keys.ts')).toBe(
-        `\uFEFFimport { Other } from '@jsverse/transloco-keys-manager';\r\nimport { marker } from '@jsverse/transloco-cli/marker';\r\nexport const key = marker('a');\r\n`,
+        `\uFEFFimport { Other } from '@jsverse/transloco-keys-manager';\r\nimport { marker } from '@jsverse/transloco';\r\nexport const key = marker('a');\r\n`,
       );
       expect(warnings.join('\n')).toContain('/src/keys.ts');
     });
 
     it(`GIVEN a .tsx file importing marker from an old path
         WHEN the migration runs
-        THEN it imports from @jsverse/transloco-cli/marker`, async () => {
+        THEN it imports from @jsverse/transloco`, async () => {
       const { migrated } = await runWith({
         '/src/view.tsx': `import { marker } from '@jsverse/transloco-keys-manager/marker';\nexport const view = <p>{marker('a')}</p>;`,
       });
 
       expect(migrated.readContent('/src/view.tsx')).toBe(
-        `import { marker } from '@jsverse/transloco-cli/marker';\nexport const view = <p>{marker('a')}</p>;`,
+        `import { marker } from '@jsverse/transloco';\nexport const view = <p>{marker('a')}</p>;`,
       );
     });
 
@@ -2219,7 +2406,7 @@ describe('migration-v9', () => {
     ])(
       `GIVEN %s using the old /marker subpath in a way that cannot be rewritten
         WHEN the migration runs
-        THEN the file is reported and left as it was`,
+        THEN the file is reported and left as it was, pointing at @jsverse/transloco`,
       async (path, content) => {
         const { migrated, warnings, runner } = await runWith({
           [path]: content,
@@ -2227,6 +2414,9 @@ describe('migration-v9', () => {
 
         expect(migrated.readContent(path)).toBe(content);
         expect(warnings.join('\n')).toContain(path);
+        expect(warnings.join('\n')).toContain(
+          `Import { marker } from '@jsverse/transloco' instead.`,
+        );
         expect(
           devDependency(migrated, '@jsverse/transloco-cli'),
         ).toBeUndefined();
@@ -2238,7 +2428,7 @@ describe('migration-v9', () => {
         WHEN the migration runs
         THEN nothing is reported about them`, async () => {
       const { warnings } = await runWith({
-        '/src/keys.ts': `import { marker } from '@jsverse/transloco-cli/marker';`,
+        '/src/keys.ts': `import { marker } from '@jsverse/transloco';`,
         '/src/other.ts': `import { thing } from '@jsverse/transloco-keys-manager-extra';`,
       });
 
@@ -2804,16 +2994,19 @@ describe('migration-v9 npm scripts', () => {
     expect(nodePackageTasks(runner)).toHaveLength(1);
   });
 
-  it(`GIVEN scripts and a marker import that both need the CLI
+  it(`GIVEN scripts and a getGlobalConfig import that both need the CLI
       WHEN the migration runs
       THEN it is added once`, async () => {
-    const { runner, infos } = await runWith(
+    const { runner, migrated, infos } = await runWith(
       {
-        '/src/keys.ts': `import { marker } from '@jsverse/transloco-keys-manager';\nexport const key = marker('a');`,
+        '/scripts/show-config.mjs': `import { getGlobalConfig } from '@jsverse/transloco-utils';\nconsole.log(getGlobalConfig());`,
       },
       legacy,
     );
 
+    expect(migrated.readContent('/scripts/show-config.mjs')).toContain(
+      `from '${CLI}'`,
+    );
     expect(
       infos.filter((message) => message.includes(`Added '${CLI}@`)),
     ).toHaveLength(1);

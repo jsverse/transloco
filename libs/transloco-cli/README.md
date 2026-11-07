@@ -251,29 +251,29 @@ Nothing is written unless everything can be: before the first file is written `i
 ### marker
 
 ```ts
-import { marker } from '@jsverse/transloco-cli/marker';
+import { marker } from '@jsverse/transloco';
 
 const key = marker('dashboard.title');
 ```
 
-Marks a key for `extract` and `find` when it is not read by a translate call, and returns the key as it is. The optional second argument takes the place of the params of a translate call (`translate(key, params, lang)`), so that the scope of the key can be the third argument; the type allows `undefined` only, so pass that when you give a scope, as in `marker('key', undefined, 'admin')`. The third argument is the scope of the key. `@jsverse/transloco-keys-manager/marker` still works and is deprecated.
+Marks a key for `extract` and `find` when it is not read by a translate call, and returns the key as it is. The optional second argument takes the place of the params of a translate call (`translate(key, params, lang)`), so that the scope of the key can be the third argument; the type allows `undefined` only, so pass that when you give a scope, as in `marker('key', undefined, 'admin')`. The third argument is the scope of the key. `@jsverse/transloco-keys-manager/marker` was removed in v9, and `ng update @jsverse/transloco` rewrites its imports to `@jsverse/transloco`.
 
 ### Replacing the old tools
 
-The tools that `transloco` replaces are deprecated and keep working until Transloco v10. The bins print a deprecation notice on stderr when they start, which `NODE_OPTIONS=--no-deprecation` silences, and the schematics log a deprecation warning through the Angular CLI logger. `ng update @jsverse/transloco` moves the npm scripts that run the old bins to the `transloco` bin.
+The tools that `transloco` replaces are deprecated and keep working until Transloco v10, except `@jsverse/transloco-keys-manager/marker`, which was removed in v9. The bins print a deprecation notice on stderr when they start, which `NODE_OPTIONS=--no-deprecation` silences, and the schematics log a deprecation warning through the Angular CLI logger. `ng update @jsverse/transloco` moves the npm scripts that run the old bins to the `transloco` bin.
 
-| Deprecated                                                                   | Use instead                                                            |
-| ---------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| `transloco-keys-manager extract`                                             | `transloco extract`                                                    |
-| `transloco-keys-manager find`                                                | `transloco find`                                                       |
-| `transloco-validator`                                                        | `transloco validate`                                                   |
-| `transloco-optimize`                                                         | `transloco optimize`                                                   |
-| `transloco-scoped-libs`                                                      | `transloco scoped-libs`                                                |
-| `join` and `split` schematics of `@jsverse/transloco-schematics`             | `transloco join` and `transloco split`                                 |
-| `ngx-migrate` and `ng-migrate` schematics of `@jsverse/transloco-schematics` | `transloco migrate ngx-translate` and `transloco migrate angular-i18n` |
-| `marker` of `@jsverse/transloco-keys-manager/marker`                         | `marker` of `@jsverse/transloco-cli/marker`                            |
-| `getGlobalConfig` of `@jsverse/transloco-utils`                              | `getGlobalConfig` of `@jsverse/transloco-cli`                          |
-| `TranslocoGlobalConfig` of `@jsverse/transloco-utils`                        | `TranslocoGlobalConfig` of `@jsverse/transloco`                        |
+| Deprecated                                                                                            | Use instead                                                            |
+| ----------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `transloco-keys-manager extract`                                                                      | `transloco extract`                                                    |
+| `transloco-keys-manager find`                                                                         | `transloco find`                                                       |
+| `transloco-validator`                                                                                 | `transloco validate`                                                   |
+| `transloco-optimize`                                                                                  | `transloco optimize`                                                   |
+| `transloco-scoped-libs`                                                                               | `transloco scoped-libs`                                                |
+| `join` and `split` schematics of `@jsverse/transloco-schematics`                                      | `transloco join` and `transloco split`                                 |
+| `ngx-migrate` and `ng-migrate` schematics of `@jsverse/transloco-schematics`                          | `transloco migrate ngx-translate` and `transloco migrate angular-i18n` |
+| `marker` of `@jsverse/transloco-keys-manager/marker` (removed in v9, `ng update` rewrites the import) | `marker` of `@jsverse/transloco`                                       |
+| `getGlobalConfig` of `@jsverse/transloco-utils`                                                       | `getGlobalConfig` of `@jsverse/transloco-cli`                          |
+| `TranslocoGlobalConfig` of `@jsverse/transloco-utils`                                                 | `TranslocoGlobalConfig` of `@jsverse/transloco`                        |
 
 ### Running from another directory
 
