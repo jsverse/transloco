@@ -2,7 +2,7 @@ import { execSync } from 'node:child_process';
 
 import { Rule, SchematicsException, Tree } from '@angular-devkit/schematics';
 import { getConfiguredPackageManager } from '@angular/cli/src/utilities/config';
-import { TranslocoGlobalConfig } from '@jsverse/transloco-utils';
+import type { TranslocoGlobalConfig } from '@jsverse/transloco-cli';
 import { from, map } from 'rxjs';
 
 import {
