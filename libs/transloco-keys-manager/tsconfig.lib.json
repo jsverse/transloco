@@ -11,7 +11,7 @@
     "target": "ES2021",
     "allowSyntheticDefaultImports": true
   },
-  "include": ["**/*.ts", "**/*.mts"],
+  "include": ["**/*.ts"],
   "exclude": [
     "**/*.spec.ts",
     "**/tests/**",

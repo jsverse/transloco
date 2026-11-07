@@ -1,4 +1,4 @@
-import { marker as t } from '@jsverse/transloco-keys-manager/marker';
+import { marker as t } from '@jsverse/transloco';
 
 @Component({
   selector: 'bla-bla',
