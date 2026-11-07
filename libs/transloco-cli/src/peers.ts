@@ -1,4 +1,6 @@
-import { createRequire } from 'node:module';
+// A namespace import: a named `createRequire` import makes the bundler keep a
+// bare `import "node:module"` in the chunk that holds its own runtime helpers.
+import * as nodeModule from 'node:module';
 
 import { CliError } from './errors';
 import { readPackageJson } from './package-info';
@@ -19,7 +21,7 @@ type ResolvePeer = (name: string) => unknown;
  */
 export function assertKeysManagerPeers(
   command: string,
-  resolve: ResolvePeer = createRequire(import.meta.url).resolve,
+  resolve: ResolvePeer = nodeModule.createRequire(import.meta.url).resolve,
 ) {
   const missing = keysManagerPeers.filter(
     (peer) => !isInstalled(peer, resolve),

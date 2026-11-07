@@ -36,7 +36,6 @@
     "./package.json": "./package.json"
   },
   "main": "index.js",
-  "module": "index.js",
   "types": "index.d.ts",
   "bin": {
     "transloco": "bin.js"
