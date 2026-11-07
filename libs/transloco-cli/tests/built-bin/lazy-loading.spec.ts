@@ -60,6 +60,7 @@ const translationFolders: Allowed = {
     'chunks/config-path.js',
     'chunks/file-system.js',
     'chunks/node-file-reader.js',
+    'chunks/real-path.js',
     'chunks/translation-files.js',
     'chunks/translation-folders.js',
     'chunks/transloco-utils.js',
@@ -102,6 +103,7 @@ const migrateAngularI18n: Allowed = {
     'chunks/file-system.js',
     'chunks/migrate-angular-i18n.js',
     'chunks/peers.js',
+    'chunks/real-path.js',
     // The bundler's helper for the namespace the command gets from `import()`.
     'chunks/rolldown-runtime.js',
     'chunks/style.js',
@@ -122,9 +124,14 @@ const init: Allowed = {
     ...program.files,
     'chunks/commands/init.js',
     'chunks/file-system.js',
+    'chunks/init/translations-path.js',
+    'chunks/real-path.js',
     'chunks/resolve-project-base-path.js',
+    // The bundler's helper for `resolve-project-base-path`, which a command also loads with `import()`.
+    'chunks/rolldown-runtime.js',
     'chunks/style.js',
     'chunks/transloco-utils.js',
+    'chunks/validators.utils.js',
   ],
   packages: [
     ...program.packages,

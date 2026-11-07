@@ -1,0 +1,6 @@
+{
+  "description": "GIVEN a comma in a language typed as --langs=en,es for extract WHEN the keys are extracted THEN it is rejected like the space form, nothing is written and it exits with 1",
+  "args": ["extract", "--langs=en,es"],
+  "exitCode": 1,
+  "snapshot": ["stdout", "stderr"]
+}

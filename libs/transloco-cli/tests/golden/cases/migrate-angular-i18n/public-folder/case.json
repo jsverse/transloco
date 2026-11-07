@@ -1,0 +1,15 @@
+{
+  "description": "GIVEN a public folder and no config WHEN the templates are migrated without a translations path THEN the files go to public/i18n, where init and ng add put them",
+  "args": [
+    "migrate",
+    "angular-i18n",
+    "--langs",
+    "en",
+    "es"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

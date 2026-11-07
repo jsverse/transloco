@@ -8,7 +8,10 @@ Options:
                              (default: "src/app")
   --translations-path <dir>  The folder the translation files are written to
                              (defaults to `rootTranslationsPath` of the config,
-                             or `src/assets/i18n`)
+                             else the folder `transloco init` picks:
+                             `public/i18n` with a `public` folder, else `<source
+                             root>/assets/i18n` when that folder exists, else
+                             `public/i18n` from Angular 18)
   -l, --langs <langs...>     The languages to create a translation file for
   -c, --config <path>        Path to a custom transloco config
   -h, --help                 Display help for the command

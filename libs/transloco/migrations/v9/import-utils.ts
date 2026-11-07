@@ -1,8 +1,9 @@
 import * as nodeModule from 'node:module';
 
-import { Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
+import { SchematicContext, Tree } from '@angular-devkit/schematics';
+import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
 
-import { loadDependencyRules } from './lazy-deps';
+import { addDevDependency } from './manifest-edit';
 
 type TypeScript = typeof import('typescript');
 type ImportSpecifier = import('typescript').ImportSpecifier;
@@ -165,27 +166,44 @@ function installedVersion(): string | null {
   }
 }
 
-/** Whether the root `package.json` lists `name`, or `null` when it can't be read. */
-function isListed(tree: Tree, name: string): boolean | null {
+/** Whether the `package.json` at `path` has a key `name` in a dependency section, or `null` when it can't be read. */
+function isListed(tree: Tree, name: string, path: string): boolean | null {
   try {
     // `JSON.parse` rejects a byte order mark, which editors on Windows put at the start of a file
     const manifest = JSON.parse(
-      (tree.read('/package.json')?.toString() ?? '').replace(/^\uFEFF/, ''),
+      (tree.read(path)?.toString() ?? '').replace(/^\uFEFF/, ''),
     );
     if (!manifest || typeof manifest !== 'object' || Array.isArray(manifest))
       return null;
 
-    return DEPENDENCY_SECTIONS.some((section) => manifest[section]?.[name]);
+    // Whatever the range, even an empty one, a key of that name is a listing
+    return DEPENDENCY_SECTIONS.some((section) => {
+      const listed = manifest[section];
+
+      return (
+        !!listed &&
+        typeof listed === 'object' &&
+        Object.prototype.hasOwnProperty.call(listed, name)
+      );
+    });
   } catch {
     return null;
   }
 }
+
+/** The runs that have scheduled the install already. */
+const scheduled = new WeakSet<SchematicContext>();
 
 /**
  * Adds the CLI to the workspace's `devDependencies` when it isn't listed yet,
  * at the range of the `@jsverse/transloco` v9 that is installed, and schedules
  * the install. `usage` says what in the workspace needs it now, for the
  * message that asks for the dependency when it can't be added.
+ *
+ * The entry is inserted into the text of the `package.json`, so the rest of
+ * the file stays as the user wrote it. `manifest` is the one that gets it, the
+ * root one unless a workspace package needs the CLI of its own: Yarn runs the
+ * bins of the package's own dependencies only.
  *
  * Every step that needs the CLI calls this. The first one that finds it
  * missing adds it, and since the rules of a chain run one after the other on
@@ -195,25 +213,32 @@ export function addCliDependency(
   tree: Tree,
   context: SchematicContext,
   usage: string,
-): Rule | void {
-  const manual = `  ↳ Add '${CLI_PACKAGE}' to your devDependencies: ${usage}.`;
+  manifest = '/package.json',
+): void {
+  const where = manifest === '/package.json' ? '' : ` of '${manifest}'`;
+  const manual = `  ↳ Add '${CLI_PACKAGE}' to your devDependencies${where}: ${usage}.`;
 
-  const listed = isListed(tree, CLI_PACKAGE);
+  const listed = isListed(tree, CLI_PACKAGE, manifest);
   if (listed) return;
 
   const version = installedVersion();
-  const rules = loadDependencyRules();
-  if (listed === null || !version || !rules) {
+  const source = tree.read(manifest)?.toString();
+  const content =
+    version && source
+      ? addDevDependency(source, CLI_PACKAGE, `^${version}`)
+      : null;
+  if (listed === null || content === null) {
     context.logger.warn(manual);
     return;
   }
 
+  tree.overwrite(manifest, content);
   context.logger.info(
-    `  ↳ Added '${CLI_PACKAGE}@^${version}' to devDependencies.`,
+    `  ↳ Added '${CLI_PACKAGE}@^${version}' to devDependencies${where}.`,
   );
 
-  return rules.addDependency(CLI_PACKAGE, `^${version}`, {
-    type: rules.DependencyType.Dev,
-    existing: rules.ExistingBehavior.Skip,
-  });
+  if (!scheduled.has(context)) {
+    scheduled.add(context);
+    context.addTask(new NodePackageInstallTask({ workingDirectory: '/' }));
+  }
 }

@@ -444,6 +444,28 @@ describe('the table of the script migration', () => {
     );
 
     it.each(
+      kept.filter(({ noComma }) => noComma).map((option) => [option.name]),
+    )(
+      `GIVEN the option %s whose values are separate arguments
+        WHEN the new bin gets a comma in a value written with an equals sign
+        THEN it refuses it as well, which is why the migration leaves such a script`,
+      async (name) => {
+        const option = invocation.options.find((entry) => entry.name === name)!;
+        const target = Object.values(option.spellings).find((spelling) =>
+          spelling?.startsWith('--'),
+        )!;
+        const { error } = await parse([
+          command,
+          ...operandsOf(invocation, option),
+          `${target}=alpha,beta`,
+        ]);
+
+        expect(error).toMatch(/comma/);
+        expect(runnerOf[command]).not.toHaveBeenCalled();
+      },
+    );
+
+    it.each(
       kept
         .filter(
           ({ takesValue, noComma, list, choices }) =>
