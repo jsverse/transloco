@@ -35,4 +35,4 @@ export function asSchematicsException<T>(run: () => T) {
 }
 
 export const deprecationWarning = (name: 'join' | 'split') =>
-  `The "${name}" schematic is deprecated and will be removed in Transloco v10. Run "transloco ${name}" from @jsverse/transloco-cli instead.`;
+  `The "${name}" schematic will be deprecated in Transloco v10. Run "transloco ${name}" from @jsverse/transloco-cli instead.`;
