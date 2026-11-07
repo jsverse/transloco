@@ -27,9 +27,12 @@ function formatDeprecationNotice(bin: LegacyBin, command?: string) {
 }
 
 /**
- * Writes the notice synchronously, so that it is the first line on stderr and
- * survives a bin that exits or throws right after. `process.emitWarning` would
- * defer it and add a process id. Node's own `--no-deprecation` silences it.
+ * Writes the notice straight to stderr, so that it is the first line there.
+ * `process.emitWarning` would defer it and add a process id. Node's own
+ * `--no-deprecation` silences it. The write is synchronous for files, TTYs and
+ * Windows pipes. A POSIX pipe takes the line at once while it has room, but
+ * when the pipe is already full Node queues it, and a bin that exits right
+ * after can drop it. `fs.writeSync(2)` would throw EAGAIN there instead.
  *
  * @param command The first argument of `transloco-keys-manager`, which picks the replacement.
  */
