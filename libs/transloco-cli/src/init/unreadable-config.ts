@@ -3,7 +3,7 @@ import path from 'node:path';
 
 import { cosmiconfigSync, getDefaultSearchPlacesSync } from 'cosmiconfig';
 
-import { fileNamedIn, oneLine } from '../config/load-error.js';
+import { fileNamedIn, oneLine } from '../config/load-error';
 
 const moduleName = 'transloco';
 

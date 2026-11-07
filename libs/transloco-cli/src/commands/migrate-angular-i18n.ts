@@ -1,13 +1,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { getGlobalConfig } from '../config/index.js';
-import { CliError } from '../errors.js';
-import { findFiles } from '../migrate/find-files.js';
-import { assertPeers } from '../peers.js';
+import { getGlobalConfig } from '../config';
+import { CliError } from '../errors';
+import { findFiles } from '../migrate/find-files';
+import { assertPeers } from '../peers';
 
-import { assertConfigPathExists } from './config-path.js';
-import { assertFolderExists } from './translation-folders.js';
+import { assertConfigPathExists } from './config-path';
+import { assertFolderExists } from './translation-folders';
 
 const name = 'Migrate';
 
@@ -60,7 +60,7 @@ export async function runMigrateAngularI18n({
   assertPeers(`migrate angular-i18n`, ['@angular/compiler']);
 
   const { migrateAngularI18n } =
-    await import('../migrate/angular-i18n/migrate-angular-i18n.js');
+    await import('../migrate/angular-i18n/migrate-angular-i18n');
 
   migrateAngularI18n({ input, output, langs });
 }
@@ -68,10 +68,9 @@ export async function runMigrateAngularI18n({
 /** The folder `transloco init` and `ng add` pick, so that the texts land where the app loads them from. */
 async function defaultTranslationsPath(input: string) {
   // Only loaded when nothing else names the folder
-  const { detectTranslationsPath } =
-    await import('../init/translations-path.js');
+  const { detectTranslationsPath } = await import('../init/translations-path');
   const { resolveProjectBasePath, listProjects } =
-    await import('../keys-manager/utils/resolve-project-base-path.js');
+    await import('../keys-manager/utils/resolve-project-base-path');
   let sourceRoot = 'src';
 
   try {

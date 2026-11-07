@@ -1,6 +1,6 @@
 import { applyEdits, modify } from 'jsonc-parser';
 
-import { CliError } from '../errors.js';
+import { CliError } from '../errors';
 
 export interface Manifest {
   /** The scripts that are already there, with their values. */

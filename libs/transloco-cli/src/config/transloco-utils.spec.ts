@@ -4,7 +4,7 @@ import path from 'node:path';
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
-import { getGlobalConfig, searchGlobalConfig } from './transloco-utils.js';
+import { getGlobalConfig, searchGlobalConfig } from './transloco-utils';
 
 const TS_CONFIG = `export default { rootTranslationsPath: 'src/assets/i18n/', langs: ['en', 'es'] };`;
 

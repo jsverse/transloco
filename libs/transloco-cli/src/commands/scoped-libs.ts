@@ -1,8 +1,8 @@
-import { getGlobalConfig } from '../config/index.js';
-import { CliError } from '../errors.js';
-import run from '../scoped-libs/index.js';
+import { getGlobalConfig } from '../config';
+import { CliError } from '../errors';
+import run from '../scoped-libs';
 
-import { assertConfigPathExists } from './config-path.js';
+import { assertConfigPathExists } from './config-path';
 
 export interface ScopedLibsCommandOptions {
   watch?: boolean;

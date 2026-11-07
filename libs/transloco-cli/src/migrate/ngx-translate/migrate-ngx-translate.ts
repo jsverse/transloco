@@ -1,15 +1,15 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { style } from '../../utils/style.js';
-import { findFiles } from '../find-files.js';
+import { style } from '../../utils/style';
+import { findFiles } from '../find-files';
 
-import { applyMatcher } from './apply-matcher.js';
+import { applyMatcher } from './apply-matcher';
 import {
   generateMatchers,
   type Matcher,
   type MatcherDef,
-} from './migration-matchers.js';
+} from './migration-matchers';
 
 export interface MigrateNgxTranslateOptions {
   /** The folder holding the sources to migrate. */

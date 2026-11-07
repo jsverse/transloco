@@ -1,6 +1,6 @@
-import { FileFormats } from '../types.js';
-import { normalizedGlob } from '../utils/normalize-glob-path.js';
-import { isTranslationFile } from '../utils/path.utils.js';
+import { FileFormats } from '../types';
+import { normalizedGlob } from '../utils/normalize-glob-path';
+import { isTranslationFile } from '../utils/path.utils';
 
 export function getTranslationFilesPath(
   path: string,

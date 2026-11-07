@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 
-import { CliError } from '../errors.js';
-import validator from '../validator/index.js';
+import { CliError } from '../errors';
+import validator from '../validator';
 
 /** Validates every file, so that a single run reports all the invalid ones. */
 export function runValidate(translationFilePaths: string[]) {

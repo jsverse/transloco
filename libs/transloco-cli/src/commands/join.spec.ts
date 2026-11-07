@@ -13,9 +13,9 @@ import {
   type TestContext,
 } from 'vitest';
 
-import { CliError } from '../errors.js';
+import { CliError } from '../errors';
 
-import { runJoin, type JoinCommandOptions } from './join.js';
+import { runJoin, type JoinCommandOptions } from './join';
 
 describe('runJoin', () => {
   const originalCwd = process.cwd();

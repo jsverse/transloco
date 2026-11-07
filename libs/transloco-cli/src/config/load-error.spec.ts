@@ -4,11 +4,11 @@ import path from 'node:path';
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { CliError } from '../errors.js';
-import { resolveConfig } from '../keys-manager/utils/resolve-config.js';
+import { CliError } from '../errors';
+import { resolveConfig } from '../keys-manager/utils/resolve-config';
 
-import { ConfigLoadError } from './load-error.js';
-import { searchGlobalConfig } from './transloco-utils.js';
+import { ConfigLoadError } from './load-error';
+import { searchGlobalConfig } from './transloco-utils';
 
 describe('a config that fails to load', () => {
   const originalCwd = process.cwd();

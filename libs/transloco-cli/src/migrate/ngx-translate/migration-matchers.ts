@@ -1,4 +1,4 @@
-import { applyMatcher } from './apply-matcher.js';
+import { applyMatcher } from './apply-matcher';
 
 /** An attribute of an element, with its value, quoted or not. */
 const ATTRIBUTE = `[^\\s=<>"'/]+(?:\\s*=\\s*(?:"[^"]*"|'[^']*'|[^\\s"'<>]+))?`;

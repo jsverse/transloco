@@ -12,18 +12,18 @@ import {
   vi,
 } from 'vitest';
 
-import { devlog } from '../../utils/logger.js';
-import { resolveConfig } from '../../utils/resolve-config.js';
-import { spyOnConsole, spyOnProcess } from '../spec-utils.js';
+import { devlog } from '../../utils/logger';
+import { resolveConfig } from '../../utils/resolve-config';
+import { spyOnConsole, spyOnProcess } from '../spec-utils';
 
 const project = vi.hoisted(() => ({ sourceRoot: 'apps/web/src' }));
 
-vi.mock('../../utils/resolve-project-base-path.js', () => ({
+vi.mock('../../utils/resolve-project-base-path', () => ({
   resolveProjectBasePath: () => ({ projectBasePath: project.sourceRoot }),
 }));
 
-vi.mock('../../utils/logger.js', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('../../utils/logger.js')>()),
+vi.mock('../../utils/logger', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../../utils/logger')>()),
   devlog: vi.fn(),
 }));
 

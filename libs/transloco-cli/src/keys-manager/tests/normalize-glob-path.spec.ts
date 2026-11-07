@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { sync as globSync } from 'glob';
 
-import { normalizedGlob } from '../utils/normalize-glob-path.js';
+import { normalizedGlob } from '../utils/normalize-glob-path';
 
 vi.mock('glob', () => ({ sync: vi.fn() }));
 

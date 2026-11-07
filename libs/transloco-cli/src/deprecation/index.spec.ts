@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { type LegacyBin, warnDeprecatedBin } from './index.js';
+import { type LegacyBin, warnDeprecatedBin } from './index';
 
 describe('warnDeprecatedBin', () => {
   const originalNoDeprecation = process.noDeprecation;

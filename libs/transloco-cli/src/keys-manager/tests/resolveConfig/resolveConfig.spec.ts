@@ -12,22 +12,22 @@ import {
   it,
 } from 'vitest';
 
-import { defaultConfig as _defaultConfig } from '../../config.js';
-import { messages } from '../../messages.js';
-import { spyOnConsole, spyOnProcess } from '../spec-utils.js';
-import { resolveConfig } from '../../utils/resolve-config.js';
-import { resolveProjectBasePath } from '../../utils/resolve-project-base-path.js';
+import { defaultConfig as _defaultConfig } from '../../config';
+import { messages } from '../../messages';
+import { spyOnConsole, spyOnProcess } from '../spec-utils';
+import { resolveConfig } from '../../utils/resolve-config';
+import { resolveProjectBasePath } from '../../utils/resolve-project-base-path';
 
 const sourceRoot = 'libs/transloco-cli/src/keys-manager/tests/resolveConfig';
 let mockedGlobalConfig = {};
 
-vi.mock('../../utils/resolve-project-base-path.js', () => ({
+vi.mock('../../utils/resolve-project-base-path', () => ({
   resolveProjectBasePath: vi.fn().mockReturnValue({
     projectBasePath: 'libs/transloco-cli/src/keys-manager/tests/resolveConfig',
   }),
 }));
 
-vi.mock('../../../config/index.js', () => ({
+vi.mock('../../../config', () => ({
   getGlobalConfig: () => mockedGlobalConfig,
   searchGlobalConfig: () => ({ config: mockedGlobalConfig }),
 }));

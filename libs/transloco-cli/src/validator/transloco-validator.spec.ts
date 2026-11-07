@@ -4,7 +4,7 @@ import path from 'node:path';
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
-import validator from './transloco-validator.js';
+import validator from './transloco-validator';
 
 const BOM = '\uFEFF';
 

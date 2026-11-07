@@ -1,4 +1,4 @@
-import { addScripts, parseManifest } from './manifest.js';
+import { addScripts, parseManifest } from './manifest';
 
 export const configFileName = 'transloco.config.ts';
 export const manifestFileName = 'package.json';

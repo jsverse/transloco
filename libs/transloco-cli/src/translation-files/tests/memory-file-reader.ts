@@ -1,6 +1,6 @@
 import { posix } from 'node:path';
 
-import type { PlannedFile, TranslationFileReader } from '../shared.js';
+import type { PlannedFile, TranslationFileReader } from '../shared';
 
 /** The files by path, with the content they hold. */
 export type MemoryFiles = Record<string, string>;

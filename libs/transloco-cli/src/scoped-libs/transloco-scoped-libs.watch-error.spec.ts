@@ -27,7 +27,7 @@ vi.mock('chokidar', async () => {
   return { default: { watch } };
 });
 
-import run from './transloco-scoped-libs.js';
+import run from './transloco-scoped-libs';
 
 describe('Scoped libs watcher errors', () => {
   const originalCwd = process.cwd();

@@ -1,11 +1,11 @@
 import { flatten, unflatten } from 'flat';
 import { po } from 'gettext-parser';
 
-import { getConfig } from '../../config.js';
-import { FileFormats, Translation } from '../../types.js';
-import { mergeDeep, stringify } from '../../utils/object.utils.js';
+import { getConfig } from '../../config';
+import { FileFormats, Translation } from '../../types';
+import { mergeDeep, stringify } from '../../utils/object.utils';
 
-import { removeExtraKeys } from './remove-extra-keys.js';
+import { removeExtraKeys } from './remove-extra-keys';
 
 interface CreateTranslationOptions {
   currentTranslation: Translation;

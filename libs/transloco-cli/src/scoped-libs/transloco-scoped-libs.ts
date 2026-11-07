@@ -4,9 +4,9 @@ import path from 'node:path';
 import { glob } from 'glob';
 import chokidar, { type FSWatcher } from 'chokidar';
 
-import { TranslocoGlobalConfig } from '../config/index.js';
-import { makeDir } from '../utils/file-system.js';
-import { style } from '../utils/style.js';
+import { TranslocoGlobalConfig } from '../config';
+import { makeDir } from '../utils/file-system';
+import { style } from '../utils/style';
 
 import {
   fromCwd,
@@ -15,14 +15,14 @@ import {
   isString,
   readJson,
   writeJson,
-} from './scoped-libs.utils.js';
+} from './scoped-libs.utils';
 import {
   CopyScopeOptions,
   CopyScopeTranslationsOptions,
   ScopedLib,
   ScopedLibsOptions,
   SetTranslationOptions,
-} from './scoped-libs.types.js';
+} from './scoped-libs.types';
 
 const libSrcExample = `
   e.g:

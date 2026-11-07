@@ -12,13 +12,13 @@ import {
   isLiteralMap,
 } from '@jsverse/angular-utils';
 
-import { ExtractorConfig, OrArray } from '../../types.js';
-import { addKey } from '../add-key.js';
-import { resolveAliasAndKey } from '../utils/resolvers.utils.js';
-import { coerceArray } from '../../utils/collection.utils.js';
-import { isString, notNil } from '../../utils/validators.utils.js';
+import { ExtractorConfig, OrArray } from '../../types';
+import { addKey } from '../add-key';
+import { resolveAliasAndKey } from '../utils/resolvers.utils';
+import { coerceArray } from '../../utils/collection.utils';
+import { isString, notNil } from '../../utils/validators.utils';
 
-import { TemplateExtractorConfig } from './types.js';
+import { TemplateExtractorConfig } from './types';
 import {
   isBlockNode,
   isBoundAttribute,
@@ -30,7 +30,7 @@ import {
   parseTemplate,
   resolveBlockChildNodes,
   resolveKeysFromLiteralMap,
-} from './utils.js';
+} from './utils';
 
 export function directiveExtractor(config: TemplateExtractorConfig) {
   const ast = parseTemplate(config);

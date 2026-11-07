@@ -308,7 +308,6 @@ if (boundary) {
           'node_modules',
           '@jsverse',
           'transloco-cli',
-          'src',
           'bin.js',
         ),
         GOLDEN_FILTER: 'boundary',

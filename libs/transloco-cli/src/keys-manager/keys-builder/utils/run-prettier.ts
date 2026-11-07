@@ -1,6 +1,6 @@
 import { writeFileSync } from 'node:fs';
 
-import { readFile } from '../../utils/file.utils.js';
+import { readFile } from '../../utils/file.utils';
 
 export async function runPrettier(filePaths: string[]) {
   try {

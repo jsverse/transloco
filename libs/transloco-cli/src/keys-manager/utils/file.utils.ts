@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync } from 'fs';
 
-import { stringify } from './object.utils.js';
+import { stringify } from './object.utils';
 
 export function readFile(file: string): string;
 export function readFile(file: string, config: { parse: false }): string;

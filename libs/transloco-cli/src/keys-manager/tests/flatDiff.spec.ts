@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { flatDiff } from '../keys-detective/flat-diff.js';
+import { flatDiff } from '../keys-detective/flat-diff';
 
 describe('flatDiff', () => {
   it('should report nothing when both maps have the same keys', () => {
