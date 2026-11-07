@@ -3,10 +3,10 @@ import nodePath from 'node:path';
 import fs from 'fs-extra';
 import { expect, vi } from 'vitest';
 
-import { Config } from '../types.js';
-import { getCurrentTranslation } from '../keys-builder/utils/get-current-translation.js';
+import { Config } from '../types';
+import { getCurrentTranslation } from '../keys-builder/utils/get-current-translation';
 
-import { sourceRoot } from './buildTranslationFiles/build-translation-utils.js';
+import { sourceRoot } from './buildTranslationFiles/build-translation-utils';
 
 export function noop() {}
 
@@ -19,7 +19,7 @@ export function spyOnProcess(method: 'exit') {
 }
 
 export function mockResolveProjectBasePath(projectBasePath: string) {
-  vi.doMock('../utils/resolve-project-base-path.js', () => ({
+  vi.doMock('../utils/resolve-project-base-path', () => ({
     resolveProjectBasePath: vi.fn().mockReturnValue({ projectBasePath }),
   }));
 }

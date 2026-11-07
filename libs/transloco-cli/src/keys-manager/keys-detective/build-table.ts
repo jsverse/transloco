@@ -1,10 +1,10 @@
 import chalk from 'chalk';
 import Table from 'cli-table3';
 
-import { messages } from '../messages.js';
-import { getLogger } from '../utils/logger.js';
+import { messages } from '../messages';
+import { getLogger } from '../utils/logger';
 
-import { mapDiffToKeys } from './map-diff-to-keys.js';
+import { mapDiffToKeys } from './map-diff-to-keys';
 
 type Params = {
   addMissingKeys: boolean;

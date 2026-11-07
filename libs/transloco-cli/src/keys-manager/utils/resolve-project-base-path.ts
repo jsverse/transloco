@@ -3,13 +3,13 @@ import path from 'path';
 import chalk from 'chalk';
 import { cosmiconfigSync } from 'cosmiconfig';
 
-import { ProjectType } from '../config.js';
+import { ProjectType } from '../config';
 
-import { coerceArray } from './collection.utils.js';
-import { readFile } from './file.utils.js';
-import { jsoncParser } from './json.utils.js';
-import { isString } from './validators.utils.js';
-import { normalizedGlob } from './normalize-glob-path.js';
+import { coerceArray } from './collection.utils';
+import { readFile } from './file.utils';
+import { jsoncParser } from './json.utils';
+import { isString } from './validators.utils';
+import { normalizedGlob } from './normalize-glob-path';
 
 const angularConfigFile = ['angular.json', '.angular.json'];
 const workspaceConfigFile = 'workspace.json';

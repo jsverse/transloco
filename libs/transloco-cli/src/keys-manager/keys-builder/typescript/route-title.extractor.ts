@@ -1,10 +1,10 @@
 import ts, { SourceFile } from 'typescript';
 
-import { Scopes } from '../../types.js';
-import { findDescendants } from '../../utils/ts-ast.utils.js';
-import { resolveAliasAndKey } from '../utils/resolvers.utils.js';
+import { Scopes } from '../../types';
+import { findDescendants } from '../../utils/ts-ast.utils';
+import { resolveAliasAndKey } from '../utils/resolvers.utils';
 
-import { TSExtractorResult } from './types.js';
+import { TSExtractorResult } from './types';
 
 const LOCATOR_PROPERTIES = new Set(['path', 'matcher']);
 const SHAPER_PROPERTIES = new Set([

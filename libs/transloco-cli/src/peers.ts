@@ -1,7 +1,7 @@
 import { createRequire } from 'node:module';
 
-import { CliError } from './errors.js';
-import { readPackageJson } from './package-info.js';
+import { CliError } from './errors';
+import { readPackageJson } from './package-info';
 
 /**
  * Only the keys manager needs these, so the package marks them as optional

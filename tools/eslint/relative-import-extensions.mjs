@@ -1,21 +1,21 @@
 /**
  * For the deprecated shims of `@jsverse/transloco-cli` (keys-manager,
- * validator, optimize and scoped-libs): ES modules that build with
- * `module: esnext` + `moduleResolution: bundler` instead of the CLI's
- * `nodenext`.
+ * validator, optimize and scoped-libs): ES modules that `@nx/js:tsc` builds
+ * file by file, with `module: esnext` + `moduleResolution: bundler`, and that
+ * Node.js runs as built. The CLI itself is bundled, so its sources don't need
+ * this.
  *
- * `@nx/js:tsc` maps `@jsverse/transloco-cli` to its dist folder for them, and
- * from an ES module TypeScript 5.9 can't resolve that under `nodenext`: the
- * `internal/*` entries end in a Debug Failure and the root entry stays
- * unresolved. Under `bundler` it resolves, but TypeScript no longer insists on
- * the extension of a relative import, while Node.js runs the output as it is
- * and fails on an import without one. This rule takes that check over.
+ * `@nx/js:tsc` maps `@jsverse/transloco-cli` to its dist folder for them, a
+ * mapping TypeScript doesn't resolve under `nodenext`, so they can't use it.
+ * Under `bundler` it resolves, but TypeScript no longer insists on the
+ * extension of a relative import, while Node.js fails on an import without
+ * one. This rule takes that check over.
  */
 const relative = '/^\\.\\.?(\\x2F|$)/';
 const withExtension = '/\\.(m?js|json)$/';
 
 const message =
-  "A relative import needs its file extension ('./file.js'). This package is an ES module that Node.js runs as built, and its build no longer checks it (moduleResolution: bundler).";
+  "A relative import needs its file extension ('./file.js'). This package is an ES module that Node.js runs as built, and its build doesn't check it (moduleResolution: bundler).";
 
 export const relativeImportExtensions = {
   files: ['**/*.ts', '**/*.mts'],

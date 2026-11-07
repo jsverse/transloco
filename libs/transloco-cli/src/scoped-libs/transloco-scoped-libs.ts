@@ -5,7 +5,7 @@ import { glob } from 'glob';
 import chokidar from 'chokidar';
 import { mkdirsSync } from 'fs-extra';
 
-import { TranslocoGlobalConfig } from '../config/index.js';
+import { TranslocoGlobalConfig } from '../config';
 
 import {
   cutPath,
@@ -14,14 +14,14 @@ import {
   isString,
   readJson,
   writeJson,
-} from './scoped-libs.utils.js';
+} from './scoped-libs.utils';
 import {
   CopyScopeOptions,
   CopyScopeTranslationsOptions,
   ScopedLib,
   ScopedLibsOptions,
   SetTranslationOptions,
-} from './scoped-libs.types.js';
+} from './scoped-libs.types';
 
 const libSrcExample = `
   e.g:

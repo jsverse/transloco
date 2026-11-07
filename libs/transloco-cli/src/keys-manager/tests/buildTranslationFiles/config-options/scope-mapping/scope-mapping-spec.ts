@@ -6,12 +6,9 @@ import {
   removeI18nFolder,
   sourceRoot,
   TranslationTestCase,
-} from '../../build-translation-utils.js';
-import {
-  generateKeys,
-  mockResolveProjectBasePath,
-} from '../../../spec-utils.js';
-import { Config } from '../../../../types.js';
+} from '../../build-translation-utils';
+import { generateKeys, mockResolveProjectBasePath } from '../../../spec-utils';
+import { Config } from '../../../../types';
 
 mockResolveProjectBasePath(sourceRoot);
 
@@ -20,8 +17,7 @@ mockResolveProjectBasePath(sourceRoot);
  * This thing is still in WIP at Jest, so keep an eye on it.
  * @see https://jestjs.io/docs/ecmascript-modules#module-mocking-in-esm
  */
-const { buildTranslationFiles } =
-  await import('../../../../keys-builder/index.js');
+const { buildTranslationFiles } = await import('../../../../keys-builder');
 
 export function testScopeMappingConfig(fileFormat: Config['fileFormat']) {
   describe('Scope mapping', () => {

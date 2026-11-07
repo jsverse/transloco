@@ -6,14 +6,14 @@ import {
   removeI18nFolder,
   sourceRoot,
   TranslationTestCase,
-} from '../../build-translation-utils.js';
+} from '../../build-translation-utils';
 import {
   generateKeys,
   mockResolveProjectBasePath,
   paramsTestConfig,
   resolveValueWithParams,
-} from '../../../spec-utils.js';
-import { Config } from '../../../../types.js';
+} from '../../../spec-utils';
+import { Config } from '../../../../types';
 
 mockResolveProjectBasePath(sourceRoot);
 
@@ -22,8 +22,7 @@ mockResolveProjectBasePath(sourceRoot);
  * This thing is still in WIP at Jest, so keep an eye on it.
  * @see https://jestjs.io/docs/ecmascript-modules#module-mocking-in-esm
  */
-const { buildTranslationFiles } =
-  await import('../../../../keys-builder/index.js');
+const { buildTranslationFiles } = await import('../../../../keys-builder');
 
 export function testPureFunctionExtraction(fileFormat: Config['fileFormat']) {
   describe('pure-function', () => {

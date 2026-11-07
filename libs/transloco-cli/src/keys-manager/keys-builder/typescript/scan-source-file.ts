@@ -6,7 +6,7 @@ import ts, {
   SourceFile,
 } from 'typescript';
 
-import { hasDescendant, isNamed, nameText } from '../../utils/ts-ast.utils.js';
+import { hasDescendant, isNamed, nameText } from '../../utils/ts-ast.utils';
 
 /**
  * Everything the TS extractors need, collected in a single walk of the AST so
