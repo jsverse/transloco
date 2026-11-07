@@ -3,6 +3,7 @@ import commandLineArgs from 'command-line-args';
 import commandLineUsage from 'command-line-usage';
 import { warnDeprecatedBin } from '@jsverse/transloco-cli/internal/deprecation';
 import {
+  allowUnknownProject,
   buildTranslationFiles,
   Config,
   findMissingKeys,
@@ -23,6 +24,8 @@ try {
 }
 
 warnDeprecatedBin('transloco-keys-manager', action);
+// v8 warned about a project it can't find and went on with `src`
+allowUnknownProject();
 
 const mainDefinitions = [{ name: 'command', defaultOption: true }];
 

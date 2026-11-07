@@ -1,0 +1,6 @@
+{
+  "description": "GIVEN an Nx workspace without a root project WHEN extract runs without --project THEN it exits with 1, nothing is written and it says to pass --project, naming the projects",
+  "args": ["extract"],
+  "exitCode": 1,
+  "snapshot": ["stdout", "stderr"]
+}

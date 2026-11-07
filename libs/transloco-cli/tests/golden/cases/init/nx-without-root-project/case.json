@@ -1,0 +1,6 @@
+{
+  "description": "GIVEN an Nx workspace without a root project WHEN init runs with --yes THEN it says to run extract with --project and the name of the project",
+  "args": ["init", "--yes", "--no-scripts"],
+  "exitCode": 0,
+  "snapshot": ["stdout", "stderr"]
+}
