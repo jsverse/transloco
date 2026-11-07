@@ -1,0 +1,6 @@
+{
+  "description": "GIVEN the languages typed as a list with a comma and a space WHEN the keys are extracted THEN it is rejected with an example holding every language, nothing is written and it exits with 1",
+  "args": ["extract", "--langs", "en,", "es"],
+  "exitCode": 1,
+  "snapshot": ["stdout", "stderr"]
+}

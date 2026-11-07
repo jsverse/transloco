@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN a config given with --config that throws when it is loaded WHEN the keys are extracted THEN the error names the file in one line, nothing is written and it exits with 1",
+  "args": [
+    "extract",
+    "--config",
+    "custom.js"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stderr"
+  ]
+}

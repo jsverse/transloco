@@ -1,0 +1,6 @@
+{
+  "description": "GIVEN the languages typed as a list with a comma and a space WHEN init runs with --yes THEN it is refused with a command holding every language, and nothing is written",
+  "args": ["init", "--yes", "--langs", "en,", "es"],
+  "exitCode": 1,
+  "snapshot": ["stdout", "stderr"]
+}
