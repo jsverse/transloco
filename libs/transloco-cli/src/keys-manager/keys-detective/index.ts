@@ -1,3 +1,4 @@
+import { style } from '../../utils/style';
 import { setConfig } from '../config';
 import { buildKeys } from '../keys-builder/build-keys';
 import { messages } from '../messages';
@@ -24,7 +25,7 @@ export function findMissingKeys(inlineConfig: Config) {
     return;
   }
 
-  logger.log('\n 🕵 🔎', `\x1b[4m${messages.startSearch}\x1b[0m`, '🔍 🕵\n');
+  logger.log('\n 🕵 🔎', style('underline', messages.startSearch), '🔍 🕵\n');
   logger.startSpinner(`${messages.extract} `);
 
   const result = buildKeys(config);

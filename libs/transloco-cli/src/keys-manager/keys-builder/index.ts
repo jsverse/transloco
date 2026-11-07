@@ -1,3 +1,4 @@
+import { style } from '../../utils/style';
 import { setConfig } from '../config';
 import { messages } from '../messages';
 import { Config } from '../types';
@@ -15,8 +16,7 @@ export async function buildTranslationFiles(inlineConfig: Config) {
   setConfig(config);
 
   logger.log(
-    '\x1b[4m%s\x1b[0m',
-    `\n${messages.startBuild(config.langs.length)} 👷🏗\n`,
+    style('underline', `\n${messages.startBuild(config.langs.length)} 👷🏗\n`),
   );
   logger.startSpinner(`${messages.extract} 🗝`);
 
@@ -30,11 +30,7 @@ export async function buildTranslationFiles(inlineConfig: Config) {
     keysFound += countKeys(scopeKeys as object);
   }
 
-  logger.log(
-    '\x1b[34m%s\x1b[0m',
-    'ℹ',
-    messages.keysFound(keysFound, fileCount),
-  );
+  logger.log(style('blue', 'ℹ', messages.keysFound(keysFound, fileCount)));
 
   await createTranslationFiles({
     scopeToKeys,

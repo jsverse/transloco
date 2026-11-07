@@ -175,7 +175,12 @@ describe('options of the other command in the config file', () => {
     output: string[],
   ) {
     expect(printers['console.warn']).not.toHaveBeenCalled();
-    expect(printers['console.error']).not.toHaveBeenCalled();
+    // The fixtures have no workspace config, which is noted on stderr
+    expect(
+      printers['console.error'].mock.calls
+        .flat()
+        .filter((text) => !String(text).includes('Unable to load workspace')),
+    ).toEqual([]);
     expect(
       output.filter((text) =>
         otherCommandOptions[command].some((option) => text.includes(option)),

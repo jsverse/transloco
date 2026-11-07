@@ -12,6 +12,7 @@
   ],
   "compilerOptions": {
     "moduleResolution": "nodenext",
+    "importHelpers": false,
     "strict": true
   }
 }
