@@ -1,0 +1,2 @@
+Unable to load workspace config from angular.json, .angular.json, workspace.json, project.json. Defaulting source root to 'src'
+Transloco: could not load the config transloco.config.js: boom at import

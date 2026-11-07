@@ -1,0 +1,1 @@
+Transloco: the project 'nope' was not found in angular.json, .angular.json, workspace.json or any project.json. The projects of the workspace are: app.

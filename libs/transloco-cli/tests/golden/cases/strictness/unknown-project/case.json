@@ -1,0 +1,6 @@
+{
+  "description": "GIVEN an Angular workspace WHEN extract runs with --project naming a project it doesn't have THEN it is rejected naming the projects there are, nothing is written and it exits with 1",
+  "args": ["extract", "--project", "nope"],
+  "exitCode": 1,
+  "snapshot": ["stdout", "stderr"]
+}

@@ -4,3 +4,4 @@ export { buildTranslationFiles } from './keys-builder';
 export { findMissingKeys } from './keys-detective';
 export type { Config } from './types';
 export { warnUnsupportedOptions } from './utils/warn-unsupported-options';
+export { allowUnknownProject } from './utils/resolve-project-base-path';

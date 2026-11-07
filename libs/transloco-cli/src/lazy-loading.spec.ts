@@ -280,6 +280,7 @@ describe('lazy loading', () => {
         'commands/join',
         'commands/translation-folders',
         'config/index',
+        'config/load-error',
         'config/transloco-utils',
         'cosmiconfig',
         'translation-files/index',
@@ -312,6 +313,7 @@ describe('lazy loading', () => {
         'commands/split',
         'commands/translation-folders',
         'config/index',
+        'config/load-error',
         'config/transloco-utils',
         'cosmiconfig',
         'translation-files/index',
@@ -320,6 +322,7 @@ describe('lazy loading', () => {
         'translation-files/shared',
         'translation-files/split',
         'utils/file-system',
+        'utils/real-path',
       ]);
     });
   });
@@ -381,6 +384,7 @@ describe('lazy loading', () => {
         'commands/migrate-angular-i18n',
         'commands/translation-folders',
         'config/index',
+        'config/load-error',
         'config/transloco-utils',
         'cosmiconfig',
         'glob',
@@ -394,6 +398,7 @@ describe('lazy loading', () => {
         'translation-files/shared',
         'translation-files/split',
         'utils/file-system',
+        'utils/real-path',
         'utils/style',
       ]);
     });
@@ -409,15 +414,29 @@ describe('lazy loading', () => {
     const initModules = [
       'commands/init',
       'config/index',
+      'config/load-error',
       'config/transloco-utils',
       'cosmiconfig',
+      'glob',
+      'init/apply',
       'init/manifest',
       'init/plan',
+      'init/translations-path',
       'init/unreadable-config',
       'init/validation',
       'jsonc-parser',
+      'keys-manager/config',
+      'keys-manager/utils/collection.utils',
+      'keys-manager/utils/file.utils',
+      'keys-manager/utils/json.utils',
+      'keys-manager/utils/normalize-glob-path',
+      'keys-manager/utils/object.utils',
+      'keys-manager/utils/path.utils',
+      'keys-manager/utils/resolve-project-base-path',
+      'keys-manager/utils/validators.utils',
       'utils/file-system',
       'utils/real-path',
+      'utils/style',
     ];
 
     function setTerminal(value: boolean) {

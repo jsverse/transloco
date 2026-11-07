@@ -68,11 +68,7 @@ const translationFolders: Allowed = {
 };
 const join: Allowed = {
   ...translationFolders,
-  files: [
-    ...translationFolders.files,
-    'chunks/commands/join.js',
-    'chunks/real-path.js',
-  ],
+  files: [...translationFolders.files, 'chunks/commands/join.js'],
 };
 const split: Allowed = {
   ...translationFolders,
@@ -126,10 +122,17 @@ const init: Allowed = {
     ...program.files,
     'chunks/commands/init.js',
     'chunks/file-system.js',
-    'chunks/real-path.js',
+    'chunks/resolve-project-base-path.js',
+    'chunks/style.js',
     'chunks/transloco-utils.js',
   ],
-  packages: [...program.packages, 'cosmiconfig', 'env-paths', 'jsonc-parser'],
+  packages: [
+    ...program.packages,
+    'cosmiconfig',
+    'env-paths',
+    'glob',
+    'jsonc-parser',
+  ],
 };
 
 /** `.../node_modules/@scope/name/lib/a.js` => `@scope/name`, for a pnpm store path as well. */
