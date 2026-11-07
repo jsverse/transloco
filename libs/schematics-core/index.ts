@@ -17,17 +17,8 @@ export {
 } from './utils/translation';
 
 export {
-  getTranslationEntryPaths,
-  getTranslationFiles,
-  getTranslationKey,
   getTranslationsRoot,
   createTranslateFilesFromOptions,
 } from './utils/translation';
-export {
-  hasFiles,
-  hasSubdirs,
-  getJsonFileContent,
-  writeToJson,
-} from './utils/file';
 export { NAMES } from './utils/schematic';
 export { findModuleFromOptions } from './utils/find-module';

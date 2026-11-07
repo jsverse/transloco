@@ -1,0 +1,15 @@
+{
+  "description": "GIVEN a root that does not exist WHEN the files are joined THEN stderr names the folder, nothing is written and it exits with 1",
+  "args": [
+    "join",
+    "--translations-path",
+    "src/nope",
+    "--default-lang",
+    "en"
+  ],
+  "exitCode": 1,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

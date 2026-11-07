@@ -1,0 +1,15 @@
+{
+  "description": "GIVEN joined files in another folder WHEN they are split with --source THEN that folder is read",
+  "args": [
+    "split",
+    "--translations-path",
+    "src/assets/i18n",
+    "--source",
+    "build/i18n"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

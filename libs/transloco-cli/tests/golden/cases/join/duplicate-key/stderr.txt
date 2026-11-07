@@ -1,0 +1,1 @@
+Transloco Join: The key "admin" is defined in both i18n/es.json and i18n/admin/es.json, rename one and run the command again.

@@ -1,0 +1,15 @@
+{
+  "description": "GIVEN a root holding a .gitkeep and a README next to the translation files WHEN the files are joined THEN only the JSON files are joined",
+  "args": [
+    "join",
+    "--translations-path",
+    "i18n",
+    "--default-lang",
+    "en"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

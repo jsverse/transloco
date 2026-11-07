@@ -209,4 +209,42 @@ describe('Join', () => {
       expect(tree.readContent('/dist-i18n/es.json')).toMatchSnapshot();
     });
   });
+  describe('deprecation and failures', () => {
+    it(`GIVEN a workspace with translation files
+        WHEN join schematic runs
+        THEN the deprecation warning is logged exactly once`, async () => {
+      const warnings: string[] = [];
+      const subscription = schematicRunner.logger.subscribe(
+        ({ level, message }) => {
+          if (level === 'warn') warnings.push(message);
+        },
+      );
+
+      await schematicRunner.runSchematic('join', options, appTree);
+      subscription.unsubscribe();
+
+      expect(warnings).toEqual([
+        'The "join" schematic is deprecated and will be removed in Transloco v10. Run "transloco join" from @jsverse/transloco-cli instead.',
+      ]);
+    });
+
+    it(`GIVEN a scope folder and a root key of the same name
+        WHEN join schematic runs
+        THEN the run is rejected with the message of the duplicate key`, async () => {
+      appTree.overwrite(
+        'src/assets/i18n/es.json',
+        JSON.stringify({ scope: 'defined in the root' }),
+      );
+      appTree.create(
+        'src/assets/i18n/scope/es.json',
+        JSON.stringify(translationMocks.scopeEs),
+      );
+
+      await expect(
+        schematicRunner.runSchematic('join', options, appTree),
+      ).rejects.toThrow(
+        /^The key "scope" is defined in both .*es\.json and .*scope\/es\.json, rename one and run the command again\.$/,
+      );
+    });
+  });
 });
