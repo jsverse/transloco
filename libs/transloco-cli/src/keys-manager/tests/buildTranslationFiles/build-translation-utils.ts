@@ -24,7 +24,7 @@ export type TranslationTestCase =
   | 'ts-extraction/service'
   | 'ts-extraction/pure-function'
   | 'ts-extraction/marker'
-  | 'ts-extraction/marker-cli'
+  | 'ts-extraction/marker-mixed-import'
   | 'ts-extraction/signal'
   | 'ts-extraction/inline-template'
   | 'ts-extraction/route-title'

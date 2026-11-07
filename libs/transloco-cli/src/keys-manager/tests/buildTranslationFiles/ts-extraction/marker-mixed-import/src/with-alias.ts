@@ -1,7 +1,8 @@
-import { marker } from '@jsverse/transloco-cli/marker';
+import { TranslocoPipe, marker as t } from '@jsverse/transloco';
 
 @Component({
   selector: 'bla-bla',
+  imports: [TranslocoPipe],
   template: `
     <table>
       <tr>
@@ -17,10 +18,10 @@ import { marker } from '@jsverse/transloco-cli/marker';
     </table>
   `,
 })
-export class Basic {
+export class TableComponent {
   data = [
-    { username: 'alex', password: '12345678' },
-    { username: 'bob', password: 'password' },
+    { username4: 'alex', password4: '12345678' },
+    { username4: 'bob', password4: 'password' },
   ];
-  displayedColumns = [marker('username'), marker('password')];
+  displayedColumns = [t('username4'), t('password4')];
 }

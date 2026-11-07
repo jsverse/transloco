@@ -1,5 +1,4 @@
-import { marker } from '@jsverse/transloco-cli/marker';
-import { provideTranslocoScope } from '@jsverse/transloco';
+import { marker, provideTranslocoScope } from '@jsverse/transloco';
 
 @Component({
   selector: 'marker-with-scope-test',
