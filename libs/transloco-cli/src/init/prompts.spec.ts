@@ -23,7 +23,7 @@ import {
   endPrompts,
   reportStep,
   startPrompts,
-} from './prompts.js';
+} from './prompts';
 
 describe('askInit', () => {
   const context = (overrides: Partial<AskContext> = {}): AskContext => ({

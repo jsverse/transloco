@@ -1,8 +1,8 @@
-import { isNamed, resolveImportedNames } from '../../utils/ts-ast.utils.js';
+import { isNamed, resolveImportedNames } from '../../utils/ts-ast.utils';
 
-import { buildKeysFromCall } from './build-keys-from-call.js';
-import { SourceFileScan } from './scan-source-file.js';
-import { TSExtractorResult } from './types.js';
+import { buildKeysFromCall } from './build-keys-from-call';
+import { SourceFileScan } from './scan-source-file';
+import { TSExtractorResult } from './types';
 
 // The CLI's `/marker` subpath, plus the two paths of the package it replaced.
 // Only the subpath of the CLI: its root exports no `marker`.

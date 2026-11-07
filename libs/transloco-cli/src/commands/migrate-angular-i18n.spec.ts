@@ -4,12 +4,12 @@ import path from 'node:path';
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { CliError } from '../errors.js';
+import { CliError } from '../errors';
 
 import {
   runMigrateAngularI18n,
   type MigrateAngularI18nCommandOptions,
-} from './migrate-angular-i18n.js';
+} from './migrate-angular-i18n';
 
 describe('runMigrateAngularI18n', () => {
   const originalCwd = process.cwd();

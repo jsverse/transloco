@@ -1,6 +1,6 @@
 import { existsSync } from 'node:fs';
 
-import { CliError } from '../errors.js';
+import { CliError } from '../errors';
 
 /**
  * Fails when the `--config` that was typed points at nothing.

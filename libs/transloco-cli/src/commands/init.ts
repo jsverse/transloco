@@ -1,16 +1,16 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { searchGlobalConfig } from '../config/index.js';
-import { ConfigLoadError } from '../config/load-error.js';
-import { CliError } from '../errors.js';
+import { searchGlobalConfig } from '../config';
+import { ConfigLoadError } from '../config/load-error';
+import { CliError } from '../errors';
 import {
   describeProjects,
   listProjects,
   resolveProjectBasePath,
-} from '../keys-manager/utils/resolve-project-base-path.js';
-import { applySteps } from '../init/apply.js';
-import { parseManifest } from '../init/manifest.js';
+} from '../keys-manager/utils/resolve-project-base-path';
+import { applySteps } from '../init/apply';
+import { parseManifest } from '../init/manifest';
 import {
   configFileName,
   defaultLangs,
@@ -19,17 +19,17 @@ import {
   manifestFileName,
   planInit,
   translationFile,
-} from '../init/plan.js';
-import { detectTranslationsPath } from '../init/translations-path.js';
-import { findUnreadableConfig } from '../init/unreadable-config.js';
+} from '../init/plan';
+import { detectTranslationsPath } from '../init/translations-path';
+import { findUnreadableConfig } from '../init/unreadable-config';
 import {
   languageProblem,
   parseLanguages,
   specialFileProblem,
   translationsPathProblem,
   writeProblem,
-} from '../init/validation.js';
-import { contains, lstat } from '../utils/real-path.js';
+} from '../init/validation';
+import { contains, lstat } from '../utils/real-path';
 
 const name = 'Init';
 const cancelledExitCode = 130;
@@ -117,7 +117,7 @@ export async function runInit({
   }
 
   // Only now is the library loaded, as nothing before this asks anything
-  const ui = await import('../init/prompts.js');
+  const ui = await import('../init/prompts');
 
   ui.startPrompts();
 

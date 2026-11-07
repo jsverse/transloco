@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { removeExtraKeys } from '../keys-builder/utils/remove-extra-keys.js';
+import { removeExtraKeys } from '../keys-builder/utils/remove-extra-keys';
 
 describe('removeExtraKeys', () => {
   describe('when both sides share the same shape', () => {

@@ -1,4 +1,4 @@
-import type { MatcherDef } from './migration-matchers.js';
+import type { MatcherDef } from './migration-matchers';
 
 /** Replaces every match of the matcher in the content. */
 export function applyMatcher(content: string, { from, to }: MatcherDef) {

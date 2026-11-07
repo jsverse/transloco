@@ -11,8 +11,9 @@
     }
   ],
   "compilerOptions": {
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
     "importHelpers": false,
     "strict": true,
     "lib": ["dom", "es2022"]

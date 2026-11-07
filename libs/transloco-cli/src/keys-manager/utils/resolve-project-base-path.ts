@@ -7,16 +7,16 @@ import {
   assertExplorerCanBeMade,
   assertRegularFile,
   assertSearchPlacesAreFiles,
-} from '../../config/load-error.js';
-import { CliError } from '../../errors.js';
-import { styleError } from '../../utils/style.js';
-import { ProjectType } from '../config.js';
+} from '../../config/load-error';
+import { CliError } from '../../errors';
+import { styleError } from '../../utils/style';
+import { ProjectType } from '../config';
 
-import { coerceArray } from './collection.utils.js';
-import { readFile } from './file.utils.js';
-import { jsoncParser } from './json.utils.js';
-import { isString } from './validators.utils.js';
-import { normalizedGlob } from './normalize-glob-path.js';
+import { coerceArray } from './collection.utils';
+import { readFile } from './file.utils';
+import { jsoncParser } from './json.utils';
+import { isString } from './validators.utils';
+import { normalizedGlob } from './normalize-glob-path';
 
 const angularConfigFile = ['angular.json', '.angular.json'];
 const workspaceConfigFile = 'workspace.json';

@@ -4,7 +4,7 @@ import path from 'node:path';
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
-import { readFile } from '../utils/file.utils.js';
+import { readFile } from '../utils/file.utils';
 
 const BOM = '\uFEFF';
 

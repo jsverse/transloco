@@ -3,4 +3,4 @@ export {
   getTranslationsFolder,
   getTranslationFiles,
   optimizeFiles,
-} from './transloco-optimize.js';
+} from './transloco-optimize';
