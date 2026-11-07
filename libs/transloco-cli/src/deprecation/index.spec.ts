@@ -34,7 +34,7 @@ describe('warnDeprecatedBin', () => {
       warnDeprecatedBin(bin, command);
 
       expect(write).toHaveBeenCalledExactlyOnceWith(
-        `DeprecationWarning: ${bin} is deprecated and will be removed in Transloco v10. Run "${replacement}" from @jsverse/transloco-cli instead.\n`,
+        `${bin} will be deprecated in Transloco v10. Run "${replacement}" from @jsverse/transloco-cli instead.\n`,
       );
     },
   );

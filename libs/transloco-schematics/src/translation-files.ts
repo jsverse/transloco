@@ -43,4 +43,4 @@ const replacements = {
 };
 
 export const deprecationWarning = (name: keyof typeof replacements) =>
-  `The "${name}" schematic is deprecated and will be removed in Transloco v10. Run "transloco ${replacements[name]}" from @jsverse/transloco-cli instead.`;
+  `The "${name}" schematic will be deprecated in Transloco v10. Run "transloco ${replacements[name]}" from @jsverse/transloco-cli instead.`;
