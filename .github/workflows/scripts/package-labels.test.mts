@@ -55,6 +55,15 @@ describe('packageLabelsFor', () => {
       ]);
     });
 
+    it(`GIVEN the dropdown names the CLI
+        WHEN the labels are derived
+        THEN returns the cli label`, () => {
+      const result = packageLabelsFor(bodyAnswering('Transloco, CLI'));
+
+      assert.deepStrictEqual(result.labels, ['transloco', 'cli']);
+      assert.deepStrictEqual(result.unknown, []);
+    });
+
     it(`GIVEN the answer is padded with surrounding whitespace
         WHEN the labels are derived
         THEN still matches the options`, () => {
@@ -72,6 +81,14 @@ describe('packageLabelsFor', () => {
       );
 
       assert.deepStrictEqual(result.labels, ['messageformat']);
+    });
+
+    it(`GIVEN a reporter typed the npm package name of the CLI
+        WHEN the labels are derived
+        THEN resolves it to the cli label`, () => {
+      const result = packageLabelsFor(bodyAnswering('@jsverse/transloco-cli'));
+
+      assert.deepStrictEqual(result.labels, ['cli']);
     });
 
     it(`GIVEN the body uses CRLF line endings
