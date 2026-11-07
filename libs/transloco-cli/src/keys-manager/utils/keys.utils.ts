@@ -1,8 +1,8 @@
-import { style } from '../../utils/style.js';
-import { messages } from '../messages.js';
+import { style } from '../../utils/style';
+import { messages } from '../messages';
 
-import { getLogger } from './logger.js';
-import { isObject } from './validators.utils.js';
+import { getLogger } from './logger';
+import { isObject } from './validators.utils';
 
 export function countKeys(obj: Record<string, any>): number {
   return Object.keys(obj).reduce(

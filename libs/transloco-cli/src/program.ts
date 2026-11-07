@@ -6,8 +6,8 @@ import {
   Option,
 } from '@commander-js/extra-typings';
 
-import type { Config } from './keys-manager/types.js';
-import { readPackageJson } from './package-info.js';
+import type { Config } from './keys-manager/types';
+import { readPackageJson } from './package-info';
 
 const helpShort = '-h';
 const helpLong = '--help';
@@ -98,7 +98,7 @@ export function createProgram() {
       'Remove extra keys from existing translation files',
     )
     .action(async (options) => {
-      const { runExtract } = await import('./commands/extract.js');
+      const { runExtract } = await import('./commands/extract');
 
       await runExtract(toKeysManagerConfig('extract', options));
     });
@@ -120,7 +120,7 @@ export function createProgram() {
       'Emit an error and exit the process if extra keys were found (defaults to `false`)',
     )
     .action(async (options) => {
-      const { runFind } = await import('./commands/find.js');
+      const { runFind } = await import('./commands/find');
 
       await runFind(toKeysManagerConfig('find', options));
     });
@@ -133,7 +133,7 @@ export function createProgram() {
     .helpOption(helpFlags, helpDescription)
     .argument('<files...>', 'The translation files to validate')
     .action(async (files) => {
-      const { runValidate } = await import('./commands/validate.js');
+      const { runValidate } = await import('./commands/validate');
 
       runValidate(files);
     });
@@ -172,7 +172,7 @@ export function createProgram() {
           return command.error(`error: 'dist' cannot be empty`);
         }
 
-        const { runOptimize } = await import('./commands/optimize.js');
+        const { runOptimize } = await import('./commands/optimize');
 
         await runOptimize({ dist, commentsKey });
       },
@@ -191,7 +191,7 @@ export function createProgram() {
     )
     .option('-c, --config <path>', 'Path to a custom transloco config')
     .action(async (options) => {
-      const { runScopedLibs } = await import('./commands/scoped-libs.js');
+      const { runScopedLibs } = await import('./commands/scoped-libs');
 
       await runScopedLibs(options);
     });
@@ -221,7 +221,7 @@ export function createProgram() {
     )
     .option('-c, --config <path>', 'Path to a custom transloco config')
     .action(async (options) => {
-      const { runJoin } = await import('./commands/join.js');
+      const { runJoin } = await import('./commands/join');
 
       runJoin(options);
     });
@@ -241,7 +241,7 @@ export function createProgram() {
     )
     .option('-c, --config <path>', 'Path to a custom transloco config')
     .action(async (options) => {
-      const { runSplit } = await import('./commands/split.js');
+      const { runSplit } = await import('./commands/split');
 
       runSplit(options);
     });

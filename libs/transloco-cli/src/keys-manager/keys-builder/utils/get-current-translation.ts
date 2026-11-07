@@ -3,9 +3,9 @@ import fs from 'node:fs';
 import { unflatten } from 'flat';
 import { po } from 'gettext-parser';
 
-import { readJsonFile } from '../../../utils/file-system.js';
-import { getConfig } from '../../config.js';
-import { FileFormats, Translation } from '../../types.js';
+import { readJsonFile } from '../../../utils/file-system';
+import { getConfig } from '../../config';
+import { FileFormats, Translation } from '../../types';
 
 function parseJson(path: string): Translation {
   return readJsonFile(path, { throws: false }) || {};

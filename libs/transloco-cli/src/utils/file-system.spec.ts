@@ -9,7 +9,7 @@ import {
   outputFile,
   readJsonFile,
   writeJsonFile,
-} from './file-system.js';
+} from './file-system';
 
 describe('file system helpers', () => {
   const platform = process.platform;

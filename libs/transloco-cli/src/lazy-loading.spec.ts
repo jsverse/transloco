@@ -4,7 +4,7 @@ import path from 'node:path';
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { collectOutput } from './tests/program-harness.js';
+import { collectOutput } from './tests/program-harness';
 
 /**
  * Tripwires: a mock factory only runs when something imports its module, so
@@ -103,7 +103,7 @@ function nameOf(id: string) {
 
 /** Commander exits after printing the help or the version, here it throws instead. */
 async function run(...args: string[]) {
-  const { createProgram } = await import('./program.js');
+  const { createProgram } = await import('./program');
   const program = createProgram();
 
   collectOutput(program);
@@ -157,7 +157,7 @@ describe('lazy loading', () => {
   it(`GIVEN the program was only created
       WHEN nothing has run yet
       THEN no runner and none of their packages were loaded with it`, async () => {
-    const { createProgram } = await import('./program.js');
+    const { createProgram } = await import('./program');
 
     createProgram();
 

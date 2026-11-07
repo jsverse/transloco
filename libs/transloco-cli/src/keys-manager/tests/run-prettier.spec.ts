@@ -10,7 +10,7 @@ vi.mock('node:fs', async (importOriginal) => {
   };
 });
 
-vi.mock('../utils/file.utils.js', () => ({
+vi.mock('../utils/file.utils', () => ({
   readFile: vi.fn(() => '{"key": "value"}'),
 }));
 
@@ -32,8 +32,7 @@ describe('runPrettier', () => {
       format: vi.fn().mockResolvedValue('{ "key": "value" }\n'),
     }));
 
-    const { runPrettier } =
-      await import('../keys-builder/utils/run-prettier.js');
+    const { runPrettier } = await import('../keys-builder/utils/run-prettier');
     await runPrettier(['/path/to/file.json']);
 
     expect(mockWriteFileSync).toHaveBeenCalledWith(
@@ -48,8 +47,7 @@ describe('runPrettier', () => {
       format: vi.fn(),
     }));
 
-    const { runPrettier } =
-      await import('../keys-builder/utils/run-prettier.js');
+    const { runPrettier } = await import('../keys-builder/utils/run-prettier');
     await runPrettier(['/path/to/file.json']);
 
     expect(mockWriteFileSync).not.toHaveBeenCalled();
@@ -68,8 +66,7 @@ describe('runPrettier', () => {
       };
     });
 
-    const { runPrettier } =
-      await import('../keys-builder/utils/run-prettier.js');
+    const { runPrettier } = await import('../keys-builder/utils/run-prettier');
     await runPrettier(['/path/to/file.json']);
 
     expect(consoleSpy).not.toHaveBeenCalled();
@@ -83,8 +80,7 @@ describe('runPrettier', () => {
       format: vi.fn(),
     }));
 
-    const { runPrettier } =
-      await import('../keys-builder/utils/run-prettier.js');
+    const { runPrettier } = await import('../keys-builder/utils/run-prettier');
     await runPrettier(['/path/to/file.json']);
 
     expect(consoleSpy).toHaveBeenCalledWith(
@@ -100,8 +96,7 @@ describe('runPrettier', () => {
       format: vi.fn().mockResolvedValue('formatted'),
     }));
 
-    const { runPrettier } =
-      await import('../keys-builder/utils/run-prettier.js');
+    const { runPrettier } = await import('../keys-builder/utils/run-prettier');
     await runPrettier(['/path/a.json', '/path/b.json']);
 
     expect(mockWriteFileSync).toHaveBeenCalledTimes(2);

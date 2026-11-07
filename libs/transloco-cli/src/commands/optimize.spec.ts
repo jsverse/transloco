@@ -4,9 +4,9 @@ import path from 'node:path';
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { CliError } from '../errors.js';
+import { CliError } from '../errors';
 
-import { runOptimize } from './optimize.js';
+import { runOptimize } from './optimize';
 
 describe('runOptimize', () => {
   let dir: string;
