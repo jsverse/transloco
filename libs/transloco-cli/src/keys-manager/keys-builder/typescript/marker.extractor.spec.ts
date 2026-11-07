@@ -12,59 +12,64 @@ function extract(content: string) {
 const keysOf = (content: string) => extract(content).map(({ key }) => key);
 
 describe('markerExtractor', () => {
-  it.each([
-    '@jsverse/transloco-cli/marker',
-    '@jsverse/transloco-keys-manager/marker',
-    '@jsverse/transloco-keys-manager',
-  ])(
-    `GIVEN marker imported from '%s'
+  it(`GIVEN marker imported from @jsverse/transloco
       WHEN the keys are extracted
-      THEN the marked key is extracted`,
-    (specifier) => {
+      THEN the marked key is extracted`, () => {
+    const keys = keysOf(`
+      import { marker } from '@jsverse/transloco';
+      const key = marker('some.key');
+    `);
+
+    expect(keys).toEqual(['some.key']);
+  });
+
+  it(`GIVEN marker imported under an alias
+      WHEN the keys are extracted
+      THEN only the calls of the alias are extracted`, () => {
+    const keys = keysOf(`
+      import { marker as _ } from '@jsverse/transloco';
+      const keys = [_('aliased.key'), marker('plain.key')];
+    `);
+
+    expect(keys).toEqual(['aliased.key']);
+  });
+
+  it.each([
+    `import { TranslocoModule, marker } from '@jsverse/transloco';`,
+    `import { TranslocoModule, marker as m } from '@jsverse/transloco';`,
+    `import { marker as m, provideTranslocoScope, translate } from '@jsverse/transloco';`,
+  ])(
+    `GIVEN marker imported next to other names: %s
+      WHEN the keys are extracted
+      THEN the calls of marker are extracted`,
+    (declaration) => {
+      const name = declaration.includes('marker as m') ? 'm' : 'marker';
       const keys = keysOf(`
-        import { marker } from '${specifier}';
-        const key = marker('some.key');
+        ${declaration}
+        const keys = [${name}('a.key'), ${name}('b.key')];
       `);
 
-      expect(keys).toEqual(['some.key']);
+      expect(keys).toEqual(['a.key', 'b.key']);
     },
   );
 
-  it.each([
-    '@jsverse/transloco-cli/marker',
-    '@jsverse/transloco-keys-manager/marker',
-    '@jsverse/transloco-keys-manager',
-  ])(
-    `GIVEN marker imported under an alias from '%s'
-      WHEN the keys are extracted
-      THEN only the calls of the alias are extracted`,
-    (specifier) => {
-      const keys = keysOf(`
-        import { marker as _ } from '${specifier}';
-        const keys = [_('aliased.key'), marker('plain.key')];
-      `);
-
-      expect(keys).toEqual(['aliased.key']);
-    },
-  );
-
-  it(`GIVEN marker imported from both the old and the new specifier, one under an alias
+  it(`GIVEN marker imported twice, once under an alias
       WHEN the keys are extracted
       THEN the calls of both bindings are extracted`, () => {
     const keys = keysOf(`
-      import { marker } from '@jsverse/transloco-keys-manager';
-      import { marker as m } from '@jsverse/transloco-cli/marker';
-      const keys = [marker('old.key'), m('new.key')];
+      import { marker } from '@jsverse/transloco';
+      import { TranslocoService, marker as m } from '@jsverse/transloco';
+      const keys = [marker('plain.key'), m('aliased.key')];
     `);
 
-    expect(keys).toEqual(['old.key', 'new.key']);
+    expect(keys).toEqual(['plain.key', 'aliased.key']);
   });
 
-  it(`GIVEN a scope and a list of keys passed to marker from the CLI
+  it(`GIVEN a scope and a list of keys passed to marker
       WHEN the keys are extracted
       THEN the scope is read as the language slot and every key is extracted`, () => {
     const result = extract(`
-      import { marker } from '@jsverse/transloco-cli/marker';
+      import { marker } from '@jsverse/transloco';
       marker(['a', 'b'], undefined, 'scope');
     `);
 
@@ -74,42 +79,40 @@ describe('markerExtractor', () => {
     ]);
   });
 
-  it(`GIVEN a local marker function next to an import of something else from the CLI root
+  it(`GIVEN a local marker function next to an import of something else from @jsverse/transloco
       WHEN the keys are extracted
       THEN nothing is extracted`, () => {
     const keys = keysOf(`
-      import { getGlobalConfig } from '@jsverse/transloco-cli';
+      import { TranslocoModule } from '@jsverse/transloco';
 
       function marker(key: string) {
         return key;
       }
 
-      getGlobalConfig();
+      export const imports = [TranslocoModule];
       marker('not.a.key');
     `);
 
     expect(keys).toEqual([]);
   });
 
-  it(`GIVEN marker imported from the CLI root, which does not export it
+  it.each([
+    '@jsverse/transloco-keys-manager/marker',
+    '@jsverse/transloco-keys-manager',
+    '@jsverse/transloco-cli/marker',
+    '@jsverse/transloco-cli',
+    '@jsverse/transloco/router',
+  ])(
+    `GIVEN marker imported from '%s', which does not export it
       WHEN the keys are extracted
-      THEN nothing is extracted`, () => {
-    const keys = keysOf(`
-      import { marker } from '@jsverse/transloco-cli';
-      marker('not.a.key');
-    `);
+      THEN nothing is extracted`,
+    (specifier) => {
+      const keys = keysOf(`
+        import { marker } from '${specifier}';
+        marker('not.a.key');
+      `);
 
-    expect(keys).toEqual([]);
-  });
-
-  it(`GIVEN marker imported from another subpath of the CLI
-      WHEN the keys are extracted
-      THEN nothing is extracted`, () => {
-    const keys = keysOf(`
-      import { marker } from '@jsverse/transloco-cli/internal/keys-manager';
-      marker('not.a.key');
-    `);
-
-    expect(keys).toEqual([]);
-  });
+      expect(keys).toEqual([]);
+    },
+  );
 });

@@ -215,12 +215,12 @@ Nothing is written unless everything can be: before the first file is written `i
 ### marker
 
 ```ts
-import { marker } from '@jsverse/transloco-cli/marker';
+import { marker } from '@jsverse/transloco';
 
 const key = marker('dashboard.title');
 ```
 
-Marks a key for `extract` and `find` when it is not read by a translate call, and returns the key as it is. The optional second argument is not used, and the third is the scope of the key. `@jsverse/transloco-keys-manager/marker` still works and is deprecated.
+Marks a key for `extract` and `find` when it is not read by a translate call, and returns the key as it is. The optional second argument is not used, and the third is the scope of the key. `@jsverse/transloco-keys-manager/marker` was removed, and `ng update @jsverse/transloco` rewrites its imports to `@jsverse/transloco`.
 
 ### Replacing the old tools
 
@@ -235,7 +235,7 @@ The tools that `transloco` replaces are deprecated and keep working until Transl
 | `transloco-scoped-libs`                                                      | `transloco scoped-libs`                                                |
 | `join` and `split` schematics of `@jsverse/transloco-schematics`             | `transloco join` and `transloco split`                                 |
 | `ngx-migrate` and `ng-migrate` schematics of `@jsverse/transloco-schematics` | `transloco migrate ngx-translate` and `transloco migrate angular-i18n` |
-| `marker` of `@jsverse/transloco-keys-manager/marker`                         | `marker` of `@jsverse/transloco-cli/marker`                            |
+| `marker` of `@jsverse/transloco-keys-manager/marker`                         | `marker` of `@jsverse/transloco`                                       |
 | `getGlobalConfig` of `@jsverse/transloco-utils`                              | `getGlobalConfig` of `@jsverse/transloco-cli`                          |
 | `TranslocoGlobalConfig` of `@jsverse/transloco-utils`                        | `TranslocoGlobalConfig` of `@jsverse/transloco`                        |
 

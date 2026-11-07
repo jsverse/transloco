@@ -100,8 +100,6 @@ const recorded = [
   './commands/init.js',
   './commands/translation-folders.js',
   './peers.js',
-  // The entry applications bundle, which must never load anything
-  './marker.js',
   'find-duplicated-property-keys',
   'glob',
   'flat',

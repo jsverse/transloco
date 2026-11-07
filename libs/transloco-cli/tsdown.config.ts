@@ -38,7 +38,6 @@ export default defineConfig({
     'internal/scoped-libs': 'src/scoped-libs/index.ts',
     'internal/translation-files': 'src/translation-files/index.ts',
     'internal/validator': 'src/validator/index.ts',
-    marker: 'src/marker.ts',
   },
   outDir: '../../dist/libs/transloco-cli',
   tsconfig: 'tsconfig.lib.json',
