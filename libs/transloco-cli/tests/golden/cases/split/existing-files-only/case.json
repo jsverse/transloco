@@ -1,0 +1,13 @@
+{
+  "description": "GIVEN a scope folder with no file for a language and a root file of a language that was not joined WHEN they are split THEN no file is created and the other root file is left as it is",
+  "args": [
+    "split",
+    "--translations-path",
+    "i18n"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

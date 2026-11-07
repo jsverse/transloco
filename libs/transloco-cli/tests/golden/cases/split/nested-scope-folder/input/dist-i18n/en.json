@@ -1,0 +1,11 @@
+{
+  "hello": "Hello",
+  "admin": {
+    "title": "Admin"
+  },
+  "admin.audit": {
+    "log": {
+      "title": "Audit log"
+    }
+  }
+}

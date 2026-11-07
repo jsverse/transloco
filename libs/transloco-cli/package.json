@@ -41,6 +41,10 @@
     "./marker": {
       "types": "./marker.d.ts",
       "default": "./marker.js"
+    },
+    "./internal/translation-files": {
+      "types": "./internal/translation-files.d.ts",
+      "default": "./internal/translation-files.js"
     }
   },
   "main": "index.js",
