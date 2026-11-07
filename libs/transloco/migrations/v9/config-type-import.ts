@@ -300,7 +300,7 @@ export function migrateConfigTypeImport(): Rule {
 
     if (leftovers.length) {
       context.logger.warn(
-        `  ↳ '${PACKAGE}' is deprecated, and these files still use it in a way this migration cannot rewrite:\n` +
+        `  ↳ '${PACKAGE}' will be deprecated in Transloco v10, and these files still use it in a way this migration cannot rewrite:\n` +
           leftovers.map((path) => `    - ${path}`).join('\n') +
           `\n    Only ${TYPE_EXPORT} (now in '${TYPE_PACKAGE}') and ${READER_EXPORT} (now in '${READER_PACKAGE}') moved.` +
           ` '${TYPE_PACKAGE}' no longer installs the utils package, so add it to your package.json if it isn't listed there and these files stay.`,

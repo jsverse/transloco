@@ -2709,7 +2709,7 @@ describe('migration-v9', () => {
       await runner.runSchematic('migration-v9', {}, tree);
 
       expect(warnings.join('\n')).not.toContain(
-        'is deprecated, and these files',
+        'will be deprecated in Transloco v10, and these files',
       );
     });
   });
