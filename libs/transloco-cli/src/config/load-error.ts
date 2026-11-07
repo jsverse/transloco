@@ -4,8 +4,8 @@ import * as path from 'node:path';
 
 import { cosmiconfigSync, getDefaultSearchPlacesSync } from 'cosmiconfig';
 
-import { CliError } from '../errors.js';
-import { specialKind } from '../utils/real-path.js';
+import { CliError } from '../errors';
+import { specialKind } from '../utils/real-path';
 
 const moduleName = 'transloco';
 /** How cosmiconfig puts the file in front of the reason, when that file is JSON. */

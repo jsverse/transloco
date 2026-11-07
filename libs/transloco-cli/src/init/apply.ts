@@ -1,11 +1,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { CliError } from '../errors.js';
-import { outputFile } from '../utils/file-system.js';
-import { lstat } from '../utils/real-path.js';
+import { CliError } from '../errors';
+import { outputFile } from '../utils/file-system';
+import { lstat } from '../utils/real-path';
 
-import type { InitStep } from './plan.js';
+import type { InitStep } from './plan';
 
 /**
  * Does what each step is about, all or nothing: when a file can't be written,

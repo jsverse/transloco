@@ -12,7 +12,7 @@ import { join } from 'node:path';
 
 import { vi } from 'vitest';
 
-import run from './transloco-scoped-libs.js';
+import run from './transloco-scoped-libs';
 
 describe('Scoped libs in watch mode', () => {
   const originalCwd = process.cwd();

@@ -1,9 +1,9 @@
-import { getConfig } from '../config.js';
-import { BaseParams } from '../types.js';
-import { regexFactoryMap } from '../utils/regexs.utils.js';
+import { getConfig } from '../config';
+import { BaseParams } from '../types';
+import { regexFactoryMap } from '../utils/regexs.utils';
 
-import { addKey } from './add-key.js';
-import { resolveAliasAndKey } from './utils/resolvers.utils.js';
+import { addKey } from './add-key';
+import { resolveAliasAndKey } from './utils/resolvers.utils';
 
 interface ExtractCommentsParams extends BaseParams {
   content: string;

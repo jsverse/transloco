@@ -5,13 +5,13 @@ import path from 'node:path';
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { runInit } from '../commands/init.js';
-import { CliError } from '../errors.js';
-import { resolveConfig } from '../keys-manager/utils/resolve-config.js';
-import { refuseToOpenWhatIsNoFile } from '../tests/fifo-guard.js';
+import { runInit } from '../commands/init';
+import { CliError } from '../errors';
+import { resolveConfig } from '../keys-manager/utils/resolve-config';
+import { refuseToOpenWhatIsNoFile } from '../tests/fifo-guard';
 
-import { ConfigLoadError } from './load-error.js';
-import { getGlobalConfig, searchGlobalConfig } from './transloco-utils.js';
+import { ConfigLoadError } from './load-error';
+import { getGlobalConfig, searchGlobalConfig } from './transloco-utils';
 
 const notFile = (kind: string) => `it is not a regular file, it is ${kind}`;
 

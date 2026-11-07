@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
-import { parseTsSource } from '../../utils/ts-ast.utils.js';
+import { parseTsSource } from '../../utils/ts-ast.utils';
 
-import { markerExtractor } from './marker.extractor.js';
-import { scanSourceFile } from './scan-source-file.js';
+import { markerExtractor } from './marker.extractor';
+import { scanSourceFile } from './scan-source-file';
 
 function extract(content: string) {
   return markerExtractor(scanSourceFile(parseTsSource(content)));

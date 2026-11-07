@@ -4,9 +4,9 @@ import path from 'node:path';
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { CliError } from '../errors.js';
+import { CliError } from '../errors';
 
-import { runSplit, type SplitCommandOptions } from './split.js';
+import { runSplit, type SplitCommandOptions } from './split';
 
 describe('runSplit', () => {
   const originalCwd = process.cwd();

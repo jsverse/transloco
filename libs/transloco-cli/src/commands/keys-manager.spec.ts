@@ -3,11 +3,11 @@ import path from 'node:path';
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { CliError } from '../errors.js';
-import type { Config } from '../keys-manager/types.js';
+import { CliError } from '../errors';
+import type { Config } from '../keys-manager/types';
 
-import { runExtract } from './extract.js';
-import { runFind } from './find.js';
+import { runExtract } from './extract';
+import { runFind } from './find';
 
 const { assertKeysManagerPeers, buildTranslationFiles, findMissingKeys } =
   vi.hoisted(() => ({
@@ -16,11 +16,11 @@ const { assertKeysManagerPeers, buildTranslationFiles, findMissingKeys } =
     findMissingKeys: vi.fn(),
   }));
 
-vi.mock('../peers.js', () => ({ assertKeysManagerPeers }));
-vi.mock('../keys-manager/keys-builder/index.js', () => ({
+vi.mock('../peers', () => ({ assertKeysManagerPeers }));
+vi.mock('../keys-manager/keys-builder', () => ({
   buildTranslationFiles,
 }));
-vi.mock('../keys-manager/keys-detective/index.js', () => ({
+vi.mock('../keys-manager/keys-detective', () => ({
   findMissingKeys,
 }));
 

@@ -1,8 +1,8 @@
 import path from 'node:path';
 import fs from 'fs';
 
-import { readJsonFile, writeJsonFile } from '../utils/file-system.js';
-import { style } from '../utils/style.js';
+import { readJsonFile, writeJsonFile } from '../utils/file-system';
+import { style } from '../utils/style';
 
 export function toLinuxFormat(p: string) {
   return p.split(path.sep).join('/');

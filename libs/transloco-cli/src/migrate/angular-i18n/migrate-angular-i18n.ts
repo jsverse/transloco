@@ -1,15 +1,15 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { CliError } from '../../errors.js';
+import { CliError } from '../../errors';
 import {
   makeDir,
   outputFile,
   readJsonFile,
   writeJsonFile,
-} from '../../utils/file-system.js';
-import { style } from '../../utils/style.js';
-import { findFiles } from '../find-files.js';
+} from '../../utils/file-system';
+import { style } from '../../utils/style';
+import { findFiles } from '../find-files';
 
 import {
   addMessage,
@@ -18,7 +18,7 @@ import {
   type Message,
   type TemplateWarning,
   type Translation,
-} from './template.js';
+} from './template';
 
 export interface MigrateAngularI18nOptions {
   /** The folder holding the templates to migrate. */

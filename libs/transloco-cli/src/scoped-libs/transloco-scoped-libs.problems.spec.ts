@@ -12,7 +12,7 @@ import { stripVTControlCharacters } from 'node:util';
 
 import { vi } from 'vitest';
 
-import run from './transloco-scoped-libs.js';
+import run from './transloco-scoped-libs';
 
 describe('Scoped libs with misconfigured libraries', () => {
   const originalCwd = process.cwd();

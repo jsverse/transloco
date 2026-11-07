@@ -4,9 +4,9 @@ import path from 'node:path';
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { CliError } from '../errors.js';
+import { CliError } from '../errors';
 
-import { runScopedLibs } from './scoped-libs.js';
+import { runScopedLibs } from './scoped-libs';
 
 const run = vi.hoisted(() => vi.fn());
 
@@ -14,7 +14,7 @@ function stopWatching(watching: number) {
   return Object.assign(async () => {}, { watching });
 }
 
-vi.mock('../scoped-libs/index.js', () => ({ default: run }));
+vi.mock('../scoped-libs', () => ({ default: run }));
 
 describe('runScopedLibs', () => {
   const originalCwd = process.cwd();

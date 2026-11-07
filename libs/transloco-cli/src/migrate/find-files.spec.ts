@@ -5,7 +5,7 @@ import path from 'node:path';
 import { globSync } from 'glob';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { findFiles } from './find-files.js';
+import { findFiles } from './find-files';
 
 vi.mock('glob', async (importOriginal) => {
   const original = await importOriginal<typeof import('glob')>();

@@ -3,8 +3,8 @@ import path from 'node:path';
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { createProgram } from './program.js';
-import { collectOutput } from './tests/program-harness.js';
+import { createProgram } from './program';
+import { collectOutput } from './tests/program-harness';
 
 /**
  * Holds the table `ng update` rewrites npm scripts with to the real program.
@@ -25,15 +25,15 @@ const runners = vi.hoisted(() => ({
   runScopedLibs: vi.fn(),
 }));
 
-vi.mock('./commands/extract.js', () => ({ runExtract: runners.runExtract }));
-vi.mock('./commands/find.js', () => ({ runFind: runners.runFind }));
-vi.mock('./commands/validate.js', () => ({
+vi.mock('./commands/extract', () => ({ runExtract: runners.runExtract }));
+vi.mock('./commands/find', () => ({ runFind: runners.runFind }));
+vi.mock('./commands/validate', () => ({
   runValidate: runners.runValidate,
 }));
-vi.mock('./commands/optimize.js', () => ({
+vi.mock('./commands/optimize', () => ({
   runOptimize: runners.runOptimize,
 }));
-vi.mock('./commands/scoped-libs.js', () => ({
+vi.mock('./commands/scoped-libs', () => ({
   runScopedLibs: runners.runScopedLibs,
 }));
 

@@ -5,7 +5,7 @@ import path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { getDefaultSearchPlacesSync } from 'cosmiconfig';
 
-import { assertConfigPathExists, configSearchPlaces } from './config-path.js';
+import { assertConfigPathExists, configSearchPlaces } from './config-path';
 
 describe('assertConfigPathExists', () => {
   let dir: string;

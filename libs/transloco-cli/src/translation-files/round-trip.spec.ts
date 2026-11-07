@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'vitest';
 
-import { joinTranslations, type JoinOptions } from './join.js';
-import { splitTranslations } from './split.js';
+import { joinTranslations, type JoinOptions } from './join';
+import { splitTranslations } from './split';
 import {
   applyPlannedFiles,
   createMemoryReader,
   json,
   type MemoryFiles,
-} from './tests/memory-file-reader.js';
+} from './tests/memory-file-reader';
 
 const root = 'src/assets/i18n';
 

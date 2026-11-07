@@ -13,10 +13,10 @@ import {
   vi,
 } from 'vitest';
 
-import { resolveProjectBasePath } from '../utils/resolve-project-base-path.js';
-import { isString } from '../utils/validators.utils.js';
+import { resolveProjectBasePath } from '../utils/resolve-project-base-path';
+import { isString } from '../utils/validators.utils';
 
-import { spyOnConsole } from './spec-utils.js';
+import { spyOnConsole } from './spec-utils';
 
 // `resolveProjectBasePath` (and the fixture helpers below) resolve paths
 // against `process.cwd()`. Under `nx test` that's the workspace root, so
@@ -96,7 +96,7 @@ describe('resolveProjectBasePath', () => {
     async function freshModule() {
       vi.resetModules();
 
-      return import('../utils/resolve-project-base-path.js');
+      return import('../utils/resolve-project-base-path');
     }
 
     it(`GIVEN no workspace config

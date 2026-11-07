@@ -5,7 +5,7 @@ import { stripVTControlCharacters } from 'node:util';
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { migrateNgxTranslate } from './migrate-ngx-translate.js';
+import { migrateNgxTranslate } from './migrate-ngx-translate';
 
 /**
  * What the migration of the schematic wrote, recorded from it before it moved:
