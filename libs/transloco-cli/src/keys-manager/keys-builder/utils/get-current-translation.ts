@@ -1,12 +1,14 @@
+import fs from 'node:fs';
+
 import { unflatten } from 'flat';
-import fs from 'fs-extra';
 import { po } from 'gettext-parser';
 
+import { readJsonFile } from '../../../utils/file-system';
 import { getConfig } from '../../config';
 import { FileFormats, Translation } from '../../types';
 
 function parseJson(path: string): Translation {
-  return fs.readJsonSync(path, { throws: false }) || {};
+  return readJsonFile(path, { throws: false }) || {};
 }
 
 function parsePot(path: string) {

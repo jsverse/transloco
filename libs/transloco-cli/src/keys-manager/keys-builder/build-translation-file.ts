@@ -1,5 +1,6 @@
-import fs from 'fs-extra';
+import fs from 'node:fs';
 
+import { outputFile } from '../../utils/file-system';
 import { Config, Translation } from '../types';
 
 import { createTranslation } from './utils/create-translation';
@@ -28,7 +29,7 @@ export function buildTranslationFile({
   const fileExists = fs.existsSync(path);
   const currentTranslation = getCurrentTranslation({ path, fileFormat });
 
-  fs.outputFileSync(
+  outputFile(
     path,
     createTranslation({
       currentTranslation,
