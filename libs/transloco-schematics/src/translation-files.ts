@@ -34,7 +34,7 @@ export function asSchematicsException<T>(run: () => T) {
   }
 }
 
-/** The command of the CLI that replaces each of the deprecated schematics. */
+/** The command of the CLI that supersedes each of the schematics. */
 const replacements = {
   join: 'join',
   split: 'split',
