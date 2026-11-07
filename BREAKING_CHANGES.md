@@ -15,7 +15,7 @@ nx migrate @jsverse/transloco  # Nx
 - `rxjs` peer dependency is now `^6.5.3 || ^7.4.0`.
 - `marker`, which marks a key for extraction, is now exported by `@jsverse/transloco`. It used to come from `@jsverse/transloco-keys-manager/marker`, which was removed (see Transloco Keys Manager below).
 - `@jsverse/transloco` no longer depends on `@jsverse/transloco-utils`. The `TranslocoGlobalConfig` type is now exported by `@jsverse/transloco`, and `getGlobalConfig` by `@jsverse/transloco-cli`. `ng update` rewrites these imports, and adds `@jsverse/transloco-cli` to `devDependencies` when it starts importing it. The config the `ng-add` schematic generates imports the type from `@jsverse/transloco`.
-- `@jsverse/transloco-utils` is deprecated and keeps working, unchanged. Both of its exports are marked `@deprecated`.
+- `@jsverse/transloco-utils` is superseded and keeps working, unchanged. It will be deprecated on npm in Transloco v10. The doc comments of both of its exports name what replaces them.
 
 ## Transloco Locale & Messageformat
 
@@ -59,7 +59,7 @@ nx migrate @jsverse/transloco  # Nx
 - `import` of Validator and of Scoped Libs gives the function as the default export, it used to be an object holding the function in `default`. Optimize has named exports only, the default export holding all of them is gone.
 - Keys Manager and Scoped Libs leave it to Node.js whether the messages they print are coloured, so `NO_COLOR` and `NODE_DISABLE_COLORS` are now honoured on a terminal too. Output that isn't a terminal stays plain as before, except on Azure Pipelines, where those messages used to carry colour codes and no longer do. A `FORCE_COLOR` value Node.js does not know, such as `4`, no longer forces colours.
 - On a terminal, the control keys pressed while Keys Manager's `extract` shows its spinner are no longer swallowed. When Prettier formatting follows, Ctrl-C or Ctrl-\ ends the command as an interrupted one (exit code 130 or 131 in a shell) once the translation files are written, so before Prettier formats them and before `Done!` is printed. Ctrl-Z suspends the command. `find` is not affected.
-- The `transloco-keys-manager`, `transloco-validator`, `transloco-optimize` and `transloco-scoped-libs` bins are deprecated in favour of the `transloco` bin of `@jsverse/transloco-cli`. They keep working until Transloco v10, and each prints a deprecation notice on stderr when it starts. Setting `NODE_OPTIONS=--no-deprecation` silences the notice. The replacements are `transloco-keys-manager extract` → `transloco extract`, `transloco-keys-manager find` → `transloco find`, `transloco-validator` → `transloco validate`, `transloco-optimize` → `transloco optimize` and `transloco-scoped-libs` → `transloco scoped-libs`.
+- The `transloco-keys-manager`, `transloco-validator`, `transloco-optimize` and `transloco-scoped-libs` bins are superseded by the `transloco` bin of `@jsverse/transloco-cli`. Their packages keep working, and will be deprecated on npm in Transloco v10. Each bin prints a notice saying so on stderr when it starts, which setting `NODE_OPTIONS=--no-deprecation` silences. The replacements are `transloco-keys-manager extract` → `transloco extract`, `transloco-keys-manager find` → `transloco find`, `transloco-validator` → `transloco validate`, `transloco-optimize` → `transloco optimize` and `transloco-scoped-libs` → `transloco scoped-libs`.
 
 # Transloco v8
 

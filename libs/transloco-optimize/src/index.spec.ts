@@ -17,7 +17,7 @@ describe('transloco-optimize bin', () => {
   const originalArgv = process.argv;
   const originalNoDeprecation = process.noDeprecation;
   const notice =
-    'DeprecationWarning: transloco-optimize is deprecated and will be removed in Transloco v10. Run "transloco optimize" from @jsverse/transloco-cli instead.\n';
+    'transloco-optimize will be deprecated in Transloco v10. Run "transloco optimize" from @jsverse/transloco-cli instead.\n';
   let stderr: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {

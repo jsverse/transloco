@@ -1,6 +1,7 @@
 /**
- * @deprecated Import the `TranslocoGlobalConfig` type from `@jsverse/transloco`
- * instead. `@jsverse/transloco-utils` keeps working but will not change.
+ * Superseded by the `TranslocoGlobalConfig` type of `@jsverse/transloco`, import
+ * it from there instead. `@jsverse/transloco-utils` keeps working but will not
+ * change, and will be deprecated in Transloco v10.
  */
 export interface TranslocoGlobalConfig {
   rootTranslationsPath?: string;
