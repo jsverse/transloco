@@ -31,6 +31,8 @@ interface Allowed {
 /** What it takes to parse the arguments, print the help or the version and report an error. */
 const program: Allowed = {
   files: [
+    // Imported as a JSON module by package-info.js.
+    'package.json',
     'src/bin.js',
     'src/errors.js',
     'src/package-info.js',

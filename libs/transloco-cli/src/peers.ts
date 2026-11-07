@@ -1,7 +1,7 @@
 import { createRequire } from 'node:module';
 
 import { CliError } from './errors.js';
-import { packageJsonPath, readPackageJson } from './package-info.js';
+import { readPackageJson } from './package-info.js';
 
 /**
  * Only the keys manager needs these, so the package marks them as optional
@@ -14,12 +14,12 @@ type ResolvePeer = (name: string) => unknown;
 /**
  * Fails with an actionable message when a peer of the keys manager is missing.
  *
- * The peers are resolved from the package and not from the working directory,
- * since that's where the keys manager is going to load them from.
+ * The peers are resolved from this file's location and not from the working
+ * directory, since that's where the keys manager is going to load them from.
  */
 export function assertKeysManagerPeers(
   command: string,
-  resolve: ResolvePeer = createRequire(packageJsonPath).resolve,
+  resolve: ResolvePeer = createRequire(import.meta.url).resolve,
 ) {
   const missing = keysManagerPeers.filter(
     (peer) => !isInstalled(peer, resolve),
