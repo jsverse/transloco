@@ -127,6 +127,42 @@ describe('object.utils', () => {
       const result = mergeDeep(target);
       expect(result).toBe(target);
     });
+
+    it('should not pollute Object.prototype through a __proto__ key', async () => {
+      const { mergeDeep } = await import('../utils/object.utils');
+      // Given a source parsed from JSON, where __proto__ is an own key
+      const source = JSON.parse('{"__proto__": {"polluted": "yes"}, "a": 1}');
+
+      try {
+        // When merging it
+        const result = mergeDeep({}, source);
+
+        // Then the prototype is untouched and the key is skipped
+        expect(({} as any).polluted).toBeUndefined();
+        expect(Object.getPrototypeOf(result)).toBe(Object.prototype);
+        expect(result).toEqual({ a: 1 });
+      } finally {
+        delete (Object.prototype as any).polluted;
+      }
+    });
+
+    it('should merge keys that shadow Object.prototype members', async () => {
+      const { mergeDeep } = await import('../utils/object.utils');
+      // Given nested keys named like inherited members
+      const source = JSON.parse(
+        '{"constructor": {"title": "Constructor"}, "toString": {"label": "To string"}}',
+      );
+
+      // When merging them into an empty target
+      const result = mergeDeep({}, source);
+
+      // Then they are kept as own keys
+      expect(Object.keys(result)).toEqual(['constructor', 'toString']);
+      expect(result).toMatchObject({
+        constructor: { title: 'Constructor' },
+        toString: { label: 'To string' },
+      });
+    });
   });
 
   describe('stringify', () => {
