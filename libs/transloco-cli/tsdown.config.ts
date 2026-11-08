@@ -31,6 +31,7 @@ export default defineConfig({
   entry: {
     index: 'src/index.ts',
     bin: 'src/bin.ts',
+    'internal/deprecation': 'src/deprecation/index.ts',
     'internal/keys-manager': 'src/keys-manager/index.ts',
     'internal/optimize': 'src/optimize/index.ts',
     'internal/scoped-libs': 'src/scoped-libs/index.ts',

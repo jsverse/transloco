@@ -33,7 +33,11 @@
       "types": "./internal/validator.d.ts",
       "default": "./internal/validator.js"
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./internal/deprecation": {
+      "types": "./internal/deprecation.d.ts",
+      "default": "./internal/deprecation.js"
+    }
   },
   "main": "index.js",
   "types": "index.d.ts",

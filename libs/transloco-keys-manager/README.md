@@ -1,5 +1,8 @@
 # Transloco Keys Manager
 
+> [!WARNING]
+> The `transloco-keys-manager` bin is superseded by `transloco extract` and `transloco find` from `@jsverse/transloco-cli` and keeps working. It will be deprecated on npm in Transloco v10. The `marker` is not part of the CLI, import it from `@jsverse/transloco-keys-manager/marker` as before.
+
 Extract translatable keys from projects that use Transloco.
 
 > This library is being migrated from [jsverse/transloco-keys-manager](https://github.com/jsverse/transloco-keys-manager) into this monorepo.
