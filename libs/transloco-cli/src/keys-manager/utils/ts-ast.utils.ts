@@ -70,14 +70,16 @@ export function isNamed(node: Node, name: string): boolean {
 }
 
 /**
- * Local name under which `importedName` is bound by the first import whose
- * module specifier matches, e.g. `t` for `import { marker as t } from '...'`.
+ * Local names under which `importedName` is bound by every import whose module
+ * specifier matches, e.g. `t` for `import { marker as t } from '...'`.
  */
-export function resolveImportedName(
+export function resolveImportedNames(
   imports: ImportDeclaration[],
   moduleSpecifier: RegExp,
   importedName: string,
-): string | undefined {
+): string[] {
+  const names: string[] = [];
+
   for (const declaration of imports) {
     const specifier = declaration.moduleSpecifier;
     if (
@@ -93,10 +95,22 @@ export function resolveImportedName(
     for (const element of bindings.elements) {
       const imported = element.propertyName ?? element.name;
       if (imported.text === importedName) {
-        return element.name.text;
+        names.push(element.name.text);
       }
     }
   }
 
-  return undefined;
+  return names;
+}
+
+/**
+ * Local name under which `importedName` is bound by the first import whose
+ * module specifier matches.
+ */
+export function resolveImportedName(
+  imports: ImportDeclaration[],
+  moduleSpecifier: RegExp,
+  importedName: string,
+): string | undefined {
+  return resolveImportedNames(imports, moduleSpecifier, importedName)[0];
 }

@@ -15,6 +15,7 @@ import { testScopeExtraction } from './template-extraction/scope/scope-spec';
 import { testServiceExtraction } from './ts-extraction/service/service-spec';
 import { testPureFunctionExtraction } from './ts-extraction/pure-function/pure-function-spec';
 import { testMarkerExtraction } from './ts-extraction/marker/marker-spec';
+import { testMarkerMixedImportExtraction } from './ts-extraction/marker-mixed-import/marker-mixed-import-spec';
 import { testSignalExtraction } from './ts-extraction/signal/signal-spec';
 import { testInlineTemplateExtraction } from './ts-extraction/inline-template/inline-template-spec';
 import { testRouteTitleExtraction } from './ts-extraction/route-title/route-title-spec';
@@ -62,6 +63,8 @@ describe.each(formats)('buildTranslationFiles in %s', (fileFormat) => {
     testPureFunctionExtraction(fileFormat);
 
     testMarkerExtraction(fileFormat);
+
+    testMarkerMixedImportExtraction(fileFormat);
 
     testSignalExtraction(fileFormat);
 
