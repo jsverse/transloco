@@ -31,8 +31,15 @@ export function mergeDeep(target: object, ...sources: any[]) {
 
   if (isObject(target) && isObject(source)) {
     for (const key in source) {
+      // A JSON-parsed `__proto__` is an own key, but assigning or reading it
+      // on the target would reach Object.prototype.
+      if (key === '__proto__') continue;
+
       if (isObject(source[key])) {
-        if (!target[key]) Object.assign(target, { [key]: {} });
+        // Ignore inherited members (e.g. `constructor`) so they become own keys
+        if (!Object.hasOwn(target, key) || !target[key]) {
+          Object.assign(target, { [key]: {} });
+        }
         mergeDeep(target[key], source[key]);
       } else {
         Object.assign(target, { [key]: source[key] });
