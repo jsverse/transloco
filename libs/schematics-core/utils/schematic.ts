@@ -1,6 +1,6 @@
 import { inspect } from 'node:util';
 
-import { TranslocoGlobalConfig } from '@jsverse/transloco-utils';
+import type { TranslocoGlobalConfig } from '@jsverse/transloco-cli';
 
 export const NAMES = {
   LIB_NAME: '@jsverse/transloco',
@@ -8,7 +8,7 @@ export const NAMES = {
 };
 
 export function generateConfigFile(config: TranslocoGlobalConfig) {
-  return `import type { TranslocoGlobalConfig } from '@jsverse/transloco-utils';
+  return `import type { TranslocoGlobalConfig } from '@jsverse/transloco';
     
 const config: TranslocoGlobalConfig = ${inspect(config)};
     

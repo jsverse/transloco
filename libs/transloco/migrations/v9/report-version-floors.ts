@@ -8,8 +8,10 @@ const REQUIRED_NODE_RANGE = '^22.18.0 || >=24';
 
 /** The CLI packages whose `engines.node` moved to {@link REQUIRED_NODE_RANGE}. */
 const NODE_PACKAGES = [
+  '@jsverse/transloco-cli',
   '@jsverse/transloco-keys-manager',
   '@jsverse/transloco-optimize',
+  '@jsverse/transloco-schematics',
   '@jsverse/transloco-scoped-libs',
   '@jsverse/transloco-utils',
   '@jsverse/transloco-validator',
@@ -17,18 +19,20 @@ const NODE_PACKAGES = [
 
 /** The ones the range comes from: they read the Transloco config through cosmiconfig 10. */
 const TYPE_STRIPPING_PACKAGES = [
+  '@jsverse/transloco-cli',
   '@jsverse/transloco-keys-manager',
   '@jsverse/transloco-scoped-libs',
   '@jsverse/transloco-utils',
 ];
 
 /**
- * The CLI packages that load no config themselves and still moved to
- * {@link REQUIRED_NODE_RANGE}: they are ES modules running on
- * `@jsverse/transloco-cli`, which has that range.
+ * The packages that load no config through cosmiconfig themselves and still
+ * moved to {@link REQUIRED_NODE_RANGE}: they run on `@jsverse/transloco-cli`,
+ * which has that range.
  */
 const CLI_BACKED_PACKAGES = [
   '@jsverse/transloco-optimize',
+  '@jsverse/transloco-schematics',
   '@jsverse/transloco-validator',
 ];
 
