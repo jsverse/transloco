@@ -1,0 +1,13 @@
+{
+  "description": "GIVEN the help of the command is asked for WHEN the binary runs THEN it describes every option and warns that files are rewritten in place",
+  "args": [
+    "migrate",
+    "angular-i18n",
+    "--help"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

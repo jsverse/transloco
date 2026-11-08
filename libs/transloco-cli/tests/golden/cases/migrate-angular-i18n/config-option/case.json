@@ -1,0 +1,16 @@
+{
+  "description": "GIVEN a config in another folder WHEN it is given with --config THEN its root translations path is used",
+  "args": [
+    "migrate",
+    "angular-i18n",
+    "--langs",
+    "en",
+    "--config",
+    "configs/transloco.config.js"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

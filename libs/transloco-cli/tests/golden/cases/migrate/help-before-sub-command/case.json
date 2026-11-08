@@ -1,0 +1,13 @@
+{
+  "description": "GIVEN the help flag between migrate and a sub-command WHEN the binary runs THEN it prints the help of migrate",
+  "args": [
+    "migrate",
+    "--help",
+    "ngx-translate"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

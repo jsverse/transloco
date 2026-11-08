@@ -1,0 +1,2 @@
+error: unknown option '--input'
+(add --help for additional information)

@@ -1,0 +1,12 @@
+{
+  "description": "GIVEN the help of migrate is asked for WHEN the binary runs THEN it lists the two sub-commands and exits with 0",
+  "args": [
+    "migrate",
+    "--help"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}

@@ -1,0 +1,2 @@
+error: option '-i, --input <dir>' argument cannot be empty
+(add --help for additional information)

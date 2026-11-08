@@ -1,0 +1,14 @@
+{
+  "description": "GIVEN the help letter after a sub-command and a wrong option WHEN the binary runs THEN it prints the help of the sub-command and writes nothing",
+  "args": [
+    "migrate",
+    "angular-i18n",
+    "--frobnicate",
+    "-h"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}
