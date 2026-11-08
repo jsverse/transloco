@@ -1,0 +1,17 @@
+{
+  "description": "GIVEN the same files WHEN the out folder is given with -o THEN the files are written there",
+  "args": [
+    "join",
+    "--translations-path",
+    "src/assets/i18n",
+    "--default-lang",
+    "en",
+    "-o",
+    "build/i18n"
+  ],
+  "exitCode": 0,
+  "snapshot": [
+    "stdout",
+    "stderr"
+  ]
+}
