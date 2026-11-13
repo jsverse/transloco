@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../dist/out-tsc",
+    "target": "es2020",
+    "declaration": true,
+    "declarationMap": true,
+    "inlineSources": true,
+    "types": ["../../@types/angular-globals"]
+  },
+  "exclude": ["src/test-setup.ts", "**/*.spec.ts", "vitest.config*.ts"],
+  "include": ["**/*.ts"]
+}

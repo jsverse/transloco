@@ -1,0 +1,43 @@
+{
+  "name": "transloco-intlmessageformat",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/transloco-intlmessageformat/src",
+  "prefix": "transloco-nx-shell",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/angular:package",
+      "dependsOn": ["^build", "copy-license"],
+      "outputs": ["{workspaceRoot}/dist/libs/transloco-intlmessageformat"],
+      "options": {
+        "project": "libs/transloco-intlmessageformat/ng-package.json",
+        "tsConfig": "libs/transloco-intlmessageformat/tsconfig.lib.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/transloco-intlmessageformat/tsconfig.lib.prod.json"
+        },
+        "development": {}
+      },
+      "defaultConfiguration": "production"
+    },
+    "test": {
+      "executor": "@nx/vitest:test",
+      "outputs": ["{workspaceRoot}/coverage/libs/transloco-intlmessageformat"],
+      "options": {
+        "configFile": "libs/transloco-intlmessageformat/vitest.config.ts"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
+    },
+    "copy-license": {
+      "command": "cp LICENSE {projectRoot}/LICENSE",
+      "inputs": ["{workspaceRoot}/LICENSE"],
+      "outputs": ["{projectRoot}/LICENSE"],
+      "cache": true
+    }
+  }
+}

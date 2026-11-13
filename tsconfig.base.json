@@ -33,6 +33,9 @@
         "./libs/transloco-keys-manager/src/index.ts"
       ],
       "@jsverse/transloco-locale": ["./libs/transloco-locale/src/index.ts"],
+      "@jsverse/transloco-intlmessageformat": [
+        "./libs/transloco-intlmessageformat/src/index.ts"
+      ],
       "@jsverse/transloco-messageformat": [
         "./libs/transloco-messageformat/src/index.ts"
       ],

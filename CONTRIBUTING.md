@@ -18,6 +18,7 @@ Packages:
 - transloco-cli
 - transloco-keys-manager
 - transloco-locale
+- transloco-intlmessageformat
 - transloco-messageformat
 - transloco-optimize
 - transloco-presist-lang

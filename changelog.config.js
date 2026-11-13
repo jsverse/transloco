@@ -62,6 +62,7 @@ module.exports = {
     'keys-manager',
     'locale',
     'messageformat',
+    'intlmessageformat',
     'optimize',
     'persist-lang',
     'persist-translations',
