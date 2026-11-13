@@ -1,11 +1,6 @@
 import { Injectable } from '@angular/core';
-import {
-  DefaultTranspiler,
-  getValue,
-  setValue,
-  TranspileParams,
-} from '@jsverse/transloco';
-import { isObject } from '@jsverse/utils';
+import { DefaultTranspiler, TranspileParams } from '@jsverse/transloco';
+import { isObject, isString } from '@jsverse/utils';
 import { Formats, Options } from 'intl-messageformat';
 
 import {
@@ -30,7 +25,7 @@ export class IntlMessageFormatTranspiler extends DefaultTranspiler {
   constructor() {
     super();
     const {
-      locales,
+      locales = this.config.defaultLang,
       formats,
       opts,
       enableCache = true,
@@ -41,25 +36,26 @@ export class IntlMessageFormatTranspiler extends DefaultTranspiler {
     this.compile = this.imfFactory(locales, this.formats, this.opts);
   }
 
-  transpile({ value, params = {}, translation, key }: TranspileParams) {
+  transpile({ value, params = {}, translation, key }: TranspileParams): any {
     if (!value) {
       return value;
     }
 
-    if (isObject(value) && params) {
-      Object.keys(params).forEach((p) => {
-        const transpiled = super.transpile({
-          value: getValue(value as Record<string, unknown>, p),
-          params: getValue(params, p),
-          translation,
-          key,
-        });
-        value = setValue(value, p, this.compile(transpiled).format(params[p]));
-      });
-    } else if (!Array.isArray(value)) {
-      const transpiled = super.transpile({ value, params, translation, key });
+    if (Array.isArray(value)) {
+      return this.handleArray({ value, params, translation, key });
+    }
 
-      return this.compile(transpiled).format(params);
+    if (isObject(value)) {
+      return this.handleObject({
+        value: value as Record<string, unknown>,
+        params,
+        translation,
+        key,
+      });
+    }
+
+    if (isString(value)) {
+      return this.format({ value, params, translation, key });
     }
 
     return value;
@@ -71,5 +67,28 @@ export class IntlMessageFormatTranspiler extends DefaultTranspiler {
 
   setLocale(locale: IMFLocale) {
     this.compile = this.imfFactory(locale, this.formats, this.opts);
+  }
+
+  private format({
+    value,
+    params = {},
+    translation,
+    key,
+  }: TranspileParams<string>) {
+    const values: Record<string, unknown> = { ...params };
+    let index = 0;
+    const message = value.replace(this.interpolationMatcher, (placeholder) => {
+      const name = `__transloco_${index++}`;
+      values[name] = super.transpile({
+        value: placeholder,
+        params,
+        translation,
+        key,
+      });
+
+      return `{${name}}`;
+    });
+
+    return this.compile(message).format(values);
   }
 }

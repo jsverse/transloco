@@ -1,9 +1,11 @@
-import { Page } from '@playwright/test';
+import { expect, Page } from '@playwright/test';
 
 import { expectContains } from './utils';
 
 export async function testActiveTranspiler(page: Page, name: string) {
-  await expectContains(page, `[data-cy=transpiler-name]`, `${name} Transpiler`);
+  await expect(page.locator(`[data-cy=transpiler-name]`)).toHaveText(
+    `${name} Transpiler`,
+  );
 }
 
 export async function testTranspilersContent(page: Page, lang = 'english') {

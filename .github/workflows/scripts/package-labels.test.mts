@@ -41,6 +41,15 @@ describe('packageLabelsFor', () => {
       assert.deepStrictEqual(result.labels, ['transloco', 'messageformat']);
     });
 
+    it(`GIVEN the dropdown names only the intl message format package
+        WHEN the labels are derived
+        THEN returns its own label and reports nothing as unknown`, () => {
+      const result = packageLabelsFor(bodyAnswering('IntlMessageFormat'));
+
+      assert.deepStrictEqual(result.labels, ['intlmessageformat']);
+      assert.deepStrictEqual(result.unknown, []);
+    });
+
     it(`GIVEN the dropdown names multi-word packages
         WHEN the labels are derived
         THEN returns their hyphenated labels`, () => {

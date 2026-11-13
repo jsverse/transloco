@@ -109,6 +109,103 @@ describe('IntlMessageFormatTranspiler', () => {
     ).toBe('5 rzeczy wiele');
   });
 
+  it(`GIVEN transpiler without locales and pl as the default language
+      WHEN transpiling before any language change
+      THEN applies the plural rules of the default language`, () => {
+    const transpiler = getTranspiler(
+      undefined,
+      translocoConfig({ defaultLang: 'pl' }),
+    );
+    const polishKey =
+      '{count, plural, one {# rzecz} few {# rzeczy} many {# rzeczy wiele} other {# rzeczy inne}}';
+
+    expect(
+      transpiler.transpile(
+        getTranspilerParams(polishKey, { params: { count: 2 } }),
+      ),
+    ).toBe('2 rzeczy');
+  });
+
+  it(`GIVEN transpiler with explicit locales and pl as the default language
+      WHEN transpiling before any language change
+      THEN applies the plural rules of the explicit locale`, () => {
+    const transpiler = getTranspiler(
+      { locales: 'en' },
+      translocoConfig({ defaultLang: 'pl' }),
+    );
+    const polishKey =
+      '{count, plural, one {# rzecz} few {# rzeczy} many {# rzeczy wiele} other {# rzeczy inne}}';
+
+    expect(
+      transpiler.transpile(
+        getTranspilerParams(polishKey, { params: { count: 2 } }),
+      ),
+    ).toBe('2 rzeczy inne');
+  });
+
+  it(`GIVEN a param value containing ICU syntax
+      WHEN transpiling a message that interpolates it
+      THEN keeps the param value as literal text`, () => {
+    const transpiler = getTranspiler();
+
+    expect(
+      transpiler.transpile(
+        getTranspilerParams(
+          '{count, plural, one {{{ name }} has # item} other {{{ name }} has # items}}',
+          { params: { name: "{missing} # <b> it's", count: 2 } },
+        ),
+      ),
+    ).toBe("{missing} # <b> it's has 2 items");
+  });
+
+  it(`GIVEN a referenced translation that resolves to text with braces
+      WHEN transpiling a message that reuses it
+      THEN keeps the referenced text as literal text`, () => {
+    const transpiler = getTranspiler();
+
+    expect(
+      transpiler.transpile(
+        getTranspilerParams('Use {{ hint }}', {
+          params: { example: '{name}' },
+          translation: { hint: 'the {{ example }} syntax' },
+        }),
+      ),
+    ).toBe('Use the {name} syntax');
+  });
+
+  it(`GIVEN an array of messages
+      WHEN transpiling
+      THEN transpiles each element`, () => {
+    const transpiler = getTranspiler();
+
+    expect(
+      transpiler.transpile(
+        getTranspilerParams(
+          [
+            'Hello {{ world }}',
+            '{count, plural, one {# item} other {# items}}',
+          ],
+          { params: { count: 1 }, translation: { world: 'World' } },
+        ),
+      ),
+    ).toEqual(['Hello World', '1 item']);
+  });
+
+  it(`GIVEN a translation object with a nested object under a params key
+      WHEN transpiling with params for the nested leaves
+      THEN formats each nested leaf with its own params`, () => {
+    const transpiler = getTranspiler();
+
+    expect(
+      transpiler.transpile(
+        getTranspilerParams(
+          { group: { label: 'Hi {name}', untouched: 'Bye {name}' } },
+          { params: { group: { label: { name: 'Ada' } } } },
+        ),
+      ),
+    ).toEqual({ group: { label: 'Hi Ada', untouched: 'Bye {name}' } });
+  });
+
   it(`GIVEN a translation containing HTML
       WHEN transpiling with the default options
       THEN keeps the HTML as text`, () => {
@@ -145,17 +242,17 @@ describe('IntlMessageFormatTranspiler', () => {
       THEN parses the message once and formats each params set`, () => {
     const parse = vi.spyOn(IntlMessageFormat, '__parse');
     const transpiler = getTranspiler({ locales: 'en' });
-    const message = '{count, plural, one {# item} other {# items}}';
+    const message = '{{ name }}: {count, plural, one {# item} other {# items}}';
 
     const single = transpiler.transpile(
-      getTranspilerParams(message, { params: { count: 1 } }),
+      getTranspilerParams(message, { params: { name: 'Ada', count: 1 } }),
     );
     const multiple = transpiler.transpile(
-      getTranspilerParams(message, { params: { count: 3 } }),
+      getTranspilerParams(message, { params: { name: 'Bob', count: 3 } }),
     );
 
-    expect(single).toBe('1 item');
-    expect(multiple).toBe('3 items');
+    expect(single).toBe('Ada: 1 item');
+    expect(multiple).toBe('Bob: 3 items');
     expect(parse).toHaveBeenCalledTimes(1);
     parse.mockRestore();
   });
