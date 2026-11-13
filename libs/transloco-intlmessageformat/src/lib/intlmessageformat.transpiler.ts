@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
-import { DefaultTranspiler, TranspileParams } from '@jsverse/transloco';
-import { isObject, isString } from '@jsverse/utils';
+import {
+  DefaultTranspiler,
+  getValue,
+  TranspileParams,
+} from '@jsverse/transloco';
+import { isDefined, isObject, isString } from '@jsverse/utils';
 import { Formats, Options } from 'intl-messageformat';
 
 import {
@@ -81,16 +85,22 @@ export class IntlMessageFormatTranspiler extends DefaultTranspiler {
   }: TranspileParams<string>) {
     const values: Record<string, unknown> = { ...params };
     let index = 0;
-    const message = value.replace(this.interpolationMatcher, (placeholder) => {
-      values[placeholderName(index)] = super.transpile({
-        value: placeholder,
-        params,
-        translation,
-        key,
-      });
+    const message = value.replace(
+      this.interpolationMatcher,
+      (_placeholder, path: string) => {
+        const name = path.trim();
+        const param = getValue(params, name);
+        const referenced = translation[name];
+        const resolved = isDefined(param)
+          ? param
+          : isDefined(referenced)
+            ? this.transpile({ value: referenced, params, translation, key })
+            : '';
+        values[placeholderName(index)] = String(resolved);
 
-      return placeholderMarker(index++);
-    });
+        return placeholderMarker(index++);
+      },
+    );
 
     return this.compile(message).format(values);
   }

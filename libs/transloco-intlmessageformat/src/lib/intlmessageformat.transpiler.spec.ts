@@ -217,6 +217,41 @@ describe('IntlMessageFormatTranspiler', () => {
     ).toBe('Hello **<i>Transloco</i>**');
   });
 
+  it(`GIVEN a param value containing interpolation markers
+      WHEN transpiling a message that interpolates it
+      THEN keeps the param value as literal text without resolving it again`, () => {
+    const transpiler = getTranspiler();
+
+    expect(
+      transpiler.transpile(
+        getTranspilerParams('Hello {{ name }}', {
+          params: { name: '{{name}}' },
+        }),
+      ),
+    ).toBe('Hello {{name}}');
+    expect(
+      transpiler.transpile(
+        getTranspilerParams('Hello {{ name }}', {
+          params: { name: '{{ other }}', other: 'Bob' },
+        }),
+      ),
+    ).toBe('Hello {{ other }}');
+  });
+
+  it(`GIVEN a message interpolating a non-string param and a missing param
+      WHEN transpiling
+      THEN renders the param as text and the missing one as empty`, () => {
+    const transpiler = getTranspiler();
+
+    expect(
+      transpiler.transpile(
+        getTranspilerParams('{{ count }} of {{ total }}{{ missing }}', {
+          params: { count: 0, total: 12 },
+        }),
+      ),
+    ).toBe('0 of 12');
+  });
+
   it(`GIVEN a referenced translation that resolves to text with braces
       WHEN transpiling a message that reuses it
       THEN keeps the referenced text as literal text`, () => {
