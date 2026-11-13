@@ -14,6 +14,7 @@ const PACKAGE_LABELS: Record<string, string> = {
   schematics: 'schematics',
   locale: 'locale',
   messageformat: 'messageformat',
+  intlmessageformat: 'intlmessageformat',
   optimize: 'optimize',
   'persist lang': 'persist-lang',
   'persist translations': 'persist-translations',

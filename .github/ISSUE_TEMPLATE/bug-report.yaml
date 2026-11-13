@@ -21,6 +21,7 @@ body:
         - Schematics
         - Locale
         - MessageFormat
+        - IntlMessageFormat
         - Optimize
         - Persist Lang
         - Persist Translations

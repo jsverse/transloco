@@ -1,6 +1,12 @@
-import { Page } from '@playwright/test';
+import { expect, Page } from '@playwright/test';
 
 import { expectContains } from './utils';
+
+export async function testActiveTranspiler(page: Page, name: string) {
+  await expect(page.locator(`[data-cy=transpiler-name]`)).toHaveText(
+    `${name} Transpiler`,
+  );
+}
 
 export async function testTranspilersContent(page: Page, lang = 'english') {
   // Structural Directive

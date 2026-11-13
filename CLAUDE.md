@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Transloco is an internationalization (i18n) library for Angular, published under the `@jsverse` npm scope. It's an Nx monorepo with 15 libraries and a playground app.
+Transloco is an internationalization (i18n) library for Angular, published under the `@jsverse` npm scope. It's an Nx monorepo with 16 libraries and a playground app.
 
 ## Common Commands
 
@@ -46,6 +46,7 @@ The core `transloco` library is the foundation. All plugin libraries depend on i
 - **transloco** - Core i18n: service, directive, pipe, signal API, transpiler, loader, interceptor
 - **transloco-locale** - Number/date localization using native `Intl` APIs
 - **transloco-messageformat** - ICU message format via `@messageformat/core`
+- **transloco-intlmessageformat** - ICU message format via FormatJS `intl-messageformat` (no `unsafe-eval`)
 - **transloco-persist-lang** - Persist active language (localStorage/cookie/custom)
 - **transloco-persist-translations** - Cache translations locally
 - **transloco-preload-langs** - Preload languages on app init
@@ -87,7 +88,7 @@ All libraries are mapped via `tsconfig.base.json` paths (e.g., `@jsverse/translo
 
 Format: `type(scope): subject` (max 64 chars). Use `pnpm commit` for interactive prompt.
 
-Scopes: `transloco`, `cli`, `locale`, `messageformat`, `optimize`, `persist-lang`, `persist-translations`, `preload-langs`, `scoped-libs`, `utils`, `validator`, `schematics`
+Scopes: `transloco`, `cli`, `locale`, `messageformat`, `intlmessageformat`, `optimize`, `persist-lang`, `persist-translations`, `preload-langs`, `scoped-libs`, `utils`, `validator`, `schematics`
 
 ### Pre-commit Checks
 

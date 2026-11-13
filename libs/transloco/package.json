@@ -56,6 +56,7 @@
       "@jsverse/transloco",
       "@jsverse/transloco-locale",
       "@jsverse/transloco-messageformat",
+      "@jsverse/transloco-intlmessageformat",
       "@jsverse/transloco-persist-lang",
       "@jsverse/transloco-persist-translations",
       "@jsverse/transloco-preload-langs",
