@@ -87,7 +87,7 @@ export class TranslocoRootModule {}
 
 The locale decides which plural rules apply and how numbers, dates and times are formatted. The transpiler follows the active language: every language change sets the locale to the new language.
 
-Until the first language change, the locale is the one you pass in `locales`, or the default locale of the runtime when you pass none:
+Until the first language change, the locale is the one you pass in `locales`, or Transloco's `defaultLang` when you pass none:
 
 {% tabs %}
 {% tab title="Standalone" %}
