@@ -4,5 +4,8 @@
   "lib": {
     "entryFile": "src/index.ts"
   },
-  "allowedNonPeerDependencies": ["intl-messageformat"]
+  "allowedNonPeerDependencies": [
+    "@formatjs/icu-messageformat-parser",
+    "intl-messageformat"
+  ]
 }

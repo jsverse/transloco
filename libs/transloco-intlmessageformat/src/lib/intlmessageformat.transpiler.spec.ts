@@ -180,6 +180,43 @@ describe('IntlMessageFormatTranspiler', () => {
     ).toBe("It's 'Ada and ''Bob");
   });
 
+  it(`GIVEN a message with an interpolation next to or inside a quoted ICU literal
+      WHEN transpiling
+      THEN keeps the quoted literal and interpolates the param`, () => {
+    const transpiler = getTranspiler();
+    const params = { n: 1, query: 'Ada' };
+
+    expect(
+      transpiler.transpile(
+        getTranspilerParams("{n, plural, other {'#'{{ query }}}}", { params }),
+      ),
+    ).toBe('#Ada');
+    expect(
+      transpiler.transpile(
+        getTranspilerParams("Use '{ {{ query }} }' and {{ query }}", {
+          params,
+        }),
+      ),
+    ).toBe('Use { Ada } and Ada');
+  });
+
+  it(`GIVEN transpiler with ignoreTag disabled
+      WHEN transpiling an interpolation inside a rich text tag
+      THEN interpolates the param inside the tag`, () => {
+    const transpiler = getTranspiler({ opts: { ignoreTag: false } });
+
+    expect(
+      transpiler.transpile(
+        getTranspilerParams('Hello <b>{{ name }}</b>', {
+          params: {
+            name: '<i>Transloco</i>',
+            b: (chunks: string[]) => `**${chunks.join('')}**`,
+          },
+        }),
+      ),
+    ).toBe('Hello **<i>Transloco</i>**');
+  });
+
   it(`GIVEN a referenced translation that resolves to text with braces
       WHEN transpiling a message that reuses it
       THEN keeps the referenced text as literal text`, () => {

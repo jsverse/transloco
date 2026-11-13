@@ -13,6 +13,10 @@ import {
   IMFCompiler,
   IMFFactory,
 } from './intlmessageformat.factory';
+import {
+  placeholderMarker,
+  placeholderName,
+} from './intlmessageformat.placeholders';
 
 @Injectable()
 export class IntlMessageFormatTranspiler extends DefaultTranspiler {
@@ -77,26 +81,16 @@ export class IntlMessageFormatTranspiler extends DefaultTranspiler {
   }: TranspileParams<string>) {
     const values: Record<string, unknown> = { ...params };
     let index = 0;
-    const message = value.replace(
-      this.interpolationMatcher,
-      (placeholder, _param: string, offset: number) => {
-        const name = `__transloco_${index++}`;
-        values[name] = super.transpile({
-          value: placeholder,
-          params,
-          translation,
-          key,
-        });
+    const message = value.replace(this.interpolationMatcher, (placeholder) => {
+      values[placeholderName(index)] = super.transpile({
+        value: placeholder,
+        params,
+        translation,
+        key,
+      });
 
-        let precedingApostrophes = 0;
-        while (value[offset - precedingApostrophes - 1] === "'") {
-          precedingApostrophes++;
-        }
-        const literalApostrophe = precedingApostrophes % 2 ? "'" : '';
-
-        return `${literalApostrophe}{${name}}`;
-      },
-    );
+      return placeholderMarker(index++);
+    });
 
     return this.compile(message).format(values);
   }

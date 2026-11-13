@@ -234,6 +234,9 @@ importers:
       '@commander-js/extra-typings':
         specifier: 15.0.0
         version: 15.0.0(commander@15.0.0)
+      '@formatjs/icu-messageformat-parser':
+        specifier: 3.5.22
+        version: 3.5.22
       '@jsverse/angular-utils':
         specifier: 1.0.0-beta.6
         version: 1.0.0-beta.6(@angular/compiler@21.2.19)

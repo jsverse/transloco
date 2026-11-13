@@ -1,6 +1,10 @@
 import { Formats, IntlMessageFormat, Options } from 'intl-messageformat';
 
 import { IMFLocale } from './intlmessageformat.config';
+import {
+  hasPlaceholderMarker,
+  resolvePlaceholderMarkers,
+} from './intlmessageformat.placeholders';
 
 export type IMFCompiler = (message: string) => IntlMessageFormat;
 
@@ -15,7 +19,18 @@ export function defaultFactory(
   formats?: Partial<Formats>,
   opts?: Options,
 ): IMFCompiler {
-  return (message) => new IntlMessageFormat(message, locales, formats, opts);
+  return (message) => {
+    const parsed = new IntlMessageFormat(message, locales, formats, opts);
+
+    return hasPlaceholderMarker(message)
+      ? new IntlMessageFormat(
+          resolvePlaceholderMarkers(parsed.getAst()),
+          locales,
+          formats,
+          opts,
+        )
+      : parsed;
+  };
 }
 
 export function cachedFactory(
