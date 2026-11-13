@@ -158,6 +158,28 @@ describe('IntlMessageFormatTranspiler', () => {
     ).toBe("{missing} # <b> it's has 2 items");
   });
 
+  it(`GIVEN a message with apostrophes directly before an interpolation
+      WHEN transpiling
+      THEN keeps the apostrophes and interpolates the param`, () => {
+    const transpiler = getTranspiler();
+    const params = { query: 'Ada', other: 'Bob' };
+
+    expect(
+      transpiler.transpile(
+        getTranspilerParams("No results for '{{ query }}'{{ other }}", {
+          params,
+        }),
+      ),
+    ).toBe("No results for 'Ada'Bob");
+    expect(
+      transpiler.transpile(
+        getTranspilerParams("It''s ''{{ query }} and '''{{ other }}", {
+          params,
+        }),
+      ),
+    ).toBe("It's 'Ada and ''Bob");
+  });
+
   it(`GIVEN a referenced translation that resolves to text with braces
       WHEN transpiling a message that reuses it
       THEN keeps the referenced text as literal text`, () => {
