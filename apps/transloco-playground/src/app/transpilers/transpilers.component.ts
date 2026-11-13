@@ -1,6 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
-import { provideTranslocoScope, TranslocoModule } from '@jsverse/transloco';
+import {
+  provideTranslocoScope,
+  TRANSLOCO_TRANSPILER,
+  TranslocoModule,
+} from '@jsverse/transloco';
+import { IntlMessageFormatTranspiler } from '@jsverse/transloco-intlmessageformat';
 
 @Component({
   selector: 'app-transpilers',
@@ -15,6 +20,10 @@ import { provideTranslocoScope, TranslocoModule } from '@jsverse/transloco';
   imports: [TranslocoModule],
 })
 export default class TranspilersComponent {
+  transpilerName =
+    inject(TRANSLOCO_TRANSPILER) instanceof IntlMessageFormatTranspiler
+      ? 'IntlMessageFormat'
+      : 'MessageFormat';
   dynamic = '🦄';
   key = 'home';
   userGender = 'female';

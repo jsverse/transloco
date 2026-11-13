@@ -9,11 +9,15 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 
 import { provideTransloco } from '@jsverse/transloco';
+import { provideTranslocoIntlMessageFormat } from '@jsverse/transloco-intlmessageformat';
 import { provideTranslocoMessageformat } from '@jsverse/transloco-messageformat';
 import { provideTranslocoLocale } from '@jsverse/transloco-locale';
 
 import { TranslocoHttpLoader } from './transloco-loader';
 import { ROUTES } from './app.routes';
+
+const useIntlMessageFormat =
+  new URLSearchParams(window.location.search).get('transpiler') === 'intl';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -43,7 +47,9 @@ export const appConfig: ApplicationConfig = {
         es: 'es-ES',
       },
     }),
-    provideTranslocoMessageformat(),
+    useIntlMessageFormat
+      ? provideTranslocoIntlMessageFormat()
+      : provideTranslocoMessageformat(),
     // provideTranslocoPersistLang({
     //   storage: {
     //     useValue: cookiesStorage(),

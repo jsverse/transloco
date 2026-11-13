@@ -1,4 +1,4 @@
-import { Page, test } from '@playwright/test';
+import { expect, Page, test } from '@playwright/test';
 
 import { testDynamicContent } from './dynamic-translation';
 import { testHomeContent } from './home';
@@ -10,11 +10,27 @@ import {
 import { testLocaleContentUS, testLocaleContentES } from './locale';
 import { testMultiLangContent } from './multi-lang';
 import { testScopeSharingContent } from './scope-sharing';
-import { testTranspilersContent } from './transpilers';
+import { testActiveTranspiler, testTranspilersContent } from './transpilers';
 import { expectContains } from './utils';
 
 function changeLang(page: Page, lang: string) {
   return page.locator(`[data-cy=${lang}]`).click();
+}
+
+function isEvalBlocked(page: Page) {
+  return page.evaluate(
+    () =>
+      new Promise<boolean>((resolve) =>
+        setTimeout(() => {
+          try {
+            new Function('return 1')();
+            resolve(false);
+          } catch {
+            resolve(true);
+          }
+        }),
+      ),
+  );
 }
 
 test.describe('Transloco Full Cycle', () => {
@@ -70,12 +86,44 @@ test.describe('Transloco Full Cycle', () => {
   });
   test('Transpilers page', async ({ page }) => {
     await page.goto('/transpilers');
+    await testActiveTranspiler(page, 'MessageFormat');
     await changeLang(page, 'en');
     await testTranspilersContent(page);
     await changeLang(page, 'es');
     await testTranspilersContent(page, 'spanish');
     await changeLang(page, 'en');
     await testTranspilersContent(page);
+  });
+  test('Transpilers page with intl-messageformat', async ({ page }) => {
+    await page.goto('/transpilers?transpiler=intl');
+    await testActiveTranspiler(page, 'IntlMessageFormat');
+    await changeLang(page, 'en');
+    await testTranspilersContent(page);
+    await changeLang(page, 'es');
+    await testTranspilersContent(page, 'spanish');
+    await changeLang(page, 'en');
+    await testTranspilersContent(page);
+  });
+  test('Transpilers page with intl-messageformat and no unsafe-eval', async ({
+    page,
+  }) => {
+    await page.route('**/transpilers?transpiler=intl', async (route) => {
+      const response = await route.fetch();
+      await route.fulfill({
+        response,
+        headers: {
+          ...response.headers(),
+          'content-security-policy': "script-src 'self' 'unsafe-inline'",
+        },
+      });
+    });
+    await page.goto('/transpilers?transpiler=intl');
+    expect(await isEvalBlocked(page)).toBe(true);
+    await testActiveTranspiler(page, 'IntlMessageFormat');
+    await changeLang(page, 'en');
+    await testTranspilersContent(page);
+    await changeLang(page, 'es');
+    await testTranspilersContent(page, 'spanish');
   });
   test('Locale page', async ({ page }) => {
     await page.goto('/locale');
