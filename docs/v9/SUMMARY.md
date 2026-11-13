@@ -39,6 +39,7 @@
 
 * [Locale l10n](plugins-and-extensions/locale-l10n.md)
 * [Message Format](plugins-and-extensions/message-format.md)
+* [Intl Message Format](plugins-and-extensions/intl-message-format.md)
 * [Persist Language](plugins-and-extensions/persist-lang.md)
 * [Persist Translations](plugins-and-extensions/persist-translations.md)
 * [Preload Languages](plugins-and-extensions/preload-langs.md)
