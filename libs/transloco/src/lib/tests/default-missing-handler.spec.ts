@@ -17,6 +17,10 @@ describe('TranslocoMissingHandler', () => {
     expect(result).toEqual('myKey');
   }
 
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
   it(`GIVEN default config
       WHEN handling a missing key
       THEN should notify a warning message`, () => {
@@ -33,12 +37,8 @@ describe('TranslocoMissingHandler', () => {
     // Even though Transloco supports Angular v16+, we don't really
     // care since it has been deprecated for a long time, and this
     // will be no breaking change for existing apps (since we have a `typeof` check).
-    const originalNgDevMode = ngDevMode;
-    // @ts-expect-error Property 'ngDevMode' does not exist on type 'typeof globalThis'
-    globalThis['ngDevMode'] = false;
+    vi.stubGlobal('ngDevMode', false);
     assertLog({ prodMode: true }, false);
-    // @ts-expect-error Property 'ngDevMode' does not exist on type 'typeof globalThis'
-    globalThis['ngDevMode'] = originalNgDevMode;
   });
 
   it(`GIVEN logMissingKey is set to false
