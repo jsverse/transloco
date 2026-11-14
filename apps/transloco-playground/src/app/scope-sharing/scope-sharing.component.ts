@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 
-import { TranslocoModule } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-scope-sharing',
   templateUrl: './scope-sharing.component.html',
   styleUrls: ['./scope-sharing.component.scss'],
-  imports: [TranslocoModule],
+  imports: [TranslocoDirective, TranslocoPipe],
 })
 export default class ScopeSharingComponent {}

@@ -39,7 +39,7 @@ The `TranslateService` imports will be replaced with `TranslocoService`.
 1. `import { TranslateService } from '@ngx-translate/core';` will be replaced with `import { TranslocoService } from '@jsverse/transloco';`
 2. `import { TranslateModule, TranslateLoader } from '@ngx-translate/core';` will be replaced with  
    `import { TranslateLoader } from '@ngx-translate/core';`
-   `import { TranslocoModule } from '@jsverse/transloco';`
+   `import { TranslocoDirective, TranslocoPipe } from '@jsverse/transloco';`
 
 ### Constructor Injections
 
@@ -75,11 +75,31 @@ The `TranslateService` injections will be replaced with `TranslocoService`.
 
 ### Modules
 
-`TranslateModule` & `TranslateModule.forChild(...)` & `TranslateModule.forRoot(...)` will be replaced with `TranslocoModule`
+`TranslateModule` & `TranslateModule.forChild(...)` & `TranslateModule.forRoot(...)` will be replaced with `TranslocoDirective, TranslocoPipe`
 
 ##### Examples:
 
-1. `TranslateModule.forChild({ loader: { provide: TranslateLoader, useFactory: HttpLoaderFactory, deps: [HttpClient] } })` will be replaced with `TranslocoModule`
+1. `TranslateModule.forChild({ loader: { provide: TranslateLoader, useFactory: HttpLoaderFactory, deps: [HttpClient] } })` will be replaced with `TranslocoDirective, TranslocoPipe`
+
+> ⚠️ The configuration passed to `forRoot(...)` / `forChild(...)` is dropped: Transloco is configured with
+> `provideTransloco(...)` instead. Set it up once with `ng add @jsverse/transloco`, and move any custom loader
+> or scope over by hand.
+
+An NgModule may re-export a module it never imported, but it may not re-export a standalone directive or pipe
+it does not import. So when `TranslateModule` sits in an `exports` array, the migration adds the replacements to
+the sibling `imports` as well:
+
+```ts
+@NgModule({ exports: [CommonModule, TranslateModule] })
+// becomes
+@NgModule({
+  exports: [CommonModule, TranslocoDirective, TranslocoPipe],
+  imports: [TranslocoDirective, TranslocoPipe],
+})
+```
+
+An `imports` that is not an array literal - a shared constant, or a spread that may carry one of its own - is
+left untouched, so those modules need the import added by hand.
 
 ### Specs
 

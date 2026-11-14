@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { TranslocoModule } from '@jsverse/transloco';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 import { ProviderLangComponent } from './provider-lang/provider-lang.component';
 
@@ -8,6 +8,6 @@ import { ProviderLangComponent } from './provider-lang/provider-lang.component';
   selector: 'app-multilangs',
   templateUrl: './multi-langs.component.html',
   styleUrls: ['./multi-langs.component.scss'],
-  imports: [TranslocoModule, ProviderLangComponent],
+  imports: [TranslocoDirective, ProviderLangComponent],
 })
 export default class MultilangsComponent {}

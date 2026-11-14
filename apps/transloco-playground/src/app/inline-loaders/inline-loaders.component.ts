@@ -3,7 +3,8 @@ import { Component, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import {
-  TranslocoModule,
+  TranslocoDirective,
+  TranslocoPipe,
   TranslocoService,
   TRANSLOCO_SCOPE,
   translateSignal,
@@ -13,7 +14,7 @@ import {
   selector: 'app-inline',
   templateUrl: './inline-loaders.component.html',
   styleUrls: ['./inline-loaders.component.scss'],
-  imports: [TranslocoModule, AsyncPipe],
+  imports: [TranslocoDirective, TranslocoPipe, AsyncPipe],
 })
 export default class InlineLoadersComponent implements OnInit {
   private translocoService = inject(TranslocoService);

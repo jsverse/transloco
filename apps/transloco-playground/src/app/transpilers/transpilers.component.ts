@@ -1,6 +1,10 @@
 import { Component } from '@angular/core';
 
-import { provideTranslocoScope, TranslocoModule } from '@jsverse/transloco';
+import {
+  provideTranslocoScope,
+  TranslocoDirective,
+  TranslocoPipe,
+} from '@jsverse/transloco';
 
 @Component({
   selector: 'app-transpilers',
@@ -12,7 +16,7 @@ import { provideTranslocoScope, TranslocoModule } from '@jsverse/transloco';
       alias: 'mf',
     }),
   ],
-  imports: [TranslocoModule],
+  imports: [TranslocoDirective, TranslocoPipe],
 })
 export default class TranspilersComponent {
   dynamic = '🦄';

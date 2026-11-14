@@ -10,6 +10,7 @@ import { collectFiles } from './workspace-utils';
 import { addGlobalTranslateFn } from './global-translate-fn';
 import { migrateMarkerImport } from './marker-import';
 import { migrateConfigTypeImport } from './config-type-import';
+import { migrateDeprecatedModules } from './deprecated-modules';
 import { reportVersionFloors } from './report-version-floors';
 import { reportScopedLibsWebpackPlugin } from './scoped-libs-webpack-plugin';
 
@@ -86,6 +87,7 @@ export function migrateToV9(): Rule {
       migrateMarkerImport(),
       reportScopedLibsWebpackPlugin(),
       migrateConfigTypeImport(),
+      migrateDeprecatedModules(),
       reportVersionFloors(),
     ])(tree, context);
   };
